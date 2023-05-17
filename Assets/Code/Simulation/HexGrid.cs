@@ -1,0 +1,395 @@
+using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using BeauUtil;
+using UnityEngine;
+
+namespace Zavala.Sim {
+    /// <summary>
+    /// Hex grid size and helper struct for space/index conversions.
+    /// Every other column is offset by 1/2 a space in a positive direction (down).
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    [DebuggerDisplay("{Width}x{Height}")]
+    public unsafe readonly struct HexGridSize {
+        
+        public readonly uint Width;
+        public readonly uint Height;
+        public readonly uint Size;
+
+        // index offset table (stored this way so we can use the "readonly" modifier)
+        // using the "fixed" keyword doesn't allow it to be marked as readonly unfortunately :(
+        private readonly short m_IndexOffset00;
+        private readonly short m_IndexOffset01;
+        private readonly short m_IndexOffset02;
+        private readonly short m_IndexOffset03;
+        private readonly short m_IndexOffset04;
+        private readonly short m_IndexOffset05;
+        private readonly short m_IndexOffset06;
+        private readonly short m_IndexOffset07;
+        private readonly short m_IndexOffset08;
+        private readonly short m_IndexOffset09;
+        private readonly short m_IndexOffset10;
+        private readonly short m_IndexOffset11;
+        private readonly short m_IndexOffset12;
+        private readonly short m_IndexOffset13;
+
+        public HexGridSize(uint width, uint height) : this() {
+            Width = width;
+            Height = height;
+            Size = width * height;
+
+            fixed(short* idxBuffer = &m_IndexOffset00) {
+                for(int i = 0; i < 14; i++) {
+                    idxBuffer[i] = (short) PointOffsetToIndexOffset(s_PointOffsets[i], Width);
+                }
+            }
+        }
+
+        #region Validation
+
+        /// <summary>
+        /// Returns if the given point is within the grid.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsValidPos(HexVector point) {
+            return point.X >= 0 && point.X < Width && point.Y >= 0 && point.Y < Height;
+        }
+
+        /// <summary>
+        /// Returns if the given index is within the grid.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsValidIndex(int index) {
+            return index >= 0 && index < Size;
+        }
+
+        #endregion // Validation
+
+        #region Offsets
+
+        /// <summary>
+        /// Returns the tile index corresponding to the given tile direction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int OffsetIndexFrom(int index, TileDirection direction) {
+            fixed(short* idxBuffer = &m_IndexOffset00) {
+                return index + idxBuffer[DirToTableIdx(direction, index, Width)];
+            }
+        }
+
+        /// <summary>
+        /// Returns the point offset for the given direction.
+        /// </summary>
+        public HexVector OffsetPosFrom(HexVector point, TileDirection direction) {
+            return point + s_PointOffsets[DirToTableIdx(direction, point.X)];
+        }
+
+        /// <summary>
+        /// Returns if the given position relative to the current vector is valid.
+        /// </summary>
+        public bool IsValidPosOffset(HexVector point, TileDirection direction) {
+            HexVector target = point + s_PointOffsets[DirToTableIdx(direction, point.X)];
+            return target.X >= 0 && target.X < Width && target.Y >= 0 && target.Y < Height;
+        }
+
+        /// <summary>
+        /// Returns if the given position relative to the current vector is valid.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsValidIndexOffset(int index, TileDirection direction) {
+            return IsValidPosOffset(IndexToPos(index), direction);
+        }
+
+        #endregion // Offsets
+
+        #region Position To Index
+
+        /// <summary>
+        /// Converts the given point to a tile index.
+        /// This will return -1 for any out-of-bounds tile positions.
+        /// </summary>
+        public int PosToIndex(int x, int y) {
+            if (x < 0 || x >= Width || y < 0 || y >= Height) {
+                return -1;
+            }
+
+            return x + (int) (y * Width);
+        }
+
+        /// <summary>
+        /// Converts the given point to a tile index.
+        /// This will return -1 for any out-of-bounds tile positions.
+        /// </summary>
+        public int PosToIndex(HexVector point) {
+            if (point.X < 0 || point.X >= Width || point.Y < 0 || point.Y >= Height) {
+                return -1;
+            }
+
+            return point.X + (int) (point.Y * Width);
+        }
+
+        /// <summary>
+        /// Converts the given point to a tile index.
+        /// This does no bounds checking.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int FastPosToIndex(int x, int y) {
+            return x + (int) (y * Width);
+        }
+
+        /// <summary>
+        /// Converts the given point to a tile index.
+        /// This does no bounds checking.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int FastPosToIndex(HexVector point) {
+            return point.X + (int) (point.Y * Width);
+        }
+
+        #endregion // Position To Index
+
+        #region Index to Position
+
+        /// <summary>
+        /// Converts the given tile index into a point.
+        /// Out of bounds indices return -1, -1
+        /// </summary>
+        public HexVector IndexToPos(int index) {
+            if (index < 0 || index >= Size) {
+                return new HexVector(-1, -1);
+            }
+
+            return new HexVector((int) (index % Width), (int) (index / Width));
+        }
+
+        /// <summary>
+        /// Converts the given tile index into a pair of coordinates.
+        /// Returns false if given an out-of-bounds index.
+        /// </summary>
+        public bool IndexToPos(int index, out int x, out int y) {
+            if (index < 0 || index >= Size) {
+                x = y = -1;
+                return false;
+            }
+
+            x= (int) (index % Width);
+            y = (int) (index / Width);
+            return true;
+        }
+
+        /// <summary>
+        /// Converts the given tile index into a point.
+        /// This does not bounds checking.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public HexVector FastIndexToPos(int index) {
+            return new HexVector((int) (index % Width), (int) (index / Width));
+        }
+
+        /// <summary>
+        /// Converts the given tile index into a pair of coordinates.
+        /// This does not bounds checking.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void FastIndexToPos(int index, out int x, out int y) {
+            x = (int) (index % Width);
+            y = (int) (index % Height);
+        }
+
+        #endregion // Index to Position
+    
+        #region Tables
+
+        // Important notes on the offset tables
+        // Hex grids can be treated internally the same as standard repeating grids
+        // Every other column is offset in the -y direction by half a tile
+        // Adjacency rules differ per column type.
+        // Let's call even index columns "type 0" and odd index columns "type 1"
+        // 
+        // Type 0 columns have the following adjacency pattern:
+        //      X X X
+        //      X o X
+        //        X
+        // Whereas Type 1 columns have this pattern:
+        //        X
+        //      X o X
+        //      X X X
+        // These offsets are stored in tables in pairs of entries
+        // The tables are laid out such that:
+        //      offset = 2 * (int) direction + type
+        // The HexVector offsets are consistent for any size
+        // The Index offsets depend on the grid width
+
+        /// <summary>
+        /// HexVector offset table per direction.
+        /// </summary>
+        static private readonly HexVector[] s_PointOffsets = new HexVector[]
+        {
+            new HexVector(0, 0),
+            new HexVector(0, 0),
+
+            new HexVector(-1, 0),
+            new HexVector(-1, -1),
+
+            new HexVector(0, -1),
+            new HexVector(0, -1),
+
+            new HexVector(1, 0),
+            new HexVector(1, -1),
+
+            new HexVector(1, 1),
+            new HexVector(1, 0),
+
+            new HexVector(0, 1),
+            new HexVector(0, 1),
+
+            new HexVector(-1, 1),
+            new HexVector(-1, 0),
+        };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static private int PointOffsetToIndexOffset(HexVector offset, uint width) {
+            return offset.X + (int) width * offset.Y;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static private int DirToTableIdx(TileDirection direction, int index, uint width) {
+            return (2 * (int) direction) + ((index % (int) width) % 2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static private int DirToTableIdx(TileDirection direction, int x) {
+            return (2 * (int) direction) + (x % 2);
+        }
+
+        #endregion // Tables
+    }
+
+    /// <summary>
+    /// Hex grid vector of ints.
+    /// </summary>
+    [DebuggerDisplay("[{X},{Y}]")]
+    public struct HexVector : IEquatable<HexVector> {
+        public int X;
+        public int Y;
+
+        public HexVector(int x, int y) {
+            X = x;
+            Y = y;
+        }
+
+        #region World Position
+
+        public Vector3 ToWorld(float height) {
+            return new Vector3(X, height, (Y - (X % 2) * 0.5f));
+        }
+
+        public Vector3 ToWorld(float height, float scale) {
+            return new Vector3(X * scale, height * scale, scale * (Y - (X % 2) * 0.5f));
+        }
+
+        public Vector3 ToWorld(float height, in HexGridSize gridSize) {
+            return new Vector3((X - gridSize.Width / 2f), height, (Y - (X % 2) * 0.5f - gridSize.Height / 2f));
+        }
+
+        public Vector3 ToWorld(float height, in HexGridSize gridSize, float scale) {
+            return new Vector3((X - gridSize.Width / 2f) * scale, height * scale, (Y - (X % 2) * 0.5f - gridSize.Height / 2f) * scale);
+        }
+
+        static public HexVector FromWorld(Vector3 position) {
+            int x = (int) Math.Round(position.x);
+            int y = (int) Math.Round(position.z + (x % 2) * 0.5f);
+            return new HexVector(x, y);
+        }
+
+        static public HexVector FromWorld(Vector3 position, float scale) {
+            int x = (int) Math.Round(position.x / scale);
+            int y = (int) Math.Round((position.z / scale) + (x % 2) * 0.5f);
+            return new HexVector(x, y);
+        }
+
+        static public HexVector FromWorld(Vector3 position, in HexGridSize gridSize) {
+            int x = (int) Math.Round(position.x + gridSize.Width / 2f);
+            int y = (int) Math.Round(position.z + (x % 2) * 0.5f + gridSize.Height / 2f);
+            return new HexVector(x, y);
+        }
+
+        static public HexVector FromWorld(Vector3 position, in HexGridSize gridSize, float scale) {
+            int x = (int) Math.Round((position.x / scale) + gridSize.Width / 2f);
+            int y = (int) Math.Round((position.z / scale) + (x % 2) * 0.5f + gridSize.Height / 2f);
+            return new HexVector(x, y);
+        }
+
+        #endregion // World Position
+
+        #region Overrides
+
+        public override bool Equals(object obj) {
+            if (obj is HexVector) {
+                return Equals((HexVector) obj);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode() {
+            return 3 * (X << 14) ^ Y;
+        }
+
+        public bool Equals(HexVector other) {
+            return X == other.X && Y == other.Y;
+        }
+
+        static public HexVector operator+(HexVector a, HexVector b) {
+            return new HexVector(a.X + b.X, a.Y + b.Y);
+        }
+
+        static public HexVector operator-(HexVector a, HexVector b) {
+            return new HexVector(a.X - b.X, a.Y - b.Y);
+        }
+
+        static public bool operator==(HexVector a, HexVector b) {
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        static public bool operator!=(HexVector a, HexVector b) {
+            return a.X != b.X || a.Y != b.Y;
+        }
+
+        #endregion // Overrides
+    }
+
+    // /// <summary>
+    // /// Subregion of a hex grid.
+    // /// </summary>
+    // public readonly struct HexGridSubregion : IEquatable<HexGridSubregion> {
+    //     public readonly ushort X;
+    //     public readonly ushort Y;
+    //     public readonly ushort Width;
+    //     public readonly ushort Height;
+    //     public readonly uint Size;
+
+    //     #region Validation
+
+    //     public bool 
+
+    //     #endregion // Validation
+    // }
+
+    /// <summary>
+    /// Tile directions.
+    /// </summary>
+    public enum TileDirection : byte {
+        Self,
+        SW,
+        S,
+        SE,
+        NE,
+        N,
+        NW,
+
+        COUNT
+    }
+}
