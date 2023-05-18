@@ -205,7 +205,7 @@ namespace Zavala.Sim {
     /// Data mapped to a tile and its adjacent tiles, referenced by direction.
     /// </summary>
     public struct TileAdjacencyDataSet<T> where T : unmanaged {
-        public TileAdjacencyMask m_Mask;
+        private TileAdjacencyMask m_Mask;
         private T m_Self;
         private T m_SW;
         private T m_S;
@@ -219,6 +219,13 @@ namespace Zavala.Sim {
         /// </summary>
         public bool IsEmpty {
             get { return m_Mask.Value == 0; }
+        }
+
+        /// <summary>
+        /// Which directions have data.
+        /// </summary>
+        public TileAdjacencyMask Mask {
+            get { return m_Mask; }
         }
 
         /// <summary>
@@ -359,10 +366,9 @@ namespace Zavala.Sim {
         /// </summary>
         /// <param name="index">Grid index</param>
         /// <param name="tileBuffer">Buffer of tile data</param>
-        /// <param name="tileBufferLength">Length of buffer</param>
         /// <param name="gridSize">Grid size parameters</param>
         /// <param name="predicate">Mask predicate</param>
-        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(int index, TTile* tileBuffer, int tileBufferLength, in HexGridSize gridSize, TileDataPredicate<TTile> predicate)
+        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(int index, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataPredicate<TTile> predicate)
             where TTile : unmanaged {
             TTile center = tileBuffer[index];
             HexVector pos = gridSize.FastIndexToPos(index);
@@ -389,16 +395,16 @@ namespace Zavala.Sim {
         /// <param name="tileBufferLength">Length of buffer</param>
         /// <param name="gridSize">Grid size parameters</param>
         /// <param name="predicate">Mask predicate</param>
-        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(HexVector point, TTile* tileBuffer, int tileBufferLength, in HexGridSize gridSize, TileDataPredicate<TTile> predicate)
+        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(HexVector point, SimBuffer<TTile> tileBuffer,in HexGridSize gridSize, TileDataPredicate<TTile> predicate)
             where TTile : unmanaged {
-            return GatherAdjacencyMask<TTile>(gridSize.PosToIndex(point), tileBuffer, tileBufferLength, gridSize, predicate);
+            return GatherAdjacencyMask<TTile>(gridSize.PosToIndex(point), tileBuffer, gridSize, predicate);
         }
 
         #endregion // Adjacency Mask
 
         #region Adjacency Set
 
-        static public unsafe TileAdjacencyDataSet<TMap> GatherAdjacencySet<TTile, TMap>(int index, TTile* tileBuffer, int tileBufferLength, in HexGridSize gridSize, TileDataMapDelegate<TTile, TMap> setMap)
+        static public unsafe TileAdjacencyDataSet<TMap> GatherAdjacencySet<TTile, TMap>(int index, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataMapDelegate<TTile, TMap> setMap)
             where TTile : unmanaged
             where TMap : unmanaged {
                 TTile center = tileBuffer[index];
@@ -419,10 +425,10 @@ namespace Zavala.Sim {
                 return mapSet;
         }
 
-        static public unsafe TileAdjacencyDataSet<TMap> GatherAdjacencySet<TTile, TMap>(HexVector point, TTile* tileBuffer, int tileBufferLength, in HexGridSize gridSize, TileDataMapDelegate<TTile, TMap> setMap)
+        static public unsafe TileAdjacencyDataSet<TMap> GatherAdjacencySet<TTile, TMap>(HexVector point, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataMapDelegate<TTile, TMap> setMap)
             where TTile : unmanaged
             where TMap : unmanaged {
-                return GatherAdjacencySet<TTile, TMap>(gridSize.PosToIndex(point), tileBuffer, tileBufferLength, gridSize, setMap);
+                return GatherAdjacencySet<TTile, TMap>(gridSize.PosToIndex(point), tileBuffer, gridSize, setMap);
         }
 
         #endregion // Adjacency Set

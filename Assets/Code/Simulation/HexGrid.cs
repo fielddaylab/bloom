@@ -6,6 +6,7 @@ using BeauUtil;
 using UnityEngine;
 
 namespace Zavala.Sim {
+
     /// <summary>
     /// Hex grid size and helper struct for space/index conversions.
     /// Every other column is offset by 1/2 a space in a positive direction (down).
@@ -290,12 +291,11 @@ namespace Zavala.Sim {
             return new Vector3(X * scale, height * scale, scale * (Y - (X % 2) * 0.5f));
         }
 
-        public Vector3 ToWorld(float height, in HexGridSize gridSize) {
-            return new Vector3((X - gridSize.Width / 2f), height, (Y - (X % 2) * 0.5f - gridSize.Height / 2f));
-        }
-
-        public Vector3 ToWorld(float height, in HexGridSize gridSize, float scale) {
-            return new Vector3((X - gridSize.Width / 2f) * scale, height * scale, (Y - (X % 2) * 0.5f - gridSize.Height / 2f) * scale);
+        public Vector3 ToWorld(float height, in HexGridWorldSpace worldSpace) {
+            return new Vector3(worldSpace.Offset.x + (X - worldSpace.GridWidth / 2f) * worldSpace.Scale.x,
+                worldSpace.Offset.y + height * worldSpace.Scale.y,
+                worldSpace.Offset.z + (Y - (X % 2) * 0.5f - worldSpace.GridHeight / 2f) * worldSpace.Scale.z
+            );
         }
 
         static public HexVector FromWorld(Vector3 position) {
@@ -310,15 +310,9 @@ namespace Zavala.Sim {
             return new HexVector(x, y);
         }
 
-        static public HexVector FromWorld(Vector3 position, in HexGridSize gridSize) {
-            int x = (int) Math.Round(position.x + gridSize.Width / 2f);
-            int y = (int) Math.Round(position.z + (x % 2) * 0.5f + gridSize.Height / 2f);
-            return new HexVector(x, y);
-        }
-
-        static public HexVector FromWorld(Vector3 position, in HexGridSize gridSize, float scale) {
-            int x = (int) Math.Round((position.x / scale) + gridSize.Width / 2f);
-            int y = (int) Math.Round((position.z / scale) + (x % 2) * 0.5f + gridSize.Height / 2f);
+        static public HexVector FromWorld(Vector3 position, in HexGridWorldSpace worldSpace) {
+            int x = (int) Math.Round(((position.x - worldSpace.Offset.x) / worldSpace.Scale.x) + worldSpace.GridWidth / 2f);
+            int y = (int) Math.Round(((position.z - worldSpace.Offset.z) / worldSpace.Scale.z) + (x % 2) * 0.5f + worldSpace.GridHeight / 2f);
             return new HexVector(x, y);
         }
 
@@ -361,22 +355,105 @@ namespace Zavala.Sim {
         #endregion // Overrides
     }
 
-    // /// <summary>
-    // /// Subregion of a hex grid.
-    // /// </summary>
-    // public readonly struct HexGridSubregion : IEquatable<HexGridSubregion> {
-    //     public readonly ushort X;
-    //     public readonly ushort Y;
-    //     public readonly ushort Width;
-    //     public readonly ushort Height;
-    //     public readonly uint Size;
+    /// <summary>
+    /// Subregion of a hex grid.
+    /// </summary>
+    public readonly struct HexGridSubregion : IEquatable<HexGridSubregion> {
+        public readonly ushort X;
+        public readonly ushort Y;
+        public readonly ushort Width;
+        public readonly ushort Height;
+        private readonly ushort m_SrcWidth;
+        public readonly uint Size;
 
-    //     #region Validation
+        public HexGridSubregion(HexGridSize fullSize) {
+            X = 0;
+            Y = 0;
+            Width = (ushort) fullSize.Width;
+            Height = (ushort) fullSize.Height;
+            m_SrcWidth = (ushort) fullSize.Width;
+            Size = fullSize.Size;
+        }
 
-    //     public bool 
+        private HexGridSubregion(ushort x, ushort y, ushort width, ushort height, ushort srcWidth) {
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            Size = (uint) (Width * Height);
+            m_SrcWidth = srcWidth;
+        }
 
-    //     #endregion // Validation
-    // }
+        #region Validation
+
+        /// <summary>
+        /// Returns if the given position is within the subregion.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool ContainsPos(HexVector pos) {
+            return pos.X >= X && pos.Y >= Y
+                && pos.X < X + Width && pos.Y < Y + Height;
+        }
+
+        /// <summary>
+        /// Returns if the given grid index is contained within this subregion.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool ContainsGridIndex(int index) {
+            int gridX = index % m_SrcWidth;
+            int gridY = index / m_SrcWidth;
+            return gridX >= X && gridY >= Y
+                && gridX < X + Width && gridY < Y + Height;
+        }
+
+        #endregion // Validation
+
+        #region Conversions
+
+        /// <summary>
+        /// Converts a local index to a grid position.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public HexVector FastIndexToPos(int index) {
+            return new HexVector(X + (index % Width), Y + (index / Width));
+        }
+
+        /// <summary>
+        /// Converts a local index to a grid index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int FastIndexToGridIndex(int index) {
+            int gridX = X + (index % Width);
+            int gridY = Y + (index / Width);
+            return gridX + gridY * m_SrcWidth;
+        }
+
+        #endregion // Conversions
+
+        #region Overrides
+
+        public bool Equals(HexGridSubregion other) {
+            return X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
+        }
+
+        public override bool Equals(object obj) {
+            if (obj is HexGridSubregion) {
+                return Equals((HexGridSubregion) obj);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode() {
+            int hash = X.GetHashCode();
+            hash = hash << 7 ^ Y.GetHashCode();
+            hash = hash >> 3 ^ Width.GetHashCode();
+            hash = hash << 5 & Height.GetHashCode();
+            return hash;
+        }
+
+        #endregion // Overrides
+    }
 
     /// <summary>
     /// Tile directions.
@@ -391,5 +468,33 @@ namespace Zavala.Sim {
         NW,
 
         COUNT
+    }
+
+    /// <summary>
+    /// Grid space to world space mapping parameters.
+    /// </summary>
+    public readonly struct HexGridWorldSpace {
+        public readonly uint GridWidth;
+        public readonly uint GridHeight;
+        public readonly Vector3 Scale;
+        public readonly Vector3 Offset;
+
+        public HexGridWorldSpace(HexGridSize size) {
+            GridWidth = size.Width;
+            GridHeight = size.Height;
+            Scale = new Vector3(1, 1, 1);
+            Offset = default(Vector3);
+        }
+
+        public HexGridWorldSpace(HexGridSize size, Vector3 scale, Vector3 offset) {
+            GridWidth = size.Width;
+            GridHeight = size.Height;
+            Scale = scale;
+            Offset = offset;
+        }
+
+        static public implicit operator HexGridWorldSpace(HexGridSize size) {
+            return new HexGridWorldSpace(size);
+        }
     }
 }

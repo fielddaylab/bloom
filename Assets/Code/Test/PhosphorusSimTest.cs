@@ -19,16 +19,20 @@ public class PhosphorusSimTest : MonoBehaviour {
     public Mesh PhosphorusMesh;
 
     private HexGridSize m_HexSize;
-    private unsafe PhosphorusTileInfo* m_TileInfo;
-    private unsafe PhosphorusTileState*[] m_TileStates;
+    private HexGridWorldSpace m_WorldSpace;
+    private unsafe SimBuffer<PhosphorusTileInfo> m_TileInfo;
+    private unsafe SimBuffer<PhosphorusTileState>[] m_TileStates;
     private unsafe int m_TileStateBufferIndex;
 
     private Unsafe.ArenaHandle m_ArenaHandle;
     private Routine m_TickRoutine;
+    private float m_AddCooldown;
 
     private void Start() {
         m_HexSize = new HexGridSize(Width, Height);
         m_ArenaHandle = Unsafe.CreateArena(64 * 1024);
+
+        m_WorldSpace = new HexGridWorldSpace(m_HexSize, Vector3.one, default(Vector3));
 
         InitializeBuffers();
 
@@ -36,29 +40,31 @@ public class PhosphorusSimTest : MonoBehaviour {
     }
 
     private unsafe void InitializeBuffers() {
-        m_TileInfo = Unsafe.AllocArray<PhosphorusTileInfo>((int) m_HexSize.Size);
-        m_TileStates = new PhosphorusTileState*[2];
-        m_TileStates[0] = Unsafe.AllocArray<PhosphorusTileState>((int) m_HexSize.Size);
-        m_TileStates[1] = Unsafe.AllocArray<PhosphorusTileState>((int) m_HexSize.Size);
+        m_TileInfo = SimBuffer<PhosphorusTileInfo>.Create(m_ArenaHandle, m_HexSize);
+        m_TileStates = new SimBuffer<PhosphorusTileState>[2];
+        m_TileStates[0] = SimBuffer<PhosphorusTileState>.Create(m_ArenaHandle, m_HexSize);
+        m_TileStates[1] = SimBuffer<PhosphorusTileState>.Create(m_ArenaHandle, m_HexSize);
 
         float offset = RNG.Instance.NextFloat(500);
 
-        PhosphorusTileState* currentBuffer = m_TileStates[0];
+        SimBuffer<PhosphorusTileState> currentBuffer = m_TileStates[0];
 
         for(int i = 0; i < m_HexSize.Size; i++) {
             HexVector pos = m_HexSize.FastIndexToPos(i);
             m_TileInfo[i] = new PhosphorusTileInfo() {
-                Height = (ushort) (10 + 300 * Mathf.PerlinNoise(offset + pos.X * 0.45f, offset * 0.6f + pos.Y * 0.39f)),
+                Height = (ushort) ((int) ((10 + 1000 * Mathf.PerlinNoise(offset + pos.X * 0.23f, offset * 0.6f + pos.Y * 0.19f) + RNG.Instance.Next(15, 100)) / 50) * 50),
                 RegionId = Tile.InvalidIndex16,
                 Flags = 0
             };
             currentBuffer[i] = new PhosphorusTileState() {
-                Count = (ushort) RNG.Instance.Next(0, 3)
+                Count = RNG.Instance.Chance(0.2f) ? (ushort) RNG.Instance.Next(1, 3) : (ushort) 0
             };
             Log.Msg("Generated tile {0}[{1},{2}] with height {3}", i, pos.X, pos.Y, m_TileInfo[i].Height);
         }
 
-        PhosphorusSim.EvaluateFlowField(m_TileInfo, (int) m_HexSize.Size, m_HexSize);
+        using(Profiling.Time("generating flow field")) {
+            PhosphorusSim.EvaluateFlowField(m_TileInfo, m_HexSize);
+        }
 
         for(int i = 0; i < m_HexSize.Size; i++) {
             HexVector pos = m_HexSize.FastIndexToPos(i);
@@ -87,17 +93,19 @@ public class PhosphorusSimTest : MonoBehaviour {
     }
 
     private unsafe void RandomPhosphorusDrop() {
-        PhosphorusTileState* stateBuffer = m_TileStates[m_TileStateBufferIndex];
+        SimBuffer<PhosphorusTileState> stateBuffer = m_TileStates[m_TileStateBufferIndex];
         for(int i = 0; i < m_HexSize.Size; i++) {
-            if (RNG.Instance.Chance(0.3f)) {
-                stateBuffer[i].Count += (ushort) RNG.Instance.Next(4, 6);
+            if (RNG.Instance.Chance(0.1f)) {
+                stateBuffer[i].Count += (ushort) RNG.Instance.Next(16, 24);
             }
         }
     }
 
     private unsafe void Tick() {
         // double buffering yeag
-        PhosphorusSim.Tick(m_TileInfo, m_TileStates[m_TileStateBufferIndex], m_TileStates[1 - m_TileStateBufferIndex], (int) m_HexSize.Size, m_HexSize, RNG.Instance);
+        using(Profiling.Time("ticking phosphorus simulation")) {
+            PhosphorusSim.Tick(m_TileInfo, m_TileStates[m_TileStateBufferIndex], m_TileStates[1 - m_TileStateBufferIndex], m_HexSize, RNG.Instance);
+        }
         m_TileStateBufferIndex = 1 - m_TileStateBufferIndex;
     }
 
@@ -112,31 +120,43 @@ public class PhosphorusSimTest : MonoBehaviour {
             rotate += 1;
         }
 
-        if (Input.GetMouseButtonDown(0)) {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z = 1;
-            Ray ray = Camera.main.ScreenPointToRay(mousePos, Camera.MonoOrStereoscopicEye.Mono);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo)) {
-                Vector3 center = hitInfo.collider.bounds.center;
-                HexVector vec = WorldToHex(center);
-                if (m_HexSize.IsValidPos(vec)) {
-                    unsafe {
-                        PhosphorusTileState* stateBuffer = m_TileStates[m_TileStateBufferIndex];
-                        stateBuffer[m_HexSize.FastPosToIndex(vec)].Count += 8;
+        if (Input.GetMouseButton(0)) {
+            if (m_AddCooldown > 0) {
+                m_AddCooldown -= Time.deltaTime;
+            } else {
+                Vector3 mousePos = Input.mousePosition;
+                mousePos.z = 1;
+                Ray ray = Camera.main.ScreenPointToRay(mousePos, Camera.MonoOrStereoscopicEye.Mono);
+                if (Physics.Raycast(ray, out RaycastHit hitInfo)) {
+                    Vector3 center = hitInfo.collider.bounds.center;
+                    HexVector vec = WorldToHex(center);
+                    if (m_HexSize.IsValidPos(vec)) {
+                        unsafe {
+                            SimBuffer<PhosphorusTileState> stateBuffer = m_TileStates[m_TileStateBufferIndex];
+                            stateBuffer[m_HexSize.FastPosToIndex(vec)].Count += 8;
+                        }
                     }
+                    m_AddCooldown = 2f / 60;
                 }
             }
+        } else {
+            m_AddCooldown = 0;
+        }
+
+        if (Input.GetMouseButtonDown(1)) {
+            RandomPhosphorusDrop();
         }
 
         CameraArm.Rotate(0, rotate * 45 * Time.deltaTime, 0, Space.World);
     }
 
     private unsafe void RenderPhosphorus() {
-        PhosphorusTileState* stateBuffer = m_TileStates[m_TileStateBufferIndex];
-        Matrix4x4* matrixBuffer = stackalloc Matrix4x4[(int) m_HexSize.Size];
-        using(var instanceHelper = new InstancingHelper<Matrix4x4>(matrixBuffer, (int) m_HexSize.Size)) {
-            RenderParams phosphorusRenderParams = new RenderParams(PhosphorusMaterial);
-            phosphorusRenderParams.camera = Camera.main;
+        SimBuffer<PhosphorusTileState> stateBuffer = m_TileStates[m_TileStateBufferIndex];
+        DefaultInstancingParams* matrixBuffer = stackalloc DefaultInstancingParams[(int) m_HexSize.Size];
+
+        RenderParams phosphorusRenderParams = new RenderParams(PhosphorusMaterial);
+        phosphorusRenderParams.camera = Camera.main;
+        using(var instanceHelper = new InstancingHelper<DefaultInstancingParams>(matrixBuffer, (int) m_HexSize.Size, phosphorusRenderParams, PhosphorusMesh)) {
             for(int i = 0; i < m_HexSize.Size; i++) {
                 PhosphorusTileState state = stateBuffer[i];
                 if (state.Count == 0) {
@@ -144,11 +164,13 @@ public class PhosphorusSimTest : MonoBehaviour {
                 }
 
                 Vector3 pos = HexToWorld(m_HexSize.FastIndexToPos(i), m_TileInfo[i].Height) + (Vector3.up * 0.5f);
-                float size = 0.1f * Mathf.Sqrt(state.Count);
-                instanceHelper.Queue(Matrix4x4.TRS(pos, Quaternion.identity, Vector3.one * size));
+                float size = 0.08f * Mathf.Sqrt(state.Count);
+                instanceHelper.Queue(new DefaultInstancingParams() {
+                    objectToWorld = Matrix4x4.TRS(pos, Quaternion.identity, Vector3.one * size)
+                });
             }
 
-            instanceHelper.Submit(phosphorusRenderParams, PhosphorusMesh);
+            instanceHelper.Submit();
         }
     }
 
@@ -157,10 +179,10 @@ public class PhosphorusSimTest : MonoBehaviour {
     }
 
     private Vector3 HexToWorld(HexVector vec, float height) {
-        return vec.ToWorld(height / 200f, m_HexSize, 1f);
+        return vec.ToWorld(height / 200f, m_WorldSpace);
     }
 
     private HexVector WorldToHex(Vector3 vec) {
-        return HexVector.FromWorld(vec, m_HexSize, 1);
+        return HexVector.FromWorld(vec, m_WorldSpace);
     }
 }

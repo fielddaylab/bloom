@@ -31,11 +31,11 @@ namespace Zavala.Sim {
         #region Tunable Parameters
 
         // height calculations
-        static public int SimilarHeightThreshold = 20;
-        static public int SteepHeightThreshold = 100;
+        static public int SimilarHeightThreshold = 50;
+        static public int SteepHeightThreshold = 300;
 
         // flow
-        static public float RemainAtSourceProportion = 0.3f;
+        static public float RemainAtSourceProportion = 0.6f;
         static public float MinFlowProportion = 0.5f;
         static public float MaxFlowProportionSteep = 1.3f;
 
@@ -52,9 +52,12 @@ namespace Zavala.Sim {
             return false;
         };
 
-        static public unsafe void EvaluateFlowField(PhosphorusTileInfo* infoBuffer, int tileCount, in HexGridSize gridSize) {
-            for(int i = 0; i < tileCount; i++) {
-                TileAdjacencyDataSet<short> heightDifferences = Tile.GatherAdjacencySet<PhosphorusTileInfo, short>(i, infoBuffer, tileCount, gridSize, ExtractHeightDifference);
+        /// <summary>
+        /// Evaluates the flow masks for the given buffer.
+        /// </summary>
+        static public unsafe void EvaluateFlowField(SimBuffer<PhosphorusTileInfo> infoBuffer, in HexGridSize gridSize) {
+            for(int i = 0; i < infoBuffer.Length; i++) {
+                TileAdjacencyDataSet<short> heightDifferences = Tile.GatherAdjacencySet<PhosphorusTileInfo, short>(i, infoBuffer, gridSize, ExtractHeightDifference);
 
                 ref PhosphorusTileInfo info = ref infoBuffer[i];
                 TileAdjacencyMask dropMask = default;
@@ -70,8 +73,7 @@ namespace Zavala.Sim {
 
                 if (dropMask.IsEmpty) {
                     info.SteepMask.Clear();
-                    info.FlowMask = ~dropMask;
-                    info.FlowMask &= ~TileDirection.Self;
+                    info.FlowMask = heightDifferences.Mask;
                 } else {
                     info.SteepMask = steepMask;
                     info.FlowMask = dropMask;
@@ -79,9 +81,9 @@ namespace Zavala.Sim {
             }
         }
 
-        static public unsafe void Tick(PhosphorusTileInfo* infoBuffer, PhosphorusTileState* stateBuffer, PhosphorusTileState* targetStateBuffer, int tileCount, in HexGridSize gridSize, Random random) {
+        static public unsafe void Tick(SimBuffer<PhosphorusTileInfo> infoBuffer, SimBuffer<PhosphorusTileState> stateBuffer, SimBuffer<PhosphorusTileState> targetStateBuffer, in HexGridSize gridSize, Random random) {
             // copy current state over
-            for(int i = 0; i < tileCount; i++) {
+            for(int i = 0; i < targetStateBuffer.Length; i++) {
                 targetStateBuffer[i] = stateBuffer[i];
             }
 
@@ -89,10 +91,12 @@ namespace Zavala.Sim {
             int directionCount = 0;
 
             // now we'll do the actual processing
-            for(int i = 0; i < tileCount; i++) {
+            for(int i = 0; i < infoBuffer.Length; i++) {
                 ref PhosphorusTileState currentState = ref stateBuffer[i];
                 PhosphorusTileInfo tileInfo = infoBuffer[i];
-                if (currentState.Count == 0 || tileInfo.FlowMask.IsEmpty) {
+                int transferRemaining = (int) (currentState.Count * (1f - RemainAtSourceProportion));
+
+                if (currentState.Count == 0 || transferRemaining <= 0 || tileInfo.FlowMask.IsEmpty) {
                     continue;
                 }
 
@@ -100,11 +104,9 @@ namespace Zavala.Sim {
                 foreach(var dir in tileInfo.FlowMask) {
                     directionOrder[directionCount++] = dir;
                 }
-
-                // TODO: Randomize the order we review this
+                UnsafeExt.Shuffle(directionOrder, directionCount, random);
 
                 TileAdjacencyMask steepMask = tileInfo.SteepMask;
-                int transferRemaining = (int) (currentState.Count * (1f - RemainAtSourceProportion));
                 int perDirection = transferRemaining / directionCount;
                 for(int dirIdx = 0; dirIdx < directionCount && transferRemaining > 0; dirIdx++) {
                     TileDirection dir = directionOrder[dirIdx];

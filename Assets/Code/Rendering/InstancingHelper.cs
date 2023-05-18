@@ -9,22 +9,37 @@ namespace Zavala {
         private T* m_WriteHead;
         private int m_QueuedElements;
 
-        public InstancingHelper(T* buffer, int bufferSize) {
+        private RenderParams m_RenderParams;
+        private Mesh m_Mesh;
+        private int m_SubmeshIndex;
+
+        public InstancingHelper(T* buffer, int bufferSize, RenderParams renderParams, Mesh mesh, int submeshIndex = 0) {
             m_DataHead = buffer;
             m_MaxElements = Math.Min(bufferSize, 1023);
             m_WriteHead = buffer;
             m_QueuedElements = 0;
+            m_RenderParams = renderParams;
+            m_Mesh = mesh;
+            m_SubmeshIndex = submeshIndex;
+        }
+
+        public bool IsFull() {
+            return m_QueuedElements == m_MaxElements;
         }
 
         public void Queue(T data) {
+            if (IsFull()) {
+                Submit();
+            }
+
             Assert.True(m_QueuedElements < m_MaxElements);
             *m_WriteHead++ = data;
             m_QueuedElements++;
         }
 
-        public void Submit(in RenderParams renderParams, Mesh mesh, int submeshIndex = 0) {
+        public void Submit() {
             if (m_QueuedElements > 0) {
-                Graphics.RenderMeshInstanced<T>(renderParams, mesh, submeshIndex, UnsafeExt.TempNativeArray(m_DataHead, m_QueuedElements), m_QueuedElements);
+                Graphics.RenderMeshInstanced<T>(m_RenderParams, m_Mesh, m_SubmeshIndex, UnsafeExt.TempNativeArray(m_DataHead, m_QueuedElements), m_QueuedElements);
                 m_QueuedElements = 0;
                 m_WriteHead = m_DataHead;
             }
@@ -34,6 +49,14 @@ namespace Zavala {
             m_DataHead = null;
             m_WriteHead = null;
             m_QueuedElements = 0;
+            m_RenderParams = default;
+            m_Mesh = null;
         }
+    }
+
+    public struct DefaultInstancingParams {
+        public Matrix4x4 objectToWorld;
+        public Matrix4x4 prevObjectToWorld;
+        public uint renderingLayerMask;
     }
 }

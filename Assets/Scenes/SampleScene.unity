@@ -184,8 +184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7063198513a7f4149b1a034ddadb2b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 9
-  Height: 9
+  Width: 50
+  Height: 50
   TilePrefab: {fileID: 5737318938826561972, guid: b7313ca0370aefb44ab190d3da4f8579, type: 3}
   FlowPrefab: {fileID: 0}
   CameraArm: {fileID: 336053}
