@@ -6,6 +6,7 @@ using BeauUtil.Debugger;
 using Unity.Collections;
 using BeauRoutine;
 using System.Collections;
+// using UnityEngine.Rendering.Universal;
 
 public class PhosphorusSimTest : MonoBehaviour {
     public uint Width;
@@ -59,7 +60,7 @@ public class PhosphorusSimTest : MonoBehaviour {
             currentBuffer[i] = new PhosphorusTileState() {
                 Count = RNG.Instance.Chance(0.2f) ? (ushort) RNG.Instance.Next(1, 3) : (ushort) 0
             };
-            Log.Msg("Generated tile {0}[{1},{2}] with height {3}", i, pos.X, pos.Y, m_TileInfo[i].Height);
+            // Log.Msg("Generated tile {0}[{1},{2}] with height {3}", i, pos.X, pos.Y, m_TileInfo[i].Height);
         }
 
         using(Profiling.Time("generating flow field")) {
@@ -72,13 +73,13 @@ public class PhosphorusSimTest : MonoBehaviour {
             GameObject go = Instantiate(TilePrefab, HexToWorld(pos, m_TileInfo[i].Height), Quaternion.identity);
             PhosphorusTileInfo tileInfo = m_TileInfo[i];
             if (!tileInfo.FlowMask.IsEmpty) {
-                Log.Msg("Tile {0}[{1},{2}] has {3} flow vectors", i, pos.X, pos.Y, tileInfo.FlowMask.Count);
-                Vector3 flowStartPos = go.transform.position + Vector3.up;
-                foreach(var flow in tileInfo.FlowMask) {
-                    int targetIdx = m_HexSize.OffsetIndexFrom(i, flow);
-                    HexVector targetPos = m_HexSize.FastIndexToPos(targetIdx);
-                    Vector3 flowEndPos = HexToWorld(targetPos, m_TileInfo[targetIdx].Height) + Vector3.up;
-                }
+                // Log.Msg("Tile {0}[{1},{2}] has {3} flow vectors", i, pos.X, pos.Y, tileInfo.FlowMask.Count);
+                // Vector3 flowStartPos = go.transform.position + Vector3.up;
+                // foreach(var flow in tileInfo.FlowMask) {
+                //     int targetIdx = m_HexSize.OffsetIndexFrom(i, flow);
+                //     HexVector targetPos = m_HexSize.FastIndexToPos(targetIdx);
+                //     Vector3 flowEndPos = HexToWorld(targetPos, m_TileInfo[targetIdx].Height) + Vector3.up;
+                // }
             }
         }
     }

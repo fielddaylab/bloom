@@ -233,7 +233,9 @@ namespace Zavala.Sim {
         /// </summary>
         public T this[TileDirection direction] {
             get {
-                Assert.True(m_Mask.Has(direction), "Value for index '{0}' is not set", direction);
+                if (!m_Mask.Has(direction)) {
+                    throw new KeyNotFoundException("Value for direction " + direction.ToString() + " not set");
+                }
                 unsafe {
                     fixed(T* data = &m_Self) {
                         return data[(int) direction];

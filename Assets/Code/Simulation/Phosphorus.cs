@@ -35,6 +35,7 @@ namespace Zavala.Sim {
         static public int SteepHeightThreshold = 300;
 
         // flow
+        static public int MinFlowThreshold = 5;
         static public float RemainAtSourceProportion = 0.6f;
         static public float MinFlowProportion = 0.5f;
         static public float MaxFlowProportionSteep = 1.3f;
@@ -81,11 +82,42 @@ namespace Zavala.Sim {
             }
         }
 
+        /// <summary>
+        /// Evaluates the flow masks for the given buffer.
+        /// </summary>
+        static public unsafe void EvaluateFlowField(SimBuffer<PhosphorusTileInfo> infoBuffer, in HexGridSize gridSize, in HexGridSubregion subRegion) {
+            for(int i = 0; i < subRegion.Size; i++) {
+                int gridIdx = subRegion.FastIndexToGridIndex(i);
+                TileAdjacencyDataSet<short> heightDifferences = Tile.GatherAdjacencySet<PhosphorusTileInfo, short>(gridIdx, infoBuffer, gridSize, ExtractHeightDifference);
+
+                ref PhosphorusTileInfo info = ref infoBuffer[gridIdx];
+                TileAdjacencyMask dropMask = default;
+                TileAdjacencyMask steepMask = default;
+                foreach(var kv in heightDifferences) {
+                    if (kv.Value < -SteepHeightThreshold) {
+                        dropMask |= kv.Key;
+                        steepMask |= kv.Key;
+                    } else if (kv.Value < -SimilarHeightThreshold) {
+                        dropMask |= kv.Key;
+                    }
+                }
+
+                if (dropMask.IsEmpty) {
+                    info.SteepMask.Clear();
+                    info.FlowMask = heightDifferences.Mask;
+                } else {
+                    info.SteepMask = steepMask;
+                    info.FlowMask = dropMask;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Runs phosphorus flow simulation.
+        /// </summary>
         static public unsafe void Tick(SimBuffer<PhosphorusTileInfo> infoBuffer, SimBuffer<PhosphorusTileState> stateBuffer, SimBuffer<PhosphorusTileState> targetStateBuffer, in HexGridSize gridSize, Random random) {
             // copy current state over
-            for(int i = 0; i < targetStateBuffer.Length; i++) {
-                targetStateBuffer[i] = stateBuffer[i];
-            }
+            stateBuffer.CopyTo(targetStateBuffer);
 
             TileDirection* directionOrder = stackalloc TileDirection[6];
             int directionCount = 0;
@@ -94,9 +126,13 @@ namespace Zavala.Sim {
             for(int i = 0; i < infoBuffer.Length; i++) {
                 ref PhosphorusTileState currentState = ref stateBuffer[i];
                 PhosphorusTileInfo tileInfo = infoBuffer[i];
-                int transferRemaining = (int) (currentState.Count * (1f - RemainAtSourceProportion));
+                if (tileInfo.FlowMask.IsEmpty || currentState.Count <= MinFlowThreshold) {
+                    continue;
+                }
 
-                if (currentState.Count == 0 || transferRemaining <= 0 || tileInfo.FlowMask.IsEmpty) {
+                int transferRemaining = (int) ((currentState.Count - MinFlowThreshold) * (1f - RemainAtSourceProportion));
+
+                if (transferRemaining <= 0) {
                     continue;
                 }
 
@@ -118,6 +154,55 @@ namespace Zavala.Sim {
                     }
                     targetStateBuffer[i].Count -= (ushort) queuedTransfer;
                     targetStateBuffer[gridSize.OffsetIndexFrom(i, dir)].Count += (ushort) queuedTransfer;
+                    transferRemaining -= queuedTransfer;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Runs phosphorus flow simulation.
+        /// </summary>
+        static public unsafe void Tick(SimBuffer<PhosphorusTileInfo> infoBuffer, SimBuffer<PhosphorusTileState> stateBuffer, SimBuffer<PhosphorusTileState> targetStateBuffer, in HexGridSize gridSize, in HexGridSubregion subRegion, ushort regionIdx, ushort flagMask, Random random) {
+            TileDirection* directionOrder = stackalloc TileDirection[6];
+            int directionCount = 0;
+
+            // now we'll do the actual processing
+            for(int i = 0; i < subRegion.Size; i++) {
+                int gridIdx = subRegion.FastIndexToGridIndex(i);
+                ref PhosphorusTileState currentState = ref stateBuffer[gridIdx];
+                PhosphorusTileInfo tileInfo = infoBuffer[gridIdx];
+
+                if (tileInfo.RegionId != regionIdx || (tileInfo.Flags & flagMask) != flagMask) {
+                    continue;
+                }
+                if (tileInfo.FlowMask.IsEmpty || currentState.Count <= MinFlowThreshold) {
+                    continue;
+                }
+
+                int transferRemaining = (int) ((currentState.Count - MinFlowThreshold) * (1f - RemainAtSourceProportion));
+
+                if (transferRemaining <= 0) {
+                    continue;
+                }
+
+                directionCount = 0;
+                foreach(var dir in tileInfo.FlowMask) {
+                    directionOrder[directionCount++] = dir;
+                }
+                UnsafeExt.Shuffle(directionOrder, directionCount, random);
+
+                TileAdjacencyMask steepMask = tileInfo.SteepMask;
+                int perDirection = transferRemaining / directionCount;
+                for(int dirIdx = 0; dirIdx < directionCount && transferRemaining > 0; dirIdx++) {
+                    TileDirection dir = directionOrder[dirIdx];
+                    int queuedTransfer;
+                    if (dirIdx == directionCount - 1) {
+                        queuedTransfer = transferRemaining;
+                    } else {
+                        queuedTransfer = Math.Min((int) (perDirection * random.NextFloat(MinFlowProportion, steepMask[dir] ? MaxFlowProportionSteep : 1)), transferRemaining);
+                    }
+                    targetStateBuffer[gridIdx].Count -= (ushort) queuedTransfer;
+                    targetStateBuffer[gridSize.OffsetIndexFrom(gridIdx, dir)].Count += (ushort) queuedTransfer;
                     transferRemaining -= queuedTransfer;
                 }
             }

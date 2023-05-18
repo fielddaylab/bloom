@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using BeauUtil;
+using System;
 
 namespace Zavala.Sim {
     /// <summary>
@@ -27,6 +28,17 @@ namespace Zavala.Sim {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T* Ptr(int index) {
             return Buffer + index;
+        }
+
+        /// <summary>
+        /// Copies this buffer to another buffer.
+        /// </summary>
+        public void CopyTo(SimBuffer<T> target) {
+            if (target.Length != Length) {
+                throw new ArgumentException("target buffer must be same length");
+            }
+
+            Unsafe.CopyArray(Buffer, Length, target.Buffer, target.Length);
         }
 
         /// <summary>
