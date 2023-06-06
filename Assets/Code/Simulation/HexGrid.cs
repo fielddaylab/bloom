@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -266,6 +268,70 @@ namespace Zavala.Sim {
         }
 
         #endregion // Tables
+
+        #region Enumerator
+
+        public IndexEnumerator GetEnumerator() {
+            return new IndexEnumerator((int) Size);
+        }
+
+        public PosEnumerator GetPosEnumerator() {
+            return new PosEnumerator((int) Size, (int) Width);
+        }
+
+        public struct IndexEnumerator : IEnumerator<int> {
+            private readonly int m_Size;
+            private int m_Current;
+
+            public IndexEnumerator(int size) {
+                m_Size = size;
+                m_Current = -1;
+            }
+
+            public int Current { get { return m_Current; } }
+
+            object IEnumerator.Current { get { return Current; } }
+
+            public void Dispose() {
+            }
+
+            public bool MoveNext() {
+                return ++m_Current < m_Size;
+            }
+
+            public void Reset() {
+                m_Current = -1;
+            }
+        }
+
+        public struct PosEnumerator : IEnumerator<HexVector> {
+            private readonly int m_Size;
+            private readonly int m_Width;
+            private int m_Current;
+
+            public PosEnumerator(int size, int width) {
+                m_Size = size;
+                m_Width = width;
+                m_Current = -1;
+            }
+
+            public HexVector Current { get { return new HexVector(m_Current % m_Width, m_Current / m_Width); } }
+
+            object IEnumerator.Current { get { return Current; } }
+
+            public void Dispose() {
+            }
+
+            public bool MoveNext() {
+                return ++m_Current < m_Size;
+            }
+
+            public void Reset() {
+                m_Current = -1;
+            }
+        }
+
+        #endregion // Enumerator
     }
 
     /// <summary>
@@ -296,6 +362,10 @@ namespace Zavala.Sim {
                 worldSpace.Offset.y + height * worldSpace.Scale.y,
                 worldSpace.Offset.z + (Y - (X % 2) * 0.5f - worldSpace.GridHeight / 2f) * worldSpace.Scale.z
             );
+        }
+
+        static public Vector3 ToWorld(int index, float height, in HexGridWorldSpace worldSpace) {
+            return new HexVector(index % (int) worldSpace.GridWidth, index / (int) worldSpace.GridWidth).ToWorld(height, worldSpace);
         }
 
         static public HexVector FromWorld(Vector3 position) {
@@ -358,13 +428,14 @@ namespace Zavala.Sim {
     /// <summary>
     /// Subregion of a hex grid.
     /// </summary>
+    [DebuggerDisplay("[{X},{Y},{Width}x{Height}]")]
     public readonly struct HexGridSubregion : IEquatable<HexGridSubregion> {
+        public readonly uint Size;
         public readonly ushort X;
         public readonly ushort Y;
         public readonly ushort Width;
         public readonly ushort Height;
         private readonly ushort m_SrcWidth;
-        public readonly uint Size;
 
         public HexGridSubregion(HexGridSize fullSize) {
             X = 0;
@@ -382,6 +453,15 @@ namespace Zavala.Sim {
             Height = height;
             Size = (uint) (Width * Height);
             m_SrcWidth = srcWidth;
+        }
+
+        public HexGridSubregion Subregion(ushort x, ushort y, ushort width, ushort height) {
+            ushort subX = (ushort) (X + x);
+            ushort subY = (ushort) (Y + Y);
+            if (subX + width > X + Width || subY + height > Y + Height) {
+                throw new ArgumentOutOfRangeException();
+            }
+            return new HexGridSubregion(subX, subY, width, height, m_SrcWidth);
         }
 
         #region Validation
@@ -453,6 +533,39 @@ namespace Zavala.Sim {
         }
 
         #endregion // Overrides
+    
+        #region Enumerators
+
+        public IndexEnumerator GetEnumerator() {
+            return new IndexEnumerator(this);
+        }
+
+        public struct IndexEnumerator : IEnumerator<int> {
+            private readonly HexGridSubregion m_Region;
+            private int m_Current;
+
+            public IndexEnumerator(HexGridSubregion subregion) {
+                m_Region = subregion;
+                m_Current = -1;
+            }
+
+            public int Current { get { return m_Region.FastIndexToGridIndex(m_Current); } }
+
+            object IEnumerator.Current { get { return Current; } }
+
+            public void Dispose() {
+            }
+
+            public bool MoveNext() {
+                return ++m_Current < m_Region.Size;
+            }
+
+            public void Reset() {
+                m_Current = -1;
+            }
+        }
+
+        #endregion // Enumerators
     }
 
     /// <summary>

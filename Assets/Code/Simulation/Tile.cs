@@ -354,8 +354,11 @@ namespace Zavala.Sim {
         #endregion // Enumerator
     }
 
+    /// <summary>
+    /// Tile data utility methods.
+    /// </summary>
     static public class Tile {
-        public delegate bool TileDataPredicate<TTile>(in TTile centerTile, in TTile adjacentTile) where TTile : struct;
+        public delegate bool TileDataMaskPredicate<TTile>(in TTile centerTile, in TTile adjacentTile) where TTile : struct;
         public delegate bool TileDataMapDelegate<TTile, TMap>(in TTile centerTile, in TTile adjacentTile, out TMap adjMap);
 
         public const ushort InvalidIndex16 = ushort.MaxValue;
@@ -370,7 +373,7 @@ namespace Zavala.Sim {
         /// <param name="tileBuffer">Buffer of tile data</param>
         /// <param name="gridSize">Grid size parameters</param>
         /// <param name="predicate">Mask predicate</param>
-        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(int index, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataPredicate<TTile> predicate)
+        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(int index, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataMaskPredicate<TTile> predicate)
             where TTile : unmanaged {
             TTile center = tileBuffer[index];
             HexVector pos = gridSize.FastIndexToPos(index);
@@ -397,7 +400,7 @@ namespace Zavala.Sim {
         /// <param name="tileBufferLength">Length of buffer</param>
         /// <param name="gridSize">Grid size parameters</param>
         /// <param name="predicate">Mask predicate</param>
-        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(HexVector point, SimBuffer<TTile> tileBuffer,in HexGridSize gridSize, TileDataPredicate<TTile> predicate)
+        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(HexVector point, SimBuffer<TTile> tileBuffer,in HexGridSize gridSize, TileDataMaskPredicate<TTile> predicate)
             where TTile : unmanaged {
             return GatherAdjacencyMask<TTile>(gridSize.PosToIndex(point), tileBuffer, gridSize, predicate);
         }
