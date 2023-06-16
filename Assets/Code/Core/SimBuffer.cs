@@ -3,7 +3,7 @@ using BeauUtil;
 using System;
 using UnityEngine.UIElements;
 
-namespace Zavala.Sim {
+namespace Zavala {
     /// <summary>
     /// Wrapper for a data buffer used for simulation.
     /// </summary>

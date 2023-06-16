@@ -1,13 +1,15 @@
 using FieldDay;
+using FieldDay.Debugging;
 using FieldDay.Systems;
 using Zavala.Sim;
+using Zavala.World;
 
 namespace Zavala.Actors {
-    [SysUpdate(FieldDay.GameLoopPhase.Update, 0)]
+    [SysUpdate(GameLoopPhase.Update, 0)]
     public sealed class ActorPhosphorusGeneratorSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ActorTimer> {
         public override void ProcessWork(float deltaTime) {
-            SimGridState grid = Game.SharedState.Get<SimGridState>();
-            SimWorldState world = Game.SharedState.Get<SimWorldState>();
+            SimGridState grid = ZavalaGame.SimGrid;
+            SimWorldState world = ZavalaGame.SimWorld;
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
 
             foreach(var componentPair in m_Components) {
@@ -16,6 +18,7 @@ namespace Zavala.Actors {
                     if (grid.HexSize.IsValidPos(vec)) {
                         int index = grid.HexSize.FastPosToIndex(vec);
                         SimPhospohorusUtility.AddPhosphorus(phosphorus, index, componentPair.Primary.Amount);
+
                     }
                 }
             }

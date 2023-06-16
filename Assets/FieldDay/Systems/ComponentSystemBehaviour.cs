@@ -1,13 +1,13 @@
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay.Components;
 using System;
-using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace FieldDay.Systems {
     /// <summary>
     /// System operating on all instances of a given component.
+    /// Systems should possess no state.
     /// </summary>
     public abstract class ComponentSystemBehaviour<TComponent> : MonoBehaviour, IComponentSystem<TComponent>
         where TComponent : class, IComponentData {
@@ -30,7 +30,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return m_Components.Count > 0;
+            return isActiveAndEnabled && m_Components.Count > 0;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -46,11 +46,11 @@ namespace FieldDay.Systems {
 
         #region Add/Remove
 
-        void IComponentSystem.Add(object component) {
+        void IComponentSystem.Add(IComponentData component) {
             Add((TComponent) component);
         }
 
-        void IComponentSystem.Remove(object component) {
+        void IComponentSystem.Remove(IComponentData component) {
             Remove((TComponent) component);
         }
 
@@ -89,6 +89,7 @@ namespace FieldDay.Systems {
 
     /// <summary>
     /// System operating on all instances of a given component paired with another component type.
+    /// Systems should possess no state.
     /// </summary>
     public abstract class ComponentSystemBehaviour<TPrimary, TSecondary> : MonoBehaviour, IComponentSystem<TPrimary>
         where TPrimary : class, IComponentData
@@ -112,7 +113,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return m_Components.Count > 0;
+            return isActiveAndEnabled && m_Components.Count > 0;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -129,11 +130,11 @@ namespace FieldDay.Systems {
 
         #region Add/Remove
 
-        void IComponentSystem.Add(object component) {
+        void IComponentSystem.Add(IComponentData component) {
             Add((TPrimary) component);
         }
 
-        void IComponentSystem.Remove(object component) {
+        void IComponentSystem.Remove(IComponentData component) {
             Remove((TPrimary) component);
         }
 
@@ -178,6 +179,7 @@ namespace FieldDay.Systems {
 
     /// <summary>
     /// System operating on all instances of a given component paired with two component types.
+    /// Systems should possess no state.
     /// </summary>
     public abstract class ComponentSystemBehaviour<TPrimary, TComponentA, TComponentB> : MonoBehaviour, IComponentSystem<TPrimary>
         where TPrimary : class, IComponentData
@@ -202,7 +204,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return m_Components.Count > 0;
+            return isActiveAndEnabled && m_Components.Count > 0;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -219,20 +221,20 @@ namespace FieldDay.Systems {
 
         #region Add/Remove
 
-        void IComponentSystem.Add(object component) {
+        void IComponentSystem.Add(IComponentData component) {
             Add((TPrimary) component);
         }
 
-        void IComponentSystem.Remove(object component) {
+        void IComponentSystem.Remove(IComponentData component) {
             Remove((TPrimary) component);
         }
 
         public void Add(TPrimary component) {
             int found = m_Components.FindIndex((a, b) => a.Primary == b, component);
             Assert.True(found < 0, "component already added");
-            if (ComponentUtility.Siblings(component, out TComponentA additional0, out TComponentB additional1)) {
-                m_Components.PushBack(new ComponentTuple<TPrimary, TComponentA, TComponentB>(component, additional0, additional1));
-                OnComponentAdded(component, additional0, additional1);
+            if (ComponentUtility.Siblings(component, out TComponentA additionalA, out TComponentB additionalB)) {
+                m_Components.PushBack(new ComponentTuple<TPrimary, TComponentA, TComponentB>(component, additionalA, additionalB));
+                OnComponentAdded(component, additionalA, additionalB);
             }
         }
 
@@ -259,6 +261,98 @@ namespace FieldDay.Systems {
         public virtual void Shutdown() {
             foreach (var component in m_Components) {
                 OnComponentRemoved(component.Primary, component.ComponentA, component.ComponentB);
+            }
+            m_Components.Clear();
+        }
+
+        #endregion // Lifecycle
+    }
+
+    /// <summary>
+    /// System operating on all instances of a given component paired with three component types.
+    /// Systems should possess no state.
+    /// </summary>
+    public abstract class ComponentSystemBehaviour<TPrimary, TComponentA, TComponentB, TComponentC> : MonoBehaviour, IComponentSystem<TPrimary>
+        where TPrimary : class, IComponentData
+        where TComponentA : class, IComponentData
+        where TComponentB : class, IComponentData
+        where TComponentC : class, IComponentData {
+        #region Inspector
+
+        [SerializeField] private int m_InitialCapacity = 64;
+
+        #endregion // Inspector
+
+        protected RingBuffer<ComponentTuple<TPrimary, TComponentA, TComponentB, TComponentC>> m_Components;
+
+        public int Count {
+            get { return m_Components.Count; }
+        }
+
+        public Type ComponentType {
+            get { return typeof(TPrimary); }
+        }
+
+        #region Work
+
+        public virtual bool HasWork() {
+            return isActiveAndEnabled && m_Components.Count > 0;
+        }
+
+        public virtual void ProcessWork(float deltaTime) {
+            for (int i = 0, count = m_Components.Count; i < count; i++) {
+                ComponentTuple<TPrimary, TComponentA, TComponentB, TComponentC> tuple = m_Components[i];
+                ProcessWorkForComponent(tuple.Primary, tuple.ComponentA, tuple.ComponentB, tuple.ComponentC, deltaTime);
+            }
+        }
+
+        public virtual void ProcessWorkForComponent(TPrimary primary, TComponentA componentA, TComponentB componentB, TComponentC componentC, float deltaTime) {
+        }
+
+        #endregion // Work
+
+        #region Add/Remove
+
+        void IComponentSystem.Add(IComponentData component) {
+            Add((TPrimary) component);
+        }
+
+        void IComponentSystem.Remove(IComponentData component) {
+            Remove((TPrimary) component);
+        }
+
+        public void Add(TPrimary component) {
+            int found = m_Components.FindIndex((a, b) => a.Primary == b, component);
+            Assert.True(found < 0, "component already added");
+            if (ComponentUtility.Siblings(component, out TComponentA additionalA, out TComponentB additionalB, out TComponentC additionalC)) {
+                m_Components.PushBack(new ComponentTuple<TPrimary, TComponentA, TComponentB, TComponentC>(component, additionalA, additionalB, additionalC));
+                OnComponentAdded(component, additionalA, additionalB, additionalC);
+            }
+        }
+
+        public void Remove(TPrimary component) {
+            int found = m_Components.FindIndex((a, b) => a.Primary == b, component);
+            if (found >= 0) {
+                ComponentTuple<TPrimary, TComponentA, TComponentB, TComponentC> componentData = m_Components[found];
+                m_Components.FastRemoveAt(found);
+                OnComponentRemoved(componentData.Primary, componentData.ComponentA, componentData.ComponentB, componentData.ComponentC);
+            }
+        }
+
+        protected virtual void OnComponentAdded(TPrimary primary, TComponentA componentA, TComponentB componentB, TComponentC componentC) { }
+        protected virtual void OnComponentRemoved(TPrimary primary, TComponentA componentA, TComponentB componentB, TComponentC componentC) { }
+
+        #endregion // Add/Remove
+
+        #region Lifecycle
+
+        public virtual void Initialize() {
+            m_Components = new RingBuffer<ComponentTuple<TPrimary, TComponentA, TComponentB, TComponentC>>(m_InitialCapacity, RingBufferMode.Expand);
+        }
+
+        public virtual void Shutdown() {
+            foreach (var component in m_Components) {
+                OnComponentRemoved(component.Primary, component.ComponentA, component.ComponentB, component.ComponentC);
             }
             m_Components.Clear();
         }

@@ -1,5 +1,10 @@
+#if (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+#define DEVELOPMENT
+#endif // (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay.Components;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -37,6 +42,7 @@ namespace FieldDay.Systems {
         private readonly RingBuffer<ISystem> m_AllSystems = new RingBuffer<ISystem>(32, RingBufferMode.Expand);
         private readonly RingBuffer<SystemInitInfo> m_InitList = new RingBuffer<SystemInitInfo>(32, RingBufferMode.Expand);
 
+        private readonly RingBuffer<ISystem> m_PreUpdateSystems = new RingBuffer<ISystem>();
         private readonly RingBuffer<ISystem> m_FixedUpdateSystems = new RingBuffer<ISystem>();
         private readonly RingBuffer<ISystem> m_UpdateSystems = new RingBuffer<ISystem>();
         private readonly RingBuffer<ISystem> m_UnscaledUpdateSystems = new RingBuffer<ISystem>();
@@ -72,6 +78,12 @@ namespace FieldDay.Systems {
             SysUpdateAttribute updateInfo = GetUpdateInfo(system.GetType());
             if (updateInfo != null) {
                 switch (updateInfo.Phase) {
+                    case GameLoopPhase.PreUpdate: {
+                        m_PreUpdateSystems.FastRemove(system);
+                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
+                        break;
+                    }
+
                     case GameLoopPhase.FixedUpdate: {
                         m_FixedUpdateSystems.FastRemove(system);
                         m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
@@ -109,7 +121,6 @@ namespace FieldDay.Systems {
                 DeregisterComponentSystem(componentSystem);
             }
 
-            s_Injector.Remove(system);
             system.Shutdown();
             Log.Msg("[SystemsMgr] Manager '{0}' shutdown", system.GetType().FullName);
         }
@@ -133,7 +144,6 @@ namespace FieldDay.Systems {
         /// </summary>
         private void FinishSystemInit(ISystem system) {
             m_AllSystems.PushBack(system);
-            s_Injector.Inject(system);
 
             IComponentSystem componentSystem = system as IComponentSystem;
             if (componentSystem != null) {
@@ -146,6 +156,12 @@ namespace FieldDay.Systems {
             SysUpdateAttribute updateInfo = CacheUpdateInfo(system.GetType());
             if (updateInfo != null) {
                 switch(updateInfo.Phase) {
+                    case GameLoopPhase.PreUpdate: {
+                        m_PreUpdateSystems.PushBack(system);
+                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
+                        break;
+                    }
+
                     case GameLoopPhase.FixedUpdate: {
                         m_FixedUpdateSystems.PushBack(system);
                         m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
@@ -226,7 +242,7 @@ namespace FieldDay.Systems {
         /// <summary>
         /// Adds the given component to all relevant systems.
         /// </summary>
-        public void AddComponent(IComponentData component) {
+        internal void AddComponent(IComponentData component) {
             Type componentType = component.GetType();
 
             List<IComponentSystem> relevant = GetRelevantSystems(componentType, true);
@@ -242,7 +258,7 @@ namespace FieldDay.Systems {
         /// <summary>
         /// Removes the given component from all relevant systems.
         /// </summary>
-        public void RemoveComponent(IComponentData component) {
+        internal void RemoveComponent(IComponentData component) {
             Type componentType = component.GetType();
 
             List<IComponentSystem> relevant = GetRelevantSystems(componentType, false);
@@ -357,6 +373,10 @@ namespace FieldDay.Systems {
 
         #region Events
 
+        internal void PreUpdate(float deltaTime) {
+            ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.PreUpdate, m_PreUpdateSystems, deltaTime);
+        }
+
         internal void FixedUpdate(float deltaTime) {
             ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.FixedUpdate, m_FixedUpdateSystems, deltaTime);
         }
@@ -378,6 +398,7 @@ namespace FieldDay.Systems {
         }
 
         internal void Shutdown() {
+            m_PreUpdateSystems.Clear();
             m_FixedUpdateSystems.Clear();
             m_UpdateSystems.Clear();
             m_UnscaledUpdateSystems.Clear();
@@ -396,7 +417,6 @@ namespace FieldDay.Systems {
 
             while(m_AllSystems.TryPopBack(out ISystem sys)) {
                 sys.Shutdown();
-                s_Injector.Remove(sys);
                 Log.Msg("[SystemsMgr] System '{0}' has shutdown", sys.GetType().FullName);
             }
         }
@@ -410,17 +430,27 @@ namespace FieldDay.Systems {
             }
 
             foreach(var sys in systems) {
+#if DEVELOPMENT
+                try {
+                    if (sys.HasWork()) {
+                        sys.ProcessWork(deltaTime);
+                    }
+                } catch(Exception e) {
+                    Log.Error("[SystemsMgr] Encountered exception when processing system '{0}'", sys.GetType().FullName);
+                    Debug.LogException(e);
+                }
+#else
                 if (sys.HasWork()) {
                     sys.ProcessWork(deltaTime);
                 }
+#endif // DEVELOPMENT
             }
         }
 
-        #endregion // Events
+#endregion // Events
 
         #region Cached Info
 
-        static private readonly StaticInjector<SysReferenceAttribute, ISystem> s_Injector = new StaticInjector<SysReferenceAttribute, ISystem>();
         static private readonly Dictionary<Type, SysUpdateAttribute> s_UpdateAttributeCache = new Dictionary<Type, SysUpdateAttribute>(16);
         static private readonly SysUpdateAttribute DefaultUpdateAttribute = new SysUpdateAttribute(GameLoopPhase.Update, 0);
 

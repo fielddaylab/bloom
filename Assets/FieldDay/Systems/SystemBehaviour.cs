@@ -1,7 +1,3 @@
-using BeauUtil;
-using BeauUtil.Debugger;
-using System;
-using System.Collections;
 using UnityEngine;
 
 namespace FieldDay.Systems {
@@ -13,7 +9,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return true;
+            return isActiveAndEnabled;
         }
 
         public virtual void ProcessWork(float deltaTime) {

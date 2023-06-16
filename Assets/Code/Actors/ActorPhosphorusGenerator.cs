@@ -1,5 +1,4 @@
-using FieldDay.Systems;
-using Zavala.Sim;
+using FieldDay.Components;
 
 namespace Zavala.Actors {
     public sealed class ActorPhosphorusGenerator : BatchedComponent {

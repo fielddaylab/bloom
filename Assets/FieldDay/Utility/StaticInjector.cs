@@ -23,6 +23,10 @@ namespace FieldDay {
             Type refType = typeof(TBaseType);
 
             foreach (var info in Reflect.FindMembers<TAttr>(Reflect.FindAllUserAssemblies(), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)) {
+                if (info.Info.DeclaringType.ContainsGenericParameters) {
+                    continue;
+                }
+
                 if (info.Info is FieldInfo) {
                     FieldInfo field = (FieldInfo) info.Info;
                     Assert.True(refType.IsAssignableFrom(field.FieldType), "[StaticInjector] Field '{0} {1}::{2}' is not a '{3}'", field.FieldType.Name, field.DeclaringType.FullName, field.Name, refType.FullName);
@@ -49,14 +53,14 @@ namespace FieldDay {
 
             for (int i = 0; i < m_InjectedFields.Length; i++) {
                 FieldInfo field = m_InjectedFields[i];
-                if (field.FieldType.IsAssignableFrom(sysType)) {
+                if (field.GetValue(null) == null && field.FieldType.IsAssignableFrom(sysType)) {
                     field.SetValue(null, reference);
                 }
             }
 
             for (int i = 0; i < m_InjectedProperties.Length; i++) {
                 PropertyInfo prop = m_InjectedProperties[i];
-                if (prop.PropertyType.IsAssignableFrom(sysType)) {
+                if (prop.GetValue(null) == null && prop.PropertyType.IsAssignableFrom(sysType)) {
                     prop.SetValue(null, reference);
                 }
             }

@@ -66,11 +66,12 @@ namespace Zavala.Sim {
 
                 HexVector pos = grid.HexSize.FastIndexToPos(i);
                 ushort height = (ushort) ((int) ((10 + 1000 * Mathf.PerlinNoise(generationOffset + pos.X * 0.23f, generationOffset * 0.6f + pos.Y * 0.19f) + grid.Random.Next(15, 100)) / 50) * 50);
-                tileInfo.Height = height;
                 if (height < 500) {
                     tileInfo.Category = TerrainCategory.Water;
                     tileInfo.Flags |= TerrainFlags.IsWater;
+                    height = 200;
                 }
+                tileInfo.Height = height;
                 tileInfo.RegionIndex = regionIndex;
                 grid.Terrain.Info[i] = tileInfo;
             }

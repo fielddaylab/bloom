@@ -1,31 +1,407 @@
+#if (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+#define DEVELOPMENT
+#endif // (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+
+using System;
 using BeauUtil;
 using UnityEngine;
+using System.Diagnostics;
+using BeauUtil.Debugger;
+using System.Runtime.InteropServices;
+using UnityEngine.Rendering;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif // UNITY_EDITOR
+
+using Debug = UnityEngine.Debug;
 
 namespace FieldDay.Debugging {
     /// <summary>
     /// Debug rendering helper.
     /// </summary>
+    [DefaultExecutionOrder(99999)]
     public sealed class DebugDraw : MonoBehaviour {
-        
-        static public void AddBounds(Bounds bounds, Color color, float lineWidth = 1, float duration = 0, bool depthTest = true) {
-            unsafe {
-                Vector3* corners = stackalloc Vector3[8];
-                Vector3 min = bounds.min;
-                Vector3 max = bounds.max;
-                corners[0] = min;
-                corners[1] = new Vector3(min.x, min.y, max.z);
-                corners[2] = new Vector3(min.x, max.y, min.z);
-                corners[3] = new Vector3(min.x, max.y, max.z);
-                corners[4] = new Vector3(max.x, min.y, min.z);
-                corners[5] = new Vector3(max.x, min.y, max.z);
-                corners[6] = new Vector3(max.x, max.y, min.z);
-                corners[7] = max;
+#if DEVELOPMENT
 
-                SubmitBox(corners, color, lineWidth, duration, depthTest);
+        #region Types
+
+        private struct DrawParams {
+            public Color32 Color;
+            public float LineWidth;
+            public bool DepthTest;
+        }
+
+        private struct DrawState {
+            public float Duration;
+        }
+
+        private struct Vector3x2RenderState {
+            public DrawParams Params;
+            public DrawState State;
+
+            public Vector3 Min;
+            public Vector3 Max;
+        }
+
+        private struct SphereRenderState {
+            public DrawParams Params;
+            public DrawState State;
+
+            public Vector3 Center;
+            public float Radius;
+            public bool Solid;
+        }
+
+        private struct TextRenderState {
+            public DrawParams Params;
+            public DrawState State;
+
+            public Vector3 Position;
+            public bool WorldSpace;
+            public string Text;
+            public TextAnchor Alignment;
+            public DebugTextStyle Style;
+        }
+
+        #endregion // Types
+
+        #region Buffers
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct DebugVertexFormat {
+            public Vector3 Position;
+            public Color32 Color;
+        }
+
+        #endregion // Buffers
+
+        #region Inspector
+
+        [SerializeField] private Font m_TextFont = null;
+        [SerializeField] private Mesh m_SphereMesh = null;
+
+        #endregion // Inspector
+
+        [NonSerialized] private Mesh m_MainMesh;
+        [NonSerialized] private Mesh m_OverlayMesh;
+        [NonSerialized] private GUIStyle m_TextStylePlain;
+        [NonSerialized] private GUIStyle m_TextStyleBox;
+        [NonSerialized] private GUIContent m_TextContent;
+
+        static private RingBuffer<Vector3x2RenderState> s_ActiveLines = new RingBuffer<Vector3x2RenderState>();
+        static private RingBuffer<SphereRenderState> s_ActiveSpheres = new RingBuffer<SphereRenderState>();
+        static private RingBuffer<TextRenderState> s_ActiveTexts = new RingBuffer<TextRenderState>();
+
+        [NonSerialized] static private DebugDraw s_Instance;
+        [NonSerialized] static private Camera s_MainCameraOverride;
+        [NonSerialized] static private VertexAttributeDescriptor[] s_DebugVertexAttributes;
+
+        [NonSerialized] private bool m_InitializedResources = false;
+
+        #region Unity Events
+
+        private void Awake() {
+            if (s_Instance != null && s_Instance != this) {
+                Debug.LogWarning("[DebugDraw] Duplicate instances of DebugDraw");
+                DestroyImmediate(this);
+                return;
+            }
+
+            s_Instance = this;
+            useGUILayout = false;
+
+            m_MainMesh = CreateVolatileMesh();
+            m_OverlayMesh = CreateVolatileMesh();
+
+#if UNITY_EDITOR
+            SceneView.duringSceneGui += OnSceneGUI;
+#endif // UNITY_EDITOR
+        }
+
+        private void OnDestroy() {
+            if (s_Instance != this) {
+                return;
+            }
+
+            s_Instance = null;
+
+            UnityHelper.SafeDestroy(ref m_MainMesh);
+            UnityHelper.SafeDestroy(ref m_OverlayMesh);
+
+#if UNITY_EDITOR
+            SceneView.duringSceneGui -= OnSceneGUI;
+#endif // UNITY_EDITOR
+        }
+
+        private void OnGUI() {
+            if (Event.current.type != EventType.Repaint) {
+                return;
+            }
+
+            GUI.matrix = Matrix4x4.identity;
+
+            EnsureGUIResources();
+            HandleRendering();
+        }
+
+#if UNITY_EDITOR
+
+        private void OnSceneGUI(SceneView view) {
+            if (!enabled) {
+                return;
+            }
+
+            Handles.BeginGUI();
+
+            EnsureGUIResources();
+            RenderText(0, view.camera);
+
+            Handles.EndGUI();
+        }
+
+#endif // UNITY_EDITOR
+
+#endregion // Unity Events
+
+        #region Resources
+
+        static private Mesh CreateVolatileMesh() {
+            Mesh m = new Mesh();
+            m.MarkDynamic();
+            return m;
+        }
+
+        private void EnsureGUIResources() {
+            if (!m_InitializedResources) {
+                m_TextStylePlain = new GUIStyle(GUIStyle.none);
+                m_TextStylePlain.font = m_TextFont;
+                m_TextStylePlain.alignment = TextAnchor.MiddleCenter;
+                m_TextStylePlain.clipping = TextClipping.Overflow;
+                m_TextStylePlain.fontStyle = FontStyle.Normal;
+                m_TextStylePlain.fontSize = 0;
+                m_TextStylePlain.normal.textColor = Color.white;
+
+                m_TextStyleBox = new GUIStyle(m_TextStylePlain);
+                m_TextStyleBox.normal.background = Texture2D.whiteTexture;
+                m_TextStyleBox.padding = new RectOffset(4, 4, 4, 4);
+
+                m_TextContent = new GUIContent();
+                m_InitializedResources = true;
             }
         }
 
+        static private VertexAttributeDescriptor[] GetVertexAttrDescriptors() {
+            if (s_DebugVertexAttributes == null) {
+                s_DebugVertexAttributes = new VertexAttributeDescriptor[] {
+                    new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3),
+                    new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4)
+                };
+            }
+            return s_DebugVertexAttributes;
+        }
+
+        #endregion // Resources
+
+        #region Rendering
+
+        private void HandleRendering() {
+            if (!enabled) {
+                return;
+            }
+
+            float deltaTime = Math.Min(Time.unscaledDeltaTime, 0.1f);
+
+            Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Camera.main;
+            if (mainCam) {
+                RenderText(deltaTime, mainCam);
+            }
+            RenderLines(deltaTime);
+            RenderSpheres(deltaTime);
+        }
+
+        private void RenderLines(float deltaTime) {
+            for (int i = s_ActiveLines.Count - 1; i >= 0; i--) {
+                ref Vector3x2RenderState state = ref s_ActiveLines[i];
+
+                // TODO: Replace
+                Debug.DrawLine(state.Min, state.Max, state.Params.Color, 0, state.Params.DepthTest);
+
+                if (deltaTime > 0) {
+                    state.State.Duration -= deltaTime;
+                    if (state.State.Duration <= 0) {
+                        s_ActiveLines.FastRemoveAt(i);
+                    }
+                }
+            }
+        }
+
+        private void RenderSpheres(float deltaTime) {
+            for (int i = s_ActiveSpheres.Count - 1; i >= 0; i--) {
+                ref SphereRenderState state = ref s_ActiveSpheres[i];
+
+                // TODO: Replace
+
+                if (deltaTime > 0) {
+                    state.State.Duration -= deltaTime;
+                    if (state.State.Duration <= 0) {
+                        s_ActiveSpheres.FastRemoveAt(i);
+                    }
+                }
+            }
+        }
+
+        private void RenderText(float deltaTime, Camera camera) {
+            for(int i = s_ActiveTexts.Count - 1; i >= 0; i--) {
+                ref TextRenderState state = ref s_ActiveTexts[i];
+
+                Vector2 targetPoint;
+
+                if (state.WorldSpace) {
+                    targetPoint = camera.WorldToScreenPoint(state.Position);
+                } else {
+                    targetPoint = camera.ViewportToScreenPoint(state.Position);
+                }
+
+                targetPoint.y = camera.pixelHeight - targetPoint.y;
+
+                GUIStyle style;
+                switch (state.Style) {
+                    case DebugTextStyle.BackgroundDark: {
+                        style = m_TextStyleBox;
+                        GUI.backgroundColor = Color.black.WithAlpha(0.7f);
+                        break;
+                    }
+                    case DebugTextStyle.BackgroundDarkOpaque: {
+                        style = m_TextStyleBox;
+                        GUI.backgroundColor = Color.black;
+                        break;
+                    }
+                    case DebugTextStyle.BackgroundLight: {
+                        style = m_TextStyleBox;
+                        GUI.backgroundColor = Color.white.WithAlpha(0.7f);
+                        break;
+                    }
+                    case DebugTextStyle.BackgroundLightOpaque: {
+                        style = m_TextStyleBox;
+                        GUI.backgroundColor = Color.white;
+                        break;
+                    }
+                    default: {
+                        style = m_TextStylePlain;
+                        break;
+                    }
+                }
+
+                style.alignment = state.Alignment;
+                m_TextContent.text = state.Text;
+
+                Vector2 size = style.CalcSize(m_TextContent);
+
+                switch(state.Alignment) {
+                    case TextAnchor.UpperCenter:
+                    case TextAnchor.MiddleCenter:
+                    case TextAnchor.LowerCenter: {
+                        targetPoint.x -= size.x / 2;
+                        break;
+                    }
+
+                    case TextAnchor.UpperRight:
+                    case TextAnchor.MiddleRight:
+                    case TextAnchor.LowerRight: {
+                        targetPoint.x -= size.x;
+                        break;
+                    }
+                }
+
+                switch (state.Alignment) {
+                    case TextAnchor.MiddleLeft:
+                    case TextAnchor.MiddleCenter:
+                    case TextAnchor.MiddleRight: {
+                        targetPoint.y -= size.y / 2;
+                        break;
+                    }
+
+                    case TextAnchor.LowerLeft:
+                    case TextAnchor.LowerCenter:
+                    case TextAnchor.LowerRight: {
+                        targetPoint.y -= size.y;
+                        break;
+                    }
+                }
+
+                GUI.contentColor = state.Params.Color;
+                GUI.Label(new Rect((int) targetPoint.x, (int) targetPoint.y, (int) size.x, (int) size.y), m_TextContent, style);
+
+                if (deltaTime > 0) {
+                    state.State.Duration -= deltaTime;
+                    if (state.State.Duration <= 0) {
+                        s_ActiveTexts.FastRemoveAt(i);
+                    }
+                }
+            }
+        }
+
+        #endregion // Rendering
+
+#endif // DEVELOPMENT
+
+        #region Static API
+
+        /// <summary>
+        /// Adds text, pinned to a world-space point, to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        static public void AddWorldText(Vector3 point, string text, Color color, float duration = 0, TextAnchor alignment = TextAnchor.MiddleCenter, DebugTextStyle style = DebugTextStyle.Default) {
+#if DEVELOPMENT
+            TextRenderState renderState = new TextRenderState();
+            renderState.Params.Color = color;
+            renderState.Params.DepthTest = false;
+            renderState.State.Duration = duration;
+            renderState.WorldSpace = true;
+            renderState.Text = text;
+            renderState.Position = point;
+            renderState.Alignment = alignment;
+            renderState.Style = style;
+            s_ActiveTexts.PushBack(renderState);
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Adds text, pinned to a viewport point, to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        static public void AddViewportText(Vector2 viewport, string text, Color color, float duration = 0, TextAnchor alignment = TextAnchor.MiddleCenter, DebugTextStyle style = DebugTextStyle.Default) {
+#if DEVELOPMENT
+            TextRenderState renderState = new TextRenderState();
+            renderState.Params.Color = color;
+            renderState.Params.DepthTest = false;
+            renderState.State.Duration = duration;
+            renderState.WorldSpace = false;
+            renderState.Text = text;
+            renderState.Position = viewport;
+            renderState.Alignment = alignment;
+            renderState.Style = style;
+            s_ActiveTexts.PushBack(renderState);
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Adds an AABB to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        static public void AddBounds(Bounds bounds, Color color, float lineWidth = 1, float duration = 0, bool depthTest = true) {
+#if DEVELOPMENT
+            AddBounds(bounds.min, bounds.max, color, lineWidth, duration, depthTest);
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Adds an AABB to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         static public void AddBounds(Vector3 pointMin, Vector3 pointMax, Color color, float lineWidth = 1, float duration = 0, bool depthTest = true) {
+#if DEVELOPMENT
             unsafe {
                 Vector3* corners = stackalloc Vector3[8];
                 Vector3 min = pointMin;
@@ -41,9 +417,15 @@ namespace FieldDay.Debugging {
 
                 SubmitBox(corners, color, lineWidth, duration, depthTest);
             }
+#endif // DEVELOPMENT
         }
 
+        /// <summary>
+        /// Adds an OOBB to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         static public void AddOrientedBounds(Matrix4x4 center, Bounds bounds, Color color, float lineWidth = 1, float duration = 0, bool depthTest = true) {
+#if DEVELOPMENT
             unsafe {
                 Vector3* corners = stackalloc Vector3[8];
                 Vector3 min = bounds.min;
@@ -63,27 +445,111 @@ namespace FieldDay.Debugging {
 
                 SubmitBox(corners, color, lineWidth, duration, depthTest);
             }
+#endif // DEVELOPMENT
         }
 
         static private unsafe void SubmitBox(Vector3* corners, Color color, float lineWidth, float duration, bool depthTest) {
-            Debug.DrawLine(corners[0], corners[1], color, duration, depthTest);
-            Debug.DrawLine(corners[0], corners[2], color, duration, depthTest);
-            Debug.DrawLine(corners[0], corners[4], color, duration, depthTest);
+            AddLine(corners[0], corners[1], color, lineWidth, duration, depthTest);
+            AddLine(corners[0], corners[2], color, lineWidth, duration, depthTest);
+            AddLine(corners[0], corners[4], color, lineWidth, duration, depthTest);
 
-            Debug.DrawLine(corners[1], corners[3], color, duration, depthTest);
-            Debug.DrawLine(corners[1], corners[5], color, duration, depthTest);
+            AddLine(corners[1], corners[3], color, lineWidth, duration, depthTest);
+            AddLine(corners[1], corners[5], color, lineWidth, duration, depthTest);
 
-            Debug.DrawLine(corners[2], corners[3], color, duration, depthTest);
-            Debug.DrawLine(corners[2], corners[6], color, duration, depthTest);
+            AddLine(corners[2], corners[3], color, lineWidth, duration, depthTest);
+            AddLine(corners[2], corners[6], color, lineWidth, duration, depthTest);
 
-            Debug.DrawLine(corners[3], corners[7], color, duration, depthTest);
+            AddLine(corners[3], corners[7], color, lineWidth, duration, depthTest);
 
-            Debug.DrawLine(corners[4], corners[5], color, duration, depthTest);
-            Debug.DrawLine(corners[4], corners[6], color, duration, depthTest);
+            AddLine(corners[4], corners[5], color, lineWidth, duration, depthTest);
+            AddLine(corners[4], corners[6], color, lineWidth, duration, depthTest);
 
-            Debug.DrawLine(corners[5], corners[7], color, duration, depthTest);
+            AddLine(corners[5], corners[7], color, lineWidth, duration, depthTest);
 
-            Debug.DrawLine(corners[6], corners[7], color, duration, depthTest);
+            AddLine(corners[6], corners[7], color, lineWidth, duration, depthTest);
         }
+
+        /// <summary>
+        /// Adds a line to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        static public void AddLine(Vector3 start, Vector3 end, Color color, float lineWidth = 1, float duration = 0, bool depthTest = true) {
+#if DEVELOPMENT
+            Vector3x2RenderState renderState = new Vector3x2RenderState();
+            renderState.Params.Color = color;
+            renderState.Params.LineWidth = lineWidth;
+            renderState.Params.DepthTest = depthTest;
+            renderState.State.Duration = duration;
+            renderState.Min = start;
+            renderState.Max = end;
+            s_ActiveLines.PushBack(renderState);
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Adds a sphere to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        static public void AddSphere(Vector3 center, float radius, Color color, float duration = 0, bool depthTest = true) {
+#if DEVELOPMENT
+            SphereRenderState renderState = new SphereRenderState();
+            renderState.Params.Color = color;
+            renderState.Params.DepthTest = depthTest;
+            renderState.State.Duration = duration;
+            renderState.Center = center;
+            renderState.Radius = radius;
+            renderState.Solid = false;
+            s_ActiveSpheres.PushBack(renderState);
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Adds a point to the debug render queue.
+        /// </summary>
+        [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        static public void AddPoint(Vector3 center, float size, Color color, float duration = 0, bool depthTest = true) {
+#if DEVELOPMENT
+            SphereRenderState renderState = new SphereRenderState();
+            renderState.Params.Color = color;
+            renderState.Params.DepthTest = depthTest;
+            renderState.State.Duration = duration;
+            renderState.Center = center;
+            renderState.Radius = size;
+            renderState.Solid = true;
+            s_ActiveSpheres.PushBack(renderState);
+#endif // DEVELOPMENT
+        }
+
+        #endregion // Static API
+    }
+
+    /// <summary>
+    /// Text display style.
+    /// </summary>
+    public enum DebugTextStyle {
+        /// <summary>
+        /// No background.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Transparent black background.
+        /// </summary>
+        BackgroundDark,
+
+        /// <summary>
+        /// Opaque black background.
+        /// </summary>
+        BackgroundDarkOpaque,
+
+        /// <summary>
+        /// Transparent white background.
+        /// </summary>
+        BackgroundLight,
+
+        /// <summary>
+        /// Opaque white background.
+        /// </summary>
+        BackgroundLightOpaque
     }
 }

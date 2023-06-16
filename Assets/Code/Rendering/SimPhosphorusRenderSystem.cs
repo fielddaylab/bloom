@@ -7,8 +7,9 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using UnityEngine;
+using Zavala.Sim;
 
-namespace Zavala.Sim {
+namespace Zavala.World {
 
     [SysUpdate(GameLoopPhase.LateUpdate)]
     public sealed class SimPhosphorusRenderSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, SimPhosphorusState> {

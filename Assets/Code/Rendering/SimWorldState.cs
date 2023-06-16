@@ -3,10 +3,12 @@ using FieldDay;
 using FieldDay.SharedState;
 using FieldDay.Systems;
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zavala.Sim;
 
-namespace Zavala.Sim {
+namespace Zavala.World {
     [SharedStateInitOrder(10)]
     public sealed class SimWorldState : SharedStateComponent, IRegistrationCallbacks {
         #region Inspector
@@ -25,7 +27,6 @@ namespace Zavala.Sim {
 
         #endregion // Inspector
 
-        [NonSerialized] public Camera RenderCamera;
         [NonSerialized] public HexGridWorldSpace WorldSpace;
         [NonSerialized] public SimWorldOverlayMask Overlays = SimWorldOverlayMask.Phosphorus;
 
@@ -51,8 +52,7 @@ namespace Zavala.Sim {
         }
 
         void IRegistrationCallbacks.OnRegister() {
-            TransformHelper.TryGetCamera(transform, out RenderCamera);
-            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            SimGridState grid = ZavalaGame.SimGrid;
             WorldSpace = new HexGridWorldSpace(grid.HexSize, Scale, Offset);
             RegionBounds = SimBuffer.Create<Bounds>(grid.HexSize);
             RegionCount = grid.RegionCount;
@@ -82,7 +82,7 @@ namespace Zavala.Sim {
                     for (int i = 0; i < Tiles.Length; i++) {
                         if (Tiles[i]) {
                             HexVector vec = grid.HexSize.FastIndexToPos(i);
-                            Vector3 pos = vec.ToWorld(grid.Terrain.Height[i], WorldSpace);
+                            Vector3 pos = HexVector.ToWorld(vec, grid.Terrain.Height[i], WorldSpace);
                             Tiles[i].transform.position = pos;
                         }
                     }
@@ -96,5 +96,42 @@ namespace Zavala.Sim {
     [Flags]
     public enum SimWorldOverlayMask : uint {
         Phosphorus = 0x01
+    }
+
+    static public class SimWorldUtility {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool TryGetTileIndexFromWorld(Vector3 worldPos, out int index) {
+            return TryGetTileIndexFromWorld(ZavalaGame.SimGrid, ZavalaGame.SimWorld, worldPos, out index);
+        }
+
+        static public bool TryGetTileIndexFromWorld(SimGridState grid, SimWorldState world, Vector3 worldPos, out int index) {
+            HexVector vec = HexVector.FromWorld(worldPos, world.WorldSpace);
+            if (grid.HexSize.IsValidPos(vec)) {
+                index = grid.HexSize.FastPosToIndex(vec);
+                return true;
+            }
+            index = -1;
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool TryGetTilePosFromWorld(Vector3 worldPos, out HexVector pos) {
+            return TryGetTilePosFromWorld(ZavalaGame.SimGrid, ZavalaGame.SimWorld, worldPos, out pos);
+        }
+
+        static public bool TryGetTilePosFromWorld(SimGridState grid, SimWorldState world, Vector3 worldPos, out HexVector pos) {
+            pos = HexVector.FromWorld(worldPos, world.WorldSpace);
+            return grid.HexSize.IsValidPos(pos);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public Vector3 GetTileCenter(HexVector pos) {
+            return GetTileCenter(ZavalaGame.SimGrid, ZavalaGame.SimWorld, pos);
+        }
+
+        static public Vector3 GetTileCenter(SimGridState grid, SimWorldState world, HexVector pos) {
+            int index = grid.HexSize.FastPosToIndex(pos);
+            return HexVector.ToWorld(pos, grid.Terrain.Height[index], world.WorldSpace);
+        }
     }
 }

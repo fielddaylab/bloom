@@ -166,7 +166,7 @@ namespace Zavala {
 
                             toProcess = changeBuffer.Remove[removeBufferIndex].Amount;
                             processIndex = totalStationary - 1;
-                            Log.Msg("[PhosphorusRendering] Processing remove of {0} from tile {1}", toProcess, tileIndex);
+                            //Log.Msg("[PhosphorusRendering] Processing remove of {0} from tile {1}", toProcess, tileIndex);
                             while(toProcess > 0 && processIndex >= 0) {
                                 processIndex--;
                                 totalStationary--;
@@ -202,7 +202,7 @@ namespace Zavala {
                             targetTileIndex = transfer.EndIdx;
                             targetRegionIndex = transfer.EndRegionIndex;
                             targetIsWater = (terrainInfo[targetTileIndex].Flags & TerrainFlags.IsWater) != 0;
-                            Log.Msg("[PhosphorusRendering] Processing transfer of {0} from tile {1} to tile {2}", toProcess, tileIndex, targetTileIndex);
+                            //Log.Msg("[PhosphorusRendering] Processing transfer of {0} from tile {1} to tile {2}", toProcess, tileIndex, targetTileIndex);
 
                             processIndex = totalStationary - 1;
                             while(toProcess > 0 && processIndex >= 0) {
@@ -245,7 +245,7 @@ namespace Zavala {
                 foreach (var req in changeBuffer.Add) {
                     int amount = req.Amount;
                     var instanceBuffer = renderStates[req.RegionIndex].StationaryInstances;
-                    Log.Msg("[PhosphorusRendering] Processing addition of {0} to tile {1}", amount, req.TileIdx);
+                    //Log.Msg("[PhosphorusRendering] Processing addition of {0} to tile {1}", amount, req.TileIdx);
                     while (amount-- > 0) {
                         instanceBuffer.PushBack(new PhosphorusRenderInstanceStatic() {
                             GridIndex = req.TileIdx,

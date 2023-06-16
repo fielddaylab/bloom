@@ -7,8 +7,9 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using UnityEngine;
+using Zavala.Sim;
 
-namespace Zavala.Sim {
+namespace Zavala.World {
 
     [SysUpdate(GameLoopPhase.LateUpdate, -1)]
     public sealed class SimWorldTileSpawnSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState> {
@@ -45,7 +46,7 @@ namespace Zavala.Sim {
         }
 
         static private void InstantiateTile(SimWorldState world, int index, in HexVector position, in TerrainTileInfo tileInfo) {
-            Vector3 pos = position.ToWorld(tileInfo.Height, world.WorldSpace);
+            Vector3 pos = HexVector.ToWorld(position, tileInfo.Height, world.WorldSpace);
             TileInstance inst;
             if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
                 inst = Instantiate(world.DefaultWaterPrefab, pos, Quaternion.identity);

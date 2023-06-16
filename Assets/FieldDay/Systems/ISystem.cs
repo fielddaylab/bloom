@@ -3,7 +3,8 @@ using UnityEngine.Scripting;
 
 namespace FieldDay.Systems {
     /// <summary>
-    /// Game system.
+    /// Base interface for a game system.
+    /// Systems should possess no state.
     /// </summary>
     public interface ISystem {
         /// <summary>
@@ -25,71 +26,6 @@ namespace FieldDay.Systems {
         /// Processes available work.
         /// </summary>
         void ProcessWork(float deltaTime);
-    }
-
-    /// <summary>
-    /// Component system.
-    /// </summary>
-    public interface IComponentSystem : ISystem {
-        /// <summary>
-        /// Number of components in this system.
-        /// </summary>
-        int Count { get; }
-
-        /// <summary>
-        /// Type of component.
-        /// </summary>
-        Type ComponentType { get; }
-
-        /// <summary>
-        /// Adds the given component to the system.
-        /// </summary>
-        void Add(object component);
-
-        /// <summary>
-        /// Removes the given component from the system.
-        /// </summary>
-        void Remove(object component);
-    }
-
-    /// <summary>
-    /// Component system.
-    /// </summary>
-    public interface IComponentSystem<in TPrimary> : IComponentSystem
-        where TPrimary : class, IComponentData {
-        /// <summary>
-        /// Adds the given component to the system.
-        /// </summary>
-        void Add(TPrimary component);
-
-        /// <summary>
-        /// Removes the given component from the system.
-        /// </summary>
-        void Remove(TPrimary component);
-    }
-
-    /// <summary>
-    /// Component system.
-    /// </summary>
-    public interface IComponentSystem<in TPrimary, in TSecondary> : IComponentSystem
-        where TPrimary : class, IComponentData
-        where TSecondary : class, IComponentData {
-        /// <summary>
-        /// Adds the given component to the system.
-        /// </summary>
-        void Add(TPrimary component);
-
-        /// <summary>
-        /// Removes the given component from the system.
-        /// </summary>
-        void Remove(TPrimary component);
-    }
-
-    /// <summary>
-    /// Attribute marking a static field or property as an injected system reference.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false), Preserve]
-    public sealed class SysReferenceAttribute : PreserveAttribute {
     }
 
     /// <summary>

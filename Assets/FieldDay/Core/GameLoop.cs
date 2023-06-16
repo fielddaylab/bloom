@@ -15,6 +15,7 @@ using UnityEngine.Scripting;
 
 #if USE_SRP
 using UnityEngine.Rendering;
+using FieldDay.Components;
 #endif // USE_SRP
 
 namespace FieldDay {
@@ -101,6 +102,9 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating systems manager...");
             Game.Systems = new SystemsMgr();
 
+            Log.Msg("[GameLoop] Creating component manager...");
+            Game.Components = new ComponentMgr(Game.Systems);
+
             Log.Msg("[GameLoop] Creating shared state manager...");
             Game.SharedState = new SharedStateMgr();
 
@@ -118,7 +122,7 @@ namespace FieldDay {
         private void Start() {
             Log.Msg("[GameLoop] Boot finished");
             SetCurrentPhase(GameLoopPhase.Booted);
-            Game.Systems?.ProcessInitQueue();
+            Game.Systems.ProcessInitQueue();
             FlushQueue(s_OnBootQueue);
 
             FinishCallbackRegistration();
@@ -152,8 +156,11 @@ namespace FieldDay {
 
             if (Game.Events != null) {
                 Game.Events.Clear();
-                Game.Events = null;
+                Game.SetEventDispatcher(null);
             }
+
+            Game.Components.Shutdown();
+            Game.Components = null;
 
             Game.Systems.Shutdown();
             Game.Systems = null;
@@ -162,8 +169,11 @@ namespace FieldDay {
         private void FixedUpdate() {
             FlushQueue(s_OnBootQueue);
             HandlePreUpdate();
+
             SetCurrentPhase(GameLoopPhase.FixedUpdate);
-            Game.Systems?.FixedUpdate(Time.fixedDeltaTime);
+            Game.Components.Lock();
+            Game.Systems.FixedUpdate(Time.fixedDeltaTime);
+            Game.Components.Unlock();
             OnFixedUpdate.Invoke(Time.fixedDeltaTime);
         }
 
@@ -173,12 +183,16 @@ namespace FieldDay {
 
             // time-scaled update
             SetCurrentPhase(GameLoopPhase.Update);
-            Game.Systems?.Update(Time.deltaTime);
+            Game.Components.Lock();
+            Game.Systems.Update(Time.deltaTime);
+            Game.Components.Unlock();
             OnUpdate.Invoke(Time.deltaTime);
 
             // unscaled update
             SetCurrentPhase(GameLoopPhase.UnscaledUpdate);
-            Game.Systems?.UnscaledUpdate(Time.unscaledDeltaTime);
+            Game.Components.Lock();
+            Game.Systems.UnscaledUpdate(Time.unscaledDeltaTime);
+            Game.Components.Unlock();
             OnUnscaledUpdate.Invoke(Time.unscaledDeltaTime);
 
             // flush event queue
@@ -188,12 +202,16 @@ namespace FieldDay {
         private void LateUpdate() {
             // time-scaled late update
             SetCurrentPhase(GameLoopPhase.LateUpdate);
-            Game.Systems?.LateUpdate(Time.unscaledDeltaTime);
+            Game.Components.Lock();
+            Game.Systems.LateUpdate(Time.unscaledDeltaTime);
+            Game.Components.Unlock();
             OnLateUpdate.Invoke(Time.deltaTime);
 
             // unscaled late update
             SetCurrentPhase(GameLoopPhase.UnscaledLateUpdate);
-            Game.Systems?.UnscaledLateUpdate(Time.unscaledDeltaTime);
+            Game.Components.Lock();
+            Game.Systems.UnscaledLateUpdate(Time.unscaledDeltaTime);
+            Game.Components.Unlock();
             OnUnscaledLateUpdate.Invoke(Time.unscaledDeltaTime);
 
             // flush event queue
@@ -246,6 +264,10 @@ namespace FieldDay {
                 SetCurrentPhase(GameLoopPhase.PreUpdate);
                 s_PrevUpdateFrameIndex = Frame.Index;
                 FlushQueue(s_FrameStartQueue);
+
+                Game.Components.Lock();
+                Game.Systems.PreUpdate(Time.unscaledDeltaTime);
+                Game.Components.Unlock();
             }
         }
 
@@ -316,7 +338,7 @@ namespace FieldDay {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private void SetCurrentPhase(GameLoopPhase phase) {
             s_CurrentPhase = phase;
-            Log.Msg("[GameLoop] Entering phase '{0}' on frame {1}", phase, Frame.Index);
+            //Log.Msg("[GameLoop] Entering phase '{0}' on frame {1}", phase, Frame.Index);
         }
 
         /// <summary>

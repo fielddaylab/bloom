@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using BeauUtil.Debugger;
-using UnityEditor;
 
 namespace FieldDay.SharedState {
     /// <summary>

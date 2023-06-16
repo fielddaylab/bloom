@@ -1,7 +1,6 @@
 using System;
 using FieldDay.SharedState;
 using UnityEngine;
-using UnityEngine.Scripting;
 
 namespace FieldDay.Systems {
     /// <summary>
@@ -16,7 +15,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return (m_State = s_State) != null;
+            return isActiveAndEnabled && (m_State = s_State) != null;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -52,7 +51,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null;
+            return isActiveAndEnabled && (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -92,7 +91,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null && (m_StateC = s_StateC) != null; 
+            return isActiveAndEnabled && (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null && (m_StateC = s_StateC) != null; 
         }
 
         public virtual void ProcessWork(float deltaTime) {

@@ -7,7 +7,7 @@ using System.Text;
 using BeauUtil;
 using BeauUtil.Debugger;
 
-namespace Zavala.Sim {
+namespace Zavala {
 
     /// <summary>
     /// Mask representing a tile and all 6 possible connections around the tile.
@@ -379,7 +379,7 @@ namespace Zavala.Sim {
             HexVector pos = gridSize.FastIndexToPos(index);
             TileAdjacencyMask mask = default(TileAdjacencyMask);
             for(TileDirection dir = (TileDirection) 1; dir < TileDirection.COUNT; dir++) {
-                HexVector adjPos = gridSize.OffsetPosFrom(pos, dir);
+                HexVector adjPos = HexVector.Offset(pos, dir);
                 if (!gridSize.IsValidPos(adjPos)) {
                     continue;
                 }
@@ -416,7 +416,7 @@ namespace Zavala.Sim {
                 HexVector pos = gridSize.FastIndexToPos(index);
                 TileAdjacencyDataSet<TMap> mapSet = default(TileAdjacencyDataSet<TMap>);
                 for(TileDirection dir = (TileDirection) 1; dir < TileDirection.COUNT; dir++) {
-                    HexVector adjPos = gridSize.OffsetPosFrom(pos, dir);
+                    HexVector adjPos = HexVector.Offset(pos, dir);
                     if (!gridSize.IsValidPos(adjPos)) {
                         continue;
                     }

@@ -1,15 +1,14 @@
+using System;
 using BeauUtil;
 using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Systems;
-using System;
-using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.Rendering;
+using Zavala.Sim;
 
-namespace Zavala.Sim {
+namespace Zavala.World {
     [SysUpdate(GameLoopPhase.LateUpdate, -100)]
-    public sealed class SimWorldPrepSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState> {
+    public sealed class SimWorldPrepSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, SimWorldCamera> {
         #region Inspector
 
 
@@ -22,7 +21,7 @@ namespace Zavala.Sim {
 
         public override void ProcessWork(float deltaTime) {
             // frustrum culling
-            GeometryUtility.CalculateFrustumPlanes(m_StateA.RenderCamera, m_CachedPlaneArray);
+            GeometryUtility.CalculateFrustumPlanes(m_StateC.Camera, m_CachedPlaneArray);
 
             int prevWorldRegionCount = (int) m_StateA.RegionCount;
             int regionsChanged = (int) m_StateB.RegionCount - prevWorldRegionCount;
@@ -37,10 +36,11 @@ namespace Zavala.Sim {
                     m_StateA.RegionBounds[idx] = approximateBounds;
                 }
             }
+
             m_StateA.RegionCullingMask = CullingHelper.EvaluateRegionVisibilityMask(m_StateA.RegionBounds, (int) m_StateA.RegionCount, m_CachedPlaneArray);
 
             for(int i = 0; i < m_StateA.RegionCount; i++) {
-                DebugDraw.AddBounds(m_StateA.RegionBounds[i], Color.red);
+                DebugDraw.AddBounds(m_StateA.RegionBounds[i], (m_StateA.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red);
             }
         }
 
@@ -51,6 +51,7 @@ namespace Zavala.Sim {
     /// Culling/visibility helper functions.
     /// </summary>
     static public class CullingHelper {
+        // TODO: more robust intersection tests? culling with frustum planes to aabb has a lot of false positives
         static public uint EvaluateRegionVisibilityMask(SimBuffer<Bounds> regionCounts, int count, Plane[] frustumPlanes) {
             uint mask = 0;
             for(int i = 0; i < count; i++) {

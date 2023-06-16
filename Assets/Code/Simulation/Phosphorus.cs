@@ -275,10 +275,12 @@ namespace Zavala.Sim {
             }
 
             float remainProportion = RemainAtSourceProportion;
+            bool isWater = false;
 
             // more flows through water - preserve fewer phosphorus at current tile
             if ((tileInfo.Flags & (ushort) TerrainFlags.IsWater) != 0) {
                 remainProportion *= remainProportion;
+                isWater = true;
             }
 
             int transferRemaining = (int) ((currentState.Count - MinFlowThreshold) * (1f - remainProportion));
@@ -299,10 +301,16 @@ namespace Zavala.Sim {
                 TileDirection dir = directionBuffer[dirIdx];
                 int targetIdx = gridSize.OffsetIndexFrom(index, dir);
                 int queuedTransfer;
-                if (dirIdx == directionCount - 1) {
-                    queuedTransfer = transferRemaining;
+                if (isWater) {
+                    // transfer is based on relative phosphorus count, leads to diffusion
+                    queuedTransfer = Math.Min((int) Math.Ceiling((float) (currentState.Count - targetStateBuffer[targetIdx].Count) / currentState.Count) * perDirection, transferRemaining);
                 } else {
-                    queuedTransfer = Math.Min((int) Math.Ceiling(perDirection * random.NextFloat(MinFlowProportion, steepMask[dir] ? MaxFlowProportionSteep : 1)), transferRemaining);
+                    if (dirIdx == directionCount - 1) {
+                        queuedTransfer = transferRemaining;
+                    } else {
+                        // transfer is based on steepness + randomization
+                        queuedTransfer = Math.Min((int) Math.Ceiling(perDirection * random.NextFloat(MinFlowProportion, steepMask[dir] ? MaxFlowProportionSteep : 1)), transferRemaining);
+                    }
                 }
                 queuedTransfer = Math.Min(queuedTransfer, TileSaturationThreshold - targetStateBuffer[targetIdx].Count);
                 if (queuedTransfer > 0) {

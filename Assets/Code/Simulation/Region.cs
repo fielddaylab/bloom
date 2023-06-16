@@ -18,9 +18,9 @@ namespace Zavala.Sim {
             HexVector minHex = subregion.FastIndexToPos(0);
             HexVector maxHex = subregion.FastIndexToPos((int) (subregion.Size - 1));
             
-            Vector3 minWorld = minHex.ToWorld(0, worldSpace);
+            Vector3 minWorld = HexVector.ToWorld(minHex, 0, worldSpace);
             minWorld.y -= bottomBuffer;
-            Vector3 maxWorld = maxHex.ToWorld(maxHeight, worldSpace);
+            Vector3 maxWorld = HexVector.ToWorld(maxHex, maxHeight, worldSpace);
 
             Vector3 center = (maxWorld + minWorld) / 2;
             Vector3 size = maxWorld - minWorld + worldSpace.Scale;

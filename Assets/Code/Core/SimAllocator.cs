@@ -1,6 +1,6 @@
 using BeauUtil;
 
-namespace Zavala.Sim {
+namespace Zavala {
     /// <summary>
     /// Simulation allocator.
     /// </summary>

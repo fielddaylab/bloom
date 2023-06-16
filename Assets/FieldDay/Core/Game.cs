@@ -1,9 +1,6 @@
-using BeauUtil;
-using System;
-using System.Collections;
-using UnityEngine;
 using FieldDay.Systems;
 using FieldDay.SharedState;
+using FieldDay.Components;
 
 namespace FieldDay {
     /// <summary>
@@ -16,6 +13,11 @@ namespace FieldDay {
         static public SystemsMgr Systems { get; internal set; }
 
         /// <summary>
+        /// IComponentData manager. Maintains component lists.
+        /// </summary>
+        static public ComponentMgr Components { get; internal set; }
+
+        /// <summary>
         /// ISharedState manager. Maintains shared state components.
         /// </summary>
         static public SharedStateMgr SharedState { get; internal set; }
@@ -23,13 +25,20 @@ namespace FieldDay {
         /// <summary>
         /// Event dispatcher. Maintains event dispatch.
         /// </summary>
-        static public IEventDispatcher Events { get; set; }
+        static public IEventDispatcher Events { get; private set; }
 
         /// <summary>
         /// Returns if the game loop is currently shutting down.
         /// </summary>
         static public bool IsShuttingDown {
             get { return GameLoop.s_CurrentPhase == GameLoopPhase.Shutdown; }
+        }
+
+        /// <summary>
+        /// Sets the current event dispatcher.
+        /// </summary>
+        static public void SetEventDispatcher(IEventDispatcher eventDispatcher) {
+            Events = eventDispatcher;
         }
     }
 }

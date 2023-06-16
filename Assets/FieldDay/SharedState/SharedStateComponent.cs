@@ -6,7 +6,7 @@ namespace FieldDay.SharedState {
     /// Base class for a shared state component.
     /// This data will be globally accessible while this component is active.
     /// </summary>
-    [DefaultExecutionOrder(-9500000)]
+    [DefaultExecutionOrder(SharedStateComponent.DefaultExecutionOrder)]
     public abstract class SharedStateComponent : MonoBehaviour, ISharedState {
         public const int DefaultExecutionOrder = -9500000;
 

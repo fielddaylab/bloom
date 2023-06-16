@@ -1,12 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
 using BeauUtil.Debugger;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Scripting;
 
-namespace FieldDay.Systems {
-    
+namespace FieldDay.Components {
+
     /// <summary>
     /// Interface for a component that can be used with a component system.
     /// </summary>
@@ -40,10 +38,32 @@ namespace FieldDay.Systems {
         public TComponentA ComponentA;
         public TComponentB ComponentB;
 
-        public ComponentTuple(TPrimary primary, TComponentA additional0, TComponentB additional1) {
+        public ComponentTuple(TPrimary primary, TComponentA additionalA, TComponentB additionalB) {
             Primary = primary;
-            ComponentA = additional0;
-            ComponentB = additional1;
+            ComponentA = additionalA;
+            ComponentB = additionalB;
+        }
+    }
+
+    /// <summary>
+    /// Tuple of three component types.
+    /// </summary>
+    public struct ComponentTuple<TPrimary, TComponentA, TComponentB, TComponentC>
+        where TPrimary : class, IComponentData
+        where TComponentA : class, IComponentData
+        where TComponentB : class, IComponentData
+        where TComponentC : class, IComponentData {
+
+        public TPrimary Primary;
+        public TComponentA ComponentA;
+        public TComponentB ComponentB;
+        public TComponentC ComponentC;
+
+        public ComponentTuple(TPrimary primary, TComponentA additionalA, TComponentB additionalB, TComponentC additionalC) {
+            Primary = primary;
+            ComponentA = additionalA;
+            ComponentB = additionalB;
+            ComponentC = additionalC;
         }
     }
 
@@ -110,7 +130,7 @@ namespace FieldDay.Systems {
         }
 
         /// <summary>
-        /// Retrieves the subling of the given type from the given primary component.
+        /// Retrieves the sublings of the given type from the given primary component.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static public bool Siblings<TPrimary, TComponentA, TComponentB>(TPrimary primary, out TComponentA componentA, out TComponentB componentB)
@@ -120,6 +140,21 @@ namespace FieldDay.Systems {
             componentA = PrimaryLookup<TPrimary>.GetSibling<TComponentA>(primary);
             componentB = PrimaryLookup<TPrimary>.GetSibling<TComponentB>(primary);
             return componentA != null && componentB != null;
+        }
+
+        /// <summary>
+        /// Retrieves the sublings of the given type from the given primary component.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool Siblings<TPrimary, TComponentA, TComponentB, TComponentC>(TPrimary primary, out TComponentA componentA, out TComponentB componentB, out TComponentC componentC)
+            where TPrimary : class, IComponentData
+            where TComponentA : class, IComponentData
+            where TComponentB : class, IComponentData
+            where TComponentC : class, IComponentData {
+            componentA = PrimaryLookup<TPrimary>.GetSibling<TComponentA>(primary);
+            componentB = PrimaryLookup<TPrimary>.GetSibling<TComponentB>(primary);
+            componentC = PrimaryLookup<TPrimary>.GetSibling<TComponentC>(primary);
+            return componentA != null && componentB != null && componentC != null;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Zavala.Sim {
         }
 
         void IRegistrationCallbacks.OnRegister() {
-            SimGridState gridState = Game.SharedState.Get<SimGridState>();
+            SimGridState gridState = ZavalaGame.SimGrid;
             Phosphorus.Create(gridState.HexSize);
             UpdatedPhosphorusRegionMask = 0;
         }
