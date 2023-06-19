@@ -105,6 +105,22 @@ namespace Zavala.Sim {
         }
 
         /// <summary>
+        /// Returns the HexGridSubregion for the given region asset.
+        /// </summary>
+        static public HexGridSubregion GetSubregion(SimGridState grid, RegionAsset asset, int offsetX, int offsetY) {
+            HexGridSubregion source = new HexGridSubregion(grid.HexSize);
+            HexGridSubregion region = source.Subregion((ushort) offsetX, (ushort) offsetY, (ushort) asset.Width, (ushort) asset.Height);
+            return region;
+        }
+
+        /// <summary>
+        /// Copies data from the given asset to the grid state.
+        /// </summary>
+        static public void CopyRegionInfo(SimGridState grid, RegionAsset asset, HexGridSubregion gridSubregion) {
+            SimBuffer<TerrainTileInfo> tiles = grid.Terrain.Info;
+        }
+
+        /// <summary>
         /// Recalculates terrain-dependent region info.
         /// </summary>
         static public void RegenRegionInfo(SimGridState grid, int regionIndex) {

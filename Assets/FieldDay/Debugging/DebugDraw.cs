@@ -68,10 +68,10 @@ namespace FieldDay.Debugging {
 
         #region Buffers
 
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         private struct DebugVertexFormat {
-            public Vector3 Position;
-            public Color32 Color;
+            [VertexAttr(VertexAttribute.Position)] public Vector3 Position;
+            [VertexAttr(VertexAttribute.Color)] public Color32 Color;
         }
 
         #endregion // Buffers
@@ -81,13 +81,21 @@ namespace FieldDay.Debugging {
         [SerializeField] private Font m_TextFont = null;
         [SerializeField] private Mesh m_SphereMesh = null;
 
+        [Header("Materials")]
+        [SerializeField] private Material m_DepthTestMaterial = null;
+        [SerializeField] private Material m_OverlayMaterial = null;
+
         #endregion // Inspector
 
         [NonSerialized] private Mesh m_MainMesh;
         [NonSerialized] private Mesh m_OverlayMesh;
+        [NonSerialized] private MeshData16<DebugVertexFormat> m_MainMeshData;
+        [NonSerialized] private MeshData16<DebugVertexFormat> m_OverlayMeshData;
         [NonSerialized] private GUIStyle m_TextStylePlain;
         [NonSerialized] private GUIStyle m_TextStyleBox;
         [NonSerialized] private GUIContent m_TextContent;
+        [NonSerialized] private float m_SphereMeshDefaultRadius;
+        [NonSerialized] private MaterialPropertyBlock m_TempMaterialPropertyBlock;
 
         static private RingBuffer<Vector3x2RenderState> s_ActiveLines = new RingBuffer<Vector3x2RenderState>();
         static private RingBuffer<SphereRenderState> s_ActiveSpheres = new RingBuffer<SphereRenderState>();
@@ -114,6 +122,12 @@ namespace FieldDay.Debugging {
             m_MainMesh = CreateVolatileMesh();
             m_OverlayMesh = CreateVolatileMesh();
 
+            m_SphereMeshDefaultRadius = m_SphereMesh.bounds.size.y / 2;
+            m_TempMaterialPropertyBlock = new MaterialPropertyBlock();
+
+            m_MainMeshData = new MeshData16<DebugVertexFormat>(512);
+            m_OverlayMeshData = new MeshData16<DebugVertexFormat>(512);
+
 #if UNITY_EDITOR
             SceneView.duringSceneGui += OnSceneGUI;
 #endif // UNITY_EDITOR
@@ -128,6 +142,7 @@ namespace FieldDay.Debugging {
 
             UnityHelper.SafeDestroy(ref m_MainMesh);
             UnityHelper.SafeDestroy(ref m_OverlayMesh);
+            m_TempMaterialPropertyBlock.Clear();
 
 #if UNITY_EDITOR
             SceneView.duringSceneGui -= OnSceneGUI;
@@ -168,6 +183,7 @@ namespace FieldDay.Debugging {
 
         static private Mesh CreateVolatileMesh() {
             Mesh m = new Mesh();
+            m.hideFlags = HideFlags.DontSave;
             m.MarkDynamic();
             return m;
         }
@@ -191,16 +207,6 @@ namespace FieldDay.Debugging {
             }
         }
 
-        static private VertexAttributeDescriptor[] GetVertexAttrDescriptors() {
-            if (s_DebugVertexAttributes == null) {
-                s_DebugVertexAttributes = new VertexAttributeDescriptor[] {
-                    new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3),
-                    new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4)
-                };
-            }
-            return s_DebugVertexAttributes;
-        }
-
         #endregion // Resources
 
         #region Rendering
@@ -212,15 +218,30 @@ namespace FieldDay.Debugging {
 
             float deltaTime = Math.Min(Time.unscaledDeltaTime, 0.1f);
 
+            m_MainMeshData.Clear();
+            m_OverlayMeshData.Clear();
+
             Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Camera.main;
             if (mainCam) {
                 RenderText(deltaTime, mainCam);
+                RenderLines(deltaTime, -mainCam.transform.forward);
             }
-            RenderLines(deltaTime);
             RenderSpheres(deltaTime);
+
+            if (m_MainMeshData.VertexCount > 0) {
+                RenderParams p = new RenderParams(m_DepthTestMaterial);
+                m_MainMeshData.Flush(m_MainMesh);
+                Graphics.RenderMesh(p, m_MainMesh, 0, Matrix4x4.identity);
+            }
+
+            if (m_OverlayMeshData.VertexCount > 0) {
+                RenderParams p = new RenderParams(m_OverlayMaterial);
+                m_OverlayMeshData.Flush(m_OverlayMesh);
+                Graphics.RenderMesh(p, m_OverlayMesh, 0, Matrix4x4.identity);
+            }
         }
 
-        private void RenderLines(float deltaTime) {
+        private void RenderLines(float deltaTime, Vector3 invCameraLook) {
             for (int i = s_ActiveLines.Count - 1; i >= 0; i--) {
                 ref Vector3x2RenderState state = ref s_ActiveLines[i];
 
@@ -240,7 +261,20 @@ namespace FieldDay.Debugging {
             for (int i = s_ActiveSpheres.Count - 1; i >= 0; i--) {
                 ref SphereRenderState state = ref s_ActiveSpheres[i];
 
-                // TODO: Replace
+                float scale = state.Radius / m_SphereMeshDefaultRadius;
+                Matrix4x4 pos = Matrix4x4.TRS(state.Center, Quaternion.identity, new Vector3(scale, scale, scale));
+
+                RenderParams renderParams;
+                if (state.Params.DepthTest) {
+                    renderParams = new RenderParams(m_OverlayMaterial);
+                } else {
+                    renderParams = new RenderParams(m_OverlayMaterial);
+                }
+
+                m_TempMaterialPropertyBlock.SetColor("_Color", state.Params.Color);
+                renderParams.matProps = m_TempMaterialPropertyBlock;
+
+                Graphics.RenderMesh(renderParams, m_SphereMesh, 0, pos);
 
                 if (deltaTime > 0) {
                     state.State.Duration -= deltaTime;

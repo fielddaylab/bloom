@@ -5,7 +5,6 @@ using Zavala.Sim;
 
 namespace Zavala.Roads {
     public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks {
-
         #region Registration
 
         void IRegistrationCallbacks.OnRegister() {

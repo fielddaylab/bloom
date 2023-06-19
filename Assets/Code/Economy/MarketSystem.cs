@@ -38,7 +38,7 @@ namespace Zavala.Economy {
             m_StateA.Suppliers.CopyTo(m_SupplierWorkList);
 
             SimGridState grid = ZavalaGame.SimGrid;
-            grid.Random.Shuffle((IRingBuffer<ResourceSupplier>) m_SupplierWorkList);
+            grid.Random.Shuffle(m_SupplierWorkList);
 
             foreach(var supplier in m_SupplierWorkList) {
                 MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList);

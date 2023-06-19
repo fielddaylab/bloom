@@ -11,6 +11,7 @@ namespace Zavala.Sim {
     /// <summary>
     /// Data for each tile indicating its terrain type.
     /// </summary>
+    [Serializable]
     public struct TerrainTileInfo {
         public ushort RegionIndex;
         public TerrainCategory Category;
@@ -31,10 +32,10 @@ namespace Zavala.Sim {
     /// General terrain categories.
     /// </summary>
     public enum TerrainCategory : ushort {
+        Void,
         Land,
         Water,
-        Building,
-        Void
+        Building
     }
 
     /// <summary>

@@ -37,6 +37,11 @@ namespace FieldDay {
         #region Global Events
 
         /// <summary>
+        /// Invoked during PreUpdate.
+        /// </summary>
+        static public readonly CastableEvent<float> OnPreUpdate = new CastableEvent<float>(16);
+
+        /// <summary>
         /// Invoked during FixedUpdate.
         /// </summary>
         static public readonly CastableEvent<float> OnFixedUpdate = new CastableEvent<float>(8);
@@ -111,7 +116,7 @@ namespace FieldDay {
             Application.targetFrameRate = m_TargetFramerate;
 
             // find all pre-boot
-            foreach (var entrypoint in Reflect.FindMethods<InvokePreBootAttribute>(Reflect.FindAllUserAssemblies(), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
+            foreach (var entrypoint in Reflect.FindMethods<InvokePreBootAttribute>(ReflectionCache.UserAssemblies, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
                 entrypoint.Info.Invoke(null, null);
             }
 
@@ -128,7 +133,7 @@ namespace FieldDay {
             FinishCallbackRegistration();
 
             // find all boot
-            foreach (var entrypoint in Reflect.FindMethods<InvokeOnBootAttribute>(Reflect.FindAllUserAssemblies(), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
+            foreach (var entrypoint in Reflect.FindMethods<InvokeOnBootAttribute>(ReflectionCache.UserAssemblies, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
                 entrypoint.Info.Invoke(null, null);
             }
         }
@@ -268,6 +273,8 @@ namespace FieldDay {
                 Game.Components.Lock();
                 Game.Systems.PreUpdate(Time.unscaledDeltaTime);
                 Game.Components.Unlock();
+
+                OnPreUpdate.Invoke(Time.unscaledDeltaTime);
             }
         }
 

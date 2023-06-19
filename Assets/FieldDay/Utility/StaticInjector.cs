@@ -22,7 +22,7 @@ namespace FieldDay {
 
             Type refType = typeof(TBaseType);
 
-            foreach (var info in Reflect.FindMembers<TAttr>(Reflect.FindAllUserAssemblies(), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)) {
+            foreach (var info in Reflect.FindMembers<TAttr>(ReflectionCache.UserAssemblies, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)) {
                 if (info.Info.DeclaringType.ContainsGenericParameters) {
                     continue;
                 }
