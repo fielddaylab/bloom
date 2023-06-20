@@ -35,6 +35,12 @@ namespace Zavala.Roads
         public int TileIndx; // destination index
         public bool Connected;
         public float Distance;
+
+        public RoadPathSummary(int idx, bool connected, float dist) {
+            TileIndx = idx;
+            Connected = connected;
+            Distance = dist;
+        }
     }
 
     /// <summary>
@@ -42,6 +48,7 @@ namespace Zavala.Roads
     /// </summary>
     public struct RoadTileInfo
     {
+        // May be able to optimize checks if there's an 'IsValid' bool here, to apply to certain types of tiles (suppliers, requesters, roads, etc.)
         public TileAdjacencyMask FlowMask; // valid road connections (flow outward from center to given direction)
         public ushort RegionIndex; // region identifier. used as a mask for sim updates (e.g. update region 1, update region 2, etc)
         public ushort Flags; // copy of tile flags
