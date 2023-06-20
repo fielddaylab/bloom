@@ -8,20 +8,28 @@ using UnityEditor.MemoryProfiler;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using Zavala.Sim;
+using Zavala.World;
 using static UnityEditor.PlayerSettings;
 
 namespace Zavala.Roads
 {
     public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks
     {
+        public GameObject TempRoadPrefab; // TEMP HACK placing roads via prefab for testing
+
         [NonSerialized] public RoadBuffers Roads;
 
         [NonSerialized] public Dictionary<int, RingBuffer<RoadPathSummary>> Connections; // key is tile index, values are tiles connected via road
+
+        public bool UpdateNeeded;
 
         #region Registration
 
         void IRegistrationCallbacks.OnRegister() {
             Connections = new Dictionary<int, RingBuffer<RoadPathSummary>>();
+            UpdateNeeded = false;
+            SimGridState gridState = ZavalaGame.SimGrid;
+            Roads.Create(gridState.HexSize);
         }
 
         void IRegistrationCallbacks.OnDeregister() {
@@ -58,7 +66,7 @@ namespace Zavala.Roads
     {
         static public RoadPathSummary IsConnected(RoadNetwork network, HexGridSize gridSize, int tileIdxA, int tileIdxB) {
             RoadPathSummary info;
-     
+
             // at this point, every tile index has a list of indexes of tiles they are connected to.
             if (network.Connections.ContainsKey(tileIdxA)) {
                 RingBuffer<RoadPathSummary> aConnections = network.Connections[tileIdxA];
@@ -79,6 +87,30 @@ namespace Zavala.Roads
             HexVector b = ZavalaGame.SimGrid.HexSize.FastIndexToPos(tileIdxB);
             info.Distance = HexVector.EuclidianDistance(a, b);
             return info;
+        }
+
+        static public void AddRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
+            RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+
+            // add a road leading in all directions
+            // ? tileInfo.FlowMask[TileDirection.Self] = true;
+
+            tileInfo.FlowMask[TileDirection.N] = true;
+            tileInfo.FlowMask[TileDirection.S] = true;
+            tileInfo.FlowMask[TileDirection.SE] = true;
+            tileInfo.FlowMask[TileDirection.SW] = true;
+            tileInfo.FlowMask[TileDirection.NE] = true;
+            tileInfo.FlowMask[TileDirection.NW] = true;
+
+            // TEMP TESTING add placeholder render of road, snap to tile
+            GameObject newRoad = MonoBehaviour.Instantiate(network.TempRoadPrefab);
+
+            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+            worldPos.y += 0.2f;
+            newRoad.transform.position = worldPos;
+
+            network.UpdateNeeded = true;
         }
     }
 }

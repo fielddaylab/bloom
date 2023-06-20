@@ -659,6 +659,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e843a7d4f02b7d4aab8adbb1ed959de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TempRoadPrefab: {fileID: 8417343884172520992, guid: f5fc5bfc38ff22541a33a6dbd37de21b, type: 3}
+  UpdateNeeded: 0
 --- !u!114 &502754873
 MonoBehaviour:
   m_ObjectHideFlags: 0

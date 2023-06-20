@@ -35,7 +35,7 @@ namespace Zavala.Roads
 
         public override void ProcessWork(float deltaTime) {
             // TODO: implement trigger to notify of needed update
-            bool updateNeeded = false;
+            bool updateNeeded = m_StateA.UpdateNeeded;
 
             if (updateNeeded) {
                 // Need to recalculate whether a given tile is connected with any other given tile via road,
@@ -56,6 +56,8 @@ namespace Zavala.Roads
                     // Add newfound connections
                     network.Connections.Add(index, connections);
                 }
+
+                network.UpdateNeeded = false;
             }
         }
 

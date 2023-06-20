@@ -6,6 +6,7 @@ using FieldDay.Systems;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Roads;
 
 namespace Zavala.Sim {
     [SharedStateInitOrder(-1)]
@@ -52,6 +53,12 @@ namespace Zavala.Sim {
             GenerateRandomTerrain(grid, phosphorus);
             RegenTerrainDependentInfo(grid, phosphorus);
             GenerateRandomPhosphorus(grid, phosphorus);
+
+            // TEMP TESTING ----
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            GenerateBasicRoad(grid, network);
+            // -----------------
+
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
         }
 
@@ -87,6 +94,23 @@ namespace Zavala.Sim {
                 if (grid.Random.Chance(0.2f)) {
                     SimPhospohorusUtility.AddPhosphorus(phosphorus, i, grid.Random.Next(5, 25));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Generates a predefined road on the grid. Used for initial testing purposes.
+        /// </summary>
+        static public void GenerateBasicRoad(SimGridState grid, RoadNetwork network) {
+            for (int i = 0; i < grid.HexSize.Size; i++) {
+                RoadUtility.AddRoad(network, grid, 5);
+                RoadUtility.AddRoad(network, grid, 6);
+                RoadUtility.AddRoad(network, grid, 7);
+                RoadUtility.AddRoad(network, grid, 8);
+                RoadUtility.AddRoad(network, grid, 9);
+
+
+                RoadUtility.AddRoad(network, grid, 44);
+                RoadUtility.AddRoad(network, grid, 45);
             }
         }
 
