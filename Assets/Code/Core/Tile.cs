@@ -7,18 +7,20 @@ using System.Text;
 using BeauUtil;
 using BeauUtil.Debugger;
 
-namespace Zavala {
+namespace Zavala
+{
 
     /// <summary>
     /// Mask representing a tile and all 6 possible connections around the tile.
     /// </summary>
-    public struct TileAdjacencyMask : IEquatable<TileAdjacencyMask> {
+    public struct TileAdjacencyMask : IEquatable<TileAdjacencyMask>
+    {
         public const byte OnlyConnectionsMask = 0xFE;
 
         public byte Value;
 
         public TileAdjacencyMask(TileDirection direction) {
-            Value = (byte) (1 << (int) direction);
+            Value = (byte)(1 << (int)direction);
         }
 
         public TileAdjacencyMask(byte value) {
@@ -26,7 +28,7 @@ namespace Zavala {
         }
 
         public TileAdjacencyMask(int value) {
-            Value = (byte) (value & 0xFF);
+            Value = (byte)(value & 0xFF);
         }
 
         /// <summary>
@@ -41,13 +43,14 @@ namespace Zavala {
         /// </summary>
         public bool this[TileDirection direction] {
             get {
-                return (Value & (1 << (int) direction)) != 0;
+                return (Value & (1 << (int)direction)) != 0;
             }
             set {
                 if (value) {
-                    Value |= (byte) (1 << (int) direction);
-                } else {
-                    Value &= (byte) ~(1 << (int) direction);
+                    Value |= (byte)(1 << (int)direction);
+                }
+                else {
+                    Value &= (byte)~(1 << (int)direction);
                 }
             }
         }
@@ -56,22 +59,24 @@ namespace Zavala {
         /// Returns how many tiles are represented by this mask.
         /// </summary>
         public int Count {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Bits.Count((uint) Value); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Bits.Count((uint)Value); }
         }
 
         /// <summary>
         /// Returns how many connecting tiles are represented by this mask.
         /// </summary>
         public int OutgoingCount {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Bits.Count((uint) (Value & OnlyConnectionsMask)); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Bits.Count((uint)(Value & OnlyConnectionsMask)); }
         }
 
         /// <summary>
         /// Returns if the given direction is present in the mask.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(TileDirection direction) {
-            return (Value & (1 << (int) direction)) != 0;
+            return (Value & (1 << (int)direction)) != 0;
         }
 
         /// <summary>
@@ -87,7 +92,8 @@ namespace Zavala {
             return new Enumerator(Value);
         }
 
-        public struct Enumerator : IEnumerator<TileDirection> {
+        public struct Enumerator : IEnumerator<TileDirection>
+        {
 
             private byte m_Mask;
             private int m_Offset;
@@ -96,7 +102,7 @@ namespace Zavala {
             internal Enumerator(byte mask) {
                 m_Mask = mask;
                 m_Offset = 0;
-                m_Last = (TileDirection) 255;
+                m_Last = (TileDirection)255;
             }
 
             public TileDirection Current { get { return m_Last; } }
@@ -107,9 +113,9 @@ namespace Zavala {
             }
 
             public bool MoveNext() {
-                while(m_Mask != 0) {
+                while (m_Mask != 0) {
                     if ((m_Mask & 1) == 1) {
-                        m_Last = (TileDirection) m_Offset;
+                        m_Last = (TileDirection)m_Offset;
                         m_Offset++;
                         m_Mask >>= 1;
                         return true;
@@ -118,7 +124,7 @@ namespace Zavala {
                     m_Offset++;
                     m_Mask >>= 1;
                 }
-                
+
                 return false;
             }
 
@@ -132,9 +138,9 @@ namespace Zavala {
 
         public override bool Equals(object obj) {
             if (obj is TileAdjacencyMask) {
-                return Equals((TileAdjacencyMask) obj);
+                return Equals((TileAdjacencyMask)obj);
             }
-            
+
             return false;
         }
 
@@ -152,7 +158,7 @@ namespace Zavala {
             }
 
             StringBuilder sb = new StringBuilder();
-            for(TileDirection i = 0; i < TileDirection.COUNT; i++) {
+            for (TileDirection i = 0; i < TileDirection.COUNT; i++) {
                 if (this[i]) {
                     sb.Append(i).Append(" | ");
                 }
@@ -163,38 +169,38 @@ namespace Zavala {
             return sb.Flush();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        static public TileAdjacencyMask operator|(TileAdjacencyMask a, TileAdjacencyMask b) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public TileAdjacencyMask operator |(TileAdjacencyMask a, TileAdjacencyMask b) {
             return new TileAdjacencyMask(a.Value | b.Value);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        static public TileAdjacencyMask operator&(TileAdjacencyMask a, TileAdjacencyMask b) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public TileAdjacencyMask operator &(TileAdjacencyMask a, TileAdjacencyMask b) {
             return new TileAdjacencyMask(a.Value & b.Value);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        static public TileAdjacencyMask operator|(TileAdjacencyMask a, TileDirection b) {
-            return new TileAdjacencyMask(a.Value | (1 << (int) b));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        static public TileAdjacencyMask operator&(TileAdjacencyMask a, TileDirection b) {
-            return new TileAdjacencyMask(a.Value & (1 << (int) b));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public TileAdjacencyMask operator |(TileAdjacencyMask a, TileDirection b) {
+            return new TileAdjacencyMask(a.Value | (1 << (int)b));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static public TileAdjacencyMask operator~(TileAdjacencyMask a) {
+        static public TileAdjacencyMask operator &(TileAdjacencyMask a, TileDirection b) {
+            return new TileAdjacencyMask(a.Value & (1 << (int)b));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public TileAdjacencyMask operator ~(TileAdjacencyMask a) {
             return new TileAdjacencyMask(~a.Value);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        static public bool operator==(TileAdjacencyMask a, TileAdjacencyMask b) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool operator ==(TileAdjacencyMask a, TileAdjacencyMask b) {
             return a.Value == b.Value;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        static public bool operator!=(TileAdjacencyMask a, TileAdjacencyMask b) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool operator !=(TileAdjacencyMask a, TileAdjacencyMask b) {
             return a.Value == b.Value;
         }
 
@@ -204,7 +210,8 @@ namespace Zavala {
     /// <summary>
     /// Data mapped to a tile and its adjacent tiles, referenced by direction.
     /// </summary>
-    public struct TileAdjacencyDataSet<T> where T : unmanaged {
+    public struct TileAdjacencyDataSet<T> where T : unmanaged
+    {
         private TileAdjacencyMask m_Mask;
         private T m_Self;
         private T m_SW;
@@ -237,8 +244,8 @@ namespace Zavala {
                     throw new KeyNotFoundException("Value for direction " + direction.ToString() + " not set");
                 }
                 unsafe {
-                    fixed(T* data = &m_Self) {
-                        return data[(int) direction];
+                    fixed (T* data = &m_Self) {
+                        return data[(int)direction];
                     }
                 }
             }
@@ -251,20 +258,22 @@ namespace Zavala {
         /// Returns how many tiles are represented by this set.
         /// </summary>
         public int Count {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return m_Mask.Count; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return m_Mask.Count; }
         }
 
         /// <summary>
         /// Returns how many connecting tiles are represented by this set.
         /// </summary>
         public int OutgoingCount {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return m_Mask.OutgoingCount; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return m_Mask.OutgoingCount; }
         }
 
         /// <summary>
         /// Returns if the given direction is present in the set.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Has(TileDirection direction) {
             return m_Mask.Has(direction);
         }
@@ -284,10 +293,10 @@ namespace Zavala {
         /// Sets the data at the given direction.
         /// </summary>
         public void Set(TileDirection direction, T value) {
-            m_Mask.Value |= (byte) (1 << (int) direction);
+            m_Mask.Value |= (byte)(1 << (int)direction);
             unsafe {
-                fixed(T* data = &m_Self) {
-                    data[(int) direction] = value;
+                fixed (T* data = &m_Self) {
+                    data[(int)direction] = value;
                 }
             }
         }
@@ -298,8 +307,8 @@ namespace Zavala {
         public bool TryGet(TileDirection direction, out T value) {
             if (m_Mask.Has(direction)) {
                 unsafe {
-                    fixed(T* data = &m_Self) {
-                        value = data[(int) direction];
+                    fixed (T* data = &m_Self) {
+                        value = data[(int)direction];
                         return true;
                     }
                 }
@@ -325,7 +334,8 @@ namespace Zavala {
         /// <summary>
         /// Enumerator for iterating over processed data.
         /// </summary>
-        public struct Enumerator : IEnumerator<KeyValuePair<TileDirection, T>> {
+        public struct Enumerator : IEnumerator<KeyValuePair<TileDirection, T>>
+        {
             private TileAdjacencyMask.Enumerator m_MaskEnumerator;
             private TileAdjacencyDataSet<T> m_SourceData;
 
@@ -334,7 +344,7 @@ namespace Zavala {
                 m_MaskEnumerator = source.m_Mask.GetEnumerator();
             }
 
-            public KeyValuePair<TileDirection, T> Current { get { return new KeyValuePair<TileDirection, T>(m_MaskEnumerator.Current, m_SourceData[m_MaskEnumerator.Current]); }}
+            public KeyValuePair<TileDirection, T> Current { get { return new KeyValuePair<TileDirection, T>(m_MaskEnumerator.Current, m_SourceData[m_MaskEnumerator.Current]); } }
 
             object IEnumerator.Current { get { return Current; } }
 
@@ -357,9 +367,11 @@ namespace Zavala {
     /// <summary>
     /// Tile data utility methods.
     /// </summary>
-    static public class Tile {
+    static public class Tile
+    {
         public delegate bool TileDataMaskPredicate<TTile>(in TTile centerTile, in TTile adjacentTile) where TTile : struct;
         public delegate bool TileDataMapDelegate<TTile, TMap>(in TTile centerTile, in TTile adjacentTile, out TMap adjMap);
+        public delegate bool TileDataMapWithIdxDelegate<TTile, TMap>(in TTile centerTile, in TTile adjacentTile, in int adjIdx, out TMap adjMap);
 
         public const ushort InvalidIndex16 = ushort.MaxValue;
         public const uint InvalidIndex32 = uint.MaxValue;
@@ -378,7 +390,7 @@ namespace Zavala {
             TTile center = tileBuffer[index];
             HexVector pos = gridSize.FastIndexToPos(index);
             TileAdjacencyMask mask = default(TileAdjacencyMask);
-            for(TileDirection dir = (TileDirection) 1; dir < TileDirection.COUNT; dir++) {
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
                 HexVector adjPos = HexVector.Offset(pos, dir);
                 if (!gridSize.IsValidPos(adjPos)) {
                     continue;
@@ -400,7 +412,7 @@ namespace Zavala {
         /// <param name="tileBufferLength">Length of buffer</param>
         /// <param name="gridSize">Grid size parameters</param>
         /// <param name="predicate">Mask predicate</param>
-        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(HexVector point, SimBuffer<TTile> tileBuffer,in HexGridSize gridSize, TileDataMaskPredicate<TTile> predicate)
+        static public unsafe TileAdjacencyMask GatherAdjacencyMask<TTile>(HexVector point, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataMaskPredicate<TTile> predicate)
             where TTile : unmanaged {
             return GatherAdjacencyMask<TTile>(gridSize.PosToIndex(point), tileBuffer, gridSize, predicate);
         }
@@ -412,28 +424,49 @@ namespace Zavala {
         static public unsafe TileAdjacencyDataSet<TMap> GatherAdjacencySet<TTile, TMap>(int index, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataMapDelegate<TTile, TMap> setMap)
             where TTile : unmanaged
             where TMap : unmanaged {
-                TTile center = tileBuffer[index];
-                HexVector pos = gridSize.FastIndexToPos(index);
-                TileAdjacencyDataSet<TMap> mapSet = default(TileAdjacencyDataSet<TMap>);
-                for(TileDirection dir = (TileDirection) 1; dir < TileDirection.COUNT; dir++) {
-                    HexVector adjPos = HexVector.Offset(pos, dir);
-                    if (!gridSize.IsValidPos(adjPos)) {
-                        continue;
-                    }
-
-                    int adjIndex = gridSize.FastPosToIndex(adjPos);
-                    if (setMap(center, tileBuffer[adjIndex], out TMap mapped)) {
-                        mapSet.Set(dir, mapped);
-                    }
+            TTile center = tileBuffer[index];
+            HexVector pos = gridSize.FastIndexToPos(index);
+            TileAdjacencyDataSet<TMap> mapSet = default(TileAdjacencyDataSet<TMap>);
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                HexVector adjPos = HexVector.Offset(pos, dir);
+                if (!gridSize.IsValidPos(adjPos)) {
+                    continue;
                 }
 
-                return mapSet;
+                int adjIndex = gridSize.FastPosToIndex(adjPos);
+                if (setMap(center, tileBuffer[adjIndex], out TMap mapped)) {
+                    mapSet.Set(dir, mapped);
+                }
+            }
+
+            return mapSet;
         }
 
         static public unsafe TileAdjacencyDataSet<TMap> GatherAdjacencySet<TTile, TMap>(HexVector point, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataMapDelegate<TTile, TMap> setMap)
             where TTile : unmanaged
             where TMap : unmanaged {
-                return GatherAdjacencySet<TTile, TMap>(gridSize.PosToIndex(point), tileBuffer, gridSize, setMap);
+            return GatherAdjacencySet<TTile, TMap>(gridSize.PosToIndex(point), tileBuffer, gridSize, setMap);
+        }
+
+        static public unsafe TileAdjacencyDataSet<TMap> GatherAdjacencySetWithIdx<TTile, TMap>(int index, SimBuffer<TTile> tileBuffer, in HexGridSize gridSize, TileDataMapWithIdxDelegate<TTile, TMap> setMap)
+            where TTile : unmanaged
+            where TMap : unmanaged {
+            TTile center = tileBuffer[index];
+            HexVector pos = gridSize.FastIndexToPos(index);
+            TileAdjacencyDataSet<TMap> mapSet = default(TileAdjacencyDataSet<TMap>);
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                HexVector adjPos = HexVector.Offset(pos, dir);
+                if (!gridSize.IsValidPos(adjPos)) {
+                    continue;
+                }
+
+                int adjIndex = gridSize.FastPosToIndex(adjPos);
+                if (setMap(center, tileBuffer[adjIndex], adjIndex, out TMap mapped)) {
+                    mapSet.Set(dir, mapped);
+                }
+            }
+
+            return mapSet;
         }
 
         #endregion // Adjacency Set

@@ -107,16 +107,17 @@ namespace Zavala.Economy {
             m_StateA.Buyers.CopyTo(m_RequesterWorkList);
 
             RoadNetwork roadState = Game.SharedState.Get<RoadNetwork>();
+            HexGridSize gridSize = Game.SharedState.Get<SimGridState>().HexSize;
 
             foreach (var supplier in m_StateA.Suppliers) {
-                UpdateSupplierPriority(supplier, m_StateA, m_StateB, roadState);
+                UpdateSupplierPriority(supplier, m_StateA, m_StateB, roadState, gridSize);
             }
 
             m_RequesterWorkList.Clear();
             m_PriorityWorkList.Clear();
         }
 
-        private void UpdateSupplierPriority(ResourceSupplier supplier, MarketData data, MarketConfig config, RoadNetwork network) {
+        private void UpdateSupplierPriority(ResourceSupplier supplier, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize) {
             m_PriorityWorkList.Clear();
             supplier.Priorities.PrioritizedBuyers.Clear();
 
@@ -129,7 +130,7 @@ namespace Zavala.Economy {
                     continue;
                 }
 
-                RoadPathSummary connectionSummary = RoadUtility.IsConnected(network, supplier.Position.TileIndex, requester.Position.TileIndex);
+                RoadPathSummary connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
                 if (!connectionSummary.Connected) {
                     return;
                 }

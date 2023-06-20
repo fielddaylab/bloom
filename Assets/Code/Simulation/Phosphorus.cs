@@ -25,6 +25,7 @@ namespace Zavala.Sim {
         public ushort Count;
     }
 
+
     #endregion // State Tracking
 
     #region Recording Changes

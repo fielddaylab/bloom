@@ -1,5 +1,6 @@
 using System;
 using BeauUtil;
+using Zavala.Roads;
 
 namespace Zavala.Sim {
     /// <summary>
@@ -53,4 +54,18 @@ namespace Zavala.Sim {
             return States[1 - StateIndex];
         }
     }
+
+    /// <summary>
+    /// Struct containing phosphorus information buffers.
+    /// </summary>
+    public unsafe struct RoadBuffers
+    {
+        public SimBuffer<RoadTileInfo> Info;
+
+        public void Create(in HexGridSize size) {
+            Info = SimBuffer.Create<RoadTileInfo>(size);
+            SimBuffer.Clear(Info);
+        }
+    }
+
 }
