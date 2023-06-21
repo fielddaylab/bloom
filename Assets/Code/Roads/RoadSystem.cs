@@ -24,15 +24,6 @@ namespace Zavala.Roads
             public int TileIdx;
         }
 
-        // delegate for extracting road flow from one tile to another
-        static private readonly Tile.TileDataMapWithIdxDelegate<RoadTileInfo, TileRoadData> ExtractRoadConnections = (in RoadTileInfo c, in RoadTileInfo a, in int adjIdx, out TileRoadData o) => {
-            // as long as passed the mask, should be added to consideration during graph traversal
-
-            o = new TileRoadData();
-            o.TileIdx = adjIdx;
-            return false;
-        };
-
         public override void ProcessWork(float deltaTime) {
             // TODO: implement trigger to notify of needed update
             bool updateNeeded = m_StateA.UpdateNeeded;

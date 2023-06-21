@@ -2250,7 +2250,7 @@ GameObject:
   - component: {fileID: 1961398107}
   - component: {fileID: 1961398108}
   m_Layer: 0
-  m_Name: GrainFarm (roaded)
+  m_Name: GrainFarm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2454,7 +2454,7 @@ GameObject:
   - component: {fileID: 2034204922}
   - component: {fileID: 2034204921}
   m_Layer: 0
-  m_Name: DairyFarm (1) (roaded)
+  m_Name: DairyFarm (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -43,6 +43,7 @@ namespace Zavala.Roads
         public int TileIndx; // destination index
         public bool Connected;
         public float Distance;
+        // TODO: store actual path
 
         public RoadPathSummary(int idx, bool connected, float dist) {
             TileIndx = idx;
