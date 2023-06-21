@@ -21,7 +21,7 @@ namespace Zavala.Roads
 
         [NonSerialized] public Dictionary<int, RingBuffer<RoadPathSummary>> Connections; // key is tile index, values are tiles connected via road
 
-        public bool UpdateNeeded;
+        public bool UpdateNeeded; // TEMP for testing; should probably use a more robust signal. Set every time the road system is updated.
 
         #region Registration
 
@@ -93,14 +93,19 @@ namespace Zavala.Roads
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
             // add a road leading in all directions
-            // ? tileInfo.FlowMask[TileDirection.Self] = true;
+            // tileInfo.FlowMask[TileDirection.Self] = true; // doesn't seem to be necessary for road connection assessment
 
+            // TODO: in the future, when implementing the road building, will need to set Flow mask according to flow of the road. Not just everywhere.
+            // Example: consider three road pieces. One sits at tile 50. Another road piece is NE of it. The third road piece is SE of that one.
+            // Then the first has a FlowMask with NE set to true. The second has SW (because it leads back to the first) and SE as true. And the third has NW as true.
             tileInfo.FlowMask[TileDirection.N] = true;
             tileInfo.FlowMask[TileDirection.S] = true;
             tileInfo.FlowMask[TileDirection.SE] = true;
             tileInfo.FlowMask[TileDirection.SW] = true;
             tileInfo.FlowMask[TileDirection.NE] = true;
             tileInfo.FlowMask[TileDirection.NW] = true;
+
+            network.Roads.Info[tileIndex] = tileInfo;
 
             // TEMP TESTING add placeholder render of road, snap to tile
             GameObject newRoad = MonoBehaviour.Instantiate(network.TempRoadPrefab);

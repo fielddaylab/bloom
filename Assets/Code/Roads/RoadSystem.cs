@@ -76,12 +76,10 @@ namespace Zavala.Roads
 
 
         /// <summary>
-        /// Runs the Dijkstra's connection algorithm
+        /// Runs the Dijkstra's shortest tree algorithm
         /// </summary>
         static public RingBuffer<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, HexGridSize gridSize) {
             RingBuffer<RoadPathSummary> allConnections = new RingBuffer<RoadPathSummary>();
-
-            // TODO: previous to now, update infoBuffer whenever a road is created/destroyed
 
             // TODO: optimize the data structures in this algorithm
 
@@ -118,10 +116,6 @@ namespace Zavala.Roads
                 // TODO: do we need to consider a case where start node is not found?
                 Assert.True(startNodeFound);
 
-                // a tile is always connected to itself
-                RoadPathSummary selfConnection = new RoadPathSummary(startIdx, true, 0);
-                allConnections.PushBack(selfConnection);
-
                 // At the start, there will always be at least the first node
                 bool setExhausted = false;
 
@@ -142,21 +136,29 @@ namespace Zavala.Roads
                             }
 
                             // if flows out to this direction
+                            int adjIdx = gridSize.FastPosToIndex(adjPos);
                             if (center.FlowMask[dir]) {
-                                int adjIdx = gridSize.FastPosToIndex(adjPos);
-
                                 // Distill to only those in the unvisited set
                                 if (SetContains(universalSet, adjIdx)) {
                                     unvisitedNeighborList.Add(adjIdx);
                                 }
                             }
+                            else {
+                                // if they flow into this tile
+                                RoadTileInfo adjInfo = infoBuffer[(int)adjIdx];
+                                TileDirection inverseDir = gridSize.InvertDir(dir);
+                                if (adjInfo.FlowMask[inverseDir]) {
+                                    if (SetContains(universalSet, adjIdx)) {
+                                        unvisitedNeighborList.Add(adjIdx);
+                                    }
+                                }
+                            }
                         }
 
 
+                        // Update distances for all unvisited neighbors
                         for (int i = 0; i < unvisitedNeighborList.Count; i++) {
                             UpdateTentativeDistance(universalSet, unvisitedNeighborList[i], currNode.TentativeDistance + 1);
-
-                            // Repeat for all unvisited neighbors
                         }
 
                         // Mark the current node as visited; remove from the unvisited set, add it to allConnections

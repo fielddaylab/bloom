@@ -331,6 +331,19 @@ namespace Zavala {
         }
 
         #endregion // Enumerator
+
+        #region Conversion
+
+        public TileDirection InvertDir(TileDirection dir) {
+            dir += 3;
+            if (dir > TileDirection.NW) {
+                dir -= 6;
+            }
+
+            return dir;
+        }
+
+        #endregion // Conversion
     }
 
     /// <summary>

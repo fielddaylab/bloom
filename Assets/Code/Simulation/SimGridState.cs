@@ -101,17 +101,13 @@ namespace Zavala.Sim {
         /// Generates a predefined road on the grid. Used for initial testing purposes.
         /// </summary>
         static public void GenerateBasicRoad(SimGridState grid, RoadNetwork network) {
-            for (int i = 0; i < grid.HexSize.Size; i++) {
-                RoadUtility.AddRoad(network, grid, 5);
-                RoadUtility.AddRoad(network, grid, 6);
-                RoadUtility.AddRoad(network, grid, 7);
-                RoadUtility.AddRoad(network, grid, 8);
-                RoadUtility.AddRoad(network, grid, 9);
-
-
-                RoadUtility.AddRoad(network, grid, 44);
-                RoadUtility.AddRoad(network, grid, 45);
-            }
+            RoadUtility.AddRoad(network, grid, 26);
+            RoadUtility.AddRoad(network, grid, 36);
+            RoadUtility.AddRoad(network, grid, 46);
+            RoadUtility.AddRoad(network, grid, 56);
+            RoadUtility.AddRoad(network, grid, 66);
+            RoadUtility.AddRoad(network, grid, 76);
+            RoadUtility.AddRoad(network, grid, 77);
         }
 
         /// <summary>

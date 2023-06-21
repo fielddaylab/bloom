@@ -132,7 +132,7 @@ namespace Zavala.Economy {
 
                 RoadPathSummary connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
                 if (!connectionSummary.Connected) {
-                    return;
+                    continue;
                 }
 
                 var adjustments = config.UserAdjustmentsPerRegion[supplier.Position.RegionIndex];
