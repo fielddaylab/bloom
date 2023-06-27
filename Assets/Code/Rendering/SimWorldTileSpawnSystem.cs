@@ -53,6 +53,8 @@ namespace Zavala.World {
             } else {
                 inst = Instantiate(world.DefaultTilePrefab, pos, Quaternion.identity);
             }
+            // TODO: check, is this too hacky?
+            inst.index = index;
             inst.gameObject.name = "Tile " + index.ToStringLookup();
             world.Tiles[index] = inst;
         }

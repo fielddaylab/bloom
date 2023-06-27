@@ -112,4 +112,50 @@ namespace FieldDay.Systems {
 
         #endregion // Lifecycle
     }
+    // TODO: Added a 4-state tuple, is that okay?
+    /// <summary>
+    /// System operating on four shared state instances.
+    /// </summary>
+    public abstract class SharedStateSystemBehaviour<TStateA, TStateB, TStateC, TStateD> : MonoBehaviour, ISystem
+        where TStateA : class, ISharedState
+        where TStateB : class, ISharedState
+        where TStateC : class, ISharedState
+        where TStateD : class, ISharedState {
+
+        [SharedStateReference] static private TStateA s_StateA;
+        [SharedStateReference] static private TStateB s_StateB;
+        [SharedStateReference] static private TStateC s_StateC;
+        [SharedStateReference] static private TStateD s_StateD;
+
+        [NonSerialized] protected TStateA m_StateA;
+        [NonSerialized] protected TStateB m_StateB;
+        [NonSerialized] protected TStateC m_StateC;
+        [NonSerialized] protected TStateD m_StateD;
+
+
+        #region Work
+
+        public virtual bool HasWork() {
+            return isActiveAndEnabled && (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null && (m_StateC = s_StateC) != null && (m_StateD = s_StateD) != null;
+        }
+
+        public virtual void ProcessWork(float deltaTime) {
+        }
+
+        #endregion // Work
+
+        #region Lifecycle
+
+        public virtual void Initialize() {
+            Game.SharedState.TryGet(out s_StateA);
+            Game.SharedState.TryGet(out s_StateB);
+            Game.SharedState.TryGet(out s_StateC);
+            Game.SharedState.TryGet(out s_StateD);
+        }
+
+        public virtual void Shutdown() {
+        }
+
+        #endregion // Lifecycle
+    }
 }

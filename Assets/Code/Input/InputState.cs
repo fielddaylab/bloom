@@ -17,6 +17,11 @@ namespace Zavala.Input {
         [NonSerialized] public InputButton ButtonsDown;
         [NonSerialized] public InputButton ButtonsDownPrev;
 
+        // tool state
+        //TODO: Make this start at None and assign based on buttons
+        [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.Road;
+        [NonSerialized] public int TileIndexPrev;
+
         #region Checks
 
         public bool ButtonDown(InputButton button) {
@@ -45,5 +50,15 @@ namespace Zavala.Input {
 
         Pause = 0x100,
         FastForward = 0x200,
+    }
+
+    [Flags]
+    public enum UserBuildTool : uint
+    {
+        None = 0,
+        Destroy = 1,
+        Road = 2,
+        Storage = 3,
+        Digester = 4,
     }
 }
