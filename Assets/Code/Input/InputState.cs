@@ -8,7 +8,9 @@ namespace Zavala.Input {
         [NonSerialized] public Vector2 ScreenMousePos;
         [NonSerialized] public Vector2 ViewportMousePos;
         [NonSerialized] public Vector2 ScrollWheel;
-        
+        [NonSerialized] public Vector2 MousePressedPosPrev;
+        [NonSerialized] public bool MouseDragging;
+
         // keyboard movement
         [NonSerialized] public Vector2 RawKeyboardMoveVector;
         [NonSerialized] public Vector2 NormalizedKeyboardMoveVector;
@@ -17,10 +19,6 @@ namespace Zavala.Input {
         [NonSerialized] public InputButton ButtonsDown;
         [NonSerialized] public InputButton ButtonsDownPrev;
 
-        // tool state
-        //TODO: Make this start at None and assign based on buttons
-        [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.Road;
-        [NonSerialized] public int TileIndexPrev;
 
         #region Checks
 
@@ -50,15 +48,5 @@ namespace Zavala.Input {
 
         Pause = 0x100,
         FastForward = 0x200,
-    }
-
-    [Flags]
-    public enum UserBuildTool : uint
-    {
-        None = 0,
-        Destroy = 1,
-        Road = 2,
-        Storage = 3,
-        Digester = 4,
     }
 }

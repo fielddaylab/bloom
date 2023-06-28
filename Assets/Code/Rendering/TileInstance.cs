@@ -10,7 +10,7 @@ namespace Zavala.World {
         public Renderer TopRenderer;
         public Renderer PillarRenderer;
         public Renderer[] Decorations;
-        [NonSerialized] public int index;
+        //[NonSerialized] public int index;
 
         //static private GUIStyle centerStyle;
 

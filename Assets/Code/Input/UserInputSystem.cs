@@ -39,6 +39,15 @@ namespace Zavala.Input {
             GetMousePosition(ref m_State.ScreenMousePos, ref m_State.ViewportMousePos);
             m_State.ScrollWheel = UnityEngine.Input.mouseScrollDelta;
 
+            if (m_State.ButtonPressed(InputButton.PrimaryMouse)) {
+                m_State.MousePressedPosPrev = m_State.ScreenMousePos;
+            }
+            if (m_State.ButtonDown(InputButton.PrimaryMouse)) {
+                if (Vector2.Distance(m_State.ScreenMousePos, m_State.MousePressedPosPrev) > 10) {
+                    m_State.MouseDragging = true;
+                } 
+            } else m_State.MouseDragging = false;
+
             Vector2 keyboardMoveVector = default;
             if (m_State.ButtonDown(InputButton.Left)) {
                 keyboardMoveVector.x -= 1;
