@@ -110,13 +110,30 @@ namespace Zavala.Roads
 
             // TEMP TESTING add placeholder render of road, snap to tile
             GameObject newRoad = MonoBehaviour.Instantiate(network.TempRoadPrefab);
-
+              
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             worldPos.y += 0.2f;
             newRoad.transform.position = worldPos;
 
             network.UpdateNeeded = true;
+        }
+
+        // TODO: consider pooling road tiles...?
+
+        static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
+            RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+
+            tileInfo.FlowMask[TileDirection.N] = false;
+            tileInfo.FlowMask[TileDirection.S] = false;
+            tileInfo.FlowMask[TileDirection.SE] = false;
+            tileInfo.FlowMask[TileDirection.SW] = false;
+            tileInfo.FlowMask[TileDirection.NE] = false;
+            tileInfo.FlowMask[TileDirection.NW] = false;
+
+            network.Roads.Info[tileIndex] = tileInfo;
+
+
         }
     }
 }

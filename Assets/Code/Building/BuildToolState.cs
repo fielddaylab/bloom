@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
 using FieldDay.SharedState;
+using FieldDay;
 
 namespace Zavala.Building {
     public class BuildToolState : SharedStateComponent {
-        [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.Road;
+        [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public HexVector VecPrev;
     }
 
