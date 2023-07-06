@@ -1,5 +1,6 @@
-using System;
-using BeauUtil;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEditorInternal;
 using Zavala.Roads;
 
 namespace Zavala.Sim {
@@ -56,15 +57,32 @@ namespace Zavala.Sim {
     }
 
     /// <summary>
-    /// Struct containing phosphorus information buffers.
+    /// Struct containing road information buffers.
     /// </summary>
-    public unsafe struct RoadBuffers
-    {
+    public unsafe struct RoadBuffers {
         public SimBuffer<RoadTileInfo> Info;
 
         public void Create(in HexGridSize size) {
             Info = SimBuffer.Create<RoadTileInfo>(size);
             SimBuffer.Clear(Info);
+        }
+    }
+
+    /// <summary>
+    /// Struct containing algae information buffers.
+    /// </summary>
+    public unsafe struct AlgaeBuffers {
+        // no need for multiple states - just the current one?
+        public SimBuffer<AlgaeTileState> State;
+        /// <summary>
+        /// Track tiles which have phosphorus level above growth threshold
+        /// </summary>
+        public HashSet<int> GrowingTiles;
+
+        public void Create(in HexGridSize size) {
+            // TODO: only create and track AlgaeTileState for water tiles?
+            State = SimBuffer.Create<AlgaeTileState>(size);
+            GrowingTiles = new HashSet<int>(200);
         }
     }
 

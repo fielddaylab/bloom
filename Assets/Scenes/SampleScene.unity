@@ -1306,6 +1306,7 @@ GameObject:
   - component: {fileID: 502754874}
   - component: {fileID: 502754873}
   - component: {fileID: 502754875}
+  - component: {fileID: 502754876}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -1450,6 +1451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f97c02245c85874792697d3ec42af93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CityStressTolerance: 0
   TransportCosts:
     CostPerTile:
       Manure: 3
@@ -1855,6 +1857,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db05eb6191f25e43a3c5455a6a2c5b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &502754876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502754864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93bf03c46f3263743be20e0f9e6d4558, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AlgaePrefab: {fileID: 8417343884172520992, guid: a6ca5fd06c732a4479679e9c420c08e6, type: 3}
 --- !u!1 &594461906
 GameObject:
   m_ObjectHideFlags: 0
@@ -1873,6 +1888,7 @@ GameObject:
   - component: {fileID: 594461915}
   - component: {fileID: 594461916}
   - component: {fileID: 594461917}
+  - component: {fileID: 594461918}
   m_Layer: 0
   m_Name: Sim
   m_TagString: Untagged
@@ -2006,6 +2022,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5e11ee7f09bfe043a60e9d971cde863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &594461918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594461906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f1365fd474b5264280808d332db54dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &657574629
