@@ -1451,7 +1451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f97c02245c85874792697d3ec42af93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CityStressTolerance: 0
+  CityStressTolerance: 8
   TransportCosts:
     CostPerTile:
       Manure: 3
@@ -1889,6 +1889,7 @@ GameObject:
   - component: {fileID: 594461916}
   - component: {fileID: 594461917}
   - component: {fileID: 594461918}
+  - component: {fileID: 594461919}
   m_Layer: 0
   m_Name: Sim
   m_TagString: Untagged
@@ -2036,6 +2037,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f1365fd474b5264280808d332db54dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &594461919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594461906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28da138711f183447b0d36e79757a347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InitialCapacity: 16
 --- !u!1 &657574629
 GameObject:
   m_ObjectHideFlags: 0
@@ -3137,6 +3151,7 @@ GameObject:
   - component: {fileID: 1501605409}
   - component: {fileID: 1501605403}
   - component: {fileID: 1501605411}
+  - component: {fileID: 1501605412}
   m_Layer: 0
   m_Name: City
   m_TagString: Untagged
@@ -3286,6 +3301,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.5
+--- !u!114 &1501605412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501605402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92b00db6c3a2f2344aa11245f033bd96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResetStressOnCap: 0
+  StressCap: 8
 --- !u!1 &1504388303
 GameObject:
   m_ObjectHideFlags: 0
@@ -3809,6 +3838,7 @@ GameObject:
   - component: {fileID: 1875672168}
   - component: {fileID: 1875672167}
   - component: {fileID: 1875672166}
+  - component: {fileID: 1875672174}
   m_Layer: 0
   m_Name: City (1)
   m_TagString: Untagged
@@ -3958,6 +3988,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1875672174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875672165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92b00db6c3a2f2344aa11245f033bd96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResetStressOnCap: 0
+  StressCap: 8
 --- !u!1 &1961398098
 GameObject:
   m_ObjectHideFlags: 0
