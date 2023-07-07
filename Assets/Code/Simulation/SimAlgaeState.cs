@@ -8,6 +8,10 @@ using UnityEngine;
 
 namespace Zavala.Sim {
     public sealed class SimAlgaeState : SharedStateComponent, IRegistrationCallbacks {
+        static public readonly StringHash32 Event_AlgaeFormed = "AlgaeState::AlgaeFormed";
+        static public readonly StringHash32 Event_AlgaeGrew = "AlgaeState::AlgaeGrew";
+        static public readonly StringHash32 Event_AlgaePeaked = "AlgaeState::AlgaePeaked";
+
         [NonSerialized] public AlgaeBuffers Algae;
         // TODO: create better solution, 
         public GameObject AlgaePrefab;
