@@ -16,7 +16,7 @@ namespace Zavala.Building {
             if (tool != UserBuildTool.None) {
                 SimWorldState world = ZavalaGame.SimWorld;
                 SimGridState grid = ZavalaGame.SimGrid;
-                TryBuildTile(grid, tool, RaycastTileIndex(world, grid));;
+                TryBuildTile(grid, tool, RaycastTileIndex(world, grid));
             }
         }
 
@@ -39,7 +39,7 @@ namespace Zavala.Building {
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
             // TODO: 100 units a reasonable max raycast distance?
             if (Physics.Raycast(mouseRay, out RaycastHit hit, 100f)) {
-                if (!hit.collider.TryGetComponent<TileInstance>(out var tile)) return -1;
+                if (!hit.collider) return -1;
                 HexVector vec = HexVector.FromWorld(hit.collider.transform.position, world.WorldSpace);
                 if (vec.Equals(m_StateC.VecPrev)){
                     // same as last
@@ -60,7 +60,11 @@ namespace Zavala.Building {
         /// </summary>
         private void TryBuildTile(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
             if (tileIndex < 0) {
-                Log.Msg("[UserBuildingSystem] Invalid build location.");
+                Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} out of bounds", tileIndex);
+                return;
+            }
+            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.NonBuildable) != 0) {
+                Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} unbuildable", tileIndex);
                 return;
             }
             switch (activeTool) {
@@ -70,7 +74,6 @@ namespace Zavala.Building {
                     // TODO: Add road removal
                     break;
                 case UserBuildTool.Road:
-                    // TODO: check if the tile is buildable
                     RoadUtility.AddRoad(Game.SharedState.Get<RoadNetwork>(), grid, tileIndex);
                     break;
                 default:
