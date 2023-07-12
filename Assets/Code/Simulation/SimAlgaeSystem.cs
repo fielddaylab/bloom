@@ -14,18 +14,18 @@ namespace Zavala.Sim {
         public override void ProcessWork(float deltaTime) {
             if (m_StateB.Timer.HasAdvanced()) {
                 // for each tile that had a phosphorus change:
-                foreach (int tile in m_StateB.Phosphorus.Changes.AffectedTiles) {
+                foreach (int tileIndex in m_StateB.Phosphorus.Changes.AffectedTiles) {
                     // check if tile is water
-                    ushort flags = m_StateB.Phosphorus.Info[tile].Flags;
+                    ushort flags = m_StateB.Phosphorus.Info[tileIndex].Flags;
                     bool isWater = (flags & (ushort) TerrainFlags.IsWater) != 0;
                     if (!isWater) continue;
                     // get phosphorus count from tile
-                    int phosphorusCount = m_StateB.Phosphorus.CurrentState()[tile].Count;
+                    int phosphorusCount = m_StateB.Phosphorus.CurrentState()[tileIndex].Count;
                     // update GrowingTiles
                     if (phosphorusCount >= AlgaeSim.MinPForAlgaeGrowth) {
-                        m_StateA.Algae.GrowingTiles.Add(tile);
+                        m_StateA.Algae.GrowingTiles.Add(tileIndex);
                     } else {
-                        m_StateA.Algae.GrowingTiles.Remove(tile);
+                        m_StateA.Algae.GrowingTiles.Remove(tileIndex);
                     }
                 }
                 foreach (int tile in m_StateA.Algae.GrowingTiles) {
@@ -38,13 +38,13 @@ namespace Zavala.Sim {
             }
         }
 
-        private void DispatchGrowthEvent (float currentGrowth, int tile) {
-            ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeGrew, tile);
+        private void DispatchGrowthEvent (float currentGrowth, int tileIndex) {
+            ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeGrew, tileIndex);
             if (currentGrowth <= 0) {
-                ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeFormed, tile);
-                InstantiateAlgae(m_StateC, tile);
+                ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeFormed, tileIndex);
+                InstantiateAlgae(m_StateC, tileIndex);
             } else if (currentGrowth >= 1) {
-                ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaePeaked, tile);
+                ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaePeaked, tileIndex);
             }
         }
 

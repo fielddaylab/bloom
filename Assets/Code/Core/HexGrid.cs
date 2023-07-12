@@ -509,6 +509,21 @@ namespace Zavala {
             return (dq * dq) + (dr * dr) + (dq * dr);
         }
 
+        /// <summary>
+        /// Determines if the two HexVectors are adjacent by checking each adjacent to a for equality to b.
+        /// </summary>
+        /// <returns></returns>
+        static public bool Adjacent(in HexVector a, in HexVector b) {
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                if (b.Equals(Offset(a, dir))) return true;
+            }
+            return false;
+        }
+
+        static public bool Adjacent(in int a, in int b, HexGridSize gridSize) {
+            return Adjacent(gridSize.FastIndexToPos(a), gridSize.FastIndexToPos(b));
+        }
+
         #endregion // Math
 
         #region Offsets

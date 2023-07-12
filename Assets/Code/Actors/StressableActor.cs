@@ -17,35 +17,54 @@ namespace Zavala.Actors {
     // TODO: is this necessary?
     [RequireComponent(typeof(ResourcePurchaser))]
     public sealed class StressableActor : BatchedComponent {
-        //private ResourcePurchaser rp;
-
-        [NonSerialized] public Dictionary<StringHash32, Action> EventResponses = new Dictionary<StringHash32, Action>(); // stores stress event IDs and stress response actions
+        [NonSerialized] public Dictionary<StringHash32, Action<int>> EventResponses = new Dictionary<StringHash32, Action<int>>(); // stores stress event IDs and stress response actions
         [NonSerialized] public Action StressCapAction; // action to run when this tile reaches its stress cap
         
-        public bool ResetStressOnCap; // set stress back to zero when cap reached?
+        [NonSerialized] public bool ResetStressOnCap = true; // set stress back to zero when cap reached?
         // TODO: temporarily hardcoded
         public int StressCap = 8;
         [NonSerialized] public int CurrentStress;
-        // [NonSerialized] public int TileIndex;
+        [NonSerialized] public int TileIndex;
 
         private void Awake() {
-            // does it make sense to calculate this first and store it? or better to calculate when needed
-            // TileIndex = ZavalaGame.SimGrid.HexSize.FastPosToIndex(HexVector.FromWorld(transform.position, ZavalaGame.SimWorld.WorldSpace));
-            // TODO: hardcoded for now, make these assignable? might need an enum for event types or something?
+            // TODO: does it make sense to calculate this first and store it? or better to calculate when needed
+            TileIndex = ZavalaGame.SimGrid.HexSize.FastPosToIndex(HexVector.FromWorld(transform.position, ZavalaGame.SimWorld.WorldSpace));
+            
+            // TODO: hardcoded for now, make these assignable? esp. if there are stressable tiles other than City
             if (TryGetComponent(out ResourcePurchaser rp)) {
-                EventResponses.Add(ResourcePurchaser.Event_PurchaseUnfulfilled, IncrementStress);
-                // EventResponses.Add(SimAlgaeState.Event_AlgaeGrew, IncrementStress);
-                EventResponses.Add(ResourcePurchaser.Event_PurchaseMade, ResetStress);
+                EventResponses.Add(ResourcePurchaser.Event_PurchaseUnfulfilled, StressOnSelfEvent);
+                EventResponses.Add(SimAlgaeState.Event_AlgaeGrew, StressOnAdjacentEvent);
+                EventResponses.Add(ResourcePurchaser.Event_PurchaseMade, ResetStressOnSelfEvent);
                 StressCapAction = () => {
                     rp.ChangeDemand(ResourceId.Milk, -1);
                 };
             }
         }
 
+
+        // TODO: there may be a more expedient data structure for these Actions?
+        private void StressOnSelfEvent(int dispatcherTileIndex) {
+            if (dispatcherTileIndex == TileIndex) {
+                IncrementStress();
+            }
+        }
+
+        private void ResetStressOnSelfEvent(int dispatcherTileIndex) {
+            if (dispatcherTileIndex == TileIndex) {
+                ResetStress();
+            }
+        }
+
+        private void StressOnAdjacentEvent(int dispatcherTileIndex) {
+            if (HexVector.Adjacent(TileIndex, dispatcherTileIndex, ZavalaGame.SimGrid.HexSize)) {
+                IncrementStress();
+            }
+        }
+
         private void IncrementStress() {
             CurrentStress++;
-            DebugDraw.AddWorldText(transform.position, ":(", Color.red, 3);
-            Log.Msg("[StressableActor] Actor {0} stressed :(", transform.name);
+            DebugDraw.AddWorldText(transform.position, "Stressed to "+CurrentStress, Color.red, 3);
+            Log.Msg("[StressableActor] Actor {0} stressed! Current: {1}", transform.name, CurrentStress);
         }
         private void ResetStress() {
             CurrentStress = 0;

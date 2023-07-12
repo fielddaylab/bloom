@@ -15,24 +15,21 @@ namespace Zavala.Actors {
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
-            CheckStressCap(actor);
+            foreach (var component in m_Components) {
+                CheckStressCap(component.Primary);
+            }
         }
  
         /// <summary>
         /// Registers event listeners for the given StressableActor's EventResponses
         /// </summary>
         protected override void OnComponentAdded(StressableActor actor, ActorTimer timer) {
-            foreach (KeyValuePair<StringHash32, Action> pair in actor.EventResponses) {
+            foreach (KeyValuePair<StringHash32, Action<int>> pair in actor.EventResponses) {
                 // listen for stressor events, increase actor stress when fired
                 // TODO: How to get context from the triggered events?
                 ZavalaGame.Events.Register(pair.Key, pair.Value);
                 Log.Msg("[StressSystem] Event registered: {0}", pair.Key.ToDebugString());
             }
-        }
-
-        // TODO: check if two tiles are adjacent
-        private bool TilesAdjacent(int tile1, int tile2) {
-            return false;
         }
 
         /// <summary>
@@ -45,8 +42,8 @@ namespace Zavala.Actors {
                 if (actor.ResetStressOnCap) {
                     actor.CurrentStress = 0;
                 }
-                Log.Msg("[StressSystem] Stress cap reached on {0}", actor.transform.name);
-                DebugDraw.AddWorldText(actor.transform.position, "D:", Color.red, 3);
+                Log.Msg("[StressSystem] Stress cap of {0} reached on {1}, now {2}", actor.StressCap, actor.transform.name, actor.CurrentStress);
+                DebugDraw.AddWorldText(actor.transform.position, "Stress cap of "+actor.StressCap+"reached!", Color.red, 3);
             }
         }
     }
