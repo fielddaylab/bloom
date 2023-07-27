@@ -28,7 +28,7 @@ namespace Zavala.World {
         #endregion // Inspector
 
         [NonSerialized] public HexGridWorldSpace WorldSpace;
-        [NonSerialized] public SimWorldOverlayMask Overlays = SimWorldOverlayMask.Phosphorus;
+        [NonSerialized] public SimWorldOverlayMask Overlays = SimWorldOverlayMask.None;
 
         // region data
 
@@ -95,6 +95,7 @@ namespace Zavala.World {
 
     [Flags]
     public enum SimWorldOverlayMask : uint {
+        None = 0x00,
         Phosphorus = 0x01
     }
 
