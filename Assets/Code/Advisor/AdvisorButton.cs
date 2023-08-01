@@ -12,12 +12,16 @@ namespace Zavala.Advisor {
         [SerializeField] public GameObject PoliciesButton;
         [SerializeField] public GameObject PoliciesWindow;
 
+        private void Start() {
+            ToggleAdvisor(false);
+        }
+
         public void ToggleAdvisor(bool toggle) {
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
             SimWorldState world = ZavalaGame.SimWorld;
 
             PoliciesButton.SetActive(toggle);
-            PoliciesButton.TryGetComponent<Toggle>(out Toggle advisorToggle);
+            PoliciesButton.TryGetComponent(out Toggle advisorToggle);
             advisorToggle.SetIsOnWithoutNotify(false);
             TogglePolicies(false);
 
