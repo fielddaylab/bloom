@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using BeauUtil;
 using BeauUtil.Debugger;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace FieldDay.Components {
     /// <summary>
     /// Interface for a component that can be used with a component system.
     /// </summary>
+    [TypeIndexCapacity(512)]
     public interface IComponentData { }
 
     /// <summary>

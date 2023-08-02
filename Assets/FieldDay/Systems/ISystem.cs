@@ -1,4 +1,5 @@
 using System;
+using BeauUtil;
 using UnityEngine.Scripting;
 
 namespace FieldDay.Systems {
@@ -6,6 +7,7 @@ namespace FieldDay.Systems {
     /// Base interface for a game system.
     /// Systems should possess no state.
     /// </summary>
+    [TypeIndexCapacity(1024)]
     public interface ISystem {
         /// <summary>
         /// Initializes the system.
@@ -47,10 +49,12 @@ namespace FieldDay.Systems {
     public sealed class SysUpdateAttribute : PreserveAttribute {
         public readonly GameLoopPhase Phase;
         public readonly int Order;
+        public readonly int CategoryMask;
 
-        public SysUpdateAttribute(GameLoopPhase phase, int order = 0) {
+        public SysUpdateAttribute(GameLoopPhase phase, int order = 0, int updateMask = Bits.All32) {
             Phase = phase;
             Order = order;
+            CategoryMask = updateMask;
         }
     }
 }

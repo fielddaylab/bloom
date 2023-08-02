@@ -1,10 +1,12 @@
 using System;
+using BeauUtil;
 using UnityEngine.Scripting;
 
 namespace FieldDay.SharedState {
     /// <summary>
     /// Singleton state object.
     /// </summary>
+    [TypeIndexCapacity(512)]
     public interface ISharedState { }
 
     /// <summary>
@@ -12,6 +14,5 @@ namespace FieldDay.SharedState {
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     [Preserve]
-    public sealed class SharedStateReferenceAttribute : PreserveAttribute {
-    }
+    public sealed class SharedStateReferenceAttribute : PreserveAttribute { }
 }

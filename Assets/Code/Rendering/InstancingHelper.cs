@@ -1,4 +1,5 @@
 using System;
+using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using UnityEngine;
@@ -40,7 +41,7 @@ namespace Zavala {
 
         public void Submit() {
             if (m_QueuedElements > 0) {
-                Graphics.RenderMeshInstanced<T>(m_RenderParams, m_Mesh, m_SubmeshIndex, NativeHelper.TempNativeArray(m_DataHead, m_QueuedElements), m_QueuedElements);
+                Graphics.RenderMeshInstanced<T>(m_RenderParams, m_Mesh, m_SubmeshIndex, Unsafe.NativeArray(m_DataHead, m_QueuedElements), m_QueuedElements);
                 m_QueuedElements = 0;
                 m_WriteHead = m_DataHead;
             }

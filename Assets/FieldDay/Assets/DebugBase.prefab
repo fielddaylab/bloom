@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TextFont: {fileID: 12800000, guid: 6b73f4e904dbcc144b6a706b25fb57bb, type: 3}
   m_SphereMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_LineWidthToWorldScale: 0.08
   m_DepthTestMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_OverlayMaterial: {fileID: 2100000, guid: cde7324d8d3bea744a157e40afbd44a2, type: 2}
 --- !u!114 &6947757145218421920
@@ -67,6 +68,7 @@ MonoBehaviour:
   m_MinimalGroup: {fileID: 2970721511653513691}
   m_TimeDisplay: {fileID: 8405930348564636986}
   m_DebugMenus: {fileID: 1743443261311663472}
+  m_DebugMenuInput: {fileID: 1550146307389444314}
 --- !u!1001 &5764060396207500681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -228,6 +230,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee79e0433ea70eb4993de53367303bc1, type: 3}
+--- !u!225 &1550146307389444314 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 6520429127270186323, guid: ee79e0433ea70eb4993de53367303bc1, type: 3}
+  m_PrefabInstance: {fileID: 5764060396207500681}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1743443261311663472 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6327550933867679993, guid: ee79e0433ea70eb4993de53367303bc1, type: 3}

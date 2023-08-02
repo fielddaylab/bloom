@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BeauUtil;
+using FieldDay.Data;
 using UnityEngine;
 
 namespace Zavala.Sim {
@@ -138,15 +139,15 @@ namespace Zavala.Sim {
         #region Tunable Parameters
 
         // height calculations
-        [ConfigIntVar("Similar Height Threshold", 0, 100, 25)] static public int SimilarHeightThreshold = 50;
-        [ConfigIntVar("Steep Height Threshold", 0, 500, 25)] static public int SteepHeightThreshold = 300;
+        [ConfigVar("Similar Height Threshold", 0, 100, 25)] static public int SimilarHeightThreshold = 50;
+        [ConfigVar("Steep Height Threshold", 0, 500, 25)] static public int SteepHeightThreshold = 300;
 
         // flow
-        [ConfigIntVar("Minimum Phosphorus for Flow", 0, 10, 1)] static public int MinFlowThreshold = 5;
-        [ConfigFloatVar("Phosphorus Remain at Source", 0, 1, 0.1f)] static public float RemainAtSourceProportion = 0.6f;
-        [ConfigFloatVar("Minimum Flow Proportion", 0, 1, 0.1f)] static public float MinFlowProportion = 0.5f;
-        [ConfigFloatVar("Steep Flow Proportion", 0, 1, 0.1f)] static public float MaxFlowProportionSteep = 1.3f;
-        [ConfigIntVar("Tile Saturation Threshold", 8, 32, 4)] static public int TileSaturationThreshold = 32;
+        [ConfigVar("Minimum Phosphorus for Flow", 0, 10, 1)] static public int MinFlowThreshold = 5;
+        [ConfigVar("Phosphorus Remain at Source", 0, 1, 0.1f)] static public float RemainAtSourceProportion = 0.6f;
+        [ConfigVar("Minimum Flow Proportion", 0, 1, 0.1f)] static public float MinFlowProportion = 0.5f;
+        [ConfigVar("Steep Flow Proportion", 0, 1, 0.1f)] static public float MaxFlowProportionSteep = 1.3f;
+        [ConfigVar("Tile Saturation Threshold", 8, 32, 4)] static public int TileSaturationThreshold = 32;
 
         #endregion // Tunable Parameters
 

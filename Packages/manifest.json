@@ -3,7 +3,6 @@
     "com.beauprime.beaudata": "0.3.1",
     "com.beauprime.beaupools": "0.2.3",
     "com.beauprime.beauroutine": "0.11.1",
-    "com.beauprime.beauutil": "0.8.6",
     "com.beauprime.leaf": "0.3.11",
     "com.unity.feature.development": "1.0.1",
     "com.unity.ide.visualstudio": "2.0.18",
@@ -42,7 +41,8 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.beauprime.beauutil": "0.9.2"
   },
   "scopedRegistries": [
     {

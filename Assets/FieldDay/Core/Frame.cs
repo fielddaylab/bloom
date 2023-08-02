@@ -58,8 +58,8 @@ namespace FieldDay {
 
         #region Allocator
 
-        internal const int EditorHeapSize = 128;
-        internal const int RuntimeHeapSize = 64;
+        internal const int EditorHeapSize = 1024;
+        internal const int RuntimeHeapSize = 256;
 
         static private bool s_AllocatorReady;
         static private Unsafe.ArenaHandle s_Allocator;

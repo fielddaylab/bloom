@@ -410,8 +410,12 @@ namespace EasyBugReporter {
             }
         }
 
+#if UNITY_WEBGL
+
         [DllImport("__Internal")]
-        static private extern void BugReporter_DisplayDocument(string documentSrc);
+        static private extern void BugReporter_DisplayDocument(string documentSrc); 
+
+#endif // UNITY_WEBGL
 
         #endregion // Utils
     }

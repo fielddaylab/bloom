@@ -8,14 +8,13 @@ namespace FieldDay.Systems {
     /// </summary>
     public abstract class SharedStateSystemBehaviour<TState> : MonoBehaviour, ISystem
         where TState : class, ISharedState {
-        [SharedStateReference] static private TState s_State;
 
         [NonSerialized] protected TState m_State;
 
         #region Work
 
         public virtual bool HasWork() {
-            return isActiveAndEnabled && (m_State = s_State) != null;
+            return isActiveAndEnabled && (m_State = Game.SharedState.FastGet<TState>()) != null;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -26,10 +25,10 @@ namespace FieldDay.Systems {
         #region Lifecycle
 
         public virtual void Initialize() {
-            Game.SharedState.TryGet(out s_State);
         }
 
         public virtual void Shutdown() {
+            m_State = null;
         }
 
         #endregion // Lifecycle
@@ -42,16 +41,13 @@ namespace FieldDay.Systems {
         where TStateA : class, ISharedState
         where TStateB : class, ISharedState {
         
-        [SharedStateReference] static private TStateA s_StateA;
-        [SharedStateReference] static private TStateB s_StateB;
-
         [NonSerialized] protected TStateA m_StateA;
         [NonSerialized] protected TStateB m_StateB;
 
         #region Work
 
         public virtual bool HasWork() {
-            return isActiveAndEnabled && (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null;
+            return isActiveAndEnabled && (m_StateA = Game.SharedState.FastGet<TStateA>()) != null && (m_StateB = Game.SharedState.FastGet<TStateB>()) != null;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -62,11 +58,11 @@ namespace FieldDay.Systems {
         #region Lifecycle
 
         public virtual void Initialize() {
-            Game.SharedState.TryGet(out s_StateA);
-            Game.SharedState.TryGet(out s_StateB);
         }
 
         public virtual void Shutdown() {
+            m_StateA = null;
+            m_StateB = null;
         }
 
         #endregion // Lifecycle
@@ -80,10 +76,6 @@ namespace FieldDay.Systems {
         where TStateB : class, ISharedState
         where TStateC : class, ISharedState {
 
-        [SharedStateReference] static private TStateA s_StateA;
-        [SharedStateReference] static private TStateB s_StateB;
-        [SharedStateReference] static private TStateC s_StateC;
-
         [NonSerialized] protected TStateA m_StateA;
         [NonSerialized] protected TStateB m_StateB;
         [NonSerialized] protected TStateC m_StateC;
@@ -91,7 +83,7 @@ namespace FieldDay.Systems {
         #region Work
 
         public virtual bool HasWork() {
-            return isActiveAndEnabled && (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null && (m_StateC = s_StateC) != null; 
+            return isActiveAndEnabled && (m_StateA = Game.SharedState.FastGet<TStateA>()) != null && (m_StateB = Game.SharedState.FastGet<TStateB>()) != null && (m_StateC = Game.SharedState.FastGet<TStateC>()) != null; 
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -102,17 +94,17 @@ namespace FieldDay.Systems {
         #region Lifecycle
 
         public virtual void Initialize() {
-            Game.SharedState.TryGet(out s_StateA);
-            Game.SharedState.TryGet(out s_StateB);
-            Game.SharedState.TryGet(out s_StateC);
         }
 
         public virtual void Shutdown() {
+            m_StateA = null;
+            m_StateB = null;
+            m_StateC = null;
         }
 
         #endregion // Lifecycle
     }
-    // TODO: Added a 4-state tuple, is that okay?
+
     /// <summary>
     /// System operating on four shared state instances.
     /// </summary>
@@ -122,21 +114,15 @@ namespace FieldDay.Systems {
         where TStateC : class, ISharedState
         where TStateD : class, ISharedState {
 
-        [SharedStateReference] static private TStateA s_StateA;
-        [SharedStateReference] static private TStateB s_StateB;
-        [SharedStateReference] static private TStateC s_StateC;
-        [SharedStateReference] static private TStateD s_StateD;
-
         [NonSerialized] protected TStateA m_StateA;
         [NonSerialized] protected TStateB m_StateB;
         [NonSerialized] protected TStateC m_StateC;
         [NonSerialized] protected TStateD m_StateD;
 
-
         #region Work
 
         public virtual bool HasWork() {
-            return isActiveAndEnabled && (m_StateA = s_StateA) != null && (m_StateB = s_StateB) != null && (m_StateC = s_StateC) != null && (m_StateD = s_StateD) != null;
+            return isActiveAndEnabled && (m_StateA = Game.SharedState.FastGet<TStateA>()) != null && (m_StateB = Game.SharedState.FastGet<TStateB>()) != null && (m_StateC = Game.SharedState.FastGet<TStateC>()) != null && (m_StateD = Game.SharedState.FastGet<TStateD>()) != null;
         }
 
         public virtual void ProcessWork(float deltaTime) {
@@ -147,13 +133,13 @@ namespace FieldDay.Systems {
         #region Lifecycle
 
         public virtual void Initialize() {
-            Game.SharedState.TryGet(out s_StateA);
-            Game.SharedState.TryGet(out s_StateB);
-            Game.SharedState.TryGet(out s_StateC);
-            Game.SharedState.TryGet(out s_StateD);
         }
 
         public virtual void Shutdown() {
+            m_StateA = null;
+            m_StateB = null;
+            m_StateC = null;
+            m_StateD = null;
         }
 
         #endregion // Lifecycle

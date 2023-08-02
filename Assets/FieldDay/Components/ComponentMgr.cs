@@ -5,13 +5,15 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Systems;
 
+using ComponentIndex = BeauUtil.TypeIndex<FieldDay.Components.IComponentData>;
+
 namespace FieldDay.Components {
     /// <summary>
     /// Component manager.
     /// </summary>
     public sealed class ComponentMgr {
         private SystemsMgr m_SystemsMgr;
-        private Dictionary<Type, List<IComponentData>> m_ComponentLists;
+        private List<IComponentData>[] m_ComponentLists;
         private RingBuffer<IComponentData> m_AddQueue = new RingBuffer<IComponentData>(64, RingBufferMode.Expand);
         private RingBuffer<IComponentData> m_RemovalQueue = new RingBuffer<IComponentData>(64, RingBufferMode.Expand);
         private int m_ModificationLock;
@@ -19,7 +21,8 @@ namespace FieldDay.Components {
         public ComponentMgr(SystemsMgr systemsMgr) {
             Assert.NotNull(systemsMgr);
             m_SystemsMgr = systemsMgr;
-            m_ComponentLists = new Dictionary<Type, List<IComponentData>>(16);
+            m_ComponentLists = new List<IComponentData>[ComponentIndex.Capacity];
+            m_SystemsMgr.OnSystemRegistered += OnNewSystemRegistered;
         }
 
         #region Registry
@@ -59,22 +62,29 @@ namespace FieldDay.Components {
 
         private void RegisterImpl(IComponentData component) {
             Type componentType = component.GetType();
-            if (!m_ComponentLists.TryGetValue(componentType, out List<IComponentData> components)) {
-                components = new List<IComponentData>(8);
-                m_ComponentLists.Add(componentType, components);
+            int index = ComponentIndex.Get(componentType);
+
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components == null) {
+                m_ComponentLists[index] = components = new List<IComponentData>(32);
             }
             components.Add(component);
 
+            RegistrationCallbacks.InvokeRegister(component);
             m_SystemsMgr.AddComponent(component);
         }
 
         private void DeregisterImpl(IComponentData component) {
             Type componentType = component.GetType();
-            if (m_ComponentLists.TryGetValue(componentType, out List<IComponentData> components)) {
+            int index = ComponentIndex.Get(componentType);
+
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components != null) {
                 components.FastRemove(component);
             }
 
             m_SystemsMgr.RemoveComponent(component);
+            RegistrationCallbacks.InvokeDeregister(component);
         }
 
         #endregion // Registry
@@ -141,7 +151,9 @@ namespace FieldDay.Components {
         /// Enumerates all the components of the given type.
         /// </summary>
         public ComponentIterator<IComponentData> ComponentsOfType(Type componentType) {
-            if (m_ComponentLists.TryGetValue(componentType, out List<IComponentData> components)) {
+            int index = ComponentIndex.Get(componentType);
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components != null) {
                 return new ComponentIterator<IComponentData>(components);
             }
             return default;
@@ -151,7 +163,9 @@ namespace FieldDay.Components {
         /// Enumerates all the components of the given type.
         /// </summary>
         public ComponentIterator<T> ComponentsOfType<T>() where T : class, IComponentData {
-            if (m_ComponentLists.TryGetValue(typeof(T), out List<IComponentData> components)) {
+            int index = ComponentIndex.Get<T>();
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components != null) {
                 return new ComponentIterator<T>(components);
             }
             return default;
@@ -161,13 +175,27 @@ namespace FieldDay.Components {
 
         #region Events
 
+        /// <summary>
+        /// Ensures that new component systems get populated
+        /// with the components already present in the ComponentMgr.
+        /// </summary>
+        private void OnNewSystemRegistered(ISystem system) {
+            IComponentSystem componentSystem = system as IComponentSystem;
+            List<IComponentData> components;
+            if (componentSystem != null && (components = m_ComponentLists[ComponentIndex.Get(componentSystem.ComponentType)]) != null) {
+                foreach(var component in components) {
+                    componentSystem.Add(component);
+                }
+            }
+        }
+
         internal void Shutdown() {
+            m_SystemsMgr.OnSystemRegistered -= OnNewSystemRegistered;
             m_SystemsMgr = null;
             foreach(var list in m_ComponentLists) {
-                list.Value.Clear();
+                list?.Clear();
             }
-            m_ComponentLists.Clear();
-            m_ComponentLists = null;
+            ArrayUtils.Dispose(ref m_ComponentLists);
         }
 
         #endregion // Events

@@ -1,0 +1,25 @@
+{
+    "name": "FieldDay.Core.Editor",
+    "rootNamespace": "",
+    "references": [
+        "BeauUtil",
+        "Unity.TextMeshPro",
+        "EasyBugReporter",
+        "BeauRoutine",
+        "BeauPools",
+        "BeauUtil.Editor",
+        "FieldDay.Core",
+        "ScriptableBake"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

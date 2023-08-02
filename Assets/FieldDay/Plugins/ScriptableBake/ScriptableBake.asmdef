@@ -1,12 +1,6 @@
 {
-    "name": "FieldDay",
-    "rootNamespace": "",
-    "references": [
-        "BeauUtil",
-        "Unity.TextMeshPro",
-        "EasyBugReporter",
-        "BeauRoutine"
-    ],
+    "name": "ScriptableBake",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,

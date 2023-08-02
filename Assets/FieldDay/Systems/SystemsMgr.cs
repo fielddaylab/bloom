@@ -11,6 +11,9 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
+using ComponentIndex = BeauUtil.TypeIndex<FieldDay.Components.IComponentData>;
+using SystemIndex = BeauUtil.TypeIndex<FieldDay.Systems.ISystem>;
+
 namespace FieldDay.Systems {
     /// <summary>
     /// Manages game system updates.
@@ -35,6 +38,30 @@ namespace FieldDay.Systems {
             static public readonly Predicate<SystemInitInfo, ISystem> FindPredicate = (i, s) => i.System == s;
         }
 
+        private struct UpdateRecord : IEquatable<UpdateRecord> {
+            public ISystem System;
+            public int UpdateOrder;
+            public int CategoryMask;
+
+            public UpdateRecord(ISystem system) {
+                System = system;
+                UpdateOrder = 0;
+                CategoryMask = 0;
+            }
+
+            public UpdateRecord(ISystem system, SysUpdateAttribute info) {
+                System = system;
+                UpdateOrder = info.Order;
+                CategoryMask = info.CategoryMask;
+            }
+
+            public bool Equals(UpdateRecord other) {
+                return System == other.System;
+            }
+        }
+
+        public delegate void SystemCallback(ISystem system);
+
         #endregion // Types
 
         #region System Lists
@@ -42,13 +69,17 @@ namespace FieldDay.Systems {
         private readonly RingBuffer<ISystem> m_AllSystems = new RingBuffer<ISystem>(32, RingBufferMode.Expand);
         private readonly RingBuffer<SystemInitInfo> m_InitList = new RingBuffer<SystemInitInfo>(32, RingBufferMode.Expand);
 
-        private readonly RingBuffer<ISystem> m_PreUpdateSystems = new RingBuffer<ISystem>();
-        private readonly RingBuffer<ISystem> m_FixedUpdateSystems = new RingBuffer<ISystem>();
-        private readonly RingBuffer<ISystem> m_UpdateSystems = new RingBuffer<ISystem>();
-        private readonly RingBuffer<ISystem> m_UnscaledUpdateSystems = new RingBuffer<ISystem>();
-        private readonly RingBuffer<ISystem> m_LateUpdateSystems = new RingBuffer<ISystem>();
-        private readonly RingBuffer<ISystem> m_UnscaledLateUpdateSystems = new RingBuffer<ISystem>();
-        private uint m_PhaseListDirtyMask = 0;
+        private PhaseBuckets<UpdateRecord> m_Updates = new PhaseBuckets<UpdateRecord>(4);
+
+        /// <summary>
+        /// Callback for when a system is registered.
+        /// </summary>
+        public event SystemCallback OnSystemRegistered;
+
+        /// <summary>
+        /// Callback for when a system is deregistered.
+        /// </summary>
+        public event SystemCallback OnSystemDeregistered;
 
         /// <summary>
         /// Queues the given system for registration.
@@ -76,44 +107,10 @@ namespace FieldDay.Systems {
             Assert.True(removed, "System already deregistered");
 
             SysUpdateAttribute updateInfo = GetUpdateInfo(system.GetType());
-            if (updateInfo != null) {
-                switch (updateInfo.Phase) {
-                    case GameLoopPhase.PreUpdate: {
-                        m_PreUpdateSystems.FastRemove(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.FixedUpdate: {
-                        m_FixedUpdateSystems.FastRemove(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.Update: {
-                        m_UpdateSystems.FastRemove(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.UnscaledUpdate: {
-                        m_UnscaledUpdateSystems.FastRemove(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.LateUpdate: {
-                        m_LateUpdateSystems.FastRemove(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.UnscaledLateUpdate: {
-                        m_UnscaledLateUpdateSystems.FastRemove(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-                }
+            if (updateInfo != null && updateInfo.Phase != GameLoopPhase.None) {
+                UpdateRecord record = new UpdateRecord(system);
+                m_Updates[updateInfo.Phase].FastRemove(record);
+                m_Updates.MarkBucketDirty(updateInfo.Phase);
             }
 
             IComponentSystem componentSystem = system as IComponentSystem;
@@ -123,6 +120,10 @@ namespace FieldDay.Systems {
 
             system.Shutdown();
             Log.Msg("[SystemsMgr] Manager '{0}' shutdown", system.GetType().FullName);
+
+            if (OnSystemDeregistered != null) {
+                OnSystemDeregistered.Invoke(system);
+            }
         }
 
         /// <summary>
@@ -154,53 +155,15 @@ namespace FieldDay.Systems {
             Log.Msg("[SystemsMgr] System '{0}' initialized", system.GetType().FullName);
 
             SysUpdateAttribute updateInfo = CacheUpdateInfo(system.GetType());
-            if (updateInfo != null) {
-                switch(updateInfo.Phase) {
-                    case GameLoopPhase.PreUpdate: {
-                        m_PreUpdateSystems.PushBack(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
+            if (updateInfo != null && updateInfo.Phase != GameLoopPhase.None) {
+                Assert.True(PhaseBuckets.IsTracked(updateInfo.Phase), "System '{0}' has an invalid update phase '{1}'", system.GetType().FullName, updateInfo.Phase);
+                UpdateRecord record = new UpdateRecord(system, updateInfo);
+                m_Updates[updateInfo.Phase].PushBack(record);
+                m_Updates.MarkBucketDirty(updateInfo.Phase);
+            }
 
-                    case GameLoopPhase.FixedUpdate: {
-                        m_FixedUpdateSystems.PushBack(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.Update: {
-                        m_UpdateSystems.PushBack(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.UnscaledUpdate: {
-                        m_UnscaledUpdateSystems.PushBack(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.LateUpdate: {
-                        m_LateUpdateSystems.PushBack(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.UnscaledLateUpdate: {
-                        m_UnscaledLateUpdateSystems.PushBack(system);
-                        m_PhaseListDirtyMask |= (1u << (int) updateInfo.Phase);
-                        break;
-                    }
-
-                    case GameLoopPhase.None: {
-                        break;
-                    }
-
-                    default: {
-                        Assert.Fail("System '{0}' has an invalid update phase '{1}'", system.GetType().FullName, updateInfo.Phase);
-                        break;
-                    }
-                }
+            if (OnSystemRegistered != null) {
+                OnSystemRegistered.Invoke(system);
             }
         }
 
@@ -208,8 +171,8 @@ namespace FieldDay.Systems {
 
         #region Component Mapping
 
-        private readonly Dictionary<Type, List<IComponentSystem>> m_SystemComponentTypeMap = new Dictionary<Type, List<IComponentSystem>>(32);
-        private readonly Dictionary<Type, List<IComponentSystem>> m_RelevantSystemsMap = new Dictionary<Type, List<IComponentSystem>>(32);
+        private readonly List<IComponentSystem>[] m_SystemComponentTypeMap = new List<IComponentSystem>[ComponentIndex.Capacity];
+        private readonly List<IComponentSystem>[] m_RelevantSystemsMap = new List<IComponentSystem>[ComponentIndex.Capacity];
 
         /// <summary>
         /// Looks up systems for the given component type.
@@ -251,7 +214,7 @@ namespace FieldDay.Systems {
                     relevant[i].Add(component);
                 }
             } else {
-                Log.Warn("[SystemsMgr] Component of type '{0}' does not have any corresponding systems", componentType.FullName);
+                //Log.Warn("[SystemsMgr] Component of type '{0}' does not have any corresponding systems", componentType.FullName);
             }
         }
 
@@ -274,31 +237,23 @@ namespace FieldDay.Systems {
         /// </summary>
         private void RegisterComponentSystem(IComponentSystem componentSystem) {
             Type componentType = componentSystem.ComponentType;
+            int index = ComponentIndex.Get(componentType);
 
             // direct mapping of component type to systems
-            if (!m_SystemComponentTypeMap.TryGetValue(componentType, out List<IComponentSystem> directList)) {
+            List<IComponentSystem> directList = m_SystemComponentTypeMap[index];
+            if (directList == null) {
                 directList = new List<IComponentSystem>(1);
-                m_SystemComponentTypeMap.Add(componentType, directList);
+                m_SystemComponentTypeMap[index] = directList;
             }
             directList.Add(componentSystem);
 
             // mapping of type to all systems that handle that type
-            if (!m_RelevantSystemsMap.TryGetValue(componentType, out List<IComponentSystem> relevantList)) {
+            List<IComponentSystem> relevantList = m_RelevantSystemsMap[index];
+            if (relevantList == null) {
                 relevantList = new List<IComponentSystem>(2);
-                m_RelevantSystemsMap.Add(componentType, relevantList);
+                m_RelevantSystemsMap[index] = relevantList;
             }
             relevantList.Add(componentSystem);
-
-            // if this is for an interface or a non-sealed class
-            // then we'll look for all the types we've tried to register
-            // and, if that type matches, add that to the relevant handlers list
-            if (MayContainMultipleConcreteTypes(componentType)) {
-                foreach (var kv in m_RelevantSystemsMap) {
-                    if (kv.Key != componentType && componentType.IsAssignableFrom(kv.Key)) {
-                        kv.Value.Add(componentSystem);
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -306,46 +261,36 @@ namespace FieldDay.Systems {
         /// </summary>
         private void DeregisterComponentSystem(IComponentSystem componentSystem) {
             Type componentType = componentSystem.ComponentType;
+            int index = ComponentIndex.Get(componentType);
 
             // remove from direct list
-            if (m_SystemComponentTypeMap.TryGetValue(componentType, out List<IComponentSystem> directList)) {
+            List<IComponentSystem> directList = m_SystemComponentTypeMap[index];
+            if (directList != null) {
                 directList.Remove(componentSystem);
             }
 
             // remove from direct relevant list
-            if (m_RelevantSystemsMap.TryGetValue(componentType, out List<IComponentSystem> relevantList)) {
+            List<IComponentSystem> relevantList = m_RelevantSystemsMap[index];
+            if (relevantList != null) {
                 relevantList.Remove(componentSystem);
             }
-
-            // remove from any relevant lists that are assignable to the component type
-            if (MayContainMultipleConcreteTypes(componentType)) {
-                foreach (var kv in m_RelevantSystemsMap) {
-                    if (kv.Key != componentType && componentType.IsAssignableFrom(kv.Key)) {
-                        kv.Value.Remove(componentSystem);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns if the given component type could potentially be represented by multiple concrete types.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static private bool MayContainMultipleConcreteTypes(Type componentType) {
-            return componentType.IsInterface || !componentType.IsSealed;
         }
 
         /// <summary>
         /// Retrieves the list of all systems relevant for the given component type.
         /// </summary>
         private List<IComponentSystem> GetRelevantSystems(Type componentType, bool createIfNotFound) {
-            if (!m_RelevantSystemsMap.TryGetValue(componentType, out List<IComponentSystem> relevantSystems) && createIfNotFound) {
+            int index = ComponentIndex.Get(componentType);
+            List<IComponentSystem> relevantSystems = m_RelevantSystemsMap[index];
+            if (relevantSystems == null && createIfNotFound) {
                 relevantSystems = new List<IComponentSystem>(Math.Max(m_AllSystems.Count / 4, 2));
 
                 Type checkedType = componentType;
                 while (checkedType != null) {
-                    if (m_SystemComponentTypeMap.TryGetValue(checkedType, out List<IComponentSystem> direct)) {
-                        relevantSystems.AddRange(direct);
+                    int checkedIndex = ComponentIndex.Get(checkedType);
+                    List<IComponentSystem> directList = m_SystemComponentTypeMap[checkedIndex];
+                    if (directList != null) {
+                        relevantSystems.AddRange(directList);
                     }
                     checkedType = checkedType.BaseType;
                     if (ArrayUtils.Contains(StopTypeTraversal, checkedType)) {
@@ -353,13 +298,7 @@ namespace FieldDay.Systems {
                     }
                 }
 
-                foreach(var interfaceType in componentType.GetInterfaces()) {
-                    if (m_SystemComponentTypeMap.TryGetValue(interfaceType, out List<IComponentSystem> fromInterface)) {
-                        relevantSystems.AddRange(fromInterface);
-                    }
-                }
-
-                m_RelevantSystemsMap.Add(componentType, relevantSystems);
+                m_RelevantSystemsMap[index] = relevantSystems;
             }
 
             return relevantSystems;
@@ -373,46 +312,47 @@ namespace FieldDay.Systems {
 
         #region Events
 
-        internal void PreUpdate(float deltaTime) {
-            ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.PreUpdate, m_PreUpdateSystems, deltaTime);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void PreUpdate(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.PreUpdate], m_Updates.PopBucketDirty(GameLoopPhase.PreUpdate), deltaTime, categoryMask);
         }
 
-        internal void FixedUpdate(float deltaTime) {
-            ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.FixedUpdate, m_FixedUpdateSystems, deltaTime);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void FixedUpdate(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.FixedUpdate], m_Updates.PopBucketDirty(GameLoopPhase.FixedUpdate), deltaTime, categoryMask);
         }
 
-        internal void Update(float deltaTime) {
-            ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.Update, m_UpdateSystems, deltaTime);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void Update(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.Update], m_Updates.PopBucketDirty(GameLoopPhase.Update), deltaTime, categoryMask);
         }
 
-        internal void UnscaledUpdate(float deltaTime) {
-            ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.UnscaledUpdate, m_UnscaledUpdateSystems, deltaTime);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void UnscaledUpdate(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.UnscaledUpdate], m_Updates.PopBucketDirty(GameLoopPhase.UnscaledUpdate), deltaTime, categoryMask);
         }
 
-        internal void LateUpdate(float deltaTime) {
-            ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.LateUpdate, m_LateUpdateSystems, deltaTime);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void LateUpdate(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.LateUpdate], m_Updates.PopBucketDirty(GameLoopPhase.LateUpdate), deltaTime, categoryMask);
         }
 
-        internal void UnscaledLateUpdate(float deltaTime) {
-            ProcessUpdates(ref m_PhaseListDirtyMask, GameLoopPhase.UnscaledLateUpdate, m_UnscaledLateUpdateSystems, deltaTime);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void UnscaledLateUpdate(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.UnscaledLateUpdate], m_Updates.PopBucketDirty(GameLoopPhase.UnscaledLateUpdate), deltaTime, categoryMask);
         }
 
         internal void Shutdown() {
-            m_PreUpdateSystems.Clear();
-            m_FixedUpdateSystems.Clear();
-            m_UpdateSystems.Clear();
-            m_UnscaledUpdateSystems.Clear();
-            m_LateUpdateSystems.Clear();
-            m_UnscaledLateUpdateSystems.Clear();
+            m_Updates.Clear();
 
-            foreach(var list in m_SystemComponentTypeMap.Values) {
-                list.Clear();
+            foreach(var list in m_SystemComponentTypeMap) {
+                list?.Clear();
             }
-            m_SystemComponentTypeMap.Clear();
-            foreach(var list in m_RelevantSystemsMap.Values) {
-                list.Clear();
+            Array.Clear(m_SystemComponentTypeMap, 0, m_SystemComponentTypeMap.Length);
+            foreach(var list in m_RelevantSystemsMap) {
+                list?.Clear();
             }
-            m_RelevantSystemsMap.Clear();
+            Array.Clear(m_RelevantSystemsMap, 0, m_SystemComponentTypeMap.Length);
             m_InitList.Clear();
 
             while(m_AllSystems.TryPopBack(out ISystem sys)) {
@@ -422,26 +362,24 @@ namespace FieldDay.Systems {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static private void ProcessUpdates(ref uint dirtyFlags, GameLoopPhase phase, RingBuffer<ISystem> systems, float deltaTime) {
-            uint phaseMask = 1u << (int) phase;
-            if ((dirtyFlags & phaseMask) != 0) {
-                dirtyFlags &= ~phaseMask;
-                systems.Sort((a, b) => GetUpdateInfo(a.GetType()).Order - GetUpdateInfo(b.GetType()).Order);
+        static private void ProcessUpdates(RingBuffer<UpdateRecord> systems, bool needsSort, float deltaTime, int categoryMask) {
+            if (needsSort) {
+                systems.Sort((a, b) => a.UpdateOrder - b.UpdateOrder);
             }
 
             foreach(var sys in systems) {
 #if DEVELOPMENT
                 try {
-                    if (sys.HasWork()) {
-                        sys.ProcessWork(deltaTime);
+                    if ((categoryMask & sys.CategoryMask) != 0 && sys.System.HasWork()) {
+                        sys.System.ProcessWork(deltaTime);
                     }
                 } catch(Exception e) {
-                    Log.Error("[SystemsMgr] Encountered exception when processing system '{0}'", sys.GetType().FullName);
+                    Log.Error("[SystemsMgr] Encountered exception when processing system '{0}'", sys.System.GetType().FullName);
                     Debug.LogException(e);
                 }
 #else
-                if (sys.HasWork()) {
-                    sys.ProcessWork(deltaTime);
+                if ((categoryMask & sys.CategoryMask) != 0 && sys.System.HasWork()) {
+                    sys.System.ProcessWork(deltaTime);
                 }
 #endif // DEVELOPMENT
             }
@@ -451,24 +389,31 @@ namespace FieldDay.Systems {
 
         #region Cached Info
 
-        static private readonly Dictionary<Type, SysUpdateAttribute> s_UpdateAttributeCache = new Dictionary<Type, SysUpdateAttribute>(16);
+        static private readonly SysUpdateAttribute[] s_UpdateAttributeCache = new SysUpdateAttribute[SystemIndex.Capacity];
         static private readonly SysUpdateAttribute DefaultUpdateAttribute = new SysUpdateAttribute(GameLoopPhase.Update, 0);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private SysUpdateAttribute CacheUpdateInfo(Type type) {
-            if (!s_UpdateAttributeCache.TryGetValue(type, out SysUpdateAttribute update)) {
+            int index = SystemIndex.Get(type);
+            SysUpdateAttribute update = s_UpdateAttributeCache[index];
+            if (update == null) {
                 update = Reflect.GetAttribute<SysUpdateAttribute>(type);
                 if (update == null && (HasOwnMethod(type, "ProcessWork") || HasOwnMethod(type, "ProcessWorkForComponent"))) {
                     update = DefaultUpdateAttribute;
                 }
-                s_UpdateAttributeCache[type] = update;
+                s_UpdateAttributeCache[index] = update;
             }
             return update;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private SysUpdateAttribute GetUpdateInfo(Type type) {
-            return s_UpdateAttributeCache[type];
+            return s_UpdateAttributeCache[SystemIndex.Get(type)];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static private SysUpdateAttribute GetUpdateInfo(int index) {
+            return s_UpdateAttributeCache[index];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

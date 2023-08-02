@@ -1,9 +1,15 @@
 namespace FieldDay {
+    /// <summary>
+    /// Interface for OnRegister and OnDeregister callbacks.
+    /// </summary>
     public interface IRegistrationCallbacks {
         void OnRegister();
         void OnDeregister();
     }
 
+    /// <summary>
+    /// IRegistrationCallbacks utilities.
+    /// </summary>
     static public class RegistrationCallbacks
     {
         static public void InvokeRegister(object obj) {

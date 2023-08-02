@@ -1,6 +1,7 @@
 using FieldDay.Systems;
 using FieldDay.SharedState;
 using FieldDay.Components;
+using FieldDay.Processes;
 
 namespace FieldDay {
     /// <summary>
@@ -23,9 +24,14 @@ namespace FieldDay {
         static public SharedStateMgr SharedState { get; internal set; }
 
         /// <summary>
+        /// Process manager. Maintains process states.
+        /// </summary>
+        static public ProcessMgr Processes { get; internal set; }
+
+        /// <summary>
         /// Event dispatcher. Maintains event dispatch.
         /// </summary>
-        static public IEventDispatcher Events { get; private set; }
+        static public IEventDispatcher Events { get; internal set; }
 
         /// <summary>
         /// Returns if the game loop is currently shutting down.

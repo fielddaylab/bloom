@@ -8,11 +8,11 @@ using UnityEngine;
 using System.Diagnostics;
 using BeauUtil.Debugger;
 using System.Runtime.InteropServices;
-using UnityEngine.Rendering;
 using UnityEngine.Scripting;
 using FieldDay.Systems;
 using BeauRoutine;
 using System.Reflection;
+using FieldDay.Data;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -51,6 +51,7 @@ namespace FieldDay.Debugging {
 
         [Header("Debug Menu")]
         [SerializeField] private DMMenuUI m_DebugMenus = null;
+        [SerializeField] private CanvasGroup m_DebugMenuInput = null;
 
         #endregion // Inspector
 
@@ -82,7 +83,7 @@ namespace FieldDay.Debugging {
             UpdateMenu();
         }
 
-        #region Timescale
+        #region Time Scale
 
         private void CheckTimeInput() {
             if (Input.GetKey(KeyCode.LeftShift)) {
@@ -128,7 +129,7 @@ namespace FieldDay.Debugging {
             }
         }
 
-        #endregion // Timescale
+        #endregion // Time Scale
 
         #region Menu
 
@@ -153,7 +154,8 @@ namespace FieldDay.Debugging {
         static private void LoadMenu() {
             s_RootMenu = new DMInfo("Debug", 16);
 
-            foreach (var pair in Reflect.FindMethods<DebugMenuFactoryAttribute>(ReflectionCache.UserAssemblies, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)) {
+            // load menus from user assemblies
+            foreach (var pair in Reflect.FindMethods<DebugMenuFactoryAttribute>(ReflectionCache.UserAssemblies, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)) {
                 if (pair.Info.ReturnType != typeof(DMInfo)) {
                     Log.Error("[DebugConsole] Method '{0}::{1}' does not return DMInfo", pair.Info.DeclaringType.Name, pair.Info.Name);
                     continue;
@@ -167,21 +169,49 @@ namespace FieldDay.Debugging {
                 DMInfo menu = (DMInfo) pair.Info.Invoke(null, Array.Empty<object>());
 
                 if (menu != null) {
-                    int existingIdx = s_RootMenu.Elements.FindIndex((e, l) => e.Type == DMElementType.Submenu && e.Submenu.Submenu.Header.Label == l, menu.Header.Label);
-                    if (existingIdx >= 0) {
-                        DMInfo existing = s_RootMenu.Elements[existingIdx].Submenu.Submenu;
-                        existing.AddDivider();
+                    DMInfo existing = FindSubmenu(s_RootMenu, menu.Header.Label);
+                    if (existing != null) {
+                        if (existing.Elements.Count > 0) {
+                            existing.AddDivider();
+                        }
                         existing.MinimumWidth = Math.Max(existing.MinimumWidth, menu.MinimumWidth);
                         foreach (var element in menu.Elements) {
                             existing.Elements.PushBack(element);
                         }
+                        menu.Clear(); // make sure to clear out old menu
                     } else {
                         s_RootMenu.AddSubmenu(menu);
                     }
                 }
             }
 
-            s_RootMenu.Elements.Sort((a, b) => a.Label.CompareTo(b.Label));
+            // config vars
+            DMInfo configVarMenu = new DMInfo("Config Vars", 8);
+            s_RootMenu.AddSubmenu(configVarMenu);
+
+            configVarMenu.AddButton("Save Changes", ConfigVar.WriteUserToPlayerPrefs);
+            configVarMenu.AddButton("Reload Changes", ConfigVar.ReadUserFromPlayerPrefs, ConfigVar.HasUserPrefs);
+            configVarMenu.AddDivider();
+
+            configVarMenu.AddButton("Commit Changes", ConfigVar.WriteAllToResources, () => Application.isEditor);
+            configVarMenu.AddButton("Reset (Committed)", () => ConfigVar.Reset(ConfigVar.AllVars));
+            configVarMenu.AddButton("Reset (Programmer)", () => ConfigVar.ProgrammerReset(ConfigVar.AllVars));
+            configVarMenu.AddDivider();
+
+            configVarMenu.AddDivider();
+
+            string currentCategory = null;
+            DMInfo categoryMenu = null;
+            foreach(var cvar in ConfigVar.AllVars) {
+                if (cvar.Category != currentCategory) {
+                    currentCategory = cvar.Category;
+                    categoryMenu = FindOrCreateSubmenu(configVarMenu, currentCategory);
+                }
+
+                ConfigVar.CreateDebugMenu(categoryMenu, cvar);
+            }
+
+            SortByLabel(s_RootMenu);
         }
 
         private void SetMenuVisible(bool visible) {
@@ -191,14 +221,19 @@ namespace FieldDay.Debugging {
 
             m_MenuOpen = visible;
             if (visible) {
+                m_VisibilityWhenDebugMenuOpened = m_MinimalVisible;
+                SetMinimalVisible(true);
+                m_DebugMenus.gameObject.SetActive(true);
+                m_DebugMenuInput.interactable = true;
+                m_MinimalGroup.interactable = true;
                 if (!m_MenuUIInitialized) {
                     m_DebugMenus.GotoMenu(s_RootMenu);
                     m_MenuUIInitialized = true;
                 }
-                m_VisibilityWhenDebugMenuOpened = m_MinimalVisible;
-                SetMinimalVisible(true);
-                m_DebugMenus.gameObject.SetActive(true);
             } else {
+                m_DebugMenus.gameObject.SetActive(false);
+                m_DebugMenuInput.interactable = false;
+                m_MinimalGroup.interactable = false;
                 SetMinimalVisible(m_VisibilityWhenDebugMenuOpened);
             }
         }
@@ -229,6 +264,44 @@ namespace FieldDay.Debugging {
         }
 
         #endregion // Minimal Layer
+
+        #region Helpers
+
+        static internal DMInfo FindSubmenu(DMInfo menu, string label) {
+            int index = menu.Elements.FindIndex((e, l) => {
+                return e.Type == DMElementType.Submenu && e.Label == label;
+            }, label);
+            if (index >= 0) {
+                return menu.Elements[index].Submenu.Submenu;
+            } else {
+                return null;
+            }
+        }
+
+        static internal DMInfo FindOrCreateSubmenu(DMInfo menu, string label) {
+            int index = menu.Elements.FindIndex((e, l) => {
+                return e.Type == DMElementType.Submenu && e.Label == label;
+            }, label);
+            if (index >= 0) {
+                return menu.Elements[index].Submenu.Submenu;
+            } else {
+                DMInfo newInfo = new DMInfo(label);
+                menu.AddSubmenu(newInfo);
+                return newInfo;
+            }
+        }
+
+        static internal void SortByLabel(DMInfo menu) {
+            menu.Elements.Sort((a, b) => StringComparer.Ordinal.Compare(a.Label, b.Label));
+        }
+
+        #endregion // Helpers
+
+        #region Config Variables
+
+        //static private void 
+
+        #endregion // Config Variables
     }
 
     /// <summary>

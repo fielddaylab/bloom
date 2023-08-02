@@ -40,7 +40,7 @@ namespace Zavala.World {
             m_StateA.RegionCullingMask = CullingHelper.EvaluateRegionVisibilityMask(m_StateA.RegionBounds, (int) m_StateA.RegionCount, m_CachedPlaneArray);
 
             for(int i = 0; i < m_StateA.RegionCount; i++) {
-                DebugDraw.AddBounds(m_StateA.RegionBounds[i], (m_StateA.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red);
+                DebugDraw.AddBounds(m_StateA.RegionBounds[i], (m_StateA.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red, 1, 0, true, 0);
             }
         }
 

@@ -1,8 +1,16 @@
+#if (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+#define DEVELOPMENT
+#endif // (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay.Systems;
+using UnityEngine;
+
+using StateIndex = BeauUtil.TypeIndex<FieldDay.SharedState.ISharedState>;
 
 namespace FieldDay.SharedState {
     /// <summary>
@@ -12,7 +20,8 @@ namespace FieldDay.SharedState {
     public sealed class SharedStateMgr {
         static private readonly StaticInjector<SharedStateReferenceAttribute, ISharedState> s_StaticInjector = new StaticInjector<SharedStateReferenceAttribute, ISharedState>();
 
-        private readonly Dictionary<Type, ISharedState> m_States = new Dictionary<Type, ISharedState>(32);
+        private ISharedState[] m_StateMap = new ISharedState[StateIndex.Capacity];
+        private readonly HashSet<ISharedState> m_StateSet = new HashSet<ISharedState>(32);
 
         #region Add/Remove
 
@@ -21,9 +30,14 @@ namespace FieldDay.SharedState {
         /// </summary>
         public void Register(ISharedState state) {
             Assert.NotNull(state);
+            
             Type stateType = state.GetType();
-            Assert.False(m_States.ContainsKey(stateType), "[SharedStateMgr] Shared state of type '{0}' already registered", stateType);
-            m_States.Add(stateType, state);
+            int index = StateIndex.Get(stateType);
+
+            Assert.True(m_StateMap[index] == null, "[SharedStateMgr] Shared state of type '{0}' already registered", stateType);
+            m_StateMap[index] = state;
+            m_StateSet.Add(state);
+
             s_StaticInjector.Inject(state);
             RegistrationCallbacks.InvokeRegister(state);
             Log.Msg("[SharedStateMgr] State '{0}' registered", stateType.FullName);
@@ -34,9 +48,14 @@ namespace FieldDay.SharedState {
         /// </summary>
         public void Deregister(ISharedState state) {
             Assert.NotNull(state);
+            
             Type stateType = state.GetType();
-            if (m_States.TryGetValue(stateType, out ISharedState currentState) && currentState == state) {
-                m_States.Remove(stateType);
+            int index = StateIndex.Get(stateType);
+
+            if (m_StateMap[index] == state) {
+                m_StateMap[index] = null;
+                m_StateSet.Remove(state);
+
                 s_StaticInjector.Remove(state);
                 RegistrationCallbacks.InvokeDeregister(state);
                 Log.Msg("[SharedStateMgr] State '{0}' deregistered", stateType.FullName);
@@ -47,11 +66,11 @@ namespace FieldDay.SharedState {
         /// Clears all ISharedState instances.
         /// </summary>
         public void Clear() {
-            foreach(var state in m_States.Values) {
+            foreach(var state in m_StateSet) {
                 s_StaticInjector.Remove(state);
                 RegistrationCallbacks.InvokeDeregister(state);
             }
-            m_States.Clear();
+            Array.Clear(m_StateMap, 0, m_StateMap.Length);
         }
 
         #endregion // Add/Remove
@@ -64,9 +83,13 @@ namespace FieldDay.SharedState {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ISharedState Get(Type type) {
-            if (!m_States.TryGetValue(type, out ISharedState state)) {
+            int index = StateIndex.Get(type);
+            ISharedState state = m_StateMap[index];
+#if DEVELOPMENT
+            if (state == null) {
                 Assert.Fail("No shared state object found for type '{0}'", type.FullName);
             }
+#endif // DEVELOPMENT
             return state;
         }
 
@@ -76,10 +99,21 @@ namespace FieldDay.SharedState {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Get<T>() where T : class, ISharedState {
-            if (!m_States.TryGetValue(typeof(T), out ISharedState state)) {
+            int index = StateIndex.Get<T>();
+            ISharedState state = m_StateMap[index];
+#if DEVELOPMENT
+            if (state == null) {
                 Assert.Fail("No shared state object found for type '{0}'", typeof(T).FullName);
             }
+#endif // DEVELOPMENT
             return (T) state;
+        }
+
+        /// <summary>
+        /// Fast unchecked retrieve.
+        /// </summary>
+        internal T FastGet<T>() where T : class, ISharedState {
+            return (T) m_StateMap[StateIndex.Get<T>()];
         }
 
         /// <summary>
@@ -87,7 +121,9 @@ namespace FieldDay.SharedState {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGet(Type type, out ISharedState state) {
-            return m_States.TryGetValue(type, out state);
+            int index = StateIndex.Get(type);
+            state = index < m_StateMap.Length ? m_StateMap[index] : null;
+            return state != null;
         }
 
         /// <summary>
@@ -95,13 +131,9 @@ namespace FieldDay.SharedState {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGet<T>(out T state) where T : class, ISharedState {
-            if (m_States.TryGetValue(typeof(T), out ISharedState baseState)) {
-                state = (T) baseState;
-                return true;
-            }
-
-            state = null;
-            return false;
+            int index = StateIndex.Get<T>();
+            state = (T) (index < m_StateMap.Length ? m_StateMap[index] : null);
+            return state != null;
         }
 
         /// <summary>
@@ -109,7 +141,7 @@ namespace FieldDay.SharedState {
         /// </summary>
         public int LookupAll(Predicate<ISharedState> predicate, List<ISharedState> sharedStates) {
             int found = 0;
-            foreach(var state in m_States.Values) {
+            foreach(var state in m_StateSet) {
                 if (predicate(state)) {
                     sharedStates.Add(state);
                     found++;
@@ -123,7 +155,7 @@ namespace FieldDay.SharedState {
         /// </summary>
         public int LookupAll<T>(List<T> sharedStates) where T : class {
             int found = 0;
-            foreach (var state in m_States.Values) {
+            foreach (var state in m_StateSet) {
                 T casted = state as T;
                 if (casted != null) {
                     sharedStates.Add(casted);
@@ -138,7 +170,7 @@ namespace FieldDay.SharedState {
         /// </summary>
         public int LookupAll<U>(Predicate<ISharedState, U> predicate, U predicateArg, List<ISharedState> sharedStates) {
             int found = 0;
-            foreach (var state in m_States.Values) {
+            foreach (var state in m_StateSet) {
                 if (predicate(state, predicateArg)) {
                     sharedStates.Add(state);
                     found++;
@@ -159,9 +191,12 @@ namespace FieldDay.SharedState {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ISharedState Require(Type type) {
-            if (!m_States.TryGetValue(type, out ISharedState state)) {
+            int index = StateIndex.Get(type);
+            ISharedState state;
+
+            if ((state = m_StateMap[index]) == null) {
                 state = CreateInstance(type);
-                m_States.Add(type, state);
+                m_StateMap[index] = state;
                 s_StaticInjector.Inject(state);
                 RegistrationCallbacks.InvokeRegister(state);
                 Log.Msg("[SharedStateMgr] State '{0}' created on Require", type.FullName);
@@ -177,13 +212,16 @@ namespace FieldDay.SharedState {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Require<T>() where T : class, ISharedState {
-            Type stateType = typeof(T);
-            if (!m_States.TryGetValue(stateType, out ISharedState state)) {
-                state = CreateInstance(stateType);
-                m_States.Add(stateType, state);
+            int index = StateIndex.Get<T>();
+            ISharedState state;
+
+            if ((state = m_StateMap[index]) == null) {
+                Type type = typeof(T);
+                state = CreateInstance(type);
+                m_StateMap[index] = state;
                 s_StaticInjector.Inject(state);
                 RegistrationCallbacks.InvokeRegister(state);
-                Log.Msg("[SharedStateMgr] State '{0}' created on Require", stateType.FullName);
+                Log.Msg("[SharedStateMgr] State '{0}' created on Require", type.FullName);
             }
             return (T) state;
         }
@@ -200,5 +238,14 @@ namespace FieldDay.SharedState {
         }
 
         #endregion // Require
+
+        #region Events
+
+        internal void Shutdown() {
+            m_StateSet.Clear();
+            Array.Clear(m_StateMap, 0, m_StateMap.Length);
+        }
+
+        #endregion // Events
     }
 }

@@ -12,10 +12,12 @@ using FieldDay.SharedState;
 using FieldDay.Systems;
 using UnityEngine;
 using UnityEngine.Scripting;
+using FieldDay.Components;
+using FieldDay.Processes;
+using FieldDay.Data;
 
 #if USE_SRP
 using UnityEngine.Rendering;
-using FieldDay.Components;
 #endif // USE_SRP
 
 namespace FieldDay {
@@ -23,7 +25,7 @@ namespace FieldDay {
     /// Game loop manager.
     /// </summary>
     [DefaultExecutionOrder(-10000000), DisallowMultipleComponent]
-    public sealed class GameLoop : MonoBehaviour {
+    public sealed class GameLoop : MonoBehaviour, ICameraPreCullCallback, ICameraPostRenderCallback, ICameraPreRenderCallback {
         #region Inspector
 
         [SerializeField, Tooltip("Size of the per-frame allocation buffer, in KiB")]
@@ -96,6 +98,9 @@ namespace FieldDay {
         static private readonly RingBuffer<Action> s_EndOfFrameQueue = new RingBuffer<Action>(16, RingBufferMode.Expand);
         static internal GameLoopPhase s_CurrentPhase = GameLoopPhase.None;
         static private ushort s_PrevUpdateFrameIndex = Frame.InvalidIndex;
+        static private int s_UpdateMask = Bits.All32;
+        static private int s_QueuedUpdateMask = Bits.All32;
+        static private bool m_ReadyForRender;
 
         #region Unity Events
 
@@ -113,7 +118,13 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating shared state manager...");
             Game.SharedState = new SharedStateMgr();
 
+            Log.Msg("[GameLoop] Creating process manager...");
+            Game.Processes = new ProcessMgr();
+
             Application.targetFrameRate = m_TargetFramerate;
+
+            ConfigVar.ReadAllFromResources();
+            ConfigVar.ReadUserFromPlayerPrefs();
 
             // find all pre-boot
             foreach (var entrypoint in Reflect.FindMethods<InvokePreBootAttribute>(ReflectionCache.UserAssemblies, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
@@ -121,6 +132,7 @@ namespace FieldDay {
             }
 
             enabled = false;
+            useGUILayout = false;
             StartCoroutine(DelayedBoot());
         }
 
@@ -141,9 +153,13 @@ namespace FieldDay {
         private void FinishCallbackRegistration() {
             Canvas.preWillRenderCanvases += OnPreCanvasRender;
 
-            #if !UNITY_EDITOR
+            CameraHelper.AddOnPreCull(this);
+            CameraHelper.AddOnPreRender(this);
+            CameraHelper.AddOnPostRender(this);
+
+#if !UNITY_EDITOR
             StartCoroutine(EndOfFrameCoroutine());
-            #endif // !UNITY_EDITOR
+#endif // !UNITY_EDITOR
         }
 
         private void OnDestroy() {
@@ -160,24 +176,39 @@ namespace FieldDay {
             OnShutdown.Invoke();
 
             if (Game.Events != null) {
+                Log.Msg("[GameLoop] Shutting down events...");
                 Game.Events.Clear();
                 Game.SetEventDispatcher(null);
             }
 
+            CameraHelper.RemoveOnPreCull(this);
+            CameraHelper.RemoveOnPreRender(this);
+            CameraHelper.RemoveOnPostRender(this);
+
+            Log.Msg("[GameLoop] Shutting down process manager...");
+            Game.Processes.Shutdown();
+            Game.Processes = null;
+
+            Log.Msg("[GameLoop] Shutting down shared state manager...");
+            Game.SharedState.Shutdown();
+            Game.SharedState = null;
+
+            Log.Msg("[GameLoop] Shutting down component manager...");
             Game.Components.Shutdown();
             Game.Components = null;
 
+            Log.Msg("[GameLoop] Shutting down systems manager...");
             Game.Systems.Shutdown();
             Game.Systems = null;
         }
 
         private void FixedUpdate() {
-            FlushQueue(s_OnBootQueue);
             HandlePreUpdate();
 
             SetCurrentPhase(GameLoopPhase.FixedUpdate);
             Game.Components.Lock();
-            Game.Systems.FixedUpdate(Time.fixedDeltaTime);
+            Game.Systems.FixedUpdate(Time.fixedDeltaTime, s_UpdateMask);
+            Game.Processes.FixedUpdate(Time.fixedDeltaTime, s_UpdateMask);
             Game.Components.Unlock();
             OnFixedUpdate.Invoke(Time.fixedDeltaTime);
         }
@@ -189,14 +220,16 @@ namespace FieldDay {
             // time-scaled update
             SetCurrentPhase(GameLoopPhase.Update);
             Game.Components.Lock();
-            Game.Systems.Update(Time.deltaTime);
+            Game.Systems.Update(Time.deltaTime, s_UpdateMask);
+            Game.Processes.Update(Time.deltaTime, s_UpdateMask);
             Game.Components.Unlock();
             OnUpdate.Invoke(Time.deltaTime);
 
             // unscaled update
             SetCurrentPhase(GameLoopPhase.UnscaledUpdate);
             Game.Components.Lock();
-            Game.Systems.UnscaledUpdate(Time.unscaledDeltaTime);
+            Game.Systems.UnscaledUpdate(Time.unscaledDeltaTime, s_UpdateMask);
+            Game.Processes.UnscaledUpdate(Time.unscaledDeltaTime, s_UpdateMask);
             Game.Components.Unlock();
             OnUnscaledUpdate.Invoke(Time.unscaledDeltaTime);
 
@@ -208,14 +241,16 @@ namespace FieldDay {
             // time-scaled late update
             SetCurrentPhase(GameLoopPhase.LateUpdate);
             Game.Components.Lock();
-            Game.Systems.LateUpdate(Time.unscaledDeltaTime);
+            Game.Systems.LateUpdate(Time.deltaTime, s_UpdateMask);
+            Game.Processes.LateUpdate(Time.deltaTime, s_UpdateMask);
             Game.Components.Unlock();
             OnLateUpdate.Invoke(Time.deltaTime);
 
             // unscaled late update
             SetCurrentPhase(GameLoopPhase.UnscaledLateUpdate);
             Game.Components.Lock();
-            Game.Systems.UnscaledLateUpdate(Time.unscaledDeltaTime);
+            Game.Systems.UnscaledLateUpdate(Time.unscaledDeltaTime, s_UpdateMask);
+            Game.Processes.UnscaledLateUpdate(Time.unscaledDeltaTime, s_UpdateMask);
             Game.Components.Unlock();
             OnUnscaledLateUpdate.Invoke(Time.unscaledDeltaTime);
 
@@ -223,6 +258,8 @@ namespace FieldDay {
             Game.Events?.Flush();
 
             FlushQueue(s_AfterLateUpdateQueue);
+
+            m_ReadyForRender = true;
         }
 
         private void OnGUI() {
@@ -236,16 +273,28 @@ namespace FieldDay {
             #endif // UNITY_EDITOR
         }
 
-        private void OnCameraPreCull() {
+        void ICameraPreCullCallback.OnCameraPreCull(Camera camera, CameraCallbackSource source) {
+            if (!m_ReadyForRender) {
+                return;
+            }
 
+            SetCurrentPhase(GameLoopPhase.PreCull);
         }
 
-        private void OnCameraPreRender() {
+        void ICameraPreRenderCallback.OnCameraPreRender(Camera camera, CameraCallbackSource source) {
+            if (!m_ReadyForRender) {
+                return;
+            }
 
+            SetCurrentPhase(GameLoopPhase.PreRender);
         }
 
-        private void OnCameraPostRender() {
+        void ICameraPostRenderCallback.OnCameraPostRender(Camera camera, CameraCallbackSource source) {
+            if (!m_ReadyForRender) {
+                return;
+            }
 
+            SetCurrentPhase(GameLoopPhase.PostRender);
         }
 
         private IEnumerator DelayedBoot() {
@@ -270,11 +319,16 @@ namespace FieldDay {
                 s_PrevUpdateFrameIndex = Frame.Index;
                 FlushQueue(s_FrameStartQueue);
 
+                FlushQueue(s_OnBootQueue);
+
                 Game.Components.Lock();
-                Game.Systems.PreUpdate(Time.unscaledDeltaTime);
+                Game.Systems.PreUpdate(Time.unscaledDeltaTime, s_UpdateMask);
+                Game.Processes.PreUpdate(Time.unscaledDeltaTime, s_UpdateMask);
                 Game.Components.Unlock();
 
                 OnPreUpdate.Invoke(Time.unscaledDeltaTime);
+                s_UpdateMask = s_QueuedUpdateMask;
+                m_ReadyForRender = false;
             }
         }
 
@@ -290,7 +344,10 @@ namespace FieldDay {
 
             Frame.IncrementFrame();
             Frame.ResetAllocator();
+            s_UpdateMask = s_QueuedUpdateMask;
+            Game.Processes.FrameAdvanced();
             OnFrameAdvance.Invoke(Frame.Index);
+            m_ReadyForRender = false;
         }
 
         #endregion // Handlers
@@ -368,6 +425,36 @@ namespace FieldDay {
         }
 
         #endregion // Phase
+
+        #region Update Mask
+
+        /// <summary>
+        /// Mask of all process and system categories allowed to update.
+        /// </summary>
+        static public int UpdateMask { get { return s_UpdateMask; } }
+
+        /// <summary>
+        /// Queues updates for specific categories to be suspended.
+        /// </summary>
+        static public void SuspendUpdates(int suspendMask) {
+            s_QueuedUpdateMask &= ~suspendMask;
+        }
+
+        /// <summary>
+        /// Returns if the any update category of the given mask is suspended.
+        /// </summary>
+        static public bool IsSuspended(int updateMask) {
+            return (s_UpdateMask & updateMask) != updateMask;
+        }
+
+        /// <summary>
+        /// Queues updates for specific categories to be resumed.
+        /// </summary>
+        static public void ResumeUpdates(int resumeMask) {
+            s_QueuedUpdateMask |= resumeMask;
+        }
+
+        #endregion // Update Mask
     }
 
     /// <summary>
@@ -394,6 +481,32 @@ namespace FieldDay {
         [Label("Frame Advanced")] FrameAdvance,
 
         [Label("Shutdown")] Shutdown,
+    }
+
+    /// <summary>
+    /// Game loop phase mask.
+    /// </summary>
+    [Flags]
+    public enum GameLoopPhaseMask : uint {
+        None = 0,
+        Booted = 1 << (int) GameLoopPhase.Booted,
+
+        PreUpdate = 1 << (int) GameLoopPhase.PreUpdate,
+        FixedUpdate = 1 << (int) GameLoopPhase.FixedUpdate,
+        Update = 1 << (int) GameLoopPhase.Update,
+        UnscaledUpdate = 1 << (int) GameLoopPhase.UnscaledUpdate,
+        LateUpdate = 1 << (int) GameLoopPhase.LateUpdate,
+        UnscaledLateUpdate = 1 << (int) GameLoopPhase.UnscaledLateUpdate,
+
+        CanvasPreRender = 1 << (int) GameLoopPhase.CanvasPreRender,
+
+        PreCull = 1 << (int) GameLoopPhase.PreCull,
+        PreRender = 1 << (int) GameLoopPhase.PreRender,
+        PostRender = 1 << (int) GameLoopPhase.PostRender,
+
+        FrameAdvance = 1 << (int) GameLoopPhase.FrameAdvance,
+
+        Shutdown = 1 << (int) GameLoopPhase.Shutdown,
     }
 
     /// <summary>
