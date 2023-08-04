@@ -6,6 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        lfs: true
+
     # Read editor version
     - name: Retrieve editor version
       id: getEditorVersion
