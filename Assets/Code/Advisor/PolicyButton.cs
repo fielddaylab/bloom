@@ -33,6 +33,8 @@ namespace Zavala.Advisor {
             // try to set a policy: if successful, close the policies menu
             if (Game.SharedState.Get<PolicyState>().SetPolicy(ButtonPolicy, policyIndex)) {
                 Text.text = ButtonPolicy.ToString() + ": " + policyIndex;
+                TryGetComponent(out Toggle toggle);
+                toggle.isOn = false;
                 TogglePolicies(false);
             }
         }
