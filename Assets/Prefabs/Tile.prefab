@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7758017013606886687}
   - component: {fileID: 7097652779095066658}
   - component: {fileID: 3680174520802473011}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8956483885663654158}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3434192996384769598}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pillar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,6 +195,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenTile
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0ce56753a331abf4cbc2f46a4a12add6, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ce56753a331abf4cbc2f46a4a12add6, type: 3}
 --- !u!4 &7458414482879604573 stripped
@@ -264,6 +268,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}
       propertyPath: m_Name
       value: brownTile
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}

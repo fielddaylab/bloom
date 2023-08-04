@@ -2,9 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using BeauPools;
 using BeauUtil;
-using UnityEditor.PackageManager.Requests;
-using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Zavala.Economy {
     /// <summary>
@@ -442,8 +439,9 @@ namespace Zavala.Economy {
         /// Returns the first set ResourceId for the given mask.
         /// </summary
         static public ResourceId FirstResource(ResourceMask mask) {
+            uint maskCasted = (uint) mask;
             for(int i = 0; i < Count; i++) {
-                if (((uint) mask & (1u << i)) != 0) {
+                if ((maskCasted & (1u << i)) != 0) {
                     return (ResourceId) i;
                 }
             }

@@ -67,8 +67,11 @@ MonoBehaviour:
   m_ToggleKey: 96
   m_MinimalGroup: {fileID: 2970721511653513691}
   m_TimeDisplay: {fileID: 8405930348564636986}
+  m_InputBlocker: {fileID: 5112324991558207394}
   m_DebugMenus: {fileID: 1743443261311663472}
   m_DebugMenuInput: {fileID: 1550146307389444314}
+  m_QuickMenu: {fileID: 0}
+  m_QuickMenuInput: {fileID: 0}
 --- !u!1001 &5764060396207500681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -251,6 +254,17 @@ CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 7405062506632213586, guid: ee79e0433ea70eb4993de53367303bc1, type: 3}
   m_PrefabInstance: {fileID: 5764060396207500681}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5112324991558207394 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 652087473860880939, guid: ee79e0433ea70eb4993de53367303bc1, type: 3}
+  m_PrefabInstance: {fileID: 5764060396207500681}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30a1eab2b1f3865409a77930639df3e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7551023321306171470 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2825043189864162759, guid: ee79e0433ea70eb4993de53367303bc1, type: 3}

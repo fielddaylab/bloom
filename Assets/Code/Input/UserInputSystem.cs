@@ -39,6 +39,13 @@ namespace Zavala.Input {
             GetMousePosition(ref m_State.ScreenMousePos, ref m_State.ViewportMousePos);
             m_State.ScrollWheel = UnityEngine.Input.mouseScrollDelta;
 
+            Camera c = Camera.main;
+            if (c) {
+                m_State.ViewportMouseRay = c.ViewportPointToRay(m_State.ViewportMousePos, Camera.MonoOrStereoscopicEye.Mono);
+            } else {
+                m_State.ViewportMouseRay = default(Ray);
+            }
+
             if (m_State.ButtonPressed(InputButton.PrimaryMouse)) {
                 m_State.MousePressedPosPrev = m_State.ScreenMousePos;
             }

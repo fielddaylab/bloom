@@ -12,6 +12,35 @@ using UnityEngine;
 
 namespace FieldDay.Editor {
     /// <summary>
+    /// Adjust splash screen, exception, and logging settings during a build.
+    /// </summary>
+    public class AdjustSettingsBuildProcessor : IPreprocessBuildWithReport {
+        public int callbackOrder { get { return -100; } }
+
+        public void OnPreprocessBuild(BuildReport report) {
+            string branch = BuildUtils.GetSourceControlBranchName();
+            bool isBatchMode = InternalEditorUtility.inBatchMode || !InternalEditorUtility.isHumanControllingUs;
+            if (isBatchMode) {
+                PlayerSettings.SplashScreen.show = false;
+                PlayerSettings.SplashScreen.showUnityLogo = false;
+                PlayerSettings.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+            }
+
+            if (EditorUserBuildSettings.development) {
+                PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
+                PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
+                PlayerSettings.SetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup, ManagedStrippingLevel.Medium);
+            } else {
+                PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly;
+                PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Off;
+                PlayerSettings.SetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup, ManagedStrippingLevel.High);
+            }
+
+            Debug.LogFormat("[AdjustSettingsBuildProcessor] Building branch '{0}', development mode {1}", branch, EditorUserBuildSettings.development);
+        }
+    }
+
+    /// <summary>
     /// Bakes all assets with a custom baking procedure.
     /// </summary>
     public class BakeAssetsBuildPreprocessor : IPreprocessBuildWithReport {

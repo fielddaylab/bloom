@@ -1,18 +1,13 @@
 using BeauUtil;
-using BeauUtil.Graph;
 using FieldDay;
 using FieldDay.SharedState;
 using System;
 using System.Collections.Generic;
-using UnityEditor.MemoryProfiler;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using Zavala.Sim;
 using Zavala.World;
-using static UnityEditor.PlayerSettings;
 
-namespace Zavala.Roads
-{
+namespace Zavala.Roads {
     public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks
     {
         public GameObject TempRoadPrefab; // TEMP HACK placing roads via prefab for testing

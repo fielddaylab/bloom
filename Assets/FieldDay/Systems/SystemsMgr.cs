@@ -313,6 +313,11 @@ namespace FieldDay.Systems {
         #region Events
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void DebugUpdate(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.DebugUpdate], m_Updates.PopBucketDirty(GameLoopPhase.DebugUpdate), deltaTime, categoryMask);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void PreUpdate(float deltaTime, int categoryMask) {
             ProcessUpdates(m_Updates[GameLoopPhase.PreUpdate], m_Updates.PopBucketDirty(GameLoopPhase.PreUpdate), deltaTime, categoryMask);
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 
@@ -7,7 +8,7 @@ namespace FieldDay {
     /// Game loop phase buckets.
     /// </summary>
     static internal class PhaseBuckets {
-        private const GameLoopPhase MinPhase = GameLoopPhase.PreUpdate;
+        private const GameLoopPhase MinPhase = GameLoopPhase.DebugUpdate;
         private const GameLoopPhase MaxPhase = GameLoopPhase.FrameAdvance;
 
         /// <summary>
@@ -267,5 +268,61 @@ namespace FieldDay {
         }
 
         #endregion // Dirty
+    }
+
+    /// <summary>
+    /// Struct for profiling how long each phase lasts.
+    /// </summary>
+    internal unsafe struct PhaseTiming {
+        /// <summary>
+        /// Timestamps. Negative values are start, positive values are actual.
+        /// </summary>
+        public fixed long Markers[PhaseBuckets.MaxBuckets];
+
+        /// <summary>
+        /// Durations.
+        /// </summary>
+        public fixed long Duration[PhaseBuckets.MaxBuckets];
+
+        /// <summary>
+        /// Clears all timestamps.
+        /// </summary>
+        public void Clear() {
+            for(int i = 0; i < PhaseBuckets.MaxBuckets; i++) {
+                Markers[i] = 0;
+                Duration[i] = 0;
+            }
+        }
+
+        /// <summary>
+        /// Marks the start of a phase.
+        /// </summary>
+        public void MarkStart(GameLoopPhase phase) {
+            if (!PhaseBuckets.IsTracked(phase)) {
+                return;
+            }
+
+            int idx = PhaseBuckets.PhaseToIndex(phase);
+            ref long marker = ref Markers[idx];
+            if (marker == 0) {
+                marker = Stopwatch.GetTimestamp();
+            }
+        }
+
+        /// <summary>
+        /// Marks the end of a phase.
+        /// </summary>
+        public void MarkEnd(GameLoopPhase phase) {
+            if (!PhaseBuckets.IsTracked(phase)) {
+                return;
+            }
+
+            int idx = PhaseBuckets.PhaseToIndex(phase);
+            ref long marker = ref Markers[idx];
+            if (marker > 0) {
+                Duration[idx] += Stopwatch.GetTimestamp() - marker;
+                marker = 0;
+            }
+        }
     }
 }

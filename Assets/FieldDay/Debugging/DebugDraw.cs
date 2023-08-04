@@ -665,6 +665,19 @@ namespace FieldDay.Debugging {
 #endif // DEVELOPMENT
         }
 
+        /// <summary>
+        /// Adds a toggle for the given category to a debug menu.
+        /// </summary>
+        static public void AddCategoryToggle(DMInfo info, int category, string name, DMPredicate predicate = null, int indent = 0) {
+            info.AddToggle(name, () => s_CategoryMask.IsSet(category), (b) => {
+                if (b) {
+                    EnableCategory(category);
+                } else {
+                    DisableCategory(category);
+                }
+            }, predicate, indent);
+        }
+
         #endregion // Static API
     }
 

@@ -3,6 +3,7 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Data;
 using FieldDay.Debugging;
+using FieldDay.Scenes;
 using ScriptableBake;
 using UnityEditor;
 using UnityEditor.Build;
@@ -85,6 +86,23 @@ namespace FieldDay.Editor {
                 Debug.LogFormat("[StripDebugSceneProcessor] Removing DebugConsole GameObjects from scene '{0}'", scene.name);
                 foreach (var obj in toRemoveConsole) {
                     GameObject.DestroyImmediate(obj.gameObject);
+                }
+            }
+
+            DevModeOnly[] toRemoveDevMode = GameObject.FindObjectsOfType<DevModeOnly>();
+            if (toRemoveDevMode.Length > 0) {
+                Debug.LogFormat("[StripDebugSceneProcessor] Removing {0} DevModeOnly GameObjects from scene '{1}'", toRemoveDevMode.Length, scene.name);
+                foreach (var obj in toRemoveDevMode) {
+                    GameObject.DestroyImmediate(obj.gameObject);
+                }
+            }
+
+            List<IDevModeOnly> devModeOnlyComponents = new List<IDevModeOnly>(256);
+            scene.GetAllComponents(true, devModeOnlyComponents);
+            if (devModeOnlyComponents.Count > 0) {
+                Debug.LogFormat("[StripDebugSceneProcessor] Removing {0} IDevModeOnly components from scene '{1}'", devModeOnlyComponents.Count, scene.name);
+                foreach (var obj in devModeOnlyComponents) {
+                    GameObject.DestroyImmediate(obj as UnityEngine.Component);
                 }
             }
         }

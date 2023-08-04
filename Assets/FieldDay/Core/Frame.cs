@@ -56,6 +56,20 @@ namespace FieldDay {
 
         #endregion // Index
 
+        #region Delta Time
+
+        /// <summary>
+        /// Delta time, in seconds.
+        /// </summary>
+        static public float DeltaTime;
+
+        /// <summary>
+        /// Unscaled delta time, in seconds.
+        /// </summary>
+        static public float UnscaledDeltaTime;
+
+        #endregion // Delta Time
+
         #region Allocator
 
         internal const int EditorHeapSize = 1024;

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using BeauData;
+using System.Diagnostics;
 using BeauUtil;
 using BeauUtil.Debugger;
 using UnityEngine;
@@ -17,6 +18,10 @@ using UnityEditor;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.Data {
+    /// <summary>
+    /// Attribute marking a static field as a configurable variable,
+    /// that will be serialized and automatically show up in the debug menu.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     public sealed class ConfigVar : PreserveAttribute {
         public enum FieldType {
@@ -44,6 +49,8 @@ namespace FieldDay.Data {
 
         private readonly int m_CreationIndex;
         static private int s_NextCreationIndex;
+
+        static private readonly Dictionary<StringHash32, CastableEvent<string>> s_Callbacks = new Dictionary<StringHash32, CastableEvent<string>>(16);
 
         #region Constructors
 
@@ -123,7 +130,7 @@ namespace FieldDay.Data {
                         m_Type = FieldType.Enum;
                         m_EnumInfo = ReflectionCache.EnumInfo(fieldType);
                         m_MinValue = 0;
-                        m_MaxValue = m_EnumInfo.Values.Length;
+                        m_MaxValue = m_EnumInfo.Values.Length - 1;
                         m_Increment = 1;
                     } else {
                         throw new ArgumentException(string.Format("Field '{0}::{1}' cannot be used as a config var - incompatible type '{2}'", field.DeclaringType.FullName, field.Name, field.FieldType.FullName));
@@ -156,8 +163,22 @@ namespace FieldDay.Data {
             return (T) field.GetValue(null);
         }
 
-        static private void Set<T>(FieldInfo field, T value) {
+        static private void Set<T>(FieldInfo field, string category, T value) {
             field.SetValue(null, value);
+            InvokeChangedCallback(field, category);
+        }
+
+        [Conditional("DEVELOPMENT")]
+        static private void InvokeChangedCallback(FieldInfo field, string category) {
+#if DEVELOPMENT
+            CastableEvent<string> categoryEvents;
+            if (s_Callbacks.TryGetValue(category, out categoryEvents)) {
+                categoryEvents.Invoke(field.Name);
+            }
+            if (s_Callbacks.TryGetValue(field.DeclaringType.Name, out categoryEvents)) {
+                categoryEvents.Invoke(field.Name);
+            }
+#endif // DEVELOPMENT
         }
 
         #endregion // Helpers
@@ -170,23 +191,23 @@ namespace FieldDay.Data {
         static public void CreateDebugMenu(DMInfo menu, ConfigVar cvar, DMPredicate predicate = null, int indent = 0) {
             switch (cvar.m_Type) {
                 case FieldType.Bool: {
-                    menu.AddToggle(cvar.DisplayName, () => Get<bool>(cvar.m_Field), (v) => Set(cvar.m_Field, v), predicate, indent);
+                    menu.AddToggle(cvar.DisplayName, () => Get<bool>(cvar.m_Field), (v) => Set(cvar.m_Field, cvar.Category, v), predicate, indent);
                     break;
                 }
                 case FieldType.Int: {
-                    menu.AddSlider(cvar.DisplayName, () => Get<int>(cvar.m_Field), (v) => Set(cvar.m_Field, (int) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
+                    menu.AddSlider(cvar.DisplayName, () => Get<int>(cvar.m_Field), (v) => Set(cvar.m_Field, cvar.Category, (int) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
                     break;
                 }
                 case FieldType.UInt: {
-                    menu.AddSlider(cvar.DisplayName, () => Get<uint>(cvar.m_Field), (v) => Set(cvar.m_Field, (uint) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
+                    menu.AddSlider(cvar.DisplayName, () => Get<uint>(cvar.m_Field), (v) => Set(cvar.m_Field, cvar.Category, (uint) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
                     break;
                 }
                 case FieldType.Float: {
-                    menu.AddSlider(cvar.DisplayName, () => Get<float>(cvar.m_Field), (v) => Set(cvar.m_Field, (float) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
+                    menu.AddSlider(cvar.DisplayName, () => Get<float>(cvar.m_Field), (v) => Set(cvar.m_Field, cvar.Category, (float) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
                     break;
                 }
                 case FieldType.Double: {
-                    menu.AddSlider(cvar.DisplayName, () => (float) Get<double>(cvar.m_Field), (v) => Set(cvar.m_Field, (double) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
+                    menu.AddSlider(cvar.DisplayName, () => (float) Get<double>(cvar.m_Field), (v) => Set(cvar.m_Field, cvar.Category, (double) v), cvar.m_MinValue, cvar.m_MaxValue, cvar.m_Increment, (DMFloatTextDelegate) null, predicate, indent);
                     break;
                 }
                 case FieldType.Enum: {
@@ -195,9 +216,9 @@ namespace FieldDay.Data {
                     }, (f) => {
                         int idx = (int) f;
                         if (idx >= 0 && idx < cvar.m_EnumInfo.Values.Length) {
-                            Set(cvar.m_Field, cvar.m_EnumInfo.Values[idx]);
+                            Set(cvar.m_Field, cvar.Category, cvar.m_EnumInfo.Values[idx]);
                         }
-                    }, 0, cvar.m_EnumInfo.Values.Length, 1,
+                    }, 0, cvar.m_EnumInfo.Values.Length - 1, 1,
                     (f) => {
                         int idx = (int) f;
                         if (idx < 0 || idx >= cvar.m_EnumInfo.Values.Length) {
@@ -305,7 +326,7 @@ namespace FieldDay.Data {
                     if (val != null) {
                         if ((flags & ReadFlags.WarnOnPotentialConflicts) != 0) {
                             object current = cvar.m_Field.GetValue(null);
-                            if (!current.Equals(cvar.m_ProgrammerDefault)) {
+                            if (!current.Equals(cvar.m_ProgrammerDefault) && !current.Equals(cvar.m_ActiveDefault)) {
                                 Log.Warn("[ConfigVar] Potential conflict on '{0}' - overwriting existing non-default value {1} with {2}", cvar.m_DataName, current, val);
                             }
                         }
@@ -313,11 +334,14 @@ namespace FieldDay.Data {
                         if ((flags & ReadFlags.BindValuesAsDefault) != 0) {
                             cvar.m_ActiveDefault = val;
                         }
+                        InvokeChangedCallback(cvar.m_Field, cvar.Category);
                     }
                 } else if ((flags & ReadFlags.OverwriteMissingWithDefaults) != 0) {
                     cvar.m_Field.SetValue(null, cvar.m_ActiveDefault);
+                    InvokeChangedCallback(cvar.m_Field, cvar.Category);
                 } else if ((flags & ReadFlags.OverwriteMissingWithProgrammerDefaults) != 0) {
                     cvar.m_Field.SetValue(null, cvar.m_ProgrammerDefault);
+                    InvokeChangedCallback(cvar.m_Field, cvar.Category);
                 }
             }
         }
@@ -329,6 +353,7 @@ namespace FieldDay.Data {
             foreach (var cvar in vars) {
                 cvar.m_Field.SetValue(null, cvar.m_ProgrammerDefault);
                 cvar.m_ActiveDefault = cvar.m_ProgrammerDefault;
+                InvokeChangedCallback(cvar.m_Field, cvar.Category);
             }
         }
 
@@ -338,6 +363,7 @@ namespace FieldDay.Data {
         static public void Reset(IEnumerable<ConfigVar> vars) {
             foreach (var cvar in vars) {
                 cvar.m_Field.SetValue(null, cvar.m_ActiveDefault);
+                InvokeChangedCallback(cvar.m_Field, cvar.Category);
             }
         }
 
@@ -382,7 +408,7 @@ namespace FieldDay.Data {
                     kv.Attribute.Bind(kv.Info);
                     list.Add(kv.Attribute);
                 } catch(Exception e) {
-                    Debug.LogException(e);
+                    UnityEngine.Debug.LogException(e);
                 }
             }
             list.Sort((a, b) => {
@@ -419,7 +445,7 @@ namespace FieldDay.Data {
             Log.Msg("[ConfigVar] Wrote all {0} modified values to '" + ResourceFilePath + "'", changes.Count);
             AssetDatabase.ImportAsset(ResourceFilePath);
 #else
-            Debug.LogError("[ConfigVar] Cannot write config vars to resources outside of the editor");
+            UnityEngine.Debug.LogError("[ConfigVar] Cannot write config vars to resources outside of the editor");
 #endif // UNITY_EDITOR
         }
 
@@ -436,7 +462,7 @@ namespace FieldDay.Data {
                 try {
                     changes = JSON.Parse(resource.text);
                 } catch(Exception e) {
-                    Debug.LogException(e);
+                    UnityEngine.Debug.LogException(e);
                     changes = null;
                 } finally {
                     Resources.UnloadAsset(resource);
@@ -475,7 +501,7 @@ namespace FieldDay.Data {
                 try {
                     changes = JSON.Parse(val);
                 } catch(Exception e) {
-                    Debug.LogException(e);
+                    UnityEngine.Debug.LogException(e);
                     changes = null;
                 }
             }
@@ -497,5 +523,37 @@ namespace FieldDay.Data {
         }
 
         #endregion // Serialization
+
+        #region Callbacks
+
+        /// <summary>
+        /// Registers a callback to be invoked when a config variable is modified.
+        /// </summary>
+        [Conditional("DEVELOPMENT_BUILD"), Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR")]
+        static public void RegisterModifiedCallback(string categoryOrGroup, Action<string> callback) {
+#if DEVELOPMENT
+            StringHash32 id = categoryOrGroup;
+            if (!s_Callbacks.TryGetValue(id, out CastableEvent<string> callbacks)) {
+                callbacks = new CastableEvent<string>(4);
+                s_Callbacks.Add(id, callbacks);
+            }
+            callbacks.Register(callback);
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Deregisters a callback to be invoked when a config variable is modified.
+        /// </summary>
+        [Conditional("DEVELOPMENT_BUILD"), Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR")]
+        static public void DeregisterModifiedCallback(string categoryOrGroup, Action<string> callback) {
+#if DEVELOPMENT
+            StringHash32 id = categoryOrGroup;
+            if (s_Callbacks.TryGetValue(id, out CastableEvent<string> callbacks)) {
+                callbacks.Deregister(callback);
+            }
+#endif // DEVELOPMENT
+        }
+
+        #endregion // Callbacks
     }
 }

@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEditorInternal;
 using Zavala.Roads;
 
 namespace Zavala.Sim {
@@ -19,6 +17,8 @@ namespace Zavala.Sim {
 
             Height = SimBuffer.Create<ushort>(size);
             Regions = SimBuffer.Create<ushort>(size);
+
+            SimBuffer.Clear(Regions, (ushort) 0);
         }
     }
 

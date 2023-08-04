@@ -7,6 +7,7 @@ namespace Zavala.Input {
         // mouse state
         [NonSerialized] public Vector2 ScreenMousePos;
         [NonSerialized] public Vector2 ViewportMousePos;
+        [NonSerialized] public Ray ViewportMouseRay;
         [NonSerialized] public Vector2 ScrollWheel;
         [NonSerialized] public Vector2 MousePressedPosPrev;
         [NonSerialized] public bool MouseDragging;
