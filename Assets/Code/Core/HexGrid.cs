@@ -520,7 +520,7 @@ namespace Zavala {
             return false;
         }
 
-        static public bool Adjacent(in int a, in int b, HexGridSize gridSize) {
+        static public bool Adjacent(int a, int b, HexGridSize gridSize) {
             return Adjacent(gridSize.FastIndexToPos(a), gridSize.FastIndexToPos(b));
         }
 

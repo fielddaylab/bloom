@@ -31,6 +31,7 @@ namespace Zavala.Sim {
                 foreach (int tile in m_StateA.Algae.GrowingTiles) {
                     ref float algaeGrowth = ref m_StateA.Algae.State[tile].PercentAlgae;
                     // trigger algae events
+                    // TODO: don't dispatch events if algae has already peaked
                     DispatchGrowthEvent(algaeGrowth, tile);
                     // increment by step
                     algaeGrowth += AlgaeSim.AlgaeGrowthIncrement;
@@ -55,6 +56,7 @@ namespace Zavala.Sim {
         /// <param name="tileIndex"></param>
         private void InstantiateAlgae (SimGridState grid, int tileIndex) {
             // TODO: grow algae object based on growth state?
+            // associate with 
             GameObject newAlgae = Instantiate(m_StateA.AlgaePrefab);
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
