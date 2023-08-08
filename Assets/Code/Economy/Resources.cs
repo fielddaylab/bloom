@@ -65,7 +65,15 @@ namespace Zavala.Economy {
                 }
             }
         }
-
+        /// <summary>
+        /// Sets
+        /// </summary>
+        /// <param name="num">Number to set all values to</param>
+        public void SetAll(int num) {
+            foreach(ResourceId id in Enum.GetValues(typeof(ResourceId))) {
+                this[id] = num;
+            }
+        }
         /// <summary>
         /// Gets a mask of all resources with a non-zero value.
         /// </summary>

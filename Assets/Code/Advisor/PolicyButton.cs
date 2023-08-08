@@ -31,7 +31,9 @@ namespace Zavala.Advisor {
 
         public void SetPolicy(int policyIndex) {
             // try to set a policy: if successful, close the policies menu
-            if (Game.SharedState.Get<PolicyState>().SetPolicy(ButtonPolicy, policyIndex)) {
+            // TODO: get current region index instead of hardcoding 0
+            int regionIndex = 0;
+            if (Game.SharedState.Get<PolicyState>().SetPolicyByIndex(ButtonPolicy, policyIndex, regionIndex)) {
                 Text.text = ButtonPolicy.ToString() + ": " + policyIndex;
                 TryGetComponent(out Toggle toggle);
                 toggle.isOn = false;
@@ -41,13 +43,5 @@ namespace Zavala.Advisor {
 
 
     }
-
-    public enum PolicyType : byte {
-        RunoffPenalty,
-        Skimming,
-        ExportTax,
-        SalesTax
-    }
-
 
 }

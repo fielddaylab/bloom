@@ -11,6 +11,7 @@ namespace Zavala.Economy {
 
         [Header("Per-Region")]
         public PurchaseCosts[] PurchasePerRegion = new PurchaseCosts[RegionInfo.MaxRegions];
+        [NonSerialized]
         public PurchaseCostAdjustments[] UserAdjustmentsPerRegion = new PurchaseCostAdjustments[RegionInfo.MaxRegions];
     }
 
