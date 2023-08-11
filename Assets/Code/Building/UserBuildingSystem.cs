@@ -2,14 +2,11 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using Zavala.Input;
 using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
-using static UnityEditor.PlayerSettings;
 
 namespace Zavala.Building
 {
