@@ -120,9 +120,6 @@ namespace Zavala.Roads {
         static public void StageRoad(RoadNetwork network, SimGridState grid, int tileIndex, TileDirection[] toStage) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
-            // TODO: check if road already exists in that tile/direction
-
-            // add a road leading in all directions
             // tileInfo.FlowMask[TileDirection.Self] = true; // doesn't seem to be necessary for road connection assessment
 
             Debug.Log("[StagingRoad] Begin staging tile " + tileIndex + " in directions : " + toStage.ToString());
