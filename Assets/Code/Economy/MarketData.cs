@@ -3,11 +3,16 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.SharedState;
+using UnityEditor.PackageManager.Requests;
+using UnityEditor.SceneManagement;
+using Zavala.Roads;
 using Zavala.Sim;
 
-namespace Zavala.Economy {
+namespace Zavala.Economy
+{
     [SharedStateInitOrder(10)]
-    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks {
+    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks
+    {
         public SimTimer MarketTimer;
 
         public RingBuffer<ResourceRequester> Buyers;
@@ -30,7 +35,8 @@ namespace Zavala.Economy {
         }
     }
 
-    public struct MarketSupplierPriorityList {
+    public struct MarketSupplierPriorityList
+    {
         public RingBuffer<MarketSupplierPriorityInfo> PrioritizedBuyers;
 
         public void Create() {
@@ -38,14 +44,16 @@ namespace Zavala.Economy {
         }
     }
 
-    public struct MarketSupplierPriorityInfo {
+    public struct MarketSupplierPriorityInfo
+    {
         public ResourceRequester Target;
         public ResourceMask Mask;
         public int Distance;
         public int Profit;
     }
 
-    public struct MarketRequestInfo {
+    public struct MarketRequestInfo
+    {
         public ResourceRequester Requester;
         public ResourceBlock Requested;
         public int Age;
@@ -57,7 +65,8 @@ namespace Zavala.Economy {
         }
     }
 
-    public struct MarketActiveRequestInfo {
+    public struct MarketActiveRequestInfo
+    {
         public ResourceSupplier Supplier;
         public ResourceRequester Requester;
         public ResourceBlock Requested;
@@ -81,7 +90,8 @@ namespace Zavala.Economy {
     /// <summary>
     /// Market utility methods.
     /// </summary>
-    static public class MarketUtility {
+    static public class MarketUtility
+    {
         #region Register
 
         static public void RegisterBuyer(ResourceRequester requester) {

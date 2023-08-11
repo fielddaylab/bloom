@@ -47,9 +47,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59d7f4f5f1903f543a7e321a81b42616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TopRenderer: {fileID: 0}
-  PillarRenderer: {fileID: 0}
+  TopRenderer: {fileID: 8631905871472172082}
+  PillarRenderer: {fileID: 8374076518350958567}
   Decorations: []
+  TopDefaultMat: {fileID: -4629791453557265533, guid: 0ce56753a331abf4cbc2f46a4a12add6, type: 3}
+  PillarDefaultMat: {fileID: 5821422650823060788, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}
 --- !u!136 &3680174520802473011
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -206,6 +208,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0ce56753a331abf4cbc2f46a4a12add6, type: 3}
   m_PrefabInstance: {fileID: 6920665976477810870}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &8631905871472172082 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 0ce56753a331abf4cbc2f46a4a12add6, type: 3}
+  m_PrefabInstance: {fileID: 6920665976477810870}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7203269663136756579
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -278,5 +285,10 @@ PrefabInstance:
 --- !u!4 &7241118484046828680 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}
+  m_PrefabInstance: {fileID: 7203269663136756579}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8374076518350958567 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}
   m_PrefabInstance: {fileID: 7203269663136756579}
   m_PrefabAsset: {fileID: 0}

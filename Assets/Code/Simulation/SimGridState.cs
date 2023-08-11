@@ -56,7 +56,7 @@ namespace Zavala.Sim {
 
             // TEMP TESTING ----
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            GenerateBasicRoad(grid, network);
+            // GenerateBasicRoad(grid, network);
             // -----------------
 
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
@@ -101,13 +101,21 @@ namespace Zavala.Sim {
         /// Generates a predefined road on the grid. Used for initial testing purposes.
         /// </summary>
         static public void GenerateBasicRoad(SimGridState grid, RoadNetwork network) {
-            RoadUtility.AddRoad(network, grid, 26);
-            RoadUtility.AddRoad(network, grid, 36);
-            RoadUtility.AddRoad(network, grid, 46);
-            RoadUtility.AddRoad(network, grid, 56);
-            RoadUtility.AddRoad(network, grid, 66);
-            RoadUtility.AddRoad(network, grid, 76);
-            RoadUtility.AddRoad(network, grid, 77);
+            TileDirection[] allDirs = new TileDirection[] {
+                TileDirection.N,
+                TileDirection.S,
+                TileDirection.NE,
+                TileDirection.NW,
+                TileDirection.SE,
+                TileDirection.SW
+            };
+            RoadUtility.AddRoadImmediate(network, grid, 26, true, allDirs);
+            RoadUtility.AddRoadImmediate(network, grid, 36, false, allDirs);
+            RoadUtility.AddRoadImmediate(network, grid, 46, false, allDirs);
+            RoadUtility.AddRoadImmediate(network, grid, 56, false, allDirs);
+            RoadUtility.AddRoadImmediate(network, grid, 66, false, allDirs);
+            RoadUtility.AddRoadImmediate(network, grid, 76, false, allDirs);
+            RoadUtility.AddRoadImmediate(network, grid, 77, true, allDirs);
         }
 
         /// <summary>

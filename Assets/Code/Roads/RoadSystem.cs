@@ -17,11 +17,6 @@ namespace Zavala.Roads
     [SysUpdate(GameLoopPhase.Update, 0)]
     public class RoadSystem : SharedStateSystemBehaviour<RoadNetwork, SimGridState>
     {
-        private struct TileRoadData
-        {
-            // any road connection data here
-            public int TileIdx;
-        }
 
         public override void ProcessWork(float deltaTime) {
             // TODO: implement trigger to notify of needed update
@@ -108,47 +103,54 @@ namespace Zavala.Roads
 
                 // At the start, there will always be at least the first node
                 bool setExhausted = false;
+                bool startingNode = true;
 
                 // Algorithm finishes when the smallest tentative distance among nodes in the unvisited set is infinity (uint.MaxValue), or if the unvisited set is empty
                 while (!setExhausted) {
                     // For the current node, check all (valid) unvisited neighbors and calculate tentative distances to current node.
                     {
-                        // Get all tiles connected by roads leading out of current tile
-                        List<int> unvisitedNeighborList = new List<int>();
+                        bool isRoad = (infoBuffer[(int)currNode.TileIdx].Flags & RoadFlags.IsRoad) != 0;
+                        bool isRoadAnchor = (infoBuffer[(int)currNode.TileIdx].Flags & RoadFlags.IsRoadAnchor) != 0;
+                        if (isRoadAnchor && !isRoad && !startingNode) {
+                            // stop road path search at a roadAnchor, unless it is also a road or the starting node
+                        }
+                        else {
+                            // Get all tiles connected by roads leading out of current tile
+                            List<int> unvisitedNeighborList = new List<int>();
 
-                        // TODO: maybe package this code block into a reusable function (originally repurposed from Tile.GatherAdjacencySetWithIdx<>)
-                        RoadTileInfo center = infoBuffer[(int)currNode.TileIdx];
-                        HexVector pos = gridSize.FastIndexToPos((int)currNode.TileIdx);
-                        for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
-                            HexVector adjPos = HexVector.Offset(pos, dir);
-                            if (!gridSize.IsValidPos(adjPos)) {
-                                continue;
-                            }
-
-                            // if flows out to this direction
-                            int adjIdx = gridSize.FastPosToIndex(adjPos);
-                            if (center.FlowMask[dir]) {
-                                // Distill to only those in the unvisited set
-                                if (SetContains(universalSet, adjIdx)) {
-                                    unvisitedNeighborList.Add(adjIdx);
+                            // TODO: maybe package this code block into a reusable function (originally repurposed from Tile.GatherAdjacencySetWithIdx<>)
+                            RoadTileInfo center = infoBuffer[(int)currNode.TileIdx];
+                            HexVector pos = gridSize.FastIndexToPos((int)currNode.TileIdx);
+                            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                                HexVector adjPos = HexVector.Offset(pos, dir);
+                                if (!gridSize.IsValidPos(adjPos)) {
+                                    continue;
                                 }
-                            }
-                            else {
-                                // if they flow into this tile
-                                RoadTileInfo adjInfo = infoBuffer[(int)adjIdx];
-                                TileDirection inverseDir = gridSize.InvertDir(dir);
-                                if (adjInfo.FlowMask[inverseDir]) {
+
+                                // if this tile flows out to curr direction
+                                int adjIdx = gridSize.FastPosToIndex(adjPos);
+                                if (center.FlowMask[dir]) {
+                                    // Distill to only those in the unvisited set
                                     if (SetContains(universalSet, adjIdx)) {
                                         unvisitedNeighborList.Add(adjIdx);
                                     }
                                 }
+                                else {
+                                    // if another tile flows into this tile from curr direction
+                                    RoadTileInfo adjInfo = infoBuffer[(int)adjIdx];
+                                    TileDirection inverseDir = gridSize.InvertDir(dir);
+                                    if (adjInfo.FlowMask[inverseDir]) {
+                                        if (SetContains(universalSet, adjIdx)) {
+                                            unvisitedNeighborList.Add(adjIdx);
+                                        }
+                                    }
+                                }
                             }
-                        }
 
-
-                        // Update distances for all unvisited neighbors
-                        for (int i = 0; i < unvisitedNeighborList.Count; i++) {
-                            UpdateTentativeDistance(universalSet, unvisitedNeighborList[i], currNode.TentativeDistance + 1);
+                            // Update distances for all unvisited neighbors
+                            for (int i = 0; i < unvisitedNeighborList.Count; i++) {
+                                UpdateTentativeDistance(universalSet, unvisitedNeighborList[i], currNode.TentativeDistance + 1);
+                            }
                         }
 
                         // Mark the current node as visited; remove from the unvisited set, add it to allConnections
@@ -159,6 +161,7 @@ namespace Zavala.Roads
                         GraphNode nextNode;
                         setExhausted = !TryGetNextNode(universalSet, out nextNode);
                         currNode = nextNode;
+                        startingNode = false;
                     }
                 }
             }

@@ -47,8 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TopRenderer: {fileID: 0}
-  PillarRenderer: {fileID: 0}
+  PillarRenderer: {fileID: 8374076518350958567}
   Decorations: []
+  TopDefaultMat: {fileID: 0}
+  PillarDefaultMat: {fileID: 0}
 --- !u!136 &3680174520802473011
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -175,5 +177,10 @@ PrefabInstance:
 --- !u!4 &7241118484046828680 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}
+  m_PrefabInstance: {fileID: 7203269663136756579}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8374076518350958567 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 72bc8a5e207850445bc137bae39dd00f, type: 3}
   m_PrefabInstance: {fileID: 7203269663136756579}
   m_PrefabAsset: {fileID: 0}
