@@ -14,8 +14,8 @@ namespace Zavala.Building
     [SysUpdate(GameLoopPhase.Update)]
     public class UserBuildingSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BuildToolState, SimWorldState>
     {
-        private static int CODE_INVALID = -1; // tried to build a road on an invalid spot
-        private static int CODE_UNCHANGED = -2; // tried to build a road on the same spot as last work process
+        private static int CODE_INVALID = -1; // tried to use a tool on an invalid spot
+        private static int CODE_UNCHANGED = -2; // tried to use a tool on the same spot as last work process
 
         #region Inspector
 

@@ -3989,6 +3989,7 @@ GameObject:
   - component: {fileID: 594461917}
   - component: {fileID: 594461918}
   - component: {fileID: 594461919}
+  - component: {fileID: 594461920}
   m_Layer: 0
   m_Name: Sim
   m_TagString: Untagged
@@ -4149,6 +4150,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InitialCapacity: 16
+--- !u!114 &594461920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594461906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe69b8ba225ae84fbe051fd6f3b6a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InitialCapacity: 64
 --- !u!1 &600160649
 GameObject:
   m_ObjectHideFlags: 0
@@ -8465,6 +8479,8 @@ GameObject:
   - component: {fileID: 1501605411}
   - component: {fileID: 1501605412}
   - component: {fileID: 1501605413}
+  - component: {fileID: 1501605415}
+  - component: {fileID: 1501605414}
   m_Layer: 7
   m_Name: City
   m_TagString: Untagged
@@ -8640,6 +8656,49 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1501605414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501605402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabbd25f34c64994598bf0e604b7a8b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ProducesAmt: 10
+  Requires:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 1
+--- !u!114 &1501605415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501605402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c26cbac4a5ef2ee4ab02d5cebd80384c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Capacity:
+    Manure: 8
+    MFertilizer: 8
+    DFertilizer: 8
+    Grain: 8
+    Milk: 8
+  Current:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 1
 --- !u!1 &1504388303
 GameObject:
   m_ObjectHideFlags: 0
@@ -10376,6 +10435,8 @@ GameObject:
   - component: {fileID: 1875672166}
   - component: {fileID: 1875672174}
   - component: {fileID: 1875672175}
+  - component: {fileID: 1875672177}
+  - component: {fileID: 1875672176}
   m_Layer: 7
   m_Name: City (1)
   m_TagString: Untagged
@@ -10551,6 +10612,49 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1875672176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875672165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabbd25f34c64994598bf0e604b7a8b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ProducesAmt: 10
+  Requires:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 1
+--- !u!114 &1875672177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875672165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c26cbac4a5ef2ee4ab02d5cebd80384c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Capacity:
+    Manure: 8
+    MFertilizer: 8
+    DFertilizer: 8
+    Grain: 8
+    Milk: 8
+  Current:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 1
 --- !u!1 &1911783916
 GameObject:
   m_ObjectHideFlags: 0

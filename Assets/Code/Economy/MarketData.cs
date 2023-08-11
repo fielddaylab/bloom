@@ -162,7 +162,7 @@ namespace Zavala.Economy
         #region Production
 
         /// <summary>
-        /// Returns if the given producer can produce right away.
+        /// Returns if the given resource producer can produce right away.
         /// </summary>
         static public bool CanProduceNow(ResourceProducer producer, out ResourceBlock produced) {
             ResourceStorage storage = producer.Storage;
@@ -172,6 +172,19 @@ namespace Zavala.Economy
             }
 
             return ResourceBlock.CanAddFull(storage.Current, produced, storage.Capacity) && ResourceBlock.Fulfills(storage.Current, producer.Requires);
+        }
+
+        /// <summary>
+        /// Returns if the given money producer can produce right away.
+        /// </summary>
+        static public bool CanProduceNow(MoneyProducer producer, out int producedAmt) {
+            ResourceStorage storage = producer.Storage;
+            producedAmt = producer.ProducesAmt;
+            if (producedAmt == 0) {
+                return false;
+            }
+
+            return ResourceBlock.Fulfills(storage.Current, producer.Requires);
         }
 
         #endregion // Production
