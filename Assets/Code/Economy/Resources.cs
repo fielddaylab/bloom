@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using BeauPools;
 using BeauUtil;
+using BeauUtil.Debugger;
 
 namespace Zavala.Economy {
     /// <summary>
@@ -50,6 +51,7 @@ namespace Zavala.Economy {
         public int this[ResourceId id] {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
+                Assert.True(id >= 0 && id < ResourceId.COUNT, "ResourceId out of range");
                 unsafe {
                     fixed (int* start = &Manure) {
                         return *(start + (int) id);
@@ -58,6 +60,7 @@ namespace Zavala.Economy {
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
+                Assert.True(id >= 0 && id < ResourceId.COUNT, "ResourceId out of range");
                 unsafe {
                     fixed (int* start = &Manure) {
                         *(start + (int) id) = value;
@@ -66,14 +69,12 @@ namespace Zavala.Economy {
             }
         }
         /// <summary>
-        /// Sets
+        /// Sets the value of all resources.
         /// </summary>
-        /// <param name="num">Number to set all values to</param>
-        public void SetAll(int num) {
-            foreach(ResourceId id in Enum.GetValues(typeof(ResourceId))) {
-                this[id] = num;
-            }
+        public void SetAll(int value) {
+            Manure = MFertilizer = DFertilizer = Grain = Milk = value;
         }
+
         /// <summary>
         /// Gets a mask of all resources with a non-zero value.
         /// </summary>

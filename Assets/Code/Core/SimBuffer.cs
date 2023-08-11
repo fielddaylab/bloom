@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using BeauUtil;
 using System;
 using UnityEngine.UIElements;
+using BeauUtil.Debugger;
 
 namespace Zavala {
     /// <summary>
@@ -21,7 +22,10 @@ namespace Zavala {
         /// </summary>
         public ref T this[int index] {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return ref Buffer[index]; }
+            get {
+                Assert.True(index >= 0 && index < Length, "Index out of range");
+                return ref Buffer[index];
+            }
         }
 
         /// <summary>
@@ -29,6 +33,7 @@ namespace Zavala {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T* Ptr(int index) {
+            Assert.True(index >= 0 && index < Length, "Index out of range");
             return Buffer + index;
         }
     }
