@@ -5,9 +5,11 @@ using FieldDay;
 using FieldDay.SharedState;
 using Zavala.Sim;
 
-namespace Zavala.Economy {
+namespace Zavala.Economy
+{
     [SharedStateInitOrder(10)]
-    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks {
+    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks
+    {
         public SimTimer MarketTimer;
 
         public RingBuffer<ResourceRequester> Buyers;
@@ -30,7 +32,8 @@ namespace Zavala.Economy {
         }
     }
 
-    public struct MarketSupplierPriorityList {
+    public struct MarketSupplierPriorityList
+    {
         public RingBuffer<MarketSupplierPriorityInfo> PrioritizedBuyers;
 
         public void Create() {
@@ -38,14 +41,16 @@ namespace Zavala.Economy {
         }
     }
 
-    public struct MarketSupplierPriorityInfo {
+    public struct MarketSupplierPriorityInfo
+    {
         public ResourceRequester Target;
         public ResourceMask Mask;
         public int Distance;
         public int Profit;
     }
 
-    public struct MarketRequestInfo {
+    public struct MarketRequestInfo
+    {
         public ResourceRequester Requester;
         public ResourceBlock Requested;
         public int Age;
@@ -57,7 +62,8 @@ namespace Zavala.Economy {
         }
     }
 
-    public struct MarketActiveRequestInfo {
+    public struct MarketActiveRequestInfo
+    {
         public ResourceSupplier Supplier;
         public ResourceRequester Requester;
         public ResourceBlock Requested;
@@ -81,7 +87,8 @@ namespace Zavala.Economy {
     /// <summary>
     /// Market utility methods.
     /// </summary>
-    static public class MarketUtility {
+    static public class MarketUtility
+    {
         #region Register
 
         static public void RegisterBuyer(ResourceRequester requester) {
@@ -155,7 +162,7 @@ namespace Zavala.Economy {
         #region Production
 
         /// <summary>
-        /// Returns if the given producer can produce right away.
+        /// Returns if the given resource producer can produce right away.
         /// </summary>
         static public bool CanProduceNow(ResourceProducer producer, out ResourceBlock produced) {
             ResourceStorage storage = producer.Storage;
@@ -165,6 +172,19 @@ namespace Zavala.Economy {
             }
 
             return ResourceBlock.CanAddFull(storage.Current, produced, storage.Capacity) && ResourceBlock.Fulfills(storage.Current, producer.Requires);
+        }
+
+        /// <summary>
+        /// Returns if the given money producer can produce right away.
+        /// </summary>
+        static public bool CanProduceNow(MoneyProducer producer, out int producedAmt) {
+            ResourceStorage storage = producer.Storage;
+            producedAmt = producer.ProducesAmt;
+            if (producedAmt == 0) {
+                return false;
+            }
+
+            return ResourceBlock.Fulfills(storage.Current, producer.Requires);
         }
 
         #endregion // Production

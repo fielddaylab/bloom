@@ -10,6 +10,10 @@ namespace Zavala.World {
         public Renderer TopRenderer;
         public Renderer PillarRenderer;
         public Renderer[] Decorations;
+
+        public Material TopDefaultMat;
+        public Material PillarDefaultMat;
+
         //[NonSerialized] public int index;
 
         //static private GUIStyle centerStyle;
