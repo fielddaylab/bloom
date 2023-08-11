@@ -9,6 +9,7 @@ using Zavala.Input;
 using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
+using static UnityEditor.PlayerSettings;
 
 namespace Zavala.Building
 {
@@ -135,6 +136,13 @@ namespace Zavala.Building
             else {
                 // Continue building road
 
+                // Verify road is continuous
+                if (!IsContinuous(grid.HexSize, m_StateC.RoadToolState.PrevTileIndex, tileIndex)) {
+                    Debug.Log("[UserBuildingSystem] Cannot build a non-continuous road");
+                    CancelRoad(grid, network);
+                    return;
+                }
+
                 if (m_StateC.RoadToolState.TracedTileIdxs.Contains(tileIndex)) {
                     // Handle a change to a tile that is already part of the road to be built
                     // don't add to list, and rewind back to that tile
@@ -143,13 +151,6 @@ namespace Zavala.Building
                     int numToUnstage = m_StateC.RoadToolState.TracedTileIdxs.Count - 1 - rewindIndex;
                     Debug.Log("[UserBuildingSystem] num to unstage: " + numToUnstage);
                     RewindStagedRoads(grid, network, rewindIndex);
-
-                    /* Uncomment if staging involves physical prefabs/pooled objects
-                    int lowerBound = m_StateC.RoadToolState.StagedBuilds.Count - 1 - numToUnstage;
-                    for (int i = m_StateC.RoadToolState.StagedBuilds.Count - 1; i > lowerBound; i--) {
-                        // remove any rewound prefabs/pooled objects
-                    }
-                    */
 
                     Debug.Log("[UserBuildingSystem] rewound to index " + rewindIndex);
                 }
@@ -238,6 +239,24 @@ namespace Zavala.Building
             SetStagingRenderer(tileIndex, true);
 
             // RoadUtility.AddRoadImmediate(Game.SharedState.Get<RoadNetwork>(), grid, tileIndex); // temp debug
+        }
+
+        private bool IsContinuous(HexGridSize hexSize, int prevIndex, int currIndex) {
+            HexVector currPos = hexSize.FastIndexToPos(currIndex);
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                HexVector adjPos = HexVector.Offset(currPos, dir);
+                if (!hexSize.IsValidPos(adjPos)) {
+                    continue;
+                }
+                int adjIdx = hexSize.PosToIndex(adjPos);
+                if (adjIdx == prevIndex) {
+                    // prev tile found in adj neighbors
+                    return true;
+                }
+            }
+
+            // prev tile not found anywhere in adj neighbors
+            return false;
         }
 
         /// <summary>
