@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1871,7 +1871,7 @@ GameObject:
   - component: {fileID: 397888516}
   - component: {fileID: 397888515}
   m_Layer: 5
-  m_Name: DigesterToggle
+  m_Name: StorageToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1911,7 +1911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5421bb5157c6457498e757d82e5edef0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ButtonTool: 4
+  ButtonTool: 3
 --- !u!114 &397888516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7167,6 +7167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db05eb6191f25e43a3c5455a6a2c5b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Digester: {fileID: 4665823543789613534, guid: d0061f3c86234f74b9cf5c0c6c73d1ce, type: 3}
 --- !u!114 &1278410803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12336,7 +12337,7 @@ GameObject:
   - component: {fileID: 2141201293}
   - component: {fileID: 2141201292}
   m_Layer: 5
-  m_Name: StorageToggle
+  m_Name: DigesterToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12376,7 +12377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5421bb5157c6457498e757d82e5edef0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ButtonTool: 3
+  ButtonTool: 4
 --- !u!114 &2141201293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12416,7 +12417,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1390062230}
   toggleTransition: 1
   graphic: {fileID: 1389850975}

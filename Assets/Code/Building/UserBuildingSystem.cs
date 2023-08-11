@@ -25,14 +25,13 @@ namespace Zavala.Building
 
         public override void ProcessWork(float deltaTime) {
             UserBuildTool toolInUse = ToolInUse(); // the tool that is actively being applied via button inputs
+            SimGridState grid = ZavalaGame.SimGrid;
             if (toolInUse != UserBuildTool.None) {
                 SimWorldState world = m_StateD;
-                SimGridState grid = ZavalaGame.SimGrid;
                 RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
                 TryBuildTile(grid, network, toolInUse, RaycastTileIndex(world, grid));
             }
             else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
-                SimGridState grid = ZavalaGame.SimGrid;
                 RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
 
                 // Road tool has stopped being applied, but the previous road was not finished
@@ -109,6 +108,15 @@ namespace Zavala.Building
                     break;
                 case UserBuildTool.Road:
                     TryBuildRoad(grid, network, tileIndex);
+                    break;
+                case UserBuildTool.Digester:
+                    GameObject d = Instantiate(m_StateC.Digester);
+                    d.SetActive(false);
+                    // TODO: would it be easier to gather the world position when raycasting and pass through to here?
+                    d.transform.position = HexVector.ToWorld(tileIndex, grid.Terrain.Height[tileIndex], m_StateD.WorldSpace);
+                    d.SetActive(true);
+                    break;
+                case UserBuildTool.Storage:
                     break;
                 default:
                     break;
