@@ -10988,6 +10988,8 @@ MonoBehaviour:
   - {fileID: 462343505}
   - {fileID: 1307630948}
   - {fileID: 2101602958}
+  m_affordableColor: {r: 0.9960785, g: 0.8980393, b: 0, a: 1}
+  m_unaffordableColor: {r: 0.8301887, g: 0.40256318, b: 0.40256318, a: 1}
   m_ySpacing: 100
 --- !u!1 &1806060017
 GameObject:

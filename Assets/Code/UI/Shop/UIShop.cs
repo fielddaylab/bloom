@@ -43,6 +43,10 @@ namespace Zavala.UI {
             m_expandRoutine.Replace(CollapseRoutine());
         }
 
+        public void RefreshCostChecks(int currBudget) {
+            m_shopBtnHub.CheckCosts(currBudget);
+        }
+
         #region Handlers
 
         private void HandleExpandBtnClicked() {

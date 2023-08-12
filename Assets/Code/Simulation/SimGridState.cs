@@ -26,6 +26,7 @@ namespace Zavala.Sim {
         [NonSerialized] public TerrainBuffers Terrain;
         [NonSerialized] public SimBuffer<RegionInfo> Regions;
         [NonSerialized] public uint RegionCount;
+        [NonSerialized] public uint CurrRegionIndex;
 
         [NonSerialized] public HashSet<uint> UpdatedRegions = new HashSet<uint>();
         
@@ -41,6 +42,7 @@ namespace Zavala.Sim {
             Terrain.Create(HexSize);
             Regions = SimBuffer.Create<RegionInfo>(HexSize);
             RegionCount = 0;
+            CurrRegionIndex = 0;
             Random = new System.Random((int) (Environment.TickCount ^ DateTime.UtcNow.ToFileTimeUtc()));
 
             GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this));

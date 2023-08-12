@@ -10,6 +10,8 @@ namespace Zavala.UI
         private int m_selectedIndex;
 
         [SerializeField] private ShopItemButton[] m_shopItemBtns;
+        [SerializeField] private Color m_affordableColor;
+        [SerializeField] private Color m_unaffordableColor;
         [SerializeField] private float m_ySpacing;
 
         public void Activate() {
@@ -18,9 +20,9 @@ namespace Zavala.UI
             // Set Button images, text, and functionality according to underlying data
             for (int i = 0; i < m_shopItemBtns.Length; i++) {
                 m_shopItemBtns[i].CostText.text = "$" + m_shopItemBtns[i].Cost;
-                // TODO: check if cost is greater than current budget?
-                // TODO: add listener: when button clicked, set BuildToolState.ActiveTool to button's BuildTool
+                // TODO: add listener: when button clicked, check if affordable; if so, set BuildToolState.ActiveTool to button's BuildTool
             }
+            // Todo: check costs
         }
 
         public void Deactivate() {
@@ -31,6 +33,13 @@ namespace Zavala.UI
 
         private void SelectIndex(int index) {
             m_selectedIndex = index;
+        }
+
+        public void CheckCosts(int currBudget) {
+            // for each item, set the cost color according to whether player can afford it
+            for (int i = 0; i < m_shopItemBtns.Length; i++) {
+                m_shopItemBtns[i].CostBG.color = m_shopItemBtns[i].Cost <= currBudget ? m_affordableColor : m_unaffordableColor;
+            }
         }
 
         #region Editor

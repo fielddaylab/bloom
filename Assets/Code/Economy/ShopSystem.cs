@@ -10,19 +10,31 @@ using Zavala.Sim;
 
 namespace Zavala.Economy {
     [SysUpdate(GameLoopPhase.Update, 0)]
-    public sealed class ShopSystem : SharedStateSystemBehaviour<BudgetData, ShopState>
+    public sealed class ShopSystem : SharedStateSystemBehaviour<BudgetData, ShopState, SimGridState>, IRegistrationCallbacks
     {
         public override void ProcessWork(float deltaTime) {
-            // Update UI to display budgetData for current region
-            // Get current region
-            int currRegionIndex = 0;
-            if (m_StateA.BudgetsPerRegion[currRegionIndex].Updated /* || region changed*/) {
-                m_StateB.ShopUI.NetText.text = "Net: " + m_StateA.BudgetsPerRegion[currRegionIndex].Net;
-
-                m_StateA.BudgetsPerRegion[currRegionIndex].Updated = false;
+            if (m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Updated /* || region changed*/) {
+                // Update UI to display budgetData for current region
+                ShopUtility.RefreshShop(m_StateA, m_StateB, m_StateC);
+                // TODO: may eventually need more control over when budgets are marked as updated if other systems also use that flag
+                m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Updated = false;
             }
+        }
 
-            // Handle purchase inputs
+        public void OnRegister() {
+            ShopUtility.RefreshShop(m_StateA, m_StateB, m_StateC);
+        }
+
+        public void OnDeregister() {
         }
     }
+
+
+    static public class ShopUtility { 
+        static public void RefreshShop(BudgetData budgetData, ShopState shopState, SimGridState gridState) {
+            shopState.ShopUI.NetText.text = "Net: " + budgetData.BudgetsPerRegion[gridState.CurrRegionIndex].Net;
+            shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[gridState.CurrRegionIndex].Net);
+        }
+    }
+
 }

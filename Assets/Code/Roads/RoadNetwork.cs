@@ -8,7 +8,8 @@ using UnityEngine;
 using Zavala.Sim;
 using Zavala.World;
 
-namespace Zavala.Roads {
+namespace Zavala.Roads
+{
     [SharedStateInitOrder(10)]
     public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks
     {
@@ -60,24 +61,6 @@ namespace Zavala.Roads {
         public TileDirection ForwardStagingDir; // The direction leading to the next road segment when staging (when rewinding, this is used to undo forward step)
         public ushort RegionIndex; // region identifier. used as a mask for sim updates (e.g. update region 1, update region 2, etc)
         public RoadFlags Flags;
-
-        public void MergeStagedMask() {
-            // For each direction, set the flow to true if either existing road or staged road unlocks that direction
-
-            Debug.Log("[StagingRoad] Merging staged mask...");
-
-            FlowMask[TileDirection.N] |= StagingMask[TileDirection.N];
-            FlowMask[TileDirection.S] |= StagingMask[TileDirection.S];
-            FlowMask[TileDirection.SE] |= StagingMask[TileDirection.SE];
-            FlowMask[TileDirection.SW] |= StagingMask[TileDirection.SW];
-            FlowMask[TileDirection.NE] |= StagingMask[TileDirection.NE];
-            FlowMask[TileDirection.NW] |= StagingMask[TileDirection.NW];
-
-            StagingMask.Clear();
-            ForwardStagingDir = TileDirection.Self; // necessary?
-
-            Debug.Log("[StagingRoad] Final merged mask: " + FlowMask.ToString());
-        }
     }
 
     /// <summary>
@@ -165,7 +148,7 @@ namespace Zavala.Roads {
         static public void FinalizeRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool isEndpoint) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
-            tileInfo.MergeStagedMask();
+            RoadUtility.MergeStagedRoadMask(tileInfo);
             tileInfo.Flags = RoadFlags.IsRoadAnchor; // roads may connect with other roads
             if (!isEndpoint) {
                 tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road)
@@ -205,6 +188,17 @@ namespace Zavala.Roads {
             tileInfo.FlowMask[TileDirection.NW] = false;
 
             network.Roads.Info[tileIndex] = tileInfo;
+        }
+
+        static public void MergeStagedRoadMask(RoadTileInfo info) {
+            // For each direction, set the flow to true if either existing road or staged road unlocks that direction
+            Debug.Log("[StagingRoad] Merging staged mask...");
+
+            info.FlowMask |= info.StagingMask;
+            info.StagingMask.Clear();
+            info.ForwardStagingDir = TileDirection.Self; // necessary?
+
+            Debug.Log("[StagingRoad] Final merged mask: " + info.FlowMask.ToString());
         }
 
 
