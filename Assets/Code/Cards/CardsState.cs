@@ -5,17 +5,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Advisor;
 using System;
+using BeauUtil;
 
 namespace Zavala.Cards
 {
     public struct CardData
     {
-        public string CardID;
+        public SerializedHash32 CardID;
         public string Header;
         public PolicyType PolicyType;
         public PolicyLevel PolicyLevel;
 
-        public CardData(string cardID, string header, PolicyType policyType, PolicyLevel level) {
+        public CardData(SerializedHash32 cardID, string header, PolicyType policyType, PolicyLevel level) {
             CardID = cardID;
             Header = header;
             PolicyType = policyType;
@@ -39,12 +40,12 @@ namespace Zavala.Cards
     {
         public TextAsset CardDefs;
 
-        [HideInInspector] public Dictionary<string, CardData> AllCards;
-        [HideInInspector] public List<string> UnlockedCards;
+        [HideInInspector] public Dictionary<SerializedHash32, CardData> AllCards;
+        [HideInInspector] public List<SerializedHash32> UnlockedCards;
 
         #region Card Mappings
 
-        [HideInInspector] public Dictionary<PolicyType, List<string>> CardMap; // maps slot type to list of relevant cards
+        [HideInInspector] public Dictionary<PolicyType, List<SerializedHash32>> CardMap; // maps slot type to list of relevant cards
 
         #endregion // Card Mappings
 
@@ -53,13 +54,13 @@ namespace Zavala.Cards
 
         public void OnRegister() {
             // Initialize Lists
-            AllCards = new Dictionary<string, CardData>();
-            UnlockedCards = new List<string>();
+            AllCards = new Dictionary<SerializedHash32, CardData>();
+            UnlockedCards = new List<SerializedHash32>();
 
-            CardMap = new Dictionary<PolicyType, List<string>>();
+            CardMap = new Dictionary<PolicyType, List<SerializedHash32>>();
 
             foreach (PolicyType pType in Enum.GetValues(typeof(PolicyType))) {
-                CardMap.Add(pType, new List<string>());
+                CardMap.Add(pType, new List<SerializedHash32>());
             }
 
             // Populate Card data
@@ -90,7 +91,7 @@ namespace Zavala.Cards
                     cardsState.AllCards.Add(newCard.CardID, newCard);
 
                     // add card to list of cards that should appear for the given sim id (queried when slot is selected)
-                    List<string> relevant = cardsState.CardMap[newCard.PolicyType];
+                    List<SerializedHash32> relevant = cardsState.CardMap[newCard.PolicyType];
                     relevant.Add(newCard.CardID);
                     cardsState.CardMap[newCard.PolicyType] = relevant;
 
@@ -104,7 +105,7 @@ namespace Zavala.Cards
 
         static private CardData ConvertDefToCard(string cardDef) {
             Debug.Log("[CardUtility] converting card: " + cardDef);
-            string cardID = "";
+            SerializedHash32 cardID = "";
             string header = "";
             PolicyLevel level = PolicyLevel.None;
             PolicyType policyType = PolicyType.RunoffPolicy;
@@ -175,9 +176,9 @@ namespace Zavala.Cards
         public List<CardData> GetUnlockedOptions(PolicyType slotType) {
             List<CardData> allOptions = new List<CardData>();
 
-            List<string> cardIDs = m_cardMap[slotType];
+            List<SerializedHash32> cardIDs = m_cardMap[slotType];
 
-            foreach (string cardID in cardIDs) {
+            foreach (SerializedHash32 cardID in cardIDs) {
                 if (m_unlockedCards.Contains(cardID)) {
                     allOptions.Add(m_allCards[cardID]);
                 }
@@ -189,20 +190,19 @@ namespace Zavala.Cards
         public List<CardData> GetAllOptions(PolicyType slotType) {
             List<CardData> allOptions = new List<CardData>();
 
-            List<string> cardIDs = m_cardMap[slotType];
+            List<SerializedHash32> cardIDs = m_cardMap[slotType];
 
-            foreach (string cardID in cardIDs) {
+            foreach (SerializedHash32 cardID in cardIDs) {
                 allOptions.Add(m_allCards[cardID]);
             }
 
             return allOptions;
         }
 
-        public CardData GetCardData(string cardID) {
+        public CardData GetCardData(SerializedHash32 cardID) {
             return m_allCards[cardID];
         }
         */
-
         /*
         private void HandleChoiceUnlock(object sender, ChoiceUnlockEventArgs args) {
             for (int i = 0; i < args.ToUnlock.Count; i++) {
