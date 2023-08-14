@@ -36,6 +36,9 @@ namespace Zavala.Economy {
         public ResourceBlock ExportTax;
 
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        public ResourceBlock ImportTax;
+
+        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock PurchaseTax;
     }
 }

@@ -9,6 +9,7 @@ namespace Zavala.Advisor {
         public RunoffPenaltyLevel Runoff;
         public SkimmingLevel Skimming;
         public ExportTaxLevel ExportTax;
+        public ImportTaxLevel ImportTax;
         public SalesTaxLevel SalesTax;
     }
 
@@ -18,6 +19,7 @@ namespace Zavala.Advisor {
         [NonSerialized] public PolicyBlock[] Policies = new PolicyBlock[RegionInfo.MaxRegions];
 
         public static ResourceBlock[] ExportTaxVals = new ResourceBlock[4];
+        public static ResourceBlock[] ImportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] SalesTaxVals = new ResourceBlock[4];
 
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
@@ -37,6 +39,11 @@ namespace Zavala.Advisor {
                     // set this region's export tax to the initialized export tax value for the given index
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].ExportTax = ExportTaxVals[policyIndex];
                     return true;
+                case PolicyType.ImportTaxPolicy:
+                    Policies[region].ImportTax = (ImportTaxLevel)policyIndex;
+                    // set this region's import tax to the initialized import tax value for the given index
+                    Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].ImportTax = ImportTaxVals[policyIndex];
+                    return true;
                 case PolicyType.SalesTaxPolicy:
                     Policies[region].SalesTax = (SalesTaxLevel)policyIndex;
                     // set this region's purchase tax to the initialized sales tax value for the given index
@@ -52,6 +59,11 @@ namespace Zavala.Advisor {
             ExportTaxVals[1].SetAll(0);
             ExportTaxVals[2].SetAll(2);
             ExportTaxVals[3].SetAll(4);
+
+            ImportTaxVals[0].SetAll(-2);
+            ImportTaxVals[1].SetAll(0);
+            ImportTaxVals[2].SetAll(2);
+            ImportTaxVals[3].SetAll(4);
 
             SalesTaxVals[0].SetAll(-2);
             SalesTaxVals[1].SetAll(0);
@@ -80,6 +92,7 @@ namespace Zavala.Advisor {
         RunoffPolicy,
         SkimmingPolicy,
         ExportTaxPolicy,
+        ImportTaxPolicy,
         SalesTaxPolicy
     }
 
@@ -100,19 +113,29 @@ namespace Zavala.Advisor {
     }
 
     public enum ExportTaxLevel {
-        Subsidy,
         None,
         Low,
-        High
+        High,
+        Subsidy
+    }
+
+    public enum ImportTaxLevel
+    {
+        None,
+        Low,
+        High,
+        Subsidy
     }
 
 
     public enum SalesTaxLevel {
-        Subsidy,
         None,
         Low,
-        High
+        High,
+        Subsidy
     }
+
+
 
     #endregion
 }

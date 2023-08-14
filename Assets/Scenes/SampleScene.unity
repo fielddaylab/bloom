@@ -3735,6 +3735,7 @@ GameObject:
   - component: {fileID: 502754876}
   - component: {fileID: 502754877}
   - component: {fileID: 502754878}
+  - component: {fileID: 502754879}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -4118,6 +4119,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShopUI: {fileID: 1962284774}
+--- !u!114 &502754879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502754864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e28c2e77908384048bebf403734017a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CardDefs: {fileID: 4900000, guid: a870cbe179378d14199b061ddaaa999b, type: 3}
+  UnlockedCards: []
 --- !u!1 &514413516
 GameObject:
   m_ObjectHideFlags: 0
@@ -11775,6 +11790,7 @@ GameObject:
   - component: {fileID: 1872292641}
   - component: {fileID: 1872292642}
   - component: {fileID: 1872292643}
+  - component: {fileID: 1872292644}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -11861,6 +11877,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b70881231d93d914aa92f4319cf7fe30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1872292644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872292637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6769dab68153fc48860e2208d657ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1875672165

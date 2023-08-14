@@ -1,0 +1,107 @@
+// Runoff Penalty
+
+::runoff-penalty-none
+@Header		Runoff Penalty
+@Level		none
+@PolicyType	RunoffPolicy
+
+::runoff-penalty-low
+@Header		Runoff Penalty
+@Level		low
+@PolicyType	RunoffPolicy
+
+::runoff-penalty-high
+@Header		Runoff Penalty
+@Level		high
+@PolicyType	RunoffPolicy
+
+::runoff-penalty-shutdown
+@Header		Runoff Penalty
+@Level		alt
+@PolicyType	RunoffPolicy
+
+
+// Import Tax
+
+::import-tax-none
+@Header		Import Tax
+@Level		none
+@PolicyType	ImportTaxPolicy
+
+::import-tax-low
+@Header		Import Tax
+@Level		low
+@PolicyType	ImportTaxPolicy
+
+::import-tax-high
+@Header		Import Tax
+@Level		high
+@PolicyType	ImportTaxPolicy
+
+// Export Tax
+
+::export-tax-none
+@Header		Export Tax
+@Level		none
+@PolicyType	ExportTaxPolicy
+
+::export-tax-low
+@Header		Export Tax
+@Level		low
+@PolicyType	ExportTaxPolicy
+
+::export-tax-high
+@Header		Export Tax
+@Level		high
+@PolicyType	ExportTaxPolicy
+
+::export-tax-subsidy
+@Header		Export Tax
+@Level		alt
+@PolicyType	ExportTaxPolicy
+
+// Skimmers
+
+::skimmers-none
+@Header		Skimmers
+@Level		none
+@PolicyType	SkimmingPolicy
+
+::skimmers-low
+@Header		Skimmers
+@Level		low
+@PolicyType	SkimmingPolicy
+
+::skimmers-high
+@Header		Skimmers
+@Level		high
+@PolicyType	SkimmingPolicy
+
+::skimmers-dredge
+@Header		Skimmers
+@Level		alt
+@PolicyType	SkimmingPolicy
+
+// Sales Tax
+
+::sales-none
+@Header		Sales Tax
+@Level		none
+@PolicyType	SalesTaxPolicy
+
+::sales-low
+@Header		Sales Tax
+@Level		low
+@PolicyType	SalesTaxPolicy
+
+::sales-high
+@Header		Sales Tax
+@Level		high
+@PolicyType	SalesTaxPolicy
+
+::sales-subsidy
+@Header		Sales Tax
+@Level		alt
+@PolicyType	SalesTaxPolicy
+
+-----
