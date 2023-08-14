@@ -54,6 +54,7 @@ namespace Zavala.Building {
         Destroy,
         Road,
         Storage,
-        Digester,
+        Digester
+        // Skimmer
     }
 }

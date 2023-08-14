@@ -7,6 +7,9 @@ using BeauUtil.Debugger;
 using UnityEngine;
 using Zavala.Sim;
 using Zavala.World;
+using UnityEditor.PackageManager.Requests;
+using Zavala.Building;
+using Zavala.Economy;
 
 namespace Zavala.Roads
 {
@@ -145,7 +148,7 @@ namespace Zavala.Roads
             network.Roads.Info[tileIndex] = tileInfo;
         }
 
-        static public void FinalizeRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool isEndpoint) {
+        static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
             RoadUtility.MergeStagedRoadMask(tileInfo);
@@ -160,19 +163,17 @@ namespace Zavala.Roads
 
             // Do not create road objects on endpoints
             if (!isEndpoint) {
-                // TEMP TESTING add placeholder render of road, snap to tile
-                GameObject newRoad = MonoBehaviour.Instantiate(network.TempRoadPrefab);
-
+                // add road, snap to tile
                 HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
                 Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
-                worldPos.y += 0.2f;
-                newRoad.transform.position = worldPos;
+                OccupiesTile newRoad = pools.Roads.Alloc(worldPos);
             }
         }
 
         static public void AddRoadImmediate(RoadNetwork network, SimGridState grid, int tileIndex, bool isEndpoint, TileDirection[] dirs) {
             StageRoad(network, grid, tileIndex, dirs);
-            FinalizeRoad(network, grid, tileIndex, isEndpoint);
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            FinalizeRoad(network, grid, pools, tileIndex, isEndpoint);
         }
 
         // TODO: consider pooling road tiles...?

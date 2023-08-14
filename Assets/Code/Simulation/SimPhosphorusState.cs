@@ -61,12 +61,14 @@ namespace Zavala.Sim {
                 amount = Math.Min(amount, count);
                 count -= (ushort) amount;
 
-                PhosphorusTileAddRemove removeRecord = new PhosphorusTileAddRemove() {
-                    TileIdx = tileIndex,
-                    RegionIndex = tileInfo.RegionIndex,
-                    Amount = (ushort) amount
-                };
-                phosphorusState.Phosphorus.Changes.PushRemove(removeRecord);
+                if (amount > 0) {
+                    PhosphorusTileAddRemove removeRecord = new PhosphorusTileAddRemove() {
+                        TileIdx = tileIndex,
+                        RegionIndex = tileInfo.RegionIndex,
+                        Amount = (ushort)amount
+                    };
+                    phosphorusState.Phosphorus.Changes.PushRemove(removeRecord);
+                }
             }
             return amount;
         }

@@ -2503,6 +2503,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1788469136}
     m_Modifications:
+    - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: BuildTool
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5009163469523836061, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_Interactable
       value: 1
@@ -2513,7 +2517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5009163469523836062, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5009163469523836063, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_Pivot.x
@@ -3028,6 +3032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.5
+  m_initial: 1
 --- !u!65 &478382907
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3736,6 +3741,7 @@ GameObject:
   - component: {fileID: 502754877}
   - component: {fileID: 502754878}
   - component: {fileID: 502754879}
+  - component: {fileID: 502754880}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -4133,6 +4139,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardDefs: {fileID: 4900000, guid: a870cbe179378d14199b061ddaaa999b, type: 3}
   UnlockedCards: []
+--- !u!114 &502754880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502754864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbdc133ebfc69324d8fa594fd40570f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Roads:
+    m_Prefab: {fileID: 5074091816765350726, guid: f5fc5bfc38ff22541a33a6dbd37de21b, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  Digesters:
+    m_Prefab: {fileID: 4665823543789613532, guid: d0061f3c86234f74b9cf5c0c6c73d1ce, type: 3}
+    m_Name: 
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  PoolRoot: {fileID: 140165166}
 --- !u!1 &514413516
 GameObject:
   m_ObjectHideFlags: 0
@@ -4618,6 +4655,7 @@ GameObject:
   - component: {fileID: 594461918}
   - component: {fileID: 594461919}
   - component: {fileID: 594461920}
+  - component: {fileID: 594461921}
   m_Layer: 0
   m_Name: Sim
   m_TagString: Untagged
@@ -4788,6 +4826,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abe69b8ba225ae84fbe051fd6f3b6a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InitialCapacity: 64
+--- !u!114 &594461921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594461906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6568c65e6aba0c9479922789d6d13f4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InitialCapacity: 64
@@ -4969,7 +5020,7 @@ Transform:
   m_Children:
   - {fileID: 122290115}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &657574632
 MonoBehaviour:
@@ -5024,6 +5075,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.5
+  m_initial: 1
 --- !u!114 &658038504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9786,6 +9838,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.5
+  m_initial: 1
 --- !u!114 &1501605412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11931,6 +11984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.5
+  m_initial: 1
 --- !u!114 &1875672167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12606,6 +12660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.5
+  m_initial: 1
 --- !u!65 &1961398109
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13195,6 +13250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.5
+  m_initial: 1
 --- !u!114 &2034204922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14357,7 +14413,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6947757145218421922, guid: ffd31753989bbd946a6b55c94be9751e, type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 6947757145218421922, guid: ffd31753989bbd946a6b55c94be9751e, type: 3}
       propertyPath: m_LocalPosition.x

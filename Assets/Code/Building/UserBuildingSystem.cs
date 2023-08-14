@@ -3,6 +3,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
 using UnityEngine;
+using Zavala.Economy;
 using Zavala.Input;
 using Zavala.Roads;
 using Zavala.Sim;
@@ -28,8 +29,7 @@ namespace Zavala.Building
             SimGridState grid = ZavalaGame.SimGrid;
             if (toolInUse != UserBuildTool.None) {
                 SimWorldState world = m_StateD;
-                RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-                TryBuildTile(grid, network, toolInUse, RaycastTileIndex(world, grid));
+                TryBuildTile(grid, toolInUse, RaycastTileIndex(world, grid));
             }
             else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
                 RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
@@ -83,11 +83,15 @@ namespace Zavala.Building
         /// <summary>
         /// Attempt to place tile on given tile index using active tool
         /// </summary>
-        private void TryBuildTile(SimGridState grid, RoadNetwork network, UserBuildTool activeTool, int tileIndex) {
+        private void TryBuildTile(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
             if (tileIndex == CODE_INVALID) {
                 Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} out of bounds", tileIndex);
-                // cancel in-progress road 
-                CancelRoad(grid, network);
+
+                if (activeTool == UserBuildTool.Road) {
+                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+                    // cancel in-progress road 
+                    CancelRoad(grid, network);
+                }
                 return;
             }
             if (tileIndex == CODE_UNCHANGED) {
@@ -96,8 +100,11 @@ namespace Zavala.Building
             }
             if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.NonBuildable) != 0) {
                 Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} unbuildable", tileIndex);
-                // cancel in-progress road 
-                CancelRoad(grid, network);
+                if (activeTool == UserBuildTool.Road) {
+                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+                    // cancel in-progress road 
+                    CancelRoad(grid, network);
+                }
                 return;
             }
             switch (activeTool) {
@@ -107,17 +114,18 @@ namespace Zavala.Building
                     // TODO: Add road removal
                     break;
                 case UserBuildTool.Road:
+                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
                     TryBuildRoad(grid, network, tileIndex);
                     break;
                 case UserBuildTool.Digester:
-                    GameObject d = Instantiate(m_StateC.Digester);
-                    d.SetActive(false);
-                    // TODO: would it be easier to gather the world position when raycasting and pass through to here?
-                    d.transform.position = HexVector.ToWorld(tileIndex, grid.Terrain.Height[tileIndex], m_StateD.WorldSpace);
-                    d.SetActive(true);
+                    TryBuildDigester(grid, tileIndex);
                     break;
                 case UserBuildTool.Storage:
                     break;
+                    /*
+                case UserBuildTool.Skimmer:
+                    break;
+                    */
                 default:
                     break;
             }
@@ -206,6 +214,17 @@ namespace Zavala.Building
                     }
                 }
             }
+        }
+
+        private bool TryBuildDigester(SimGridState grid, int tileIndex) {
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+
+            // add digester, snap to tile
+            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+            OccupiesTile newDigester = pools.Digesters.Alloc(worldPos);
+            
+            return true;
         }
 
         private void StageRoad(SimGridState grid, RoadNetwork network, int tileIndex) {
@@ -297,8 +316,8 @@ namespace Zavala.Building
             m_StateC.RoadToolState.PrevTileIndex = m_StateC.RoadToolState.TracedTileIdxs[rewindIndex];
         }
 
-        private void FinalizeRoad(SimGridState grid, RoadNetwork network, int tileIndex, bool isEndpoint) {
-            RoadUtility.FinalizeRoad(network, grid, tileIndex, isEndpoint);
+        private void FinalizeRoad(SimGridState grid, RoadNetwork network, BuildingPools pools, int tileIndex, bool isEndpoint) {
+            RoadUtility.FinalizeRoad(network, grid, pools, tileIndex, isEndpoint);
 
             // remove staging visuals
             SetStagingRenderer(tileIndex, false);
@@ -349,10 +368,12 @@ namespace Zavala.Building
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");
 
+                BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+
                 // Merge staged masks into flow masks
                 for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
                     bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
-                    FinalizeRoad(grid, network, m_StateC.RoadToolState.TracedTileIdxs[i], isEndpoint);
+                    FinalizeRoad(grid, network, pools, m_StateC.RoadToolState.TracedTileIdxs[i], isEndpoint);
                 }
 
                 // TODO: create physical roads
