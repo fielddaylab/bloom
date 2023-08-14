@@ -56,11 +56,6 @@ namespace Zavala.Sim {
             RegenTerrainDependentInfo(grid, phosphorus);
             GenerateRandomPhosphorus(grid, phosphorus);
 
-            // TEMP TESTING ----
-            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            // GenerateBasicRoad(grid, network);
-            // -----------------
-
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
         }
 

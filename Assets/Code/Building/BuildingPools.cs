@@ -15,11 +15,15 @@ namespace Zavala.Building
 
         [Serializable] public class RoadPool : SerializablePool<OccupiesTile> { }
         [Serializable] public class DigesterPool : SerializablePool<OccupiesTile> { }
+        [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
+        [Serializable] public class SkimmerPool : SerializablePool<OccupiesTile> { }
 
         #endregion // Types
 
         public RoadPool Roads;
         public DigesterPool Digesters;
+        public DigesterPool Storages;
+        public SkimmerPool Skimmers;
 
         [Header("Shared")]
         public Transform PoolRoot;
@@ -27,6 +31,8 @@ namespace Zavala.Building
         void IRegistrationCallbacks.OnRegister() {
             Roads.TryInitialize(PoolRoot);
             Digesters.TryInitialize(PoolRoot);
+            Storages.TryInitialize(PoolRoot);
+            Skimmers.TryInitialize(PoolRoot);
         }
 
         void IRegistrationCallbacks.OnDeregister() {

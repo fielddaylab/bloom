@@ -2503,6 +2503,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1788469136}
     m_Modifications:
+    - target: {fileID: 5009163468971833369, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: m_text
+      value: Skimmer
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: Cost
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: BuildTool
       value: 5
@@ -4166,6 +4174,24 @@ MonoBehaviour:
     m_InitialCapacity: 16
     m_PrewarmOnInitialize: 1
     m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  Storages:
+    m_Prefab: {fileID: 4665823543789613532, guid: 83cbad4e9bc632b45a85008072ee80e8, type: 3}
+    m_Name: 
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  Skimmers:
+    m_Prefab: {fileID: 5412720830129975462, guid: dab5c08824f46364ba60727ed1637681, type: 3}
+    m_Name: 
+    m_InitialCapacity: 8
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 4
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1

@@ -1,3 +1,4 @@
+using BeauPools;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -29,7 +30,7 @@ namespace Zavala.Building
             SimGridState grid = ZavalaGame.SimGrid;
             if (toolInUse != UserBuildTool.None) {
                 SimWorldState world = m_StateD;
-                TryBuildTile(grid, toolInUse, RaycastTileIndex(world, grid));
+                TryApplyTool(grid, toolInUse, RaycastTileIndex(world, grid));
             }
             else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
                 RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
@@ -83,7 +84,7 @@ namespace Zavala.Building
         /// <summary>
         /// Attempt to place tile on given tile index using active tool
         /// </summary>
-        private void TryBuildTile(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
+        private void TryApplyTool(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
             if (tileIndex == CODE_INVALID) {
                 Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} out of bounds", tileIndex);
 
@@ -107,28 +108,80 @@ namespace Zavala.Building
                 }
                 return;
             }
-            switch (activeTool) {
-                // TODO: Add building costs
 
+            switch (activeTool) {
                 case UserBuildTool.Destroy:
-                    // TODO: Add road removal
+                    // TODO: Add building removal
                     break;
                 case UserBuildTool.Road:
                     RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
                     TryBuildRoad(grid, network, tileIndex);
                     break;
                 case UserBuildTool.Digester:
-                    TryBuildDigester(grid, tileIndex);
-                    break;
                 case UserBuildTool.Storage:
-                    break;
-                    /*
                 case UserBuildTool.Skimmer:
+                    TryBuildOnTile(grid, activeTool, tileIndex);
                     break;
-                    */
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// For single tile builds
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="activeTool"></param>
+        /// <param name="tileIndex"></param>
+        /// <returns></returns>
+        private bool TryBuildOnTile(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
+            // TODO: Check if valid location
+            bool validLocation = true;
+            if (!validLocation) {
+                return false;
+            }
+
+            // TODO: try to pay for build
+            bool purchaseSuccessful = TryPurchaseBuild(activeTool);
+            if (!purchaseSuccessful) {
+                return false;
+            }
+
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            switch (activeTool) {
+                case UserBuildTool.Destroy:
+                case UserBuildTool.Road:
+                    // N/A
+                    break;
+                case UserBuildTool.Digester:
+                    BuildOnTile(grid, pools.Digesters, tileIndex);
+                    break;
+                case UserBuildTool.Storage:
+                    BuildOnTile(grid, pools.Storages, tileIndex);
+                    break;
+                case UserBuildTool.Skimmer:
+                    BuildOnTile(grid, pools.Skimmers, tileIndex);
+                    break;
+                default:
+                    break;
+            }
+
+            return true;
+        }
+
+        private void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex) {
+            // add build, snap to tile
+            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+            OccupiesTile newDigester = pool.Alloc(worldPos);
+        }
+
+        private bool TryPurchaseBuild(UserBuildTool currTool) {
+            // TODO: implement this
+            bool purchaseSuccessful = true;
+
+
+            return purchaseSuccessful;
         }
 
         #region Road Building
@@ -214,17 +267,6 @@ namespace Zavala.Building
                     }
                 }
             }
-        }
-
-        private bool TryBuildDigester(SimGridState grid, int tileIndex) {
-            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-
-            // add digester, snap to tile
-            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
-            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
-            OccupiesTile newDigester = pools.Digesters.Alloc(worldPos);
-            
-            return true;
         }
 
         private void StageRoad(SimGridState grid, RoadNetwork network, int tileIndex) {
@@ -344,7 +386,7 @@ namespace Zavala.Building
             }
 
             // TODO: try to purchase road
-            bool purchaseSuccessful = true;
+            bool purchaseSuccessful = TryPurchaseBuild(UserBuildTool.Road);
 
             /*
             // try to purchase road
