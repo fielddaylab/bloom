@@ -562,6 +562,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Button: {fileID: 5009163469523836061}
   Cost: -1
+  CanAfford: 0
   BuildTool: 0
   CostText: {fileID: 5009163468968526373}
   CostBG: {fileID: 5009163468508710121}
+  SelectedColor: {r: 0.8018868, g: 0.79043126, b: 0.7216981, a: 1}
+  UnselectedColor: {r: 1, g: 0.9843137, b: 0.8901961, a: 1}

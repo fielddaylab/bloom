@@ -75,9 +75,29 @@ PrefabInstance:
       propertyPath: BuildTool
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: SelectedColor.b
+      value: 0.08718402
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: SelectedColor.g
+      value: 0.22738774
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: SelectedColor.r
+      value: 0.745283
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: UnselectedColor.b
+      value: 0.09803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: UnselectedColor.g
+      value: 0.2901961
+      objectReference: {fileID: 0}
     - target: {fileID: 5009163469523836062, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_Name
-      value: ShopItemButton (Destroy)
+      value: ShopItemButton (Destroy) Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5009163469523836063, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_Pivot.x

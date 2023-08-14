@@ -1,7 +1,10 @@
+using FieldDay;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Zavala.Building;
 
 namespace Zavala.UI
 {
@@ -20,27 +23,68 @@ namespace Zavala.UI
             // Set Button images, text, and functionality according to underlying data
             for (int i = 0; i < m_shopItemBtns.Length; i++) {
                 m_shopItemBtns[i].CostText.text = "$" + m_shopItemBtns[i].Cost;
-                // TODO: add listener: when button clicked, check if affordable; if so, set BuildToolState.ActiveTool to button's BuildTool
+                int buttonIndex = i;
+                m_shopItemBtns[i].Button.onClick.AddListener(delegate { HandleButtonSelected(buttonIndex); });
             }
-            // Todo: check costs
         }
 
         public void Deactivate() {
             this.gameObject.SetActive(false);
 
-            SelectIndex(-1);
+            // Set Button images, text, and functionality according to underlying data
+            for (int i = 0; i < m_shopItemBtns.Length; i++) {
+                m_shopItemBtns[i].Button.onClick.RemoveAllListeners();
+            }
+
+            ClearSelected();
         }
 
-        private void SelectIndex(int index) {
-            m_selectedIndex = index;
+        private void ClearSelected() {
+            // unselect current button
+            if (m_selectedIndex != -1) {
+                m_shopItemBtns[m_selectedIndex].Button.image.color = m_shopItemBtns[m_selectedIndex].UnselectedColor;
+                m_selectedIndex = -1;
+            }
         }
 
         public void CheckCosts(int currBudget) {
             // for each item, set the cost color according to whether player can afford it
             for (int i = 0; i < m_shopItemBtns.Length; i++) {
-                m_shopItemBtns[i].CostBG.color = m_shopItemBtns[i].Cost <= currBudget ? m_affordableColor : m_unaffordableColor;
+                bool canAfford = m_shopItemBtns[i].Cost <= currBudget;
+                m_shopItemBtns[i].CostBG.color = canAfford ? m_affordableColor : m_unaffordableColor;
+                m_shopItemBtns[i].CanAfford = canAfford;
             }
         }
+
+        #region Handlers
+
+        private void HandleButtonSelected(int selectedIndex) {
+            if (selectedIndex == m_selectedIndex) {
+                // selected current button; should unselect it and return
+                ClearSelected();
+                return;
+            }
+
+            // unselect current button
+            ClearSelected();
+
+            ShopItemButton button = m_shopItemBtns[selectedIndex];
+            if (button.CanAfford) {
+                // set tool
+                BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+                bts.ActiveTool = button.BuildTool;
+
+                // set selected color
+                m_shopItemBtns[selectedIndex].Button.image.color = m_shopItemBtns[selectedIndex].SelectedColor;
+
+                m_selectedIndex = selectedIndex;
+            }
+            else {
+                // some disallow routine? error sound, red flash, queue Balthazar, etc.
+            }
+        }
+
+        #endregion // Handlers
 
         #region Editor
 
