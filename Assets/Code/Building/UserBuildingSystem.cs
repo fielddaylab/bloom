@@ -422,6 +422,8 @@ namespace Zavala.Building
 
                 // TODO: calculate orientations of roads
 
+                m_StateC.RoadToolState.ClearState();
+
                 return true;
             }
             else {

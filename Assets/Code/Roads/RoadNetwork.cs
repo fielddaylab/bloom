@@ -8,6 +8,7 @@ using UnityEngine;
 using Zavala.Sim;
 using Zavala.World;
 using Zavala.Building;
+using System.IO;
 
 namespace Zavala.Roads
 {
@@ -149,7 +150,7 @@ namespace Zavala.Roads
         static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
-            RoadUtility.MergeStagedRoadMask(tileInfo);
+            RoadUtility.MergeStagedRoadMask(ref tileInfo);
             tileInfo.Flags = RoadFlags.IsRoadAnchor; // roads may connect with other roads
             if (!isEndpoint) {
                 tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road)
@@ -189,11 +190,12 @@ namespace Zavala.Roads
             network.Roads.Info[tileIndex] = tileInfo;
         }
 
-        static public void MergeStagedRoadMask(RoadTileInfo info) {
+        static public void MergeStagedRoadMask(ref RoadTileInfo info) {
             // For each direction, set the flow to true if either existing road or staged road unlocks that direction
             Debug.Log("[StagingRoad] Merging staged mask...");
 
             info.FlowMask |= info.StagingMask;
+
             info.StagingMask.Clear();
             info.ForwardStagingDir = TileDirection.Self; // necessary?
 

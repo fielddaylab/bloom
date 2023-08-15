@@ -2934,7 +2934,7 @@ MonoBehaviour:
     Manure: 0
     MFertilizer: 0
     DFertilizer: 0
-    Grain: 3
+    Grain: 1
     Milk: 0
 --- !u!33 &478382901
 MeshFilter:
@@ -5184,7 +5184,7 @@ MonoBehaviour:
     Grain: 8
     Milk: 0
   Current:
-    Manure: 3
+    Manure: 1
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0
@@ -12577,7 +12577,7 @@ MonoBehaviour:
     Grain: 8
     Milk: 0
   Current:
-    Manure: 3
+    Manure: 1
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0
@@ -13362,7 +13362,7 @@ MonoBehaviour:
     Manure: 0
     MFertilizer: 0
     DFertilizer: 0
-    Grain: 3
+    Grain: 1
     Milk: 0
 --- !u!33 &2034204927
 MeshFilter:
