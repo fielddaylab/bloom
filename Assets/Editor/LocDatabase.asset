@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c4457b69df64d4ab8b8572e7d7e991, type: 3}
+  m_Name: LocDatabase
+  m_EditorClassIdentifier: 
+  m_PackageRecords:
+  - Name: ui
+    FilePath: Assets/Content/Text/ui.zaloc
+    Asset: {fileID: -4270002856181823206, guid: ea8734fcad5f46d48b270c48650c56ab, type: 3}
+    LastLine: 0
+    Records:
+    - Id: ui.shop.header
+      Content: Shop UI
+    BasePath: ui
+    AllBasePaths:
+    - Path: ui
+      Start: 0
+    NeedsExport: 0
