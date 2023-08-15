@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8794960591691319854}
   - component: {fileID: 5074091816765350726}
   - component: {fileID: -7104959141006727276}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,3 +125,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOffset: 0.2
+  m_initial: 0

@@ -60,7 +60,7 @@ namespace Zavala.Building
             // TODO: only raycast if the mouse has moved significantly since last placed tile?
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
             // TODO: 100 units a reasonable max raycast distance?
-            if (Physics.Raycast(mouseRay, out RaycastHit hit, 100f)) {
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, 100f, LayerMask.GetMask("HexTile"))) {
                 if (!hit.collider) return CODE_INVALID;
                 HexVector vec = HexVector.FromWorld(hit.collider.transform.position, world.WorldSpace);
                 if (vec.Equals(m_StateC.VecPrev)) {
