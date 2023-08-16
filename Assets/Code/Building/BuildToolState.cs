@@ -32,7 +32,6 @@ namespace Zavala.Building {
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public RoadToolState RoadToolState;
         [NonSerialized] public HexVector VecPrev;
-        public GameObject Digester;
 
         public void OnDeregister() {
         }
