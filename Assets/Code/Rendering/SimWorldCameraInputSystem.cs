@@ -4,6 +4,7 @@ using FieldDay.SharedState;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Input;
+using Zavala.UI;
 
 namespace Zavala.World {
     [SysUpdate(GameLoopPhase.UnscaledUpdate, 100)]
@@ -15,6 +16,9 @@ namespace Zavala.World {
                 Quaternion cameraRot = Quaternion.Euler(0, cameraRotEuler.y, 0);
                 Vector3 moveVec = cameraRot * Geom.SwizzleYZ(moveDist);
                 m_StateA.LookTarget.Translate(moveVec, Space.World);
+                // TODO: better solution?
+                // temp: close context menu when moving
+                BuildingPopup.instance.CloseMenu();
             }
         }
     }

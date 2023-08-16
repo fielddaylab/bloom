@@ -9,6 +9,7 @@ using Zavala.Input;
 using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
+using Zavala.UI;
 
 namespace Zavala.Building
 {
@@ -18,7 +19,7 @@ namespace Zavala.Building
     {
         private static int CODE_INVALID = -1; // tried to use a tool on an invalid spot
         private static int CODE_UNCHANGED = -2; // tried to use a tool on the same spot as last work process
-        private static float RAYCAST_RANGE = 100;
+        private static float RAYCAST_RANGE = 100; // range of build/destroy raycast
 
         #region Inspector
 
@@ -31,7 +32,7 @@ namespace Zavala.Building
             SimGridState grid = ZavalaGame.SimGrid;
             SimWorldState world = ZavalaGame.SimWorld;
             if (toolInUse == UserBuildTool.Destroy) {
-                Collider hit = RaycastBuilding(world, grid);
+                TryDestroyBuilding(world, grid);
             } else if (toolInUse != UserBuildTool.None) {
                 TryApplyTool(grid, toolInUse, RaycastTileIndex(world, grid));
             } else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
@@ -44,14 +45,24 @@ namespace Zavala.Building
         }
 
         /// <summary>
-        /// Check if player clicked with a tool selected
+        /// Check if mouse is down with road tool, or mouse is pressed with any other tool
         /// </summary>
         private UserBuildTool ToolInUse() {
-            // if mouse pressed
-            // TODO: change to if ButtonDown && position significantly different from pressed position
-            if (m_StateA.ButtonDown(InputButton.PrimaryMouse) || m_StateA.MouseDragging)
+            if (m_StateC.ActiveTool == UserBuildTool.Road && m_StateA.ButtonDown(InputButton.PrimaryMouse)) {
+                return UserBuildTool.Road;
+            } else if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
                 return m_StateC.ActiveTool;
+            }
             return UserBuildTool.None;
+        }
+
+        private Collider RaycastCollider(SimWorldState world, SimGridState grid, LayerMask mask) {
+            Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, mask)) {
+                return hit.collider;
+            } else {
+                return null;
+            }
         }
 
         /// <summary>
@@ -61,7 +72,6 @@ namespace Zavala.Building
             // do a raycast
             // TODO: only raycast if the mouse has moved significantly since last placed tile?
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-            // TODO: 100 units a reasonable max raycast distance?
             if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMask.GetMask("HexTile"))) {
                 if (!hit.collider) return CODE_INVALID;
                 HexVector vec = HexVector.FromWorld(hit.collider.transform.position, world.WorldSpace);
@@ -94,9 +104,7 @@ namespace Zavala.Building
             if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMask.GetMask("Building"))) {
                 Log.Msg("[UserBuildingSystem] RaycastBuilding hit building {0}", hit.collider.transform.name);
                 return hit.collider;
-            } else {
-                return null;
-            }
+            } else return null;
         }
 
         /// <summary>
@@ -131,7 +139,7 @@ namespace Zavala.Building
                 case UserBuildTool.Destroy:
                     // TODO: Add building removal
                     RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-                    TryDestroyBuilding(grid, network, tileIndex);
+                    //TryDestroyBuilding(grid, network, tileIndex);
                     break;
                 case UserBuildTool.Road:
                     network = Game.SharedState.Get<RoadNetwork>();
@@ -204,7 +212,17 @@ namespace Zavala.Building
 
             return purchaseSuccessful;
         }
-
+        private bool TryDestroyBuilding(SimWorldState world, SimGridState grid) {
+            Collider hit = RaycastBuilding(world, grid);
+            if (hit != null && hit.gameObject.tag == "PlayerPlaced") {
+                Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + Vector3.up);
+                BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy "+hit.transform.name, null, "Are you sure?", ()=> {Destroy(hit.gameObject);}, null);
+                BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                
+                
+            }
+            return false;
+        }
         private bool TryDestroyBuilding(SimGridState grid, RoadNetwork network, int tileIndex) {
             // find the building associated with the tileIndex
             //      if none, return false

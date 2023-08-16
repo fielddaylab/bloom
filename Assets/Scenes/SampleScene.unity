@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 41233033}
   - component: {fileID: 41233034}
   m_Layer: 5
-  m_Name: BuildingContextMenu
+  m_Name: BuildingPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -446,11 +446,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e641a2a3456704cbdc0e56f543725f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: {fileID: 483754967}
-  Icon: {fileID: 129210597}
-  Description: {fileID: 661931179}
-  Button1: {fileID: 2031985548}
-  Button2: {fileID: 496157696}
+  m_Title: {fileID: 483754967}
+  m_Icon: {fileID: 129210597}
+  m_Description: {fileID: 661931179}
+  m_Button1: {fileID: 2031985548}
+  m_Button1Text: {fileID: 1568171624}
+  m_Button2: {fileID: 496157696}
+  m_Button2Text: {fileID: 1147039822}
 --- !u!1 &56029480
 GameObject:
   m_ObjectHideFlags: 0
@@ -3418,9 +3420,9 @@ MonoBehaviour:
   m_fontSize: 16
   m_fontSizeBase: 16
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 16
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -3451,7 +3453,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 10, y: 4, z: 10, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -8527,7 +8529,7 @@ MonoBehaviour:
   m_StreamedTextureMem: 8
   m_StreamedAudioMem: 8
   m_PreloadGroupFiles: []
-  m_DefaultSquare: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_DefaultSquare: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 3}
 --- !u!1 &1093492267
 GameObject:
   m_ObjectHideFlags: 0
@@ -8718,7 +8720,7 @@ GameObject:
   - component: {fileID: 1147039823}
   - component: {fileID: 1147039822}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Button2Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8764,7 +8766,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Button2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8791,8 +8793,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -11356,7 +11358,7 @@ GameObject:
   - component: {fileID: 1568171625}
   - component: {fileID: 1568171624}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Button1Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11402,7 +11404,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Button1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11429,8 +11431,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -13170,7 +13172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f7cd555380f8a4f8bfd52571bc5d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PhosphorusMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  PhosphorusMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 3}
   PhosphorusMaterial: {fileID: 2100000, guid: a31166a6800a4e7409d5e0ae867011e4, type: 2}
   PhosphorusLerpSpeed: 7
   PhosphorusSnapRange: 0.03
