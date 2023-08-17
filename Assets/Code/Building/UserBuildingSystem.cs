@@ -9,15 +9,17 @@ using Zavala.Input;
 using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
+using Zavala.UI;
 
 namespace Zavala.Building
 {
     // TODO: is this the right update phase?
     [SysUpdate(GameLoopPhase.Update)]
-    public class UserBuildingSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BuildToolState, SimWorldState>
+    public class UserBuildingSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BuildToolState>
     {
         private static int CODE_INVALID = -1; // tried to use a tool on an invalid spot
         private static int CODE_UNCHANGED = -2; // tried to use a tool on the same spot as last work process
+        private static float RAYCAST_RANGE = 100; // range of build/destroy raycast
 
         #region Inspector
 
@@ -28,11 +30,12 @@ namespace Zavala.Building
         public override void ProcessWork(float deltaTime) {
             UserBuildTool toolInUse = ToolInUse(); // the tool that is actively being applied via button inputs
             SimGridState grid = ZavalaGame.SimGrid;
-            if (toolInUse != UserBuildTool.None) {
-                SimWorldState world = m_StateD;
+            SimWorldState world = ZavalaGame.SimWorld;
+            if (toolInUse == UserBuildTool.Destroy) {
+                TryDestroyBuilding(world, grid);
+            } else if (toolInUse != UserBuildTool.None) {
                 TryApplyTool(grid, toolInUse, RaycastTileIndex(world, grid));
-            }
-            else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
+            } else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
                 RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
 
                 // Road tool has stopped being applied, but the previous road was not finished
@@ -42,14 +45,24 @@ namespace Zavala.Building
         }
 
         /// <summary>
-        /// Check if player clicked with a tool selected
+        /// Check if mouse is down with road tool, or mouse is pressed with any other tool
         /// </summary>
         private UserBuildTool ToolInUse() {
-            // if mouse pressed
-            // TODO: change to if ButtonDown && position significantly different from pressed position
-            if (m_StateA.ButtonDown(InputButton.PrimaryMouse) || m_StateA.MouseDragging)
+            if (m_StateC.ActiveTool == UserBuildTool.Road && m_StateA.ButtonDown(InputButton.PrimaryMouse)) {
+                return UserBuildTool.Road;
+            } else if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
                 return m_StateC.ActiveTool;
+            }
             return UserBuildTool.None;
+        }
+
+        private Collider RaycastCollider(SimWorldState world, SimGridState grid, LayerMask mask) {
+            Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, mask)) {
+                return hit.collider;
+            } else {
+                return null;
+            }
         }
 
         /// <summary>
@@ -59,8 +72,7 @@ namespace Zavala.Building
             // do a raycast
             // TODO: only raycast if the mouse has moved significantly since last placed tile?
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-            // TODO: 100 units a reasonable max raycast distance?
-            if (Physics.Raycast(mouseRay, out RaycastHit hit, 100f, LayerMask.GetMask("HexTile"))) {
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMask.GetMask("HexTile"))) {
                 if (!hit.collider) return CODE_INVALID;
                 HexVector vec = HexVector.FromWorld(hit.collider.transform.position, world.WorldSpace);
                 if (vec.Equals(m_StateC.VecPrev)) {
@@ -79,6 +91,20 @@ namespace Zavala.Building
                 Log.Msg("[UserBuildingSystem] Raycast missed.");
                 return CODE_INVALID;
             }
+        }
+
+        /// <summary>
+        /// Attempt to access a Building collider with a raycast from the mouse position
+        /// </summary>
+        /// <param name="world"></param>
+        /// <param name="grid"></param>
+        /// <returns></returns>
+        private Collider RaycastBuilding(SimWorldState world, SimGridState grid) {
+            Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMask.GetMask("Building"))) {
+                Log.Msg("[UserBuildingSystem] RaycastBuilding hit building {0}", hit.collider.transform.name);
+                return hit.collider;
+            } else return null;
         }
 
         /// <summary>
@@ -112,9 +138,11 @@ namespace Zavala.Building
             switch (activeTool) {
                 case UserBuildTool.Destroy:
                     // TODO: Add building removal
+                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+                    //TryDestroyBuilding(grid, network, tileIndex);
                     break;
                 case UserBuildTool.Road:
-                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+                    network = Game.SharedState.Get<RoadNetwork>();
                     TryBuildRoad(grid, network, tileIndex);
                     break;
                 case UserBuildTool.Digester:
@@ -136,6 +164,7 @@ namespace Zavala.Building
         /// <returns></returns>
         private bool TryBuildOnTile(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
             // TODO: Check if valid location
+            // disallow: water, existing road(?)
             bool validLocation = true;
             if (!validLocation) {
                 return false;
@@ -182,6 +211,29 @@ namespace Zavala.Building
 
 
             return purchaseSuccessful;
+        }
+        private bool TryDestroyBuilding(SimWorldState world, SimGridState grid) {
+            Collider hit = RaycastBuilding(world, grid);
+            if (hit != null && hit.gameObject.tag == "PlayerPlaced") {
+                Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + Vector3.up);
+                BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy "+hit.transform.name, null, "Are you sure?", ()=> {Destroy(hit.gameObject);}, null);
+                BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                
+                
+            }
+            return false;
+        }
+        private bool TryDestroyBuilding(SimGridState grid, RoadNetwork network, int tileIndex) {
+            // find the building associated with the tileIndex
+            //      if none, return false
+            // if it's player-built (digester, road, storage):
+            //      check cost/apply refund
+            //      destroy it
+            if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsRoad) != 0) {
+                RoadUtility.RemoveRoad(network, grid, tileIndex);
+            }
+
+            return false;
         }
 
         #region Road Building
@@ -366,11 +418,12 @@ namespace Zavala.Building
         }
 
         private void SetStagingRenderer(int tileIndex, bool isStaging) {
+            SimWorldState world = ZavalaGame.SimWorld;
             if (isStaging) {
-                TileEffectRendering.SetMaterial(m_StateD.Tiles[tileIndex], m_stagingMaterial);
+                TileEffectRendering.SetMaterial(world.Tiles[tileIndex], m_stagingMaterial);
             }
             else {
-                TileEffectRendering.RestoreDefaultMaterial(m_StateD.Tiles[tileIndex]);
+                TileEffectRendering.RestoreDefaultMaterial(world.Tiles[tileIndex]);
             }
         }
 
