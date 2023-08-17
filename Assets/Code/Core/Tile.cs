@@ -240,6 +240,7 @@ namespace Zavala
         /// </summary>
         public T this[TileDirection direction] {
             get {
+                Assert.True(direction >= 0 && direction < TileDirection.COUNT, "Invalid TileDirection");
                 if (!m_Mask.Has(direction)) {
                     throw new KeyNotFoundException("Value for direction " + direction.ToString() + " not set");
                 }
@@ -282,6 +283,7 @@ namespace Zavala
         /// Removes the data at the given direction.
         /// </summary>
         public bool Remove(TileDirection direction) {
+            Assert.True(direction >= 0 && direction < TileDirection.COUNT, "Invalid TileDirection");
             if (m_Mask.Has(direction)) {
                 m_Mask[direction] = false;
                 return true;
@@ -293,6 +295,7 @@ namespace Zavala
         /// Sets the data at the given direction.
         /// </summary>
         public void Set(TileDirection direction, T value) {
+            Assert.True(direction >= 0 && direction < TileDirection.COUNT, "Invalid TileDirection");
             m_Mask.Value |= (byte)(1 << (int)direction);
             unsafe {
                 fixed (T* data = &m_Self) {
@@ -305,6 +308,7 @@ namespace Zavala
         /// Attempts to get the data from the given direction.
         /// </summary>
         public bool TryGet(TileDirection direction, out T value) {
+            Assert.True(direction >= 0 && direction < TileDirection.COUNT, "Invalid TileDirection");
             if (m_Mask.Has(direction)) {
                 unsafe {
                     fixed (T* data = &m_Self) {

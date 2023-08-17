@@ -110,7 +110,7 @@ namespace FieldDay.Debugging {
 #endif // UNITY_EDITOR
 
             if (!s_Instance) {
-                s_Instance = Instantiate(Resources.Load<CrashHandler>("CrashHandler"));
+                s_Instance = Instantiate(UnityEngine.Resources.Load<CrashHandler>("CrashHandler"));
                 string context = null;
                 OnCrash?.Invoke(exception, exceptionInfo);
                 DisplayCrash?.Invoke(exception, exceptionInfo, out context);

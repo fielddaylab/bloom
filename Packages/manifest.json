@@ -42,7 +42,9 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0",
-    "com.beauprime.beauutil": "0.9.2"
+    "com.beauprime.beauutil": "0.9.2",
+    "com.beauprime.beauroutine-extensions": "0.1.2",
+    "com.beauprime.beauroutine-spline": "0.1.1"
   },
   "scopedRegistries": [
     {
@@ -52,6 +54,8 @@
         "com.beauprime.beaudata",
         "com.beauprime.beaupools",
         "com.beauprime.beauroutine",
+        "com.beauprime.beauroutine-extensions",
+        "com.beauprime.beauroutine-spline",
         "com.beauprime.beauutil",
         "com.beauprime.leaf",
         "com.openupm"

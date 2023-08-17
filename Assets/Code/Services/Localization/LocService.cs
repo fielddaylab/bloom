@@ -19,11 +19,12 @@ using BeauUtil.Tags;
 using EasyAssetStreaming;
 using ScriptableBake;
 using UnityEngine;
+using FieldDay.Scripting;
 
 namespace Zavala
 {
     [ServiceDependency(typeof(AssetsService))]
-    public partial class LocService : ServiceBehaviour, ILoadable, IDebuggable
+    public partial class LocService : ServiceBehaviour, ILoadable
     {
         static private readonly FourCC DefaultLanguage = FourCC.Parse("EN");
 
@@ -75,13 +76,13 @@ namespace Zavala
                 loadPackages = manifest.Packages.Length > 0;
                 #endif // PREVIEW || PRODUCTION
                 if (loadPackages) {
-                    DebugService.Log(LogMask.Loading | LogMask.Localization, "[LocService] Loading '{0}' from {1} packages", manifest.name, manifest.Packages.Length);
+                    Log.Msg("[LocService] Loading '{0}' from {1} packages", manifest.name, manifest.Packages.Length);
                     foreach(var file in manifest.Packages) {
                         var parser = BlockParser.ParseAsync(ref m_LanguagePackage, file, Parsing.Block, LocPackage.Generator.Instance);
                         yield return Async.Schedule(parser); 
                     }
                 } else {
-                    DebugService.Log(LogMask.Loading | LogMask.Localization, "[LocService] Loading '{0}' from {1:0.00}kb binary", manifest.name, manifest.Binary.Length / 1024);
+                    Log.Msg("[LocService] Loading '{0}' from {1:0.00}kb binary", manifest.name, manifest.Binary.Length / 1024f);
                     yield return Async.Schedule(LocPackage.ReadFromBinary(m_LanguagePackage, manifest.Binary));
                 }
             }
@@ -93,9 +94,9 @@ namespace Zavala
                 m_UsageAudit.Add(key);
             }
 
-            #endif // DEVELOPMENT
+#endif // DEVELOPMENT
 
-            DebugService.Log(LogMask.Loading | LogMask.Localization, "[LocService] Loaded {0} keys ({1})", m_LanguagePackage.Count, manifest.LanguageId.ToString());
+            Log.Msg("[LocService] Loaded {0} keys ({1})", m_LanguagePackage.Count, manifest.LanguageId.ToString());
 
             m_CurrentLanguage = manifest.LanguageId;
             m_Loading = false;
@@ -186,10 +187,9 @@ namespace Zavala
 
             #if DEVELOPMENT
             m_UsageAudit.Remove(inKey);
-            #endif // DEVELOPMENT
+#endif // DEVELOPMENT
 
-            // TODO: hook up LocService with Scripting system. Needs a ParseTag function.
-            // Services.Script.ParseToTag(ref ioTagString, content, inContext);
+            ScriptUtility.ParseToTag(ref ioTagString, content, inContext);
 
             return true;
         }
@@ -242,34 +242,6 @@ namespace Zavala
         #endregion // IService
 
         #region IDebuggable
-
-        #if DEVELOPMENT
-
-        IEnumerable<DMInfo> IDebuggable.ConstructDebugMenus(FindOrCreateMenu findOrCreate)
-        {
-            DMInfo info = findOrCreate("Audit");
-
-            info.AddButton("Log Unused Localization Keys", () => {
-                if (m_UsageAudit.Count > 0) {
-                    StringBuilder sb = new StringBuilder(1024);
-                    foreach(var unused in m_UsageAudit) {
-                        sb.Append(unused.ToDebugString()).Append('\n');
-                    }
-                    sb.TrimEnd(StringUtils.DefaultNewLineChars);
-
-                    string output = sb.Flush();
-
-                    Log.Warn("[LocService] {0} unused keys\n{1}", m_UsageAudit.Count, output);
-                    File.WriteAllText("Temp/Unused Localization Keys.txt", output);
-                } else {
-                    Log.Msg("[LocService] No unused localization keys! Wow!");
-                }
-            });
-
-            yield return info;
-        }
-
-        #endif // DEVELOPMENT
 
         #endregion // IDebuggable
     }

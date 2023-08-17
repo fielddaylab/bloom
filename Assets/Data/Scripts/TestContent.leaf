@@ -1,0 +1,7 @@
+# basePath test
+
+:: Intro
+@trigger    GameBooted
+@cutscene
+@once
+Welcome to the game!

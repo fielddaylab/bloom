@@ -8,7 +8,9 @@
         "BeauRoutine",
         "BeauPools",
         "BeauData",
-        "BeauUtil.Parse"
+        "BeauUtil.Parse",
+        "BeauRoutine-Extensions",
+        "BeauRoutine-Spline"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

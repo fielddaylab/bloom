@@ -37,14 +37,14 @@ namespace Zavala
 
         static public HashSet<T> NewSet<T>(int capacity)
         {
-            HashSet<T> set = new HashSet<T>(CompareUtils.DefaultComparer<T>());
-            set.Initialize(capacity);
+            HashSet<T> set = new HashSet<T>(capacity, CompareUtils.DefaultEquals<T>());
+            //set.Initialize(capacity);
             return set;
         }
 
         static public Dictionary<K, V> NewDictionary<K, V>(int capacity)
         {
-            return new Dictionary<K, V>(capacity, CompareUtils.DefaultComparer<K>());
+            return new Dictionary<K, V>(capacity, CompareUtils.DefaultEquals<K>());
         }
 
         static private class MethodsCache<T>

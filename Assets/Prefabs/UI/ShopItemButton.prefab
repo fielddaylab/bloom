@@ -145,8 +145,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Cost
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 88a40a8b5061183459fcf1f166a51f2d, type: 2}
+  m_sharedMaterial: {fileID: -3933179619822425990, guid: 88a40a8b5061183459fcf1f166a51f2d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -280,8 +280,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tool Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 88a40a8b5061183459fcf1f166a51f2d, type: 2}
+  m_sharedMaterial: {fileID: -3933179619822425990, guid: 88a40a8b5061183459fcf1f166a51f2d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

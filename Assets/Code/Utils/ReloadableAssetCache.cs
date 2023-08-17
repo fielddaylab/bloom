@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BeauUtil;
+using BeauUtil.Debugger;
 using BeauUtil.IO;
 using UnityEngine;
 using Zavala.Debugging;
@@ -22,7 +23,7 @@ namespace Zavala
         {
             if (s_AssetCache.Add(inReloadable))
             {
-                DebugService.Log(LogMask.Loading, "[ReloadableAssetCache] Added asset '{0}'", inReloadable.Id);
+                Log.Msg("[ReloadableAssetCache] Added asset '{0}'", inReloadable.Id);
                 return true;
             }
 
@@ -33,7 +34,7 @@ namespace Zavala
         {
             if (s_AssetCache.Remove(inReloadable))
             {
-                DebugService.Log(LogMask.Loading, "[ReloadableAssetCache] Removed asset '{0}'", inReloadable.Id);
+                Log.Msg("[ReloadableAssetCache] Removed asset '{0}'", inReloadable.Id);
                 
                 return true;
             }

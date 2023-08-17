@@ -1,4 +1,5 @@
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using UnityEngine.Scripting;
 using Zavala.Sim;
@@ -34,6 +35,11 @@ namespace Zavala {
             Game.SetEventDispatcher(Events);
 
             GameLoop.OnShutdown.Register(OnShutdown);
+        }
+
+        [InvokeOnBoot]
+        static private void OnBoot() {
+            ScriptUtility.Trigger("GameBooted");
         }
 
         static private void OnShutdown() {

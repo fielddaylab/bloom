@@ -477,7 +477,7 @@ namespace Zavala.Editor {
                     if (filePath.EndsWith("LocEditor.cs"))
                         return true;
 
-                    if (filePath.EndsWith(".aqloc")) {
+                    if (filePath.EndsWith(".zaloc")) {
                         StringSlice truncated = filePath.Substring(0, filePath.Length - 6);
                         if (truncated.Length > 3)
                             return truncated[truncated.Length - 3] != '.';

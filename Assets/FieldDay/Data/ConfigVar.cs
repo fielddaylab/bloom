@@ -457,7 +457,7 @@ namespace FieldDay.Data {
 
             var all = AllVars;
             
-            TextAsset resource = Resources.Load<TextAsset>(ResourceFileName);
+            TextAsset resource = UnityEngine.Resources.Load<TextAsset>(ResourceFileName); 
             if (resource != null) {
                 try {
                     changes = JSON.Parse(resource.text);
@@ -465,7 +465,7 @@ namespace FieldDay.Data {
                     UnityEngine.Debug.LogException(e);
                     changes = null;
                 } finally {
-                    Resources.UnloadAsset(resource);
+                    UnityEngine.Resources.UnloadAsset(resource);
                 }
             }
             
