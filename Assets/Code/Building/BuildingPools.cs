@@ -20,6 +20,12 @@ namespace Zavala.Building
 
         #endregion // Types
 
+        [Header("Static Buildings")]
+        public GameObject GrainFarm;
+        public GameObject DairyFarm;
+        public GameObject City;
+
+        [Header("Player-created Buildings")]
         public RoadPool Roads;
         public DigesterPool Digesters;
         public DigesterPool Storages;

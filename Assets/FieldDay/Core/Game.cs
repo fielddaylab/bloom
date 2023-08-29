@@ -2,12 +2,18 @@ using FieldDay.Systems;
 using FieldDay.SharedState;
 using FieldDay.Components;
 using FieldDay.Processes;
+using FieldDay.Audio;
 
 namespace FieldDay {
     /// <summary>
     /// Maintains references to game engine components.
     /// </summary>
     public class Game {
+        /// <summary>
+        /// Audio manager. Maintains audio playback.
+        /// </summary>
+        static public AudioMgr Audio { get; internal set; }
+
         /// <summary>
         /// ISystem manager. Maintains system updates.
         /// </summary>

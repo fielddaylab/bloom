@@ -191,7 +191,7 @@ namespace Zavala {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FastIndexToPos(int index, out int x, out int y) {
             x = (int) (index % Width);
-            y = (int) (index % Height);
+            y = (int) (index / Width);
         }
 
         #endregion // Index to Position
@@ -810,7 +810,7 @@ namespace Zavala {
 
         public HexGridSubregion Subregion(ushort x, ushort y, ushort width, ushort height) {
             ushort subX = (ushort) (X + x);
-            ushort subY = (ushort) (Y + Y);
+            ushort subY = (ushort) (Y + y);
             if (subX + width > X + Width || subY + height > Y + Height) {
                 throw new ArgumentOutOfRangeException();
             }

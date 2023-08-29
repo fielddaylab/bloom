@@ -1,12 +1,15 @@
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using FieldDay.Systems;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Building;
 using Zavala.Roads;
+using Zavala.World;
 
 namespace Zavala.Sim {
     [SharedStateInitOrder(-1)]
@@ -15,8 +18,7 @@ namespace Zavala.Sim {
 
         #region Inspector
 
-        public uint Width = 10;
-        public uint Height = 10;
+        public WorldAsset WorldData;
 
         #endregion // Inspector
 
@@ -38,49 +40,95 @@ namespace Zavala.Sim {
         }
 
         void IRegistrationCallbacks.OnRegister() {
-            HexSize = new HexGridSize(Width, Height);
+            HexSize = new HexGridSize(WorldData.Width, WorldData.Height);
             Terrain.Create(HexSize);
             Regions = SimBuffer.Create<RegionInfo>(HexSize);
             RegionCount = 0;
             CurrRegionIndex = 0;
             Random = new System.Random((int) (Environment.TickCount ^ DateTime.UtcNow.ToFileTimeUtc()));
 
-            GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this));
+            GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this, WorldData));
         }
     }
 
     static public class SimDataUtility {
-        static public void LateInitializeData(SimGridState grid) {
+        static public void LateInitializeData(SimGridState grid, WorldAsset world) {
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
-            GenerateRandomTerrain(grid, phosphorus);
+            LoadRegionDataFromWorld(grid, world, 0);
             RegenTerrainDependentInfo(grid, phosphorus);
             GenerateRandomPhosphorus(grid, phosphorus);
 
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
         }
 
-        static public void GenerateRandomTerrain(SimGridState grid, SimPhosphorusState phosphorus) {
-            float generationOffset = grid.Random.NextFloat(500);
+        static public void LoadRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex) {
+            var offsetRegion = world.Regions[regionIndex];
+            LoadRegionData(grid, offsetRegion.Region, offsetRegion.X, offsetRegion.Y);
+        }
 
-            HexGridSubregion globalRegion = new HexGridSubregion(grid.HexSize);
-            ushort regionIndex = AddRegion(grid, globalRegion, 0);
+        static public void LoadRegionData(SimGridState grid, RegionAsset asset, uint offsetX, uint offsetY) {
+            HexGridSubregion totalRegion = new HexGridSubregion(grid.HexSize);
+            HexGridSubregion subRegion = totalRegion.Subregion((ushort) offsetX, (ushort) offsetY, (ushort) asset.Width, (ushort) asset.Height);
 
-            for(int i = 0; i < grid.HexSize.Size; i++) {
-                TerrainTileInfo tileInfo = default;
+            Assert.True(offsetX % 2 == 0, "Region offset x must be multiple of 2");
 
-                HexVector pos = grid.HexSize.FastIndexToPos(i);
-                ushort height = (ushort) ((int) ((10 + 1000 * Mathf.PerlinNoise(generationOffset + pos.X * 0.23f, generationOffset * 0.6f + pos.Y * 0.19f) + grid.Random.Next(15, 100)) / 50) * 50);
-                if (height < 500) {
-                    tileInfo.Category = TerrainCategory.Water;
-                    tileInfo.Flags |= TerrainFlags.IsWater;
-                    height = 200;
+            ushort regionIndex = AddRegion(grid, subRegion, (ushort) asset.PaletteIndex);
+
+            for(int subIndex = 0; subIndex < subRegion.Size; subIndex++) {
+                int mapIndex = subRegion.FastIndexToGridIndex(subIndex);
+
+                TerrainTileInfo fromRegion = asset.Tiles[subIndex];
+                ref TerrainTileInfo currentTile = ref grid.Terrain.Info[mapIndex];
+
+                if (fromRegion.Category == TerrainCategory.Void) {
+                    if (currentTile.Category == TerrainCategory.Void) {
+                        currentTile.RegionIndex = regionIndex;
+                    }
+                    continue;
                 }
-                tileInfo.Height = height;
-                tileInfo.RegionIndex = regionIndex;
-                grid.Terrain.Info[i] = tileInfo;
+
+                if (currentTile.Category != TerrainCategory.Void) {
+                    Log.Warn("[SimDataUtility] Skipping data import for tile {0} - tile is not empty", mapIndex);
+                    continue;
+                }
+
+                fromRegion.RegionIndex = regionIndex;
+                currentTile = fromRegion;
             }
 
-            RegenRegionInfo(grid, regionIndex);
+            SimWorldState world = Game.SharedState.Get<SimWorldState>();
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+
+            // spawn buildings
+            foreach(var obj in asset.Buildings) {
+                int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
+                HexVector pos = grid.HexSize.FastIndexToPos(mapIndex);
+                Vector3 worldPos = HexVector.ToWorld(pos, grid.Terrain.Info[mapIndex].Height, world.WorldSpace);
+                switch (obj.Type) {
+                    case RegionAsset.BuildingType.City: {
+                        GameObject.Instantiate(pools.City, worldPos, Quaternion.identity);
+                        break;
+                    }
+                    case RegionAsset.BuildingType.DairyFarm: {
+                        GameObject.Instantiate(pools.DairyFarm, worldPos, Quaternion.identity);
+                        break;
+                    }
+                    case RegionAsset.BuildingType.GrainFarm: {
+                        GameObject.Instantiate(pools.GrainFarm, worldPos, Quaternion.identity);
+                        break;
+                    }
+                }
+            }
+
+            // TODO: spawn roads?
+
+            // load script
+            if (asset.LeafScript != null) {
+                ScriptDatabaseUtility.LoadNow(ScriptUtility.Database, asset.LeafScript);
+            }
+
+            RegenRegionInfo(grid, regionIndex, subRegion);
+            // TODO: analyze tile border information
         }
 
         /// <summary>
@@ -88,7 +136,7 @@ namespace Zavala.Sim {
         /// </summary>
         static public void GenerateRandomPhosphorus(SimGridState grid, SimPhosphorusState phosphorus) {
             for (int i = 0; i < grid.HexSize.Size; i++) {
-                if (grid.Random.Chance(0.2f)) {
+                if (grid.Terrain.Info[i].Category != TerrainCategory.Void && grid.Random.Chance(0.2f)) {
                     SimPhospohorusUtility.AddPhosphorus(phosphorus, i, grid.Random.Next(5, 25));
                 }
             }
@@ -148,10 +196,11 @@ namespace Zavala.Sim {
         /// <summary>
         /// Recalculates terrain-dependent region info.
         /// </summary>
-        static public void RegenRegionInfo(SimGridState grid, int regionIndex) {
+        static public void RegenRegionInfo(SimGridState grid, int regionIndex, HexGridSubregion subregion) {
             Assert.True(regionIndex < grid.RegionCount, "Region {0} is not a part of grid - currently {1} regions", regionIndex, grid.RegionCount);
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
             regionInfo.MaxHeight = TerrainInfo.GetMaximumHeight(grid.Terrain.Info, grid.HexSize);
+            regionInfo.GridArea = subregion;
         }
 
         /// <summary>

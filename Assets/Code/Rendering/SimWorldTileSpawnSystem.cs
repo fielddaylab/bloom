@@ -34,7 +34,7 @@ namespace Zavala.World {
                     HexGridSubregion subRegion = m_StateB.Regions[regionIdx].GridArea;
                     var terrainData = m_StateB.Terrain.Info;
                     foreach(var index in subRegion) {
-                        if (terrainData[index].RegionIndex != regionIdx) {
+                        if (terrainData[index].RegionIndex != regionIdx || terrainData[index].Category == TerrainCategory.Void) {
                             continue;
                         }
                         InstantiateTile(m_StateA, index, m_StateB.HexSize.FastIndexToPos(index), terrainData[index]);

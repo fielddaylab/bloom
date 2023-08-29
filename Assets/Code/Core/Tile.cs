@@ -9,10 +9,10 @@ using BeauUtil.Debugger;
 
 namespace Zavala
 {
-
     /// <summary>
     /// Mask representing a tile and all 6 possible connections around the tile.
     /// </summary>
+    [Serializable]
     public struct TileAdjacencyMask : IEquatable<TileAdjacencyMask>
     {
         public const byte OnlyConnectionsMask = 0xFE;
@@ -94,7 +94,6 @@ namespace Zavala
 
         public struct Enumerator : IEnumerator<TileDirection>
         {
-
             private byte m_Mask;
             private int m_Offset;
             private TileDirection m_Last;

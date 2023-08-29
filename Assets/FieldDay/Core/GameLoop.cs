@@ -19,6 +19,7 @@ using BeauPools;
 
 #if USE_SRP
 using UnityEngine.Rendering;
+using FieldDay.Audio;
 #endif // USE_SRP
 
 namespace FieldDay {
@@ -143,6 +144,9 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating process manager...");
             Game.Processes = new ProcessMgr();
 
+            Log.Msg("[GameLoop] Creating audio manager...");
+            Game.Audio = new AudioMgr();
+
             Application.targetFrameRate = m_TargetFramerate;
 
             Log.Msg("[GameLoop] Loading config vars...");
@@ -207,6 +211,10 @@ namespace FieldDay {
             CameraHelper.RemoveOnPreCull(this);
             CameraHelper.RemoveOnPreRender(this);
             CameraHelper.RemoveOnPostRender(this);
+
+            Log.Msg("[GameLoop] Shutting down audio manager...");
+            Game.Audio.Shutdown();
+            Game.Audio = null;
 
             Log.Msg("[GameLoop] Shutting down process manager...");
             Game.Processes.Shutdown();
@@ -292,6 +300,8 @@ namespace FieldDay {
                 OnUnscaledLateUpdate.Invoke(Frame.UnscaledDeltaTime);
             }
 
+            Game.Audio.Update(Frame.UnscaledDeltaTime);
+
             // flush event queue
             Game.Events?.Flush();
 
@@ -371,6 +381,7 @@ namespace FieldDay {
                 Game.Components.Unlock();
 
                 OnDebugUpdate.Invoke(Frame.UnscaledDeltaTime);
+                Game.Audio.PreUpdate(Frame.UnscaledDeltaTime);
 
                 // PRE UPDATE
 

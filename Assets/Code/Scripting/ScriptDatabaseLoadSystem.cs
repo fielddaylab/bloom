@@ -1,16 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using BeauRoutine;
 using BeauUtil;
-using BeauUtil.Variants;
-using FieldDay;
-using FieldDay.Components;
-using FieldDay.SharedState;
 using FieldDay.Systems;
 using Leaf;
-using UnityEngine;
-using Zavala.Scripting;
-using Zavala.Sim;
 
 namespace FieldDay.Scripting {
     [SysUpdate(GameLoopPhase.PreUpdate, 100)]

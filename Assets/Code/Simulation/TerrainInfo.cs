@@ -34,8 +34,7 @@ namespace Zavala.Sim {
     public enum TerrainCategory : ushort {
         Void,
         Land,
-        Water,
-        Building
+        Water
     }
 
     /// <summary>

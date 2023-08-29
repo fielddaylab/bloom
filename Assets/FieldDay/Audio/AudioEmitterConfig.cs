@@ -15,19 +15,22 @@ namespace FieldDay.Audio {
         [AutoEnum] public AudioEmitterMode Mode;
 
         /// <summary>
+        /// Rolloff type.
+        /// </summary>
+        [Tooltip("How audio will roll off over distance.")]
+        [AutoEnum] public AudioRolloffMode Rolloff;
+
+        /// <summary>
         /// Rolloff minimum distance.
         /// </summary>
+        [Tooltip("Minimum rolloff distance")]
         [Range(0, 300)] public float MinDistance;
 
         /// <summary>
         /// Rolloff maximum distance.
         /// </summary>
+        [Tooltip("Maximum rolloff distance")]
         [Range(0, 300)] public float MaxDistance;
-
-        /// <summary>
-        /// Rolloff type.
-        /// </summary>
-        [AutoEnum] public AudioRolloffMode Rolloff;
 
         /// <summary>
         /// Factor by which the audio is "despatialized".
