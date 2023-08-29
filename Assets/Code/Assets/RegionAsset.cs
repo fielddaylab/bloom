@@ -52,11 +52,11 @@ namespace Zavala {
         public int Height;
 
         [Header("Tile Information")]
-        public TerrainTileInfo[] Tiles;
-        public BuildingData[] Buildings;
-        public PointData[] Points;
-        public RoadData[] Roads;
-        public ModifierData[] Modifiers;
+        public TerrainTileInfo[] Tiles = Array.Empty<TerrainTileInfo>();
+        public BuildingData[] Buildings = Array.Empty<BuildingData>();
+        public PointData[] Points = Array.Empty<PointData>();
+        public RoadData[] Roads = Array.Empty<RoadData>();
+        public ModifierData[] Modifiers = Array.Empty<ModifierData>();
 
         [Header("Visuals")]
         public int PaletteIndex;

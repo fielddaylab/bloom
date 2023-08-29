@@ -308,8 +308,8 @@ namespace Zavala.Editor {
 
         static public HexVector PixelToHex(in TiledData data, Vector2 pixelLocation) {
             pixelLocation.y = data.PixelSize.y - pixelLocation.y;
-            int x = (int) Mathf.Round(pixelLocation.x / data.GridCellSize.x);
-            int y = (int) Mathf.Round((pixelLocation.y / data.GridCellSize.y) - (x & 1) * 0.5f);
+            int x = (int) Mathf.Floor(pixelLocation.x / data.GridCellSize.x);
+            int y = (int) Mathf.Floor((pixelLocation.y / data.GridCellSize.y) - (x & 1) * 0.5f);
             return HexVector.FromGrid(x, y);
         }
 

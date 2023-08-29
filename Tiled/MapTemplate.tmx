@@ -45,7 +45,7 @@
 0,0,0,0,1,1,1,1,1,1,1,1,0,0,0
 </data>
  </layer>
- <objectgroup id="2" name="Objects" opacity="0.4">
+ <objectgroup id="2" name="Objects">
   <object id="31" name="FirstFarm" gid="33" x="339" y="378" width="64" height="55"/>
   <object id="32" gid="38" x="526" y="647" width="64" height="55"/>
   <object id="33" gid="38" x="524" y="698" width="64" height="55"/>
