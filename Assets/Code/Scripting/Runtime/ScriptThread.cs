@@ -1,5 +1,6 @@
 using System;
 using BeauPools;
+using BeauUtil;
 using Leaf;
 using Leaf.Runtime;
 
@@ -9,6 +10,11 @@ namespace FieldDay.Scripting {
         
         private ScriptNode m_OriginalNode;
         private ScriptNodePriority m_Priority;
+
+        // record state
+        private bool m_RecordedDialog;
+        private StringHash32 m_LastKnownCharacter;
+        private string m_LastKnownName;
 
         public ScriptThread(IPool<ScriptThread> pool, ILeafPlugin<ScriptNode> inPlugin) : base(inPlugin) {
             m_Pool = pool;

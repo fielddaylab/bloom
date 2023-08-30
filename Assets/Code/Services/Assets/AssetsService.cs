@@ -11,16 +11,19 @@ using BeauUtil.UI;
 using EasyAssetStreaming;
 using TMPro;
 using UnityEngine;
+using Zavala.Scripting;
 
 namespace Zavala {
     public class AssetsService : ServiceBehaviour {
         #region Inspector
 
+        /*
         [Header("Databases")]
 
         [Header("Fonts")]
 
         [Header("Shaders")]
+        */
 
         [Header("Streaming")]
         [SerializeField, Range(1, 32)] private float m_StreamedTextureMem = 8;
@@ -32,6 +35,7 @@ namespace Zavala {
         #endregion // Inspector
 
         private Unsafe.ArenaHandle m_DecompressionBuffer;
+
 
         protected override void Initialize() {
             base.Initialize();

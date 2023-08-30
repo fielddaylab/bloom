@@ -39,7 +39,7 @@ namespace Zavala {
 
         [InvokeOnBoot]
         static private void OnBoot() {
-            ScriptUtility.Trigger("GameBooted");
+            ScriptUtility.Trigger(GameTriggers.GameBooted);
         }
 
         static private void OnShutdown() {

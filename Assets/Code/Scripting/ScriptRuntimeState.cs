@@ -100,6 +100,7 @@ namespace FieldDay.Scripting {
             LeafEvalContext context = GetContext(Runtime, actor, vars);
             ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(Database, triggerId, context, default);
             if (node != null) {
+                Debug.Log("[Script] triggered node " + node.Id().ToDebugString());
                 return Runtime.Plugin.Run(node, actor, vars);
             }
 
