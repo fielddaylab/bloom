@@ -4,8 +4,10 @@ using BeauUtil;
 using BeauUtil.Blocks;
 using BeauUtil.Tags;
 using BeauUtil.Variants;
+using Leaf;
 using Leaf.Defaults;
 using Leaf.Runtime;
+using UnityEditor.PackageManager;
 using Zavala;
 
 namespace FieldDay.Scripting {
@@ -18,6 +20,13 @@ namespace FieldDay.Scripting {
 
             BlockMetaCache.Default.Cache(typeof(ScriptNode));
             BlockMetaCache.Default.Cache(typeof(ScriptNodePackage));
+
+            ConfigureTagStringHandling(new CustomTagParserConfig(), new TagStringEventHandler());
+
+            LeafUtils.ConfigureDefaultParsers(m_TagParseConfig, this, null);
+            LeafUtils.ConfigureDefaultHandlers(m_TagHandler, this);
+
+            m_TagHandler.Register(LeafUtils.Events.Character, () => { });
         }
 
         public override LeafThreadHandle Run(ScriptNode inNode, ILeafActor inActor = null, VariantTable inLocals = null, string inName = null, bool inbImmediateTick = true) {

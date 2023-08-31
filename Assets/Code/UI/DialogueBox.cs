@@ -75,7 +75,7 @@ namespace Zavala.UI {
 
             m_TransitionRoutine.Replace(ShowRoutine());
 
-            return inBaseHandler;
+            return null;
         }
 
         public IEnumerator ShowChoice(LeafChoice inChoice, LeafThreadState inThread, ILeafPlugin inPlugin) {
