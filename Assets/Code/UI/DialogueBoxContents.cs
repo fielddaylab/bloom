@@ -11,6 +11,7 @@ namespace Zavala.UI {
         public TMP_Text Header;
         public TMP_Text Subheader;
         public TMP_Text Contents;
+        public Graphic BoxColorLayer;
 
         [Header("Portrait")]
         public RectTransform PortraitBox;
@@ -26,10 +27,24 @@ namespace Zavala.UI {
     }
 
     static public class DialogueUIUtility {
-        static public void PopulateBoxText(DialogueBoxContents box, string header, string subheader, string content) {
+        static public void PopulateBoxText(DialogueBoxContents box, Graphic buttonGraphic, string header, string subheader, string content, Sprite portraitBG, Sprite portraitImg, Color boxColor, Color nameColor, Color titleColor, Color textColor) {
+            // text
             box.Header.TryPopulate(header);
             box.Subheader.TryPopulate(subheader);
             box.Contents.TryPopulate(content);
+
+            // portrait
+            box.PortraitBackground.gameObject.SetActive(portraitBG != null);
+            box.PortraitBackground.sprite = portraitBG;
+            box.PortraitImage.gameObject.SetActive(portraitImg != null);
+            box.PortraitImage.sprite = portraitImg;
+
+            // Colors
+            box.BoxColorLayer.color = boxColor;
+            buttonGraphic.color = boxColor;
+            box.Header.color = nameColor;
+            box.Subheader.color = titleColor;
+            box.Contents.color = textColor;
         }
     }
 }

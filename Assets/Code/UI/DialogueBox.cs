@@ -63,13 +63,28 @@ namespace Zavala.UI {
                 }
                 ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
-                string header = "";
-                string subheader = "";
+                string header, subheader;
+                Sprite portraitBG, portraitImg;
+                Color boxColor, nameColor, titleColor, textColor;
                 if (charDef != null) {
                     header = charDef.NameId;
                     subheader = charDef.TitleId;
+                    portraitBG = charDef.PortraitBackground;
+                    portraitImg = charDef.PortraitArt;
+                    boxColor = charDef.BackgroundColor;
+                    nameColor = charDef.NameColor;
+                    titleColor = charDef.TitleColor;
+                    textColor = charDef.TextColor;
                 }
-                DialogueUIUtility.PopulateBoxText(Contents, header, subheader, inString.RichText);
+                else {
+                    header = subheader = "";
+                    portraitBG = portraitImg = null;
+                    boxColor = Color.clear;
+                    nameColor = Color.white;
+                    titleColor = Color.black;
+                    textColor = Color.black;
+                }
+                DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitBG, portraitImg, boxColor, nameColor, titleColor, textColor);
                 Contents.Contents.maxVisibleCharacters = 0;
             }
 

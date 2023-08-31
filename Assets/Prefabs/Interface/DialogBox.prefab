@@ -132,6 +132,7 @@ MonoBehaviour:
   Header: {fileID: 7404315287059689800}
   Subheader: {fileID: 7335009408221634363}
   Contents: {fileID: 7812175611988919444}
+  BoxColorLayer: {fileID: 1560462090484535935}
   PortraitBox: {fileID: 6546045605500925986}
   PortraitColorLayer: {fileID: 6659954506089717478}
   PortraitBackground: {fileID: 3331730855759563609}
