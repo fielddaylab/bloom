@@ -20,6 +20,8 @@ namespace Zavala.Scripting {
                     ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, trigger.EventId, ScriptUtility.GetContext(ScriptUtility.Runtime, component, varTable), component.Id);
                     varTable.Clear();
 
+                    // TODO: Do we need to handle @once tags between queueing events and running them?
+
                     if (node != null) {
                         EventActorUtility.CancelEvent(component, trigger.EventId);
                         if (component.QueuedEvents.Count < component.MaxQueuedEvents) {

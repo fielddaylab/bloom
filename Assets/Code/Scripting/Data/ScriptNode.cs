@@ -4,6 +4,7 @@ using BeauUtil.Blocks;
 using Leaf;
 using Leaf.Compiler;
 using Leaf.Runtime;
+using UnityEngine.Scripting;
 
 namespace FieldDay.Scripting {
     /// <summary>

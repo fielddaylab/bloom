@@ -11,6 +11,8 @@ namespace Zavala.Scripting {
         public int MaxQueuedEvents = 3;
         public SerializedHash32 Id;
 
+        public bool ActivelyDisplayingEvent = false;
+
         // not serialized
 
         public RingBuffer<EventActorTrigger> QueuedTriggers = new RingBuffer<EventActorTrigger>(8, RingBufferMode.Expand);

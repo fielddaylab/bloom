@@ -172,6 +172,15 @@ namespace FieldDay.Scripting {
             return null;
         }
 
+        static public ScriptNode FindSpecificNode(ScriptDatabase db, StringHash32 nodeId, LeafEvalContext context, StringHash32 targetId) {
+            ScriptNode node;
+            if (db.LoadedRandomAccessNodes.TryGetValue(nodeId, out node)) {
+                return node;
+            }
+
+            return null;
+        }
+
         static public int FindAllFunctions(ScriptDatabase db, StringHash32 bucketId, LeafEvalContext context, StringHash32 targetId, ICollection<ScriptNode> results) {
             ScriptNodeBucket bucket;
             if (db.LoadedNodeBuckets.TryGetValue(bucketId, out bucket)) {

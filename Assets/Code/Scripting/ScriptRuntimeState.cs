@@ -104,6 +104,15 @@ namespace FieldDay.Scripting {
                 return Runtime.Plugin.Run(node, actor, vars);
             }
 
+            /*
+            LeafEvalContext context = GetContext(Runtime, actor, vars);
+            ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(Database, node.Id(), context, default);
+            if (node != null) {
+                Debug.Log("[Script] triggered node " + node.Id().ToDebugString());
+                return Runtime.Plugin.Run(node, actor, vars);
+            }
+            */
+
             return default;
         }
 

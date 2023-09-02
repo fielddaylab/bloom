@@ -7,3 +7,17 @@
 {@test-char} And this is test character, chiming in.
 {@test-char} This is a continuation.
 {@balthazar} And now I'm jumping back into the conversation. All done!
+
+
+:: testRunoffTrigger
+@trigger    AlertExamined
+@conditions       alertType == "excessive-runoff"
+// @when    
+{@balthazar}    There has been excessive runoff!
+
+
+:: testBloomTrigger
+@trigger    AlertExamined
+@conditions       alertType == "bloom"
+// @when    
+{@balthazar}    Algae blooms are appearing in the water!

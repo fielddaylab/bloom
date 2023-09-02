@@ -232,6 +232,7 @@ GameObject:
   - component: {fileID: 1204671298359837929}
   - component: {fileID: 7837471679041832413}
   - component: {fileID: 8831316873728611835}
+  - component: {fileID: 3541596346748969672}
   m_Layer: 0
   m_Name: Scripting
   m_TagString: Untagged
@@ -333,3 +334,17 @@ MonoBehaviour:
   m_NullActorDefinition: {fileID: 11400000, guid: cc3cca4f8f520e042baee4cfad0f3bd3, type: 2}
   m_ErrorPortrait: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Constructed: 0
+--- !u!114 &3541596346748969672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7025879419901973865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 457a23bcdc406354b8b612b12b4860de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Scripts:
+  - {fileID: -1942890987711236906, guid: ed8019f3347fbd1409a15c9fcb7fe836, type: 3}
