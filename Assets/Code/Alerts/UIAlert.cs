@@ -1,5 +1,6 @@
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay;
 using FieldDay.Scripting;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using UnityEngine;
 using Zavala.Scripting;
 
 namespace Zavala.UI {
+    [RequireComponent(typeof(SnapToTile))]
     public class UIAlert : MonoBehaviour
     {
         [SerializeField] private MultiImageButton m_Button;
@@ -22,9 +24,17 @@ namespace Zavala.UI {
         private void HandleButtonClicked() {
             Assert.NotNull(Actor);
 
+            UIAlertUtility.ClickAlert(this);
+        }
+
+        #endregion // Handlers
+    }
+
+    public static class UIAlertUtility { 
+        public static void ClickAlert(UIAlert alert) {
             // Activate queued script node event
             using (TempVarTable varTable = TempVarTable.Alloc()) {
-                if (!Actor.QueuedEvents.TryPopBack(out EventActorQueuedEvent newEvent)) {
+                if (!alert.Actor.QueuedEvents.TryPopBack(out EventActorQueuedEvent newEvent)) {
                     // No event linked with this event
                     return;
                 }
@@ -33,20 +43,21 @@ namespace Zavala.UI {
                 }
 
                 //ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, newEvent.ScriptId, ScriptUtility.GetContext(ScriptUtility.Runtime, Actor, varTable), Actor.Id);
-                ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, newEvent.TypeId, ScriptUtility.GetContext(ScriptUtility.Runtime, Actor, varTable), Actor.Id);
+                ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, newEvent.TypeId, ScriptUtility.GetContext(ScriptUtility.Runtime, alert.Actor, varTable), alert.Actor.Id);
 
                 // TODO: What if this particular node has already run between when the alert was created and when it was clicked?
 
-                ScriptUtility.Runtime.Plugin.Run(node, Actor, varTable);
+                ScriptUtility.Runtime.Plugin.Run(node, alert.Actor, varTable);
                 varTable.Clear();
 
-                // TODO: hide/destroy this alert
+                // free this alert
+                UIPools pools = Game.SharedState.Get<UIPools>();
+                pools.Alerts.Free(alert);
 
                 // Allow next queued events to be generated
-                Actor.ActivelyDisplayingEvent = false;
+                alert.Actor.ActivelyDisplayingEvent = false;
             }
         }
-
-        #endregion // Handlers
     }
+
 }

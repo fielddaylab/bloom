@@ -3479,6 +3479,7 @@ GameObject:
   - component: {fileID: 502754878}
   - component: {fileID: 502754879}
   - component: {fileID: 502754880}
+  - component: {fileID: 502754881}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -3923,6 +3924,28 @@ MonoBehaviour:
     m_InitialCapacity: 8
     m_PrewarmOnInitialize: 1
     m_InitialPrewarm: 4
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  PoolRoot: {fileID: 140165166}
+--- !u!114 &502754881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502754864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddc2d6176a04d58409fe5705623362aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Alerts:
+    m_Prefab: {fileID: 5880324271969544395, guid: e2bf128a1f2becb44a988ba928791bbc, type: 3}
+    m_Name: 
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
@@ -9103,7 +9126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 393.055
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -11093,6 +11116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InitialCapacity: 64
+  AlertPrefab: {fileID: 5880324271969544398, guid: e2bf128a1f2becb44a988ba928791bbc, type: 3}
 --- !u!1 &1911783916
 GameObject:
   m_ObjectHideFlags: 0

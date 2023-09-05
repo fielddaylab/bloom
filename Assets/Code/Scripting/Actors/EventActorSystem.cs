@@ -17,10 +17,13 @@ namespace Zavala.Scripting {
                         varTable.Set(trigger.Argument.Id, trigger.Argument.Value);
                     }
 
+
                     ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, trigger.EventId, ScriptUtility.GetContext(ScriptUtility.Runtime, component, varTable), component.Id);
                     varTable.Clear();
 
                     // TODO: Do we need to handle @once tags between queueing events and running them?
+                    // TODO: ensure only one of any particular node is "checked out" at any given time
+                    // OR allow any number to display the alert, but once one has been clicked, remove all alerts that share that same ID
 
                     if (node != null) {
                         EventActorUtility.CancelEvent(component, trigger.EventId);

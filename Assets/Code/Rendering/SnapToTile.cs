@@ -13,19 +13,28 @@ namespace Zavala {
         private void OnEnable() {
             if (m_initial) {
                 // wait for world to finish setting up
-                GameLoop.QueuePreUpdate(Snap);
+                GameLoop.QueuePreUpdate(SnapOnEnable);
             }
             else {
                 // snap to tile as soon as possible
-                Snap();
+                SnapOnEnable();
             }
         }
 
-        private void Snap() {
-            HexVector pos = GetComponent<OccupiesTile>().TileVector;
+        private void SnapOnEnable() {
+            OccupiesTile tile = GetComponent<OccupiesTile>();
+            if (tile) {
+                SnapUtility.Snap(this, GetComponent<OccupiesTile>());
+            }
+        }
+    }
+
+    public static class SnapUtility {
+        public static void Snap(SnapToTile snap, OccupiesTile tile) {
+            HexVector pos = tile.TileVector;
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
-            worldPos.y += HeightOffset;
-            transform.position = worldPos;
+            worldPos.y += snap.HeightOffset;
+            snap.transform.position = worldPos;
         }
     }
 }
