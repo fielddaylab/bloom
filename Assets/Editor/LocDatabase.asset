@@ -20,6 +20,18 @@ MonoBehaviour:
     Records:
     - Id: alerts.bloom
       Content: Algae Bloom
+    - Id: alerts.excess-runoff
+      Content: Excessive Runoff
+    - Id: alerts.die-off
+      Content: Die-OFF
+    - Id: alerts.crit-imbalance
+      Content: Critical Imbalance
+    - Id: alerts.unused-digester
+      Content: Unused Digester
+    - Id: alerts.declining-pop
+      Content: Declining Population
+    - Id: alerts.selling-loss
+      Content: Selling at a Loss
     BasePath: alerts
     AllBasePaths:
     - Path: alerts

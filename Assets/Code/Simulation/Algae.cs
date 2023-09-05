@@ -12,6 +12,7 @@ namespace Zavala.Sim {
     public struct AlgaeTileState {
         public float PercentAlgae; // growth level of algae for this tile
         public bool isWater;
+        public bool HasPeaked; // TODO: Does this ever reset? Do we need a time threashold? Or if it drops below a certaion threshold?
     }
 
     static public class AlgaeSim {

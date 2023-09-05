@@ -3,7 +3,7 @@ using Zavala.Actors;
 
 namespace Zavala.Sim
 {
-    public class RunoffAlertSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ActorTimer, OccupiesTile>
+    public class ExcessRunoffAlertSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ActorTimer, OccupiesTile>
     {
         public override void ProcessWorkForComponent(ActorPhosphorusGenerator generator, ActorTimer timer, OccupiesTile tile, float deltaTime) {
             if (!timer.Timer.HasAdvanced()) {

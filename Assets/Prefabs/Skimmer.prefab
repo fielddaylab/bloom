@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5412720830129975463}
   - component: {fileID: 5412720830129975464}
   - component: {fileID: 5412720830129975457}
+  - component: {fileID: 1976245010908455185}
   m_Layer: 7
   m_Name: Skimmer
   m_TagString: Untagged
@@ -154,3 +155,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SkimAmt: 2
+--- !u!114 &1976245010908455185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5412720830129975465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6077f8951d683da4483f3bead0540aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxQueuedEvents: 3
+  Id:
+    m_Source: 
+    m_HashValue: 0
+  ActivelyDisplayingEvent: 0

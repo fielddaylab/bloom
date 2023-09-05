@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 947691686583835034}
   - component: {fileID: 947691686583835032}
   - component: {fileID: 947691686583835033}
+  - component: {fileID: 546599153688107881}
   m_Layer: 7
   m_Name: City
   m_TagString: Untagged
@@ -239,3 +240,20 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 1
+--- !u!114 &546599153688107881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947691686583835045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6077f8951d683da4483f3bead0540aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxQueuedEvents: 3
+  Id:
+    m_Source: 
+    m_HashValue: 0
+  ActivelyDisplayingEvent: 0

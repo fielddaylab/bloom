@@ -9,8 +9,6 @@ namespace Zavala.Scripting
     [SysUpdate(FieldDay.GameLoopPhase.Update, 100100)] // after EventActorSystem
     public sealed class AlertCreationSystem : ComponentSystemBehaviour<EventActor, OccupiesTile>
     {
-        public GameObject AlertPrefab;
-
         public override void ProcessWorkForComponent(EventActor component, OccupiesTile tile, float deltaTime) {
             if (Loc.IsServiceLoading()) {
                 // Don't create alerts until localization has loaded (avoids empty banners)

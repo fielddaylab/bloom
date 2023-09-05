@@ -32,20 +32,24 @@ namespace Zavala.Sim {
                     ref float algaeGrowth = ref m_StateA.Algae.State[tile].PercentAlgae;
                     // trigger algae events
                     // TODO: don't dispatch events if algae has already peaked
-                    DispatchGrowthEvent(algaeGrowth, tile);
+                    if (!m_StateA.Algae.State[tile].HasPeaked) {
+                        DispatchGrowthEvent(algaeGrowth, tile, ref m_StateA.Algae);
+                    }
                     // increment by step
                     algaeGrowth += AlgaeSim.AlgaeGrowthIncrement;
                 }
             }
         }
 
-        private void DispatchGrowthEvent (float currentGrowth, int tileIndex) {
+        private void DispatchGrowthEvent (float currentGrowth, int tileIndex, ref AlgaeBuffers algaeBuffers) {
             ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeGrew, tileIndex);
             if (currentGrowth <= 0) {
                 ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeFormed, tileIndex);
                 InstantiateAlgae(m_StateC, tileIndex);
             } else if (currentGrowth >= 1) {
                 ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaePeaked, tileIndex);
+                algaeBuffers.PeakingTiles.Add(tileIndex); // flag any peaking tiles for alert system(s)
+                algaeBuffers.State[tileIndex].HasPeaked = true;
             }
         }
 
@@ -57,12 +61,11 @@ namespace Zavala.Sim {
         private void InstantiateAlgae (SimGridState grid, int tileIndex) {
             // TODO: grow algae object based on growth state?
             // associate with 
-            GameObject newAlgae = Instantiate(m_StateA.AlgaePrefab);
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             // Vector3 worldPos = HexVector.ToWorld(tileIndex, grid.Terrain.Height[tileIndex], ZavalaGame.SimWorld.WorldSpace);
             worldPos.y += 0.01f;
-            newAlgae.transform.position = worldPos;
+            GameObject newAlgae = Instantiate(m_StateA.AlgaePrefab, worldPos, m_StateA.AlgaePrefab.transform.rotation);
         }
     }
 }

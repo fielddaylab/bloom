@@ -44,7 +44,6 @@ namespace Zavala.UI {
                     varTable.Set(newEvent.Argument.Id, newEvent.Argument.Value);
                 }
 
-                //ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, newEvent.ScriptId, ScriptUtility.GetContext(ScriptUtility.Runtime, Actor, varTable), Actor.Id);
                 ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, newEvent.TypeId, ScriptUtility.GetContext(ScriptUtility.Runtime, alert.Actor, varTable), alert.Actor.Id);
 
                 // TODO: What if this particular node has already run between when the alert was created and when it was clicked?
