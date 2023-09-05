@@ -11,7 +11,7 @@
 
 :: testRunoffTrigger
 @trigger    AlertExamined
-@conditions       alertType == "excessive-runoff"
+@conditions       alertType == "excess-runoff"
 // @when    
 {@balthazar}    There has been excessive runoff!
 

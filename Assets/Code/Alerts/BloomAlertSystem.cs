@@ -16,7 +16,7 @@ namespace Zavala.Sim
 
             EventActorTrigger newTrigger = new EventActorTrigger();
             newTrigger.EventId = GameTriggers.AlertExamined;
-            newTrigger.Argument = new NamedVariant("alertType", "bloom");
+            newTrigger.Argument = new NamedVariant("alertType", GameAlerts.Bloom);
             EventActorUtility.QueueTrigger(actor, newTrigger.EventId, newTrigger.Argument);
 
             // TODO: check if bloom has occured

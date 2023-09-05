@@ -116,5 +116,9 @@ namespace Zavala
         static public EditorLocCallback EditorLoc;
 
         #endif // UNITY_EDITOR
+
+        static public bool IsServiceLoading() {
+            return Service.IsLoading();
+        }
     }
 }

@@ -5,6 +5,7 @@ using FieldDay.Scripting;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using TMPro;
 using UnityEngine;
 using Zavala.Scripting;
 
@@ -14,6 +15,7 @@ namespace Zavala.UI {
     {
         [SerializeField] private MultiImageButton m_Button;
         public EventActor Actor; // The event actor this alert is anchored to
+        public TMP_Text EventText;
 
         private void OnEnable() {
             m_Button.onClick.AddListener(HandleButtonClicked);

@@ -13,6 +13,18 @@ MonoBehaviour:
   m_Name: LocDatabase
   m_EditorClassIdentifier: 
   m_PackageRecords:
+  - Name: alerts
+    FilePath: Assets/Content/Text/alerts.zaloc
+    Asset: {fileID: -4270002856181823206, guid: c9d28cae82eb22f4790913aba0817934, type: 3}
+    LastLine: 0
+    Records:
+    - Id: alerts.bloom
+      Content: Algae Bloom
+    BasePath: alerts
+    AllBasePaths:
+    - Path: alerts
+      Start: 0
+    NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc
     Asset: {fileID: -4270002856181823206, guid: ea8734fcad5f46d48b270c48650c56ab, type: 3}

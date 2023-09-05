@@ -118,6 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Button: {fileID: 5880324272469248372}
   Actor: {fileID: 0}
+  EventText: {fileID: 5880324273120039238}
 --- !u!114 &4192421131787911186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,7 +405,7 @@ GameObject:
   - component: {fileID: 5880324273120039239}
   - component: {fileID: 5880324273120039238}
   m_Layer: 6
-  m_Name: Text (TMP)
+  m_Name: Alert Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
