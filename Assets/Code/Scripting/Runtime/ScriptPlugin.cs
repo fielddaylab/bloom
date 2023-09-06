@@ -87,6 +87,17 @@ namespace FieldDay.Scripting {
             }
         }
 
+        public override void OnNodeExit(ScriptNode inNode, LeafThreadState<ScriptNode> inThreadState) {
+            if ((inNode.Flags & ScriptNodeFlags.ForcePolicy) != 0) {
+                // View Policies: expand
+                m_RuntimeState.DefaultDialogue.ExpandPolicyUI();
+            }
+            else {
+                // Close advisor, no policies forced
+                m_RuntimeState.DefaultDialogue.HideAdvisorUI();
+            }
+        }
+
         public override void OnEnd(LeafThreadState<ScriptNode> inThreadState) {
             base.OnEnd(inThreadState);
         }

@@ -79,6 +79,12 @@ namespace FieldDay.Scripting {
             }
         }
 
+        [BlockMeta("forcePolicy")]
+        private void SetForcePolicy(ScriptNodeMemoryTarget target = ScriptNodeMemoryTarget.Persistent) {
+            Flags |= ScriptNodeFlags.ForcePolicy;
+            PersistenceType = target;
+        }
+
         #endregion // Internal
     }
 
@@ -94,7 +100,8 @@ namespace FieldDay.Scripting {
         Queued = 0x10,
         IgnoreDuringCutscene = 0x20,
         InterruptSamePriority = 0x40,
-        AnyTarget = 0x80
+        AnyTarget = 0x80,
+        ForcePolicy = 0x100
     }
 
     /// <summary>

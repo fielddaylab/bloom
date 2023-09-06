@@ -2,6 +2,7 @@ using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scripting;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,7 +27,6 @@ namespace Zavala.Advisor {
         public void TogglePolicies(bool toggle) {
             Cards.SetActive(toggle);
             Log.Msg("[PolicyButton] Pressed, {0} active: {1}", Cards.transform.name, toggle);
-            
         }
 
         public void SetPolicy(int policyIndex) {

@@ -1,31 +1,41 @@
 # basePath   region1
 
 
-// :: testIntro
-// @trigger    GameBooted
+:: testIntro
+@trigger    GameBooted
+@forcePolicy
+{@balthazar} Hello! This is Balthazar speaking.
+{@test-char} And this is test character, chiming in.
+{@test-char} This is a continuation.
+{@balthazar} And now I'm jumping back into the conversation. All done!
 
-// {@balthazar} Hello! This is Balthazar speaking.
-// {@test-char} And this is test character, chiming in.
-// {@test-char} This is a continuation.
-// {@balthazar} And now I'm jumping back into the conversation. All done!
+
+:: testEnvironmentAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Environment"
+@forcePolicy
+{@balthazar}    Here are the ecology policies.
+
+:: testEconomyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Economy"
+@forcePolicy
+{@balthazar}    Here are the economic policies.
 
 
 :: testRunoffTrigger
-@trigger    AlertExamined
-@conditions       alertType == "excess-runoff"
-// @when    
+@trigger        AlertExamined
+@conditions     alertType == "excess-runoff"
 {@balthazar}    There has been excessive runoff!
 
 
 :: testBloomTrigger
-@trigger    AlertExamined
-@conditions       alertType == "bloom"
-// @when    
+@trigger        AlertExamined
+@conditions     alertType == "bloom"
 {@balthazar}    Algae blooms are appearing in the water!
 
 
 :: testSellAtLossTrigger
-@trigger    AlertExamined
-@conditions       alertType == "selling-loss"
-// @when    
+@trigger        AlertExamined
+@conditions     alertType == "selling-loss"
 {@balthazar}    This supplier is selling at a loss!

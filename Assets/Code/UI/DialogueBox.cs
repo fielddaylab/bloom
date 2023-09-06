@@ -11,12 +11,15 @@ using Leaf.Runtime;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Scripting;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using Zavala.Scripting;
 
 namespace Zavala.UI {
     public class DialogueBox : MonoBehaviour, ITextDisplayer, IChoiceDisplayer {
+        #region Inspector
+
         public DialogueBoxContents Contents;
         [SerializeField] RectTransform m_ButtonContainer = null;
         [SerializeField] private Button m_Button = null;
@@ -26,6 +29,12 @@ namespace Zavala.UI {
         [Header("Behavior")]
         [SerializeField] private LineEndBehavior m_EndBehavior = LineEndBehavior.WaitForInput;
 
+        [Space(5)]
+        [Header("Policies")]
+        [SerializeField] private GameObject m_PolicyExpansionContainer;
+        [SerializeField] private Button m_PolicyCloseButton;
+
+        #endregion // Inspector
 
         private Routine m_TransitionRoutine;
 
@@ -33,6 +42,10 @@ namespace Zavala.UI {
         {
             WaitForInput,
             WaitFixedDuration
+        }
+
+        private void Start() {
+            m_PolicyExpansionContainer.SetActive(false);    
         }
 
         #region Display
@@ -49,8 +62,6 @@ namespace Zavala.UI {
                         break;
                     }
             }
-
-            m_TransitionRoutine.Replace(HideRoutine());
         }
 
         public TagStringEventHandler PrepareLine(TagString inString, TagStringEventHandler inBaseHandler) {
@@ -105,6 +116,18 @@ namespace Zavala.UI {
 
         #endregion // Display
 
+        #region Leaf Flag Interactions
+
+        public void ExpandPolicyUI() { 
+            m_TransitionRoutine.Replace(ExpandPolicyUIRoutine());
+        }
+
+        public void HideAdvisorUI() {
+            m_TransitionRoutine.Replace(HideRoutine());
+        }
+
+        #endregion // Leaf Flag Interactions
+
         #region Routines
 
         private IEnumerator ShowRoutine() {
@@ -116,6 +139,11 @@ namespace Zavala.UI {
         }
 
         private IEnumerator HideRoutine() {
+            if (m_PolicyExpansionContainer.activeSelf) {
+                // TODO: perform policy collapse routine
+                m_PolicyExpansionContainer.SetActive(false);
+            }
+
             yield return m_Rect.AnchorPosTo(-500, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
             this.gameObject.SetActive(false);
@@ -136,6 +164,28 @@ namespace Zavala.UI {
             yield break;
         }
 
+        private IEnumerator ExpandPolicyUIRoutine() {
+            m_PolicyCloseButton.onClick.RemoveAllListeners();
+            m_PolicyCloseButton.onClick.AddListener(OnPolicyClose);
+
+            yield return m_Rect.AnchorPosTo(-100, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+
+            m_PolicyExpansionContainer.SetActive(true);
+
+            // TODO: populate with default localized text? Or do we like having the last line spoken displayed?
+            // "Here are the current policies you can put in place, you can modify them at any time."
+
+            yield return null;
+        }
+
         #endregion // Routines
+
+        #region Handlers
+
+        private void OnPolicyClose() {
+            m_TransitionRoutine.Replace(HideRoutine());
+        }
+
+        #endregion // Handlers
     }
 }

@@ -1,13 +1,17 @@
 using BeauUtil;
 using BeauUtil.Debugger;
+using BeauUtil.Variants;
 using FieldDay;
+using FieldDay.Scripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Building;
 using Zavala.World;
 
-namespace Zavala.Advisor {
-    public class AdvisorButton : MonoBehaviour {
+namespace Zavala.Advisor
+{
+    public class AdvisorButton : MonoBehaviour
+    {
         [SerializeField] public AdvisorType ButtonAdvisorType;
         [SerializeField] public GameObject PoliciesButton;
         [SerializeField] public GameObject PoliciesWindow;
@@ -26,12 +30,15 @@ namespace Zavala.Advisor {
             TogglePolicies(false);
 
             if (toggle) {
-                if (advisorState.UpdateAdvisor(ButtonAdvisorType) == AdvisorType.Environment) {
+                AdvisorType newAdvisor = advisorState.UpdateAdvisor(ButtonAdvisorType);
+                if (newAdvisor == AdvisorType.Environment) {
                     world.Overlays = SimWorldOverlayMask.Phosphorus;
-                } else {
+                }
+                else {
                     world.Overlays = SimWorldOverlayMask.None;
                 }
-            } else {
+            }
+            else {
                 advisorState.UpdateAdvisor(AdvisorType.None);
                 world.Overlays = SimWorldOverlayMask.None;
             }
@@ -39,10 +46,16 @@ namespace Zavala.Advisor {
 
         public void TogglePolicies(bool toggle) {
             PoliciesWindow.SetActive(toggle);
+
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                if (toggle) {
+                    varTable.Set("advisorType", ButtonAdvisorType.ToString());
+                    ScriptUtility.Trigger(GameTriggers.AdvisorOpened, varTable);
+                }
+                else {
+                    ScriptUtility.Trigger(GameTriggers.AdvisorClosed);
+                }
+            }
         }
-
-
     }
-
-
 }

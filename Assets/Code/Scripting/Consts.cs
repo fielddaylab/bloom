@@ -7,6 +7,8 @@ namespace Zavala
     {
         static public readonly StringHash32 GameBooted = "GameBooted";
         static public readonly StringHash32 AlertExamined = "AlertExamined";
+        static public readonly StringHash32 AdvisorOpened = "AdvisorOpened";
+        static public readonly StringHash32 AdvisorClosed = "AdvisorClosed";
     }
 
     static public class GameAlerts
