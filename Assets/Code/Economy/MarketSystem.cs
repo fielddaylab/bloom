@@ -8,9 +8,11 @@ using UnityEditor;
 using Zavala.Roads;
 using Zavala.Sim;
 
-namespace Zavala.Economy {
+namespace Zavala.Economy
+{
     [SysUpdate(GameLoopPhase.Update, 5)]
-    public sealed class MarketSystem : SharedStateSystemBehaviour<MarketData, MarketConfig, SimGridState> {
+    public sealed class MarketSystem : SharedStateSystemBehaviour<MarketData, MarketConfig, SimGridState>
+    {
 
         // NOT persistent state - work lists for various updates
         private readonly RingBuffer<MarketRequestInfo> m_RequestWorkList = new RingBuffer<MarketRequestInfo>(8, RingBufferMode.Expand);
@@ -40,25 +42,28 @@ namespace Zavala.Economy {
             SimGridState grid = ZavalaGame.SimGrid;
             grid.Random.Shuffle(m_SupplierWorkList);
 
-            foreach(var supplier in m_SupplierWorkList) {
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList);
+            foreach (var supplier in m_SupplierWorkList) {
+                // reset sold at a loss
+                supplier.SoldAtALoss = false;
+                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int profit);
                 if (found.HasValue) {
                     Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", found.Value.Requested, supplier.name, found.Value.Requester.name);
                     ResourceBlock.Consume(ref supplier.Storage.Current, found.Value.Requested);
                     MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, found.Value);
+                    if (profit < 0) { supplier.SoldAtALoss = true; }
                     m_StateA.FulfullQueue.PushBack(activeRequest); // picked up by fulfillment system
                 }
             }
 
             // for all remaining, increment their age
-            for(int i = 0; i < m_RequestWorkList.Count; i++) {
+            for (int i = 0; i < m_RequestWorkList.Count; i++) {
                 m_RequestWorkList[i].Age++;
             }
             m_RequestWorkList.CopyTo(m_StateA.RequestQueue);
             m_RequesterWorkList.Clear();
         }
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current = supplier.Storage.Current;
@@ -73,9 +78,11 @@ namespace Zavala.Economy {
                     continue;
                 }
 
+
                 if (priorityIndex == 0) {
                     MarketRequestInfo request = requests[i];
                     requests.FastRemoveAt(i);
+                    profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
                     return request;
                 }
 
@@ -88,14 +95,16 @@ namespace Zavala.Economy {
             if (highestPriorityRequestIndex >= 0) {
                 MarketRequestInfo request = requests[highestPriorityRequestIndex];
                 requests.FastRemoveAt(highestPriorityRequestIndex);
+                profit = supplier.Priorities.PrioritizedBuyers[highestPriorityRequestIndex].Profit;
                 return request;
             }
 
+            profit = 0;
             return null;
         }
 
         private void MoveReceivedToStorage() {
-            foreach(var requester in m_StateA.Buyers) {
+            foreach (var requester in m_StateA.Buyers) {
                 if (requester.Storage && !requester.Received.IsZero) {
                     requester.Storage.Current += requester.Received;
                     requester.Received = default;
@@ -123,7 +132,7 @@ namespace Zavala.Economy {
 
             ResourceMask shippingMask = supplier.ShippingMask;
 
-            foreach(var requester in m_RequesterWorkList) {
+            foreach (var requester in m_RequesterWorkList) {
                 // ignore buyers that don't overlap with shipping mask
                 ResourceMask overlap = requester.RequestMask & supplier.ShippingMask;
                 if (overlap == 0) {
@@ -143,10 +152,10 @@ namespace Zavala.Economy {
                 float score = profit - shippingCost;
 
                 m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo() {
-                    Distance = (int) Math.Ceiling(connectionSummary.Distance),
+                    Distance = (int)Math.Ceiling(connectionSummary.Distance),
                     Mask = overlap,
                     Target = requester,
-                    Profit = (int) Math.Ceiling(score)
+                    Profit = (int)Math.Ceiling(score)
                 });
             }
 

@@ -14,7 +14,6 @@ namespace Zavala.Sim
             }
             if (EventActorUtility.AnyQueueContains(actor, GameAlerts.ExcessRunoff)) {
                 // only add this trigger once
-                Debug.Log("[P] excess runoff already queued");
                 return;
             }
 

@@ -14,6 +14,7 @@ namespace Zavala.Economy {
 
         [NonSerialized] public ResourceStorage Storage;
         [NonSerialized] public MarketSupplierPriorityList Priorities;
+        [NonSerialized] public bool SoldAtALoss = false;
 
         private void Awake() {
             this.CacheComponent(ref Storage);
