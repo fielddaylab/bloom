@@ -13,7 +13,8 @@ namespace Zavala.Sim
     public class BloomAlertSystem : ComponentSystemBehaviour<EventActor, OccupiesTile>
     {
         public override void ProcessWorkForComponent(EventActor actor, OccupiesTile tile, float deltaTime) {
-            if (actor.QueuedTriggers.Count > 0) {
+            if (EventActorUtility.AnyQueueContains(actor, GameAlerts.Bloom)) {
+                // only add this trigger once
                 return;
             }
             bool bloomPeaked = false;

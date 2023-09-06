@@ -61,5 +61,23 @@ namespace Zavala.Scripting {
 
             return false;
         }
+
+        static public bool AnyQueueContains(EventActor actor, StringHash32 value) {
+            foreach (var trigger in actor.QueuedTriggers) {
+                // in the case of alerts, "value" is the alertType
+                if (trigger.Argument.Value == value) {
+                    return true;
+                }
+            }
+
+            foreach (var aEvent in actor.QueuedEvents) {
+                // in the case of alerts, "value" is the alertType
+                if (aEvent.Argument.Value == value) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

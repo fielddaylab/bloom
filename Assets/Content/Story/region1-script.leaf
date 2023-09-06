@@ -1,12 +1,13 @@
 # basePath   region1
 
-:: testIntro
-@trigger    GameBooted
 
-{@balthazar} Hello! This is Balthazar speaking.
-{@test-char} And this is test character, chiming in.
-{@test-char} This is a continuation.
-{@balthazar} And now I'm jumping back into the conversation. All done!
+// :: testIntro
+// @trigger    GameBooted
+
+// {@balthazar} Hello! This is Balthazar speaking.
+// {@test-char} And this is test character, chiming in.
+// {@test-char} This is a continuation.
+// {@balthazar} And now I'm jumping back into the conversation. All done!
 
 
 :: testRunoffTrigger
@@ -21,3 +22,10 @@
 @conditions       alertType == "bloom"
 // @when    
 {@balthazar}    Algae blooms are appearing in the water!
+
+
+:: testSellAtLossTrigger
+@trigger    AlertExamined
+@conditions       alertType == "selling-loss"
+// @when    
+{@balthazar}    This supplier is selling at a loss!
