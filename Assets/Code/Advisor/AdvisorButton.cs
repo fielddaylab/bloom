@@ -45,7 +45,7 @@ namespace Zavala.Advisor
         }
 
         public void TogglePolicies(bool toggle) {
-            PoliciesWindow.SetActive(toggle);
+            // PoliciesWindow.SetActive(toggle);
 
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 if (toggle) {

@@ -5,6 +5,7 @@ using Leaf;
 using Leaf.Compiler;
 using Leaf.Runtime;
 using UnityEngine.Scripting;
+using Zavala.Advisor;
 
 namespace FieldDay.Scripting {
     /// <summary>
@@ -22,6 +23,7 @@ namespace FieldDay.Scripting {
         public LeafExpressionGroup Conditions;
         public StringHash32 TargetId;
         public int EvalScore;
+        public AdvisorType AdvisorType;
         [BlockMeta("priority")] public ScriptNodePriority Priority = ScriptNodePriority.Medium;
         [BlockMeta("repeat")] public int RepeatPeriod;
         public ScriptNodeMemoryTarget PersistenceType;
@@ -80,8 +82,9 @@ namespace FieldDay.Scripting {
         }
 
         [BlockMeta("forcePolicy")]
-        private void SetForcePolicy(ScriptNodeMemoryTarget target = ScriptNodeMemoryTarget.Persistent) {
+        private void SetForcePolicy(AdvisorType advisorType, ScriptNodeMemoryTarget target = ScriptNodeMemoryTarget.Persistent) {
             Flags |= ScriptNodeFlags.ForcePolicy;
+            AdvisorType = advisorType;
             PersistenceType = target;
         }
 

@@ -1,25 +1,25 @@
 # basePath   region1
 
 
-:: testIntro
-@trigger    GameBooted
-@forcePolicy
-{@balthazar} Hello! This is Balthazar speaking.
-{@test-char} And this is test character, chiming in.
-{@test-char} This is a continuation.
-{@balthazar} And now I'm jumping back into the conversation. All done!
+// :: testIntro
+// @trigger        GameBooted
+// @forcePolicy    Environment
+// {@balthazar} Hello! This is Balthazar speaking.
+// {@test-char} And this is test character, chiming in.
+// {@test-char} This is a continuation.
+// {@balthazar} And now I'm jumping back into the conversation. All done!
 
 
 :: testEnvironmentAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Environment"
-@forcePolicy
+@forcePolicy    Environment
 {@balthazar}    Here are the ecology policies.
 
 :: testEconomyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy"
-@forcePolicy
+@forcePolicy    Economy
 {@balthazar}    Here are the economic policies.
 
 

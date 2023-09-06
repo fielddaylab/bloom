@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using BeauRoutine;
 using BeauRoutine.Extensions;
 using BeauUtil;
@@ -14,6 +15,8 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UI;
 using UnityEngine.Windows;
+using Zavala.Advisor;
+using Zavala.Cards;
 using Zavala.Scripting;
 
 namespace Zavala.UI {
@@ -32,6 +35,7 @@ namespace Zavala.UI {
         [Space(5)]
         [Header("Policies")]
         [SerializeField] private GameObject m_PolicyExpansionContainer;
+        [SerializeField] private PolicySlot[] m_PolicySlots;
         [SerializeField] private Button m_PolicyCloseButton;
 
         #endregion // Inspector
@@ -118,7 +122,19 @@ namespace Zavala.UI {
 
         #region Leaf Flag Interactions
 
-        public void ExpandPolicyUI() { 
+        public void ExpandPolicyUI(AdvisorType advisorType) {
+            // Load relevant policy slot types according to advisor type
+            // TODO: room for more flexibility here, such as an adaptive number of slots
+            PolicyType[] policyTypes = CardsUtility.AdvisorPolicyMap[advisorType];
+
+            for (int i = 0; i < policyTypes.Count(); i++) {
+                if (i == m_PolicySlots.Count()) {
+                    // Defined too many policies for the number of slots!
+                    break;
+                }
+                m_PolicySlots[i].PopulateSlot(policyTypes[i]);
+            }
+
             m_TransitionRoutine.Replace(ExpandPolicyUIRoutine());
         }
 

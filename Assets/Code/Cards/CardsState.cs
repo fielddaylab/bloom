@@ -65,11 +65,13 @@ namespace Zavala.Cards
 
             // Populate Card data
             CardsUtility.PopulateCards(this);
+
+            // Unlock Runoff
+            // CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
         }
     }
 
-    static public class CardsUtility
-    {
+    static public class CardsUtility {
 
         #region Card Definition Parsing
 
@@ -80,6 +82,17 @@ namespace Zavala.Cards
         private static string END_DELIM = "\n";
 
         #endregion // Card Definition Parsing
+
+        public static Dictionary<AdvisorType, PolicyType[]> AdvisorPolicyMap = new Dictionary<AdvisorType, PolicyType[]>() {
+            {
+                AdvisorType.Environment,
+                new PolicyType[] { PolicyType.RunoffPolicy, PolicyType.SkimmingPolicy }
+            },
+            {
+                AdvisorType.Economy,
+                new PolicyType[] { PolicyType.SalesTaxPolicy, PolicyType.ExportTaxPolicy /*, PolicyType.ImportTaxPolicy*/ }
+            }
+        };
 
         static public void PopulateCards(CardsState cardsState) {
             List<string> cardStrings = TextIO.TextAssetToList(cardsState.CardDefs, "::");
@@ -172,37 +185,47 @@ namespace Zavala.Cards
         }
 
 
-        /*
-        public List<CardData> GetUnlockedOptions(PolicyType slotType) {
+        
+        static public List<CardData> GetUnlockedOptions(CardsState state, PolicyType slotType) {
             List<CardData> allOptions = new List<CardData>();
 
-            List<SerializedHash32> cardIDs = m_cardMap[slotType];
+            List<SerializedHash32> cardIDs = state.CardMap[slotType];
 
             foreach (SerializedHash32 cardID in cardIDs) {
-                if (m_unlockedCards.Contains(cardID)) {
-                    allOptions.Add(m_allCards[cardID]);
+                if (state.UnlockedCards.Contains(cardID)) {
+                    allOptions.Add(state.AllCards[cardID]);
                 }
             }
 
             return allOptions;
         }
 
-        public List<CardData> GetAllOptions(PolicyType slotType) {
+        static public List<CardData> GetAllOptions(CardsState state, PolicyType type) {
             List<CardData> allOptions = new List<CardData>();
 
-            List<SerializedHash32> cardIDs = m_cardMap[slotType];
+            List<SerializedHash32> cardIDs = state.CardMap[type];
 
             foreach (SerializedHash32 cardID in cardIDs) {
-                allOptions.Add(m_allCards[cardID]);
+                allOptions.Add(state.AllCards[cardID]);
             }
 
             return allOptions;
         }
 
+        /*
         public CardData GetCardData(SerializedHash32 cardID) {
             return m_allCards[cardID];
         }
         */
+        static public void UnlockCardsByType(CardsState state, PolicyType type) {
+
+            List<SerializedHash32> unlockIds = state.CardMap[type];
+
+            foreach (SerializedHash32 id in unlockIds) {
+                state.UnlockedCards.Add(id);
+            }
+        }
+
         /*
         private void HandleChoiceUnlock(object sender, ChoiceUnlockEventArgs args) {
             for (int i = 0; i < args.ToUnlock.Count; i++) {
