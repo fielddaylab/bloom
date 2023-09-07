@@ -66,8 +66,8 @@ namespace Zavala.Cards
             // Populate Card data
             CardsUtility.PopulateCards(this);
 
-            // TEMP Unlock Runoff
-            // CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
+            // TEMP Unlock initial cards
+            CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
             // CardsUtility.UnlockCardsByType(this, PolicyType.SkimmingPolicy);
         }
     }
@@ -91,7 +91,7 @@ namespace Zavala.Cards
             },
             {
                 AdvisorType.Economy,
-                new PolicyType[] { PolicyType.SalesTaxPolicy, PolicyType.ExportTaxPolicy /*, PolicyType.ImportTaxPolicy*/ }
+                new PolicyType[] { PolicyType.SalesTaxPolicy, PolicyType.ImportTaxPolicy /*, PolicyType.ExportTaxPolicy*/ }
             }
         };
 

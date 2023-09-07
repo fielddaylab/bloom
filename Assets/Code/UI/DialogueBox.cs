@@ -18,6 +18,7 @@ using UnityEngine.Windows;
 using Zavala.Advisor;
 using Zavala.Cards;
 using Zavala.Scripting;
+using Zavala.World;
 
 namespace Zavala.UI {
     public class DialogueBox : MonoBehaviour, ITextDisplayer, IChoiceDisplayer {
@@ -133,6 +134,7 @@ namespace Zavala.UI {
         public void ExpandPolicyUI(AdvisorType advisorType) {
             // Load relevant policy slot types according to advisor type
             // TODO: room for more flexibility here, such as an adaptive number of slots
+
             PolicyType[] policyTypes = CardsUtility.AdvisorPolicyMap[advisorType];
 
             for (int i = 0; i < policyTypes.Count(); i++) {
@@ -216,7 +218,7 @@ namespace Zavala.UI {
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
-            // TODO: should probably disable advisor buttons when dialogue is showing
+            // TODO: should probably just disable advisor buttons when dialogue is showing
 
             // If dialogue has completed when advisor button is clicked, hide this
             if (m_FullyExpanded) {

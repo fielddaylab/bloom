@@ -10,7 +10,7 @@ namespace Zavala.Advisor {
     public struct PolicyBlock {
         public RunoffPenaltyLevel Runoff;
         public SkimmingLevel Skimming;
-        public ExportTaxLevel ExportTax;
+        // public ExportTaxLevel ExportTax;
         public ImportTaxLevel ImportTax;
         public SalesTaxLevel SalesTax;
     }
@@ -20,7 +20,7 @@ namespace Zavala.Advisor {
     public class PolicyState : SharedStateComponent, IRegistrationCallbacks {
         [NonSerialized] public PolicyBlock[] Policies = new PolicyBlock[RegionInfo.MaxRegions];
 
-        public static ResourceBlock[] ExportTaxVals = new ResourceBlock[4];
+        // public static ResourceBlock[] ExportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] ImportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] SalesTaxVals = new ResourceBlock[4];
 
@@ -40,11 +40,13 @@ namespace Zavala.Advisor {
                     Policies[region].Skimming = (SkimmingLevel)policyIndex;
                     // TODO: When skimming implemented, read skimming policy
                     return true;
+                    /*
                 case PolicyType.ExportTaxPolicy:
                     Policies[region].ExportTax = (ExportTaxLevel)policyIndex;
                     // set this region's export tax to the initialized export tax value for the given index
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].ExportTax = ExportTaxVals[policyIndex];
                     return true;
+                    */
                 case PolicyType.ImportTaxPolicy:
                     Policies[region].ImportTax = (ImportTaxLevel)policyIndex;
                     // set this region's import tax to the initialized import tax value for the given index
@@ -61,10 +63,12 @@ namespace Zavala.Advisor {
         }
 
         public void InitializePolicyValues() {
+            /*
             ExportTaxVals[0].SetAll(-2);
             ExportTaxVals[1].SetAll(0);
             ExportTaxVals[2].SetAll(2);
             ExportTaxVals[3].SetAll(4);
+            */
 
             ImportTaxVals[0].SetAll(-2);
             ImportTaxVals[1].SetAll(0);
@@ -107,7 +111,7 @@ namespace Zavala.Advisor {
     public enum PolicyType : byte {
         RunoffPolicy,
         SkimmingPolicy,
-        ExportTaxPolicy,
+        // ExportTaxPolicy,
         ImportTaxPolicy,
         SalesTaxPolicy
     }
@@ -128,12 +132,14 @@ namespace Zavala.Advisor {
         Dredge
     }
 
+    /*
     public enum ExportTaxLevel {
         None,
         Low,
         High,
         Subsidy
     }
+    */
 
     public enum ImportTaxLevel
     {

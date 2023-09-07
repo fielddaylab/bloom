@@ -26,16 +26,19 @@
 :: testRunoffTrigger
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff"
+@forcePolicy    Environment
 {@balthazar}    There has been excessive runoff!
 
 
 :: testBloomTrigger
 @trigger        AlertExamined
 @conditions     alertType == "bloom"
+@forcePolicy    Environment
 {@balthazar}    Algae blooms are appearing in the water!
 
 
 :: testSellAtLossTrigger
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss"
+@forcePolicy    Economy
 {@balthazar}    This supplier is selling at a loss!
