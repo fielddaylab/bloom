@@ -1,13 +1,13 @@
 // Runoff Penalty
 
-::runoff-penalty-none
-@Header		Runoff Penalty
-@Level		none
-@PolicyType	RunoffPolicy
-
 ::runoff-penalty-low
 @Header		Runoff Penalty
 @Level		low
+@PolicyType	RunoffPolicy
+
+::runoff-penalty-med
+@Header		Runoff Penalty
+@Level		med
 @PolicyType	RunoffPolicy
 
 ::runoff-penalty-high
@@ -23,14 +23,14 @@
 
 // Import Tax
 
-::import-tax-none
-@Header		Import Tax
-@Level		none
-@PolicyType	ImportTaxPolicy
-
 ::import-tax-low
 @Header		Import Tax
 @Level		low
+@PolicyType	ImportTaxPolicy
+
+::import-tax-med
+@Header		Import Tax
+@Level		med
 @PolicyType	ImportTaxPolicy
 
 ::import-tax-high
@@ -40,14 +40,14 @@
 
 // Export Tax
 
-::export-tax-none
-@Header		Export Tax
-@Level		none
-@PolicyType	ExportTaxPolicy
-
 ::export-tax-low
 @Header		Export Tax
 @Level		low
+@PolicyType	ExportTaxPolicy
+
+::export-tax-med
+@Header		Export Tax
+@Level		med
 @PolicyType	ExportTaxPolicy
 
 ::export-tax-high
@@ -62,14 +62,14 @@
 
 // Skimmers
 
-::skimmers-none
-@Header		Skimmers
-@Level		none
-@PolicyType	SkimmingPolicy
-
 ::skimmers-low
 @Header		Skimmers
 @Level		low
+@PolicyType	SkimmingPolicy
+
+::skimmers-med
+@Header		Skimmers
+@Level		med
 @PolicyType	SkimmingPolicy
 
 ::skimmers-high
@@ -84,14 +84,14 @@
 
 // Sales Tax
 
-::sales-none
-@Header		Sales Tax
-@Level		none
-@PolicyType	SalesTaxPolicy
-
 ::sales-low
 @Header		Sales Tax
 @Level		low
+@PolicyType	SalesTaxPolicy
+
+::sales-med
+@Header		Sales Tax
+@Level		med
 @PolicyType	SalesTaxPolicy
 
 ::sales-high
