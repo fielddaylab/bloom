@@ -42,6 +42,8 @@ namespace Zavala.UI {
 
         private Routine m_TransitionRoutine;
 
+        private bool m_FullyExpanded = false;
+
         private enum LineEndBehavior
         {
             WaitForInput,
@@ -49,7 +51,13 @@ namespace Zavala.UI {
         }
 
         private void Start() {
-            m_PolicyExpansionContainer.SetActive(false);    
+            m_PolicyExpansionContainer.SetActive(false);
+
+            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            advisorState.AdvisorButtonClicked.AddListener(HandleAdvisorButtonClicked);
+
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            policyState.PolicyCloseButtonClicked.AddListener(HandlePolicyCloseClicked);
         }
 
         #region Display
@@ -155,6 +163,8 @@ namespace Zavala.UI {
         }
 
         private IEnumerator HideRoutine() {
+            m_FullyExpanded = false;
+
             if (m_PolicyExpansionContainer.activeSelf) {
                 // TODO: perform policy collapse routine
                 m_PolicyExpansionContainer.SetActive(false);
@@ -181,8 +191,9 @@ namespace Zavala.UI {
         }
 
         private IEnumerator ExpandPolicyUIRoutine() {
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
             m_PolicyCloseButton.onClick.RemoveAllListeners();
-            m_PolicyCloseButton.onClick.AddListener(OnPolicyClose);
+            m_PolicyCloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
 
             yield return m_Rect.AnchorPosTo(-100, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
@@ -191,6 +202,8 @@ namespace Zavala.UI {
             // TODO: populate with default localized text? Or do we like having the last line spoken displayed?
             // "Here are the current policies you can put in place, you can modify them at any time."
 
+            m_FullyExpanded = true;
+
             yield return null;
         }
 
@@ -198,8 +211,17 @@ namespace Zavala.UI {
 
         #region Handlers
 
-        private void OnPolicyClose() {
+        private void HandlePolicyCloseClicked() {
             m_TransitionRoutine.Replace(HideRoutine());
+        }
+
+        private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
+            // TODO: should probably disable advisor buttons when dialogue is showing
+
+            // If dialogue has completed when advisor button is clicked, hide this
+            if (m_FullyExpanded) {
+                m_TransitionRoutine.Replace(HideRoutine());
+            }
         }
 
         #endregion // Handlers

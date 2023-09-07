@@ -3,6 +3,13 @@ using BeauUtil.Variants;
 
 namespace Zavala
 {
+    static public class GameEvents
+    {
+        static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
+        static public readonly StringHash32 PolicyCardSelected = "advisors:policy-card-selected";
+        static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
+    }
+
     static public class GameTriggers
     {
         static public readonly StringHash32 GameBooted = "GameBooted";

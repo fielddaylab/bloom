@@ -11,35 +11,29 @@ using Zavala.World;
 
 namespace Zavala.Advisor {
     public class PolicyButton : MonoBehaviour {
-        public AdvisorType PolicyGroup;
-        public PolicyType ButtonPolicy;
-        public GameObject Cards;
-        public TextMeshProUGUI Text;
+        public AdvisorButton ParentButton;
+        [SerializeField] private Button m_Button;
 
         // TODO: collapse menus when background clicked
         // TODO: propagate menu collapse through children
 
         private void Start() {
-            SetPolicy(0);    
-            Cards.SetActive(false);
+            m_Button.onClick.AddListener(HandleButtonClicked);
         }
 
-        public void TogglePolicies(bool toggle) {
-            Cards.SetActive(toggle);
-            Log.Msg("[PolicyButton] Pressed, {0} active: {1}", Cards.transform.name, toggle);
-        }
+        #region Handlers
 
-        public void SetPolicy(int policyIndex) {
-            // try to set a policy: if successful, close the policies menu
-            // TODO: get current region index instead of hardcoding 0
-            int regionIndex = 0;
-            if (Game.SharedState.Get<PolicyState>().SetPolicyByIndex(ButtonPolicy, policyIndex, regionIndex)) {
-                Text.text = ButtonPolicy.ToString() + ": " + policyIndex;
-                TryGetComponent(out Toggle toggle);
-                toggle.isOn = false;
-                TogglePolicies(false);
+        private void HandleButtonClicked() {
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("advisorType", ParentButton.ButtonAdvisorType.ToString());
+                ScriptUtility.Trigger(GameTriggers.AdvisorOpened, varTable);
             }
+
+            // Hide this button
+            this.gameObject.SetActive(false);
         }
+
+        #endregion // Handlers
 
 
     }

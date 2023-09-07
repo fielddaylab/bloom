@@ -66,8 +66,9 @@ namespace Zavala.Cards
             // Populate Card data
             CardsUtility.PopulateCards(this);
 
-            // Unlock Runoff
+            // TEMP Unlock Runoff
             // CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
+            // CardsUtility.UnlockCardsByType(this, PolicyType.SkimmingPolicy);
         }
     }
 

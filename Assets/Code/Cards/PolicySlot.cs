@@ -20,15 +20,29 @@ namespace Zavala.Cards
         private Routine m_ChoiceRoutine;
         private List<CardUI> m_DisplayCards;
 
-        private bool m_HandVisible;
+        private enum HandState {
+            Hidden,
+            Showing,
+            Visible,
+            Hiding
+        }
+
+        private HandState m_HandState;
 
         // TODO: collapse menus when background clicked
         // TODO: propagate menu collapse through children
 
         private void Start() {
-            m_Button.onClick.AddListener(HandleSlotClicked);
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            m_Button.onClick.AddListener(() => { policyState.PolicySlotClicked?.Invoke(m_Type); });
+            policyState.PolicySlotClicked.AddListener(HandleSlotClicked);
+            policyState.PolicyCardSelected.AddListener(HandlePolicyCardSelected);
+            policyState.PolicyCloseButtonClicked.AddListener(HandlePolicyCloseClicked);
 
-            m_HandVisible = false;
+            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            advisorState.AdvisorButtonClicked.AddListener(HandleAdvisorButtonClicked);
+
+            m_HandState = HandState.Hidden;
         }
 
         public void PopulateSlot(PolicyType newType) {
@@ -53,22 +67,63 @@ namespace Zavala.Cards
 
         #region Handlers
 
-        private void HandleSlotClicked() {
-            // TODO: pool cards, one for each option
-            // Assign listeners to each?
-            // Or have each dispatch an event?
-
-            CardsState state = Game.SharedState.Get<CardsState>();
-            List<CardData> cardData = CardsUtility.GetUnlockedOptions(state, m_Type);
-            if (m_DisplayCards == null) {
-                m_DisplayCards = new List<CardUI>();
+        private void HandleSlotClicked(PolicyType policyType) {
+            if (policyType != m_Type) {
+                // Clicked a different slot
+                if (m_HandState == HandState.Visible || m_HandState == HandState.Showing) {
+                    // Hide this hand in deference to other hand
+                    m_ChoiceRoutine.Replace(HideHandRoutine());
+                }
+                return;
             }
-            else {
-                m_DisplayCards.Clear();
-            }
-            // For each card, allocate a card from the pool
 
-            m_ChoiceRoutine.Replace(ShowHandRoutine());
+            if (m_HandState == HandState.Hidden || m_HandState == HandState.Hiding) {
+                // Show hand
+                CardsState cardState = Game.SharedState.Get<CardsState>();
+                CardPools pools = Game.SharedState.Get<CardPools>();
+                PolicyState policyState = Game.SharedState.Get<PolicyState>();
+
+                List<CardData> cardData = CardsUtility.GetUnlockedOptions(cardState, m_Type);
+                if (m_DisplayCards == null) {
+                    m_DisplayCards = new List<CardUI>();
+                }
+                else {
+                    m_DisplayCards.Clear();
+                }
+                // For each card, allocate a card from the pool
+                for (int i = 0; i < cardData.Count; i++) {
+                    CardData data = cardData[i];
+                    CardUI card = pools.Cards.Alloc(this.transform.parent != null ? this.transform.parent : this.transform);
+                    card.transform.localPosition = this.transform.localPosition;
+                    card.PolicyIndex = (int)data.PolicyLevel;
+                    m_DisplayCards.Add(card);
+
+                    card.Button.onClick.AddListener(() => { policyState.PolicyCardSelected?.Invoke(data); });
+                }
+
+                m_ChoiceRoutine.Replace(ShowHandRoutine());
+            }
+            else if (m_HandState == HandState.Visible || m_HandState == HandState.Showing) {
+                // Hide hand
+                m_ChoiceRoutine.Replace(HideHandRoutine());
+            }
+        }
+
+        private void HandlePolicyCardSelected(CardData data) {
+            // Hide Hand
+            m_ChoiceRoutine.Replace(HideHandRoutine());
+        }
+
+        private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
+            if (gameObject.activeInHierarchy) {
+                // Hide Hand
+                m_ChoiceRoutine.Replace(HideHandRoutine());
+            }
+        }
+
+        private void HandlePolicyCloseClicked() {
+            // Hide Hand
+            m_ChoiceRoutine.Replace(HideHandRoutine());
         }
 
         #endregion // Handlers
@@ -76,6 +131,8 @@ namespace Zavala.Cards
         #region Routines
 
         private IEnumerator ShowHandRoutine() {
+            m_HandState = HandState.Showing;
+
             float offset = 0.5f;
             float leftMost = 55 * (m_DisplayCards.Count - 1);
             float rotatedMost = 7.5f * (m_DisplayCards.Count - 1);
@@ -91,16 +148,19 @@ namespace Zavala.Cards
                         ), .3f, Axis.XY),
                         cardTransform.RotateTo(cardTransform.rotation.z + rotatedMost - 15f * i, .3f, Axis.Z)
                     )
-                );
+                ).OnComplete(() => { m_HandState = HandState.Visible; });
             }
-            m_HandVisible = true;
 
             yield return null;
         }
 
 
         private IEnumerator HideHandRoutine() {
-            // m_hiding = true;
+            if (m_HandState == HandState.Hidden) {
+                yield break;
+            }
+
+            m_HandState = HandState.Hiding;
 
             for (int i = 0; i < m_DisplayCards.Count; i++) {
                 Transform cardTransform = m_DisplayCards[i].transform;
@@ -109,18 +169,20 @@ namespace Zavala.Cards
                     cardTransform.MoveTo(this.transform.position, .3f, Axis.XY),
                     cardTransform.RotateTo(0, .3f, Axis.Z)
                     )
-                );
+                ).OnComplete(() => { m_HandState = HandState.Hidden; });
             }
 
-            yield return 0.35f;
+            while (m_HandState != HandState.Hidden) {
+                yield return null;
+            }
+
+            CardPools pools = Game.SharedState.Get<CardPools>();
 
             for (int i = 0; i < m_DisplayCards.Count; i++) {
-                // TODO: free the card back to the pool
+                // free the card back to the pool
+                pools.Cards.Free(m_DisplayCards[i]);
             }
             m_DisplayCards.Clear();
-
-            m_HandVisible = false;
-            // m_hiding = false;
         }
 
         #endregion // Routines

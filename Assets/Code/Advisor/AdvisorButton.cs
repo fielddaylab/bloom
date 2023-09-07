@@ -14,22 +14,29 @@ namespace Zavala.Advisor
     {
         [SerializeField] public AdvisorType ButtonAdvisorType;
         [SerializeField] public GameObject PoliciesButton;
-        [SerializeField] public GameObject PoliciesWindow;
+        [SerializeField] private Button m_Button;
 
         private void Start() {
-            ToggleAdvisor(false);
+            // ToggleAdvisor(false);
+            PoliciesButton.SetActive(false);
+
+            m_Button.onClick.AddListener(HandleButtonClicked);
+
+            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            advisorState.AdvisorButtonClicked.AddListener(HandleAdvisorButtonClicked);
         }
 
-        public void ToggleAdvisor(bool toggle) {
+        #region Handlers
+
+        private void HandleButtonClicked() {
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
             SimWorldState world = ZavalaGame.SimWorld;
 
-            PoliciesButton.SetActive(toggle);
-            PoliciesButton.TryGetComponent(out Toggle advisorToggle);
-            advisorToggle.SetIsOnWithoutNotify(false);
-            TogglePolicies(false);
+            bool activating = advisorState.ActiveAdvisor != ButtonAdvisorType;
 
-            if (toggle) {
+            PoliciesButton.SetActive(activating);
+
+            if (activating) {
                 AdvisorType newAdvisor = advisorState.UpdateAdvisor(ButtonAdvisorType);
                 if (newAdvisor == AdvisorType.Environment) {
                     world.Overlays = SimWorldOverlayMask.Phosphorus;
@@ -41,21 +48,21 @@ namespace Zavala.Advisor
             else {
                 advisorState.UpdateAdvisor(AdvisorType.None);
                 world.Overlays = SimWorldOverlayMask.None;
+                ScriptUtility.Trigger(GameTriggers.AdvisorClosed);
             }
+
+            // regardless of on or off, advisor was clicked
+            advisorState.AdvisorButtonClicked?.Invoke(ButtonAdvisorType);
         }
 
-        public void TogglePolicies(bool toggle) {
-            // PoliciesWindow.SetActive(toggle);
-
-            using (TempVarTable varTable = TempVarTable.Alloc()) {
-                if (toggle) {
-                    varTable.Set("advisorType", ButtonAdvisorType.ToString());
-                    ScriptUtility.Trigger(GameTriggers.AdvisorOpened, varTable);
-                }
-                else {
-                    ScriptUtility.Trigger(GameTriggers.AdvisorClosed);
-                }
+        private void HandleAdvisorButtonClicked(AdvisorType advisorType) { 
+            if (ButtonAdvisorType == advisorType) {
+                return;
             }
+
+            PoliciesButton.SetActive(false);
         }
+
+        #endregion // Handlers
     }
 }

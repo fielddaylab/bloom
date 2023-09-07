@@ -1,6 +1,8 @@
 using System;
 using FieldDay;
 using FieldDay.SharedState;
+using UnityEngine.Events;
+using Zavala.Cards;
 using Zavala.Economy;
 using Zavala.Sim;
 
@@ -21,6 +23,10 @@ namespace Zavala.Advisor {
         public static ResourceBlock[] ExportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] ImportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] SalesTaxVals = new ResourceBlock[4];
+
+        public UnityEvent<PolicyType> PolicySlotClicked = new UnityEvent<PolicyType>();
+        public UnityEvent<CardData> PolicyCardSelected = new UnityEvent<CardData>();
+        public UnityEvent PolicyCloseButtonClicked = new UnityEvent();
 
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
         public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region) {
@@ -82,10 +88,20 @@ namespace Zavala.Advisor {
 
         public void OnRegister() {
             InitializePolicyValues();
+
+            PolicyCardSelected.AddListener(HandlePolicyCardSelected);
         }
 
         public void OnDeregister() {
         }
+
+        #region Handlers
+
+        private void HandlePolicyCardSelected(CardData data) {
+            SetPolicyByIndex(data.PolicyType, (int)data.PolicyLevel, (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex);
+        }
+
+        #endregion // Handlers
     }
 
     public enum PolicyType : byte {
