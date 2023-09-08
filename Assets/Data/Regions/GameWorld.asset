@@ -16,8 +16,10 @@ MonoBehaviour:
   - Region: {fileID: 11400000, guid: b28b1ec17f3ec544d8bdd870c8ee5216, type: 2}
     X: 4
     Y: 0
+    Elevation: 0
   - Region: {fileID: 11400000, guid: 580231a10b79d7c42aebdf328771d6be, type: 2}
     X: 8
     Y: 15
+    Elevation: 0
   Width: 30
   Height: 30

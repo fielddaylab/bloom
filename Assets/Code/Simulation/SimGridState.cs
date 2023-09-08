@@ -69,10 +69,10 @@ namespace Zavala.Sim {
 
         static public void LoadRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex) {
             var offsetRegion = world.Regions[regionIndex];
-            LoadRegionData(grid, offsetRegion.Region, offsetRegion.X, offsetRegion.Y);
+            LoadRegionData(grid, offsetRegion.Region, offsetRegion.X, offsetRegion.Y, offsetRegion.Elevation);
         }
 
-        static public void LoadRegionData(SimGridState grid, RegionAsset asset, uint offsetX, uint offsetY) {
+        static public void LoadRegionData(SimGridState grid, RegionAsset asset, uint offsetX, uint offsetY, uint offsetElevation) {
             HexGridSubregion totalRegion = new HexGridSubregion(grid.HexSize);
             HexGridSubregion subRegion = totalRegion.Subregion((ushort) offsetX, (ushort) offsetY, (ushort) asset.Width, (ushort) asset.Height);
 
@@ -85,6 +85,7 @@ namespace Zavala.Sim {
 
                 TerrainTileInfo fromRegion = asset.Tiles[subIndex];
                 ref TerrainTileInfo currentTile = ref grid.Terrain.Info[mapIndex];
+                fromRegion.Height += (ushort)(offsetElevation * ImportSettings.HEIGHT_SCALE);
 
                 if (fromRegion.Category == TerrainCategory.Void) {
                     if (currentTile.Category == TerrainCategory.Void) {
@@ -180,6 +181,9 @@ namespace Zavala.Sim {
             regionInfo.PaletteType = palette;
             regionInfo.MaxHeight = 0;
             grid.RegionCount++;
+            foreach(var index in region) {
+                grid.Terrain.Regions[index] = (ushort)regionIndex;
+            }
             return (ushort) regionIndex;
         }
 

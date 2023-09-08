@@ -3,6 +3,10 @@ using BeauUtil.Variants;
 
 namespace Zavala
 {
+    static public class ImportSettings {
+        static public int HEIGHT_SCALE = 50;
+    }
+
     static public class GameEvents
     {
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";

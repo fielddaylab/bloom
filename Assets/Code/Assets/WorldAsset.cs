@@ -10,6 +10,7 @@ namespace Zavala {
             public RegionAsset Region;
             public uint X;
             public uint Y;
+            public uint Elevation;
         }
 
         public OffsetRegion[] Regions;
