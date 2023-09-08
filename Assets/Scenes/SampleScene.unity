@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 336052}
   m_LocalRotation: {x: 0.39044833, y: 0.34682897, z: -0.161729, w: 0.8373192}
-  m_LocalPosition: {x: 7.6, y: 1, z: 9.3}
+  m_LocalPosition: {x: 8, y: 1, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2707,7 +2707,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e843a7d4f02b7d4aab8adbb1ed959de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TempRoadPrefab: {fileID: 8417343884172520992, guid: f5fc5bfc38ff22541a33a6dbd37de21b, type: 3}
   UpdateNeeded: 0
 --- !u!114 &502754873
 MonoBehaviour:
@@ -3012,7 +3011,7 @@ MonoBehaviour:
   DairyFarm: {fileID: 7291294420475072060, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
   City: {fileID: 947691686583835045, guid: d475cf78d7eaba44291403bea57f3e8a, type: 3}
   Roads:
-    m_Prefab: {fileID: 5074091816765350726, guid: f5fc5bfc38ff22541a33a6dbd37de21b, type: 3}
+    m_Prefab: {fileID: 8966737996612447901, guid: f5fc5bfc38ff22541a33a6dbd37de21b, type: 3}
     m_Name: 
     m_InitialCapacity: 32
     m_PrewarmOnInitialize: 1

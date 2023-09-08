@@ -15,9 +15,8 @@ namespace Zavala.Roads
     [SharedStateInitOrder(10)]
     public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks
     {
-        public GameObject TempRoadPrefab; // TEMP HACK placing roads via prefab for testing
-
         [NonSerialized] public RoadBuffers Roads;
+        [NonSerialized] public List<RoadInstanceController> RoadObjects; // The physical instances of road prefabs
 
         [NonSerialized] public Dictionary<int, RingBuffer<RoadPathSummary>> Connections; // key is tile index, values are tiles connected via road
 
@@ -30,6 +29,7 @@ namespace Zavala.Roads
             UpdateNeeded = false;
             SimGridState gridState = ZavalaGame.SimGrid;
             Roads.Create(gridState.HexSize);
+            RoadObjects = new List<RoadInstanceController>();
         }
 
         void IRegistrationCallbacks.OnDeregister() {
@@ -162,10 +162,11 @@ namespace Zavala.Roads
 
             // Do not create road objects on endpoints
             if (!isEndpoint) {
-                // add road, snap to tile
+                // TEMP add road, snap to tile
                 HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
                 Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
-                OccupiesTile newRoad = pools.Roads.Alloc(worldPos);
+                RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
+                network.RoadObjects.Add(newRoad);
             }
         }
 

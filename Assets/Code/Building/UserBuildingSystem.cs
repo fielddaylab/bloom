@@ -468,12 +468,17 @@ namespace Zavala.Building
                 // Merge staged masks into flow masks
                 for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
                     bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
-                    FinalizeRoad(grid, network, pools, m_StateC.RoadToolState.TracedTileIdxs[i], isEndpoint);
+                    int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
+                    FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
+
+                    // TEMP update road visuals
+                    RoadTileInfo tileInfo = network.Roads.Info[currIndex];
+                    for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
+                        if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == currIndex) {
+                            network.RoadObjects[r].UpdateSegmentVisuals(tileInfo.FlowMask | tileInfo.StagingMask);
+                        }
+                    }
                 }
-
-                // TODO: create physical roads
-
-                // TODO: calculate orientations of roads
 
                 m_StateC.RoadToolState.ClearState();
 

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Economy;
+using Zavala.Roads;
 
 namespace Zavala.Building
 {
@@ -13,7 +14,7 @@ namespace Zavala.Building
     {
         #region Types
 
-        [Serializable] public class RoadPool : SerializablePool<OccupiesTile> { }
+        [Serializable] public class RoadPool : SerializablePool<RoadInstanceController> { }
         [Serializable] public class DigesterPool : SerializablePool<OccupiesTile> { }
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
         [Serializable] public class SkimmerPool : SerializablePool<OccupiesTile> { }
