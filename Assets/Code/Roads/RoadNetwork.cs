@@ -151,7 +151,7 @@ namespace Zavala.Roads
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
             RoadUtility.MergeStagedRoadMask(ref tileInfo);
-            tileInfo.Flags = RoadFlags.IsRoadAnchor; // roads may connect with other roads
+            tileInfo.Flags |= RoadFlags.IsRoadAnchor; // roads may connect with other roads
             if (!isEndpoint) {
                 tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road)
             }
