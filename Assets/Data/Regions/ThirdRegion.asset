@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8840229424e8df04189c3fca9de97280, type: 3}
-  m_Name: New Region Asset
+  m_Name: ThirdRegion
   m_EditorClassIdentifier: 
-  Width: 10
-  Height: 10
+  Width: 12
+  Height: 12
   Tiles:
   - RegionIndex: 65535
     Category: 0
@@ -21,130 +21,240 @@ MonoBehaviour:
     Flags: 1
     Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 2
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 2
     Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 1
-    Height: 100
+    Height: 65535
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
     Flags: 1
     Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 2
     Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 2
-    Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
+    Height: 65535
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
     Flags: 1
     Height: 65535
   - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 1
-    SubCategory: 0
+    SubCategory: 1
     Flags: 0
     Height: 50
   - RegionIndex: 65535
     Category: 1
-    SubCategory: 2
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 0
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 0
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
     Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
     Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
     Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -161,45 +271,110 @@ MonoBehaviour:
     Flags: 0
     Height: 100
   - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
-    Height: 100
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
     Flags: 1
     Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
     Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
+    Height: 65535
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
     Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -216,6 +391,256 @@ MonoBehaviour:
     Flags: 0
     Height: 100
   - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 0
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 200
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 200
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 100
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 200
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 200
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 250
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
     Category: 0
     SubCategory: 0
     Flags: 1
@@ -224,96 +649,6 @@ MonoBehaviour:
     Category: 2
     SubCategory: 0
     Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 150
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 150
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 300
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 300
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 150
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 150
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
     Height: 200
   - RegionIndex: 65535
     Category: 0
@@ -321,100 +656,10 @@ MonoBehaviour:
     Flags: 1
     Height: 65535
   - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 200
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 1
-    Height: 100
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 200
-  - RegionIndex: 65535
     Category: 0
     SubCategory: 0
     Flags: 1
     Height: 65535
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 200
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 0
-    Flags: 0
-    Height: 200
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 150
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
@@ -426,45 +671,10 @@ MonoBehaviour:
     Flags: 1
     Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 0
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 100
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 150
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
@@ -486,89 +696,61 @@ MonoBehaviour:
     Flags: 1
     Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 50
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 100
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 8
-    Height: 150
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
   Buildings:
-  - LocalTileIndex: 37
-    ScriptName: FirstFarm
-    Type: 0
-  - LocalTileIndex: 16
-    ScriptName: SomeDangOlCows
-    Type: 1
-  - LocalTileIndex: 54
-    ScriptName: WowACity
+  - LocalTileIndex: 67
+    ScriptName: City
     Type: 2
-  Points:
-  - LocalTileIndex: 29
-    ScriptName: TestScriptNode
-  Roads:
-  - LocalTileIndex: 26
-    Adjacency:
-      Value: 36
-  - LocalTileIndex: 36
-    Adjacency:
-      Value: 20
-  Modifiers:
-  - LocalTileIndex: 58
+  - LocalTileIndex: 28
     ScriptName: 
-    Modifier: 0
-  - LocalTileIndex: 68
+    Type: 1
+  - LocalTileIndex: 61
     ScriptName: 
-    Modifier: 0
-  - LocalTileIndex: 49
+    Type: 1
+  - LocalTileIndex: 98
     ScriptName: 
-    Modifier: 0
-  - LocalTileIndex: 20
-    ScriptName: 
-    Modifier: 1
-  - LocalTileIndex: 9
-    ScriptName: 
-    Modifier: 1
-  - LocalTileIndex: 56
-    ScriptName: 
-    Modifier: 0
-  - LocalTileIndex: 34
-    ScriptName: 
-    Modifier: 0
-  - LocalTileIndex: 24
-    ScriptName: 
-    Modifier: 1
-  - LocalTileIndex: 15
-    ScriptName: 
-    Modifier: 1
-  - LocalTileIndex: 5
-    ScriptName: 
-    Modifier: 1
-  - LocalTileIndex: 14
-    ScriptName: 
-    Modifier: 1
+    Type: 0
+  Points: []
+  Roads: []
+  Modifiers: []
   PaletteIndex: 0
   LeafScript: {fileID: 0}
-  SourceFilePath: Tiled/AnotherTestMap.json
+  SourceFilePath: Tiled/Region3.json
