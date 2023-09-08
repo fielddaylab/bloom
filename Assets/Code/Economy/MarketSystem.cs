@@ -81,8 +81,8 @@ namespace Zavala.Economy
 
                 if (priorityIndex == 0) {
                     MarketRequestInfo request = requests[i];
-                    requests.FastRemoveAt(i);
                     profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
+                    requests.FastRemoveAt(i);
                     return request;
                 }
 
@@ -94,8 +94,8 @@ namespace Zavala.Economy
 
             if (highestPriorityRequestIndex >= 0) {
                 MarketRequestInfo request = requests[highestPriorityRequestIndex];
+                profit = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Profit;
                 requests.FastRemoveAt(highestPriorityRequestIndex);
-                profit = supplier.Priorities.PrioritizedBuyers[highestPriorityRequestIndex].Profit;
                 return request;
             }
 
