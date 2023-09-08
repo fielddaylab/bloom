@@ -17,7 +17,7 @@ MonoBehaviour:
     X: 4
     Y: 0
   - Region: {fileID: 11400000, guid: 580231a10b79d7c42aebdf328771d6be, type: 2}
-    X: 10
+    X: 8
     Y: 15
   Width: 30
   Height: 30

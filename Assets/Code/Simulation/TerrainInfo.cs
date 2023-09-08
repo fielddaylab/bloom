@@ -44,7 +44,7 @@ namespace Zavala.Sim {
     public enum TerrainFlags : ushort {
         NonBuildable = 0x01,
         IsBorder = 0x02,
-        BorderingWater = 0x04,
+        BorderingWater = 0x04, // Needed? Seems to already check during phosphorus flow...
         IsWater = 0x08
     }
 

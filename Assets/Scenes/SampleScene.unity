@@ -2599,6 +2599,7 @@ GameObject:
   - component: {fileID: 502754880}
   - component: {fileID: 502754881}
   - component: {fileID: 502754882}
+  - component: {fileID: 502754883}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -3091,6 +3092,22 @@ MonoBehaviour:
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
   PoolRoot: {fileID: 140165166}
+--- !u!114 &502754883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502754864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d9b6a5273484b34199f72c5714ef32b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnlockGroups:
+  - RegionIndexUnlocks: 01000000
+  - RegionIndexUnlocks: 0200000003000000
+  - RegionIndexUnlocks: 0400000005000000
 --- !u!1 &540215468
 GameObject:
   m_ObjectHideFlags: 0
@@ -3266,6 +3283,7 @@ GameObject:
   - component: {fileID: 594461919}
   - component: {fileID: 594461920}
   - component: {fileID: 594461921}
+  - component: {fileID: 594461922}
   m_Layer: 0
   m_Name: Sim
   m_TagString: Untagged
@@ -3452,6 +3470,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InitialCapacity: 64
+--- !u!114 &594461922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594461906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaead2fba9c0804f8bf69b05f7628cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &600160649
 GameObject:
   m_ObjectHideFlags: 0
@@ -7758,6 +7788,7 @@ GameObject:
   - component: {fileID: 1872292642}
   - component: {fileID: 1872292643}
   - component: {fileID: 1872292644}
+  - component: {fileID: 1872292645}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -7858,6 +7889,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6769dab68153fc48860e2208d657ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1872292645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872292637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b96effef873c82c4c9140686b8d99ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BorderMaterial: {fileID: 2100000, guid: 827b425ee2c59de4aa477656e78a0aeb, type: 2}
 --- !u!1 &1897052388
 GameObject:
   m_ObjectHideFlags: 0

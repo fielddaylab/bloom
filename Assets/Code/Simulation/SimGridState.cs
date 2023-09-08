@@ -31,7 +31,7 @@ namespace Zavala.Sim {
         [NonSerialized] public uint CurrRegionIndex;
 
         [NonSerialized] public HashSet<uint> UpdatedRegions = new HashSet<uint>();
-        
+
         // miscellaneous
 
         [NonSerialized] public System.Random Random;
@@ -59,6 +59,12 @@ namespace Zavala.Sim {
             GenerateRandomPhosphorus(grid, phosphorus);
 
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
+        }
+
+        static public void LoadAndRegenRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex) {
+            SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
+            LoadRegionDataFromWorld(grid, world, regionIndex);
+            RegenTerrainDependentInfo(grid, phosphorus);
         }
 
         static public void LoadRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex) {
@@ -128,7 +134,7 @@ namespace Zavala.Sim {
             }
 
             RegenRegionInfo(grid, regionIndex, subRegion);
-            // TODO: analyze tile border information
+            RegenBorderInfo(grid, regionIndex, world);
         }
 
         /// <summary>
@@ -204,6 +210,18 @@ namespace Zavala.Sim {
         }
 
         /// <summary>
+        /// Recalculates terrain-dependent border info within region
+        /// </summary>
+        static public void RegenBorderInfo(SimGridState grid, int regionIndex, SimWorldState worldState) {
+            Assert.True(regionIndex < grid.RegionCount, "Region {0} is not a part of grid - currently {1} regions", regionIndex, grid.RegionCount);
+            SimBuffer<TerrainTileInfo> infoBuffer = grid.Terrain.Info;
+
+            foreach (var index in grid.HexSize) {
+                EvaluateBorders_Step(index, infoBuffer, grid.HexSize, worldState);
+            }
+        }
+
+        /// <summary>
         /// Regenerates dependent buffers from terrain information.
         /// </summary>
         static public void RegenTerrainDependentInfo(SimGridState grid, SimPhosphorusState phosphorus) {
@@ -220,6 +238,42 @@ namespace Zavala.Sim {
                 if (grid.Terrain.Regions[tileIndex] == regionIndex) {
                     tileIndexAction((ushort) regionIndex, tileIndex);
                 }
+            }
+        }
+
+        // internal evaluation
+        static private unsafe void EvaluateBorders_Step(int tileIndex, SimBuffer<TerrainTileInfo> infoBuffer, in HexGridSize gridSize, SimWorldState worldState) {
+            bool isBorder = false;
+
+            ref TerrainTileInfo center = ref infoBuffer[tileIndex];
+            HexVector pos = gridSize.FastIndexToPos(tileIndex);
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                HexVector adjPos = HexVector.Offset(pos, dir);
+
+                // check if bordering void
+                if (!gridSize.IsValidPos(adjPos)) {
+                    isBorder = true;
+                    break;
+                }
+                int adjIndex = gridSize.FastPosToIndex(adjPos);
+                if ((infoBuffer[adjIndex].Category == TerrainCategory.Void)) {
+                    isBorder = true;
+                    break;
+                }
+
+                // check if bordering adj region
+                if (center.RegionIndex != infoBuffer[adjIndex].RegionIndex) {
+                    isBorder = true;
+                    break;
+                }
+            }
+
+            if (isBorder) {
+                center.Flags |= TerrainFlags.IsBorder;
+            }
+            else if ((center.Flags & TerrainFlags.IsBorder) != 0) {
+                // was border, now is not. Somehow?
+                center.Flags -= TerrainFlags.IsBorder;
             }
         }
     }

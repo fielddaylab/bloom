@@ -269,7 +269,7 @@ namespace Zavala.Sim {
             ref PhosphorusTileState currentState = ref stateBuffer[index];
             PhosphorusTileInfo tileInfo = infoBuffer[index];
 
-            if ((regionIdx != Tile.InvalidIndex16 && tileInfo.RegionIndex != regionIdx) || (tileInfo.Flags & flagMask) != flagMask) {
+            if ((regionIdx != Tile.InvalidIndex16 /*&& tileInfo.RegionIndex != regionIdx*/) || (tileInfo.Flags & flagMask) != flagMask) {
                 return;
             }
             if (tileInfo.FlowMask.IsEmpty || currentState.Count <= MinFlowThreshold) {

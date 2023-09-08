@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8840229424e8df04189c3fca9de97280, type: 3}
   m_Name: SecondRegion
   m_EditorClassIdentifier: 
-  Width: 8
+  Width: 9
   Height: 8
   Tiles:
   - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
@@ -56,6 +61,11 @@ MonoBehaviour:
     Flags: 0
     Height: 200
   - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
@@ -85,36 +95,6 @@ MonoBehaviour:
     SubCategory: 0
     Flags: 8
     Height: 150
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 150
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 250
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 150
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 200
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 200
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 8
-    Height: 200
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
@@ -126,15 +106,10 @@ MonoBehaviour:
     Flags: 0
     Height: 250
   - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 300
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 300
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -155,6 +130,11 @@ MonoBehaviour:
     SubCategory: 0
     Flags: 8
     Height: 200
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 150
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -171,10 +151,55 @@ MonoBehaviour:
     Flags: 0
     Height: 300
   - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 150
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 200
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 200
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 200
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 250
+  - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
     Height: 300
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 300
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 300
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -216,6 +241,11 @@ MonoBehaviour:
     Flags: 0
     Height: 350
   - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
@@ -256,6 +286,11 @@ MonoBehaviour:
     Flags: 0
     Height: 400
   - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 0
@@ -295,6 +330,11 @@ MonoBehaviour:
     SubCategory: 0
     Flags: 8
     Height: 400
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 1
     SubCategory: 0
@@ -340,4 +380,5 @@ MonoBehaviour:
   Roads: []
   Modifiers: []
   PaletteIndex: 0
-  SourceFilePath: Tiled/NewTestMap.json
+  LeafScript: {fileID: 0}
+  SourceFilePath: Tiled/NewTestMap_Uneven.json
