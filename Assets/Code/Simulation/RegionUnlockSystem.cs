@@ -8,21 +8,57 @@ using UnityEngine;
 namespace Zavala.Sim
 {
     [SysUpdate(GameLoopPhase.Update, 0)]
-    public class RegionUnlockSystem : SharedStateSystemBehaviour<RegionUnlockState, SimGridState>
+    public class RegionUnlockSystem : SharedStateSystemBehaviour<RegionUnlockState, SimGridState, SimPhosphorusState>
     {
         #region Work
 
         public override void ProcessWork(float deltaTime) {
             // Check for unlocks
             for (int i = 0; i < m_StateA.UnlockGroups.Count; i++) {
-                UnlockGroup currGroup = m_StateA.UnlockGroups[i];
+                UnlockGroup currUnlockGroup = m_StateA.UnlockGroups[i];
 
-                // TODO: implement checks
-                bool passedCheck = false;
+                // Implement checks
+                bool passedCheck = true;
+
+                // ALL conditions must be passed (&&, not ||)
+                foreach(UnlockConditionGroup conditionGroup in currUnlockGroup.UnlockConditions) {
+                    switch(conditionGroup.Type) {
+                        case UnlockConditionType.AvgPhosphorus:
+                            foreach(int region in conditionGroup.ChecksRegions) {
+                                if (m_StateC.HistoryPerRegion[region].TryGetAvg(conditionGroup.Scope, out float avg)) {
+                                    if (avg > conditionGroup.Threshold) {
+                                        // did not meet threshold
+                                        passedCheck = false;
+                                    }
+                                }
+                                else {
+                                    // not enough data -- false by default
+                                    passedCheck = false;
+                                }
+                            }
+                            break;
+                        case UnlockConditionType.TotalPhosphorus:
+                            foreach (int region in conditionGroup.ChecksRegions) {
+                                if (m_StateC.HistoryPerRegion[region].TryGetTotal(conditionGroup.Scope, out float total)) {
+                                    if (total > conditionGroup.Threshold) {
+                                        // did not meet threshold
+                                        passedCheck = false;
+                                    }
+                                }
+                                else {
+                                    // not enough data -- false by default
+                                    passedCheck = false;
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
 
                 if (passedCheck) {
                     // Unlock regions
-                    foreach(int region in currGroup.RegionIndexUnlocks) {
+                    foreach(int region in currUnlockGroup.RegionIndexUnlocks) {
                         if (region >= m_StateB.WorldData.Regions.Length) {
                             // region to unlock not registered
                             continue;

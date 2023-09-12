@@ -78,7 +78,7 @@ namespace Zavala.Sim {
 
             Assert.True(offsetX % 2 == 0, "Region offset x must be multiple of 2");
 
-            ushort regionIndex = AddRegion(grid, subRegion, (ushort) asset.PaletteIndex);
+            ushort regionIndex = AddRegion(grid, subRegion, (ushort) asset.PaletteIndex, asset.Id);
 
             for(int subIndex = 0; subIndex < subRegion.Size; subIndex++) {
                 int mapIndex = subRegion.FastIndexToGridIndex(subIndex);
@@ -173,13 +173,15 @@ namespace Zavala.Sim {
         /// <summary>
         /// Adds a new region.
         /// </summary>
-        static public ushort AddRegion(SimGridState grid, HexGridSubregion region, ushort palette) {
+        static public ushort AddRegion(SimGridState grid, HexGridSubregion region, ushort palette, RegionId id) {
             Assert.True(grid.RegionCount < RegionInfo.MaxRegions, "Maximum '{0}' regions supported - should we increase this?", RegionInfo.MaxRegions);
             int regionIndex = (int) grid.RegionCount;
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
             regionInfo.GridArea = region;
             regionInfo.PaletteType = palette;
             regionInfo.MaxHeight = 0;
+            regionInfo.IsUnlocked = true;
+            regionInfo.Id = id;
             grid.RegionCount++;
             foreach(var index in region) {
                 grid.Terrain.Regions[index] = (ushort)regionIndex;

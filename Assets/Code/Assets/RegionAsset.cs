@@ -4,6 +4,15 @@ using UnityEngine;
 using Zavala.Sim;
 
 namespace Zavala {
+    public enum RegionId
+    {
+        Hillside,
+        Region2,
+        Region3,
+        Region4,
+        Region5
+    }
+
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]
     public sealed class RegionAsset : ScriptableObject {
         #region Types
@@ -61,6 +70,9 @@ namespace Zavala {
         [Header("Visuals")]
         public int PaletteIndex;
         public LeafAsset LeafScript;
+
+        [Header("Id")]
+        public RegionId Id;
 
         [Header("Source File Info")]
         public string SourceFilePath;

@@ -55,6 +55,8 @@ namespace Zavala.Editor {
                 EditorGUILayout.IntField("Modifiers", region.Modifiers.Length);
                 EditorGUILayout.IntField("Named Points", region.Points.Length);
             }
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("Id"));
         }
 
         private void MultiEditor() {

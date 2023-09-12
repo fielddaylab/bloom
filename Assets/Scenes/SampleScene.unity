@@ -3104,9 +3104,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnlockGroups:
-  - RegionIndexUnlocks: 01000000
-  - RegionIndexUnlocks: 0200000003000000
-  - RegionIndexUnlocks: 0400000005000000
+  - UnlockConditions:
+    - Type: 0
+      Scope: 10
+      Threshold: 0.1
+      ChecksRegions: 00000000
+    RegionIndexUnlocks: 0100000002000000
+  - UnlockConditions:
+    - Type: 0
+      Scope: 10
+      Threshold: 0.1
+      ChecksRegions: 0100000002000000
+    RegionIndexUnlocks: 0300000004000000
 --- !u!1 &540215468
 GameObject:
   m_ObjectHideFlags: 0

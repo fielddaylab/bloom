@@ -3,14 +3,79 @@ using FieldDay;
 using FieldDay.SharedState;
 using FieldDay.Systems;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Economy;
 
-namespace Zavala.Sim {
+namespace Zavala.Sim
+{
+    public struct PhosphorusProductionHistory {
+        public const int MaxHistory = 20; // how far back history is stored
+        
+        public int Pending;
+        public LinkedList<int> Net;  // store show much P was produced/removed over the previous ticks
+
+        /// <summary>
+        /// Outputs average phosphorus produced/removed over "depth" # of ticks
+        /// </summary>
+        /// <param name="depth">number of ticks to analyze</param>
+        /// <param name="avg"></param>
+        /// <returns></returns>
+        public bool TryGetAvg(int depth, out float avg) {
+            if (depth > MaxHistory || depth > Net.Count) {
+                avg = float.MaxValue;
+                return false;
+            }
+
+            int sum = 0;
+            int index = 0;
+            foreach(int i in Net) {
+                if (index >= depth) {
+                    break;
+                }
+                sum += i;
+                index++;
+            }
+
+            avg = (float)sum / Net.Count;
+            return true;
+        }
+
+        /// <summary>
+        /// Outputs total phosphorus produced/removed over "depth" # of ticks
+        /// </summary>
+        /// <param name="depth">number of ticks to analyze</param>
+        /// <param name="avg"></param>
+        /// <returns></returns>
+        public bool TryGetTotal(int depth, out float total) {
+            if (depth > MaxHistory || depth > Net.Count) {
+                total = float.MaxValue;
+                return false;
+            }
+
+            int sum = 0;
+            int index = 0;
+            foreach (int i in Net) {
+                if (index >= depth) {
+                    break;
+                }
+                sum += i;
+                index++;
+            }
+
+            total = sum;
+            return true;
+        }
+    }
+
     public sealed class SimPhosphorusState : SharedStateComponent, IRegistrationCallbacks {
         public SimTimer Timer;
 
         [NonSerialized] public PhosphorusBuffers Phosphorus;
         [NonSerialized] public uint UpdatedPhosphorusRegionMask = 0;
+
+        [Header("Per-Region")]
+        public PhosphorusProductionHistory[] HistoryPerRegion = new PhosphorusProductionHistory[RegionInfo.MaxRegions];
 
         void IRegistrationCallbacks.OnDeregister() {
         }
@@ -19,6 +84,10 @@ namespace Zavala.Sim {
             SimGridState gridState = ZavalaGame.SimGrid;
             Phosphorus.Create(gridState.HexSize);
             UpdatedPhosphorusRegionMask = 0;
+
+            for (int i = 0; i < HistoryPerRegion.Length; i++) {
+                SimPhospohorusUtility.SetHistory(this, new LinkedList<int>(), i);
+            }
         }
     }
 
@@ -45,6 +114,7 @@ namespace Zavala.Sim {
                         Amount = (ushort) amount
                     };
                     phosphorusState.Phosphorus.Changes.PushAdd(addRecord);
+                    RecordToHistory(phosphorusState, addRecord.RegionIndex, addRecord.Amount);
                 }
             }
             return amount;
@@ -68,9 +138,18 @@ namespace Zavala.Sim {
                         Amount = (ushort)amount
                     };
                     phosphorusState.Phosphorus.Changes.PushRemove(removeRecord);
+                    RecordToHistory(phosphorusState, removeRecord.RegionIndex, removeRecord.Amount);
                 }
             }
             return amount;
+        }
+
+        static public void SetHistory(SimPhosphorusState state, LinkedList<int> history, int regionIndex) {
+            state.HistoryPerRegion[regionIndex].Net = history;
+        }
+
+        static public void RecordToHistory(SimPhosphorusState state, int regionIndex, int phosphorusDelta) {
+            state.HistoryPerRegion[regionIndex].Pending += phosphorusDelta;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using BeauUtil;
 using FieldDay.Data;
 using UnityEngine;
@@ -327,6 +328,44 @@ namespace Zavala.Sim {
                         Transfer = (ushort) queuedTransfer
                     };
                     stateChangeBuffer.PushTransfer(tileTransfer);
+                }
+            }
+        }
+
+        static public void TickPhosphorusHistory(PhosphorusProductionHistory[] histories, SimBuffer<RegionInfo> gridRegions) {
+            // for each region
+            for (int i = 0; i < RegionInfo.MaxRegions; i++) {
+                if (!gridRegions[i].IsUnlocked) {
+                    continue;
+                }
+
+                PhosphorusProductionHistory history = histories[i];
+                // add any phosphorus changes that have been recorded
+                history.Net.AddFirst(history.Pending);
+
+                // reset phosphorus changes for next tick
+                history.Pending = 0;
+
+                // Remove any history that is older than we care about keeping track of
+                if (history.Net.Count > PhosphorusProductionHistory.MaxHistory) {
+                    history.Net.RemoveLast();
+                }
+
+                histories[i] = history;
+
+                StringBuilder builder = new StringBuilder();
+                int index = 0;
+                foreach(int h in history.Net) {
+                    builder.Append(index + ": " + h + "\n");
+                    index++;
+                }
+
+                Debug.Log("[History] New History for region " + i + " : " + builder.ToString());
+                if (history.TryGetAvg(10, out float avg)) {
+                    Debug.Log("[History] Avg produced for region " + i + " over 10 ticks: " + avg);
+                }
+                if (history.TryGetTotal(10, out float total)) {
+                    Debug.Log("[History] Total produced for region " + i + " over 10 ticks: " + total);
                 }
             }
         }
