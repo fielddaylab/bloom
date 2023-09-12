@@ -7,7 +7,9 @@ using BeauUtil.Variants;
 using Leaf;
 using Leaf.Defaults;
 using Leaf.Runtime;
+using UnityEngine;
 using Zavala;
+using Zavala.Scripting;
 
 namespace FieldDay.Scripting {
     public class ScriptPlugin : DefaultLeafManager<ScriptNode> {
@@ -23,6 +25,8 @@ namespace FieldDay.Scripting {
             ConfigureTagStringHandling(new CustomTagParserConfig(), new TagStringEventHandler());
 
             LeafUtils.ConfigureDefaultParsers(m_TagParseConfig, this, null);
+            m_TagParseConfig.AddReplace("local", ReplaceLocalIdOf);
+
             LeafUtils.ConfigureDefaultHandlers(m_TagHandler, this);
 
             m_TagHandler.Register(LeafUtils.Events.Character, () => { });
@@ -127,6 +131,19 @@ namespace FieldDay.Scripting {
             }
 
             return true;
+        }
+
+
+        static private string ReplaceLocalIdOf(TagData inTag, object inContext) {
+            if (inTag.Data.StartsWith('@')) {
+                StringHash32 characterId = inTag.Data.Substring(1);
+                ScriptCharacterDB db = Game.SharedState.Get<ScriptCharacterDB>();
+
+                return "{@" + ScriptCharacterDBUtility.GetRemapped(db, characterId).name + "}";
+            }
+
+            Debug.LogError("[ScriptPlugin] No local id could be found for " + inTag.Data.Substring(1));
+            return inTag.Data.ToString();
         }
     }
 }

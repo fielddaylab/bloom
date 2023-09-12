@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c8788d3658a0443ac0693add2652cc, type: 3}
+  m_Name: advisorEcon
+  m_EditorClassIdentifier: 
+  RemapTo:
+  - Region: 0
+    CharDef: {fileID: 11400000, guid: 45f2e2ec1a03f3842893ba6a37b52414, type: 2}
+  - Region: 1
+    CharDef: {fileID: 11400000, guid: 9af28242206017444a129e9d565c5a38, type: 2}

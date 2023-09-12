@@ -1510,8 +1510,8 @@ MonoBehaviour:
   UnlockGroups:
   - UnlockConditions:
     - Type: 0
-      Scope: 10
-      Threshold: 0.1
+      Scope: 5
+      Threshold: 0.3
       ChecksRegions: 00000000
     RegionIndexUnlocks: 0100000002000000
   - UnlockConditions:

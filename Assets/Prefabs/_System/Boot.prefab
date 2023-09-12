@@ -339,6 +339,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 53c73f1b8f76b054ca2a9aac4f9a21d1, type: 2}
   - {fileID: 11400000, guid: dc66ef02893aeb940afdadcd0eb78de4, type: 2}
   - {fileID: 11400000, guid: 1c2e1366f6268344fa915be9b285c9ac, type: 2}
+  CharRemaps:
+  - {fileID: 11400000, guid: 0238a5d21776a3f48a51a57720523556, type: 2}
+  - {fileID: 11400000, guid: 2229b669ee74681498a08bcba191516e, type: 2}
+  - {fileID: 11400000, guid: a7c54b1d1a50e764db6097718e872f2f, type: 2}
+  - {fileID: 11400000, guid: d430155c44f5fa54585415d80557f0d5, type: 2}
+  - {fileID: 11400000, guid: afbf0124dd2e77b4193a405977c940de, type: 2}
   m_NullActorDefinition: {fileID: 11400000, guid: cc3cca4f8f520e042baee4cfad0f3bd3, type: 2}
   m_ErrorPortrait: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Constructed: 0

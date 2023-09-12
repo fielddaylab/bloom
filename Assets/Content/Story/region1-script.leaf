@@ -4,7 +4,7 @@
 // :: testIntro
 // @trigger        GameBooted
 // @forcePolicy    Ecology
-// {@advisorEconHill} Hello! This is advisorEconHill speaking.
+// {@advisorEconHill} Hello! This is Balthazar speaking.
 // {@test-char} And this is test character, chiming in.
 // {@test-char} This is a continuation.
 // {@advisorEconHill} And now I'm jumping back into the conversation. All done!
@@ -14,19 +14,19 @@
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology"
 @forcePolicy    Ecology
-{@advisorEcolHill}    Here are the ecology policies.
+{local @advisorEcol}    Here are the ecology policies.
 
 :: testEconomyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy"
 @forcePolicy    Economy
-{@advisorEconHill}    Here are the economic policies.
+{local @advisorEcon}    Here are the economic policies.
 
 :: testRunoffTrigger
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff"
 @forcePolicy    Ecology
-{@advisorEcolHill}    There has been excessive runoff!
+{local @advisorEcol}    There has been excessive runoff!
 $call UnlockCards(RunoffPolicy)
 
 
@@ -34,7 +34,7 @@ $call UnlockCards(RunoffPolicy)
 @trigger        AlertExamined
 @conditions     alertType == "bloom"
 @forcePolicy    Ecology
-{@advisorEcolHill}    Algae blooms are appearing in the water!
+{local @advisorEcol}    Algae blooms are appearing in the water!
 $call UnlockCards(SkimmingPolicy)
 
 
@@ -42,7 +42,7 @@ $call UnlockCards(SkimmingPolicy)
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss"
 @forcePolicy    Economy
-{@advisorEconHill}    This supplier is selling at a loss!
+{local @advisorEcon}    This supplier is selling at a loss!
 
 
 :: testRegionUnlocked
