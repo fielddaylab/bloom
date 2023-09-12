@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using FieldDay;
 using FieldDay.SharedState;
 using UnityEngine.Events;
@@ -8,11 +10,7 @@ using Zavala.Sim;
 
 namespace Zavala.Advisor {
     public struct PolicyBlock {
-        public RunoffPenaltyLevel Runoff;
-        public SkimmingLevel Skimming;
-        // public ExportTaxLevel ExportTax;
-        public ImportTaxLevel ImportTax;
-        public SalesTaxLevel SalesTax;
+        public Dictionary<PolicyType, PolicyLevel> Map;
     }
 
     // TODO: track unlocked policies (progression)
@@ -30,14 +28,14 @@ namespace Zavala.Advisor {
 
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
         public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region) {
-            if (policyIndex < 0 || policyIndex > 3) return false;
+            if (policyIndex < 0 || policyIndex > 3) { return false; }
+
+            Policies[region].Map[policyType] = (PolicyLevel)policyIndex;
             switch (policyType) {
                 case PolicyType.RunoffPolicy:
-                    Policies[region].Runoff = (RunoffPenaltyLevel)policyIndex;
                     // TODO: When runoff penalty implemented, read runoff policy
                     return true;
                 case PolicyType.SkimmingPolicy:
-                    Policies[region].Skimming = (SkimmingLevel)policyIndex;
                     // TODO: When skimming implemented, read skimming policy
                     return true;
                     /*
@@ -48,12 +46,10 @@ namespace Zavala.Advisor {
                     return true;
                     */
                 case PolicyType.ImportTaxPolicy:
-                    Policies[region].ImportTax = (ImportTaxLevel)policyIndex;
                     // set this region's import tax to the initialized import tax value for the given index
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].ImportTax = ImportTaxVals[policyIndex];
                     return true;
                 case PolicyType.SalesTaxPolicy:
-                    Policies[region].SalesTax = (SalesTaxLevel)policyIndex;
                     // set this region's purchase tax to the initialized sales tax value for the given index
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].PurchaseTax = SalesTaxVals[policyIndex];
                     return true; 
@@ -81,6 +77,17 @@ namespace Zavala.Advisor {
             SalesTaxVals[3].SetAll(4);
         }
 
+        private void InitializePolicyMap() {
+            for (int i = 0; i < Policies.Length; i++) {
+                Policies[i].Map = new Dictionary<PolicyType, PolicyLevel>() {
+                    { PolicyType.RunoffPolicy, PolicyLevel.Low },
+                    { PolicyType.SkimmingPolicy, PolicyLevel.Low },
+                    { PolicyType.ImportTaxPolicy, PolicyLevel.Low },
+                    { PolicyType.SalesTaxPolicy, PolicyLevel.Low }
+                };
+            }
+        }
+
         /// <summary>
         /// Return a numerical value of runoff penalty based on the policy level.
         /// </summary>
@@ -92,6 +99,7 @@ namespace Zavala.Advisor {
 
         public void OnRegister() {
             InitializePolicyValues();
+            InitializePolicyMap();
 
             PolicyCardSelected.AddListener(HandlePolicyCardSelected);
         }

@@ -37,6 +37,38 @@ MonoBehaviour:
     - Path: alerts
       Start: 0
     NeedsExport: 0
+  - Name: cards
+    FilePath: Assets/Content/Text/cards.zaloc
+    Asset: {fileID: -4270002856181823206, guid: 41cbe5b48a722554ead67c28a831c4b5, type: 3}
+    LastLine: 0
+    Records:
+    - Id: cards.severity.low
+      Content: Low
+    - Id: cards.severity.med
+      Content: Medium
+    - Id: cards.severity.high
+      Content: High
+    - Id: cards.RunoffPolicy.category
+      Content: Runoff Policy
+    - Id: cards.RunoffPolicy.alt
+      Content: Halt
+    - Id: cards.SkimmingPolicy.category
+      Content: Skimming Policy
+    - Id: cards.SkimmingPolicy.alt
+      Content: Dredge
+    - Id: cards.ImportTaxPolicy.category
+      Content: Import Tax
+    - Id: cards.ImportTaxPolicy.alt
+      Content: Subsidy
+    - Id: cards.SalesTaxPolicy.category
+      Content: Sales Tax
+    - Id: cards.SalesTaxPolicy.alt
+      Content: Subsidy
+    BasePath: cards
+    AllBasePaths:
+    - Path: cards
+      Start: 0
+    NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc
     Asset: {fileID: -4270002856181823206, guid: ea8734fcad5f46d48b270c48650c56ab, type: 3}
