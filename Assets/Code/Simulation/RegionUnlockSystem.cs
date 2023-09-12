@@ -1,5 +1,6 @@
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.Systems;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace Zavala.Sim
                     switch(conditionGroup.Type) {
                         case UnlockConditionType.AvgPhosphorus:
                             foreach(int region in conditionGroup.ChecksRegions) {
+                                // TODO: would be cleaner to convert these into delegates
                                 if (m_StateC.HistoryPerRegion[region].TryGetAvg(conditionGroup.Scope, out float avg)) {
                                     if (avg > conditionGroup.Threshold) {
                                         // did not meet threshold
@@ -39,6 +41,7 @@ namespace Zavala.Sim
                             break;
                         case UnlockConditionType.TotalPhosphorus:
                             foreach (int region in conditionGroup.ChecksRegions) {
+                                // TODO: would be cleaner to convert these into delegates
                                 if (m_StateC.HistoryPerRegion[region].TryGetTotal(conditionGroup.Scope, out float total)) {
                                     if (total > conditionGroup.Threshold) {
                                         // did not meet threshold
@@ -66,6 +69,10 @@ namespace Zavala.Sim
 
                         SimDataUtility.LoadAndRegenRegionDataFromWorld(m_StateB, m_StateB.WorldData, region);
                         // TODO: trigger RegionUnlocked for scripting purposes
+                        using (TempVarTable varTable = TempVarTable.Alloc()) {
+                            varTable.Set("regionId", ((RegionId)region).ToString());
+                            ScriptUtility.Trigger(GameTriggers.RegionUnlocked, varTable);
+                        }
                         Debug.Log("[RegionUnlockSystem] Unlocked region " + region);
                     }
 

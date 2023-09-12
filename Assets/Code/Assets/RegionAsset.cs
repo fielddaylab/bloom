@@ -7,7 +7,7 @@ namespace Zavala {
     public enum RegionId
     {
         Hillside,
-        Region2,
+        Prairie,
         Region3,
         Region4,
         Region5

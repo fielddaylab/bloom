@@ -6,6 +6,8 @@ using UnityEngine;
 using Zavala.Advisor;
 using System;
 using BeauUtil;
+using Leaf.Runtime;
+using System.Runtime.CompilerServices;
 
 namespace Zavala.Cards
 {
@@ -67,7 +69,7 @@ namespace Zavala.Cards
             CardsUtility.PopulateCards(this);
 
             // TEMP Unlock initial cards
-            CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
+            // CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
             // CardsUtility.UnlockCardsByType(this, PolicyType.SkimmingPolicy);
         }
     }
@@ -86,7 +88,7 @@ namespace Zavala.Cards
 
         public static Dictionary<AdvisorType, PolicyType[]> AdvisorPolicyMap = new Dictionary<AdvisorType, PolicyType[]>() {
             {
-                AdvisorType.Environment,
+                AdvisorType.Ecology,
                 new PolicyType[] { PolicyType.RunoffPolicy, PolicyType.SkimmingPolicy }
             },
             {
@@ -218,11 +220,21 @@ namespace Zavala.Cards
             return m_allCards[cardID];
         }
         */
+
+        [LeafMember("UnlockCards")]
+        static public void UnlockCardsLeaf(PolicyType type) {
+            CardsUtility.UnlockCardsByType(Game.SharedState.Get<CardsState>(), type);
+        }
+
+
         static public void UnlockCardsByType(CardsState state, PolicyType type) {
 
             List<SerializedHash32> unlockIds = state.CardMap[type];
 
             foreach (SerializedHash32 id in unlockIds) {
+                if (state.UnlockedCards.Contains(id)) {
+                    continue;
+                }
                 state.UnlockedCards.Add(id);
             }
         }

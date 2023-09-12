@@ -38,7 +38,7 @@ namespace Zavala.Advisor
 
             if (activating) {
                 AdvisorType newAdvisor = advisorState.UpdateAdvisor(ButtonAdvisorType);
-                if (newAdvisor == AdvisorType.Environment) {
+                if (newAdvisor == AdvisorType.Ecology) {
                     world.Overlays = SimWorldOverlayMask.Phosphorus;
                 }
                 else {

@@ -329,8 +329,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharDefs:
-  - {fileID: 11400000, guid: 5878897dd5a9b9d44bafe56c979148bd, type: 2}
+  - {fileID: 11400000, guid: 377b7e03e80f35b419cb2d0ac3ab8bf8, type: 2}
   - {fileID: 11400000, guid: 45f2e2ec1a03f3842893ba6a37b52414, type: 2}
+  - {fileID: 11400000, guid: 419c257dc7c2fd54ba9a3d941bbcd931, type: 2}
+  - {fileID: 11400000, guid: 1700103f886b35d43b0161b9122c2940, type: 2}
+  - {fileID: 11400000, guid: 8c0a2e7d7eb460345bf9726a512bcb46, type: 2}
+  - {fileID: 11400000, guid: d6495b2ea23aa874fbeb28b7c6941d06, type: 2}
+  - {fileID: 11400000, guid: 9af28242206017444a129e9d565c5a38, type: 2}
+  - {fileID: 11400000, guid: 53c73f1b8f76b054ca2a9aac4f9a21d1, type: 2}
+  - {fileID: 11400000, guid: dc66ef02893aeb940afdadcd0eb78de4, type: 2}
+  - {fileID: 11400000, guid: 1c2e1366f6268344fa915be9b285c9ac, type: 2}
   m_NullActorDefinition: {fileID: 11400000, guid: cc3cca4f8f520e042baee4cfad0f3bd3, type: 2}
   m_ErrorPortrait: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Constructed: 0

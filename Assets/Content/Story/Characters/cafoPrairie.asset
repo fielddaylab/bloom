@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
-  m_Name: test-char
+  m_Name: cafoPrairie
   m_EditorClassIdentifier: 
-  NameId: Test Char
-  TitleId: Ecological Advisor
+  NameId: '[CAFO Farmer Name] (Prairie)'
+  TitleId: CAFO Farmer
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4280345884
+    rgba: 4283545344
   NameColor:
     serializedVersion: 2
-    rgba: 4293504509
+    rgba: 4290693832
   TitleColor:
     serializedVersion: 2
-    rgba: 4278593087
+    rgba: 4282955560
   TextColor:
     serializedVersion: 2
-    rgba: 4282599501
-  PortraitArt: {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
-  PortraitBackground: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    rgba: 4290693832
+  PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+  PortraitBackground: {fileID: 0}

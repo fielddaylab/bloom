@@ -3,42 +3,49 @@
 
 // :: testIntro
 // @trigger        GameBooted
-// @forcePolicy    Environment
-// {@balthazar} Hello! This is Balthazar speaking.
+// @forcePolicy    Ecology
+// {@advisorEconHill} Hello! This is advisorEconHill speaking.
 // {@test-char} And this is test character, chiming in.
 // {@test-char} This is a continuation.
-// {@balthazar} And now I'm jumping back into the conversation. All done!
+// {@advisorEconHill} And now I'm jumping back into the conversation. All done!
 
 
-:: testEnvironmentAdvisorOpen
+:: testEcologyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Environment"
-@forcePolicy    Environment
-{@balthazar}    Here are the ecology policies.
+@conditions     advisorType == "Ecology"
+@forcePolicy    Ecology
+{@advisorEcolHill}    Here are the ecology policies.
 
 :: testEconomyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy"
 @forcePolicy    Economy
-{@balthazar}    Here are the economic policies.
-
+{@advisorEconHill}    Here are the economic policies.
 
 :: testRunoffTrigger
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff"
-@forcePolicy    Environment
-{@balthazar}    There has been excessive runoff!
+@forcePolicy    Ecology
+{@advisorEcolHill}    There has been excessive runoff!
+$call UnlockCards(RunoffPolicy)
 
 
 :: testBloomTrigger
 @trigger        AlertExamined
 @conditions     alertType == "bloom"
-@forcePolicy    Environment
-{@balthazar}    Algae blooms are appearing in the water!
+@forcePolicy    Ecology
+{@advisorEcolHill}    Algae blooms are appearing in the water!
+$call UnlockCards(SkimmingPolicy)
 
 
 :: testSellAtLossTrigger
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss"
 @forcePolicy    Economy
-{@balthazar}    This supplier is selling at a loss!
+{@advisorEconHill}    This supplier is selling at a loss!
+
+
+:: testRegionUnlocked
+@trigger        RegionUnlocked
+@conditions     regionId == "Prairie"
+{@advisorEconPrairie}    Welcome to the Prairie!

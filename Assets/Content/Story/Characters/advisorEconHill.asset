@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
-  m_Name: balthazar
+  m_Name: advisorEconHill
   m_EditorClassIdentifier: 
   NameId: Balthazar
   TitleId: Economic Advisor

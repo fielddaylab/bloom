@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
+  m_Name: grainHill
+  m_EditorClassIdentifier: 
+  NameId: '[Grain Farmer Name]'
+  TitleId: Grain Farmer
+  BackgroundColor:
+    serializedVersion: 2
+    rgba: 4283545344
+  NameColor:
+    serializedVersion: 2
+    rgba: 4290693832
+  TitleColor:
+    serializedVersion: 2
+    rgba: 4282955560
+  TextColor:
+    serializedVersion: 2
+    rgba: 4290693832
+  PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+  PortraitBackground: {fileID: 0}

@@ -17,7 +17,7 @@ namespace Zavala.Advisor {
     
     public enum AdvisorType : byte {
         None,
-        Environment,
+        Ecology,
         Economy
     }
 }
