@@ -22,6 +22,7 @@ namespace Zavala.UI {
         [SerializeField] private Button m_Button2;
         [SerializeField] private TextMeshProUGUI m_Button2Text;
         private Action m_Button2Action;
+        [SerializeField] private Button m_CloseButton;
 
         private void Awake() {
             instance = this;

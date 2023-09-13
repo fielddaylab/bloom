@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 7130767049187325555}
   - component: {fileID: 4158031073122630595}
   - component: {fileID: 6354438958989678728}
-  - component: {fileID: 8794960591691319854}
   - component: {fileID: 5074091816765350726}
   - component: {fileID: -7104959141006727276}
   - component: {fileID: 8966737996612447901}
+  - component: {fileID: 2840642189383664604}
   m_Layer: 8
   m_Name: Road
-  m_TagString: Untagged
+  m_TagString: PlayerPlaced
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -93,20 +93,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &8794960591691319854
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8417343884172520992}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!114 &5074091816765350726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +138,19 @@ MonoBehaviour:
   - {fileID: 3917359711619418785}
   - {fileID: 985482362777601422}
   - {fileID: 8698090574236590891}
+--- !u!65 &2840642189383664604
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417343884172520992}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.5, y: 2, z: 2.5}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &606454147210287726
 PrefabInstance:
   m_ObjectHideFlags: 0
