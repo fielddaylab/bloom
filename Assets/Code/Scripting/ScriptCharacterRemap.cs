@@ -20,5 +20,14 @@ namespace Zavala.Scripting {
         public CharRemapData[] RemapTo;
 
         #endregion // Inspector
+
+        public bool Contains(string charName) {
+            for (int i = 0; i < RemapTo.Length; i++) {
+                if (RemapTo[i].CharDef.name.Equals(charName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

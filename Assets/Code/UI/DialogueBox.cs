@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using BeauRoutine;
 using BeauRoutine.Extensions;
@@ -41,6 +42,10 @@ namespace Zavala.UI {
         [SerializeField] private PolicySlot[] m_PolicySlots;
         [SerializeField] private Button m_PolicyCloseButton;
 
+        [Space(5)]
+        [Header("Modules")]
+        [SerializeField] private List<DialogueModuleBase> m_Modules;
+
         #endregion // Inspector
 
         private Routine m_TransitionRoutine;
@@ -61,6 +66,17 @@ namespace Zavala.UI {
 
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.AddListener(HandlePolicyCloseClicked);
+        }
+
+        private void RefreshModules(string charName) {
+            foreach(var module in m_Modules) {
+                if (module.UsedBy(charName)) {
+                    module.Activate(false);
+                }
+                else {
+                    module.Deactivate();
+                }
+            }
         }
 
         #region Display
@@ -103,6 +119,8 @@ namespace Zavala.UI {
                     nameColor = charDef.NameColor;
                     titleColor = charDef.TitleColor;
                     textColor = charDef.TextColor;
+
+                    RefreshModules(charDef.name);
                 }
                 else {
                     header = subheader = "";
