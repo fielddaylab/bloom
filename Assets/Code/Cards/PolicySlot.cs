@@ -163,7 +163,8 @@ namespace Zavala.Cards
             // Set this image and text to selected card's text and image
             CardUIUtility.ExtractSprite(data, out Sprite sprite);
             CardUIUtility.ExtractLocText(data, out string locText);
-            // m_Button.image.sprite = sprite;
+            // TODO: extract font effects
+            m_Button.image.sprite = sprite;
             m_Text.SetText(locText);
         }
 

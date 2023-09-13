@@ -1,3 +1,4 @@
+using EasyAssetStreaming;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -22,8 +23,7 @@ namespace Zavala.Cards {
             // TODO: extract font effects
             card.Text.SetText(locText);
             ExtractSprite(data, out Sprite sprite);
-            // TODO: uncomment once paths are defined
-            // card.Button.image.sprite = sprite;
+            card.Button.image.sprite = sprite;
             card.PolicyIndex = (int)data.PolicyLevel;
         }
 
@@ -43,9 +43,13 @@ namespace Zavala.Cards {
         }
 
         static public void ExtractSprite(CardData data, out Sprite sprite) {
-            // TODO: find image path from card definition, load it from resources
-
-            sprite = null;
+            // find image path from card definition, load it from resources
+            string pathStr = data.ImgPath;
+            int extIndex = pathStr.IndexOf(".");
+            if (extIndex != -1) {
+                pathStr = pathStr.Substring(0, extIndex);
+            }
+            sprite = Resources.Load<Sprite>("CardArt/" + pathStr);
         }
     }
 
