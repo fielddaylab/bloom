@@ -76,6 +76,12 @@ MonoBehaviour:
     Records:
     - Id: ui.shop.header
       Content: Shop UI
+    - Id: ui.target.sales
+      Content: Sales Tax
+    - Id: ui.target.import
+      Content: Import Tax
+    - Id: ui.target.penalties
+      Content: Penalties
     BasePath: ui
     AllBasePaths:
     - Path: ui
