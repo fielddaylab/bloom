@@ -17,12 +17,18 @@ MonoBehaviour:
   BackgroundColor:
     serializedVersion: 2
     rgba: 4280060645
+  PanelColor:
+    serializedVersion: 2
+    rgba: 4288204258
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 4278220543
   NameColor:
     serializedVersion: 2
     rgba: 4289584125
   TitleColor:
     serializedVersion: 2
-    rgba: 4278211989
+    rgba: 4289584125
   TextColor:
     serializedVersion: 2
     rgba: 4278198591

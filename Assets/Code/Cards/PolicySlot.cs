@@ -17,8 +17,13 @@ namespace Zavala.Cards
         [SerializeField] private TMP_Text m_Text;
 
         [SerializeField] private Image m_Image;
+        [SerializeField] private Graphic m_SlotBackground;
         [SerializeField] private Sprite m_LockedSprite;
         [SerializeField] private Sprite m_UnlockedSprite;
+
+        private Color32 m_LockedColor;
+        private Color32 m_UnlockedColor;
+        private Color32 m_SlotColor;
 
         private Routine m_ChoiceRoutine;
         private List<CardUI> m_DisplayCards;
@@ -57,10 +62,14 @@ namespace Zavala.Cards
             bool slotUnlocked = unlockedCards.Count > 0;
             if (slotUnlocked) {
                 m_Image.sprite = m_UnlockedSprite;
+                m_Image.color = m_UnlockedColor;
+                m_SlotBackground.color = m_SlotColor;
                 m_Button.enabled = true;
             }
             else {
                 m_Image.sprite = m_LockedSprite;
+                m_Image.color = m_LockedColor;
+                m_SlotBackground.color = m_UnlockedColor; // same color is used for locked background as locked foreground
                 m_Button.enabled = false;
             }
 
@@ -85,7 +94,11 @@ namespace Zavala.Cards
             }
         }
 
-
+        public void SetColors(Color slotColor, Color lockedColor, Color unlockedColor) {
+            m_SlotColor = slotColor;
+            m_LockedColor = lockedColor;
+            m_UnlockedColor = unlockedColor;
+        }
 
         #region Handlers
 

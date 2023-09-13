@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using BeauRoutine;
@@ -36,6 +37,7 @@ namespace Zavala.UI {
         [Space(5)]
         [Header("Policies")]
         [SerializeField] private GameObject m_PolicyExpansionContainer;
+        [SerializeField] private Graphic m_PolicyBackground;
         [SerializeField] private PolicySlot[] m_PolicySlots;
         [SerializeField] private Button m_PolicyCloseButton;
 
@@ -89,13 +91,15 @@ namespace Zavala.UI {
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
                 string header, subheader;
                 Sprite portraitBG, portraitImg;
-                Color boxColor, nameColor, titleColor, textColor;
+                Color boxColor, panelColor, highlightColor, nameColor, titleColor, textColor;
                 if (charDef != null) {
                     header = charDef.NameId;
                     subheader = charDef.TitleId;
                     portraitBG = charDef.PortraitBackground;
                     portraitImg = charDef.PortraitArt;
                     boxColor = charDef.BackgroundColor;
+                    panelColor = charDef.PanelColor;
+                    highlightColor = charDef.HighlightColor;
                     nameColor = charDef.NameColor;
                     titleColor = charDef.TitleColor;
                     textColor = charDef.TextColor;
@@ -104,11 +108,18 @@ namespace Zavala.UI {
                     header = subheader = "";
                     portraitBG = portraitImg = null;
                     boxColor = Color.clear;
+                    panelColor = Color.white;
+                    highlightColor = Color.gray;
                     nameColor = Color.white;
                     titleColor = Color.black;
                     textColor = Color.black;
                 }
-                DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitBG, portraitImg, boxColor, nameColor, titleColor, textColor);
+                DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitBG, portraitImg, boxColor, highlightColor, nameColor, titleColor, textColor);
+                // TODO: is it unnecessary overhead to refresh this with every PrepareLine?
+                foreach (PolicySlot slot in m_PolicySlots) {
+                    slot.SetColors(highlightColor, panelColor, boxColor);
+                }
+                m_PolicyBackground.color = panelColor;
                 Contents.Contents.maxVisibleCharacters = 0;
             }
 
@@ -159,7 +170,7 @@ namespace Zavala.UI {
         private IEnumerator ShowRoutine() {
             this.gameObject.SetActive(true);
 
-            yield return m_Rect.AnchorPosTo(0, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+            yield return m_Rect.AnchorPosTo(-100, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
             yield return null;
         }
@@ -197,7 +208,7 @@ namespace Zavala.UI {
             m_PolicyCloseButton.onClick.RemoveAllListeners();
             m_PolicyCloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
 
-            yield return m_Rect.AnchorPosTo(-100, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+            yield return m_Rect.AnchorPosTo(-170, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
             m_PolicyExpansionContainer.SetActive(true);
 
