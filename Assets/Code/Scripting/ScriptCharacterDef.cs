@@ -12,6 +12,8 @@ namespace Zavala.Scripting {
 
         [Header("Color Schemes")]
         public Color32 BackgroundColor;
+        public Color32 PanelColor;
+        public Color32 HighlightColor;
         public Color32 NameColor;
         public Color32 TitleColor;
         public Color32 TextColor;

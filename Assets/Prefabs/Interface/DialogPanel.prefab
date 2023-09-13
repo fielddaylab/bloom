@@ -124,14 +124,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.98039216, b: 0.8745098, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5719c3775b4f9154b90f3c00271de3d0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: df037504ebfeed743b9e4e85e1449a30, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -374,8 +374,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140}
-  m_SizeDelta: {x: -24, y: 395}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -24, y: 255}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1637605266437720220
 GameObject:
@@ -523,19 +523,19 @@ MonoBehaviour:
   Contents: {fileID: 8031181494914309745}
   BoxColorLayer: {fileID: 1637605266437720218}
   PortraitBox: {fileID: 6468902562693948103}
-  PortraitColorLayer: {fileID: 0}
+  PortraitColorLayer: {fileID: 9128199145218067320}
   PortraitBackground: {fileID: 3252371747787166140}
   PortraitImage: {fileID: 2543509485868389815}
   BoxDefaultOffset:
-    m_Left: 10
-    m_Right: 10
-    m_Top: 10
-    m_Bottom: 10
+    m_Left: 30
+    m_Right: 0
+    m_Top: 15
+    m_Bottom: 0
   BoxWithPortraitOffset:
-    m_Left: 160
-    m_Right: 10
-    m_Top: 10
-    m_Bottom: 10
+    m_Left: 130
+    m_Right: 0
+    m_Top: 15
+    m_Bottom: 0
 --- !u!114 &1876718266001972432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -554,9 +554,11 @@ MonoBehaviour:
   m_Rect: {fileID: 1637605267548580037}
   m_EndBehavior: 0
   m_PolicyExpansionContainer: {fileID: 1368593867569696488}
+  m_PolicyBackground: {fileID: 826595107018870028}
   m_PolicySlots:
   - {fileID: 1535557090027631772}
   - {fileID: 5988818949644188924}
+  m_PolicySlotBackgrounds: []
   m_PolicyCloseButton: {fileID: 168146751151202610}
 --- !u!1 &2186653336543893110
 GameObject:
@@ -1176,10 +1178,10 @@ RectTransform:
   m_Father: {fileID: 1637605267548580037}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 130, y: -15}
-  m_SizeDelta: {x: 270, y: 135}
+  m_SizeDelta: {x: -130, y: -15}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3067665370597219667
 MonoBehaviour:
@@ -1273,7 +1275,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3a5c4677cd4a1ad4281c6d7c0a71223a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a2bd58e308068aa4aaf94eda9584f4e5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1308,7 +1310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1316,7 +1318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1356,11 +1358,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 434
+      value: 369.055
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

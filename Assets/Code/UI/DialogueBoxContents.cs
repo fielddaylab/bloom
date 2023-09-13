@@ -27,7 +27,7 @@ namespace Zavala.UI {
     }
 
     static public class DialogueUIUtility {
-        static public void PopulateBoxText(DialogueBoxContents box, Graphic buttonGraphic, string header, string subheader, string content, Sprite portraitBG, Sprite portraitImg, Color boxColor, Color nameColor, Color titleColor, Color textColor) {
+        static public void PopulateBoxText(DialogueBoxContents box, Graphic buttonGraphic, string header, string subheader, string content, Sprite portraitBG, Sprite portraitImg, Color boxColor, Color highlightColor, Color nameColor, Color titleColor, Color textColor) {
             // text
             box.Header.TryPopulate(header);
             box.Subheader.TryPopulate(subheader);
@@ -41,6 +41,7 @@ namespace Zavala.UI {
 
             // Colors
             box.BoxColorLayer.color = boxColor;
+            box.PortraitColorLayer.color = highlightColor;
             buttonGraphic.color = boxColor;
             box.Header.color = nameColor;
             box.Subheader.color = titleColor;

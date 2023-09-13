@@ -17,14 +17,20 @@ MonoBehaviour:
   BackgroundColor:
     serializedVersion: 2
     rgba: 4293587076
-  NameColor:
+  PanelColor:
     serializedVersion: 2
-    rgba: 4290693832
-  TitleColor:
+    rgba: 4294965209
+  HighlightColor:
     serializedVersion: 2
     rgba: 4291401507
+  NameColor:
+    serializedVersion: 2
+    rgba: 4290501631
+  TitleColor:
+    serializedVersion: 2
+    rgba: 4290501631
   TextColor:
     serializedVersion: 2
-    rgba: 4290693832
-  PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+    rgba: 4284689159
+  PortraitArt: {fileID: 21300000, guid: 22721463e41d055488b0925d5c029c7a, type: 3}
   PortraitBackground: {fileID: 0}
