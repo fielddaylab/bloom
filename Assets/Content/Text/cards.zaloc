@@ -1,0 +1,34 @@
+# basePath cards
+
+:: severity.low
+Low
+
+:: severity.med
+Medium
+
+:: severity.high
+High
+
+:: RunoffPolicy.category
+Runoff Policy
+
+:: RunoffPolicy.alt
+Halt
+
+:: SkimmingPolicy.category
+Skimming Policy
+
+:: SkimmingPolicy.alt
+Dredge
+
+:: ImportTaxPolicy.category
+Import Tax
+
+:: ImportTaxPolicy.alt
+Subsidy
+
+:: SalesTaxPolicy.category
+Sales Tax
+
+:: SalesTaxPolicy.alt
+Subsidy

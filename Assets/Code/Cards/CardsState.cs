@@ -14,15 +14,15 @@ namespace Zavala.Cards
     public struct CardData
     {
         public SerializedHash32 CardID;
-        public string Header;
         public PolicyType PolicyType;
         public PolicyLevel PolicyLevel;
+        public string ImgPath;
 
-        public CardData(SerializedHash32 cardID, string header, PolicyType policyType, PolicyLevel level) {
+        public CardData(SerializedHash32 cardID, string header, PolicyType policyType, PolicyLevel level, string imgPath) {
             CardID = cardID;
-            Header = header;
             PolicyType = policyType;
             PolicyLevel = level;
+            ImgPath = imgPath;
         }
     }
 
@@ -69,8 +69,8 @@ namespace Zavala.Cards
             CardsUtility.PopulateCards(this);
 
             // TEMP Unlock initial cards
-            // CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
-            // CardsUtility.UnlockCardsByType(this, PolicyType.SkimmingPolicy);
+            CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
+            CardsUtility.UnlockCardsByType(this, PolicyType.SkimmingPolicy);
         }
     }
 
@@ -78,9 +78,9 @@ namespace Zavala.Cards
 
         #region Card Definition Parsing
 
-        private static string HEADER_TAG = "@header";
         private static string POLICY_LEVEL_TAG = "@level";
         private static string POLICY_TYPE_TAG = "@policytype";
+        private static string IMAGE_PATH_TAG = "@path";
 
         private static string END_DELIM = "\n";
 
@@ -125,26 +125,13 @@ namespace Zavala.Cards
             string header = "";
             PolicyLevel level = PolicyLevel.Low;
             PolicyType policyType = PolicyType.RunoffPolicy;
+            string imgPath = "";
 
             // Parse into data
 
             // First line must be card id
             cardID = cardDef.Substring(0, cardDef.IndexOf(END_DELIM));
             Debug.Log("[CardUtility] parsed card id : " + cardID);
-
-            // Header comes after @Header
-            int headerIndex = cardDef.ToLower().IndexOf(HEADER_TAG);
-            if (headerIndex != -1) {
-                string afterHeader = cardDef.Substring(headerIndex);
-                int offset = HEADER_TAG.Length;
-                header = cardDef.Substring(headerIndex + offset, afterHeader.IndexOf(END_DELIM) - offset).Trim();
-            }
-            else {
-                // syntax error
-                Debug.Log("[CardUtility] header syntax error!");
-
-                throw new Exception("Header");
-            }
 
             // PolicyLevel comes after @PolicyLevel
             int levelIndex = cardDef.ToLower().IndexOf(POLICY_LEVEL_TAG);
@@ -184,7 +171,25 @@ namespace Zavala.Cards
                 throw new Exception("Sim Lever");
             }
 
-            return new CardData(cardID, header, policyType, level);
+
+            // Image Path comes after @Path
+            int imgPathIndex = cardDef.ToLower().IndexOf(IMAGE_PATH_TAG);
+
+            if (imgPathIndex != -1) {
+                string afterPathIndex = cardDef.Substring(imgPathIndex);
+                int offset = IMAGE_PATH_TAG.Length;
+                string imgPathStr = cardDef.Substring(imgPathIndex + offset, afterPathIndex.IndexOf(END_DELIM) - offset).Trim();
+
+                imgPath = imgPathStr;
+            }
+            else {
+                // syntax error
+                Debug.Log("[CardUtility] image path syntax error!");
+
+                throw new Exception("Image Path");
+            }
+
+            return new CardData(cardID, header, policyType, level, imgPath);
         }
 
 

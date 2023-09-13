@@ -1,107 +1,107 @@
 // Runoff Penalty
 
 ::runoff-penalty-low
-@Header		Runoff Penalty
 @Level		low
 @PolicyType	RunoffPolicy
+@Path		policy-background.png
 
 ::runoff-penalty-med
-@Header		Runoff Penalty
 @Level		med
 @PolicyType	RunoffPolicy
+@Path		policy-background.png
 
 ::runoff-penalty-high
-@Header		Runoff Penalty
 @Level		high
 @PolicyType	RunoffPolicy
+@Path		policy-background.png
 
 ::runoff-penalty-shutdown
-@Header		Runoff Penalty
 @Level		alt
 @PolicyType	RunoffPolicy
+@Path		policy-background.png
 
 
 // Import Tax
 
 ::import-tax-low
-@Header		Import Tax
 @Level		low
 @PolicyType	ImportTaxPolicy
+@Path		policy-background.png
 
 ::import-tax-med
-@Header		Import Tax
 @Level		med
 @PolicyType	ImportTaxPolicy
+@Path		policy-background.png
 
 ::import-tax-high
-@Header		Import Tax
 @Level		high
 @PolicyType	ImportTaxPolicy
+@Path		policy-background.png
 
 // Export Tax
 
 ::export-tax-low
-@Header		Export Tax
 @Level		low
 @PolicyType	ExportTaxPolicy
+@Path		policy-background.png
 
 ::export-tax-med
-@Header		Export Tax
 @Level		med
 @PolicyType	ExportTaxPolicy
+@Path		policy-background.png
 
 ::export-tax-high
-@Header		Export Tax
 @Level		high
 @PolicyType	ExportTaxPolicy
+@Path		policy-background.png
 
 ::export-tax-subsidy
-@Header		Export Tax
 @Level		alt
 @PolicyType	ExportTaxPolicy
+@Path		policy-background.png
 
 // Skimmers
 
 ::skimmers-low
-@Header		Skimmers
 @Level		low
 @PolicyType	SkimmingPolicy
+@Path		policy-background.png
 
 ::skimmers-med
-@Header		Skimmers
 @Level		med
 @PolicyType	SkimmingPolicy
+@Path		policy-background.png
 
 ::skimmers-high
-@Header		Skimmers
 @Level		high
 @PolicyType	SkimmingPolicy
+@Path		policy-background.png
 
 ::skimmers-dredge
-@Header		Skimmers
 @Level		alt
 @PolicyType	SkimmingPolicy
+@Path		policy-background.png
 
 // Sales Tax
 
 ::sales-low
-@Header		Sales Tax
 @Level		low
 @PolicyType	SalesTaxPolicy
+@Path		policy-background.png
 
 ::sales-med
-@Header		Sales Tax
 @Level		med
 @PolicyType	SalesTaxPolicy
+@Path		policy-background.png
 
 ::sales-high
-@Header		Sales Tax
 @Level		high
 @PolicyType	SalesTaxPolicy
+@Path		policy-background.png
 
 ::sales-subsidy
-@Header		Sales Tax
 @Level		alt
 @PolicyType	SalesTaxPolicy
+@Path		policy-background.png
 
 -----

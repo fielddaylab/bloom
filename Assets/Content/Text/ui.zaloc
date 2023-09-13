@@ -2,3 +2,13 @@
 
 :: shop.header
 Shop UI
+
+:: target.sales
+Sales Tax
+
+:: target.import
+Import Tax
+
+:: target.penalties
+Penalties
+

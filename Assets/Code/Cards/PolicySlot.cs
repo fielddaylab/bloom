@@ -2,9 +2,11 @@ using BeauRoutine;
 using FieldDay;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Advisor;
+using Zavala.Sim;
 
 namespace Zavala.Cards
 {
@@ -12,6 +14,7 @@ namespace Zavala.Cards
     {
         [SerializeField] private PolicyType m_Type;
         [SerializeField] private Button m_Button;
+        [SerializeField] private TMP_Text m_Text;
 
         [SerializeField] private Image m_Image;
         [SerializeField] private Graphic m_SlotBackground;
@@ -55,7 +58,8 @@ namespace Zavala.Cards
 
             // If this slot type is unlocked, enable button / disable if not
             CardsState state = Game.SharedState.Get<CardsState>();
-            bool slotUnlocked = CardsUtility.GetUnlockedOptions(state, m_Type).Count > 0;
+            List<CardData> unlockedCards = CardsUtility.GetUnlockedOptions(state, m_Type);
+            bool slotUnlocked = unlockedCards.Count > 0;
             if (slotUnlocked) {
                 m_Image.sprite = m_UnlockedSprite;
                 m_Image.color = m_UnlockedColor;
@@ -69,7 +73,25 @@ namespace Zavala.Cards
                 m_Button.enabled = false;
             }
 
-            // TODO: If a policy is already selected, load it
+            // TODO: if we add possibility for no policy to be selected, implement check here
+
+            bool currentExists = false;
+            // load current policy
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[newType];
+            for (int i = 0; i < unlockedCards.Count; i++) {
+                if (unlockedCards[i].PolicyLevel == level) {
+                    // found current policy
+                    MirrorSelectedCard(unlockedCards[i]);
+                    currentExists = true;
+                    break;
+                }
+            }
+
+            if (!currentExists) {
+                m_Text.SetText("");
+            }
         }
 
         public void SetColors(Color slotColor, Color lockedColor, Color unlockedColor) {
@@ -107,11 +129,11 @@ namespace Zavala.Cards
                 for (int i = 0; i < cardData.Count; i++) {
                     CardData data = cardData[i];
                     CardUI card = pools.Cards.Alloc(this.transform.parent != null ? this.transform.parent : this.transform);
-                    card.transform.localPosition = this.transform.localPosition;
-                    card.PolicyIndex = (int)data.PolicyLevel;
-                    m_DisplayCards.Add(card);
+                    CardUIUtility.PopulateCard(card, data);
 
-                    card.Button.onClick.AddListener(() => { policyState.PolicyCardSelected?.Invoke(data); });
+                    card.transform.localPosition = this.transform.localPosition;
+                    m_DisplayCards.Add(card);
+                    card.Button.onClick.AddListener(() => { OnCardClicked(policyState, data, card); });
                 }
 
                 m_ChoiceRoutine.Replace(ShowHandRoutine());
@@ -123,6 +145,10 @@ namespace Zavala.Cards
         }
 
         private void HandlePolicyCardSelected(CardData data) {
+            if (m_Type == data.PolicyType) {
+                MirrorSelectedCard(data);
+            }
+
             // Hide Hand
             m_ChoiceRoutine.Replace(HideHandRoutine());
         }
@@ -139,7 +165,21 @@ namespace Zavala.Cards
             m_ChoiceRoutine.Replace(HideHandRoutine());
         }
 
+        private void OnCardClicked(PolicyState policyState, CardData data, CardUI card) {
+            policyState.PolicyCardSelected?.Invoke(data);
+            // TODO: hiding/click into place animation
+        }
+
         #endregion // Handlers
+
+        private void MirrorSelectedCard(CardData data) {
+            // Set this image and text to selected card's text and image
+            CardUIUtility.ExtractSprite(data, out Sprite sprite);
+            CardUIUtility.ExtractLocText(data, out string locText);
+            // TODO: extract font effects
+            m_Button.image.sprite = sprite;
+            m_Text.SetText(locText);
+        }
 
         #region Routines
 
