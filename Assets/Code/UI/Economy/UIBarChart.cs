@@ -1,5 +1,6 @@
 using BeauRoutine;
 using BeauUtil.Debugger;
+using FieldDay.Components;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace Zavala.UI
 {
-    public class UIBarChart : MonoBehaviour
+    public class UIBarChart : BatchedComponent
     {
         /*
         private static int SALES_INDEX = 0;

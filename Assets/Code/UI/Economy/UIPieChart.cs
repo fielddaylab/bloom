@@ -1,12 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
+using BeauUtil.Debugger;
+using FieldDay;
+using FieldDay.Components;
 using UnityEngine;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using Zavala.Economy;
+using Zavala.Sim;
 
 namespace Zavala.UI
 {
-    public class UIPieChart : MonoBehaviour
+    public class UIPieChart : BatchedComponent
     {
         /*
         static private int CFERTILIZER_INDEX = 0;
@@ -21,10 +23,13 @@ namespace Zavala.UI
 
         [SerializeField] private float m_IconInset = 20;
 
+        [SerializeField] private int m_HistoryDepth = 10;
+
         private float[] m_Ratios;
 
         private void Start() {
-            SetAmounts(new int[3] { 5, 5, 3 });
+            ZavalaGame.Events.Register(GameEvents.MarketCycleTickCompleted, HandleMarketCycleTickCompleted);
+            ZavalaGame.Events.Register(GameEvents.RegionSwitched, HandleRegionSwitched);
         }
 
         public void SetAmounts(int[] amounts) {
@@ -76,5 +81,30 @@ namespace Zavala.UI
                 m_PortionIcons[i].gameObject.SetActive(m_Ratios[i] > 0);
             }
         }
+
+        private void UpdateData() {
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            uint regionIndex = grid.CurrRegionIndex;
+
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+
+            marketData.CFertilizerSaleHistory[regionIndex].TryGetTotal(m_HistoryDepth, out int cFertVal);
+            marketData.ManureSaleHistory[regionIndex].TryGetTotal(m_HistoryDepth, out int manureVal);
+            marketData.DFertilizerSaleHistory[regionIndex].TryGetTotal(m_HistoryDepth, out int dFertVal);
+
+            SetAmounts(new int[3] { cFertVal, manureVal, dFertVal });
+        }
+
+        #region Handlers
+
+        private void HandleMarketCycleTickCompleted() {
+            UpdateData();
+        }
+
+        private void HandleRegionSwitched() {
+            UpdateData();
+        }
+
+        #endregion // Handlers
     }
 }

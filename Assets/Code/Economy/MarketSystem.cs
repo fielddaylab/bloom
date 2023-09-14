@@ -2,10 +2,12 @@ using System;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using FieldDay.Systems;
 using UnityEditor;
 using Zavala.Roads;
+using Zavala.Scripting;
 using Zavala.Sim;
 
 namespace Zavala.Economy
@@ -42,18 +44,25 @@ namespace Zavala.Economy
             SimGridState grid = ZavalaGame.SimGrid;
             grid.Random.Shuffle(m_SupplierWorkList);
 
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+
             foreach (var supplier in m_SupplierWorkList) {
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
                 MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int profit);
+                
                 if (found.HasValue) {
                     Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", found.Value.Requested, supplier.name, found.Value.Requester.name);
                     ResourceBlock.Consume(ref supplier.Storage.Current, found.Value.Requested);
                     MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, found.Value);
                     if (profit < 0) { supplier.SoldAtALoss = true; }
                     m_StateA.FulfullQueue.PushBack(activeRequest); // picked up by fulfillment system
+                    int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[found.Value.Requester.Position.TileIndex];
+                    MarketUtility.RecordPurchaseToHistory(marketData, found.Value.Requested, regionPurchasedIn);
                 }
             }
+
+            // TODO: keep track of gathered sales taxes, import taxes, and penalties
 
             // for all remaining, increment their age
             for (int i = 0; i < m_RequestWorkList.Count; i++) {
@@ -61,6 +70,10 @@ namespace Zavala.Economy
             }
             m_RequestWorkList.CopyTo(m_StateA.RequestQueue);
             m_RequesterWorkList.Clear();
+
+            MarketUtility.FinalizeCycleHistory(marketData);
+            // Trigger market cycle tick completed for market graphs to update
+            ZavalaGame.Events.Dispatch(GameEvents.MarketCycleTickCompleted);
         }
 
         private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit) {

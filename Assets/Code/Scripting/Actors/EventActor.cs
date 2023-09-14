@@ -36,6 +36,7 @@ namespace Zavala.Scripting {
         public StringHash32 ScriptId;
         public StringHash32 TypeId;
         public NamedVariant Argument;
+        // TODO: may need to store tile index or region id here
     }
 
     static public class EventActorUtility {

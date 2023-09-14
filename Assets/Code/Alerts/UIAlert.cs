@@ -8,6 +8,7 @@ using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using Zavala.Scripting;
+using Zavala.Sim;
 
 namespace Zavala.UI {
     [RequireComponent(typeof(SnapToTile))]
@@ -43,6 +44,12 @@ namespace Zavala.UI {
                 if (!newEvent.Argument.Id.IsEmpty) {
                     varTable.Set(newEvent.Argument.Id, newEvent.Argument.Value);
                 }
+
+                // TODD: shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
+
+                // Use region index as a condition for alerts
+                SimGridState grid = Game.SharedState.Get<SimGridState>();
+                varTable.Set("region", ((RegionId)grid.CurrRegionIndex).ToString()); // i.e. region == Hillside
 
                 ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, newEvent.TypeId, ScriptUtility.GetContext(ScriptUtility.Runtime, alert.Actor, varTable), alert.Actor.Id);
 

@@ -1,6 +1,7 @@
 using System;
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Systems;
 using UnityEngine;
@@ -34,7 +35,6 @@ namespace Zavala.Economy {
                 DebugDraw.AddWorldText(purchaser.transform.position, "Requesting!", Color.yellow, 2);
                 // TODO: TEMPORARY, not ideal - should trigger when there is an outstanding request, not when any request is made
                 ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, grid.HexSize.FastPosToIndex(vec));
-
             }
         }
 

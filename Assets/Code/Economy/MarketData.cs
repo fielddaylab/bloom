@@ -3,7 +3,9 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.SharedState;
+using Zavala.Data;
 using Zavala.Sim;
+using Zavala.UI;
 
 namespace Zavala.Economy
 {
@@ -20,6 +22,17 @@ namespace Zavala.Economy
         public RingBuffer<MarketActiveRequestInfo> FulfullQueue;
         public RingBuffer<MarketActiveRequestInfo> ActiveRequests;
 
+        // Pie Chart
+        public DataHistory[] CFertilizerSaleHistory;
+        public DataHistory[] ManureSaleHistory;
+        public DataHistory[] DFertilizerSaleHistory;
+
+        // Bar Chart (Financial Targets)
+        public DataHistory[] SalesTaxHistory;
+        public DataHistory[] ImportTaxHistory;
+        public DataHistory[] PenaltiesHistory;
+
+
         void IRegistrationCallbacks.OnDeregister() {
         }
 
@@ -29,6 +42,16 @@ namespace Zavala.Economy
             RequestQueue = new RingBuffer<MarketRequestInfo>(16, RingBufferMode.Expand);
             FulfullQueue = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
             ActiveRequests = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
+
+            int pieChartHistoryDepth = 10;
+            DataHistoryUtil.InitializeDataHistory(ref CFertilizerSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
+            DataHistoryUtil.InitializeDataHistory(ref ManureSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
+            DataHistoryUtil.InitializeDataHistory(ref DFertilizerSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
+
+            int barChartHistoryDepth = 10;
+            DataHistoryUtil.InitializeDataHistory(ref SalesTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
+            DataHistoryUtil.InitializeDataHistory(ref ImportTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
+            DataHistoryUtil.InitializeDataHistory(ref PenaltiesHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
         }
     }
 
@@ -188,5 +211,46 @@ namespace Zavala.Economy
         }
 
         #endregion // Production
+
+        #region DataHistory
+
+        public static void RecordPurchaseToHistory(MarketData marketData, ResourceBlock purchased, int regionIndex) {
+            // MFertilizer is CFertilizer
+            if (purchased.MFertilizer != 0) {
+                marketData.CFertilizerSaleHistory[regionIndex].AddPending(purchased.MFertilizer);
+            }
+            if (purchased.Manure != 0) {
+                marketData.ManureSaleHistory[regionIndex].AddPending(purchased.Manure);
+            }
+            if (purchased.DFertilizer != 0) {
+                marketData.DFertilizerSaleHistory[regionIndex].AddPending(purchased.DFertilizer);
+            }
+        }
+
+        public static void FinalizeCycleHistory(MarketData marketData) {
+            // Pie Chart
+            for (int i = 0; i < marketData.CFertilizerSaleHistory.Length; i++) {
+                marketData.CFertilizerSaleHistory[i].ConvertPending();
+            }
+            for (int i = 0; i < marketData.ManureSaleHistory.Length; i++) {
+                marketData.ManureSaleHistory[i].ConvertPending();
+            }
+            for (int i = 0; i < marketData.DFertilizerSaleHistory.Length; i++) {
+                marketData.DFertilizerSaleHistory[i].ConvertPending();
+            }
+
+            // Bar Chart (Financial Targets)
+            for (int i = 0; i < marketData.SalesTaxHistory.Length; i++) {
+                marketData.SalesTaxHistory[i].ConvertPending();
+            }
+            for (int i = 0; i < marketData.ImportTaxHistory.Length; i++) {
+                marketData.ImportTaxHistory[i].ConvertPending();
+            }
+            for (int i = 0; i < marketData.PenaltiesHistory.Length; i++) {
+                marketData.PenaltiesHistory[i].ConvertPending();
+            }
+        }
+
+        #endregion // DataHistory
     }
 }

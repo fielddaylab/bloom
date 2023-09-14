@@ -42,7 +42,7 @@ namespace Zavala.Sim
                         case UnlockConditionType.TotalPhosphorus:
                             foreach (int region in conditionGroup.ChecksRegions) {
                                 // TODO: would be cleaner to convert these into delegates
-                                if (m_StateC.HistoryPerRegion[region].TryGetTotal(conditionGroup.Scope, out float total)) {
+                                if (m_StateC.HistoryPerRegion[region].TryGetTotal(conditionGroup.Scope, out int total)) {
                                     if (total > conditionGroup.Threshold) {
                                         // did not meet threshold
                                         passedCheck = false;
