@@ -102,6 +102,8 @@ namespace Zavala.UI {
         }
 
         public TagStringEventHandler PrepareLine(TagString inString, TagStringEventHandler inBaseHandler) {
+            DeactivateModules();
+
             if (inString.RichText.Length > 0) {
                 StringHash32 character = ScriptUtility.FindCharacterId(inString);
                 if (!character.IsEmpty) {
