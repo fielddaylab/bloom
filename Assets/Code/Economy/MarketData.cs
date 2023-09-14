@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
@@ -86,7 +87,8 @@ namespace Zavala.Economy
         }
     }
 
-    public struct GeneratedTaxRevenue {
+    public struct GeneratedTaxRevenue
+    {
         public int Sales;
         public int Import;
         public int Penalties;
@@ -98,6 +100,17 @@ namespace Zavala.Economy
         }
     }
 
+    [Serializable]
+    public struct TargetThreshold
+    {
+        public bool Below; // true for down/below, false for up/above
+        public float Value; // threshold % (where the target bar is set)
+
+        public TargetThreshold(bool below, float val) {
+            Below = below;
+            Value = val;
+        }
+    }
 
     public struct MarketActiveRequestInfo
     {
@@ -277,6 +290,34 @@ namespace Zavala.Economy
             }
         }
 
+        public static void CalculateRatios(ref float[] ratios, int[] values) {
+            int total = 0;
+
+            for (int i = 0; i < values.Length; i++) {
+                total += values[i];
+            }
+
+            if (total <= 0) {
+                total = 1;
+            }
+
+            if (ratios == null) {
+                ratios = new float[values.Length];
+            }
+
+            for (int i = 0; i < ratios.Length; i++) {
+                ratios[i] = (float)values[i] / total;
+            }
+        }
+
         #endregion // DataHistory
+
+        public static bool EvaluateTargetThreshold(float value, TargetThreshold target) {
+            if ((value >= target.Value && target.Below) || (value <= target.Value && !target.Below)) {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

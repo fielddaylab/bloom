@@ -33,28 +33,8 @@ namespace Zavala.UI
         }
 
         public void SetAmounts(int[] amounts) {
-            RecalculateRatios(amounts);
+            MarketUtility.CalculateRatios(ref m_Ratios, amounts);
             RefreshVisuals();
-        }
-
-        private void RecalculateRatios(int[] amounts) {
-            int total = 0;
-
-            for (int i = 0; i < amounts.Length; i++) {
-                total += amounts[i];
-            }
-
-            if (total <= 0) {
-                total = 1;
-            }
-
-            if (m_Ratios == null) {
-                m_Ratios = new float[amounts.Length];
-            }
-
-            for (int i = 0; i < m_Ratios.Length; i++) {
-                m_Ratios[i] = (float)amounts[i] / total;
-            }
         }
 
         private void RefreshVisuals() {

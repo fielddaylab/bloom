@@ -1,4 +1,5 @@
 using BeauRoutine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,17 +7,6 @@ using UnityEngine.UI;
 
 namespace Zavala.UI
 {
-    public struct FinancialTargetThreshold {
-        public bool Dir; // true for down, false for up
-        public float Value; // threshold % (where the target bar is set)
-
-        public FinancialTargetThreshold(bool dir, float val) {
-            Dir = dir;
-            Value = val;
-        }
-    }
-
-
     public class UIFinancialTarget : MonoBehaviour
     {
         [SerializeField] private RectTransform m_Root;

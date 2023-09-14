@@ -39,7 +39,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 110, y: 150}
+  m_SizeDelta: {x: 160, y: 190}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4938544890881922666
 CanvasRenderer:
@@ -69,8 +69,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: e1b27d169eca15f4ebef51dd39ff2b90, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -119,7 +119,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1953126850503066680}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -228,6 +228,14 @@ PrefabInstance:
     - target: {fileID: 1233910315729488366, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_text
+      value: 'Category: SEVERITY'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5779379559460817192, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_Name

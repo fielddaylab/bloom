@@ -10672,15 +10672,57 @@ MonoBehaviour:
   UnlockGroups:
   - UnlockConditions:
     - Type: 0
-      Scope: 5
-      Threshold: 0.3
       ChecksRegions: 00000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.1
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth: 0
     RegionIndexUnlocks: 0100000002000000
   - UnlockConditions:
     - Type: 0
-      Scope: 10
-      Threshold: 0.1
       ChecksRegions: 0100000002000000
+      Scope: 10
+      TargetRunoff:
+        Below: 0
+        Value: 0
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth: 0
     RegionIndexUnlocks: 0300000004000000
 --- !u!1 &594461906
 GameObject:
@@ -11598,6 +11640,10 @@ PrefabInstance:
     - target: {fileID: 3852392205096164597, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4674191554096658289, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5283433069789951179, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchorMax.x

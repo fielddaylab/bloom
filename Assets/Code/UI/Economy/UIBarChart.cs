@@ -26,10 +26,10 @@ namespace Zavala.UI
         private float[] m_Ratios;
 
         private void Start() {
-            SetTargetLines(new FinancialTargetThreshold[3] {
-                new FinancialTargetThreshold(false, 0.9f),
-                new FinancialTargetThreshold(true, 0.5f),
-                new FinancialTargetThreshold(true, 0.1f)}
+            SetTargetLines(new TargetThreshold[3] {
+                new TargetThreshold(false, 0.9f),
+                new TargetThreshold(true, 0.5f),
+                new TargetThreshold(true, 0.1f)}
             );
 
             SetAmounts(new int[3] { 5, 5, 3 });
@@ -44,42 +44,22 @@ namespace Zavala.UI
         /// </summary>
         /// <param name="amounts"></param>
         public void SetAmounts(int[] amounts) {
-            RecalculateRatios(amounts);
+            MarketUtility.CalculateRatios(ref m_Ratios, amounts);
             UpdateRatioVisuals();
         }
 
-        public void SetTargetLines(FinancialTargetThreshold[] targets) {
+        public void SetTargetLines(TargetThreshold[] targets) {
             for (int i = 0; i < m_Targets.Count(); i++) {
                 // reposition target line
                 m_Targets[i].SetTargetLine(targets[i].Value);
 
                 // Orient dir arrow
                 int dir = 1; // point up
-                if (!targets[i].Dir) {
+                if (!targets[i].Below) {
                     // point down
                     dir = -1;
                 }
                 m_Targets[i].SetArrowDir(dir);
-            }
-        }
-
-        private void RecalculateRatios(int[] amounts) {
-            int total = 0;
-
-            for (int i = 0; i < amounts.Length; i++) {
-                total += amounts[i];
-            }
-
-            if (total <= 0) {
-                total = 1;
-            }
-
-            if (m_Ratios == null) {
-                m_Ratios = new float[amounts.Length];
-            }
-
-            for (int i = 0; i < m_Ratios.Length; i++) {
-                m_Ratios[i] = (float)amounts[i] / total;
             }
         }
 
