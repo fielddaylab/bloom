@@ -241,11 +241,18 @@ namespace Zavala.Building
                 Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + new Vector3(0,0.5f,0));
                 BuildingPools pools = Game.SharedState.Get<BuildingPools>();
                 if (hit.gameObject.layer == LayerMask.NameToLayer(ROAD_LAYER)) {
-                    BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy Road", null, "Are you sure?", ()=>{ pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>()); }, null);
                     RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+                    BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy Road", null, "Are you sure?", ()=>{
+                        int tileIndex = grid.HexSize.FastPosToIndex(HexVector.FromWorld(hit.transform.position, world.WorldSpace));
+                        network.Roads.Info[tileIndex].Flags -= RoadFlags.IsRoadAnchor;
+                        pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>()); 
+                    }, null);
                     
                 } else {
-                    BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", ()=>{ Destroy(hit.gameObject); }, null);
+                    BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", ()=>{
+                        // TODO: use pools
+                        Destroy(hit.gameObject); 
+                    }, null);
                 }
                 
            
