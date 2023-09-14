@@ -1,10 +1,13 @@
 using BeauRoutine;
 using BeauUtil.Debugger;
+using FieldDay;
 using FieldDay.Components;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zavala.Economy;
+using Zavala.Sim;
 
 namespace Zavala.UI
 {
@@ -18,6 +21,8 @@ namespace Zavala.UI
 
         [SerializeField] private UIFinancialTarget[] m_Targets;
 
+        [SerializeField] private int m_HistoryDepth = 10;
+
         private float[] m_Ratios;
 
         private void Start() {
@@ -26,7 +31,11 @@ namespace Zavala.UI
                 new FinancialTargetThreshold(true, 0.5f),
                 new FinancialTargetThreshold(true, 0.1f)}
             );
+
             SetAmounts(new int[3] { 5, 5, 3 });
+
+            ZavalaGame.Events.Register(GameEvents.MarketCycleTickCompleted, HandleMarketCycleTickCompleted);
+            ZavalaGame.Events.Register(GameEvents.RegionSwitched, HandleRegionSwitched);
         }
 
 
@@ -74,11 +83,36 @@ namespace Zavala.UI
             }
         }
 
-
         private void UpdateRatioVisuals() {
             for (int i = 0; i < m_Targets.Count(); i++) {
                 m_Targets[i].SetRatio(m_Ratios[i]);
             }
         }
+
+        private void UpdateData() {
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            uint regionIndex = grid.CurrRegionIndex;
+
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+
+            marketData.SalesTaxHistory[regionIndex].TryGetTotal(m_HistoryDepth, out int salesVal);
+            marketData.ImportTaxHistory[regionIndex].TryGetTotal(m_HistoryDepth, out int importVal);
+            marketData.PenaltiesHistory[regionIndex].TryGetTotal(m_HistoryDepth, out int penaltyVal);
+
+            SetAmounts(new int[3] { salesVal, importVal, penaltyVal });
+        }
+
+
+        #region Handlers
+
+        private void HandleMarketCycleTickCompleted() {
+            UpdateData();
+        }
+
+        private void HandleRegionSwitched() {
+            UpdateData();
+        }
+
+        #endregion // Handlers
     }
 }

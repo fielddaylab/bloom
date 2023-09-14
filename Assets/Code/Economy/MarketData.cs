@@ -70,6 +70,7 @@ namespace Zavala.Economy
         public ResourceMask Mask;
         public int Distance;
         public int Profit;
+        public GeneratedTaxRevenue TaxRevenue;
     }
 
     public struct MarketRequestInfo
@@ -84,6 +85,19 @@ namespace Zavala.Economy
             Age = 0;
         }
     }
+
+    public struct GeneratedTaxRevenue {
+        public int Sales;
+        public int Import;
+        public int Penalties;
+
+        public GeneratedTaxRevenue(int sales, int import, int penalties) {
+            Sales = sales;
+            Import = import;
+            Penalties = penalties;
+        }
+    }
+
 
     public struct MarketActiveRequestInfo
     {
@@ -224,6 +238,18 @@ namespace Zavala.Economy
             }
             if (purchased.DFertilizer != 0) {
                 marketData.DFertilizerSaleHistory[regionIndex].AddPending(purchased.DFertilizer);
+            }
+        }
+
+        public static void RecordRevenueToHistory(MarketData marketData, GeneratedTaxRevenue taxRevenue, int regionIndex) {
+            if (taxRevenue.Sales != 0) {
+                marketData.SalesTaxHistory[regionIndex].AddPending(taxRevenue.Sales);
+            }
+            if (taxRevenue.Import != 0) {
+                marketData.ImportTaxHistory[regionIndex].AddPending(taxRevenue.Import);
+            }
+            if (taxRevenue.Penalties != 0) {
+                marketData.PenaltiesHistory[regionIndex].AddPending(taxRevenue.Penalties);
             }
         }
 

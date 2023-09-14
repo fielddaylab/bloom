@@ -32,13 +32,19 @@ namespace Zavala.Economy {
 
     [Serializable]
     public struct PurchaseCostAdjustments {
+        /*
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock ExportTax;
+        */
 
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock ImportTax;
 
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock PurchaseTax;
+
+
+        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        public ResourceBlock RunoffPenalty;
     }
 }

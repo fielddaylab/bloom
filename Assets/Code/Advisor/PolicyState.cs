@@ -21,6 +21,7 @@ namespace Zavala.Advisor {
         // public static ResourceBlock[] ExportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] ImportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] SalesTaxVals = new ResourceBlock[4];
+        public static ResourceBlock[] RunoffPenaltyVals = new ResourceBlock[4];
 
         public UnityEvent<PolicyType> PolicySlotClicked = new UnityEvent<PolicyType>();
         public UnityEvent<CardData> PolicyCardSelected = new UnityEvent<CardData>();
@@ -34,6 +35,7 @@ namespace Zavala.Advisor {
             switch (policyType) {
                 case PolicyType.RunoffPolicy:
                     // TODO: When runoff penalty implemented, read runoff policy
+                    Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].RunoffPenalty = RunoffPenaltyVals[policyIndex];
                     return true;
                 case PolicyType.SkimmingPolicy:
                     // TODO: When skimming implemented, read skimming policy
@@ -75,6 +77,11 @@ namespace Zavala.Advisor {
             SalesTaxVals[1].SetAll(0);
             SalesTaxVals[2].SetAll(2);
             SalesTaxVals[3].SetAll(4);
+
+            RunoffPenaltyVals[0].SetAll(-2);
+            RunoffPenaltyVals[1].SetAll(0);
+            RunoffPenaltyVals[2].SetAll(2);
+            RunoffPenaltyVals[3].SetAll(4);
         }
 
         private void InitializePolicyMap() {

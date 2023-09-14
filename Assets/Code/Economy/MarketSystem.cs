@@ -49,7 +49,7 @@ namespace Zavala.Economy
             foreach (var supplier in m_SupplierWorkList) {
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int profit);
+                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int profit, out GeneratedTaxRevenue taxRevenue);
                 
                 if (found.HasValue) {
                     Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", found.Value.Requested, supplier.name, found.Value.Requester.name);
@@ -59,6 +59,7 @@ namespace Zavala.Economy
                     m_StateA.FulfullQueue.PushBack(activeRequest); // picked up by fulfillment system
                     int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[found.Value.Requester.Position.TileIndex];
                     MarketUtility.RecordPurchaseToHistory(marketData, found.Value.Requested, regionPurchasedIn);
+                    MarketUtility.RecordRevenueToHistory(marketData, taxRevenue, regionPurchasedIn);
                 }
             }
 
@@ -76,7 +77,7 @@ namespace Zavala.Economy
             ZavalaGame.Events.Dispatch(GameEvents.MarketCycleTickCompleted);
         }
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out GeneratedTaxRevenue taxRevenue) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current = supplier.Storage.Current;
@@ -95,6 +96,7 @@ namespace Zavala.Economy
                 if (priorityIndex == 0) {
                     MarketRequestInfo request = requests[i];
                     profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
+                    taxRevenue = supplier.Priorities.PrioritizedBuyers[priorityIndex].TaxRevenue;
                     requests.FastRemoveAt(i);
                     return request;
                 }
@@ -108,11 +110,13 @@ namespace Zavala.Economy
             if (highestPriorityRequestIndex >= 0) {
                 MarketRequestInfo request = requests[highestPriorityRequestIndex];
                 profit = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Profit;
+                taxRevenue = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].TaxRevenue;
                 requests.FastRemoveAt(highestPriorityRequestIndex);
                 return request;
             }
 
             profit = 0;
+            taxRevenue = new GeneratedTaxRevenue(0, 0, 0);
             return null;
         }
 
@@ -160,15 +164,20 @@ namespace Zavala.Economy
                 var adjustments = config.UserAdjustmentsPerRegion[supplier.Position.RegionIndex];
 
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
-                float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + adjustments.ExportTax[primary];
+                // TODO: only apply import tax if shipping across regions. Then use import tax of purchaser
+                // TODO: do purchase / import taxes need to be multiplied by the quantity of shipped goods?
+                float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + adjustments.ImportTax[primary];
                 float profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
                 float score = profit - shippingCost;
+                // TODO: implement Let it Sit option. Then if purchaser is letting it sit, find penalties
+                GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue(adjustments.PurchaseTax[primary], adjustments.ImportTax[primary], 0);
 
                 m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo() {
                     Distance = (int)Math.Ceiling(connectionSummary.Distance),
                     Mask = overlap,
                     Target = requester,
-                    Profit = (int)Math.Ceiling(score)
+                    Profit = (int)Math.Ceiling(score),
+                    TaxRevenue = taxRevenue
                 });
             }
 
