@@ -14,7 +14,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -78,11 +78,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Vector1_29A8EAB: 0.7
-    - Vector1_3C2CF0EB: 0.0047
+    - Vector1_29A8EAB: 0
+    - Vector1_3C2CF0EB: 0.0105
     - Vector1_53B9698E: 0.4
-    - Vector1_6D9DC178: 87.3
-    - Vector1_93DCFAA9: 0.7
+    - Vector1_6D9DC178: 87.4
+    - Vector1_93DCFAA9: 0.5
     - Vector1_95BBCBE0: 34.84
     - Vector1_C5543ECF: 2.82
     - Vector1_E23798DE: 0.23
@@ -120,6 +120,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamSize: {r: 35.25, g: 103.69, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5032931187970120539

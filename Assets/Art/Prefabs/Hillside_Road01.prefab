@@ -59,23 +59,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7071068
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -92,7 +92,7 @@ PrefabInstance:
     - target: {fileID: -5754084199372789682, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -5458624030750321767, guid: 628917f65a83b4a2d851fe940806bbb6, type: 3}
+      objectReference: {fileID: -2437352718369479403, guid: 7c98332fdee9ad84f87f998334506653, type: 3}
     - target: {fileID: 919132149155446097, guid: 28201661146d54649afdc5ca784bfb9f, type: 3}
       propertyPath: m_Name
       value: Hillside_Road01

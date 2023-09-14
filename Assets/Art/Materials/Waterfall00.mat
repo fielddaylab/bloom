@@ -27,7 +27,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -116,13 +116,18 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EdgePosition: -1.83
+    - _EdgeWidth: 2.04
     - _EnvironmentReflections: 1
-    - _FoamDensity: 0.279
-    - _FoamSize: 21.4
-    - _FoamSpeed: 0.5
+    - _Foam1Size: 30
+    - _Foam2Size: 14.35
+    - _FoamDensity: 0.194
+    - _FoamSize: 15.48
+    - _FoamSpeed: 0.3
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _GradientIntensity: 0.1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -143,12 +148,13 @@ Material:
     - _BendDirection: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 0.823, g: 0.99673736, b: 1, a: 0}
-    - _FoamStretch: {r: 1, g: 9.6, b: 0, a: 0}
+    - _FoamColor: {r: 0.823, g: 0.9967373, b: 1, a: 1}
+    - _FoamStretch: {r: 1, g: 7.17, b: 0, a: 0}
     - _GradientBottom: {r: 1, g: 1, b: 1, a: 0}
     - _GradientColor: {r: 1, g: 1, b: 1, a: 1}
     - _GradientTop: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.011764707, g: 0.5137255, b: 0.54509807, a: 1}
+    - _MainColor: {r: 0.011764707, g: 0.5137255, b: 0.54901963, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tint: {r: 1, g: 1, b: 1, a: 1}
+    - _WaterfallColor: {r: 0, g: 0.5699224, b: 0.6132076, a: 1}
   m_BuildTextureStacks: []
