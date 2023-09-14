@@ -243,7 +243,7 @@ namespace Zavala.Building
                 if (hit.gameObject.layer == LayerMask.NameToLayer(ROAD_LAYER)) {
                     RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
                     BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy Road", null, "Are you sure?", ()=>{
-                        int tileIndex = grid.HexSize.FastPosToIndex(HexVector.FromWorld(hit.transform.position, world.WorldSpace));
+                        SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int tileIndex);
                         network.Roads.Info[tileIndex].Flags -= RoadFlags.IsRoadAnchor;
                         pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>()); 
                     }, null);

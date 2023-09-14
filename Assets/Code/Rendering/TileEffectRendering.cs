@@ -40,5 +40,15 @@ namespace Zavala.World
                 tile.PillarRenderer.material = newMat;
             }
         }
+
+        static public bool ToggleTopVisibility(TileInstance tile) {
+            if (tile != null) {
+                Debug.LogWarning("[TileEffectRendering] Hiding top of tile " + tile.ToString());
+                tile.TopRenderer.enabled = !tile.TopRenderer.enabled;
+                return true;
+            }
+            Debug.LogWarning("[TileEffectRendering] Tile doesn't exist, apparently");
+            return false;
+        }
     }
 }
