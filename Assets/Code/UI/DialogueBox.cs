@@ -79,6 +79,12 @@ namespace Zavala.UI {
             }
         }
 
+        private void DeactivateModules() {
+            foreach (var module in m_Modules) {
+                module.Deactivate();
+            }
+        }
+
         #region Display
 
         public IEnumerator CompleteLine() {
@@ -204,6 +210,7 @@ namespace Zavala.UI {
             yield return m_Rect.AnchorPosTo(-500, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
             this.gameObject.SetActive(false);
+            DeactivateModules();
 
             yield return null;
         }
