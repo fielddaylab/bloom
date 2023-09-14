@@ -5240,7 +5240,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: -5}
-  m_SizeDelta: {x: 200, y: 80}
+  m_SizeDelta: {x: 200, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &190549082
 MonoBehaviour:
@@ -11241,6 +11241,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7310159028860247830, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
     - target: {fileID: 7310159029076472490, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
       propertyPath: m_text
       value: Economic Advisor

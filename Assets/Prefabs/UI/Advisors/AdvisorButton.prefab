@@ -332,7 +332,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ButtonAdvisorType: 1
   PoliciesButton: {fileID: 7310159027859421525}
-  PoliciesWindow: {fileID: 0}
   m_Button: {fileID: 3390929152225095434}
 --- !u!1 &7310159028860247824
 GameObject:
@@ -400,8 +399,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -503,7 +502,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7310159029076472491
 RectTransform:
   m_ObjectHideFlags: 0
