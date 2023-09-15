@@ -9,7 +9,7 @@ namespace Zavala.UI {
     public class ShopItemButton : MonoBehaviour
     {
         public Button Button;
-        public int Cost;
+        [HideInInspector] public int Cost;
         [HideInInspector] public bool CanAfford;
         public UserBuildTool BuildTool;
 

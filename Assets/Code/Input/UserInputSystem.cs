@@ -3,6 +3,7 @@ using UnityEngine;
 using FieldDay.SharedState;
 using FieldDay.Systems;
 using FieldDay;
+using Zavala.Sim;
 
 namespace Zavala.Input {
     /// <summary>
@@ -44,6 +45,7 @@ namespace Zavala.Input {
                 m_State.ViewportMouseRay = c.ViewportPointToRay(m_State.ViewportMousePos, Camera.MonoOrStereoscopicEye.Mono);
             } else {
                 m_State.ViewportMouseRay = default(Ray);
+                m_State.ViewportCenterRay = default(Ray);
             }
 
             if (m_State.ButtonPressed(InputButton.PrimaryMouse)) {
@@ -71,6 +73,11 @@ namespace Zavala.Input {
 
             m_State.RawKeyboardMoveVector = keyboardMoveVector;
             m_State.NormalizedKeyboardMoveVector = keyboardMoveVector.normalized;
+            if (keyboardMoveVector.magnitude > 0 && c) {
+                m_State.ViewportCenterRay = c.ViewportPointToRay(new Vector2(0.5f, 0.5f)); 
+            }
+            // TODO: evaluate performance?
+            SimDataUtility.TryUpdateCurrentRegion(ZavalaGame.SimGrid, ZavalaGame.SimWorld, m_State.ViewportCenterRay);
         }
 
         static private void GetMousePosition(ref Vector2 screenPos, ref Vector2 viewportPos) {

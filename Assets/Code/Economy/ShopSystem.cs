@@ -6,6 +6,7 @@ using FieldDay.Debugging;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Actors;
+using Zavala.Building;
 using Zavala.Sim;
 
 namespace Zavala.Economy {
@@ -34,6 +35,19 @@ namespace Zavala.Economy {
         static public void RefreshShop(BudgetData budgetData, ShopState shopState, SimGridState gridState) {
             shopState.ShopUI.NetText.text = /*"Net: " +*/ budgetData.BudgetsPerRegion[gridState.CurrRegionIndex].Net.ToString();
             shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[gridState.CurrRegionIndex].Net);
+        }
+
+        public static long PriceLookup(UserBuildTool building) {
+            switch (building) {
+                case UserBuildTool.Road:
+                    return 10;
+                case UserBuildTool.Storage:
+                    return 20;
+                case UserBuildTool.Digester:
+                    return 30;
+                default:
+                    return 0;
+            }
         }
     }
 

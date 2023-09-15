@@ -15,6 +15,7 @@ namespace Zavala.Input {
         // keyboard movement
         [NonSerialized] public Vector2 RawKeyboardMoveVector;
         [NonSerialized] public Vector2 NormalizedKeyboardMoveVector;
+        [NonSerialized] public Ray ViewportCenterRay;
 
         // button states
         [NonSerialized] public InputButton ButtonsDown;

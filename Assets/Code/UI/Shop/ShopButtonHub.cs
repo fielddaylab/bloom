@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Zavala.Building;
+using Zavala.Economy;
 
 namespace Zavala.UI
 {
@@ -22,6 +23,7 @@ namespace Zavala.UI
 
             // Set Button images, text, and functionality according to underlying data
             for (int i = 0; i < m_shopItemBtns.Length; i++) {
+                m_shopItemBtns[i].Cost = (int) ShopUtility.PriceLookup(m_shopItemBtns[i].BuildTool);
                 m_shopItemBtns[i].CostText.text = "$" + m_shopItemBtns[i].Cost;
                 int buttonIndex = i;
                 m_shopItemBtns[i].Button.onClick.AddListener(delegate { HandleButtonSelected(buttonIndex); });

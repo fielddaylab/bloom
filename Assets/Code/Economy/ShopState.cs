@@ -2,6 +2,7 @@ using FieldDay.SharedState;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Building;
 using Zavala.UI;
 
 namespace Zavala.Economy

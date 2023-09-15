@@ -194,7 +194,7 @@ namespace Zavala.Building
             }
 
             // TODO: try to pay for build
-            bool purchaseSuccessful = TryPurchaseBuild(activeTool);
+            bool purchaseSuccessful = TryPurchaseBuild(activeTool, grid.CurrRegionIndex);
             if (!purchaseSuccessful) {
                 return false;
             }
@@ -227,15 +227,24 @@ namespace Zavala.Building
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             OccupiesTile newDigester = pool.Alloc(worldPos);
         }
-
-        private bool TryPurchaseBuild(UserBuildTool currTool) {
-            // TODO: implement this
-            bool purchaseSuccessful = true;
-
-
+        /// <summary>
+        /// Check if the current region can afford to purchase the given buildings, and deduct the price if so.
+        /// </summary>
+        /// <param name="currTool">Building tool to purchase</param>
+        /// <param name="currentRegion">Region whose budget to test</param>
+        /// <param name="num">Number of buildings purchased (used only for roads)</param>
+        /// <returns></returns>
+        private bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion, int num) {
+            BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+            long price = ShopUtility.PriceLookup(currTool) * num;
+            bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, price, currentRegion);
             return purchaseSuccessful;
         }
-        private bool TryDestroyBuilding(SimWorldState world, SimGridState grid) {
+        private bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion) {
+            return TryPurchaseBuild(currTool, currentRegion, 1);
+            }
+
+            private bool TryDestroyBuilding(SimWorldState world, SimGridState grid) {
             Collider hit = RaycastBuilding(world, grid);
             if (hit != null && hit.gameObject.tag == PLAYERPLACED_TAG) {
                 Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + new Vector3(0,0.5f,0));
@@ -470,13 +479,14 @@ namespace Zavala.Building
         /// </summary>
         private bool TryFinishRoad(SimGridState grid, RoadNetwork network) {
             // Check if road can be purchased
-            if (m_StateC.RoadToolState.TracedTileIdxs.Count < 3) {
+            int roadCount = m_StateC.RoadToolState.TracedTileIdxs.Count;
+            if (roadCount < 3) {
                 // cannot connect a single tile, or only two tiles
                 return false;
             }
 
             // TODO: try to purchase road
-            bool purchaseSuccessful = TryPurchaseBuild(UserBuildTool.Road);
+            bool purchaseSuccessful = TryPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount);
 
             /*
             // try to purchase road

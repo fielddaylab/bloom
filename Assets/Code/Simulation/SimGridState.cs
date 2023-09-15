@@ -247,6 +247,22 @@ namespace Zavala.Sim {
             }
         }
 
+        static public bool TryUpdateCurrentRegion(SimGridState grid, SimWorldState world, Ray viewportCenter) {
+            if (Physics.Raycast(viewportCenter, out RaycastHit hit, 100f, LayerMask.GetMask("HexTile"))
+                && SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int index) 
+                && index >= 0) {
+                ushort newRegionIndex = grid.Terrain.Info[index].RegionIndex;
+                if (newRegionIndex == grid.CurrRegionIndex) {
+                    // region unchanged.
+                    return false;
+                }
+                Debug.LogWarning("[SimGridState] Region updated from " + grid.CurrRegionIndex + " to " + newRegionIndex);
+                grid.CurrRegionIndex = newRegionIndex;
+                return true;
+            } 
+            return false;
+        }
+
         // internal evaluation
         static private unsafe void EvaluateBorders_Step(int tileIndex, SimBuffer<TerrainTileInfo> infoBuffer, in HexGridSize gridSize, SimWorldState worldState) {
             bool isBorder = false;

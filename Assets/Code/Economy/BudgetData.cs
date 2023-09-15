@@ -3,6 +3,7 @@ using FieldDay;
 using FieldDay.SharedState;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.WSA;
 using Zavala.Sim;
 
 namespace Zavala.Economy
@@ -47,6 +48,16 @@ namespace Zavala.Economy
             budgetData.BudgetsPerRegion[regionIndex].Net += toAdd;
 
             budgetData.BudgetsPerRegion[regionIndex].Updated = true;
+        }
+
+        static public bool TrySpendBudget(BudgetData budgetData, long toSpend, uint regionIndex) {
+            long net = budgetData.BudgetsPerRegion[regionIndex].Net;
+            if (net - toSpend >= 0) {
+                budgetData.BudgetsPerRegion[regionIndex].Net -= toSpend;
+                budgetData.BudgetsPerRegion[regionIndex].Updated = true;
+                return true;
+            }
+            return false;
         }
 
     }
