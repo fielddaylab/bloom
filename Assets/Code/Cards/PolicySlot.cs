@@ -185,10 +185,10 @@ namespace Zavala.Cards
             CardUIUtility.ExtractSprite(data, out Sprite sprite);
             CardUIUtility.ExtractLocText(data, out string locText);
             // TODO: extract font effects
-            m_Button.image.sprite = sprite;
-            m_Button.image.color = Color.white;
+            m_OverlayImage.sprite = sprite;
+            m_OverlayImage.color = Color.white;
             m_Text.SetText(locText);
-            m_OverlayImage.enabled = false;
+            // m_OverlayImage.enabled = true;
         }
 
         #region Routines

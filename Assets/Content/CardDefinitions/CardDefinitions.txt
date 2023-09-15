@@ -3,22 +3,22 @@
 ::runoff-penalty-low
 @Level		low
 @PolicyType	RunoffPolicy
-@Path		policy-background.png
+@Path		policy-runoff_0.png
 
 ::runoff-penalty-med
 @Level		med
 @PolicyType	RunoffPolicy
-@Path		policy-background.png
+@Path		policy-runoff_1.png
 
 ::runoff-penalty-high
 @Level		high
 @PolicyType	RunoffPolicy
-@Path		policy-background.png
+@Path		policy-runoff_2.png
 
 ::runoff-penalty-shutdown
 @Level		alt
 @PolicyType	RunoffPolicy
-@Path		policy-background.png
+@Path		policy-runoff_3.png
 
 
 // Import Tax

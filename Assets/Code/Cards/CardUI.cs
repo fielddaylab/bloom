@@ -11,6 +11,7 @@ namespace Zavala.Cards {
         [HideInInspector] public int PolicyIndex; // Which severity index this card corresponds to (also index from left to right)
         public Button Button;
         public TMP_Text Text;
+        public Image CardArt;
 
         private void OnDisable() {
             Button.onClick.RemoveAllListeners();
@@ -23,7 +24,7 @@ namespace Zavala.Cards {
             // TODO: extract font effects
             card.Text.SetText(locText);
             ExtractSprite(data, out Sprite sprite);
-            card.Button.image.sprite = sprite;
+            card.CardArt.sprite = sprite;
             card.PolicyIndex = (int)data.PolicyLevel;
         }
 
