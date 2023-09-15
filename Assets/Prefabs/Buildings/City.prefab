@@ -71,6 +71,7 @@ MonoBehaviour:
   RequestMask: 16
   MaxRequests: 3
   AgeOfUrgency: 20
+  IsLocalOption: 0
 --- !u!114 &947691686583835038
 MonoBehaviour:
   m_ObjectHideFlags: 0

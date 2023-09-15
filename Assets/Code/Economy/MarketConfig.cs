@@ -43,7 +43,6 @@ namespace Zavala.Economy {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock PurchaseTax;
 
-
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock RunoffPenalty;
     }

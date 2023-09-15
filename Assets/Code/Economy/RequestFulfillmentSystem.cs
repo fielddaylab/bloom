@@ -32,10 +32,17 @@ namespace Zavala.Economy {
 
         private void ProcessFulfillmentQueue(MarketData marketData, MarketPools pools) {
             while (marketData.FulfullQueue.TryPopFront(out MarketActiveRequestInfo request)) {
-                request.Fulfiller = pools.Trucks.Alloc();
-                FulfillerUtility.InitializeFulfiller(request.Fulfiller, request);
-                request.Fulfiller.transform.position = request.Fulfiller.SourceWorldPos;
-                marketData.ActiveRequests.PushBack(request);
+                if (!request.Requester.IsLocalOption) {
+                    request.Fulfiller = pools.Trucks.Alloc();
+                    FulfillerUtility.InitializeFulfiller(request.Fulfiller, request);
+                    request.Fulfiller.transform.position = request.Fulfiller.SourceWorldPos;
+                    marketData.ActiveRequests.PushBack(request);
+                }
+                else {
+                    // Skip fulfillment system, deliver directly to local tile
+                    request.Requester.Received += request.Requested;
+                    request.Requester.RequestCount--;
+                }
             }
         }
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.1273174, g: 0.13414761, b: 0.12107885, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10693,7 +10693,7 @@ MonoBehaviour:
       Scope: 10
       TargetRunoff:
         Below: 1
-        Value: 0.1
+        Value: 0.3
       TargetCFertilizer:
         Below: 0
         Value: 0
@@ -10789,6 +10789,7 @@ GameObject:
   - component: {fileID: 594461920}
   - component: {fileID: 594461921}
   - component: {fileID: 594461922}
+  - component: {fileID: 594461923}
   m_Layer: 0
   m_Name: Sim
   m_TagString: Untagged
@@ -10987,6 +10988,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfaead2fba9c0804f8bf69b05f7628cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &594461923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594461906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b34277cb70f0e34b9024f57c890d6d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InitialCapacity: 64
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

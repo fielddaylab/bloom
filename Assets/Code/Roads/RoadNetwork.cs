@@ -26,7 +26,7 @@ namespace Zavala.Roads
 
         void IRegistrationCallbacks.OnRegister() {
             Connections = new Dictionary<int, RingBuffer<RoadPathSummary>>();
-            UpdateNeeded = false;
+            UpdateNeeded = true;
             SimGridState gridState = ZavalaGame.SimGrid;
             Roads.Create(gridState.HexSize);
             RoadObjects = new List<RoadInstanceController>();
@@ -220,7 +220,7 @@ namespace Zavala.Roads
             }
 
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            if (network != null) {
+            if (network != null && (network.Roads.Info[position.TileIndex].Flags & RoadFlags.IsRoadAnchor) != 0) {
                 network.Roads.Info[position.TileIndex].Flags -= RoadFlags.IsRoadAnchor;
             }
         }

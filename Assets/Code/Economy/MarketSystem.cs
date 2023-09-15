@@ -6,6 +6,7 @@ using FieldDay.Scripting;
 using FieldDay.SharedState;
 using FieldDay.Systems;
 using UnityEditor;
+using UnityEngine;
 using Zavala.Roads;
 using Zavala.Scripting;
 using Zavala.Sim;
@@ -49,21 +50,21 @@ namespace Zavala.Economy
             foreach (var supplier in m_SupplierWorkList) {
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int profit, out GeneratedTaxRevenue taxRevenue);
+                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue);
                 
                 if (found.HasValue) {
                     Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", found.Value.Requested, supplier.name, found.Value.Requester.name);
                     ResourceBlock.Consume(ref supplier.Storage.Current, found.Value.Requested);
                     MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, found.Value);
-                    if (profit < 0) { supplier.SoldAtALoss = true; }
+                    if (baseProfit < 0) { supplier.SoldAtALoss = true; }
                     m_StateA.FulfullQueue.PushBack(activeRequest); // picked up by fulfillment system
                     int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[found.Value.Requester.Position.TileIndex];
                     MarketUtility.RecordPurchaseToHistory(marketData, found.Value.Requested, regionPurchasedIn);
-                    MarketUtility.RecordRevenueToHistory(marketData, taxRevenue, regionPurchasedIn);
+                    int quantity = found.Value.Requested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
+                    GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
+                    MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
                 }
             }
-
-            // TODO: keep track of gathered sales taxes, import taxes, and penalties
 
             // for all remaining, increment their age
             for (int i = 0; i < m_RequestWorkList.Count; i++) {
@@ -163,14 +164,21 @@ namespace Zavala.Economy
                 if (!connectionSummary.Connected) {
                     continue;
                 }
+                if (connectionSummary.Distance != 0 && requester.IsLocalOption) {
+                    // Exclude local options from lists of non-local tiles
+                    continue;
+                }
 
                 var adjustments = config.UserAdjustmentsPerRegion[supplier.Position.RegionIndex];
 
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
                 // TODO: only apply import tax if shipping across regions. Then use import tax of purchaser
-                // TODO: do purchase / import taxes need to be multiplied by the quantity of shipped goods?
+                // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + adjustments.ImportTax[primary];
                 float profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
+                if (requester.IsLocalOption) {
+                    profit -= adjustments.RunoffPenalty[primary];
+                }
                 float score = profit - shippingCost;
                 // TODO: implement Let it Sit option. Then if purchaser is letting it sit, find penalties
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue(adjustments.PurchaseTax[primary], adjustments.ImportTax[primary], 0);

@@ -1,5 +1,162 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5845473704882985891
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2986159883632690117}
+  - component: {fileID: 3948993899798491296}
+  - component: {fileID: 7207750407103898590}
+  - component: {fileID: 3038908885332165687}
+  - component: {fileID: 9191267247866587228}
+  - component: {fileID: 5602663514362957504}
+  - component: {fileID: 8274710210108649578}
+  - component: {fileID: 8571083980977752943}
+  m_Layer: 7
+  m_Name: Let It Sit Option
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2986159883632690117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7291294420475072052}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3948993899798491296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf898e7b8e31975428fa78bd14534ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7207750407103898590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0beb4e17b7beb944915c397a181fb12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RequestMask: 1
+  MaxRequests: 3
+  AgeOfUrgency: 20
+  IsLocalOption: 1
+--- !u!114 &3038908885332165687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c26cbac4a5ef2ee4ab02d5cebd80384c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Capacity:
+    Manure: 32
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
+  Current:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
+--- !u!114 &9191267247866587228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38402e251b5111c4ca6247043c16c6b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Amount: 1
+  AmountProducedLastTick: 0
+--- !u!114 &5602663514362957504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b814bd36186386d4c89dd626be3c5af6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReturnTo: {fileID: 7291294420475072056}
+  m_Timer: {fileID: 8274710210108649578}
+  m_ReturnToTimer: {fileID: 7291294420475072059}
+--- !u!114 &8274710210108649578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e3b0c9ed15a50f4d95d30f9ff7de740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Timer:
+    Period: 8
+--- !u!114 &8571083980977752943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c6869cf846b7bc4fb5f6f3ad678dca4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Produces:
+    Manure: 1
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
+  Requires:
+    Manure: 1
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
 --- !u!1 &7291294420475072060
 GameObject:
   m_ObjectHideFlags: 0
@@ -18,7 +175,6 @@ GameObject:
   - component: {fileID: 7291294420475072054}
   - component: {fileID: 7291294420475072055}
   - component: {fileID: 6065373712702326176}
-  - component: {fileID: 1219562413352863909}
   m_Layer: 7
   m_Name: DairyFarm
   m_TagString: Untagged
@@ -39,6 +195,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 752772165226251723}
+  - {fileID: 2986159883632690117}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -69,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capacity:
-    Manure: 8
+    Manure: 40
     MFertilizer: 8
     DFertilizer: 8
     Grain: 8
@@ -119,6 +276,7 @@ MonoBehaviour:
   RequestMask: 8
   MaxRequests: 3
   AgeOfUrgency: 20
+  IsLocalOption: 0
 --- !u!114 &7291294420475072061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,20 +347,6 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   ActivelyDisplayingEvent: 0
---- !u!114 &1219562413352863909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7291294420475072060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38402e251b5111c4ca6247043c16c6b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Amount: 1
-  AmountProducedLastTick: 0
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0
