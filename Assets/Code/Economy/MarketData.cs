@@ -19,9 +19,9 @@ namespace Zavala.Economy
         public RingBuffer<ResourceSupplier> Suppliers;
 
         // buffer for buyers that requested for this market cycle
-        public RingBuffer<MarketRequestInfo> RequestQueue;
-        public RingBuffer<MarketActiveRequestInfo> FulfullQueue;
-        public RingBuffer<MarketActiveRequestInfo> ActiveRequests;
+        public RingBuffer<MarketRequestInfo> RequestQueue; // Queue of requests, sitting idle
+        public RingBuffer<MarketActiveRequestInfo> FulfullQueue; // Queue of requests which have found a match and need to route through a fulfiller
+        public RingBuffer<MarketActiveRequestInfo> ActiveRequests; // List of requests actively being fulfilled (en-route)
 
         // Pie Chart
         public DataHistory[] CFertilizerSaleHistory;
@@ -80,7 +80,7 @@ namespace Zavala.Economy
         public ResourceBlock Requested;
         public int Age;
 
-        public MarketRequestInfo(ResourceRequester requester, ResourceBlock request) {
+        public MarketRequestInfo(ResourceRequester requester, ResourceBlock request, bool isUrgent = false) {
             Requester = requester;
             Requested = request;
             Age = 0;

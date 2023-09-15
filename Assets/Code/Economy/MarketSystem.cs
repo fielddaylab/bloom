@@ -13,7 +13,7 @@ using Zavala.Sim;
 namespace Zavala.Economy
 {
     [SysUpdate(GameLoopPhase.Update, 5)]
-    public sealed class MarketSystem : SharedStateSystemBehaviour<MarketData, MarketConfig, SimGridState>
+    public sealed class MarketSystem : SharedStateSystemBehaviour<MarketData, MarketConfig, SimGridState, RequestVisualState>
     {
 
         // NOT persistent state - work lists for various updates
@@ -68,6 +68,9 @@ namespace Zavala.Economy
             // for all remaining, increment their age
             for (int i = 0; i < m_RequestWorkList.Count; i++) {
                 m_RequestWorkList[i].Age++;
+                if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency) {
+                    m_StateD.NewUrgents.Add(m_RequestWorkList[i]);
+                }
             }
             m_RequestWorkList.CopyTo(m_StateA.RequestQueue);
             m_RequesterWorkList.Clear();

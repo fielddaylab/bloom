@@ -20,12 +20,13 @@ namespace Zavala.Economy {
             MarketData marketData = Game.SharedState.Get<MarketData>();
             MarketPools pools = Game.SharedState.Get<MarketPools>();
             SimTimeState timeState = ZavalaGame.SimTime;
+            RequestVisualState visualState = Game.SharedState.Get<RequestVisualState>();
 
             ProcessFulfillmentQueue(marketData, pools);
             deltaTime = SimTimeUtility.AdjustedDeltaTime(deltaTime, timeState);
 
             foreach (var component in m_Components) {
-                ProcessFulfiller(marketData, pools, component, deltaTime);
+                ProcessFulfiller(marketData, pools, component, visualState, deltaTime);
             }
         }
 
@@ -38,7 +39,7 @@ namespace Zavala.Economy {
             }
         }
 
-        private void ProcessFulfiller(MarketData marketData, MarketPools pools, RequestFulfiller component, float deltaTime) {
+        private void ProcessFulfiller(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
             Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, 3 * deltaTime);
             if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
                 component.Target.Received += component.Carrying;
@@ -47,7 +48,9 @@ namespace Zavala.Economy {
                 DebugDraw.AddWorldText(component.Target.transform.position, "Received!", Color.black, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundLightOpaque);               
                 int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
                 if (index >= 0) {
-                    marketData.ActiveRequests.FastRemoveAt(index);
+                    MarketActiveRequestInfo fulfilling = marketData.ActiveRequests[index];
+                    visualState.FulfilledQueue.PushBack(fulfilling);
+                    marketData.ActiveRequests.FastRemoveAt(index);                    
                 }
                 pools.Trucks.Free(component);
             } else {

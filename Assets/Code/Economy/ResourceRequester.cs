@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using BeauUtil;
 using FieldDay.Components;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Zavala.Economy {
     public sealed class ResourceRequester : BatchedComponent {
         [AutoEnum] public ResourceMask RequestMask;
         public int MaxRequests = 3;
+        public int AgeOfUrgency = 20; // Min age at which requests begin to be marked as urgent
 
         [NonSerialized] public OccupiesTile Position;
         [NonSerialized] public ResourceStorage Storage;
@@ -17,6 +19,9 @@ namespace Zavala.Economy {
         [NonSerialized] public ResourceBlock Requested;
         [NonSerialized] public int RequestCount;
         [NonSerialized] public ResourceBlock Received;
+
+        // Map resource to ticks since fulfilled
+        
 
         protected override void OnEnable() {
             base.OnEnable();

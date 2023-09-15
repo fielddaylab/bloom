@@ -118,6 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RequestMask: 8
   MaxRequests: 3
+  AgeOfUrgency: 20
 --- !u!114 &7291294420475072061
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10166,6 +10166,7 @@ GameObject:
   - component: {fileID: 502754881}
   - component: {fileID: 502754882}
   - component: {fileID: 502754883}
+  - component: {fileID: 502754884}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -10728,6 +10729,27 @@ MonoBehaviour:
         Below: 0
         Value: 0
     RegionIndexUnlocks: 0300000004000000
+--- !u!114 &502754884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502754864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d718f7c89913a9498adc93ecad07f3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RequestPool:
+    m_Prefab: {fileID: 4747262016318168114, guid: 2d7b10891c2b7e445ad891fd31800edf, type: 3}
+    m_Name: 
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 140165166}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
 --- !u!1 &594461906
 GameObject:
   m_ObjectHideFlags: 0
@@ -16888,6 +16910,7 @@ GameObject:
   - component: {fileID: 1872292643}
   - component: {fileID: 1872292644}
   - component: {fileID: 1872292645}
+  - component: {fileID: 1872292646}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -16998,6 +17021,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b96effef873c82c4c9140686b8d99ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1872292646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872292637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d31cd51aa393c2f4f883e936bc269671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1897052388
