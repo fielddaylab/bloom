@@ -272,7 +272,7 @@ namespace Zavala.Sim {
                     // region unchanged.
                     return false;
                 }
-                Debug.LogWarning("[SimGridState] Region updated from " + grid.CurrRegionIndex + " to " + newRegionIndex);
+                Debug.Log("[SimGridState] Region updated from " + grid.CurrRegionIndex + " to " + newRegionIndex);
                 grid.CurrRegionIndex = newRegionIndex;
                 return true;
             } 

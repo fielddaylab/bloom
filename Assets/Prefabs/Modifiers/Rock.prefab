@@ -61,7 +61,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeightOffset: 0
   m_initial: 1
-  m_replaceTop: 1
 --- !u!135 &3929456070218417537
 SphereCollider:
   m_ObjectHideFlags: 0

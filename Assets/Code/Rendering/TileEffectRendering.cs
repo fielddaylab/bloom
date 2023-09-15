@@ -41,13 +41,13 @@ namespace Zavala.World
             }
         }
 
-        static public bool ToggleTopVisibility(TileInstance tile) {
+        static public bool DisableTopVisibility(TileInstance tile) {
             if (tile != null) {
-                Debug.LogWarning("[TileEffectRendering] Hiding top of tile " + tile.ToString());
-                tile.TopRenderer.enabled = !tile.TopRenderer.enabled;
+                Debug.Log("[TileEffectRendering] Hiding top of tile " + tile.ToString());
+                tile.TopRenderer.enabled = false;
                 return true;
             }
-            Debug.LogWarning("[TileEffectRendering] Tile doesn't exist, apparently");
+            Debug.Log("[TileEffectRendering] Tile doesn't exist, apparently");
             return false;
         }
     }

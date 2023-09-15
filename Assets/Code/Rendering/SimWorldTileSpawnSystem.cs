@@ -56,6 +56,9 @@ namespace Zavala.World {
             //inst.index = index;
             inst.gameObject.name = "Tile " + index.ToStringLookup();
             world.Tiles[index] = inst;
+            if ((tileInfo.Flags & TerrainFlags.TopHidden) != 0) {
+                TileEffectRendering.DisableTopVisibility(inst);
+            }
         }
 
         #endregion // Work

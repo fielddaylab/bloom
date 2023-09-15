@@ -205,6 +205,7 @@ namespace Zavala.Editor {
                                 ScriptName = scriptName
                             });
                             occupiedTileIndices.Add(pos);
+                            tiles[pos].Flags |= TerrainFlags.TopHidden;
                             break;
                         }
                         case 1: { // dairy
@@ -214,6 +215,7 @@ namespace Zavala.Editor {
                                 ScriptName = scriptName
                             });
                             occupiedTileIndices.Add(pos);
+                            tiles[pos].Flags |= TerrainFlags.TopHidden;
                             break;
                         }
                         case 2: { // city
@@ -223,6 +225,7 @@ namespace Zavala.Editor {
                                 ScriptName = scriptName
                             });
                             occupiedTileIndices.Add(pos);
+                            tiles[pos].Flags |= TerrainFlags.TopHidden;
                             break;
                         }
                         case 3: {
@@ -232,6 +235,7 @@ namespace Zavala.Editor {
                                 Modifier = RegionAsset.TerrainModifier.Tree
                             });
                             tiles[pos].Flags |= TerrainFlags.NonBuildable;
+                            tiles[pos].Flags |= TerrainFlags.TopHidden;
                             break;
                         }
                         case 4: {
@@ -241,6 +245,7 @@ namespace Zavala.Editor {
                                 Modifier = RegionAsset.TerrainModifier.Rock
                             });
                             tiles[pos].Flags |= TerrainFlags.NonBuildable;
+                            tiles[pos].Flags |= TerrainFlags.TopHidden;
                             break;
                         }
                         case 6: { // road

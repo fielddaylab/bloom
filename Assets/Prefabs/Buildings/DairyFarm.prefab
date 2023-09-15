@@ -318,7 +318,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeightOffset: 0
   m_initial: 1
-  m_replaceTop: 1
 --- !u!65 &7291294420475072055
 BoxCollider:
   m_ObjectHideFlags: 0

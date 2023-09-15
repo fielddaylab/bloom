@@ -117,6 +117,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RequestMask: 7
   MaxRequests: 3
+  AgeOfUrgency: 20
+  IsLocalOption: 0
+  InfiniteRequests: 0
 --- !u!114 &5421243799934890596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,7 +159,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeightOffset: 0
   m_initial: 1
-  m_replaceTop: 1
 --- !u!65 &5421243799934890602
 BoxCollider:
   m_ObjectHideFlags: 0
