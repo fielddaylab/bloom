@@ -13,12 +13,13 @@ namespace Zavala.Advisor
     public class AdvisorButton : MonoBehaviour
     {
         [SerializeField] public AdvisorType ButtonAdvisorType;
-        [SerializeField] public GameObject PoliciesButton;
+        //[SerializeField] public GameObject PoliciesButton;
         [SerializeField] private Button m_Button;
+        [SerializeField] private AdvisorButtonContainer m_Container;
 
         private void Start() {
             // ToggleAdvisor(false);
-            PoliciesButton.SetActive(false);
+            //PoliciesButton.SetActive(false);
 
             m_Button.onClick.AddListener(HandleButtonClicked);
 
@@ -34,7 +35,11 @@ namespace Zavala.Advisor
 
             bool activating = advisorState.ActiveAdvisor != ButtonAdvisorType;
 
-            PoliciesButton.SetActive(activating);
+            //PoliciesButton.SetActive(activating);
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("advisorType", ButtonAdvisorType.ToString());
+                ScriptUtility.Trigger(GameTriggers.AdvisorOpened, varTable);
+            }
 
             if (activating) {
                 AdvisorType newAdvisor = advisorState.UpdateAdvisor(ButtonAdvisorType);
@@ -60,7 +65,8 @@ namespace Zavala.Advisor
                 return;
             }
 
-            PoliciesButton.SetActive(false);
+            m_Container.HideAdvisorButtons();
+            //PoliciesButton.SetActive(false);
         }
 
         #endregion // Handlers

@@ -951,7 +951,7 @@ MonoBehaviour:
   m_Button1Text: {fileID: 2588054532191173775}
   m_Button2: {fileID: 2588054533262450407}
   m_Button2Text: {fileID: 2588054532344654505}
-  m_CloseButton: {fileID: 0}
+  m_CloseButton: {fileID: 1168894908977485441}
 --- !u!1 &2588054533902179918
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,6 +29,8 @@ namespace Zavala.UI {
         public DialogueBoxContents Contents;
         [SerializeField] RectTransform m_ButtonContainer = null;
         [SerializeField] private Button m_Button = null;
+        [SerializeField] private Button m_CloseButton = null;
+        [SerializeField] private AdvisorButtonContainer m_AdvisorButtons = null;
 
         [SerializeField] private RectTransform m_Rect;
 
@@ -66,6 +68,8 @@ namespace Zavala.UI {
 
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.AddListener(HandlePolicyCloseClicked);
+            m_CloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke();});
+
         }
 
         private void RefreshModules(string charName) {
@@ -195,8 +199,9 @@ namespace Zavala.UI {
 
         private IEnumerator ShowRoutine() {
             this.gameObject.SetActive(true);
+            m_Button.gameObject.SetActive(true);
 
-            yield return m_Rect.AnchorPosTo(-100, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+            yield return m_Rect.AnchorPosTo(-230, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
             yield return null;
         }
@@ -210,7 +215,7 @@ namespace Zavala.UI {
             }
 
             yield return m_Rect.AnchorPosTo(-500, 0.3f, Axis.Y).Ease(Curve.CubeIn);
-
+            m_CloseButton.gameObject.SetActive(true);
             this.gameObject.SetActive(false);
             DeactivateModules();
 
@@ -235,10 +240,10 @@ namespace Zavala.UI {
             m_PolicyCloseButton.onClick.RemoveAllListeners();
             m_PolicyCloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
 
-            yield return m_Rect.AnchorPosTo(-170, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+            yield return m_Rect.AnchorPosTo(-250, 0.1f, Axis.Y).Ease(Curve.CubeIn);
 
             m_PolicyExpansionContainer.SetActive(true);
-
+            m_CloseButton.gameObject.SetActive(false);
             // TODO: populate with default localized text? Or do we like having the last line spoken displayed?
             // "Here are the current policies you can put in place, you can modify them at any time."
 
@@ -253,6 +258,8 @@ namespace Zavala.UI {
 
         private void HandlePolicyCloseClicked() {
             m_TransitionRoutine.Replace(HideRoutine());
+            m_AdvisorButtons.ShowAdvisorButtons();
+            
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {

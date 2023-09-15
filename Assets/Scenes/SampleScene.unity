@@ -5213,6 +5213,7 @@ GameObject:
   - component: {fileID: 190549080}
   - component: {fileID: 190549082}
   - component: {fileID: 190549083}
+  - component: {fileID: 190549084}
   m_Layer: 5
   m_Name: AdvisorLayout
   m_TagString: Untagged
@@ -5239,8 +5240,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -5}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchoredPosition: {x: 0, y: -20}
+  m_SizeDelta: {x: 170, y: 80}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &190549082
 MonoBehaviour:
@@ -5281,6 +5282,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AllowSwitchOff: 1
+--- !u!114 &190549084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190549079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3312a6fb9fa11468f979a3fddf2590, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Rect: {fileID: 190549080}
 --- !u!1 &195906053
 GameObject:
   m_ObjectHideFlags: 0
@@ -11213,6 +11227,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 190549080}
     m_Modifications:
+    - target: {fileID: 7310159027859421525, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7310159028650111912, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+      propertyPath: m_Container
+      value: 
+      objectReference: {fileID: 190549084}
     - target: {fileID: 7310159028650111912, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
       propertyPath: ButtonAdvisorType
       value: 2
@@ -11627,6 +11649,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1876718266001972432, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
+      propertyPath: m_AdvisorButtons
+      value: 
+      objectReference: {fileID: 190549084}
+    - target: {fileID: 1876718266001972432, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
+      propertyPath: m_AdvisorButtonContainer
+      value: 
+      objectReference: {fileID: 190549079}
     - target: {fileID: 1901034844193978742, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_Texture
       value: 
@@ -11717,11 +11747,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_SizeDelta.x
@@ -11733,11 +11763,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 410
+      value: 369.055
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
@@ -17414,6 +17444,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1249365800256848176, guid: b71595893f886bc4b9351665fc80346b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1249365800256848176, guid: b71595893f886bc4b9351665fc80346b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 145
+      objectReference: {fileID: 0}
     - target: {fileID: 6112154565430246904, guid: b71595893f886bc4b9351665fc80346b, type: 3}
       propertyPath: m_SizeDelta.y
       value: 30
@@ -17621,6 +17659,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 190549080}
     m_Modifications:
+    - target: {fileID: 7310159027859421525, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7310159028650111912, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+      propertyPath: m_Container
+      value: 
+      objectReference: {fileID: 190549084}
     - target: {fileID: 7310159028650111914, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

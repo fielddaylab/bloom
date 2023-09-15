@@ -575,6 +575,8 @@ MonoBehaviour:
   m_collapseBtn: {fileID: 1249365798748016985}
   m_expandedGroup: {fileID: 1249365800256848177}
   m_shopBtnHub: {fileID: 1249365799568577658}
+  m_expandedRect: {fileID: 1249365800256848176}
+  m_buttonRect: {fileID: 0}
 --- !u!1 &1249365800256848177
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,9 +613,9 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 610}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -200, y: 0}
+  m_SizeDelta: {x: 145, y: 610}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &5880845742873346084
 GameObject:
