@@ -80,7 +80,7 @@ namespace Zavala.Economy
         public ResourceBlock Requested;
         public int Age;
 
-        public MarketRequestInfo(ResourceRequester requester, ResourceBlock request, bool isUrgent = false) {
+        public MarketRequestInfo(ResourceRequester requester, ResourceBlock request) {
             Requester = requester;
             Requested = request;
             Age = 0;

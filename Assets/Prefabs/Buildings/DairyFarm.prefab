@@ -66,6 +66,7 @@ MonoBehaviour:
   MaxRequests: 3
   AgeOfUrgency: 20
   IsLocalOption: 1
+  InfiniteRequests: 1
 --- !u!114 &3038908885332165687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +278,7 @@ MonoBehaviour:
   MaxRequests: 3
   AgeOfUrgency: 20
   IsLocalOption: 0
+  InfiniteRequests: 0
 --- !u!114 &7291294420475072061
 MonoBehaviour:
   m_ObjectHideFlags: 0

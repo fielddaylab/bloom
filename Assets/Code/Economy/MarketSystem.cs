@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -51,16 +52,40 @@ namespace Zavala.Economy
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
                 MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue);
-                
+
                 if (found.HasValue) {
-                    Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", found.Value.Requested, supplier.name, found.Value.Requester.name);
-                    ResourceBlock.Consume(ref supplier.Storage.Current, found.Value.Requested);
-                    MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, found.Value);
+                    ResourceBlock adjustedValueRequested = found.Value.Requested;
+                    MarketRequestInfo? adjustedFound = found;
+
+                    if (found.Value.Requester.InfiniteRequests) {
+                        // Set requested value equal to this suppliers stock
+                        // TODO: probably a simpler way to do this
+                        var array = Enum.GetValues(typeof(ResourceId)).Cast<ResourceId>();
+                        int length = array.Count();
+                        for (int i = 0; i < length - 2; i++) {
+                            if ((supplier.Storage.Current[(ResourceId)i] != 0) && (found.Value.Requested[(ResourceId)i] != 0)) {
+                                Debug.Log("[Sitting] Set request to max " + supplier.Storage.Current[(ResourceId)i] + " for resource " + ((ResourceId)i).ToString());
+                                adjustedValueRequested[(ResourceId)i] = supplier.Storage.Current[(ResourceId)i];
+                            }
+                        }
+
+                        // Remove sales / import taxes (since essentially sold to itself)
+                        baseTaxRevenue.Sales = 0;
+                        baseTaxRevenue.Import = 0;
+
+                        adjustedFound = new MarketRequestInfo(found.Value.Requester, adjustedValueRequested);
+                    }
+
+                    Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", adjustedValueRequested, supplier.name, adjustedFound.Value.Requester.name);
+                    ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested);
+                    MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value);
                     if (baseProfit < 0) { supplier.SoldAtALoss = true; }
                     m_StateA.FulfullQueue.PushBack(activeRequest); // picked up by fulfillment system
-                    int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[found.Value.Requester.Position.TileIndex];
-                    MarketUtility.RecordPurchaseToHistory(marketData, found.Value.Requested, regionPurchasedIn);
-                    int quantity = found.Value.Requested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
+                    int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
+                    if (!adjustedFound.Value.Requester.IsLocalOption) {
+                        MarketUtility.RecordPurchaseToHistory(marketData, adjustedValueRequested, regionPurchasedIn);
+                    }
+                    int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
                     GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
                     MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
                 }
