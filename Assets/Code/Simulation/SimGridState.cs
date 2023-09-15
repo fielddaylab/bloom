@@ -129,6 +129,22 @@ namespace Zavala.Sim {
 
             // TODO: spawn roads?
 
+            // spawn modifiers
+            foreach(var obj in asset.Modifiers) {
+                int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
+                HexVector pos = grid.HexSize.FastIndexToPos(mapIndex);
+                Vector3 worldPos = HexVector.ToWorld(pos, grid.Terrain.Info[mapIndex].Height, world.WorldSpace);
+                switch (obj.Modifier) {
+                    case RegionAsset.TerrainModifier.Tree: {
+                            GameObject.Instantiate(pools.Tree, worldPos, Quaternion.identity);
+                            break;
+                        }
+                    case RegionAsset.TerrainModifier.Rock: {
+                            GameObject.Instantiate(pools.Rock, worldPos, Quaternion.identity);
+                            break;
+                        }
+                }
+            }
             // load script
             if (asset.LeafScript != null) {
                 ScriptDatabaseUtility.LoadNow(ScriptUtility.Database, asset.LeafScript);

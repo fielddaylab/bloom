@@ -19,6 +19,10 @@ namespace Zavala.Building
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
         [Serializable] public class SkimmerPool : SerializablePool<OccupiesTile> { }
 
+        [Serializable] public class RockPool : SerializablePool<OccupiesTile> { }
+        [Serializable] public class TreePool : SerializablePool<OccupiesTile> { }
+
+
         #endregion // Types
 
         [Header("Static Buildings")]
@@ -26,10 +30,14 @@ namespace Zavala.Building
         public GameObject DairyFarm;
         public GameObject City;
 
+        [Header("Static Modifiers")]
+        public GameObject Rock;
+        public GameObject Tree;
+
         [Header("Player-created Buildings")]
         public RoadPool Roads;
         public DigesterPool Digesters;
-        public DigesterPool Storages;
+        public StoragePool Storages;
         public SkimmerPool Skimmers;
 
         [Header("Shared")]

@@ -170,14 +170,14 @@ namespace Zavala.Editor {
                         case 3: {
                             tileInfo.Category = TerrainCategory.Land;
                             tileInfo.SubCategory = 2;
-                            tileInfo.Flags = TerrainFlags.NonBuildable;
+                            tileInfo.Flags = 0;
                             break;
                         }
 
                         case 4: {
                             tileInfo.Category = TerrainCategory.Land;
                             tileInfo.SubCategory = 3;
-                            tileInfo.Flags = TerrainFlags.NonBuildable;
+                            tileInfo.Flags = 0;
                             break;
                         }
                     }

@@ -37,9 +37,7 @@ namespace Zavala {
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             if (snap.m_replaceTop) {
                 Debug.LogWarning("[SnapToTile] Trying to replace top at Tile " + tile.TileIndex);
-                if (!TileEffectRendering.ToggleTopVisibility(ZavalaGame.SimWorld.Tiles[tile.TileIndex])) {
-
-                }
+                TileEffectRendering.ToggleTopVisibility(ZavalaGame.SimWorld.Tiles[tile.TileIndex]);
             }
             worldPos.y += snap.HeightOffset;
             snap.transform.position = worldPos;
