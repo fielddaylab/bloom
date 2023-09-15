@@ -16,7 +16,7 @@ namespace Zavala.Cards
         [SerializeField] private Button m_Button;
         [SerializeField] private TMP_Text m_Text;
 
-        [SerializeField] private Image m_Image;
+        [SerializeField] private Image m_OverlayImage; // The locked/open slot image
         [SerializeField] private Graphic m_SlotBackground;
         [SerializeField] private Sprite m_LockedSprite;
         [SerializeField] private Sprite m_UnlockedSprite;
@@ -61,36 +61,44 @@ namespace Zavala.Cards
             List<CardData> unlockedCards = CardsUtility.GetUnlockedOptions(state, m_Type);
             bool slotUnlocked = unlockedCards.Count > 0;
             if (slotUnlocked) {
-                m_Image.sprite = m_UnlockedSprite;
-                m_Image.color = m_UnlockedColor;
+                m_OverlayImage.enabled = true; // set to open slot image
+                m_OverlayImage.sprite = m_UnlockedSprite;
+                m_OverlayImage.color = m_UnlockedColor;
                 m_SlotBackground.color = m_SlotColor;
                 m_Button.enabled = true;
             }
             else {
-                m_Image.sprite = m_LockedSprite;
-                m_Image.color = m_LockedColor;
+                m_OverlayImage.enabled = true; // set to locked slot image
+                m_OverlayImage.sprite = m_LockedSprite;
+                m_OverlayImage.color = m_LockedColor;
                 m_SlotBackground.color = m_UnlockedColor; // same color is used for locked background as locked foreground
                 m_Button.enabled = false;
             }
+            m_Text.SetText("");
 
             // TODO: if we add possibility for no policy to be selected, implement check here
 
-            bool currentExists = false;
-            // load current policy
-            PolicyState policyState = Game.SharedState.Get<PolicyState>();
-            SimGridState grid = Game.SharedState.Get<SimGridState>();
-            PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[newType];
-            for (int i = 0; i < unlockedCards.Count; i++) {
-                if (unlockedCards[i].PolicyLevel == level) {
-                    // found current policy
-                    MirrorSelectedCard(unlockedCards[i]);
-                    currentExists = true;
-                    break;
+            if (slotUnlocked) {
+                bool currentExists = false;
+                // load current policy
+                PolicyState policyState = Game.SharedState.Get<PolicyState>();
+                SimGridState grid = Game.SharedState.Get<SimGridState>();
+                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[newType];
+                if (policyState.Policies[grid.CurrRegionIndex].EverSet[newType]) {
+                    // Has been set before -- look for current policy
+                    for (int i = 0; i < unlockedCards.Count; i++) {
+                        if (unlockedCards[i].PolicyLevel == level) {
+                            // found current policy
+                            MirrorSelectedCard(unlockedCards[i]);
+                            currentExists = true;
+                            break;
+                        }
+                    }
                 }
-            }
 
-            if (!currentExists) {
-                m_Text.SetText("");
+                if (currentExists) {
+                    m_OverlayImage.enabled = false; // hide open slot image, in favor of the currently selected card
+                }
             }
         }
 
@@ -178,7 +186,9 @@ namespace Zavala.Cards
             CardUIUtility.ExtractLocText(data, out string locText);
             // TODO: extract font effects
             m_Button.image.sprite = sprite;
+            m_Button.image.color = Color.white;
             m_Text.SetText(locText);
+            m_OverlayImage.enabled = false;
         }
 
         #region Routines

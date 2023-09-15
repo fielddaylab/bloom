@@ -11,6 +11,7 @@ using Zavala.Sim;
 namespace Zavala.Advisor {
     public struct PolicyBlock {
         public Dictionary<PolicyType, PolicyLevel> Map;
+        public Dictionary<PolicyType, bool> EverSet; // Whether this policy type has ever been set in its region
     }
 
     // TODO: track unlocked policies (progression)
@@ -32,6 +33,7 @@ namespace Zavala.Advisor {
             if (policyIndex < 0 || policyIndex > 3) { return false; }
 
             Policies[region].Map[policyType] = (PolicyLevel)policyIndex;
+            Policies[region].EverSet[policyType] = true; // this policy has now been set
             switch (policyType) {
                 case PolicyType.RunoffPolicy:
                     // TODO: When runoff penalty implemented, read runoff policy
@@ -91,6 +93,12 @@ namespace Zavala.Advisor {
                     { PolicyType.SkimmingPolicy, PolicyLevel.Low },
                     { PolicyType.ImportTaxPolicy, PolicyLevel.Low },
                     { PolicyType.SalesTaxPolicy, PolicyLevel.Low }
+                };
+                Policies[i].EverSet = new Dictionary<PolicyType, bool>() {
+                    { PolicyType.RunoffPolicy, false },
+                    { PolicyType.SkimmingPolicy, false },
+                    { PolicyType.ImportTaxPolicy, false },
+                    { PolicyType.SalesTaxPolicy, false }
                 };
             }
         }

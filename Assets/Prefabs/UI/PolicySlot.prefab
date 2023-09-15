@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Type: 0
   m_Button: {fileID: 1820353052934337475}
   m_Text: {fileID: 8828173663211731098}
-  m_Image: {fileID: 6650229850384811833}
+  m_OverlayImage: {fileID: 6650229850384811833}
   m_SlotBackground: {fileID: 3873226206364117844}
   m_LockedSprite: {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
   m_UnlockedSprite: {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
@@ -305,6 +305,10 @@ PrefabInstance:
     - target: {fileID: 1233910315729488366, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 5779379559460817192, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_Name
