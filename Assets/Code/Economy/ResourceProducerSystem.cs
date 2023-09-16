@@ -18,6 +18,8 @@ namespace Zavala.Economy {
                 ResourceBlock consumed = producer.Requires;
                 ResourceBlock.Consume(ref producer.Storage.Current, ref consumed);
                 producer.Storage.Current += produced;
+                producer.ProducedLastTick = true;
+
                 ResourceRequester requester = producer.GetComponent<ResourceRequester>();
                 Log.Msg("[ResourceProducerSystem] Producer '{0}' consumed {1} to produce {2}", producer.name, consumed, produced);
                 DebugDraw.AddWorldText(producer.transform.position, "Produced!", Color.green, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);

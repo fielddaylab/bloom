@@ -17,6 +17,8 @@ namespace Zavala.Economy {
         [NonSerialized] public ResourceStorage Storage;
         [NonSerialized] public ResourceRequester Request;
 
+        public bool ProducedLastTick = false; // used by production runoff system
+
         private void Awake() {
             this.CacheComponent(ref Storage);
             this.CacheComponent(ref Request);
