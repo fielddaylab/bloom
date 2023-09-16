@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5602663514362957504}
   - component: {fileID: 8274710210108649578}
   - component: {fileID: 8571083980977752943}
+  - component: {fileID: 2719164954211423765}
   m_Layer: 7
   m_Name: Let It Sit Option
   m_TagString: Untagged
@@ -103,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38402e251b5111c4ca6247043c16c6b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Amount: 1
+  Amount: 5
   AmountProducedLastTick: 0
 --- !u!114 &5602663514362957504
 MonoBehaviour:
@@ -158,6 +159,23 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
+--- !u!114 &2719164954211423765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6077f8951d683da4483f3bead0540aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxQueuedEvents: 3
+  Id:
+    m_Source: 
+    m_HashValue: 0
+  ActivelyDisplayingEvent: 0
 --- !u!1 &7291294420475072060
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,7 +293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RequestMask: 8
-  MaxRequests: 3
+  MaxRequests: 2
   AgeOfUrgency: 20
   IsLocalOption: 0
   InfiniteRequests: 0

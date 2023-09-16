@@ -1,14 +1,12 @@
 # basePath   region1
 
 
-// :: testIntro
-// @trigger        GameBooted
-// @forcePolicy    Ecology
-// {@advisorEconHill} Hello! This is Balthazar speaking.
-// {@test-char} And this is test character, chiming in.
-// {@test-char} This is a continuation.
-// {@advisorEconHill} And now I'm jumping back into the conversation. All done!
-
+:: sittingOmens
+@trigger        LetSat
+@once
+{local @advisorEcol}    Your dairy farm has decided to let manure sit instead of shipping it elsewhere.
+{local @advisorEcol}    Consider hooking your farm up to a grain farm.
+{local @advisorEcol}    Otherwise, this may have ramifications for lake health down the line...
 
 :: testEcologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -27,15 +25,16 @@
 @conditions     alertType == "excess-runoff"
 @forcePolicy    Ecology
 {local @advisorEcol}    There has been excessive runoff!
+{local @advisorEcol}    Despite connecting the grain farm, it was cheaper for the dairy farm to let the manure sit.
+{local @advisorEcol}    I've unlocked some new policies to address the runoff. Set a higher penalty!
 $call UnlockCards(RunoffPolicy)
-
 
 :: testBloomTrigger
 @trigger        AlertExamined
 @conditions     alertType == "bloom"
 @forcePolicy    Ecology
 {local @advisorEcol}    Algae blooms are appearing in the water!
-$call UnlockCards(SkimmingPolicy)
+$call UnlockCards(RunoffPolicy)
 
 
 :: testSellAtLossTrigger

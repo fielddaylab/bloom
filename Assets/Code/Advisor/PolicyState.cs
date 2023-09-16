@@ -82,8 +82,8 @@ namespace Zavala.Advisor {
 
             RunoffPenaltyVals[0].SetAll(-2);
             RunoffPenaltyVals[1].SetAll(0);
-            RunoffPenaltyVals[2].SetAll(2);
-            RunoffPenaltyVals[3].SetAll(4);
+            RunoffPenaltyVals[2].SetAll(100);
+            RunoffPenaltyVals[3].SetAll(200);
         }
 
         private void InitializePolicyMap() {

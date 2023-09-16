@@ -85,6 +85,9 @@ namespace Zavala.Economy
                     if (!adjustedFound.Value.Requester.IsLocalOption) {
                         MarketUtility.RecordPurchaseToHistory(marketData, adjustedValueRequested, regionPurchasedIn);
                     }
+                    else {
+                        ScriptUtility.Trigger(GameTriggers.LetSat);
+                    }
                     int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
                     GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
                     MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);

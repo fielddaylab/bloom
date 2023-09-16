@@ -18,8 +18,8 @@ namespace Zavala.Sim
             }
 
             // check if runoff is excessive
-            int excessThreshold = 5; // TODO: balance this number
-
+            int excessThreshold = 10; // TODO: balance this number
+            Debug.Log("[Phosphorus] Amount generated last tick: " + generator.AmountProducedLastTick);
             if (generator.AmountProducedLastTick >= excessThreshold) {
                 // if so, create alert on this tile
                 EventActorTrigger newTrigger = new EventActorTrigger();

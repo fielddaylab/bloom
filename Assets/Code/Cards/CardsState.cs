@@ -69,7 +69,7 @@ namespace Zavala.Cards
             CardsUtility.PopulateCards(this);
 
             // TEMP Unlock initial cards
-            CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
+            // CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
             // CardsUtility.UnlockCardsByType(this, PolicyType.SkimmingPolicy);
             // CardsUtility.UnlockCardsByType(this, PolicyType.SalesTaxPolicy);
             // CardsUtility.UnlockCardsByType(this, PolicyType.ImportTaxPolicy);

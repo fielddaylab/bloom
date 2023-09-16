@@ -1,2 +1,5 @@
 {
+    "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 25,
+    "Zavala.Sim.PhosphorusSim::SteepHeightThreshold": 25,
+    "Zavala.Sim.PhosphorusSim::MaxFlowProportionSteep": 1
 }
