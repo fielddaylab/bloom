@@ -1,15 +1,10 @@
 using FieldDay;
 using FieldDay.Systems;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using Zavala.Actors;
 using Zavala.Economy;
 
-namespace Zavala.Sim
-{
+namespace Zavala.Sim {
     [SysUpdate(GameLoopPhase.Update, 4)] // Before MarketSystem, After ActorPhosphorusGeneratorSystem
     public sealed class StorageRecyclerSystem : ComponentSystemBehaviour<StorageRecycler, ResourceStorage, ActorTimer>
     {

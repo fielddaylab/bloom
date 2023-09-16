@@ -27,6 +27,7 @@ namespace Zavala.UI {
         #region Inspector
 
         public DialogueBoxContents Contents;
+        public DialogueBoxPin Pin;
         [SerializeField] RectTransform m_ButtonContainer = null;
         [SerializeField] private Button m_Button = null;
         [SerializeField] private Button m_CloseButton = null;
@@ -48,11 +49,18 @@ namespace Zavala.UI {
         [Header("Modules")]
         [SerializeField] private List<DialogueModuleBase> m_Modules;
 
+        [Space(5)]
+        [Header("Animation")]
+        [SerializeField] private float m_OffscreenY = -500;
+        [SerializeField] private float m_OnscreenY = -230;
+        [SerializeField] private float m_OnscreenPolicyY = -250;
+
         #endregion // Inspector
 
         private Routine m_TransitionRoutine;
-
-        private bool m_FullyExpanded = false;
+        private TagStringEventHandler m_LocalHandler;
+        [NonSerialized] private ScriptCharacterDef m_CurrentDef;
+        [NonSerialized] private bool m_FullyExpanded = false;
 
         private enum LineEndBehavior
         {
@@ -68,8 +76,19 @@ namespace Zavala.UI {
 
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.AddListener(HandlePolicyCloseClicked);
-            m_CloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke();});
+            m_CloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
 
+            m_LocalHandler = new TagStringEventHandler();
+            m_LocalHandler.Register(LeafUtils.Events.Character, (d, o) => {
+                LeafEvalContext evalContext = LeafEvalContext.FromObject(o);
+                if (evalContext.Thread.Actor == null || m_CurrentDef == null || m_CurrentDef.IsAdvisor) {
+                    Pin.Unpin();
+                } else {
+                    Pin.PinTo(((EventActor) evalContext.Thread.Actor).transform);
+                }
+            });
+
+            m_Rect.SetAnchorPos(m_OffscreenY, Axis.Y);
         }
 
         private void RefreshModules(string charName) {
@@ -117,6 +136,7 @@ namespace Zavala.UI {
                 }
                 ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
+                m_CurrentDef = charDef;
                 string header, subheader;
                 Sprite portraitBG, portraitImg;
                 Color boxColor, panelColor, highlightColor, nameColor, titleColor, textColor;
@@ -154,8 +174,7 @@ namespace Zavala.UI {
             }
 
             m_TransitionRoutine.Replace(ShowRoutine());
-
-            return null;
+            return m_LocalHandler;
         }
 
         public IEnumerator ShowChoice(LeafChoice inChoice, LeafThreadState inThread, ILeafPlugin inPlugin) {
@@ -201,7 +220,7 @@ namespace Zavala.UI {
             this.gameObject.SetActive(true);
             m_Button.gameObject.SetActive(true);
 
-            yield return m_Rect.AnchorPosTo(-230, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+            yield return m_Rect.AnchorPosTo(m_OnscreenY, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
             yield return null;
         }
@@ -214,10 +233,11 @@ namespace Zavala.UI {
                 m_PolicyExpansionContainer.SetActive(false);
             }
 
-            yield return m_Rect.AnchorPosTo(-500, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+            yield return m_Rect.AnchorPosTo(m_OffscreenY, 0.3f, Axis.Y).Ease(Curve.CubeIn);
             m_CloseButton.gameObject.SetActive(true);
             this.gameObject.SetActive(false);
             DeactivateModules();
+            Pin.Unpin();
 
             yield return null;
         }
@@ -240,7 +260,7 @@ namespace Zavala.UI {
             m_PolicyCloseButton.onClick.RemoveAllListeners();
             m_PolicyCloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
 
-            yield return m_Rect.AnchorPosTo(-250, 0.1f, Axis.Y).Ease(Curve.CubeIn);
+            yield return m_Rect.AnchorPosTo(m_OnscreenPolicyY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
 
             m_PolicyExpansionContainer.SetActive(true);
             m_CloseButton.gameObject.SetActive(false);

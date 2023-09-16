@@ -37,6 +37,9 @@ namespace FieldDay.Scripting {
         private void SetTrigger(StringHash32 triggerId) {
             Flags |= ScriptNodeFlags.Trigger;
             TriggerOrFunctionId = triggerId;
+            if (triggerId == "AlertExamined") {
+                Flags |= ScriptNodeFlags.Queued;
+            }
         }
 
         [BlockMeta("function")]

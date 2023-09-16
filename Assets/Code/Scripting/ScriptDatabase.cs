@@ -172,7 +172,7 @@ namespace FieldDay.Scripting {
             return null;
         }
 
-        static public ScriptNode FindSpecificNode(ScriptDatabase db, StringHash32 nodeId, LeafEvalContext context, StringHash32 targetId) {
+        static public ScriptNode FindSpecificNode(ScriptDatabase db, StringHash32 nodeId) {
             ScriptNode node;
             if (db.LoadedRandomAccessNodes.TryGetValue(nodeId, out node)) {
                 return node;

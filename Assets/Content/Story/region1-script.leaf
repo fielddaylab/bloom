@@ -24,6 +24,8 @@
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff"
 @forcePolicy    Ecology
+@queued
+{local @grainFarmer}    Whoa! Excessive runoff over here!
 {local @advisorEcol}    There has been excessive runoff!
 {local @advisorEcol}    Despite connecting the grain farm, it was cheaper for the dairy farm to let the manure sit.
 {local @advisorEcol}    I've unlocked some new policies to address the runoff. Set a higher penalty!
@@ -33,6 +35,7 @@ $call UnlockCards(RunoffPolicy)
 @trigger        AlertExamined
 @conditions     alertType == "bloom"
 @forcePolicy    Ecology
+@queued
 {local @advisorEcol}    Algae blooms are appearing in the water!
 $call UnlockCards(RunoffPolicy)
 
@@ -41,8 +44,9 @@ $call UnlockCards(RunoffPolicy)
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss"
 @forcePolicy    Economy
+@queued
+{local @grainFarmer}    I'm selling at a loss over here!
 {local @advisorEcon}    This supplier is selling at a loss!
-
 
 :: testRegionUnlocked
 @trigger        RegionUnlocked

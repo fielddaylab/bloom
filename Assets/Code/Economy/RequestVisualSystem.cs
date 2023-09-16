@@ -1,16 +1,11 @@
 using BeauUtil;
 using FieldDay;
 using FieldDay.Systems;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using Zavala.Sim;
 using Zavala.World;
 
-namespace Zavala.Economy
-{
+namespace Zavala.Economy {
     [SysUpdate(GameLoopPhase.Update, 4)]
     public class RequestVisualSystem : SharedStateSystemBehaviour<MarketData, RequestVisualState, SimGridState>
     {

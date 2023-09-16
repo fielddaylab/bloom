@@ -14,9 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NameId: Permethrin (Prairie)
   TitleId: Ecological Advisor
+  IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
     rgba: 4293587076
+  PanelColor:
+    serializedVersion: 2
+    rgba: 0
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 0
   NameColor:
     serializedVersion: 2
     rgba: 4290693832

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NameId: Permethrin
   TitleId: Ecological Advisor
+  IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
     rgba: 4293587076

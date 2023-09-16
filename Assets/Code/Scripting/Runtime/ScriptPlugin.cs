@@ -139,6 +139,7 @@ namespace FieldDay.Scripting {
                 StringHash32 characterId = inTag.Data.Substring(1);
                 ScriptCharacterDB db = Game.SharedState.Get<ScriptCharacterDB>();
 
+                // TODO: refactor into emitting the character event directly
                 return "{@" + ScriptCharacterDBUtility.GetRemapped(db, characterId).name + "}";
             }
 

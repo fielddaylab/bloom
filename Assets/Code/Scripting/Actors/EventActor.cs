@@ -10,6 +10,7 @@ namespace Zavala.Scripting {
     public sealed class EventActor : BatchedComponent, ILeafActor {
         public int MaxQueuedEvents = 3;
         public SerializedHash32 Id;
+        public SerializedHash32 Class;
 
         public bool ActivelyDisplayingEvent = false;
 

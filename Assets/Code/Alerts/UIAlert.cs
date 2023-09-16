@@ -2,6 +2,7 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,7 +34,10 @@ namespace Zavala.UI {
         #endregion // Handlers
     }
 
-    public static class UIAlertUtility { 
+    public static class UIAlertUtility {
+
+        static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
+
         public static void ClickAlert(UIAlert alert) {
             // Activate queued script node event
             using (TempVarTable varTable = TempVarTable.Alloc()) {
@@ -49,9 +53,12 @@ namespace Zavala.UI {
 
                 // Use region index as a condition for alerts
                 SimGridState grid = Game.SharedState.Get<SimGridState>();
-                varTable.Set("region", ((RegionId)grid.CurrRegionIndex).ToString()); // i.e. region == Hillside
+                varTable.Set("region", RegionIndexToString[grid.CurrRegionIndex]); // i.e. region == Hillside
+                varTable.Set("class", alert.Actor.Class);
 
-                ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, newEvent.TypeId, ScriptUtility.GetContext(ScriptUtility.Runtime, alert.Actor, varTable), alert.Actor.Id);
+                ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, newEvent.ScriptId);
+
+                Log.Msg("[UIAlertUtility] Node is '{0}' ({1})", newEvent.ScriptId, node);
 
                 // TODO: What if this particular node has already run between when the alert was created and when it was clicked?
 
