@@ -37,7 +37,7 @@ namespace Zavala.Building
             SimGridState grid = ZavalaGame.SimGrid;
             SimWorldState world = ZavalaGame.SimWorld;
             if (toolInUse == UserBuildTool.Destroy) {
-                TryDestroyBuilding(world, grid);
+                TryDestroyClickedBuilding(world, grid);
             } else if (toolInUse != UserBuildTool.None) {
                 TryApplyTool(grid, toolInUse, RaycastTileIndex(world, grid));
             } else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
@@ -244,30 +244,55 @@ namespace Zavala.Building
             return TryPurchaseBuild(currTool, currentRegion, 1);
             }
 
-            private bool TryDestroyBuilding(SimWorldState world, SimGridState grid) {
+        /// <summary>
+        /// Attempt a raycast to destroy a building at the mouse position.
+        /// </summary>
+        /// <param name="world"></param>
+        /// <param name="grid"></param>
+        /// <returns>true if building destroy dialog spawned, false otherwise</returns>
+        private bool TryDestroyClickedBuilding(SimWorldState world, SimGridState grid) {
+            // TODO: streamline this?
             Collider hit = RaycastBuilding(world, grid);
             if (hit != null && hit.gameObject.tag == PLAYERPLACED_TAG) {
                 Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + new Vector3(0,0.5f,0));
-                BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-                if (hit.gameObject.layer == LayerMask.NameToLayer(ROAD_LAYER)) {
-                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-                    BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy Road", null, "Are you sure?", ()=>{
-                        SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int tileIndex);
-                        network.Roads.Info[tileIndex].Flags -= RoadFlags.IsRoadAnchor;
-                        pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>()); 
+                BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {
+                    DestroyBuilding(hit);
                     }, null);
-                    
-                } else {
-                    BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", ()=>{
-                        // TODO: use pools
-                        Destroy(hit.gameObject); 
-                    }, null);
-                }
-                
-           
+                return true;
             }
             return false;
         }
+
+        /// <summary>
+        /// Destroys a building with the hit collider
+        /// </summary>
+        /// <param name="hit">Collider hit by a raycast</param>
+        private void DestroyBuilding(Collider hit) {
+            SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int tileIndex);
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsRoadAnchor;
+            if (hit.gameObject.TryGetComponent(out SnapToTile snap) && snap.m_hideTop) {
+                TileEffectRendering.SetTopVisibility(ZavalaGame.SimWorld.Tiles[tileIndex], true);
+            }
+            OccupiesTile ot = hit.gameObject.GetComponent<OccupiesTile>();
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            Log.Msg("[UserBuildingSystem] Attempting delete, found type {0}", ot.Type.ToString());
+            switch (ot.Type) {
+                case BuildingType.Road:
+                    pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>());
+                    break;
+                case BuildingType.Digester:
+                    pools.Digesters.Free(ot);
+                    break;
+                case BuildingType.Storage:
+                    Debug.Log("storage");
+                    pools.Storages.Free(ot);
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
         private bool TryDestroyBuilding(SimGridState grid, RoadNetwork network, int tileIndex) {
             // find the building associated with the tileIndex

@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf898e7b8e31975428fa78bd14534ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 3
 --- !u!114 &947691686583835036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeightOffset: 0
   m_initial: 1
+  m_hideTop: 0
 --- !u!114 &947691686583835035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +197,9 @@ MonoBehaviour:
   Id:
     m_Source: 
     m_HashValue: 0
+  Class:
+    m_Source: 
+    m_HashValue: 0
   ActivelyDisplayingEvent: 0
 --- !u!135 &3929456070218417537
 SphereCollider:
@@ -221,7 +226,7 @@ GameObject:
   - component: {fileID: 6934697932591090636}
   - component: {fileID: 8116604590816144531}
   m_Layer: 7
-  m_Name: GameObject
+  m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

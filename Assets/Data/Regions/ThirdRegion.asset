@@ -738,16 +738,16 @@ MonoBehaviour:
   Buildings:
   - LocalTileIndex: 67
     ScriptName: City
-    Type: 2
+    Type: 3
   - LocalTileIndex: 28
     ScriptName: 
-    Type: 1
+    Type: 2
   - LocalTileIndex: 61
     ScriptName: 
-    Type: 1
+    Type: 2
   - LocalTileIndex: 98
     ScriptName: 
-    Type: 0
+    Type: 1
   Points: []
   Roads: []
   Modifiers: []

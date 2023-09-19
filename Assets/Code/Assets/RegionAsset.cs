@@ -13,15 +13,22 @@ namespace Zavala {
         Region5
     }
 
+    public enum BuildingType : byte {
+        None,
+        GrainFarm,
+        DairyFarm,
+        City,
+        Road,
+        Digester,
+        Storage,
+        Skimmer,
+        Obstacle
+    }
+
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]
     public sealed class RegionAsset : ScriptableObject {
         #region Types
 
-        public enum BuildingType : byte {
-            GrainFarm,
-            DairyFarm,
-            City
-        }
 
         public enum TerrainModifier : byte {
             Tree,

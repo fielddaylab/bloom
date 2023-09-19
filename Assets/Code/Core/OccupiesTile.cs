@@ -5,6 +5,7 @@ using Zavala.World;
 using FieldDay;
 using Zavala.Sim;
 using BeauUtil.Debugger;
+using Zavala.Building;
 
 namespace Zavala {
     [DisallowMultipleComponent]
@@ -12,6 +13,7 @@ namespace Zavala {
         [NonSerialized] public int TileIndex;
         [NonSerialized] public HexVector TileVector;
         [NonSerialized] public ushort RegionIndex;
+        [SerializeField] public BuildingType Type;
 
         private void OnEnable() {
             RefreshData();

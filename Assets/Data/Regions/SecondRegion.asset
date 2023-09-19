@@ -618,16 +618,16 @@ MonoBehaviour:
   Buildings:
   - LocalTileIndex: 53
     ScriptName: City
-    Type: 2
+    Type: 3
   - LocalTileIndex: 77
     ScriptName: CAFO
-    Type: 1
+    Type: 2
   - LocalTileIndex: 28
     ScriptName: 
-    Type: 0
+    Type: 1
   - LocalTileIndex: 50
     ScriptName: 
-    Type: 0
+    Type: 1
   Points: []
   Roads: []
   Modifiers: []

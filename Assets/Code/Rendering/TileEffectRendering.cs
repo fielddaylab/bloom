@@ -41,10 +41,10 @@ namespace Zavala.World
             }
         }
 
-        static public bool DisableTopVisibility(TileInstance tile) {
+        static public bool SetTopVisibility(TileInstance tile, bool vis) {
             if (tile != null) {
                 Debug.Log("[TileEffectRendering] Hiding top of tile " + tile.ToString());
-                tile.TopRenderer.enabled = false;
+                tile.TopRenderer.enabled = vis;
                 return true;
             }
             Debug.Log("[TileEffectRendering] Tile doesn't exist, apparently");

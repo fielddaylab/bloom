@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf898e7b8e31975428fa78bd14534ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 0
 --- !u!114 &7207750407103898590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,6 +160,7 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
+  ProducedLastTick: 0
 --- !u!114 &2719164954211423765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,6 +175,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxQueuedEvents: 3
   Id:
+    m_Source: 
+    m_HashValue: 0
+  Class:
     m_Source: 
     m_HashValue: 0
   ActivelyDisplayingEvent: 0
@@ -192,8 +197,8 @@ GameObject:
   - component: {fileID: 7291294420475072061}
   - component: {fileID: 7291294420475072053}
   - component: {fileID: 7291294420475072054}
-  - component: {fileID: 7291294420475072055}
   - component: {fileID: 6065373712702326176}
+  - component: {fileID: 5890811373593064956}
   m_Layer: 7
   m_Name: DairyFarm
   m_TagString: Untagged
@@ -280,6 +285,7 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 1
     Milk: 0
+  ProducedLastTick: 0
 --- !u!114 &7291294420475072062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,6 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf898e7b8e31975428fa78bd14534ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 2
 --- !u!114 &7291294420475072054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,19 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeightOffset: 0
   m_initial: 1
---- !u!65 &7291294420475072055
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7291294420475072060}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_hideTop: 0
 --- !u!114 &6065373712702326176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,7 +360,23 @@ MonoBehaviour:
   Id:
     m_Source: 
     m_HashValue: 0
+  Class:
+    m_Source: 
+    m_HashValue: 0
   ActivelyDisplayingEvent: 0
+--- !u!135 &5890811373593064956
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0

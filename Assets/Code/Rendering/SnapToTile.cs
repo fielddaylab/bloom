@@ -10,6 +10,7 @@ namespace Zavala {
     public sealed class SnapToTile : MonoBehaviour {
         public float HeightOffset;
         [SerializeField] private bool m_initial; // whether this object is enabled before the first update
+        public bool m_hideTop; // whether this object should hide the top renderer of the tile it's placed on
         private void OnEnable() {
             if (m_initial) {
                 // wait for world to finish setting up
@@ -34,6 +35,9 @@ namespace Zavala {
             HexVector pos = tile.TileVector;
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             worldPos.y += snap.HeightOffset;
+            if (snap.m_hideTop) {
+                TileEffectRendering.SetTopVisibility(ZavalaGame.SimWorld.Tiles[tile.TileIndex], false);
+            }
             snap.transform.position = worldPos;
         }
     }

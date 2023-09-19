@@ -113,15 +113,15 @@ namespace Zavala.Sim {
                 HexVector pos = grid.HexSize.FastIndexToPos(mapIndex);
                 Vector3 worldPos = HexVector.ToWorld(pos, grid.Terrain.Info[mapIndex].Height, world.WorldSpace);
                 switch (obj.Type) {
-                    case RegionAsset.BuildingType.City: {
+                    case BuildingType.City: {
                         GameObject.Instantiate(pools.City, worldPos, Quaternion.identity);
                         break;
                     }
-                    case RegionAsset.BuildingType.DairyFarm: {
+                    case BuildingType.DairyFarm: {
                         GameObject.Instantiate(pools.DairyFarm, worldPos, Quaternion.identity);
                         break;
                     }
-                    case RegionAsset.BuildingType.GrainFarm: {
+                    case BuildingType.GrainFarm: {
                         GameObject.Instantiate(pools.GrainFarm, worldPos, Quaternion.identity);
                         break;
                     }

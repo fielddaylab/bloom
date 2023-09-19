@@ -201,7 +201,7 @@ namespace Zavala.Editor {
                         case 0: { // grain
                             buildingList.Add(new RegionAsset.BuildingData() {
                                 LocalTileIndex = (ushort) pos,
-                                Type = RegionAsset.BuildingType.GrainFarm,
+                                Type = BuildingType.GrainFarm,
                                 ScriptName = scriptName
                             });
                             occupiedTileIndices.Add(pos);
@@ -211,7 +211,7 @@ namespace Zavala.Editor {
                         case 1: { // dairy
                             buildingList.Add(new RegionAsset.BuildingData() {
                                 LocalTileIndex = (ushort) pos,
-                                Type = RegionAsset.BuildingType.DairyFarm,
+                                Type = BuildingType.DairyFarm,
                                 ScriptName = scriptName
                             });
                             occupiedTileIndices.Add(pos);
@@ -221,7 +221,7 @@ namespace Zavala.Editor {
                         case 2: { // city
                             buildingList.Add(new RegionAsset.BuildingData() {
                                 LocalTileIndex = (ushort) pos,
-                                Type = RegionAsset.BuildingType.City,
+                                Type = BuildingType.City,
                                 ScriptName = scriptName
                             });
                             occupiedTileIndices.Add(pos);
