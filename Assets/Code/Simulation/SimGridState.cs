@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Building;
+using Zavala.Economy;
 using Zavala.Roads;
 using Zavala.World;
 
@@ -274,6 +275,7 @@ namespace Zavala.Sim {
                 }
                 Debug.Log("[SimGridState] Region updated from " + grid.CurrRegionIndex + " to " + newRegionIndex);
                 grid.CurrRegionIndex = newRegionIndex;
+                ShopUtility.RefreshShop(Game.SharedState.Get<BudgetData>(), Game.SharedState.Get<ShopState>(), grid);
                 return true;
             } 
             return false;
