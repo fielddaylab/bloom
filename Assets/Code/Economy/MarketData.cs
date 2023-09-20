@@ -20,7 +20,7 @@ namespace Zavala.Economy
 
         // buffer for buyers that requested for this market cycle
         public RingBuffer<MarketRequestInfo> RequestQueue; // Queue of requests, sitting idle
-        public RingBuffer<MarketActiveRequestInfo> FulfullQueue; // Queue of requests which have found a match and need to route through a fulfiller
+        public RingBuffer<MarketActiveRequestInfo> FulfillQueue; // Queue of requests which have found a match and need to route through a fulfiller
         public RingBuffer<MarketActiveRequestInfo> ActiveRequests; // List of requests actively being fulfilled (en-route)
 
         // Pie Chart
@@ -41,7 +41,7 @@ namespace Zavala.Economy
             Buyers = new RingBuffer<ResourceRequester>(16, RingBufferMode.Expand);
             Suppliers = new RingBuffer<ResourceSupplier>(16, RingBufferMode.Expand);
             RequestQueue = new RingBuffer<MarketRequestInfo>(16, RingBufferMode.Expand);
-            FulfullQueue = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
+            FulfillQueue = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
             ActiveRequests = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
 
             int pieChartHistoryDepth = 10;
@@ -117,19 +117,22 @@ namespace Zavala.Economy
         public ResourceSupplier Supplier;
         public ResourceRequester Requester;
         public ResourceBlock Requested;
+        public ResourceBlock Supplied;
         public RequestFulfiller Fulfiller;
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, ResourceBlock request) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, ResourceBlock request, ResourceBlock supply) {
             Supplier = supplier;
             Requester = requester;
             Requested = request;
+            Supplied = supply;
             Fulfiller = null;
         }
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request, ResourceBlock supplied) {
             Supplier = supplier;
             Requester = request.Requester;
             Requested = request.Requested;
+            Supplied = supplied;
             Fulfiller = null;
         }
     }
@@ -204,7 +207,7 @@ namespace Zavala.Economy
         static public void QueueShipping(MarketActiveRequestInfo request) {
             MarketData marketData = Game.SharedState.Get<MarketData>();
             Assert.NotNull(marketData);
-            marketData.FulfullQueue.PushBack(request);
+            marketData.FulfillQueue.PushBack(request);
         }
 
         #endregion // Requests

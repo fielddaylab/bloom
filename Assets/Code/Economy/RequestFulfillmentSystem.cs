@@ -31,7 +31,7 @@ namespace Zavala.Economy {
         }
 
         private void ProcessFulfillmentQueue(MarketData marketData, MarketPools pools) {
-            while (marketData.FulfullQueue.TryPopFront(out MarketActiveRequestInfo request)) {
+            while (marketData.FulfillQueue.TryPopFront(out MarketActiveRequestInfo request)) {
                 if (!request.Requester.IsLocalOption) {
                     request.Fulfiller = pools.Trucks.Alloc();
                     FulfillerUtility.InitializeFulfiller(request.Fulfiller, request);

@@ -77,10 +77,9 @@ namespace Zavala.Economy
                     }
 
                     Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", adjustedValueRequested, supplier.name, adjustedFound.Value.Requester.name);
-                    ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested);
-                    MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value);
+                    MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested));
                     if (baseProfit < 0) { supplier.SoldAtALoss = true; }
-                    m_StateA.FulfullQueue.PushBack(activeRequest); // picked up by fulfillment system
+                    m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
                     int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
                     if (!adjustedFound.Value.Requester.IsLocalOption) {
                         MarketUtility.RecordPurchaseToHistory(marketData, adjustedValueRequested, regionPurchasedIn);

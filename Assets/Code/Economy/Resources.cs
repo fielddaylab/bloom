@@ -308,17 +308,17 @@ namespace Zavala.Economy {
         /// <summary>
         /// Consumess the given resource block from the given source.
         /// </summary>
-        static public bool Consume(ref ResourceBlock source, ResourceBlock request) {
+        static public ResourceBlock Consume(ref ResourceBlock source, ResourceBlock request) {
             if (source.PhosphorusCount >= request.PhosphorusCount
                 && source.Grain >= request.Grain && source.Milk >= request.Milk) {
                 GatherPhosphorusPrioritized(source, request.PhosphorusCount, out ResourceBlock consumed);
                 consumed.Grain = request.Grain;
                 consumed.Milk = request.Milk;
                 source -= consumed;
-                return true;
+                return consumed;
             }
 
-            return false;
+            return new ResourceBlock();
         }
 
         /// <summary>

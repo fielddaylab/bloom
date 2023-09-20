@@ -23,7 +23,7 @@ namespace Zavala.Economy {
     static public class FulfillerUtility {
         static public void InitializeFulfiller(RequestFulfiller unit, MarketActiveRequestInfo request) {
             unit.Source = request.Supplier;
-            unit.Carrying = request.Requested;
+            unit.Carrying = request.Supplied;
             unit.Target = request.Requester;
 
             unit.TargetWorldPos = unit.Target.transform.position;
