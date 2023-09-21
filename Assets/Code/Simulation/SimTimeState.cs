@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.UIElements;
 using BeauPools;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -28,6 +29,7 @@ namespace Zavala.Sim {
         /// What has paused the simulation.
         /// </summary>
         [AutoEnum] public SimPauseFlags Paused = 0;
+        public Graphic PauseOverlay;
     }
 
     [Flags]

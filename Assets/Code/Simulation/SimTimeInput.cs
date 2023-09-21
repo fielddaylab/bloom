@@ -13,8 +13,10 @@ namespace Zavala.Sim {
             if (m_StateB.ButtonPressed(InputButton.Pause)) {
                 if ((m_StateA.Paused & SimPauseFlags.User) != 0) {
                     m_StateA.Paused &= ~SimPauseFlags.User;
+                    m_StateA.PauseOverlay.gameObject.SetActive(false);
                 } else {
                     m_StateA.Paused |= SimPauseFlags.User;
+                    m_StateA.PauseOverlay.gameObject.SetActive(true);
                 }
             }
         }
