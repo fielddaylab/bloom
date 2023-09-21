@@ -65,7 +65,7 @@ namespace Zavala.Advisor
                 return;
             }
 
-            m_Container.HideAdvisorButtons();
+            //m_Container.HideAdvisorButtons();
             //PoliciesButton.SetActive(false);
         }
 

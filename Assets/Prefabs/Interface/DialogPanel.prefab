@@ -552,6 +552,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Contents: {fileID: 6082034104170215353}
+  Pin: {fileID: 0}
   m_ButtonContainer: {fileID: 8246924889287396043}
   m_Button: {fileID: 6305211003446646782}
   m_CloseButton: {fileID: 3166169138213520959}
@@ -1746,7 +1747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 369.055
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6801886332995570997, guid: c88fce1a247199c47aada0ce18dd9cae, type: 3}
       propertyPath: m_AnchoredPosition.y

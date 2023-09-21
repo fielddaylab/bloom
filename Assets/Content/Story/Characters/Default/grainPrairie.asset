@@ -14,15 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NameId: '[Grain Farmer Name] (Prairie)'
   TitleId: Grain Farmer
+  IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4283545344
+    rgba: 4278936460
+  PanelColor:
+    serializedVersion: 2
+    rgba: 0
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 0
   NameColor:
     serializedVersion: 2
     rgba: 4290693832
   TitleColor:
     serializedVersion: 2
-    rgba: 4282955560
+    rgba: 4281750225
   TextColor:
     serializedVersion: 2
     rgba: 4290693832

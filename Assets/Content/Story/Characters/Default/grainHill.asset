@@ -14,17 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NameId: '[Grain Farmer Name]'
   TitleId: Grain Farmer
+  IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4283545344
+    rgba: 4280586650
+  PanelColor:
+    serializedVersion: 2
+    rgba: 0
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 0
   NameColor:
     serializedVersion: 2
-    rgba: 4290693832
+    rgba: 4294967295
   TitleColor:
     serializedVersion: 2
-    rgba: 4282955560
+    rgba: 4280848823
   TextColor:
     serializedVersion: 2
-    rgba: 4290693832
+    rgba: 4294967295
   PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
   PortraitBackground: {fileID: 0}

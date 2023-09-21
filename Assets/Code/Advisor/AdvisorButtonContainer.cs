@@ -7,7 +7,6 @@ public class AdvisorButtonContainer : MonoBehaviour
 {
     [SerializeField] private RectTransform m_Rect;
     private Routine m_TransitionRoutine;
-    private bool m_FullyExpanded;
 
 
     public void HideAdvisorButtons() {
@@ -18,7 +17,6 @@ public class AdvisorButtonContainer : MonoBehaviour
     }
 
     private IEnumerator HideRoutine() {
-        m_FullyExpanded = false;
         yield return m_Rect.AnchorPosTo(-100, 0.3f, Axis.Y).Ease(Curve.CubeIn);
          
         this.gameObject.SetActive(false);
@@ -28,7 +26,6 @@ public class AdvisorButtonContainer : MonoBehaviour
     private IEnumerator ShowRoutine() {
         this.gameObject.SetActive(true);
         yield return m_Rect.AnchorPosTo(-20, 0.3f, Axis.Y).Ease(Curve.CubeIn);
-        m_FullyExpanded = true;
         yield return null;
     }
 

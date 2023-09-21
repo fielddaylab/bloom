@@ -1,5 +1,11 @@
 # basePath   region1
 
+:: welcome
+@trigger GameBooted
+@once
+{local @advisorEcon}    Greetings.
+{local @advisorEcon}    Let's get right to business, shall we?
+{local @advisorEcon}    Start by opening the shop and connecting these farms with a road.
 
 :: sittingOmens
 @trigger        LetSat
@@ -12,7 +18,7 @@
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology"
 @forcePolicy    Ecology
-{local @advisorEcol}    Here are the ecology policies.
+{local @advisorEcol}    Hey there boss! Here to check out some policies?
 
 :: testEconomyAdvisorOpen
 @trigger        AdvisorOpened
@@ -25,10 +31,10 @@
 @conditions     alertType == "excess-runoff"
 @forcePolicy    Ecology
 @queued
-{local @grainFarmer}    Whoa! Excessive runoff over here!
+{local @grainFarmer}    Goodness gracious. This manure just slips off my fields.
 {local @advisorEcol}    There has been excessive runoff!
 {local @advisorEcol}    Despite connecting the grain farm, it was cheaper for the dairy farm to let the manure sit.
-{local @advisorEcol}    I've unlocked some new policies to address the runoff. Set a higher penalty!
+{local @advisorEcol}    I've unlocked some new policies to address the runoff. I'd advise creating a penalty.
 $call UnlockCards(RunoffPolicy)
 
 :: testBloomTrigger

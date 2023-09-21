@@ -218,8 +218,8 @@ namespace Zavala.UI {
 
         private IEnumerator ShowRoutine() {
             this.gameObject.SetActive(true);
+            m_AdvisorButtons.HideAdvisorButtons();
             m_Button.gameObject.SetActive(true);
-
             yield return m_Rect.AnchorPosTo(m_OnscreenY, 0.3f, Axis.Y).Ease(Curve.CubeIn);
 
             yield return null;
@@ -227,7 +227,7 @@ namespace Zavala.UI {
 
         private IEnumerator HideRoutine() {
             m_FullyExpanded = false;
-
+            m_AdvisorButtons.ShowAdvisorButtons();
             if (m_PolicyExpansionContainer.activeSelf) {
                 // TODO: perform policy collapse routine
                 m_PolicyExpansionContainer.SetActive(false);
@@ -278,7 +278,6 @@ namespace Zavala.UI {
 
         private void HandlePolicyCloseClicked() {
             m_TransitionRoutine.Replace(HideRoutine());
-            m_AdvisorButtons.ShowAdvisorButtons();
             
         }
 
