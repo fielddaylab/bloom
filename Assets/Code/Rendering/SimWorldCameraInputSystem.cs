@@ -1,4 +1,5 @@
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.SharedState;
 using FieldDay.Systems;
@@ -26,11 +27,11 @@ namespace Zavala.World {
             }
             
             Vector3 camPos = m_StateA.Camera.transform.position;
-            Debug.Log("Scroll recorded..." + (camPos.z + zoomDelta));
+            Log.Msg("[SimWorldCameraSystem] Scroll zoom detected, scrolling to {0}", (camPos.z + zoomDelta));
             if (camPos.z + zoomDelta <= m_StateA.CameraMaxZoomDist && camPos.z + zoomDelta >= m_StateA.CameraMinZoomDist) {
                 m_StateA.Camera.transform.Translate(0, 0, zoomDelta);
             } else {
-                Debug.Log("Outta bounds: "+ (camPos.z + zoomDelta));
+                Log.Msg("[SimWorldCameraSystem] Scroll {0} out of bounds", (camPos.z + zoomDelta));
             }
         }
     }
