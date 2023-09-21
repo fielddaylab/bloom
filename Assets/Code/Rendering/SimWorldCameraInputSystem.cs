@@ -20,6 +20,18 @@ namespace Zavala.World {
                 // temp: close context menu when moving
                 BuildingPopup.instance.CloseMenu();
             }
+            float zoomDelta = m_StateB.ScrollWheel.y * m_StateA.ZoomFactor;
+            if (zoomDelta == 0) {
+                return;
+            }
+            
+            Vector3 camPos = m_StateA.Camera.transform.position;
+            Debug.Log("Scroll recorded..." + (camPos.z + zoomDelta));
+            if (camPos.z + zoomDelta <= m_StateA.CameraMaxZoomDist && camPos.z + zoomDelta >= m_StateA.CameraMinZoomDist) {
+                m_StateA.Camera.transform.Translate(0, 0, zoomDelta);
+            } else {
+                Debug.Log("Outta bounds: "+ (camPos.z + zoomDelta));
+            }
         }
     }
 }

@@ -12,6 +12,9 @@ namespace Zavala.World {
 
         [Header("Camera Movement")]
         public float CameraMoveSpeed;
+        public float CameraMaxZoomDist;
+        public float CameraMinZoomDist;
+        public int ZoomFactor;
 
         #endregion // Inspector
     }
