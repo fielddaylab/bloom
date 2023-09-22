@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Skimmer
+  m_Name: Digester00
   m_Shader: {fileID: -6465566751694194690, guid: 55b8488a904e04b2592896ac29ffaebe, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadowTexture:
-        m_Texture: {fileID: 2800000, guid: 5d3ee049952ab0442980e7b872ebb0af, type: 3}
+        m_Texture: {fileID: 2800000, guid: df32b78c836e1544a805fbe63883a173, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:

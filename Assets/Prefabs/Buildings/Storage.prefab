@@ -315,10 +315,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 259913788303091578, guid: 52421d5c0f46e6342b1fc85bdd6a3747, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: afb766f4c628c0a4f81be440ae56e8c4, type: 2}
     - target: {fileID: 919132149155446097, guid: 52421d5c0f46e6342b1fc85bdd6a3747, type: 3}
       propertyPath: m_Name
       value: manureStorage
       objectReference: {fileID: 0}
+    - target: {fileID: 8818982399787282693, guid: 52421d5c0f46e6342b1fc85bdd6a3747, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: afb766f4c628c0a4f81be440ae56e8c4, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52421d5c0f46e6342b1fc85bdd6a3747, type: 3}
 --- !u!4 &6967617638726455199 stripped
