@@ -151,11 +151,6 @@ namespace Zavala.Building
             }
             if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.NonBuildable) != 0) {
                 Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} unbuildable", tileIndex);
-                if (activeTool == UserBuildTool.Road) {
-                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-                    // cancel in-progress road 
-                    CancelRoad(grid, network);
-                }
                 return;
             }
 
@@ -373,7 +368,7 @@ namespace Zavala.Building
                             // Tile is not buildable
                             // cannot build a road through non-buildable tiles
                             Debug.Log("[UserBuildingSystem] Cannot build a road through non-buildable tiles");
-                            CancelRoad(grid, network);
+                            // CancelRoad(grid, network);
                             return;
                         }
                         else {
