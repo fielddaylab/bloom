@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 947691686583835032}
   - component: {fileID: 947691686583835033}
   - component: {fileID: 546599153688107881}
-  - component: {fileID: 3929456070218417537}
+  - component: {fileID: 8857267195269478930}
   m_Layer: 7
   m_Name: City
   m_TagString: Untagged
@@ -201,7 +201,6 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   ActivelyDisplayingEvent: 0
---- !u!135 &3929456070218417537
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,9 +210,10 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
   m_Radius: 0.5
-  m_Center: {x: 0, y: -0.2, z: 0}
+  m_Height: 1.1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!1 &5417570481552996235
 GameObject:
   m_ObjectHideFlags: 0

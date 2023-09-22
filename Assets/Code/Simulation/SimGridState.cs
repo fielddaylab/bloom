@@ -161,7 +161,7 @@ namespace Zavala.Sim {
         static public void GenerateRandomPhosphorus(SimGridState grid, SimPhosphorusState phosphorus) {
             for (int i = 0; i < grid.HexSize.Size; i++) {
                 if (grid.Terrain.Info[i].Category != TerrainCategory.Void && grid.Random.Chance(0.2f)) {
-                    SimPhospohorusUtility.AddPhosphorus(phosphorus, i, grid.Random.Next(5, 25));
+                    SimPhospohorusUtility.AddPhosphorus(phosphorus, i, grid.Random.Next(2, 8));
                 }
             }
         }

@@ -3,16 +3,21 @@
 :: welcome
 @trigger GameBooted
 @once
-{local @advisorEcon}    Greetings.
-{local @advisorEcon}    Let's get right to business, shall we?
-{local @advisorEcon}    Start by opening the shop and connecting these farms with a road.
+{local @advisorEcon}    Greetings. Let's get right to business, shall we?
+{local @advisorEcon}    These troublesome algae blooms have been appearing all over. 
+{local @advisorEcon}    I'm here to fill you in on the market conditions driving this trend.
+{local @advisorEcon}    It starts with the Grain Farms: they import mineral phosphorus to fertilize their fields.
+{local @advisorEcon}    And the Dairy Farms let their phosphorus-filled manure run into the lakes.
+{local @advisorEcon}    Seems to me they could help each other out, no?
+{local @advisorEcon}    Start by opening the shop and connecting these farms with a Road.
 
 :: sittingOmens
 @trigger        LetSat
 @once
-{local @advisorEcol}    Your dairy farm has decided to let manure sit instead of shipping it elsewhere.
-{local @advisorEcol}    Consider hooking your farm up to a grain farm.
-{local @advisorEcol}    Otherwise, this may have ramifications for lake health down the line...
+{local @advisorEcol}    It looks like this dairy farm is letting its manure sit and run off.
+{local @advisorEcon}    Indeed. You'll have to make it favorable for them to send it to a grain farm.
+{local @advisorEcon}    Make sure there's a road connecting them, and that shipping is cheaper than allowing runoff.
+{local @advisorEcol}    This could have ramifications for lake health down the line...
 
 :: testEcologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -33,16 +38,19 @@
 @queued
 {local @grainFarmer}    Goodness gracious. This manure just slips off my fields.
 {local @advisorEcol}    There has been excessive runoff!
-{local @advisorEcol}    Despite connecting the grain farm, it was cheaper for the dairy farm to let the manure sit.
-{local @advisorEcol}    I've unlocked some new policies to address the runoff. I'd advise creating a penalty.
+{local @advisorEcol}    Looks like it's still cheaper for the dairy farm to let the manure sit.
+{local @advisorEcol}    We've been authorized to implement a penalty for allowing manure runoff.
+{local @advisorEcon}    That could incentivize selling, but if it's too high it'll disrupt the supply chain.
+{local @advisorEcol}    What do you think, boss?
 $call UnlockCards(RunoffPolicy)
 
 :: testBloomTrigger
 @trigger        AlertExamined
 @conditions     alertType == "bloom"
 @forcePolicy    Ecology
-@queued
-{local @advisorEcol}    Algae blooms are appearing in the water!
+@once
+{local @advisorEcol}    Oh dear. We're getting algae blooms here in our lake.
+{local @advisorEcol}    
 $call UnlockCards(RunoffPolicy)
 
 
@@ -51,10 +59,14 @@ $call UnlockCards(RunoffPolicy)
 @conditions     alertType == "selling-loss"
 @forcePolicy    Economy
 @queued
-{local @grainFarmer}    I'm selling at a loss over here!
-{local @advisorEcon}    This supplier is selling at a loss!
+{local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
+{local @advisorEcon}    This supplier is selling at a loss.
+{local @advisorEcon}    This supplier is selling at a loss.
+
 
 :: testRegionUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Prairie"
-{@advisorEconPrairie}    Welcome to the Prairie!
+{@advisorEconPrairie}    Howdy there!
+{@advisorEconPrairie}    We've heard about your program over here in Prairie County.
+{@advisorEconPrairie}    We think it shows promise. Maybe we could coordinate to address this muck together? 
