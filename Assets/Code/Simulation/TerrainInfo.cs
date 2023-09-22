@@ -46,7 +46,8 @@ namespace Zavala.Sim {
         IsBorder = 0x02,
         BorderingWater = 0x04, // Needed? Seems to already check during phosphorus flow...
         IsWater = 0x08,
-        TopHidden = 0x10
+        TopHidden = 0x10,
+        IsOccupied = 0x20,
     }
 
     #endregion // Static Info

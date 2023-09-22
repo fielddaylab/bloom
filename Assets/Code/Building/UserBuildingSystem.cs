@@ -155,12 +155,8 @@ namespace Zavala.Building
             }
 
             switch (activeTool) {
-                case UserBuildTool.Destroy:
-                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-                    //TryDestroyBuilding(grid, network, tileIndex);
-                    break;
                 case UserBuildTool.Road:
-                    network = Game.SharedState.Get<RoadNetwork>();
+                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
                     TryBuildRoad(grid, network, tileIndex);
                     break;
                 case UserBuildTool.Digester:
@@ -176,30 +172,22 @@ namespace Zavala.Building
         /// <summary>
         /// For single tile builds
         /// </summary>
-        /// <param name="grid"></param>
-        /// <param name="activeTool"></param>
-        /// <param name="tileIndex"></param>
-        /// <returns></returns>
         private bool TryBuildOnTile(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
-            // TODO: Check if valid location
-            // disallow: water, existing road(?)
+            // disallow: water, existing building
+            // TODO: disallow road?
             bool validLocation = true;
+            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsWater) != 0) validLocation = false;
+            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsOccupied) != 0) validLocation = false;
             if (!validLocation) {
                 return false;
             }
 
-            // TODO: try to pay for build
-            bool purchaseSuccessful = TryPurchaseBuild(activeTool, grid.CurrRegionIndex);
-            if (!purchaseSuccessful) {
+            if (!TryPurchaseBuild(activeTool, grid.CurrRegionIndex)) {
                 return false;
             }
 
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
             switch (activeTool) {
-                case UserBuildTool.Destroy:
-                case UserBuildTool.Road:
-                    // N/A
-                    break;
                 case UserBuildTool.Digester:
                     BuildOnTile(grid, pools.Digesters, tileIndex);
                     break;
@@ -220,7 +208,8 @@ namespace Zavala.Building
             // add build, snap to tile
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
-            OccupiesTile newDigester = pool.Alloc(worldPos);
+            grid.Terrain.Info[tileIndex].Flags |= TerrainFlags.IsOccupied;
+            pool.Alloc(worldPos);
         }
         /// <summary>
         /// Check if the current region can afford to purchase the given buildings, and deduct the price if so.
@@ -251,8 +240,8 @@ namespace Zavala.Building
             if (hit != null && hit.gameObject.tag == PLAYERPLACED_TAG) {
                 Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + new Vector3(0,0.5f,0));
                 BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {
-                    DestroyBuilding(hit);
-                    }, null);
+                    DestroyBuilding(grid, hit);
+                }, null);
                 return true;
             }
             return false;
@@ -262,10 +251,11 @@ namespace Zavala.Building
         /// Destroys a building with the hit collider
         /// </summary>
         /// <param name="hit">Collider hit by a raycast</param>
-        private void DestroyBuilding(Collider hit) {
+        private void DestroyBuilding(SimGridState grid, Collider hit) {
             SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int tileIndex);
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsRoadAnchor;
+            grid.Terrain.Info[tileIndex].Flags &= ~TerrainFlags.IsOccupied;
             if (hit.gameObject.TryGetComponent(out SnapToTile snap) && snap.m_hideTop) {
                 TileEffectRendering.SetTopVisibility(ZavalaGame.SimWorld.Tiles[tileIndex], true);
             }

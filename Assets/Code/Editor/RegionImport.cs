@@ -206,6 +206,7 @@ namespace Zavala.Editor {
                             });
                             occupiedTileIndices.Add(pos);
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
+                            tiles[pos].Flags |= TerrainFlags.IsOccupied;
                             break;
                         }
                         case 1: { // dairy
@@ -216,6 +217,7 @@ namespace Zavala.Editor {
                             });
                             occupiedTileIndices.Add(pos);
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
+                            tiles[pos].Flags |= TerrainFlags.IsOccupied;
                             break;
                         }
                         case 2: { // city
@@ -226,9 +228,10 @@ namespace Zavala.Editor {
                             });
                             occupiedTileIndices.Add(pos);
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
+                            tiles[pos].Flags |= TerrainFlags.IsOccupied;
                             break;
                         }
-                        case 3: {
+                        case 3: { // Tree
                             modifierList.Add(new RegionAsset.ModifierData() {
                                 LocalTileIndex = (ushort) pos,
                                 ScriptName = scriptName,
@@ -236,9 +239,10 @@ namespace Zavala.Editor {
                             });
                             tiles[pos].Flags |= TerrainFlags.NonBuildable;
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
+                            tiles[pos].Flags |= TerrainFlags.IsOccupied;
                             break;
                         }
-                        case 4: {
+                        case 4: { // Rock
                             modifierList.Add(new RegionAsset.ModifierData() {
                                 LocalTileIndex = (ushort) pos,
                                 ScriptName = scriptName,
@@ -246,6 +250,7 @@ namespace Zavala.Editor {
                             });
                             tiles[pos].Flags |= TerrainFlags.NonBuildable;
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
+                            tiles[pos].Flags |= TerrainFlags.IsOccupied;
                             break;
                         }
                         case 6: { // road
