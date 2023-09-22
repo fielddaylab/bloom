@@ -50,7 +50,7 @@ $call UnlockCards(RunoffPolicy)
 @forcePolicy    Ecology
 @once
 {local @advisorEcol}    Oh dear. We're getting algae blooms here in our lake.
-{local @advisorEcol}    
+{local @advisorEcol}    We've been authorized to implement a runoff penalty to disincentivize sitting manure.
 $call UnlockCards(RunoffPolicy)
 
 
@@ -61,7 +61,7 @@ $call UnlockCards(RunoffPolicy)
 @queued
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
 {local @advisorEcon}    This supplier is selling at a loss.
-{local @advisorEcon}    This supplier is selling at a loss.
+{local @advisorEcon}    If we want to keep business running smoothly, we'd best decrease costs.
 
 
 :: testRegionUnlocked
