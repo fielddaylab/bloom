@@ -3,13 +3,25 @@
 :: welcome
 @trigger GameBooted
 @once
+$call Pause()
 {local @advisorEcon}    Greetings. Let's get right to business, shall we?
 {local @advisorEcon}    These troublesome algae blooms have been appearing all over. 
 {local @advisorEcon}    I'm here to fill you in on the market conditions driving this trend.
 {local @advisorEcon}    It starts with the Grain Farms: they import mineral phosphorus to fertilize their fields.
-{local @advisorEcon}    And the Dairy Farms let their phosphorus-filled manure run into the lakes.
+{local @advisorEcon}    The Dairy Farms will buy their grain to feed cows... 
+{local @advisorEcon}    But then their phosphorus-filled manure runs into the lakes.
 {local @advisorEcon}    Seems to me they could help each other out, no?
-{local @advisorEcon}    Start by opening the shop and connecting these farms with a Road.
+{local @advisorEcon}    Start by opening your Funding menu to connect these farms with a Road.
+$call Unpause()
+
+
+// Step 2: Road drawing tutorial
+:: roadSelected
+
+// Step 3: Introduce cities
+:: farmsConnected
+// TODO: add a trigger for farm connection.
+
 
 :: sittingOmens
 @trigger        LetSat
@@ -67,6 +79,7 @@ $call UnlockCards(RunoffPolicy)
 :: testRegionUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Prairie"
+@queued
 {@advisorEconPrairie}    Howdy there!
 {@advisorEconPrairie}    We've heard about your program over here in Prairie County.
 {@advisorEconPrairie}    We think it shows promise. Maybe we could coordinate to address this muck together? 
