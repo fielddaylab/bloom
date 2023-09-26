@@ -97,7 +97,8 @@ namespace Zavala.Cards
                 }
 
                 if (currentExists) {
-                    m_OverlayImage.enabled = false; // hide open slot image, in favor of the currently selected card
+                    // the overlay image acts as both the lock/unlock and the policy image, no need to change it here
+                    //m_OverlayImage.enabled = false;
                 }
             }
         }
@@ -137,9 +138,10 @@ namespace Zavala.Cards
                 for (int i = 0; i < cardData.Count; i++) {
                     CardData data = cardData[i];
                     CardUI card = pools.Cards.Alloc(this.transform.parent != null ? this.transform.parent : this.transform);
-                    CardUIUtility.PopulateCard(card, data);
+                    CardUIUtility.PopulateCard(card, data, m_SlotColor);
 
                     card.transform.localPosition = this.transform.localPosition;
+                    card.transform.SetAsFirstSibling();
                     m_DisplayCards.Add(card);
                     card.Button.onClick.AddListener(() => { OnCardClicked(policyState, data, card); });
                 }
@@ -188,7 +190,7 @@ namespace Zavala.Cards
             m_OverlayImage.sprite = sprite;
             m_OverlayImage.color = Color.white;
             m_Text.SetText(locText);
-            // m_OverlayImage.enabled = true;
+            m_OverlayImage.enabled = true;
         }
 
         #region Routines
@@ -197,16 +199,16 @@ namespace Zavala.Cards
             m_HandState = HandState.Showing;
 
             float offset = 0.5f;
-            float leftMost = 55 * (m_DisplayCards.Count - 1);
-            float rotatedMost = 7.5f * (m_DisplayCards.Count - 1);
+            float leftMost = 60 * (m_DisplayCards.Count - 1);
+            float rotatedMost = 8.0f * (m_DisplayCards.Count - 1);
             float topMost = 155;
             for (int i = 0; i < m_DisplayCards.Count; i++) {
                 Transform cardTransform = m_DisplayCards[i].transform;
                 Routine.Start(
                     Routine.Combine(
                         cardTransform.MoveTo(new Vector3(
-                            cardTransform.position.x - leftMost + 110 * i,
-                            cardTransform.position.y + topMost - 22 * Mathf.Abs((i + offset) - (m_DisplayCards.Count / 2.0f)),
+                            cardTransform.position.x - leftMost + 120 * i,
+                            cardTransform.position.y + topMost - 30 * Mathf.Abs((i + offset) - (m_DisplayCards.Count / 2.0f)),
                             cardTransform.position.z
                         ), .3f, Axis.XY),
                         cardTransform.RotateTo(cardTransform.rotation.z + rotatedMost - 15f * i, .3f, Axis.Z)

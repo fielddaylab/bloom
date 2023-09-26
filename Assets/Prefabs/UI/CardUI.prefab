@@ -140,6 +140,7 @@ MonoBehaviour:
   Button: {fileID: 3442992750624647281}
   Text: {fileID: 61101823028463490}
   CardArt: {fileID: 3487112840135310017}
+  Background: {fileID: 1953126850503066680}
 --- !u!1 &7351568381153388500
 GameObject:
   m_ObjectHideFlags: 0
