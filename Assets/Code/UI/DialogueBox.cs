@@ -20,6 +20,7 @@ using UnityEngine.Windows;
 using Zavala.Advisor;
 using Zavala.Cards;
 using Zavala.Scripting;
+using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.UI {
@@ -238,6 +239,7 @@ namespace Zavala.UI {
             this.gameObject.SetActive(false);
             DeactivateModules();
             Pin.Unpin();
+            SimTimeInput.UnpauseEvent();
 
             yield return null;
         }
