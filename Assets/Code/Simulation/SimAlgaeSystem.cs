@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -40,15 +41,10 @@ namespace Zavala.Sim {
                     algaeGrowth += AlgaeSim.AlgaeGrowthIncrement;
                 }
 
-                // Decay algae
-                foreach (int tile in m_StateA.Algae.BloomedTiles) {
-                    if (m_StateA.Algae.GrowingTiles.Contains(tile)) continue;
-                    ref float algaeGrowth = ref m_StateA.Algae.State[tile].PercentAlgae;
-                    algaeGrowth -= AlgaeSim.AlgaeGrowthIncrement;
-                    if (algaeGrowth <= 0) {
-                        m_StateA.Algae.BloomedTiles.Remove(tile);
-                    }
-                }
+                // for bloomed tiles that aren't growing (i.e. below P threshold), decrement algae. if this brings them to 0 or lower, remove from bloomed
+                m_StateA.Algae.BloomedTiles.RemoveWhere(
+                    tile => !m_StateA.Algae.GrowingTiles.Contains(tile) 
+                    && (m_StateA.Algae.State[tile].PercentAlgae -= AlgaeSim.AlgaeGrowthIncrement) <= 0);
             }
         }
 
