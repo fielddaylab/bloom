@@ -33,8 +33,10 @@ namespace Zavala.Economy {
 
     static public class ShopUtility { 
         static public void RefreshShop(BudgetData budgetData, ShopState shopState, SimGridState gridState) {
-            shopState.ShopUI.NetText.text = /*"Net: " +*/ budgetData.BudgetsPerRegion[gridState.CurrRegionIndex].Net.ToString();
-            shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[gridState.CurrRegionIndex].Net);
+            uint idx = gridState.CurrRegionIndex;
+            shopState.ShopUI.NetText.text = /*"Net: " +*/ budgetData.BudgetsPerRegion[idx].Net.ToString();
+            shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[idx].Net);
+            shopState.ShopUI.RegionName.text = ((RegionId)idx).ToString();
         }
 
         public static long PriceLookup(UserBuildTool building) {

@@ -9,6 +9,7 @@ namespace Zavala.UI {
     public class UIShop : MonoBehaviour
     {
         public TMP_Text NetText;
+        public TMP_Text RegionName;
 
         [SerializeField] private Button m_expandBtn;
         [SerializeField] private Button m_collapseBtn;
