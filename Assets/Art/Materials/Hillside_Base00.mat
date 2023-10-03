@@ -109,7 +109,7 @@ Material:
     - _BendStrength: 1.5
     - _Blend: 0
     - _BottomFogFade: -0.25
-    - _BottomFogHeight: -1
+    - _BottomFogHeight: 0.5
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
