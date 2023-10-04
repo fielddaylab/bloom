@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ButtonAdvisorType: 1
   m_Button: {fileID: 3390929152225095434}
+  m_Container: {fileID: 0}
 --- !u!1 &7310159028860247824
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,7 +135,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80, y: 80}
+  m_SizeDelta: {x: 88, y: 88}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7310159028860247829
 CanvasRenderer:
@@ -164,7 +165,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bae214028ce35f74fb50e3c2ac6e846e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

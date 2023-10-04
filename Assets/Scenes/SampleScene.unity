@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12733805, g: 0.13418633, b: 0.12118639, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10649,7 +10649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Alerts:
     m_Prefab: {fileID: 5880324271969544395, guid: e2bf128a1f2becb44a988ba928791bbc, type: 3}
-    m_Name: 
+    m_Name: Alert
     m_InitialCapacity: 16
     m_PrewarmOnInitialize: 1
     m_InitialPrewarm: 8
@@ -10677,7 +10677,7 @@ MonoBehaviour:
     m_InitialPrewarm: 4
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
-    m_ResetTransformOnAlloc: 1
+    m_ResetTransformOnAlloc: 0
   PoolRoot: {fileID: 140165166}
 --- !u!114 &502754883
 MonoBehaviour:
@@ -11369,7 +11369,7 @@ PrefabInstance:
     - target: {fileID: 7310159028860247830, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
+      objectReference: {fileID: 21300000, guid: 628a196241e4e004aa8706fab08d657e, type: 3}
     - target: {fileID: 7310159029076472490, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
       propertyPath: m_text
       value: Economic Advisor
