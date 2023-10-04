@@ -1,4 +1,5 @@
 using BeauUtil;
+using BeauUtil.Variants;
 using FieldDay;
 using FieldDay.Systems;
 using UnityEngine;
@@ -27,7 +28,22 @@ namespace Zavala.Scripting
 
                 // assign localized banner text
                 alert.Actor.QueuedEvents.TryPeekBack<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
-                alert.EventText.SetText(GameAlerts.ConvertArgToLocText(peekEvent.Argument.Value));
+                Variant eventVal = peekEvent.Argument.Value;
+                alert.EventText.SetText(GameAlerts.ConvertArgToLocText(eventVal));
+
+                string spritePath = "UIAlert/base_" + eventVal.ToDebugString().Replace("\"","");
+                alert.AlertBase.sprite = Resources.Load<Sprite>(spritePath);
+                if (alert.AlertBase.sprite == null) {
+                    Debug.LogWarning("[Alerts] Alert path "+spritePath+" invalid, substituting with bloom");
+                    alert.AlertBase.sprite = Resources.Load<Sprite>("UIAlert/base_bloom");
+                }
+                spritePath = "UIAlert/banner_" + eventVal.ToDebugString().Replace("\"", "");
+                alert.AlertBanner.sprite = Resources.Load<Sprite>(spritePath);
+                if (alert.AlertBanner.sprite == null) {
+                    Debug.LogWarning("[Alerts] Alert path " + spritePath + " invalid, substituting with bloom");
+                    alert.AlertBanner.sprite = Resources.Load<Sprite>("UIAlert/banner_bloom");
+                }
+                
 
                 Debug.Log("[Alerts] Created new alert!");
                 component.ActivelyDisplayingEvent = true;
