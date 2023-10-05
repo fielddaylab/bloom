@@ -25,6 +25,7 @@ namespace Zavala.Sim {
 
                 // remove the recyclable storage
                 storage.Current = default;
+                ResourceStorageUtility.RefreshStorageDisplays(storage);
                 Debug.Log("[Sitting] Sitting storage returned!");
             }
             else {

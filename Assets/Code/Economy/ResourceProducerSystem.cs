@@ -15,6 +15,7 @@ namespace Zavala.Economy {
                 ResourceBlock consumed = producer.Requires;
                 ResourceBlock.Consume(ref producer.Storage.Current, ref consumed);
                 producer.Storage.Current += produced;
+                ResourceStorageUtility.RefreshStorageDisplays(producer.Storage);
                 producer.ProducedLastTick = true;
 
                 ResourceRequester requester = producer.GetComponent<ResourceRequester>();

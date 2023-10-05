@@ -16,5 +16,19 @@ namespace Zavala.Economy {
 
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock Current;
+        public ResourceDisplay[] Displays;
+
+        public void Start() {
+             ResourceStorageUtility.RefreshStorageDisplays(this);
+        }
+    }
+
+    public static class ResourceStorageUtility {
+        public static void RefreshStorageDisplays(ResourceStorage storage) {
+            if (storage.Displays.Length <= 0) return;
+            foreach (ResourceDisplay display in storage.Displays) {
+                display.SetCount(storage.Current[display.ResourceType]);
+            }
+        }
     }
 }

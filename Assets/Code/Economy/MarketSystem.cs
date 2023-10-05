@@ -78,6 +78,7 @@ namespace Zavala.Economy
 
                     Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", adjustedValueRequested, supplier.name, adjustedFound.Value.Requester.name);
                     MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested));
+                    ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
                     if (baseProfit < 0) { supplier.SoldAtALoss = true; }
                     m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
                     int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
@@ -155,6 +156,7 @@ namespace Zavala.Economy
             foreach (var requester in m_StateA.Buyers) {
                 if (requester.Storage && !requester.Received.IsZero) {
                     requester.Storage.Current += requester.Received;
+                    ResourceStorageUtility.RefreshStorageDisplays(requester.Storage);
                     requester.Received = default;
                 }
             }
