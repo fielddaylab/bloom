@@ -17,11 +17,11 @@ public class ResourceDisplay : MonoBehaviour {
 
     public void Start() {
         Camera cam = ZavalaGame.SharedState.Get<SimWorldCamera>().Camera;
-        transform.LookAt(cam.transform.position);
+        transform.rotation = cam.transform.rotation;
     }
     public void SetCount(int count) {
         CountText.text = count.ToString();
-        ColorGroup.Color = count == 0 ? new Color(0,0,0,0.5f) : Color.white;
+        ColorGroup.Color = count == 0 ? Color.clear : Color.white;
     }
 
 }

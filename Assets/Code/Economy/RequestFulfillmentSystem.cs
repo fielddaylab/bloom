@@ -52,7 +52,8 @@ namespace Zavala.Economy {
                 component.Target.Received += component.Carrying;
                 component.Target.RequestCount--;
                 Log.Msg("[RequestFulfillmentSystem] Shipment of {0} received by '{1}'", component.Carrying, component.Target.name);
-                DebugDraw.AddWorldText(component.Target.transform.position, "Received!", Color.black, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundLightOpaque);               
+                DebugDraw.AddWorldText(component.Target.transform.position, "Received!", Color.black, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundLightOpaque);
+                ResourceStorageUtility.RefreshStorageDisplays(component.Target.Storage);
                 int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
                 if (index >= 0) {
                     MarketActiveRequestInfo fulfilling = marketData.ActiveRequests[index];

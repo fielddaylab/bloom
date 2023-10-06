@@ -24,10 +24,10 @@ namespace Zavala.Economy {
     }
 
     public static class ResourceStorageUtility {
-        public static void RefreshStorageDisplays(ResourceStorage storage) {
-            if (storage.Displays.Length <= 0) return;
+        public static void RefreshStorageDisplays(ResourceStorage storage ) {
+            if (storage == null || storage.Displays.Length <= 0) return;
             foreach (ResourceDisplay display in storage.Displays) {
-                display.SetCount(storage.Current[display.ResourceType]);
+                display?.SetCount(storage.Current[display.ResourceType]);
             }
         }
     }
