@@ -17227,7 +17227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f7cd555380f8a4f8bfd52571bc5d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PhosphorusMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 3}
+  PhosphorusMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   PhosphorusMaterial: {fileID: 2100000, guid: a31166a6800a4e7409d5e0ae867011e4, type: 2}
   PhosphorusLerpSpeed: 7
   PhosphorusSnapRange: 0.03

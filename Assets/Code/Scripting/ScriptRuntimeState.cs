@@ -97,6 +97,8 @@ namespace FieldDay.Scripting {
         static public LeafThreadHandle Trigger(StringHash32 triggerId, ILeafActor actor, VariantTable vars = null) {
             Invoke(triggerId, vars);
 
+            Debug.Log("[ScriptUtility] Triggered event " + triggerId.ToDebugString());
+
             LeafEvalContext context = GetContext(Runtime, actor, vars);
             ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(Database, triggerId, context, default);
             if (node != null) {

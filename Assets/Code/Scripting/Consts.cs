@@ -24,6 +24,8 @@ namespace Zavala
         static public readonly StringHash32 AdvisorClosed = "AdvisorClosed";
         static public readonly StringHash32 RegionUnlocked = "RegionUnlocked";
         static public readonly StringHash32 LetSat = "LetSat";
+        static public readonly StringHash32 BuildButtonPressed = "BuildButtonPressed";
+        static public readonly StringHash32 ConnectedFarms = "ConnectedFarms";
     }
 
     static public class GameAlerts

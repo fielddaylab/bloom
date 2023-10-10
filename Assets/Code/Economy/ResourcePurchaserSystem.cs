@@ -26,6 +26,8 @@ namespace Zavala.Economy {
 
             if (ResourceBlock.Consume(ref total, ref requestAmt)) {
                 ResourceBlock cash = requestAmt * purchaser.PurchasePrice;
+                ResourceStorageUtility.RefreshStorageDisplays(purchaser.Storage);
+
                 Log.Msg("[ResourcePurchaserSystem] Purchaser '{0}' consumed {1} for ${2}", purchaser.name, requestAmt, cash.Count);
                 // TODO: cash
                 // Dispatch purchase event

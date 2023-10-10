@@ -17,10 +17,16 @@ $call Unpause()
 
 // Step 2: Road drawing tutorial
 :: roadSelected
+@trigger BuildButtonPressed
+@once
+{local @advisorEcon}    Mmm, yes. Press the button.
+
 
 // Step 3: Introduce cities
 :: farmsConnected
 // TODO: add a trigger for farm connection.
+
+// Step 4: Connect city and dairy
 
 
 :: sittingOmens

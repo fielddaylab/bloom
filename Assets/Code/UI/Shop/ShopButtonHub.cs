@@ -1,4 +1,5 @@
 using FieldDay;
+using FieldDay.Scripting;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,6 +72,11 @@ namespace Zavala.UI
             ClearSelected();
 
             ShopItemButton button = m_shopItemBtns[selectedIndex];
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("toolType", button.BuildTool.ToString());
+                ScriptUtility.Trigger(GameTriggers.BuildButtonPressed, varTable);
+            }
+
             if (button.CanAfford) {
                 // set tool
                 BuildToolState bts = Game.SharedState.Get<BuildToolState>();
