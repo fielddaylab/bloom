@@ -495,8 +495,8 @@ namespace Zavala.Building
                 return false;
             }
 
-           // subtract 2 from count, only pay for roads on empty tiles
-            bool purchaseSuccessful = TryPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount-2);
+           // subtract 1 from count, only pay for edges of graph (?)
+            bool purchaseSuccessful = TryPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount-1);
 
             /*
             // try to purchase road
