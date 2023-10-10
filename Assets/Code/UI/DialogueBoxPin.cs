@@ -1,6 +1,7 @@
 using System;
 using BeauUtil;
 using UnityEngine;
+using Zavala.World;
 
 namespace Zavala.UI {
     public class DialogueBoxPin : MonoBehaviour {
@@ -19,6 +20,7 @@ namespace Zavala.UI {
         public void PinTo(Transform t) {
             if (Pin.Pin(t)) {
                 PinnedVisuals.SetActive(true);
+                CameraUtility.PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), t);
             }
         }
 
