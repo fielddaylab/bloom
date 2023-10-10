@@ -14,14 +14,16 @@ public class ResourceDisplay : MonoBehaviour {
     public TMP_Text CountText;
     public SpriteRenderer Renderer;
     public ColorGroup ColorGroup;
+    public MeshRenderer Mesh;
 
     public void Start() {
         Camera cam = ZavalaGame.SharedState.Get<SimWorldCamera>().Camera;
-        transform.rotation = cam.transform.rotation;
+        Renderer.transform.rotation = cam.transform.rotation;
     }
     public void SetCount(int count) {
         CountText.text = count.ToString();
         ColorGroup.Color = count == 0 ? Color.clear : Color.white;
+        if (Mesh != null) Mesh.enabled = (count != 0);
     }
 
 }
