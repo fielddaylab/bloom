@@ -16844,9 +16844,9 @@ MonoBehaviour:
   m_TargetWorldOffset:
     Local: {x: 0, y: 2, z: 0}
     World: {x: 0, y: 0, z: 0}
-  m_LocalOffset: {x: 0, y: 40}
+  m_LocalOffset: {x: 0, y: 30}
   m_ClampToParentRect: 1
-  m_ParentRectClampOffset: {x: 0, y: 130}
+  m_ParentRectClampOffset: {x: 0, y: 200}
   m_PositionBehavior: 0
   m_UnpinWhenDisabled: 0
 --- !u!114 &1723163438

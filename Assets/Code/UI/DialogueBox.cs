@@ -240,7 +240,7 @@ namespace Zavala.UI {
             DeactivateModules();
             Pin.Unpin();
             SimTimeInput.UnpauseEvent();
-
+            ZavalaGame.SimWorld.Overlays = SimWorldOverlayMask.None;
             yield return null;
         }
 
@@ -280,7 +280,6 @@ namespace Zavala.UI {
 
         private void HandlePolicyCloseClicked() {
             m_TransitionRoutine.Replace(HideRoutine());
-            
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
