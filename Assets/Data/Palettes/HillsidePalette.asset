@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5b4b218509de34192fd25dbc3a19fe, type: 3}
+  m_Name: HillsidePalette
+  m_EditorClassIdentifier: 
+  GroundTile: {fileID: 7097652779095066658, guid: b7313ca0370aefb44ab190d3da4f8579, type: 3}
+  City: {fileID: 947691686583835045, guid: d475cf78d7eaba44291403bea57f3e8a, type: 3}
+  DairyFarm: {fileID: 7291294420475072060, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+  GrainFarm: {fileID: 5421243799934890597, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
+  Rock: {fileID: 947691686583835045, guid: d3ddaaf331739bb4ea0ff3d4322c0b59, type: 3}
+  Tree: {fileID: 947691686583835045, guid: d1e61cd43fd0451419b2acc60f6ff4f7, type: 3}

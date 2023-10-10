@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Economy;
 using Zavala.Roads;
+using Zavala.World;
 
 namespace Zavala.Building
 {
@@ -19,19 +20,7 @@ namespace Zavala.Building
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
         [Serializable] public class SkimmerPool : SerializablePool<OccupiesTile> { }
 
-        [Serializable] public class RockPool : SerializablePool<OccupiesTile> { }
-        [Serializable] public class TreePool : SerializablePool<OccupiesTile> { }
-
         #endregion // Types
-
-        [Header("Static Buildings")]
-        public GameObject GrainFarm;
-        public GameObject DairyFarm;
-        public GameObject City;
-
-        [Header("Static Modifiers")]
-        public GameObject Rock;
-        public GameObject Tree;
 
         [Header("Player-created Buildings")]
         public RoadPool Roads;

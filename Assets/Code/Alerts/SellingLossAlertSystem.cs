@@ -23,7 +23,7 @@ namespace Zavala.Sim
                 EventActorTrigger newTrigger = new EventActorTrigger();
                 newTrigger.EventId = GameTriggers.AlertExamined;
                 newTrigger.Argument = new NamedVariant("alertType", GameAlerts.SellingLoss);
-                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, newTrigger.Argument);
+                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, tile.TileIndex, newTrigger.Argument);
             }
         }
     }

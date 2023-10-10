@@ -324,6 +324,47 @@ namespace Zavala.Editor {
             return points.ToArray();
         }
 
+        static public void ReadWaterGroups(in TiledData data, TerrainTileInfo[] tiles, out ushort[] groupTileIndices, out RegionAsset.WaterGroupRange[] ranges) {
+            if (data.GroupLayer == null) {
+                groupTileIndices = null;
+                ranges = null;
+                return;
+            }
+
+            List<ushort>[] groups = new List<ushort>[4];
+            for(int i = 0; i < 4; i++) {
+                groups[i] = new List<ushort>();
+            }
+
+            JSON groupArray = data.GroupLayer["data"];
+            for(int i = 0; i < groupArray.Count; i++) {
+                int group = groupArray[i].AsInt;
+                if (group > 0) {
+                    group = group - data.GroupTileOffset;
+                    int tileIndex = IndexToTile(data, i);
+                    tiles[tileIndex].Flags |= TerrainFlags.IsInGroup;
+                    groups[group].Add((ushort) tileIndex);
+                }
+            }
+
+            List<ushort> groupIndices = new List<ushort>(64);
+            List<RegionAsset.WaterGroupRange> groupData = new List<RegionAsset.WaterGroupRange>();
+
+            for(int i = 0; i < 4; i++) {
+                if (groups[i].Count > 0) {
+                    groups[i].Sort();
+                    groupData.Add(new RegionAsset.WaterGroupRange() {
+                        Offset = (ushort) groupIndices.Count,
+                        Length = (ushort) groups[i].Count
+                    });
+                    groupIndices.AddRange(groups[i]);
+                }
+            }
+
+            groupTileIndices = groupIndices.ToArray();
+            ranges = groupData.ToArray();
+        }
+
         #region Space Conversion
 
         static public HexVector PixelToHex(in TiledData data, Vector2 pixelLocation) {

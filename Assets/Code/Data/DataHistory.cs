@@ -15,7 +15,7 @@ namespace Zavala.Data
         public readonly int MaxHistory = 20; // how far back history is stored
 
         public int Pending;
-        public RingBuffer<int> Net = new RingBuffer<int>(); // store show much P was produced/removed over the previous ticks
+        public RingBuffer<int> Net; // store show much P was produced/removed over the previous ticks
 
         public void AddPending(int pendingDelta) {
             Pending += pendingDelta;

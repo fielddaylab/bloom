@@ -1,4 +1,5 @@
 using System;
+using BeauUtil;
 using Leaf;
 using UnityEngine;
 using Zavala.Sim;
@@ -28,7 +29,6 @@ namespace Zavala {
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]
     public sealed class RegionAsset : ScriptableObject {
         #region Types
-
 
         public enum TerrainModifier : byte {
             Tree,
@@ -62,8 +62,9 @@ namespace Zavala {
         }
 
         [Serializable]
-        public struct WaterGroupData {
-            public ushort[] LocalTileIndices;
+        public struct WaterGroupRange {
+            public ushort Offset;
+            public ushort Length;
         }
 
         #endregion // Types
@@ -78,10 +79,12 @@ namespace Zavala {
         public PointData[] Points = Array.Empty<PointData>();
         public RoadData[] Roads = Array.Empty<RoadData>();
         public ModifierData[] Modifiers = Array.Empty<ModifierData>();
-        public WaterGroupData[] WaterGroups = Array.Empty<WaterGroupData>();
+
+        [Header("Groups")]
+        public ushort[] WaterGroupLocalIndices = Array.Empty<ushort>();
+        public WaterGroupRange[] WaterGroups = Array.Empty<WaterGroupRange>();
 
         [Header("Visuals")]
-        public int PaletteIndex;
         public LeafAsset LeafScript;
 
         [Header("Id")]

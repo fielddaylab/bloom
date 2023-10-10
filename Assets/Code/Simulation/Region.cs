@@ -8,8 +8,6 @@ namespace Zavala.Sim {
 
         public HexGridSubregion GridArea;
         public ushort MaxHeight;
-        public ushort PaletteType;
-        public bool IsUnlocked; // Used for updating histories
         public RegionId Id;
     }
 

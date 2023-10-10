@@ -5,6 +5,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
 using UnityEngine;
+using Zavala.Scripting;
 using Zavala.World;
 
 namespace Zavala.Sim {
@@ -74,6 +75,11 @@ namespace Zavala.Sim {
             // Vector3 worldPos = HexVector.ToWorld(tileIndex, grid.Terrain.Height[tileIndex], ZavalaGame.SimWorld.WorldSpace);
             worldPos.y += 0.01f;
             GameObject newAlgae = Instantiate(m_StateA.AlgaePrefab, worldPos, m_StateA.AlgaePrefab.transform.rotation);
+            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsInGroup) != 0) {
+                if (newAlgae.TryGetComponent(out EventActor evtActor)) {
+                    Destroy(evtActor);
+                }
+            }
         }
     }
 }

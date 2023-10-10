@@ -26,7 +26,7 @@ namespace Zavala.Sim
                 EventActorTrigger newTrigger = new EventActorTrigger();
                 newTrigger.EventId = GameTriggers.AlertExamined;
                 newTrigger.Argument = new NamedVariant("alertType", GameAlerts.Bloom);
-                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, newTrigger.Argument);
+                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, tile.TileIndex, newTrigger.Argument);
 
                 // TODO: seems like we should be able to clear this at the start of SimAlgaeSystem, since this system comes after.
                 // But for some reason some tiles aren't processed before SimAlgaeSystem starts again.

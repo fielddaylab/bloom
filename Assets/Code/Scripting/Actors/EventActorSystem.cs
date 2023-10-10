@@ -17,7 +17,6 @@ namespace Zavala.Scripting {
                         varTable.Set(trigger.Argument.Id, trigger.Argument.Value);
                     }
 
-
                     ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, trigger.EventId, ScriptUtility.GetContext(ScriptUtility.Runtime, component, varTable), component.Id);
                     varTable.Clear();
 
@@ -31,7 +30,8 @@ namespace Zavala.Scripting {
                             EventActorQueuedEvent queuedEvent = new EventActorQueuedEvent() {
                                 Argument = trigger.Argument,
                                 TypeId = trigger.EventId,
-                                ScriptId = node.Id()
+                                ScriptId = node.Id(),
+                                TileIndex = trigger.TileIndex
                             };
                             component.QueuedEvents.PushBack(queuedEvent);
                         }

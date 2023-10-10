@@ -32,12 +32,13 @@ namespace Zavala.World {
                 for(int i = 0; i < m_StateA.NewRegions; i++) {
                     int regionIdx = regionStart + i;
                     HexGridSubregion subRegion = m_StateB.Regions[regionIdx].GridArea;
+                    RegionPrefabPalette palette = m_StateA.Palettes[regionIdx];
                     var terrainData = m_StateB.Terrain.Info;
                     foreach(var index in subRegion) {
                         if (terrainData[index].RegionIndex != regionIdx || terrainData[index].Category == TerrainCategory.Void) {
                             continue;
                         }
-                        InstantiateTile(m_StateA, index, m_StateB.HexSize.FastIndexToPos(index), terrainData[index]);
+                        InstantiateTile(m_StateA, index, m_StateB.HexSize.FastIndexToPos(index), palette, terrainData[index]);
                     }
                 }
             } else {
@@ -45,13 +46,13 @@ namespace Zavala.World {
             }
         }
 
-        static private void InstantiateTile(SimWorldState world, int index, in HexVector position, in TerrainTileInfo tileInfo) {
+        static private void InstantiateTile(SimWorldState world, int index, in HexVector position, RegionPrefabPalette palette, in TerrainTileInfo tileInfo) {
             Vector3 pos = HexVector.ToWorld(position, tileInfo.Height, world.WorldSpace);
             TileInstance inst;
             if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
                 inst = Instantiate(world.DefaultWaterPrefab, pos, Quaternion.identity);
             } else {
-                inst = Instantiate(world.DefaultTilePrefab, pos, Quaternion.identity);
+                inst = Instantiate(palette.GroundTile, pos, Quaternion.identity);
             }
             //inst.index = index;
             inst.gameObject.name = "Tile " + index.ToStringLookup();

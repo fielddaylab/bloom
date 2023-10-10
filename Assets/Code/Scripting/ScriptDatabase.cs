@@ -141,7 +141,7 @@ namespace FieldDay.Scripting {
             foreach (var node in package.Functions()) {
                 ScriptNodeBucket bucket;
                 if (db.LoadedNodeBuckets.TryGetValue(node.TriggerOrFunctionId, out bucket)) {
-                    bucket.RemoveUnsorteed(node);
+                    bucket.RemoveUnsorted(node);
                 }
             }
 

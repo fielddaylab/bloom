@@ -32,26 +32,28 @@ namespace Zavala.Scripting {
     public struct EventActorTrigger {
         public StringHash32 EventId;
         public NamedVariant Argument;
+        public int TileIndex;
     }
 
     public struct EventActorQueuedEvent {
         public StringHash32 ScriptId;
         public StringHash32 TypeId;
         public NamedVariant Argument;
-        // TODO: may need to store tile index or region id here
+        public int TileIndex;
     }
 
     static public class EventActorUtility {
-        static public void QueueTrigger(EventActor actor, StringHash32 eventId, NamedVariant customArg = default) {
+        static public void QueueTrigger(EventActor actor, StringHash32 eventId, int tileIndex, NamedVariant customArg = default) {
             actor.QueuedTriggers.PushBack(new EventActorTrigger() {
                 EventId = eventId,
-                Argument = customArg
+                Argument = customArg,
+                TileIndex = tileIndex
             });
         }
 
-        static public void QueueTrigger(GameObject actorGO, StringHash32 eventId, NamedVariant customArg = default) {
+        static public void QueueTrigger(GameObject actorGO, StringHash32 eventId, int tileIndex, NamedVariant customArg = default) {
             if (actorGO.TryGetComponent(out EventActor act)) {
-                QueueTrigger(act, eventId, customArg);
+                QueueTrigger(act, eventId, tileIndex, customArg);
             }
         }
 

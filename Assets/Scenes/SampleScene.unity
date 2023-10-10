@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731703, g: 0.13414727, b: 0.121078506, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10235,8 +10235,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Scale: {x: 0.76, y: 0.008, z: 0.86}
   Offset: {x: 0, y: 0, z: 0}
-  DefaultTilePrefab: {fileID: 7097652779095066658, guid: b7313ca0370aefb44ab190d3da4f8579, type: 3}
   DefaultWaterPrefab: {fileID: 7097652779095066658, guid: 5887f51366947f240ae408caadcb0af1, type: 3}
+  WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
   BottomBounds: 0
   BoundsExpand: 1.5
 --- !u!114 &502754869
@@ -10593,11 +10593,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbdc133ebfc69324d8fa594fd40570f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GrainFarm: {fileID: 5421243799934890597, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
-  DairyFarm: {fileID: 7291294420475072060, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
-  City: {fileID: 947691686583835045, guid: d475cf78d7eaba44291403bea57f3e8a, type: 3}
-  Rock: {fileID: 947691686583835045, guid: d3ddaaf331739bb4ea0ff3d4322c0b59, type: 3}
-  Tree: {fileID: 947691686583835045, guid: d1e61cd43fd0451419b2acc60f6ff4f7, type: 3}
   Roads:
     m_Prefab: {fileID: 8966737996612447901, guid: f5fc5bfc38ff22541a33a6dbd37de21b, type: 3}
     m_Name: 
@@ -17331,6 +17326,7 @@ GameObject:
   - component: {fileID: 1897052395}
   - component: {fileID: 1897052390}
   - component: {fileID: 1897052394}
+  - component: {fileID: 1897052396}
   m_Layer: 0
   m_Name: Scripting
   m_TagString: Untagged
@@ -17418,6 +17414,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InitialCapacity: 64
+--- !u!114 &1897052396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897052388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1acbd40ed3b4d343a740174b11b7614, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InitialCapacity: 4
 --- !u!1 &1911783916
 GameObject:
   m_ObjectHideFlags: 0
