@@ -179,16 +179,9 @@ namespace Zavala.Roads
         // TODO: consider pooling road tiles...?
 
         static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
-            RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+            ref RoadTileInfo tileInfo = ref network.Roads.Info[tileIndex];
 
-            tileInfo.FlowMask[TileDirection.N] = false;
-            tileInfo.FlowMask[TileDirection.S] = false;
-            tileInfo.FlowMask[TileDirection.SE] = false;
-            tileInfo.FlowMask[TileDirection.SW] = false;
-            tileInfo.FlowMask[TileDirection.NE] = false;
-            tileInfo.FlowMask[TileDirection.NW] = false;
-
-            network.Roads.Info[tileIndex] = tileInfo;
+            tileInfo.FlowMask.Clear();
         }
 
         static public void MergeStagedRoadMask(ref RoadTileInfo info) {

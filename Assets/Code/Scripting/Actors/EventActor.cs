@@ -1,3 +1,4 @@
+using System;
 using BeauUtil;
 using BeauUtil.Variants;
 using FieldDay.Components;
@@ -12,7 +13,7 @@ namespace Zavala.Scripting {
         public SerializedHash32 Id;
         public SerializedHash32 Class;
 
-        public bool ActivelyDisplayingEvent = false;
+        [NonSerialized] public bool ActivelyDisplayingEvent = false;
 
         // not serialized
 

@@ -24,7 +24,7 @@ namespace Zavala.Advisor
             m_Button.onClick.AddListener(HandleButtonClicked);
 
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked.AddListener(HandleAdvisorButtonClicked);
+            advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
         }
 
         #region Handlers

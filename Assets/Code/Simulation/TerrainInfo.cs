@@ -48,6 +48,7 @@ namespace Zavala.Sim {
         IsWater = 0x08,
         TopHidden = 0x10,
         IsOccupied = 0x20,
+        IsInGroup = 0x40,
     }
 
     #endregion // Static Info

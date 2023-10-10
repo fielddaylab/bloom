@@ -16,10 +16,12 @@ namespace Zavala.Editor {
             public JSON HeightLayer;
             public JSON TypeLayer;
             public JSON ObjectLayer;
+            public JSON GroupLayer;
 
             public int HeightTileOffset;
             public int TypeTileOffset;
             public int ObjectTileOffset;
+            public int GroupTileOffset;
         }
 
         public enum ErrorCode {
@@ -97,6 +99,10 @@ namespace Zavala.Editor {
                         data.ObjectTileOffset = child["firstgid"].AsInt;
                         break;
                     }
+                    case "Groups.tsx": {
+                        data.GroupTileOffset = child["firstgid"].AsInt;
+                        break;
+                    }
                 }
             }
         }
@@ -116,6 +122,10 @@ namespace Zavala.Editor {
                     }
                     case "Objects": {
                         data.ObjectLayer = child;
+                        break;
+                    }
+                    case "Groups": {
+                        data.GroupLayer = child;
                         break;
                     }
                 }

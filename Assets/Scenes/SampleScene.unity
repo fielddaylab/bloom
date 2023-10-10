@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11613,9 +11613,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c076f4bc1164ae04b919f62bce86481c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AdvisorButtonClicked:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1278410804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11628,15 +11625,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f1b3780eadc6144da1df389104034d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PolicySlotClicked:
-    m_PersistentCalls:
-      m_Calls: []
-  PolicyCardSelected:
-    m_PersistentCalls:
-      m_Calls: []
-  PolicyCloseButtonClicked:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!224 &1375608425 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7310159028650111914, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
@@ -11931,11 +11919,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_SizeDelta.x
@@ -11947,11 +11935,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 410
+      value: 390.28
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
@@ -12634,7 +12622,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 256
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 1

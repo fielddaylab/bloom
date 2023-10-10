@@ -61,6 +61,11 @@ namespace Zavala {
             public TerrainModifier Modifier;
         }
 
+        [Serializable]
+        public struct WaterGroupData {
+            public ushort[] LocalTileIndices;
+        }
+
         #endregion // Types
 
         [Header("Dimensions")]
@@ -73,6 +78,7 @@ namespace Zavala {
         public PointData[] Points = Array.Empty<PointData>();
         public RoadData[] Roads = Array.Empty<RoadData>();
         public ModifierData[] Modifiers = Array.Empty<ModifierData>();
+        public WaterGroupData[] WaterGroups = Array.Empty<WaterGroupData>();
 
         [Header("Visuals")]
         public int PaletteIndex;

@@ -28,6 +28,7 @@ namespace Zavala.Sim {
         [NonSerialized] public HexGridSize HexSize;
         [NonSerialized] public TerrainBuffers Terrain;
         [NonSerialized] public SimBuffer<RegionInfo> Regions;
+        [NonSerialized] public SimBuffer<WaterGroupInfo> WaterGroups;
         [NonSerialized] public uint RegionCount;
         [NonSerialized] public uint CurrRegionIndex;
 
@@ -43,7 +44,8 @@ namespace Zavala.Sim {
         void IRegistrationCallbacks.OnRegister() {
             HexSize = new HexGridSize(WorldData.Width, WorldData.Height);
             Terrain.Create(HexSize);
-            Regions = SimBuffer.Create<RegionInfo>(HexSize);
+            Regions = SimBuffer.Create<RegionInfo>(RegionInfo.MaxRegions);
+            WaterGroups = SimBuffer.Create<WaterGroupInfo>(WaterGroupInfo.MaxGroups);
             RegionCount = 0;
             CurrRegionIndex = 0;
             Random = new System.Random((int) (Environment.TickCount ^ DateTime.UtcNow.ToFileTimeUtc()));
@@ -146,6 +148,12 @@ namespace Zavala.Sim {
                         }
                 }
             }
+
+            // water groups
+            foreach(var group in asset.WaterGroups) {
+
+            }
+
             // load script
             if (asset.LeafScript != null) {
                 ScriptDatabaseUtility.LoadNow(ScriptUtility.Database, asset.LeafScript);

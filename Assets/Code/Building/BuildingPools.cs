@@ -22,7 +22,6 @@ namespace Zavala.Building
         [Serializable] public class RockPool : SerializablePool<OccupiesTile> { }
         [Serializable] public class TreePool : SerializablePool<OccupiesTile> { }
 
-
         #endregion // Types
 
         [Header("Static Buildings")]

@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace FieldDay.Audio {
     public sealed class AudioMgr {
+        internal AudioMgr() {
+
+        }
+
+        #region Events
 
         internal void PreUpdate(float deltaTime) {
 
@@ -15,6 +20,8 @@ namespace FieldDay.Audio {
         internal void Shutdown() {
 
         }
+
+        #endregion // Events
 
         #region Audio Updates
 

@@ -43,12 +43,12 @@ namespace Zavala.Cards
         private void Start() {
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             m_Button.onClick.AddListener(() => { policyState.PolicySlotClicked?.Invoke(m_Type); });
-            policyState.PolicySlotClicked.AddListener(HandleSlotClicked);
-            policyState.PolicyCardSelected.AddListener(HandlePolicyCardSelected);
-            policyState.PolicyCloseButtonClicked.AddListener(HandlePolicyCloseClicked);
+            policyState.PolicySlotClicked.Register(HandleSlotClicked);
+            policyState.PolicyCardSelected.Register(HandlePolicyCardSelected);
+            policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
 
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked.AddListener(HandleAdvisorButtonClicked);
+            advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
 
             m_HandState = HandState.Hidden;
         }

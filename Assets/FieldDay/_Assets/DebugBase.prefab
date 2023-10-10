@@ -48,9 +48,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TextFont: {fileID: 12800000, guid: 6b73f4e904dbcc144b6a706b25fb57bb, type: 3}
   m_SphereMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_CubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   m_LineWidthToWorldScale: 0.08
-  m_DepthTestMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_OverlayMaterial: {fileID: 2100000, guid: cde7324d8d3bea744a157e40afbd44a2, type: 2}
+  m_DepthTestMaterial: {fileID: 2100000, guid: 768f046303294a94487e42a6fb059674, type: 2}
+  m_OverlayMaterial: {fileID: 2100000, guid: 827b425ee2c59de4aa477656e78a0aeb, type: 2}
 --- !u!114 &6947757145218421920
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -59,7 +59,6 @@ namespace Zavala.Roads
             }
         }
 
-
         /// <summary>
         /// Runs the Dijkstra's shortest tree algorithm
         /// </summary>

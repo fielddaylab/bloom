@@ -132,18 +132,18 @@ namespace Zavala
         }
 
         static private unsafe ushort ReadNodeCount(ref Unsafe.PinnedArrayHandle<byte> bytes) {
-            return UnsafeExt.Read<ushort>(ref bytes.Address, ref bytes.Length);
+            return Unsafe.Read<ushort>(ref bytes.Address, ref bytes.Length);
         }
 
         static private unsafe void ReadNode(ref Unsafe.PinnedArrayHandle<byte> bytes, LocPackage package) {
             StringHash32 id = ReadNodeId(ref bytes);
             Log.Msg("Reading '{0}'...", id.ToDebugString());
-            string text = UnsafeExt.ReadString(ref bytes.Address, ref bytes.Length);
+            string text = Unsafe.ReadUTF8(ref bytes.Address, ref bytes.Length);
             package.m_Nodes.Add(id, text);
         }
 
         static private unsafe StringHash32 ReadNodeId(ref Unsafe.PinnedArrayHandle<byte> bytes) {
-            return UnsafeExt.Read<StringHash32>(ref bytes.Address, ref bytes.Length);
+            return Unsafe.Read<StringHash32>(ref bytes.Address, ref bytes.Length);
         }
 
         #if UNITY_EDITOR
@@ -171,15 +171,15 @@ namespace Zavala
                     BlockParser.Parse(ref tmpPkg, pkg, Parsing.Block, Generator.Instance);
                 }
 
-                UnsafeExt.Write(&head, &bufferLength, (ushort) tmpPkg.m_Nodes.Count);
+                Unsafe.Write((ushort) tmpPkg.m_Nodes.Count, &head, &bufferLength, MaxCompressedSize);
                 foreach(var kv in tmpPkg.m_Nodes) {
-                    UnsafeExt.Write(&head, &bufferLength, kv.Key);
-                    UnsafeExt.WriteString(&head, &bufferLength, kv.Value);
+                    Unsafe.Write(kv.Key, &head, &bufferLength, MaxCompressedSize);
+                    Unsafe.WriteUTF8(kv.Value, &head, &bufferLength, MaxCompressedSize);
                 }
 
-                UnsafeExt.Write(&head, &bufferLength, (ushort) tmpPkg.m_IdsWithEvents.Count);
+                Unsafe.Write((ushort) tmpPkg.m_IdsWithEvents.Count, &head, &bufferLength, MaxCompressedSize);
                 foreach(var v in tmpPkg.m_IdsWithEvents) {
-                    UnsafeExt.Write(&head, &bufferLength, v);
+                    Unsafe.Write(v, &head, &bufferLength, MaxCompressedSize);
                 }
 
                 byte[] written = new byte[bufferLength];

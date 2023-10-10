@@ -1,4 +1,5 @@
 using System;
+using BeauUtil;
 using FieldDay.SharedState;
 using UnityEngine.Events;
 using Zavala.Cards;
@@ -6,7 +7,7 @@ using Zavala.Cards;
 namespace Zavala.Advisor {
     public class AdvisorState : SharedStateComponent {
         [NonSerialized] public AdvisorType ActiveAdvisor = AdvisorType.None;
-        public UnityEvent<AdvisorType> AdvisorButtonClicked = new UnityEvent<AdvisorType>();
+        public CastableEvent<AdvisorType> AdvisorButtonClicked = new CastableEvent<AdvisorType>();
 
         public AdvisorType UpdateAdvisor(AdvisorType type) {
             ActiveAdvisor = type;

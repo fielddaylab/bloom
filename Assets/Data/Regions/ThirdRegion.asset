@@ -158,7 +158,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 16
+    Flags: 48
     Height: 50
   - RegionIndex: 65535
     Category: 2
@@ -323,7 +323,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 16
+    Flags: 48
     Height: 150
   - RegionIndex: 65535
     Category: 1
@@ -353,7 +353,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 16
+    Flags: 48
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -508,7 +508,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 16
+    Flags: 48
     Height: 100
   - RegionIndex: 65535
     Category: 1

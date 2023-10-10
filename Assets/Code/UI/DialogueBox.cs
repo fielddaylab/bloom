@@ -73,10 +73,10 @@ namespace Zavala.UI {
             m_PolicyExpansionContainer.SetActive(false);
 
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked.AddListener(HandleAdvisorButtonClicked);
+            advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
 
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
-            policyState.PolicyCloseButtonClicked.AddListener(HandlePolicyCloseClicked);
+            policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
             m_CloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
 
             m_LocalHandler = new TagStringEventHandler();
@@ -174,7 +174,7 @@ namespace Zavala.UI {
                 Contents.Contents.maxVisibleCharacters = 0;
             }
 
-            m_TransitionRoutine.Replace(ShowRoutine());
+            m_TransitionRoutine.Replace(this, ShowRoutine());
             return m_LocalHandler;
         }
 
