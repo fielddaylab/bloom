@@ -121,6 +121,13 @@ MonoBehaviour:
   AgeOfUrgency: -1
   IsLocalOption: 0
   InfiniteRequests: 1
+  OverridesBuyPrice: 1
+  OverrideBlock:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
 --- !u!114 &4665823543789613532
 MonoBehaviour:
   m_ObjectHideFlags: 0

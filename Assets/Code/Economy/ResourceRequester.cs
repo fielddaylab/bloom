@@ -16,6 +16,9 @@ namespace Zavala.Economy {
         public bool IsLocalOption = false; // used by Let It Sit option on Dairy Farms
         public bool InfiniteRequests = false;  // used by Let It Sit option on Dairy Farms
 
+        public bool OverridesBuyPrice = false;
+        public ResourceBlock OverrideBlock;
+
         [NonSerialized] public OccupiesTile Position;
         [NonSerialized] public ResourceStorage Storage;
 
@@ -23,8 +26,9 @@ namespace Zavala.Economy {
         [NonSerialized] public int RequestCount;
         [NonSerialized] public ResourceBlock Received;
 
+
         // Map resource to ticks since fulfilled
-        
+
 
         protected override void OnEnable() {
             base.OnEnable();

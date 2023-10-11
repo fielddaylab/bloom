@@ -29,7 +29,7 @@ namespace Zavala.Economy {
                 }
             }
             else if (producer.Requires.IsPositive) {
-                QueueRequestForProduction(producer);
+               QueueRequestForProduction(producer);
             }
         }
 

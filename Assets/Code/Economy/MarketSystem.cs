@@ -206,7 +206,12 @@ namespace Zavala.Economy
                     // no profit associated
                 }
                 else {
-                    profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
+                    if (requester.OverridesBuyPrice) {
+                        profit = requester.OverrideBlock[primary];
+                    }
+                    else {
+                        profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
+                    }
                 }
                 if (requester.IsLocalOption) {
                     profit -= adjustments.RunoffPenalty[primary];
