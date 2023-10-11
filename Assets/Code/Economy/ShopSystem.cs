@@ -51,6 +51,20 @@ namespace Zavala.Economy {
                     return 0;
             }
         }
+
+        /// <summary>
+        /// Check if the current region can afford to purchase the given buildings, and deduct the price if so.
+        /// </summary>
+        /// <param name="currTool">Building tool to purchase</param>
+        /// <param name="currentRegion">Region whose budget to test</param>
+        /// <param name="num">Number of buildings purchased (used only for roads)</param>
+        /// <returns></returns>
+        public static bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion, int num) {
+            BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+            long price = ShopUtility.PriceLookup(currTool) * num;
+            bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, price, currentRegion);
+            return purchaseSuccessful;
+        }
     }
 
 }

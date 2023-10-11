@@ -211,22 +211,10 @@ namespace Zavala.Building
             grid.Terrain.Info[tileIndex].Flags |= TerrainFlags.IsOccupied;
             pool.Alloc(worldPos);
         }
-        /// <summary>
-        /// Check if the current region can afford to purchase the given buildings, and deduct the price if so.
-        /// </summary>
-        /// <param name="currTool">Building tool to purchase</param>
-        /// <param name="currentRegion">Region whose budget to test</param>
-        /// <param name="num">Number of buildings purchased (used only for roads)</param>
-        /// <returns></returns>
-        private bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion, int num) {
-            BudgetData budgetData = Game.SharedState.Get<BudgetData>();
-            long price = ShopUtility.PriceLookup(currTool) * num;
-            bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, price, currentRegion);
-            return purchaseSuccessful;
-        }
+
         private bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion) {
-            return TryPurchaseBuild(currTool, currentRegion, 1);
-            }
+            return ShopUtility.TryPurchaseBuild(currTool, currentRegion, 1);
+        }
 
         /// <summary>
         /// Attempt a raycast to destroy a building at the mouse position.
@@ -264,32 +252,22 @@ namespace Zavala.Building
             Log.Msg("[UserBuildingSystem] Attempting delete, found type {0}", ot.Type.ToString());
             switch (ot.Type) {
                 case BuildingType.Road:
+                    // TODO: Clear from adj roads
+                    RoadUtility.RemoveRoad(network, grid, tileIndex);
                     pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>());
                     break;
                 case BuildingType.Digester:
+                    RoadUtility.RemoveRoad(network, grid, tileIndex);
                     pools.Digesters.Free(ot);
                     break;
                 case BuildingType.Storage:
                     Debug.Log("storage");
+                    RoadUtility.RemoveRoad(network, grid, tileIndex);
                     pools.Storages.Free(ot);
                     break;
                 default:
                     break;
             }
-        }
-
-
-        private bool TryDestroyBuilding(SimGridState grid, RoadNetwork network, int tileIndex) {
-            // find the building associated with the tileIndex
-            //      if none, return false
-            // if it's player-built (digester, road, storage):
-            //      check cost/apply refund
-            //      destroy it
-            if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsRoad) != 0) {
-                RoadUtility.RemoveRoad(network, grid, tileIndex);
-            }
-
-            return false;
         }
 
         #region Road Building
@@ -490,32 +468,32 @@ namespace Zavala.Building
         private bool TryFinishRoad(SimGridState grid, RoadNetwork network) {
             // Check if road can be purchased
             int roadCount = m_StateC.RoadToolState.TracedTileIdxs.Count;
-            if (roadCount < 3) {
-                // cannot connect a single tile, or only two tiles
+
+            bool anyRoad = false;
+
+            // count num of actual road segments being built
+            int deductNum = 0;
+            for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
+                bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
+                int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
+
+                RoadTileInfo tileInfo = network.Roads.Info[currIndex];
+
+                if ((tileInfo.Flags & RoadFlags.IsRoad) != 0) {
+                    anyRoad = true;
+                }
+                else if (isEndpoint) {
+                    // only if counting each half of a road
+                    // deductNum++;
+                }
+            }
+
+            if (roadCount < 3 && !anyRoad) {
+                // can only connect to adj tile if at least one is a road
                 return false;
             }
 
-           // subtract 1 from count, only pay for edges of graph (?)
-            bool purchaseSuccessful = TryPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount-1);
-
-            /*
-            // try to purchase road
-            Debug.Log("[RoadMgr] trying to purchase road");
-
-            ShopMgr.Instance.TryPurchaseRoad(m_tracedTiles.Count)
-            if () {
-                Debug.Log("[RoadMgr] Finalizing road");
-                // save road in mgr and connected nodes
-                FinalizeRoad(m_tracedTiles, m_stagedSegments);
-
-                return;
-            }
-            else {
-                // clear road
-                Debug.Log("[InteractMgr] shop failure");
-                return;
-            }
-            */
+            bool purchaseSuccessful = ShopUtility.TryPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum);
 
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");

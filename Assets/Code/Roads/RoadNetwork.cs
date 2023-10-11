@@ -177,19 +177,61 @@ namespace Zavala.Roads
             FinalizeRoad(network, grid, pools, tileIndex, isEndpoint);
         }
 
-        // TODO: consider pooling road tiles...?
-
         static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
-            RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
-            tileInfo.FlowMask[TileDirection.N] = false;
-            tileInfo.FlowMask[TileDirection.S] = false;
-            tileInfo.FlowMask[TileDirection.SE] = false;
-            tileInfo.FlowMask[TileDirection.SW] = false;
-            tileInfo.FlowMask[TileDirection.NE] = false;
-            tileInfo.FlowMask[TileDirection.NW] = false;
+            // Erase record from adj nodes
 
-            network.Roads.Info[tileIndex] = tileInfo;
+            RemoveInleadingRoads(network, grid, tileIndex);
+
+            RoadTileInfo centerTileInfo = network.Roads.Info[tileIndex];
+
+            // Erase record from center tile
+
+            centerTileInfo.FlowMask[TileDirection.N] = false;
+            centerTileInfo.FlowMask[TileDirection.S] = false;
+            centerTileInfo.FlowMask[TileDirection.SE] = false;
+            centerTileInfo.FlowMask[TileDirection.SW] = false;
+            centerTileInfo.FlowMask[TileDirection.NE] = false;
+            centerTileInfo.FlowMask[TileDirection.NW] = false;
+
+            network.Roads.Info[tileIndex] = centerTileInfo;
+        }
+
+        static public void RemoveInleadingRoads(RoadNetwork network, SimGridState grid, int tileIndex) {
+
+            RoadTileInfo centerTileInfo = network.Roads.Info[tileIndex];
+
+            // Erase record from adj nodes
+
+            HexVector currPos = grid.HexSize.FastIndexToPos(tileIndex);
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                if (!centerTileInfo.FlowMask[dir]) {
+                    // no record in adj tile
+                    continue;
+                }
+
+                HexVector adjPos = HexVector.Offset(currPos, dir);
+                if (!grid.HexSize.IsValidPos(adjPos)) {
+                    continue;
+                }
+                int adjIdx = grid.HexSize.PosToIndex(adjPos);
+
+                RoadTileInfo adjTileInfo = network.Roads.Info[adjIdx];
+
+                TileDirection currDir = dir; // to stage into curr road
+                TileDirection adjDir = grid.HexSize.InvertDir(currDir); // to stage into prev road
+
+                adjTileInfo.FlowMask[adjDir] = false;
+
+                network.Roads.Info[adjIdx] = adjTileInfo;
+
+                // Update prev road rendering
+                for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
+                    if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == adjIdx) {
+                        network.RoadObjects[r].UpdateSegmentVisuals(network.Roads.Info[adjIdx].FlowMask);
+                    }
+                }
+            }
         }
 
         static public void MergeStagedRoadMask(ref RoadTileInfo info) {
