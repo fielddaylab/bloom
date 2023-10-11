@@ -4,14 +4,25 @@
 @trigger GameBooted
 @once
 $call Pause()
+// Seems like we only need to talk about market conditions at first.
+// Start mentioning blooms only after some start to appear. And leave that to the ecological advisor.
 {local @advisorEcon}    Greetings. Let's get right to business, shall we?
-{local @advisorEcon}    These troublesome algae blooms have been appearing all over. 
-{local @advisorEcon}    I'm here to fill you in on the market conditions driving this trend.
-{local @advisorEcon}    It starts with the Grain Farms: they import mineral phosphorus to fertilize their fields.
-{local @advisorEcon}    The Dairy Farms will buy their grain to feed cows... 
-{local @advisorEcon}    But then their phosphorus-filled manure runs into the lakes.
-{local @advisorEcon}    Seems to me they could help each other out, no?
-{local @advisorEcon}    Start by opening your Funding menu to connect these farms with a Road.
+{local @advisorEcon}    Our lovely <i>Hillside Region</i> is a chunk of blooming real estate with three buildings:
+{local @advisorEcon}    A <i>City</i>... // Insert camera panning here
+{local @advisorEcon}    A <i>Dairy Farm</i>... // Insert camera panning here
+{local @advisorEcon}    And a <i>Grain Farm</i>. // Insert camera panning here
+{local @advisorEcon}    But something else is required before it can truly be considered an economy... <i>Roads</i>!
+{local @advisorEcon}    Start by opening your <i>Funding</i> menu to connect these your two farms with a <i>Road</i>.
+
+
+// {local @advisorEcon}    Greetings. Let's get right to business, shall we?
+// {local @advisorEcon}    These troublesome algae blooms have been appearing all over. 
+// {local @advisorEcon}    I'm here to fill you in on the market conditions driving this trend.
+// {local @advisorEcon}    It starts with the Grain Farms: they import mineral phosphorus to fertilize their fields.
+// {local @advisorEcon}    The Dairy Farms will buy their grain to feed cows... 
+// {local @advisorEcon}    But then their phosphorus-filled manure runs into the lakes.
+// {local @advisorEcon}    Seems to me they could help each other out, no?
+// {local @advisorEcon}    Start by opening your Funding menu to connect these farms with a Road.
 $call Unpause()
 
 
@@ -27,13 +38,16 @@ $call Unpause()
 @once
 $call Pause()
 $if intro:citiesConnected
-    {local @advisorEcon}    Nice work! The grain farm is hooked up with the dairy farm, and the dairy farm with the city.
-    {local @advisorEcon}    The great milk-money conversions are underway.
+    {local @advisorEcon}    Nice work! Now the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i> and <i>manure</i>.
+    {local @advisorEcon}    And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
+    $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect city and dairy
     {local @advisorEcon}    That's a well-built road, that.
-    {local @advisorEcon}    But now the city needs milk.
-    {local @advisorEcon}    Build another road between the dairy farm and the city.
+    {local @advisorEcon}    Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
+    {local @advisorEcon}    And the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i>.
+    {local @advisorEcon}    But who buys the <i>milk</i>, you ask? That'll be the City!
+    {local @advisorEcon}    Build another <i>Road</i> connecting the Dairy Farm and the City.
 $endif
 $call Unpause()
 $set intro:farmsConnected = true
@@ -43,17 +57,23 @@ $set intro:farmsConnected = true
 @once
 $call Pause()
 $if intro:farmsConnected
-    {local @advisorEcon}    Nice work! The city is hooked up with the dairy farm, and the dairy farm with the grain farm.
-    {local @advisorEcon}    The great milk-money conversions are underway.
+    {local @advisorEcon}    Nice work! Now the the City can buy <i>milk</i> from the Dairy Farm and turn it into <i>money</i> using TAX MAGIC!
+    $branch .farmsAndCitiesConnected
 $else
-    // Step 4: Connect city and dairy
-    {local @advisorEcon}    That's a well-built road, that.
-    {local @advisorEcon}    But now the dairy farm needs grain to produce milk.
-    {local @advisorEcon}    Build another road between the dairy farm and the grain farm.
+    // Step 4: Connect dairy and grain
+    {local @advisorEcon}    Uh-- hmm. I suppose we can start with the City. I'm not picky about these things.
+    {local @advisorEcon}    With this road, the City can purchase <i>milk</i> from the Dairy Farm to produce <i>money</i>.
+    {local @advisorEcon}    But how does a Dairy Farm make the <i>milk</i>, you ask? They trade with a Grain Farm!
+    {local @advisorEcon}    Build another road between the Dairy Farm and the Grain Farm.
 $endif
 
 $call Unpause()
 $set intro:citiesConnected = true
+
+:: farmsAndCitiesConnected 
+{local @advisorEcon}    Your Grain Farm is hooked up with the Dairy Farm, and the Dairy Farm with the City.
+{local @advisorEcon}    Now you can start optimizing your <i>manure</i> sources to produce more <i>milk</i> and <i>money</i>!
+{local @advisorEcon}    Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
 
 :: sittingOmens
 @trigger        LetSat
