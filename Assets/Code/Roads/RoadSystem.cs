@@ -11,6 +11,7 @@ using Zavala.Data.Utils;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System;
+using System.Xml;
 
 namespace Zavala.Roads
 {
@@ -41,6 +42,9 @@ namespace Zavala.Roads
                     // Add newfound connections
                     network.Connections.Add(index, connections);
                 }
+
+                MarketData marketData = Game.SharedState.Get<MarketData>();
+                MarketUtility.TriggerConnectionTriggers(marketData, m_StateA, gridSize);
 
                 network.UpdateNeeded = false;
             }

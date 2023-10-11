@@ -14,12 +14,14 @@ namespace FieldDay.Scripting {
         public HashSet<StringHash32> SavedViewedNodeIds = new HashSet<StringHash32>(64);
 
         public VariantTable GlobalVars = new VariantTable("global");
+        public VariantTable IntroVars = new VariantTable("intro");
 
         public void OnDeregister() {
         }
 
         public void OnRegister() {
             ScriptUtility.RegisterTable(GlobalVars);
+            ScriptUtility.RegisterTable(IntroVars);
         }
     }
 }

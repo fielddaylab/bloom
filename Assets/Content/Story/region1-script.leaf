@@ -21,21 +21,49 @@ $call Unpause()
 @once
 {local @advisorEcon}    Mmm, yes. Press the button.
 
-
 // Step 3: Introduce cities
 :: farmsConnected
-// TODO: add a trigger for farm connection.
+@trigger    FarmConnection
+@once
+$call Pause()
+$if intro:citiesConnected
+    {local @advisorEcon}    Nice work! The grain farm is hooked up with the dairy farm, and the dairy farm with the city.
+    {local @advisorEcon}    The great milk-money conversions are underway.
+$else
+    // Step 4: Connect city and dairy
+    {local @advisorEcon}    That's a well-built road, that.
+    {local @advisorEcon}    But now the city needs milk.
+    {local @advisorEcon}    Build another road between the dairy farm and the city.
+$endif
+$call Unpause()
+$set intro:farmsConnected = true
 
-// Step 4: Connect city and dairy
+:: cityConnected
+@trigger    CityConnection
+@once
+$call Pause()
+$if intro:farmsConnected
+    {local @advisorEcon}    Nice work! The city is hooked up with the dairy farm, and the dairy farm with the grain farm.
+    {local @advisorEcon}    The great milk-money conversions are underway.
+$else
+    // Step 4: Connect city and dairy
+    {local @advisorEcon}    That's a well-built road, that.
+    {local @advisorEcon}    But now the dairy farm needs grain to produce milk.
+    {local @advisorEcon}    Build another road between the dairy farm and the grain farm.
+$endif
 
+$call Unpause()
+$set intro:citiesConnected = true
 
 :: sittingOmens
 @trigger        LetSat
 @once
+$call Pause()
 {local @advisorEcol}    It looks like this dairy farm is letting its manure sit and run off.
 {local @advisorEcon}    Indeed. You'll have to make it favorable for them to send it to a grain farm.
 {local @advisorEcon}    Make sure there's a road connecting them, and that shipping is cheaper than allowing runoff.
 {local @advisorEcol}    This could have ramifications for lake health down the line...
+$call Unpause()
 
 :: testEcologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -54,6 +82,7 @@ $call Unpause()
 @conditions     alertType == "excess-runoff"
 @forcePolicy    Ecology
 @queued
+$call Pause()
 {local @grainFarmer}    Goodness gracious. This manure just slips off my fields.
 {local @advisorEcol}    There has been excessive runoff!
 {local @advisorEcol}    Looks like it's still cheaper for the dairy farm to let the manure sit.
@@ -61,15 +90,18 @@ $call Unpause()
 {local @advisorEcon}    That could incentivize selling, but if it's too high it'll disrupt the supply chain.
 {local @advisorEcol}    What do you think, boss?
 $call UnlockCards(RunoffPolicy)
+$call Unpause()
 
 :: testBloomTrigger
 @trigger        AlertExamined
 @conditions     alertType == "bloom"
 @forcePolicy    Ecology
 @once
+$call Pause()
 {local @advisorEcol}    Oh dear. We're getting algae blooms here in our lake.
 {local @advisorEcol}    We've been authorized to implement a runoff penalty to disincentivize sitting manure.
 $call UnlockCards(RunoffPolicy)
+$call Unpause()
 
 
 :: testSellAtLossTrigger
@@ -77,15 +109,19 @@ $call UnlockCards(RunoffPolicy)
 @conditions     alertType == "selling-loss"
 @forcePolicy    Economy
 @queued
+$call Pause()
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
 {local @advisorEcon}    This supplier is selling at a loss.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best decrease costs.
+$call Unpause()
 
 
 :: testRegionUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Prairie"
 @queued
+$call Pause()
 {@advisorEconPrairie}    Howdy there!
 {@advisorEconPrairie}    We've heard about your program over here in Prairie County.
 {@advisorEconPrairie}    We think it shows promise. Maybe we could coordinate to address this muck together? 
+$call Unpause()

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Zavala.Data;
+using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.UI;
 
@@ -322,5 +324,43 @@ namespace Zavala.Economy
 
             return true;
         }
+
+        #region Roads
+
+        public static void TriggerConnectionTriggers(MarketData marketData, RoadNetwork network, HexGridSize gridSize) {
+            // TODO: if we're only ever checking these in the intro, may be worth adding another variable to only calc this during intro
+            foreach(var supplier in marketData.Suppliers) {
+                foreach (var requester in marketData.Buyers) {
+                    // ignore buyers that don't overlap with shipping mask
+                    ResourceMask overlap = requester.RequestMask & supplier.ShippingMask;
+                    if (overlap == 0) {
+                        continue;
+                    }
+
+                    RoadPathSummary connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
+                    if (!connectionSummary.Connected) {
+                        continue;
+                    }
+                    if (connectionSummary.Distance != 0 && requester.IsLocalOption) {
+                        // Exclude local options from lists of non-local tiles
+                        continue;
+                    }
+
+                    // Check for cafo-grain farm connection
+                    bool dairyFarmSupplier = (supplier.ShippingMask & ResourceMask.Manure) != 0 && (supplier.ShippingMask & ResourceMask.Milk) != 0;
+                    bool grainFarmRequester = (requester.RequestMask & ResourceMask.Manure) != 0;
+                    bool cityRequester = (requester.RequestMask & ResourceMask.Milk) != 0;
+                    bool difTiles = supplier.Position.TileIndex != requester.Position.TileIndex;
+                    if (dairyFarmSupplier && grainFarmRequester && difTiles) {
+                        ScriptUtility.Trigger(GameTriggers.FarmConnection);
+                    }
+                    if (dairyFarmSupplier && cityRequester && difTiles) {
+                        ScriptUtility.Trigger(GameTriggers.CityConnection);
+                    }
+                }
+            }
+        }
+
+        #endregion // Roads
     }
 }
