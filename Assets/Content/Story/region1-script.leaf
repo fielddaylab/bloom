@@ -14,7 +14,6 @@ $call Pause()
 {local @advisorEcon}    But something else is required before it can truly be considered an economy... <i>Roads</i>!
 {local @advisorEcon}    Start by opening your <i>Funding</i> menu to connect these your two farms with a <i>Road</i>.
 
-
 // {local @advisorEcon}    Greetings. Let's get right to business, shall we?
 // {local @advisorEcon}    These troublesome algae blooms have been appearing all over. 
 // {local @advisorEcon}    I'm here to fill you in on the market conditions driving this trend.
@@ -77,6 +76,7 @@ $set intro:citiesConnected = true
 
 :: sittingOmens
 @trigger        LetSat
+@conditions     intro:citiesConnected, intro:farmsConnected
 @once
 $call Pause()
 {local @advisorEcol}    It looks like this dairy farm is letting its manure sit and run off.
@@ -99,7 +99,7 @@ $call Unpause()
 
 :: testRunoffTrigger
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff"
+@conditions     alertType == "excess-runoff", intro:citiesConnected, intro:farmsConnected
 @forcePolicy    Ecology
 @queued
 $call Pause()
