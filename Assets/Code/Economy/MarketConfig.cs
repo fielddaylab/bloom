@@ -26,8 +26,8 @@ namespace Zavala.Economy {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock Buy;
 
-        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
-        public ResourceBlock Import;
+        // [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        // public ResourceBlock Import;
     }
 
     [Serializable]

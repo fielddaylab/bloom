@@ -82,6 +82,7 @@ $call Pause()
 {local @advisorEcol}    It looks like this dairy farm is letting its manure sit and run off.
 {local @advisorEcon}    Indeed. You'll have to make it favorable for them to send it to a grain farm.
 {local @advisorEcon}    Make sure there's a road connecting them, and that shipping is cheaper than allowing runoff.
+{local @advisorEcon}    Or build a Storage unit for it to sit at while the farm looks for a reasonable seller.
 {local @advisorEcol}    This could have ramifications for lake health down the line...
 $call Unpause()
 
@@ -97,7 +98,7 @@ $call Unpause()
 @forcePolicy    Economy
 {local @advisorEcon}    Here are the economic policies.
 
-:: testRunoffTrigger
+:: runoffTrigger
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff", intro:citiesConnected, intro:farmsConnected
 @forcePolicy    Ecology
@@ -133,15 +134,4 @@ $call Pause()
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
 {local @advisorEcon}    This supplier is selling at a loss.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best decrease costs.
-$call Unpause()
-
-
-:: testRegionUnlocked
-@trigger        RegionUnlocked
-@conditions     regionId == "Prairie"
-@queued
-$call Pause()
-{@advisorEconPrairie}    Howdy there!
-{@advisorEconPrairie}    We've heard about your program over here in Prairie County.
-{@advisorEconPrairie}    We think it shows promise. Maybe we could coordinate to address this muck together? 
 $call Unpause()

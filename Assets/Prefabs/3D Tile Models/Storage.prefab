@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4665823543789613533}
   - component: {fileID: 4665823543789613532}
   - component: {fileID: 4665823543789613535}
+  - component: {fileID: 4841412241795618843}
   - component: {fileID: 6129802998970184723}
   - component: {fileID: 5983373466290620169}
   m_Layer: 7
@@ -78,9 +79,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Produces:
-    Manure: 0
+    Manure: 1
     MFertilizer: 0
-    DFertilizer: 1
+    DFertilizer: 0
     Grain: 0
     Milk: 0
   Requires:
@@ -102,7 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 307847752eca4184495abedaae534342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShippingMask: 4
+  ShippingMask: 1
 --- !u!114 &4665823543789613533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,9 +118,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RequestMask: 1
   MaxRequests: 3
-  AgeOfUrgency: 20
+  AgeOfUrgency: -1
   IsLocalOption: 0
-  InfiniteRequests: 0
+  InfiniteRequests: 1
 --- !u!114 &4665823543789613532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,6 +149,20 @@ MonoBehaviour:
   HeightOffset: 0
   m_initial: 0
   m_hideTop: 1
+--- !u!114 &4841412241795618843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e3b0c9ed15a50f4d95d30f9ff7de740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Timer:
+    Period: 8
 --- !u!114 &6129802998970184723
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10338,197 +10338,65 @@ MonoBehaviour:
       Milk: 3
   PurchasePerRegion:
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
   - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-  - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-  - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-  - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-  - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-  - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-  - Buy:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
-    Import:
-      Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
-      Grain: 0
-      Milk: 0
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
 --- !u!114 &502754876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11948,7 +11816,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 390.28
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.y

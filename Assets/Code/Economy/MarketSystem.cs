@@ -94,7 +94,7 @@ namespace Zavala.Economy
             // for all remaining, increment their age
             for (int i = 0; i < m_RequestWorkList.Count; i++) {
                 m_RequestWorkList[i].Age++;
-                if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency) {
+                if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency && m_RequestWorkList[i].Requester.AgeOfUrgency > 0) {
                     m_StateD.NewUrgents.Add(m_RequestWorkList[i]);
                 }
             }
@@ -201,7 +201,13 @@ namespace Zavala.Economy
                 // TODO: only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + adjustments.ImportTax[primary];
-                float profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
+                float profit = 0;
+                if (requester.IsLocalOption) {
+                    // no profit associated
+                }
+                else {
+                    profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
+                }
                 if (requester.IsLocalOption) {
                     profit -= adjustments.RunoffPenalty[primary];
                 }
