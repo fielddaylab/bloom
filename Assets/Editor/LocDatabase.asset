@@ -49,11 +49,11 @@ MonoBehaviour:
     - Id: cards.severity.high
       Content: High
     - Id: cards.RunoffPolicy.category
-      Content: Runoff Policy
+      Content: Runoff Penalty
     - Id: cards.RunoffPolicy.alt
       Content: Halt
     - Id: cards.SkimmingPolicy.category
-      Content: Skimming Policy
+      Content: Skimming Level
     - Id: cards.SkimmingPolicy.alt
       Content: Dredge
     - Id: cards.ImportTaxPolicy.category
