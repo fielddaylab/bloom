@@ -23,7 +23,6 @@ using FieldDay.Scripting;
 
 namespace Zavala
 {
-    [ServiceDependency(typeof(AssetsService))]
     public partial class LocService : ServiceBehaviour, ILoadable
     {
         static private readonly FourCC DefaultLanguage = FourCC.Parse("EN");

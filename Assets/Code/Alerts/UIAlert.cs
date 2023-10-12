@@ -13,7 +13,6 @@ using Zavala.Scripting;
 using Zavala.Sim;
 
 namespace Zavala.UI {
-    [RequireComponent(typeof(SnapToTile))]
     public class UIAlert : MonoBehaviour
     {
         [SerializeField] private MultiImageButton m_Button;
@@ -73,7 +72,7 @@ namespace Zavala.UI {
                 pools.Alerts.Free(alert);
 
                 // Allow next queued events to be generated
-                alert.Actor.ActivelyDisplayingEvent = false;
+                alert.Actor.DisplayingEvent = null;
             }
         }
     }

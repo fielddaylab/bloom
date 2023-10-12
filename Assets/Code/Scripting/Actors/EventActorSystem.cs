@@ -31,7 +31,8 @@ namespace Zavala.Scripting {
                                 Argument = trigger.Argument,
                                 TypeId = trigger.EventId,
                                 ScriptId = node.Id(),
-                                TileIndex = trigger.TileIndex
+                                TileIndex = trigger.TileIndex,
+                                Alert = trigger.Alert
                             };
                             component.QueuedEvents.PushBack(queuedEvent);
                         }

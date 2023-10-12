@@ -11,6 +11,7 @@ namespace Zavala {
         public float HeightOffset;
         [SerializeField] private bool m_initial; // whether this object is enabled before the first update
         public bool m_hideTop; // whether this object should hide the top renderer of the tile it's placed on
+
         private void OnEnable() {
             if (m_initial) {
                 // wait for world to finish setting up

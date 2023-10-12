@@ -12,7 +12,7 @@ namespace Zavala.Sim
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
-            if (EventActorUtility.AnyQueueContains(actor, GameAlerts.SellingLoss)) {
+            if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.SellingLoss)) {
                 // only add this trigger once
                 return;
             }
@@ -20,10 +20,7 @@ namespace Zavala.Sim
             // Check if a supplier sold at a loss
             if (supplier.SoldAtALoss) {
                 // if so, create alert on this tile
-                EventActorTrigger newTrigger = new EventActorTrigger();
-                newTrigger.EventId = GameTriggers.AlertExamined;
-                newTrigger.Argument = new NamedVariant("alertType", GameAlerts.SellingLoss);
-                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, tile.TileIndex, newTrigger.Argument);
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.SellingLoss, tile.TileIndex);
             }
         }
     }

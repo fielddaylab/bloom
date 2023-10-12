@@ -10580,6 +10580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardDefs: {fileID: 4900000, guid: a870cbe179378d14199b061ddaaa999b, type: 3}
+  Sprites: {fileID: 11400000, guid: f86e624ee7a192f46bc45db618f1f39d, type: 2}
   UnlockedCards: []
 --- !u!114 &502754880
 MonoBehaviour:
@@ -11188,7 +11189,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1013
+    m_Bits: 2147484661
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -11241,7 +11242,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 1
+  m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -17388,6 +17389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InitialCapacity: 64
+  m_AlertAssets: {fileID: 11400000, guid: 6d3b183c9672a974fb689f6e71348bba, type: 2}
 --- !u!114 &1897052394
 MonoBehaviour:
   m_ObjectHideFlags: 0

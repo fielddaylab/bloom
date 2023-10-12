@@ -132,8 +132,18 @@ namespace Zavala.World {
             return GetTileCenter(ZavalaGame.SimGrid, ZavalaGame.SimWorld, pos);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public Vector3 GetTileCenter(int index) {
+            return GetTileCenter(ZavalaGame.SimGrid, ZavalaGame.SimWorld, index);
+        }
+
         static public Vector3 GetTileCenter(SimGridState grid, SimWorldState world, HexVector pos) {
             int index = grid.HexSize.FastPosToIndex(pos);
+            return HexVector.ToWorld(pos, grid.Terrain.Height[index], world.WorldSpace);
+        }
+
+        static public Vector3 GetTileCenter(SimGridState grid, SimWorldState world, int index) {
+            HexVector pos = grid.HexSize.FastIndexToPos(index);
             return HexVector.ToWorld(pos, grid.Terrain.Height[index], world.WorldSpace);
         }
 
@@ -146,7 +156,7 @@ namespace Zavala.World {
             }
         }
 
-        static public unsafe Vector3 GetTileCentroid(HexGridWorldSpace worldSpace, ushort* tileIndices, ushort indexCount) {
+        static public unsafe Vector3 GetTileCentroid(HexGridWorldSpace worldSpace, ushort* tileIndices, int indexCount) {
             if (indexCount <= 0) {
                 return default;
             }

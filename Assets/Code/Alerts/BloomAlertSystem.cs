@@ -13,20 +13,18 @@ namespace Zavala.Sim
     public class BloomAlertSystem : ComponentSystemBehaviour<EventActor, OccupiesTile>
     {
         public override void ProcessWorkForComponent(EventActor actor, OccupiesTile tile, float deltaTime) {
-            if (EventActorUtility.AnyQueueContains(actor, GameAlerts.Bloom)) {
+            if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.Bloom)) {
                 // only add this trigger once
                 return;
             }
+
             bool bloomPeaked = false;
 
             SimAlgaeState simAlgae = Game.SharedState.Get<SimAlgaeState>();
             bloomPeaked = simAlgae.Algae.PeakingTiles.Contains(tile.TileIndex);
 
             if (bloomPeaked) {
-                EventActorTrigger newTrigger = new EventActorTrigger();
-                newTrigger.EventId = GameTriggers.AlertExamined;
-                newTrigger.Argument = new NamedVariant("alertType", GameAlerts.Bloom);
-                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, tile.TileIndex, newTrigger.Argument);
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.Bloom, tile.TileIndex);
 
                 // TODO: seems like we should be able to clear this at the start of SimAlgaeSystem, since this system comes after.
                 // But for some reason some tiles aren't processed before SimAlgaeSystem starts again.

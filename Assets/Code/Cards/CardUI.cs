@@ -1,5 +1,6 @@
 using BeauRoutine;
 using EasyAssetStreaming;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,13 +11,13 @@ using UnityEngine.UI;
 namespace Zavala.Cards {
     public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [HideInInspector] public int PolicyIndex; // Which severity index this card corresponds to (also index from left to right)
         public Button Button;
         public TMP_Text Text;
         public Image CardArt;
         public Graphic Background;
 
-
+        [NonSerialized] public int PolicyIndex; // Which severity index this card corresponds to (also index from left to right)
+        [NonSerialized] private Vector2 OriginalAnchorPos;
 
         private void OnDisable() {
             Button.onClick.RemoveAllListeners();
@@ -31,11 +32,11 @@ namespace Zavala.Cards {
     }
 
     static public class CardUIUtility { 
-        static public void PopulateCard(CardUI card, CardData data, Color32 bgColor) {
+        static public void PopulateCard(CardUI card, CardData data, SpriteLibrary library, Color32 bgColor) {
             ExtractLocText(data, out string locText);
             // TODO: extract font effects
             card.Text.SetText(locText);
-            ExtractSprite(data, out Sprite sprite);
+            ExtractSprite(data, library, out Sprite sprite);
             card.CardArt.sprite = sprite;
             card.PolicyIndex = (int)data.PolicyLevel;
             card.Background.color = bgColor;
@@ -56,14 +57,14 @@ namespace Zavala.Cards {
             locText = typeText + ": " + severityText.ToUpper();
         }
 
-        static public void ExtractSprite(CardData data, out Sprite sprite) {
+        static public void ExtractSprite(CardData data, SpriteLibrary sprites, out Sprite sprite) {
             // find image path from card definition, load it from resources
             string pathStr = data.ImgPath;
             int extIndex = pathStr.IndexOf(".");
             if (extIndex != -1) {
                 pathStr = pathStr.Substring(0, extIndex);
             }
-            sprite = Resources.Load<Sprite>("CardArt/" + pathStr);
+            sprites.TryLookup(pathStr, out sprite);
         }
     }
 

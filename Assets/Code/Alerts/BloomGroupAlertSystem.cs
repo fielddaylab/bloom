@@ -13,7 +13,7 @@ namespace Zavala.Sim
     public class BloomGroupAlertSystem : ComponentSystemBehaviour<EventActor, WaterGroupInstance>
     {
         public unsafe override void ProcessWorkForComponent(EventActor actor, WaterGroupInstance group, float deltaTime) {
-            if (EventActorUtility.AnyQueueContains(actor, GameAlerts.Bloom)) {
+            if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.Bloom)) {
                 // only add this trigger once
                 return;
             }
@@ -30,10 +30,7 @@ namespace Zavala.Sim
             }
 
             if (bloomPeaked) {
-                EventActorTrigger newTrigger = new EventActorTrigger();
-                newTrigger.EventId = GameTriggers.AlertExamined;
-                newTrigger.Argument = new NamedVariant("alertType", GameAlerts.Bloom);
-                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, tileIndex, newTrigger.Argument);
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.Bloom, tileIndex);
 
                 // TODO: seems like we should be able to clear this at the start of SimAlgaeSystem, since this system comes after.
                 // But for some reason some tiles aren't processed before SimAlgaeSystem starts again.

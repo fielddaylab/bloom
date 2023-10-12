@@ -12,7 +12,7 @@ namespace Zavala.Sim
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
-            if (EventActorUtility.AnyQueueContains(actor, GameAlerts.ExcessRunoff)) {
+            if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.ExcessRunoff)) {
                 // only add this trigger once
                 return;
             }
@@ -22,10 +22,7 @@ namespace Zavala.Sim
             Debug.Log("[Phosphorus] Amount generated last tick: " + generator.AmountProducedLastTick);
             if (generator.AmountProducedLastTick >= excessThreshold) {
                 // if so, create alert on this tile
-                EventActorTrigger newTrigger = new EventActorTrigger();
-                newTrigger.EventId = GameTriggers.AlertExamined;
-                newTrigger.Argument = new NamedVariant("alertType", GameAlerts.ExcessRunoff);
-                EventActorUtility.QueueTrigger(actor, newTrigger.EventId, tile.TileIndex, newTrigger.Argument);
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex);
             }
         }
     }

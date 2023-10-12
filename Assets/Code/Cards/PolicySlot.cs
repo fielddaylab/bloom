@@ -138,7 +138,7 @@ namespace Zavala.Cards
                 for (int i = 0; i < cardData.Count; i++) {
                     CardData data = cardData[i];
                     CardUI card = pools.Cards.Alloc(this.transform.parent != null ? this.transform.parent : this.transform);
-                    CardUIUtility.PopulateCard(card, data, m_SlotColor);
+                    CardUIUtility.PopulateCard(card, data, cardState.Sprites, m_SlotColor);
 
                     card.transform.localPosition = this.transform.localPosition;
                     card.transform.SetAsFirstSibling();
@@ -184,7 +184,7 @@ namespace Zavala.Cards
 
         private void MirrorSelectedCard(CardData data) {
             // Set this image and text to selected card's text and image
-            CardUIUtility.ExtractSprite(data, out Sprite sprite);
+            CardUIUtility.ExtractSprite(data, Game.SharedState.Get<CardsState>().Sprites, out Sprite sprite);
             CardUIUtility.ExtractLocText(data, out string locText);
             // TODO: extract font effects
             m_OverlayImage.sprite = sprite;
@@ -203,13 +203,12 @@ namespace Zavala.Cards
             float rotatedMost = 8.0f * (m_DisplayCards.Count - 1);
             float topMost = 155;
             for (int i = 0; i < m_DisplayCards.Count; i++) {
-                Transform cardTransform = m_DisplayCards[i].transform;
+                RectTransform cardTransform = (RectTransform) m_DisplayCards[i].transform;
                 Routine.Start(
                     Routine.Combine(
-                        cardTransform.MoveTo(new Vector3(
-                            cardTransform.position.x - leftMost + 120 * i,
-                            cardTransform.position.y + topMost - 30 * Mathf.Abs((i + offset) - (m_DisplayCards.Count / 2.0f)),
-                            cardTransform.position.z
+                        cardTransform.AnchorPosTo(new Vector2(
+                            cardTransform.anchoredPosition.x - leftMost + 120 * i,
+                            cardTransform.anchoredPosition.y + topMost - 30 * Mathf.Abs((i + offset) - (m_DisplayCards.Count / 2.0f))
                         ), .3f, Axis.XY),
                         cardTransform.RotateTo(cardTransform.rotation.z + rotatedMost - 15f * i, .3f, Axis.Z)
                     )
