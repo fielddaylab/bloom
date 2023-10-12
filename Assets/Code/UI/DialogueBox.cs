@@ -174,7 +174,7 @@ namespace Zavala.UI {
                 Contents.Contents.maxVisibleCharacters = 0;
             }
 
-            m_TransitionRoutine.Replace(this, ShowRoutine());
+            m_TransitionRoutine.Replace(ShowRoutine());
             return m_LocalHandler;
         }
 
