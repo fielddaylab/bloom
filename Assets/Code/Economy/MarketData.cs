@@ -347,9 +347,9 @@ namespace Zavala.Economy
                     }
 
                     // Check for cafo-grain farm connection
-                    bool dairyFarmSupplier = (supplier.ShippingMask & ResourceMask.Manure) != 0 && (supplier.ShippingMask & ResourceMask.Milk) != 0;
-                    bool grainFarmRequester = (requester.RequestMask & ResourceMask.Manure) != 0;
-                    bool cityRequester = (requester.RequestMask & ResourceMask.Milk) != 0;
+                    bool dairyFarmSupplier = supplier.Position.Type == BuildingType.DairyFarm;
+                    bool grainFarmRequester = requester.Position.Type == BuildingType.GrainFarm;
+                    bool cityRequester = requester.Position.Type == BuildingType.City;
                     bool difTiles = supplier.Position.TileIndex != requester.Position.TileIndex;
                     if (dairyFarmSupplier && grainFarmRequester && difTiles) {
                         ScriptUtility.Trigger(GameTriggers.FarmConnection);

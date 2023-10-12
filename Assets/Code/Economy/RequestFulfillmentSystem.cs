@@ -5,6 +5,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Systems;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using Zavala.Actors;
 using Zavala.Sim;
@@ -42,6 +43,7 @@ namespace Zavala.Economy {
                     // Skip fulfillment system, deliver directly to local tile
                     request.Requester.Received += request.Requested;
                     request.Requester.RequestCount--;
+                    ResourceStorageUtility.RefreshStorageDisplays(request.Supplier.Storage);
                 }
             }
         }
