@@ -5,6 +5,7 @@ using UnityEngine;
 using Zavala.Actors;
 using Zavala.Economy;
 using Zavala.Scripting;
+using Zavala.World;
 
 namespace Zavala.Sim
 {

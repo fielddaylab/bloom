@@ -12,7 +12,7 @@ namespace Zavala.World {
         public GameObject GrainFarm;
 
         [Header("Static Modifiers")]
-        public GameObject Rock;
-        public GameObject Tree;
+        public GameObject[] Rock;
+        public GameObject[] Tree;
     }
 }

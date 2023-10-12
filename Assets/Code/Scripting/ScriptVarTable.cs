@@ -8,7 +8,7 @@ namespace FieldDay.Scripting {
     /// Temporary variable table.
     /// </summary>
     public struct TempVarTable : IDisposable {
-        private readonly TempAlloc<VariantTable> m_Table;
+        private TempAlloc<VariantTable> m_Table;
         
         internal TempVarTable(TempAlloc<VariantTable> tempTable) {
             m_Table = tempTable;

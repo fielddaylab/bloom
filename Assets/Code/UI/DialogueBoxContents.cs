@@ -19,10 +19,6 @@ namespace Zavala.UI {
         public Image PortraitBackground;
         public Image PortraitImage;
 
-        [Header("Settings")]
-        public RectOffset BoxDefaultOffset;
-        public RectOffset BoxWithPortraitOffset;
-
         #endregion // Inspector
     }
 

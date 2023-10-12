@@ -517,67 +517,107 @@ MonoBehaviour:
     Height: 65535
   Buildings:
   - LocalTileIndex: 68
-    ScriptName: CAFO
+    ScriptName:
+      m_Source: CAFO
+      m_HashValue: 2925324310
     Type: 2
   - LocalTileIndex: 38
-    ScriptName: Farm
+    ScriptName:
+      m_Source: Farm
+      m_HashValue: 2151182681
     Type: 1
   - LocalTileIndex: 75
-    ScriptName: City
+    ScriptName:
+      m_Source: City
+      m_HashValue: 2422945378
     Type: 3
   Points: []
   Roads: []
   Modifiers:
   - LocalTileIndex: 26
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 58
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 86
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 98
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 73
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 82
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 72
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 62
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 16
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 1
   - LocalTileIndex: 15
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 1
   - LocalTileIndex: 5
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 1
   - LocalTileIndex: 13
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 1
   - LocalTileIndex: 23
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 1
   - LocalTileIndex: 71
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 1
   - LocalTileIndex: 14
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 55
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 0
   - LocalTileIndex: 45
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Modifier: 1
   WaterGroupLocalIndices: 1f0029002a002b003300340035003600400041004200
   WaterGroups:

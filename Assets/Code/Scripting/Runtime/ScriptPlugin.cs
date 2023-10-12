@@ -133,6 +133,11 @@ namespace FieldDay.Scripting {
             return true;
         }
 
+        public override bool TryLookupObject(StringHash32 inObjectId, LeafThreadState inThreadState, out object outObject) {
+            bool result = m_RuntimeState.NamedActors.TryGetValue(inObjectId, out var evt);
+            outObject = evt;
+            return result;
+        }
 
         static private string ReplaceLocalIdOf(TagData inTag, object inContext) {
             if (inTag.Data.StartsWith('@')) {

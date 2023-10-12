@@ -38,14 +38,14 @@ namespace Zavala {
         [Serializable]
         public struct BuildingData {
             public ushort LocalTileIndex;
-            public string ScriptName;
+            public SerializedHash32 ScriptName;
             public BuildingType Type;
         }
 
         [Serializable]
         public struct PointData {
             public ushort LocalTileIndex;
-            public string ScriptName;
+            public SerializedHash32 ScriptName;
         }
 
         [Serializable]
@@ -57,7 +57,7 @@ namespace Zavala {
         [Serializable]
         public struct ModifierData {
             public ushort LocalTileIndex;
-            public string ScriptName;
+            public SerializedHash32 ScriptName;
             public TerrainModifier Modifier;
         }
 

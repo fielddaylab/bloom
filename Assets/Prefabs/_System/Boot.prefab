@@ -167,6 +167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3575173300628751710}
   - component: {fileID: 3575173300628751681}
+  - component: {fileID: 5559271431860279338}
   m_Layer: 0
   m_Name: AssetServices
   m_TagString: Untagged
@@ -202,6 +203,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnglishManifest: {fileID: 11400000, guid: f2a6ba20c9a457545abe3a87b3762914, type: 2}
+--- !u!114 &5559271431860279338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3575173300628751680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3801b419e883ec41878568c1dd60bfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TopMaterial: {fileID: 11400000, guid: 0787aaccb5e7e464c954254134283b26, type: 2}
+  WaterfallMaterial: {fileID: 11400000, guid: f89baba2d595fa34db52df1088109dff, type: 2}
 --- !u!1 &7025879419901973865
 GameObject:
   m_ObjectHideFlags: 0

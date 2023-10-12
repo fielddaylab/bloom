@@ -617,16 +617,24 @@ MonoBehaviour:
     Height: 65535
   Buildings:
   - LocalTileIndex: 53
-    ScriptName: City
+    ScriptName:
+      m_Source: City
+      m_HashValue: 2422945378
     Type: 3
   - LocalTileIndex: 77
-    ScriptName: CAFO
+    ScriptName:
+      m_Source: CAFO
+      m_HashValue: 2925324310
     Type: 2
   - LocalTileIndex: 28
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Type: 1
   - LocalTileIndex: 50
-    ScriptName: 
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
     Type: 1
   Points: []
   Roads: []

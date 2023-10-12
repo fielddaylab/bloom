@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a034235ca79e3d48b2c310b92e9bc71, type: 3}
+  m_Name: WaterTop_Lerp
+  m_EditorClassIdentifier: 
+  Start: {fileID: 2100000, guid: 169b439adb403440aa0e56c8bdf973be, type: 2}
+  End: {fileID: 2100000, guid: d6ba24d23f8224567892cc694431016b, type: 2}
+  Increments: 32

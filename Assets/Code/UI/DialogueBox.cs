@@ -130,11 +130,6 @@ namespace Zavala.UI {
 
             if (inString.RichText.Length > 0) {
                 StringHash32 character = ScriptUtility.FindCharacterId(inString);
-                if (!character.IsEmpty) {
-                    UIUtility.ApplyOffsets(Contents.TextBox, Contents.BoxWithPortraitOffset);
-                } else {
-                    UIUtility.ApplyOffsets(Contents.TextBox, Contents.BoxDefaultOffset);
-                }
                 ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
                 m_CurrentDef = charDef;

@@ -11,6 +11,13 @@ using Zavala.Sim;
 namespace Zavala.World {
     [SharedStateInitOrder(10)]
     public sealed class SimWorldState : SharedStateComponent, IRegistrationCallbacks {
+        public struct SpawnRecord<T> {
+            public ushort TileIndex;
+            public ushort RegionIndex;
+            public StringHash32 Id;
+            public T Data;
+        }
+
         #region Inspector
 
         [Header("World Scale")]
@@ -48,6 +55,8 @@ namespace Zavala.World {
         // temporary data
 
         [NonSerialized] public int NewRegions;
+        [NonSerialized] public RingBuffer<SpawnRecord<BuildingType>> QueuedBuildings = new RingBuffer<SpawnRecord<BuildingType>>();
+        [NonSerialized] public RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>> QueuedModifiers = new RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>>();
 
         void IRegistrationCallbacks.OnDeregister() {
         }

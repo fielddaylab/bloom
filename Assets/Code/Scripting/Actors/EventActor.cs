@@ -1,7 +1,9 @@
 using System;
 using BeauUtil;
 using BeauUtil.Variants;
+using FieldDay;
 using FieldDay.Components;
+using FieldDay.Scripting;
 using Leaf.Runtime;
 using UnityEngine;
 using Zavala.Sim;
@@ -31,6 +33,16 @@ namespace Zavala.Scripting {
         VariantTable ILeafActor.Locals => null;
 
         #endregion // Leaf
+
+        #region Unity Events
+
+        private void OnDestroy() {
+            if (!Game.IsShuttingDown) {
+                EventActorUtility.DeregisterActor(this);
+            }
+        }
+
+        #endregion // Unity Events
     }
 
     public struct EventActorTrigger {
@@ -109,6 +121,35 @@ namespace Zavala.Scripting {
             }
 
             return false;
+        }
+    
+        static public void RegisterActor(EventActor actor, StringHash32 id) {
+            if (actor == null) {
+                return;
+            }
+
+            if (actor.Id != id) {
+                StringHash32 oldId = actor.Id;
+                actor.Id = id;
+
+                if (Game.SharedState.TryGet(out ScriptRuntimeState runtime)) {
+                    if (!oldId.IsEmpty) {
+                        runtime.NamedActors.Remove(oldId);
+                    } else {
+                        runtime.NamedActors[id] = actor;
+                    }
+                }
+            }
+        }
+
+        static public void DeregisterActor(EventActor actor) {
+            if (!actor.Id.IsEmpty) {
+                StringHash32 oldId = actor.Id;
+
+                if (Game.SharedState.TryGet(out ScriptRuntimeState runtime)) {
+                    runtime.NamedActors.Remove(oldId);
+                }
+            }
         }
     }
 }

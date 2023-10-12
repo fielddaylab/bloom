@@ -10,6 +10,7 @@ using UnityEngine;
 using Zavala.Building;
 using Zavala.Economy;
 using Zavala.Roads;
+using Zavala.Scripting;
 using Zavala.World;
 
 namespace Zavala.Sim {
@@ -126,22 +127,12 @@ namespace Zavala.Sim {
             // spawn buildings
             foreach (var obj in asset.Buildings) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                HexVector pos = grid.HexSize.FastIndexToPos(mapIndex);
-                Vector3 worldPos = HexVector.ToWorld(pos, grid.Terrain.Info[mapIndex].Height, world.WorldSpace);
-                switch (obj.Type) {
-                    case BuildingType.City: {
-                        GameObject.Instantiate(palette.City, worldPos, Quaternion.identity);
-                        break;
-                    }
-                    case BuildingType.DairyFarm: {
-                        GameObject.Instantiate(palette.DairyFarm, worldPos, Quaternion.identity);
-                        break;
-                    }
-                    case BuildingType.GrainFarm: {
-                        GameObject.Instantiate(palette.GrainFarm, worldPos, Quaternion.identity);
-                        break;
-                    }
-                }
+                world.QueuedBuildings.PushBack(new SimWorldState.SpawnRecord<BuildingType>() {
+                    TileIndex = (ushort) mapIndex,
+                    RegionIndex = regionIndex,
+                    Id = obj.ScriptName,
+                    Data = obj.Type
+                });
             }
 
             // TODO: spawn roads?
@@ -149,18 +140,12 @@ namespace Zavala.Sim {
             // spawn modifiers
             foreach(var obj in asset.Modifiers) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                HexVector pos = grid.HexSize.FastIndexToPos(mapIndex);
-                Vector3 worldPos = HexVector.ToWorld(pos, grid.Terrain.Info[mapIndex].Height, world.WorldSpace);
-                switch (obj.Modifier) {
-                    case RegionAsset.TerrainModifier.Tree: {
-                            GameObject.Instantiate(palette.Tree, worldPos, Quaternion.identity);
-                            break;
-                        }
-                    case RegionAsset.TerrainModifier.Rock: {
-                            GameObject.Instantiate(palette.Rock, worldPos, Quaternion.identity);
-                            break;
-                        }
-                }
+                world.QueuedModifiers.PushBack(new SimWorldState.SpawnRecord<RegionAsset.TerrainModifier>() {
+                    TileIndex = (ushort)mapIndex,
+                    RegionIndex = regionIndex,
+                    Id = obj.ScriptName,
+                    Data = obj.Modifier
+                });
             }
 
             // load script
