@@ -12,11 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
   m_Name: urbanPrairie
   m_EditorClassIdentifier: 
-  NameId: '[Urbanite Name] (Prairie)'
+  NameId: Pibbleton
   TitleId: Urbanite
+  IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
     rgba: 4283545344
+  PanelColor:
+    serializedVersion: 2
+    rgba: 0
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 0
   NameColor:
     serializedVersion: 2
     rgba: 4290693832

@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
-  m_Name: cafoPrairie
+  m_Name: advisorEconForest
   m_EditorClassIdentifier: 
-  NameId: Squinkle
-  TitleId: CAFO Farmer
-  IsAdvisor: 0
+  NameId: Agatha
+  TitleId: Economic Advisor
+  IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4283545344
+    rgba: 4280060645
   PanelColor:
     serializedVersion: 2
-    rgba: 0
+    rgba: 4288204258
   HighlightColor:
     serializedVersion: 2
-    rgba: 0
+    rgba: 4278220543
   NameColor:
     serializedVersion: 2
-    rgba: 4290693832
+    rgba: 4289584125
   TitleColor:
     serializedVersion: 2
-    rgba: 4282955560
+    rgba: 4289584125
   TextColor:
     serializedVersion: 2
-    rgba: 4290693832
-  PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+    rgba: 4278198591
+  PortraitArt: {fileID: 21300000, guid: 6b7ffe1aa44a7194ab4cc3392086cc05, type: 3}
   PortraitBackground: {fileID: 0}
