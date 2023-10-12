@@ -17,6 +17,8 @@ namespace Zavala.Economy {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock Current;
         public ResourceDisplay[] Displays;
+        public ResourceRequester StorageExtensionReq; // mainly for let it sit option
+        public ResourceStorage StorageExtensionStore; // mainly for let it sit option
 
         public void Start() {
              ResourceStorageUtility.RefreshStorageDisplays(this);
@@ -24,10 +26,17 @@ namespace Zavala.Economy {
     }
 
     public static class ResourceStorageUtility {
-        public static void RefreshStorageDisplays(ResourceStorage storage ) {
+        public static void RefreshStorageDisplays(ResourceStorage storage) {
             if (storage == null || storage.Displays.Length <= 0) return;
             foreach (ResourceDisplay display in storage.Displays) {
-                display?.SetCount(storage.Current[display.ResourceType]);
+                int extensionAdd = 0;
+                if (storage.StorageExtensionReq != null) {
+                    extensionAdd += storage.StorageExtensionReq.Received[display.ResourceType];
+                }
+                if (storage.StorageExtensionStore != null) {
+                    extensionAdd += storage.StorageExtensionStore.Current[display.ResourceType];
+                }
+                display?.SetCount(storage.Current[display.ResourceType] + extensionAdd);
             }
         }
     }

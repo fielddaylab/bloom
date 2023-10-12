@@ -80,9 +80,9 @@ $set intro:citiesConnected = true
 @once
 $call Pause()
 {local @advisorEcol}    It looks like this dairy farm is letting its manure sit and run off.
-{local @advisorEcon}    Indeed. You'll have to make it favorable for them to send it to a grain farm.
+{local @advisorEcon}    Indeed. You'll have to make their alternatives more favorable.
+{local @advisorEcon}    Namely, either a Storage unit or a Grain Farm.
 {local @advisorEcon}    Make sure there's a road connecting them, and that shipping is cheaper than allowing runoff.
-{local @advisorEcon}    Or build a Storage unit for it to sit at while the farm looks for a reasonable seller.
 {local @advisorEcol}    This could have ramifications for lake health down the line...
 $call Unpause()
 

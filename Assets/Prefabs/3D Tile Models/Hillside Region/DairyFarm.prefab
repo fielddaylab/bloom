@@ -69,6 +69,13 @@ MonoBehaviour:
   AgeOfUrgency: -1
   IsLocalOption: 1
   InfiniteRequests: 1
+  OverridesBuyPrice: 0
+  OverrideBlock:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
 --- !u!114 &3038908885332165687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,6 +101,8 @@ MonoBehaviour:
     Grain: 0
     Milk: 0
   Displays: []
+  StorageExtensionReq: {fileID: 0}
+  StorageExtensionStore: {fileID: 0}
 --- !u!114 &9191267247866587228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +276,8 @@ MonoBehaviour:
   Displays:
   - {fileID: 1421884348082835421}
   - {fileID: 2224641303006806999}
+  StorageExtensionReq: {fileID: 7207750407103898590}
+  StorageExtensionStore: {fileID: 3038908885332165687}
 --- !u!114 &7291294420475072063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,6 +320,13 @@ MonoBehaviour:
   AgeOfUrgency: 20
   IsLocalOption: 0
   InfiniteRequests: 0
+  OverridesBuyPrice: 0
+  OverrideBlock:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
 --- !u!114 &7291294420475072061
 MonoBehaviour:
   m_ObjectHideFlags: 0
