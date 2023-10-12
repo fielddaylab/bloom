@@ -1,3 +1,4 @@
+using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -21,6 +22,10 @@ namespace Zavala.UI {
         public Image AlertBase;
         public Image AlertBanner;
 
+        [NonSerialized] public Routine BannerRoutine;
+        [NonSerialized] public bool FullyOpened = false;
+
+
         private void OnEnable() {
             m_Button.onClick.AddListener(HandleButtonClicked);
         }
@@ -41,6 +46,10 @@ namespace Zavala.UI {
         static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
 
         public static void ClickAlert(UIAlert alert) {
+            if (!alert.FullyOpened) {
+                alert.BannerRoutine.Replace(OpenRoutine(alert));
+                return;
+            }
             // Activate queued script node event
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 if (!alert.Actor.QueuedEvents.TryPopBack(out EventActorQueuedEvent newEvent)) {
@@ -61,19 +70,41 @@ namespace Zavala.UI {
                 ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, newEvent.ScriptId);
 
                 Log.Msg("[UIAlertUtility] Node is '{0}' ({1})", newEvent.ScriptId, node);
-
                 // TODO: What if this particular node has already run between when the alert was created and when it was clicked?
 
                 ScriptUtility.Runtime.Plugin.Run(node, alert.Actor, varTable);
                 varTable.Clear();
 
-                // free this alert
-                UIPools pools = Game.SharedState.Get<UIPools>();
-                pools.Alerts.Free(alert);
-
-                // Allow next queued events to be generated
-                alert.Actor.DisplayingEvent = null;
+                alert.BannerRoutine.Replace(CloseRoutine(alert, true));
             }
+        }
+
+        public static void FreeAlert(UIAlert alert) {
+            // free this alert
+            UIPools pools = Game.SharedState.Get<UIPools>();
+            pools.Alerts.Free(alert);
+
+            // Allow next queued events to be generated
+            alert.Actor.DisplayingEvent = null;
+        }
+
+        public static IEnumerator OpenRoutine(UIAlert alert) {
+            yield return alert.AlertBanner.rectTransform.AnchorPosTo(new Vector2(0, 0), 0.3f).Ease(Curve.CubeIn);
+            alert.FullyOpened = true;
+            alert.BannerRoutine.Replace(HoldRoutine(alert, 5.0f));
+            yield return null;
+        }
+
+        public static IEnumerator HoldRoutine(UIAlert alert, float sec) {
+            yield return Routine.WaitRealSeconds(sec);
+            alert.BannerRoutine.Replace(CloseRoutine(alert, false));
+            yield return null;
+        }
+        public static IEnumerator CloseRoutine(UIAlert alert, bool freeOnClose) {
+            alert.FullyOpened = false;
+            yield return alert.AlertBanner.rectTransform.AnchorPosTo(new Vector2(-120, 0), 0.3f).Ease(Curve.CubeIn);
+            if (freeOnClose) FreeAlert(alert);
+            yield return null;
         }
     }
 
