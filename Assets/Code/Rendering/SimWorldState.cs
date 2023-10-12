@@ -18,8 +18,8 @@ namespace Zavala.World {
         public Vector3 Offset;
 
         [Header("Tile Spawning")]
-        public TileInstance DefaultTilePrefab;
         public TileInstance DefaultWaterPrefab;
+        public WaterGroupInstance WaterProxyPrefab;
 
         [Header("Bounds Calculations")]
         public float BottomBounds = 100;
@@ -43,6 +43,7 @@ namespace Zavala.World {
         // instantiated prefabs
 
         [NonSerialized] public TileInstance[] Tiles;
+        [NonSerialized] public RegionPrefabPalette[] Palettes;
 
         // temporary data
 
@@ -55,6 +56,7 @@ namespace Zavala.World {
             SimGridState grid = ZavalaGame.SimGrid;
             WorldSpace = new HexGridWorldSpace(grid.HexSize, Scale, Offset);
             RegionBounds = SimBuffer.Create<Bounds>(grid.HexSize);
+            Palettes = new RegionPrefabPalette[RegionInfo.MaxRegions];
             RegionCount = grid.RegionCount;
             RegionCullingMask = 0;
 
@@ -130,9 +132,42 @@ namespace Zavala.World {
             return GetTileCenter(ZavalaGame.SimGrid, ZavalaGame.SimWorld, pos);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public Vector3 GetTileCenter(int index) {
+            return GetTileCenter(ZavalaGame.SimGrid, ZavalaGame.SimWorld, index);
+        }
+
         static public Vector3 GetTileCenter(SimGridState grid, SimWorldState world, HexVector pos) {
             int index = grid.HexSize.FastPosToIndex(pos);
             return HexVector.ToWorld(pos, grid.Terrain.Height[index], world.WorldSpace);
         }
+
+        static public Vector3 GetTileCenter(SimGridState grid, SimWorldState world, int index) {
+            HexVector pos = grid.HexSize.FastIndexToPos(index);
+            return HexVector.ToWorld(pos, grid.Terrain.Height[index], world.WorldSpace);
+        }
+
+        #region Centroids
+
+        static public Vector3 GetWaterCentroid(SimWorldState worldState, WaterGroupInfo waterGroup) {
+            unsafe {
+                ushort* tiles = waterGroup.TileIndices;
+                return GetTileCentroid(worldState.WorldSpace, tiles, waterGroup.TileCount);
+            }
+        }
+
+        static public unsafe Vector3 GetTileCentroid(HexGridWorldSpace worldSpace, ushort* tileIndices, int indexCount) {
+            if (indexCount <= 0) {
+                return default;
+            }
+
+            Vector3 accum = default;
+            for(int i = 0; i < indexCount; i++) {
+                accum += HexVector.ToWorld(tileIndices[i], 0, worldSpace);
+            }
+            return accum / indexCount;
+        }
+
+        #endregion // Centroids
     }
 }

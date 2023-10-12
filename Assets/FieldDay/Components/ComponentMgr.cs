@@ -68,6 +68,7 @@ namespace FieldDay.Components {
             if (components == null) {
                 m_ComponentLists[index] = components = new List<IComponentData>(32);
             }
+            Assert.False(components.Contains(component), "Component of type '{0}' was registered more than once", componentType.Name);
             components.Add(component);
 
             RegistrationCallbacks.InvokeRegister(component);
@@ -79,12 +80,10 @@ namespace FieldDay.Components {
             int index = ComponentIndex.Get(componentType);
 
             List<IComponentData> components = m_ComponentLists[index];
-            if (components != null) {
-                components.FastRemove(component);
+            if (components != null && components.FastRemove(component)) {
+                m_SystemsMgr.RemoveComponent(component);
+                RegistrationCallbacks.InvokeDeregister(component);
             }
-
-            m_SystemsMgr.RemoveComponent(component);
-            RegistrationCallbacks.InvokeDeregister(component);
         }
 
         #endregion // Registry

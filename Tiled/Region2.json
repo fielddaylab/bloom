@@ -54,6 +54,27 @@
          "y":0
         }, 
         {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 50, 50, 50, 50, 0,
+            0, 0, 0, 0, 0, 0, 50, 50, 50, 50, 50, 0,
+            0, 0, 0, 0, 0, 50, 50, 50, 0, 0, 50, 0,
+            0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 50, 50, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":10,
+         "id":5,
+         "name":"Groups",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":12,
+         "x":0,
+         "y":0
+        }, 
+        {
          "draworder":"topdown",
          "id":2,
          "name":"Objects",
@@ -106,13 +127,13 @@
                  "x":97.3333,
                  "y":349.333
                 }],
-         "opacity":0.45,
+         "opacity":0.42,
          "type":"objectgroup",
          "visible":true,
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
+ "nextlayerid":6,
  "nextobjectid":90,
  "orientation":"hexagonal",
  "renderorder":"right-up",
@@ -132,6 +153,10 @@
         {
          "firstgid":33,
          "source":"Objects.tsx"
+        }, 
+        {
+         "firstgid":49,
+         "source":"Groups.tsx"
         }],
  "tilewidth":64,
  "type":"map",

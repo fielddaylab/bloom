@@ -27,7 +27,6 @@ namespace Zavala
 
         #region Accessors
 
-        [ServiceReference, UnityEngine.Scripting.Preserve] static public AssetsService Assets { get; private set; }
         [ServiceReference, UnityEngine.Scripting.Preserve] static public LocService Loc { get; private set; }
     
         #endregion // Accessors

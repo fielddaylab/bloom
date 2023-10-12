@@ -58,6 +58,8 @@ namespace FieldDay.Systems {
             public bool Equals(UpdateRecord other) {
                 return System == other.System;
             }
+
+            static public readonly Predicate<UpdateRecord, ISystem> FindPredicate = (u, s) => u.System == s;
         }
 
         public delegate void SystemCallback(ISystem system);
@@ -107,10 +109,11 @@ namespace FieldDay.Systems {
             Assert.True(removed, "System already deregistered");
 
             SysUpdateAttribute updateInfo = GetUpdateInfo(system.GetType());
-            if (updateInfo != null && updateInfo.Phase != GameLoopPhase.None) {
-                UpdateRecord record = new UpdateRecord(system);
-                m_Updates[updateInfo.Phase].FastRemove(record);
-                m_Updates.MarkBucketDirty(updateInfo.Phase);
+            if (updateInfo != null && updateInfo.PhaseMask != 0) {
+                foreach(var phase in new PhaseBuckets.PhaseEnumerator(updateInfo.PhaseMask)) {
+                    m_Updates[phase].RemoveWhere(UpdateRecord.FindPredicate, system);
+                }
+                m_Updates.MarkBucketsDirty(updateInfo.PhaseMask);
             }
 
             IComponentSystem componentSystem = system as IComponentSystem;
@@ -155,11 +158,13 @@ namespace FieldDay.Systems {
             Log.Msg("[SystemsMgr] System '{0}' initialized", system.GetType().FullName);
 
             SysUpdateAttribute updateInfo = CacheUpdateInfo(system.GetType());
-            if (updateInfo != null && updateInfo.Phase != GameLoopPhase.None) {
-                Assert.True(PhaseBuckets.IsTracked(updateInfo.Phase), "System '{0}' has an invalid update phase '{1}'", system.GetType().FullName, updateInfo.Phase);
+            if (updateInfo != null && updateInfo.PhaseMask != 0) {
+                Assert.True(PhaseBuckets.IsTracked(updateInfo.PhaseMask), "System '{0}' has an invalid update phase '{1}'", system.GetType().FullName, updateInfo.PhaseMask);
                 UpdateRecord record = new UpdateRecord(system, updateInfo);
-                m_Updates[updateInfo.Phase].PushBack(record);
-                m_Updates.MarkBucketDirty(updateInfo.Phase);
+                foreach (var phase in new PhaseBuckets.PhaseEnumerator(updateInfo.PhaseMask)) {
+                    m_Updates[phase].PushBack(record);
+                }
+                m_Updates.MarkBucketsDirty(updateInfo.PhaseMask);
             }
 
             if (OnSystemRegistered != null) {
@@ -328,6 +333,11 @@ namespace FieldDay.Systems {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void LateFixedUpdate(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.LateFixedUpdate], m_Updates.PopBucketDirty(GameLoopPhase.LateFixedUpdate), deltaTime, categoryMask);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Update(float deltaTime, int categoryMask) {
             ProcessUpdates(m_Updates[GameLoopPhase.Update], m_Updates.PopBucketDirty(GameLoopPhase.Update), deltaTime, categoryMask);
         }
@@ -345,6 +355,11 @@ namespace FieldDay.Systems {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void UnscaledLateUpdate(float deltaTime, int categoryMask) {
             ProcessUpdates(m_Updates[GameLoopPhase.UnscaledLateUpdate], m_Updates.PopBucketDirty(GameLoopPhase.UnscaledLateUpdate), deltaTime, categoryMask);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void ApplicationPreRender(float deltaTime, int categoryMask) {
+            ProcessUpdates(m_Updates[GameLoopPhase.ApplicationPreRender], m_Updates.PopBucketDirty(GameLoopPhase.ApplicationPreRender), deltaTime, categoryMask);
         }
 
         internal void Shutdown() {

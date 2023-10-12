@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using BeauUtil;
 using BeauUtil.Debugger;
+using System.Diagnostics;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -55,6 +56,26 @@ namespace FieldDay {
         }
 
         #endregion // Index
+
+        #region Timestamp
+
+        static private long s_TimestampOffset;
+
+        /// <summary>
+        /// Marks the current timestamp offset.
+        /// </summary>
+        static internal void MarkTimestampOffset() {
+            s_TimestampOffset = Stopwatch.GetTimestamp();
+        }
+
+        /// <summary>
+        /// Returns the current timestamp.
+        /// </summary>
+        static public long Timestamp() {
+            return Stopwatch.GetTimestamp() - s_TimestampOffset;
+        }
+
+        #endregion // Timestamp
 
         #region Delta Time
 

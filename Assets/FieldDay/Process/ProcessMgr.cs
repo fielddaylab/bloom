@@ -133,6 +133,16 @@ namespace FieldDay.Processes {
             ProcessDirty();
         }
 
+        internal void LateFixedUpdate(float deltaTime, int categoryMask) {
+            ProcessPending(categoryMask);
+            foreach (var process in m_ProcessUpdates[GameLoopPhase.LateFixedUpdate]) {
+                if (process.ShouldUpdate(categoryMask)) {
+                    process.OnLateFixedUpdate(deltaTime);
+                }
+            }
+            ProcessDirty();
+        }
+
         internal void Update(float deltaTime, int categoryMask) {
             ProcessPending(categoryMask);
             foreach (var process in m_ProcessUpdates[GameLoopPhase.Update]) {

@@ -66,135 +66,6 @@ namespace Zavala {
             return new string(charBuffer, 0, charBufferSize);
         }
 
-        #region Hashing
-
-        /// <summary>
-        /// Hashes the given unmanaged struct.
-        /// </summary>
-        static public ulong Hash<T>(T value) where T : unmanaged {
-            // fnv-1a
-            ulong hash = 14695981039346656037;
-            byte* ptr = (byte*)&value;
-            int length = sizeof(T);
-            while (length-- > 0) {
-                hash = (hash ^ *ptr++) * 1099511628211;
-            }
-            return hash;
-        }
-
-        /// <summary>
-        /// Hashes the given unmanaged struct.
-        /// </summary>
-        static public ulong Hash<T>(T value, ulong initialHash) where T : unmanaged {
-            // fnv-1a
-            ulong hash = initialHash;
-            byte* ptr = (byte*)&value;
-            int length = sizeof(T);
-            while (length-- > 0) {
-                hash = (hash ^ *ptr++) * 1099511628211;
-            }
-            return hash;
-        }
-
-        #endregion // Hashing
-
-        #region Read/Write
-
-        static public T Read<T>(byte** mem, int* size) where T : unmanaged {
-            if (*size < sizeof(T)) {
-                throw new IndexOutOfRangeException();
-            }
-
-            T val = default(T);
-            if (((ulong)(*mem) % Unsafe.AlignOf<T>()) == 0) {
-                val = Unsafe.Reinterpret<byte, T>(*mem);
-            }
-            else {
-                Unsafe.Copy(*mem, sizeof(T), &val, sizeof(T));
-            }
-
-            *size -= sizeof(T);
-            *mem += sizeof(T);
-            return val;
-        }
-
-        static public T Read<T>(ref byte* mem, ref int size) where T : unmanaged {
-            if (size < sizeof(T)) {
-                throw new IndexOutOfRangeException();
-            }
-
-            T val = default(T);
-            if (((ulong)(*mem) % Unsafe.AlignOf<T>()) == 0) {
-                val = Unsafe.Reinterpret<byte, T>(mem);
-            }
-            else {
-                Unsafe.Copy(mem, sizeof(T), &val, sizeof(T));
-            }
-
-            size -= sizeof(T);
-            mem += sizeof(T);
-            return val;
-        }
-
-        static public string ReadString(byte** mem, int* size) {
-            ushort byteLength = Read<ushort>(mem, size);
-            if (byteLength > 0) {
-                char* charBuffer = stackalloc char[byteLength];
-                int stringLength = StringUtils.DecodeUFT8(*mem, byteLength, charBuffer, byteLength);
-
-                *mem += byteLength;
-                *size -= byteLength;
-                return new string(charBuffer, 0, stringLength);
-            }
-            else {
-                return string.Empty;
-            }
-        }
-
-        static public string ReadString(ref byte* mem, ref int size) {
-            ushort byteLength = Read<ushort>(ref mem, ref size);
-            if (byteLength > 0) {
-                char* charBuffer = stackalloc char[byteLength];
-                int stringLength = StringUtils.DecodeUFT8(mem, byteLength, charBuffer, byteLength);
-
-                mem += byteLength;
-                size -= byteLength;
-
-                return new string(charBuffer, 0, stringLength);
-            }
-            else {
-                return string.Empty;
-            }
-        }
-
-        static public void Write<T>(byte** mem, int* size, T val) where T : unmanaged {
-            Unsafe.Copy(&val, sizeof(T), *mem, sizeof(T));
-            *mem += sizeof(T);
-            *size += sizeof(T);
-        }
-
-        static public void Write<T>(ref byte* mem, ref int size, T val) where T : unmanaged {
-            Unsafe.Copy(&val, sizeof(T), mem, sizeof(T));
-            mem += sizeof(T);
-            size += sizeof(T);
-        }
-
-        static public void WriteString(byte** mem, int* size, string val) {
-            fixed (char* strChars = val) {
-                byte* lengthMarker = *mem;
-                UnsafeExt.Write(mem, size, (ushort)val.Length);
-                if (val.Length > 0) {
-                    ushort byteLength = (ushort)StringUtils.EncodeUFT8(strChars, val.Length, *mem, val.Length * 4);
-                    // Unsafe.Copy(lengthMarker, sizeof(ushort), &byteLength, sizeof(ushort));
-                    Unsafe.Copy(&byteLength, sizeof(ushort), lengthMarker, sizeof(ushort));
-                    *mem += byteLength;
-                    *size += byteLength;
-                }
-            }
-        }
-
-        #endregion // Read/Write
-
         #region Compression
 
         private const int WindowSize = 256;
@@ -251,7 +122,7 @@ namespace Zavala {
             header._Reserved = 0;
 
             int finalSize = 0;
-            Write(&dest, &finalSize, header);
+            Unsafe.Write(header, &dest, &finalSize, destSize);
 
             byte groupSize = 0;
             byte groupMask = 0;

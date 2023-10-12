@@ -82,6 +82,7 @@ namespace FieldDay.Debugging {
 
         [SerializeField] private Font m_TextFont = null;
         [SerializeField] private Mesh m_SphereMesh = null;
+        [SerializeField] private Mesh m_CubeMesh = null;
         [SerializeField] private float m_LineWidthToWorldScale = 0.08f;
 
         [Header("Materials")]
@@ -98,9 +99,11 @@ namespace FieldDay.Debugging {
         [NonSerialized] private GUIStyle m_TextStyleBox;
         [NonSerialized] private GUIContent m_TextContent;
         [NonSerialized] private float m_SphereMeshDefaultRadius;
+        [NonSerialized] private float m_CubeMeshDefaultSize;
         [NonSerialized] private MaterialPropertyBlock m_TempMaterialPropertyBlock;
 
         static private RingBuffer<Vector3x2RenderState> s_ActiveLines = new RingBuffer<Vector3x2RenderState>();
+        static private RingBuffer<Vector3x2RenderState> s_ActiveBoxes = new RingBuffer<Vector3x2RenderState>();
         static private RingBuffer<SphereRenderState> s_ActiveSpheres = new RingBuffer<SphereRenderState>();
         static private RingBuffer<TextRenderState> s_ActiveTexts = new RingBuffer<TextRenderState>();
 
@@ -126,6 +129,7 @@ namespace FieldDay.Debugging {
             m_OverlayMesh = CreateVolatileMesh("DEBUG_Overlay");
 
             m_SphereMeshDefaultRadius = m_SphereMesh.bounds.size.y / 2;
+            m_CubeMeshDefaultSize = m_CubeMesh.bounds.size.x;
             m_TempMaterialPropertyBlock = new MaterialPropertyBlock();
 
             m_MainMeshData = new MeshData16<DebugVertexFormat>(512);
@@ -327,7 +331,8 @@ namespace FieldDay.Debugging {
                     }
 
                     targetPoint.y = camera.pixelHeight - targetPoint.y;
-                    targetPoint += state.Offset;
+                    targetPoint.x += state.Offset.x;
+                    targetPoint.y -= state.Offset.y;
 
                     GUIStyle style;
                     switch (state.Style) {
@@ -669,6 +674,7 @@ namespace FieldDay.Debugging {
         /// Adds a toggle for the given category to a debug menu.
         /// </summary>
         static public void AddCategoryToggle(DMInfo info, int category, string name, DMPredicate predicate = null, int indent = 0) {
+#if DEVELOPMENT
             info.AddToggle(name, () => s_CategoryMask.IsSet(category), (b) => {
                 if (b) {
                     EnableCategory(category);
@@ -676,6 +682,7 @@ namespace FieldDay.Debugging {
                     DisableCategory(category);
                 }
             }, predicate, indent);
+#endif // DEVELOPMENT
         }
 
         #endregion // Static API

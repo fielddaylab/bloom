@@ -356,17 +356,11 @@ namespace Zavala {
         }
 
         static private void FastForward(RingBuffer<PhosphorusRenderInstanceStatic> allInstances, int minIndex) {
-            int count = allInstances.Count;
-            while(count-- > 0 && allInstances[0].GridIndex != minIndex) {
-                allInstances.PushBack(allInstances.PopFront());
-            }
+            allInstances.MoveFrontToBackWhere((a, b) => a.GridIndex != b, minIndex);
         }
 
         static private void FastForward(RingBuffer<PhosphorusRenderInstanceAnimated> allInstances, int minIndex) {
-            int count = allInstances.Count;
-            while (count-- > 0 && allInstances[0].GridIndex != minIndex) {
-                allInstances.PushBack(allInstances.PopFront());
-            }
+            allInstances.MoveFrontToBackWhere((a, b) => a.GridIndex != b, minIndex);
         }
 
         static private unsafe void AppendInstances<T>(T* instanceBuffer, int count, RingBuffer<T> allInstances) where T : unmanaged {

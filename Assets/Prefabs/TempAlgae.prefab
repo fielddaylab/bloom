@@ -103,9 +103,8 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   Class:
-    m_Source: 
-    m_HashValue: 0
-  ActivelyDisplayingEvent: 0
+    m_Source: Algae
+    m_HashValue: 867384491
 --- !u!114 &4537286188299723802
 MonoBehaviour:
   m_ObjectHideFlags: 0

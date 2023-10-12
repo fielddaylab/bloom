@@ -1,3 +1,4 @@
+using System;
 using BeauRoutine.Extensions;
 using BeauUtil;
 using UnityEngine;
@@ -17,6 +18,11 @@ namespace FieldDay.Audio {
         public FloatRange Volume = new FloatRange(1);
         public FloatRange Pitch = new FloatRange(1);
         public FloatRange Delay = new FloatRange(0);
+
+        public AudioEmitterConfig Spatial = AudioEmitterConfig.Default2D;
+
+        [NonSerialized] internal StringHash32 CachedId;
+        [NonSerialized] internal RandomDeck<AudioClip> RandomClips;
     }
 
     /// <summary>
@@ -24,7 +30,7 @@ namespace FieldDay.Audio {
     /// </summary>
     public enum AudioSampleType {
         AudioClip,
-        Stream
+        //Stream
     }
 
     public enum AudioContainerType {

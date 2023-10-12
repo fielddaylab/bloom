@@ -1,9 +1,11 @@
+using System;
 using BeauUtil;
 using BeauUtil.Variants;
 using FieldDay.Components;
 using Leaf.Runtime;
 using UnityEngine;
 using Zavala.Sim;
+using Zavala.UI;
 
 namespace Zavala.Scripting {
     [DisallowMultipleComponent]
@@ -12,7 +14,10 @@ namespace Zavala.Scripting {
         public SerializedHash32 Id;
         public SerializedHash32 Class;
 
-        public bool ActivelyDisplayingEvent = false;
+        [Header("Event Display")]
+        public Vector3 EventDisplayOffset;
+
+        [NonSerialized] public UIAlert DisplayingEvent;
 
         // not serialized
 
@@ -31,27 +36,51 @@ namespace Zavala.Scripting {
     public struct EventActorTrigger {
         public StringHash32 EventId;
         public NamedVariant Argument;
+        public EventActorAlertType Alert;
+        public int TileIndex;
     }
 
     public struct EventActorQueuedEvent {
         public StringHash32 ScriptId;
         public StringHash32 TypeId;
         public NamedVariant Argument;
-        // TODO: may need to store tile index or region id here
+        public EventActorAlertType Alert;
+        public int TileIndex;
+    }
+
+    public enum EventActorAlertType {
+        None,
+        Bloom,
+        ExcessRunoff,
+        DieOff,
+        CritImbalance,
+        UnusedDigester,
+        DecliningPop,
+        SellingLoss,
+        [Hidden]
+        COUNT,
     }
 
     static public class EventActorUtility {
-        static public void QueueTrigger(EventActor actor, StringHash32 eventId, NamedVariant customArg = default) {
+        static public void QueueTrigger(EventActor actor, StringHash32 eventId, int tileIndex, NamedVariant customArg = default) {
             actor.QueuedTriggers.PushBack(new EventActorTrigger() {
                 EventId = eventId,
-                Argument = customArg
+                Argument = customArg,
+                TileIndex = tileIndex
             });
         }
 
-        static public void QueueTrigger(GameObject actorGO, StringHash32 eventId, NamedVariant customArg = default) {
-            if (actorGO.TryGetComponent(out EventActor act)) {
-                QueueTrigger(act, eventId, customArg);
-            }
+        static public void QueueTrigger(EventActor actor, EventActorTrigger trigger) {
+            actor.QueuedTriggers.PushBack(trigger);
+        }
+
+        static public void QueueAlert(EventActor actor, EventActorAlertType alert, int tileIndex) {
+            actor.QueuedTriggers.PushBack(new EventActorTrigger() {
+                EventId = GameTriggers.AlertExamined,
+                Argument = GameAlerts.GetAlertTypeArgument(alert),
+                Alert = alert,
+                TileIndex = tileIndex
+            });
         }
 
         static public bool CancelEvent(EventActor actor, StringHash32 eventId) {
@@ -64,17 +93,17 @@ namespace Zavala.Scripting {
             return false;
         }
 
-        static public bool AnyQueueContains(EventActor actor, StringHash32 value) {
+        static public bool IsAlertQueued(EventActor actor, EventActorAlertType alert) {
             foreach (var trigger in actor.QueuedTriggers) {
                 // in the case of alerts, "value" is the alertType
-                if (trigger.Argument.Value == value) {
+                if (trigger.Alert == alert) {
                     return true;
                 }
             }
 
             foreach (var aEvent in actor.QueuedEvents) {
                 // in the case of alerts, "value" is the alertType
-                if (aEvent.Argument.Value == value) {
+                if (aEvent.Alert == alert) {
                     return true;
                 }
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using BeauPools;
 using BeauUtil;
 using FieldDay.Data;
 using UnityEngine;
@@ -333,31 +334,29 @@ namespace Zavala.Sim {
             }
         }
 
-        static public void TickPhosphorusHistory(DataHistory[] histories, SimBuffer<RegionInfo> gridRegions) {
+        static public void TickPhosphorusHistory(DataHistory[] histories, SimBuffer<RegionInfo> gridRegions, int gridRegionCount) {
             // for each region
-            for (int i = 0; i < RegionInfo.MaxRegions; i++) {
-                if (!gridRegions[i].IsUnlocked) {
-                    continue;
-                }
-
+            for (int i = 0; i < gridRegionCount; i++) {
                 DataHistory history = histories[i];
                 history.ConvertPending();
 
                 histories[i] = history;
 
-                StringBuilder builder = new StringBuilder();
-                int index = 0;
-                foreach(int h in history.Net) {
-                    builder.Append(index + ": " + h + "\n");
-                    index++;
-                }
+                using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+                    StringBuilder builder = psb.Builder;
+                    int index = 0;
+                    foreach (int h in history.Net) {
+                        builder.Append(index + ": " + h + "\n");
+                        index++;
+                    }
 
-                Debug.Log("[History] New History for region " + i + " : " + builder.ToString());
-                if (history.TryGetAvg(10, out float avg)) {
-                    Debug.Log("[History] Avg produced for region " + i + " over 10 ticks: " + avg);
-                }
-                if (history.TryGetTotal(10, out int total)) {
-                    Debug.Log("[History] Total produced for region " + i + " over 10 ticks: " + total);
+                    Debug.Log("[History] New History for region " + i + " : " + builder.ToString());
+                    if (history.TryGetAvg(10, out float avg)) {
+                        Debug.Log("[History] Avg produced for region " + i + " over 10 ticks: " + avg);
+                    }
+                    if (history.TryGetTotal(10, out int total)) {
+                        Debug.Log("[History] Total produced for region " + i + " over 10 ticks: " + total);
+                    }
                 }
             }
         }

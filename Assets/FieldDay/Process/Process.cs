@@ -247,6 +247,13 @@ namespace FieldDay.Processes {
             m_Status &= ~ProcessStatus.Updating;
         }
 
+        internal void OnLateFixedUpdate(float deltaTime) {
+            Assert.True((m_MethodTable.UpdatePhaseMask & GameLoopPhaseMask.LateFixedUpdate) != 0);
+            m_Status |= ProcessStatus.Updating;
+            m_MethodTable.OnLateFixedUpdate(this, deltaTime * m_TimeScale);
+            m_Status &= ~ProcessStatus.Updating;
+        }
+
         internal void OnUpdate(float deltaTime) {
             Assert.True((m_MethodTable.UpdatePhaseMask & GameLoopPhaseMask.Update) != 0);
             m_Status |= ProcessStatus.Updating;

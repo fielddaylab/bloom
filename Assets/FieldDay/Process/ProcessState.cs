@@ -89,6 +89,11 @@ namespace FieldDay.Processes {
         public ProcessUpdateCallback OnFixedUpdate;
 
         /// <summary>
+        /// Invoked after the Fixed Update phase.
+        /// </summary>
+        public ProcessUpdateCallback OnLateFixedUpdate;
+
+        /// <summary>
         /// Invoked in the Update phase.
         /// </summary>
         public ProcessUpdateCallback OnUpdate;
@@ -154,6 +159,12 @@ namespace FieldDay.Processes {
             if (OnPreUpdate != null) {
                 phases |= GameLoopPhaseMask.PreUpdate;
             }
+            if (OnFixedUpdate != null) {
+                phases |= GameLoopPhaseMask.FixedUpdate;
+            }
+            if (OnLateFixedUpdate != null) {
+                phases |= GameLoopPhaseMask.LateFixedUpdate;
+            }
             if (OnUpdate != null) {
                 phases |= GameLoopPhaseMask.Update;
             }
@@ -185,6 +196,7 @@ namespace FieldDay.Processes {
             table.OnSignal = FindCallback<ProcessSignalCallback>("OnSignal", type);
             table.OnPreUpdate = FindCallback<ProcessUpdateCallback>("OnPreUpdate", type);
             table.OnFixedUpdate = FindCallback<ProcessUpdateCallback>("OnFixedUpdate", type);
+            table.OnLateFixedUpdate = FindCallback<ProcessUpdateCallback>("OnLateFixedUpdate", type);
             table.OnUpdate = FindCallback<ProcessUpdateCallback>("OnUpdate", type);
             table.OnUnscaledUpdate = FindCallback<ProcessUpdateCallback>("OnUnscaledUpdate", type);
             table.OnLateUpdate = FindCallback<ProcessUpdateCallback>("OnLateUpdate", type);
@@ -207,6 +219,7 @@ namespace FieldDay.Processes {
             table.OnSignal = FindCallback<ProcessSignalCallback>(prefix + "OnSignal", type);
             table.OnPreUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnPreUpdate", type);
             table.OnFixedUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnFixedUpdate", type);
+            table.OnLateFixedUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnLateFixedUpdate", type);
             table.OnUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnUpdate", type);
             table.OnUnscaledUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnUnscaledUpdate", type);
             table.OnLateUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnLateUpdate", type);
@@ -230,6 +243,7 @@ namespace FieldDay.Processes {
             table.OnSignal = FindCallback<ProcessSignalCallback>("OnSignal", type, target);
             table.OnPreUpdate = FindCallback<ProcessUpdateCallback>("OnPreUpdate", type, target);
             table.OnFixedUpdate = FindCallback<ProcessUpdateCallback>("OnFixedUpdate", type, target);
+            table.OnLateFixedUpdate = FindCallback<ProcessUpdateCallback>("OnLateFixedUpdate", type, target);
             table.OnUpdate = FindCallback<ProcessUpdateCallback>("OnUpdate", type, target);
             table.OnUnscaledUpdate = FindCallback<ProcessUpdateCallback>("OnUnscaledUpdate", type, target);
             table.OnLateUpdate = FindCallback<ProcessUpdateCallback>("OnLateUpdate", type, target);
@@ -253,6 +267,7 @@ namespace FieldDay.Processes {
             table.OnSignal = FindCallback<ProcessSignalCallback>(prefix + "OnSignal", type, target);
             table.OnPreUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnPreUpdate", type, target);
             table.OnFixedUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnFixedUpdate", type, target);
+            table.OnLateFixedUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnLateFixedUpdate", type, target);
             table.OnUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnUpdate", type, target);
             table.OnUnscaledUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnUnscaledUpdate", type, target);
             table.OnLateUpdate = FindCallback<ProcessUpdateCallback>(prefix + "OnLateUpdate", type, target);
@@ -304,6 +319,11 @@ namespace FieldDay.Processes {
             IProcessStateFixedUpdate fixedUpdate = type as IProcessStateFixedUpdate;
             if (fixedUpdate != null) {
                 table.OnFixedUpdate = fixedUpdate.OnFixedUpdate;
+            }
+
+            IProcessStateLateFixedUpdate postFixedUpdate = type as IProcessStateLateFixedUpdate;
+            if (postFixedUpdate != null) {
+                table.OnLateFixedUpdate = postFixedUpdate.OnLateFixedUpdate;
             }
 
             IProcessStateUpdate update = type as IProcessStateUpdate;
@@ -414,6 +434,13 @@ namespace FieldDay.Processes {
     /// </summary>
     public interface IProcessStateFixedUpdate : IProcessStateCallbacks {
         void OnFixedUpdate(Process process, float deltaTime);
+    }
+
+    /// <summary>
+    /// Specifies callbacks for a post-fixed update function.
+    /// </summary>
+    public interface IProcessStateLateFixedUpdate : IProcessStateCallbacks {
+        void OnLateFixedUpdate(Process process, float deltaTime);
     }
 
     /// <summary>

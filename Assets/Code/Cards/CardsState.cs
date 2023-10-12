@@ -41,6 +41,7 @@ namespace Zavala.Cards
     public sealed class CardsState : SharedStateComponent, IRegistrationCallbacks
     {
         public TextAsset CardDefs;
+        public SpriteLibrary Sprites;
 
         [HideInInspector] public Dictionary<SerializedHash32, CardData> AllCards;
         [HideInInspector] public List<SerializedHash32> UnlockedCards;

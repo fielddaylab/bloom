@@ -43,7 +43,7 @@ namespace FieldDay.Scripting {
         /// <summary>
         /// Removes an unsorted node from the bucket.
         /// </summary>
-        public void RemoveUnsorteed(ScriptNode scriptNode) {
+        public void RemoveUnsorted(ScriptNode scriptNode) {
             m_Unordered.Remove(scriptNode);
         }
 

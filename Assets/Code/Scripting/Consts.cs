@@ -1,5 +1,6 @@
 using BeauUtil;
 using BeauUtil.Variants;
+using Zavala.Scripting;
 
 namespace Zavala
 {
@@ -31,43 +32,75 @@ namespace Zavala
 
     static public class GameAlerts
     {
+        // alert ids
+        private const string Bloom = "bloom";
+        private const string ExcessRunoff = "excess-runoff";
+        private const string DieOff = "die-off";
+        private const string CritImbalance = "crit-imbalance";
+        private const string UnusedDigester = "unused-digester";
+        private const string DecliningPop = "declining-pop";
+        private const string SellingLoss = "selling-loss";
+
         // Localization Ids
-        static private readonly string BasePath = "alerts.";
-        static private readonly string ExcessRunoffLocId = "excess-runoff";
-        static private readonly string BloomLocId = "bloom";
-        static private readonly string DieOffLocId = "die-off";
-        static private readonly string CritImbalanceLocId = "crit-imbalance";
-        static private readonly string UnusedDigesterLocId = "unused-digester";
-        static private readonly string DecliningPopLocId = "declining-pop";
-        static private readonly string SellingLossLocId = "selling-loss";
+        private const string BaseLocPath = "alerts.";
+        private const string ExcessRunoffLocId = BaseLocPath + ExcessRunoff;
+        private const string BloomLocId = BaseLocPath + Bloom;
+        private const string DieOffLocId = BaseLocPath + DieOff;
+        private const string CritImbalanceLocId = BaseLocPath + CritImbalance;
+        private const string UnusedDigesterLocId = BaseLocPath + UnusedDigester;
+        private const string DecliningPopLocId = BaseLocPath + DecliningPop;
+        private const string SellingLossLocId = BaseLocPath + SellingLoss;
 
-        // Alerts
-        static public readonly StringHash32 Bloom = BloomLocId;
-        static public readonly StringHash32 ExcessRunoff = ExcessRunoffLocId;
-        static public readonly StringHash32 DieOff = DieOffLocId;
-        static public readonly StringHash32 CritImbalance = CritImbalanceLocId;
-        static public readonly StringHash32 UnusedDigester = UnusedDigesterLocId;
-        static public readonly StringHash32 DecliningPop = DecliningPopLocId;
-        static public readonly StringHash32 SellingLoss = SellingLossLocId;
+        static private readonly string[] AlertTypeToString = new string[] {
+            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss
+        };
 
-        static public string ConvertArgToLocText(Variant arg) {
-            string locText = "";
-            string eventName = "";
+        static private readonly StringHash32[] AlertTypeToHash = new StringHash32[] {
+            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss
+        };
 
-            // TODO: If there's another way around this that serves the same function as arg.ToDebugString(), I'm all for it
-            // i.e. eventName = arg.ToDebugString() would be the simplest assignment approach
+        static public string GetAlertName(EventActorAlertType alert) {
+            return AlertTypeToString[(int) alert];
+        }
 
-            if (arg == Bloom)                   { eventName = BloomLocId; }
-            else if (arg == ExcessRunoff)       { eventName = ExcessRunoffLocId; }
-            else if (arg == DieOff)             { eventName = DieOffLocId; }
-            else if (arg == CritImbalance)      { eventName = CritImbalanceLocId; }
-            else if (arg == UnusedDigester)     { eventName = UnusedDigesterLocId; }
-            else if (arg == DecliningPop)       { eventName = DecliningPopLocId; }
-            else if (arg == SellingLoss)        { eventName = SellingLossLocId; }
+        static public StringHash32 GetAlertId(EventActorAlertType alert) {
+            return AlertTypeToHash[(int) alert];
+        }
 
-            locText = Loc.Find(GameAlerts.BasePath + "" + eventName);
+        static public NamedVariant GetAlertTypeArgument(EventActorAlertType alert) {
+            return new NamedVariant("alertType", AlertTypeToHash[(int) alert]);
+        }
 
-            return locText;
+        static public string GetLocalizedName(EventActorAlertType type) {
+            TextId lookup = default;
+            switch (type) {
+                case EventActorAlertType.Bloom: {
+                    lookup = BloomLocId; break;
+                }
+                case EventActorAlertType.ExcessRunoff: {
+                    lookup = ExcessRunoffLocId; break;
+                }
+                case EventActorAlertType.DieOff: {
+                    lookup = DieOffLocId; break;
+                }
+                case EventActorAlertType.CritImbalance: {
+                    lookup = CritImbalanceLocId;
+                    break;
+                }
+                case EventActorAlertType.UnusedDigester: {
+                    lookup = UnusedDigesterLocId;
+                    break;
+                }
+                case EventActorAlertType.DecliningPop: {
+                    lookup = DecliningPopLocId;
+                    break;
+                }
+                case EventActorAlertType.SellingLoss: {
+                    lookup = SellingLossLocId;
+                    break;
+                }
+            }
+            return Loc.Find(lookup);
         }
     }
 }

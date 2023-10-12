@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using BeauUtil;
 using FieldDay;
 using FieldDay.SharedState;
 using UnityEngine.Events;
@@ -24,9 +25,9 @@ namespace Zavala.Advisor {
         public static ResourceBlock[] SalesTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] RunoffPenaltyVals = new ResourceBlock[4];
 
-        public UnityEvent<PolicyType> PolicySlotClicked = new UnityEvent<PolicyType>();
-        public UnityEvent<CardData> PolicyCardSelected = new UnityEvent<CardData>();
-        public UnityEvent PolicyCloseButtonClicked = new UnityEvent();
+        public CastableEvent<PolicyType> PolicySlotClicked = new CastableEvent<PolicyType>();
+        public CastableEvent<CardData> PolicyCardSelected = new CastableEvent<CardData>();
+        public ActionEvent PolicyCloseButtonClicked = new ActionEvent();
 
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
         public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region) {
@@ -116,7 +117,7 @@ namespace Zavala.Advisor {
             InitializePolicyValues();
             InitializePolicyMap();
 
-            PolicyCardSelected.AddListener(HandlePolicyCardSelected);
+            PolicyCardSelected.Register(HandlePolicyCardSelected);
         }
 
         public void OnDeregister() {

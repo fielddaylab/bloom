@@ -1,16 +1,22 @@
 using BeauUtil;
+using BeauUtil.Debugger;
 using BeauUtil.Variants;
 using FieldDay;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.UI;
+using Zavala.World;
 
 namespace Zavala.Scripting
 {
     [SysUpdate(FieldDay.GameLoopPhase.Update, 100100)] // after EventActorSystem
-    public sealed class AlertCreationSystem : ComponentSystemBehaviour<EventActor, OccupiesTile>
+    public sealed class AlertCreationSystem : ComponentSystemBehaviour<EventActor>
     {
-        public override void ProcessWorkForComponent(EventActor component, OccupiesTile tile, float deltaTime) {
+        static private readonly Vector3 EventDisplayOffset = new Vector3(0, 0.85f, 0);
+
+        [SerializeField] private SpriteLibrary m_AlertAssets;
+
+        public override void ProcessWorkForComponent(EventActor component, float deltaTime) {
             if (Loc.IsServiceLoading()) {
                 // Don't create alerts until localization has loaded (avoids empty banners)
                 // TODO: This check won't be needed once we actually have a loading screen
@@ -18,36 +24,49 @@ namespace Zavala.Scripting
             }
 
             // if no active events, create alert
-            if (!component.ActivelyDisplayingEvent && component.QueuedEvents.Count > 0) {
+            if (!component.DisplayingEvent && component.QueuedEvents.Count > 0) {
+                component.QueuedEvents.TryPeekBack<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
+
                 // allocate new alert from pool
                 UIPools pools = Game.SharedState.Get<UIPools>();
-                UIAlert alert = pools.Alerts.Alloc(tile.transform.position);
+                UIAlert alert = pools.Alerts.Alloc(SimWorldUtility.GetTileCenter(peekEvent.TileIndex) + component.EventDisplayOffset + EventDisplayOffset);
 
                 // assign component as alert's Actor
                 alert.Actor = component;
 
                 // assign localized banner text
-                alert.Actor.QueuedEvents.TryPeekBack<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
-                Variant eventVal = peekEvent.Argument.Value;
-                alert.EventText.SetText(GameAlerts.ConvertArgToLocText(eventVal));
+                alert.EventText.SetText(GameAlerts.GetLocalizedName(peekEvent.Alert));
 
-                string spritePath = "UIAlert/base_" + eventVal.ToDebugString().Replace("\"","");
-                alert.AlertBase.sprite = Resources.Load<Sprite>(spritePath);
-                if (alert.AlertBase.sprite == null) {
-                    Debug.LogWarning("[Alerts] Alert path "+spritePath+" invalid, substituting with bloom");
-                    alert.AlertBase.sprite = Resources.Load<Sprite>("UIAlert/base_bloom");
-                }
-                spritePath = "UIAlert/banner_" + eventVal.ToDebugString().Replace("\"", "");
-                alert.AlertBanner.sprite = Resources.Load<Sprite>(spritePath);
-                if (alert.AlertBanner.sprite == null) {
-                    Debug.LogWarning("[Alerts] Alert path " + spritePath + " invalid, substituting with bloom");
-                    alert.AlertBanner.sprite = Resources.Load<Sprite>("UIAlert/banner_bloom");
-                }
-                
+                alert.AlertBase.sprite = GetAlertBaseSprite(peekEvent.Alert, m_AlertAssets);
+                alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
 
                 Debug.Log("[Alerts] Created new alert!");
-                component.ActivelyDisplayingEvent = true;
+                component.DisplayingEvent = alert;
             }
+        }
+
+        static private Sprite GetAlertBaseSprite(EventActorAlertType type, SpriteLibrary library) {
+            StringHash32 id = "base_";
+            id = id.FastConcat(GameAlerts.GetAlertName(type));
+            if (!library.TryLookup(id, out Sprite sprite)) {
+                Log.Warn("[Alerts] No sprite found for '{0}', substituting with bloom", type);
+                id = "base_";
+                id = id.FastConcat(GameAlerts.GetAlertName(EventActorAlertType.Bloom));
+                library.TryLookup(id, out sprite);
+            }
+            return sprite;
+        }
+
+        static private Sprite GetAlertBannerSprite(EventActorAlertType type, SpriteLibrary library) {
+            StringHash32 id = "banner_";
+            id = id.FastConcat(GameAlerts.GetAlertName(type));
+            if (!library.TryLookup(id, out Sprite sprite)) {
+                Log.Warn("[Alerts] No sprite found for '{0}', substituting with bloom", type);
+                id = "banner_";
+                id = id.FastConcat(GameAlerts.GetAlertName(EventActorAlertType.Bloom));
+                library.TryLookup(id, out sprite);
+            }
+            return sprite;
         }
     }
 }

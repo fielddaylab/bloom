@@ -35,6 +35,13 @@ namespace FieldDay.Processes {
 
         #endregion // Events
 
+        /// <summary>
+        /// Main process.
+        /// </summary>
+        public ProcessId MainProcess {
+            get { return m_MainProcess; }
+        }
+
         #region Start
 
         /// <summary>

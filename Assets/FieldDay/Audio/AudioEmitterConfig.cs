@@ -37,6 +37,28 @@ namespace FieldDay.Audio {
         /// </summary>
         [Tooltip("Adjusts the impact of positioning on playback.\n0 = Full 3D, 1 = Completely Flat")]
         [Range(0, 1)] public float DespatializeFactor;
+
+        /// <summary>
+        /// Default non-spatial playback.
+        /// </summary>
+        static public readonly AudioEmitterConfig Default2D = new AudioEmitterConfig() {
+            Mode = AudioEmitterMode.Flat,
+            Rolloff = AudioRolloffMode.Logarithmic,
+            MinDistance = 1,
+            MaxDistance = 500,
+            DespatializeFactor = 1
+        };
+
+        /// <summary>
+        /// Default spatial playback.
+        /// </summary>
+        static public readonly AudioEmitterConfig Default3D = new AudioEmitterConfig() {
+            Mode = AudioEmitterMode.World,
+            Rolloff = AudioRolloffMode.Logarithmic,
+            MinDistance = 1,
+            MaxDistance = 500,
+            DespatializeFactor = 0
+        };
     }
 
     /// <summary>

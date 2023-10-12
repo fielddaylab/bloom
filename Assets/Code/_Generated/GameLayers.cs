@@ -52,4 +52,6 @@ static public class UnityTags {
     public const string Player = "Player";
     // Tag GameController
     public const string GameController = "GameController";
+    // Tag PlayerPlaced
+    public const string PlayerPlaced = "PlayerPlaced";
 }
