@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FancyAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 1
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 56587a5c6af308a4abe357fea5a0efdf, type: 3}
+    - {fileID: 102900000, guid: b57dba7a77810b04d855418b32aaed7b, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 064528b0730cfdc43bfb655c57bb6fec, type: 3}
+  - {fileID: 21300000, guid: 5f89e5f25f8c7cb4089c002e59ff6529, type: 3}
+  - {fileID: 21300000, guid: 22721463e41d055488b0925d5c029c7a, type: 3}
+  - {fileID: 21300000, guid: c3bc70a48e2cc1c418891b694a27e88e, type: 3}
+  - {fileID: 21300000, guid: 901af485fc54e614ba9314e2d9d1181b, type: 3}
+  - {fileID: 21300000, guid: 479a03262c720c74b8ced10525243aef, type: 3}
+  - {fileID: 21300000, guid: 72672cd65ee38ca458430482179011bb, type: 3}
+  - {fileID: 21300000, guid: b55285f6fa5d00e4eb593d7c062b15fc, type: 3}
+  - {fileID: 21300000, guid: 312c4ba7e2be4334bb0a3c5acd350d15, type: 3}
+  - {fileID: 21300000, guid: b53b1538761d4cc4a9aa46586c322d8a, type: 3}
+  - {fileID: 21300000, guid: af582ab87b4a1f146a99d9adaa0a8097, type: 3}
+  - {fileID: 21300000, guid: 6b7ffe1aa44a7194ab4cc3392086cc05, type: 3}
+  - {fileID: 21300000, guid: f92ecf4a3611dda42ac3bfa333f8499b, type: 3}
+  - {fileID: 21300000, guid: ee19c47af36bd79449808e67e5fd48c8, type: 3}
+  - {fileID: 21300000, guid: 3221538a6ea084f42bdadc9ce3f60b40, type: 3}
+  - {fileID: 21300000, guid: e39f42aab065b7641a33851700b992c7, type: 3}
+  - {fileID: 21300000, guid: c90324ba8f6d6084aaffdd2c3c0f017b, type: 3}
+  - {fileID: 21300000, guid: 5003940beef422d4693a43a7aaf83470, type: 3}
+  - {fileID: 21300000, guid: 3899347b9b69eff41ae0e4ca9a5260ad, type: 3}
+  - {fileID: 21300000, guid: 96437d7bec135c4479fcbb447c680ab3, type: 3}
+  - {fileID: 21300000, guid: 7aa04a8b3557e8048a329c267d750156, type: 3}
+  - {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+  - {fileID: 21300000, guid: 7422652db3e2cd649b64fa5d423c0bd8, type: 3}
+  - {fileID: 21300000, guid: 49ab58adde7fc8e4abbfef3225a18e79, type: 3}
+  - {fileID: 21300000, guid: 21f3e17fb04c1584daa1d0a07f204984, type: 3}
+  - {fileID: 21300000, guid: eb5d687ff34744f4c99ad627148ce14f, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - policy-import_2
+  - policy-sales_1
+  - advisor-ecologial_hills
+  - cafo_forest
+  - policy-sales_2
+  - advisor-ecol_forest
+  - policy-sales_0
+  - policy-runoff_1
+  - policy-skim_0
+  - advisor-economic_hills
+  - policy-import_0
+  - advisor-econ_forest
+  - urban_forest
+  - policy-runoff_3
+  - grain_hills
+  - policy-skim_2
+  - policy-import_3
+  - urbanite_hills
+  - policy-import_1
+  - grain_forest
+  - policy-runoff_0
+  - char-balthazar
+  - policy-runoff_2
+  - policy-sales_3
+  - cafo_hills
+  - policy-skim_1
+  m_RenderDataMap: {}
+  m_Tag: FancyAtlas
+  m_IsVariant: 0

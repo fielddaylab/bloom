@@ -7,7 +7,6 @@ namespace Zavala.UI {
         #region Inspector
 
         [Header("Text")]
-        public RectTransform TextBox;
         public TMP_Text Header;
         public TMP_Text Subheader;
         public TMP_Text Contents;

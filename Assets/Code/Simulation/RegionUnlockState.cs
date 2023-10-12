@@ -1,9 +1,15 @@
+using BeauUtil.Debugger;
+using FieldDay;
+using FieldDay.Debugging;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Zavala.Economy;
+using Zavala.World;
 
 namespace Zavala.Sim
 {
@@ -61,5 +67,36 @@ namespace Zavala.Sim
     public class RegionUnlockState : SharedStateComponent
     {
         public List<UnlockGroup> UnlockGroups;
+        [NonSerialized] public int UnlockCount;
+    }
+
+    static public class RegionUnlockUtility {
+        static public void UnlockRegion(SimGridState grid, int region) {
+            if (region >= grid.WorldData.Regions.Length) {
+                // region to unlock not registered
+                return;
+            }
+
+            SimDataUtility.LoadAndRegenRegionDataFromWorld(grid, grid.WorldData, region);
+            // TODO: trigger RegionUnlocked for scripting purposes
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("regionId", ((RegionId) region).ToString());
+                ScriptUtility.Trigger(GameTriggers.RegionUnlocked, varTable);
+            }
+            Debug.Log("[RegionUnlockSystem] Unlocked region " + region);
+        }
+
+        [DebugMenuFactory]
+        static private DMInfo RegionUnlockDebugMenu() {
+            DMInfo info = new DMInfo("Regions");
+            info.AddButton("Unlock Next Region", () => {
+                var r = Game.SharedState.Get<RegionUnlockState>();
+                var data = r.UnlockGroups[r.UnlockCount++];
+                foreach(int region in data.RegionIndexUnlocks) {
+                    UnlockRegion(ZavalaGame.SimGrid, region);
+                }
+            }, () => Game.SharedState.TryGet(out RegionUnlockState r) && r.UnlockCount < r.UnlockGroups.Count);
+            return info;
+        }
     }
 }

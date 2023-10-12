@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a5b4b218509de34192fd25dbc3a19fe, type: 3}
   m_Name: HillsidePalette
   m_EditorClassIdentifier: 
-  GroundTile: {fileID: 7097652779095066658, guid: b7313ca0370aefb44ab190d3da4f8579, type: 3}
-  City: {fileID: 947691686583835045, guid: d475cf78d7eaba44291403bea57f3e8a, type: 3}
-  DairyFarm: {fileID: 7291294420475072060, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
-  GrainFarm: {fileID: 5421243799934890597, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
+  GroundTile: {fileID: 4929987932592038972, guid: 500c22797ee7e384785494b17cccc1fb, type: 3}
+  City: {fileID: 7969817350258342186, guid: 167b78c4fbd0c5d419f1f25f22287109, type: 3}
+  DairyFarm: {fileID: 2888134989403396560, guid: 47af73b4c61ac7d4bb08ac89e9eb146e, type: 3}
+  GrainFarm: {fileID: 5981646520746778409, guid: a60778472af60764cbfa08d6bea8d568, type: 3}
   Rock:
-  - {fileID: 947691686583835045, guid: d3ddaaf331739bb4ea0ff3d4322c0b59, type: 3}
+  - {fileID: 7038089790863349094, guid: a1bb9b6c231870b4d9abca913e16e47b, type: 3}
   Tree:
-  - {fileID: 947691686583835045, guid: d1e61cd43fd0451419b2acc60f6ff4f7, type: 3}
+  - {fileID: 7038089790863349094, guid: a1b92c455077b3c41b3a52912f0f1412, type: 3}
+  - {fileID: 7038089790863349094, guid: 771952602e8789e4691a0fa63ca09c71, type: 3}

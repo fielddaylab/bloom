@@ -21,11 +21,9 @@ MonoBehaviour:
     X: 10
     Y: 10
     Elevation: 0
-  - Region: {fileID: 11400000, guid: 4337db1d407d90b4f89b74f7ee9caa2b, type: 2}
-    X: 8
-    Y: 18
-    Elevation: 3
-  Palettes: []
+  Palettes:
+  - {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
+  - {fileID: 11400000, guid: f8726d719bf5d9c4899bcb5bdee173a7, type: 2}
   DefaultPalette: {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
   Width: 30
   Height: 30

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5b4b218509de34192fd25dbc3a19fe, type: 3}
+  m_Name: ForestPalette
+  m_EditorClassIdentifier: 
+  GroundTile: {fileID: 4929987932592038972, guid: 0b976d59a11a29341b2cb852bc43199b, type: 3}
+  City: {fileID: 7969817350258342186, guid: c80f1eae9dd8ed04eaa4458297132759, type: 3}
+  DairyFarm: {fileID: 2888134989403396560, guid: ea239b7060842b8489d6d2855f8de181, type: 3}
+  GrainFarm: {fileID: 5981646520746778409, guid: 64fc9adf09f541f43902c4dbd9ddc80d, type: 3}
+  Rock:
+  - {fileID: 7038089790863349094, guid: b7bc3d8c9af19204abdff3b87de36e36, type: 3}
+  Tree:
+  - {fileID: 7038089790863349094, guid: df01e3d1b34c801419fd46cd28c3ba47, type: 3}

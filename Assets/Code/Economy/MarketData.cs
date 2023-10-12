@@ -315,6 +315,26 @@ namespace Zavala.Economy
             }
         }
 
+        public static void CalculateRatios(ref float[] ratios, UnsafeSpan<int> values) {
+            int total = 0;
+
+            for (int i = 0; i < values.Length; i++) {
+                total += values[i];
+            }
+
+            if (total <= 0) {
+                total = 1;
+            }
+
+            if (ratios == null) {
+                ratios = new float[values.Length];
+            }
+
+            for (int i = 0; i < ratios.Length; i++) {
+                ratios[i] = (float) values[i] / total;
+            }
+        }
+
         #endregion // DataHistory
 
         public static bool EvaluateTargetThreshold(float value, TargetThreshold target) {
