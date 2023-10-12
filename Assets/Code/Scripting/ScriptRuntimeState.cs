@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BeauPools;
 using BeauUtil;
 using BeauUtil.Tags;
@@ -6,6 +7,7 @@ using FieldDay.SharedState;
 using Leaf;
 using Leaf.Runtime;
 using UnityEngine;
+using Zavala.Scripting;
 using Zavala.UI;
 using Random = System.Random;
 
@@ -13,16 +15,18 @@ namespace FieldDay.Scripting {
     [DisallowMultipleComponent]
     [SharedStateInitOrder(-10)]
     public sealed class ScriptRuntimeState : SharedStateComponent, IRegistrationCallbacks {
-        public ScriptThreadMap ThreadMap = new ScriptThreadMap();
-        public RingBuffer<LeafThreadHandle> ActiveThreads = new RingBuffer<LeafThreadHandle>(64, RingBufferMode.Expand);
+        public readonly ScriptThreadMap ThreadMap = new ScriptThreadMap();
+        public readonly RingBuffer<LeafThreadHandle> ActiveThreads = new RingBuffer<LeafThreadHandle>(64, RingBufferMode.Expand);
         public LeafThreadHandle Cutscene;
+
+        public readonly Dictionary<StringHash32, EventActor> NamedActors = new Dictionary<StringHash32, EventActor>(16, CompareUtils.DefaultEquals<StringHash32>());
 
         public ScriptPlugin Plugin;
         public CustomVariantResolver Resolver;
         public IPool<ScriptThread> ThreadPool;
         public IPool<VariantTable> TablePool;
         public IPool<TagStringParser> ParserPool;
-        public Random Random = new Random();
+        public readonly Random Random = new Random();
         public CustomVariantResolver ResolverOverride;
 
         public DialogueBox DefaultDialogue;
@@ -121,6 +125,11 @@ namespace FieldDay.Scripting {
         static public StringHash32 FindCharacterId(TagString str) {
             str.TryFindEvent(LeafUtils.Events.Character, out var evtData);
             return evtData.Argument0.AsStringHash();
+        }
+
+        static public EventActor LookupActor(StringHash32 actorId) {
+            Runtime.NamedActors.TryGetValue(actorId, out EventActor actor);
+            return actor;
         }
 
         static public void ParseToTag(ref TagString tagString, StringSlice content, object context = null) {

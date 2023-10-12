@@ -10,7 +10,7 @@ namespace Zavala.Roads {
         public void UpdateSegmentVisuals(TileAdjacencyMask roadFlowMask) {
             for (int i = (int)TileDirection.SW; i < (int)TileDirection.COUNT; i++) {
                 // activate / deactivate direction segment base on road flow
-                DirSegments[i - 1].SetActive(roadFlowMask[(TileDirection)i]);
+                DirSegments[i - 1].SetActive(roadFlowMask[(TileDirection)i]);   
             }
         }
     }

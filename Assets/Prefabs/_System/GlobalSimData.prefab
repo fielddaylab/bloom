@@ -1,0 +1,478 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7708306960153739425
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7708306960153739427}
+  - component: {fileID: 7708306960153739428}
+  - component: {fileID: 7708306960153739426}
+  - component: {fileID: 7708306960153739429}
+  - component: {fileID: 7708306960153739431}
+  - component: {fileID: 7708306960153739430}
+  - component: {fileID: 7708306960153739433}
+  - component: {fileID: 7708306960153739435}
+  - component: {fileID: 7708306960153739432}
+  - component: {fileID: 7708306960153739437}
+  - component: {fileID: 7708306960153739436}
+  - component: {fileID: 7708306960153739439}
+  - component: {fileID: 7708306960153739438}
+  - component: {fileID: 7708306960153739473}
+  - component: {fileID: 7708306960153739472}
+  - component: {fileID: 7708306960153739475}
+  - component: {fileID: 7708306960153739474}
+  - component: {fileID: 7708306960153739477}
+  m_Layer: 0
+  m_Name: GlobalSimData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7708306960153739427
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7708306960153739428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ccb9de3c74010f4ead4c504aa1eac50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WorldData: {fileID: 11400000, guid: b8a9b3c53697c714eb1d273d1d388045, type: 2}
+--- !u!114 &7708306960153739426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53282cde614a741419315ee56a311dcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Timer:
+    Period: 2
+--- !u!114 &7708306960153739429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12d8422261ae1734682bdb5db00e1c75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Scale: {x: 0.76, y: 0.008, z: 0.86}
+  Offset: {x: 0, y: 0, z: 0}
+  DefaultWaterPrefab: {fileID: 7097652779095066658, guid: 5887f51366947f240ae408caadcb0af1, type: 3}
+  WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
+  BottomBounds: 0
+  BoundsExpand: 1.5
+--- !u!114 &7708306960153739431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a58f3b69788e34d99fd2b481f29388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TimeScale: 1
+  Paused: 0
+  PauseOverlay: {fileID: 0}
+--- !u!114 &7708306960153739430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a02fd670ebad1f4bbc885f4456ba73e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MarketTimer:
+    Period: 2
+--- !u!114 &7708306960153739433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e843a7d4f02b7d4aab8adbb1ed959de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpdateNeeded: 0
+--- !u!114 &7708306960153739435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f97c02245c85874792697d3ec42af93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransportCosts:
+    CostPerTile:
+      Manure: 3
+      MFertilizer: 3
+      DFertilizer: 3
+      Grain: 3
+      Milk: 3
+  PurchasePerRegion:
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+--- !u!114 &7708306960153739432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d2c7897fc009d54f95e00dbc59d177a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Trucks:
+    m_Prefab: {fileID: 2981774100162078211, guid: 535b903f1a66032489ba37c5037d90fe, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  PoolRoot: {fileID: 0}
+--- !u!114 &7708306960153739437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93bf03c46f3263743be20e0f9e6d4558, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AlgaePrefab: {fileID: 8417343884172520992, guid: a6ca5fd06c732a4479679e9c420c08e6, type: 3}
+--- !u!114 &7708306960153739436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f5bce2403f8124e9edef615ac5ac95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_initialBudget: 150
+--- !u!114 &7708306960153739439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83dcbfef3a195de4384d836550637c50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShopUI: {fileID: 0}
+--- !u!114 &7708306960153739438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e28c2e77908384048bebf403734017a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CardDefs: {fileID: 4900000, guid: a870cbe179378d14199b061ddaaa999b, type: 3}
+  Sprites: {fileID: 11400000, guid: f86e624ee7a192f46bc45db618f1f39d, type: 2}
+  UnlockedCards: []
+--- !u!114 &7708306960153739473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbdc133ebfc69324d8fa594fd40570f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Roads:
+    m_Prefab: {fileID: 8966737996612447901, guid: f5fc5bfc38ff22541a33a6dbd37de21b, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  Digesters:
+    m_Prefab: {fileID: 4665823543789613532, guid: d0061f3c86234f74b9cf5c0c6c73d1ce, type: 3}
+    m_Name: 
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  Storages:
+    m_Prefab: {fileID: 4665823543789613532, guid: 83cbad4e9bc632b45a85008072ee80e8, type: 3}
+    m_Name: 
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  Skimmers:
+    m_Prefab: {fileID: 5412720830129975462, guid: dab5c08824f46364ba60727ed1637681, type: 3}
+    m_Name: 
+    m_InitialCapacity: 8
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 4
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  PoolRoot: {fileID: 0}
+--- !u!114 &7708306960153739472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddc2d6176a04d58409fe5705623362aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Alerts:
+    m_Prefab: {fileID: 5880324271969544395, guid: e2bf128a1f2becb44a988ba928791bbc, type: 3}
+    m_Name: Alert
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  PoolRoot: {fileID: 0}
+--- !u!114 &7708306960153739475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c0dda7fab292340bafa68f3b8b24d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Cards:
+    m_Prefab: {fileID: 6078919034079738049, guid: 80435b86e6579914fb1a67cab4c88ee5, type: 3}
+    m_Name: 
+    m_InitialCapacity: 8
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 4
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 0
+  PoolRoot: {fileID: 0}
+--- !u!114 &7708306960153739474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d9b6a5273484b34199f72c5714ef32b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnlockGroups:
+  - UnlockConditions:
+    - Type: 0
+      ChecksRegions: 00000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 1.5
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+    RegionIndexUnlocks: 0100000002000000
+  - UnlockConditions:
+    - Type: 0
+      ChecksRegions: 0100000002000000
+      Scope: 10
+      TargetRunoff:
+        Below: 0
+        Value: 0
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+    RegionIndexUnlocks: 0300000004000000
+--- !u!114 &7708306960153739477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d718f7c89913a9498adc93ecad07f3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RequestPool:
+    m_Prefab: {fileID: 4747262016318168114, guid: 2d7b10891c2b7e445ad891fd31800edf, type: 3}
+    m_Name: 
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1

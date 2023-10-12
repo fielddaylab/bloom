@@ -92,6 +92,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hillside_Landscape02
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: fe2b07ff98ccfa048a28f6e8d87fb3eb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe2b07ff98ccfa048a28f6e8d87fb3eb, type: 3}
 --- !u!4 &1983173686743532624 stripped
@@ -157,6 +161,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3077eb95414504d95a0a1bff2a1368e2, type: 3}
       propertyPath: m_Name
       value: Hillside_Base00
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3077eb95414504d95a0a1bff2a1368e2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3077eb95414504d95a0a1bff2a1368e2, type: 3}

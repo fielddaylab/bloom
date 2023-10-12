@@ -78,11 +78,11 @@ namespace Zavala
                     Log.Msg("[LocService] Loading '{0}' from {1} packages", manifest.name, manifest.Packages.Length);
                     foreach(var file in manifest.Packages) {
                         var parser = BlockParser.ParseAsync(ref m_LanguagePackage, file, Parsing.Block, LocPackage.Generator.Instance);
-                        yield return Async.Schedule(parser); 
+                        yield return Async.Schedule(parser, AsyncFlags.HighPriority); 
                     }
                 } else {
                     Log.Msg("[LocService] Loading '{0}' from {1:0.00}kb binary", manifest.name, manifest.Binary.Length / 1024f);
-                    yield return Async.Schedule(LocPackage.ReadFromBinary(m_LanguagePackage, manifest.Binary));
+                    yield return Async.Schedule(LocPackage.ReadFromBinary(m_LanguagePackage, manifest.Binary), AsyncFlags.HighPriority);
                 }
             }
 
