@@ -10,13 +10,13 @@ Medium
 High
 
 :: RunoffPolicy.category
-Runoff Policy
+Runoff Penalty
 
 :: RunoffPolicy.alt
 Halt
 
 :: SkimmingPolicy.category
-Skimming Policy
+Skimming Level
 
 :: SkimmingPolicy.alt
 Dredge

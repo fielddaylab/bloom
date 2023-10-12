@@ -26,17 +26,22 @@
 ::import-tax-low
 @Level		low
 @PolicyType	ImportTaxPolicy
-@Path		policy-background.png
+@Path		policy-import_0.png
 
 ::import-tax-med
 @Level		med
 @PolicyType	ImportTaxPolicy
-@Path		policy-background.png
+@Path		policy-import_1.png
 
 ::import-tax-high
 @Level		high
 @PolicyType	ImportTaxPolicy
-@Path		policy-background.png
+@Path		policy-import_2.png
+
+::import-tax-subsidy
+@Level		alt
+@PolicyType	ImportTaxPolicy
+@Path		policy-import_3.png
 
 // Export Tax
 
@@ -65,43 +70,43 @@
 ::skimmers-low
 @Level		low
 @PolicyType	SkimmingPolicy
-@Path		policy-background.png
+@Path		policy-skim_0.png
 
 ::skimmers-med
 @Level		med
 @PolicyType	SkimmingPolicy
-@Path		policy-background.png
+@Path		policy-skim_1.png
 
 ::skimmers-high
 @Level		high
 @PolicyType	SkimmingPolicy
-@Path		policy-background.png
+@Path		policy-skim_2.png
 
 ::skimmers-dredge
 @Level		alt
 @PolicyType	SkimmingPolicy
-@Path		policy-background.png
+@Path		policy-skim_2.png
 
 // Sales Tax
 
 ::sales-low
 @Level		low
 @PolicyType	SalesTaxPolicy
-@Path		policy-background.png
+@Path		policy-sales_0.png
 
 ::sales-med
 @Level		med
 @PolicyType	SalesTaxPolicy
-@Path		policy-background.png
+@Path		policy-sales_1.png
 
 ::sales-high
 @Level		high
 @PolicyType	SalesTaxPolicy
-@Path		policy-background.png
+@Path		policy-sales_2.png
 
 ::sales-subsidy
 @Level		alt
 @PolicyType	SalesTaxPolicy
-@Path		policy-background.png
+@Path		policy-sales_3.png
 
 -----

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
   m_Name: advisorEcolPrairie
   m_EditorClassIdentifier: 
-  NameId: Permethrin (Prairie)
+  NameId: Crimpus
   TitleId: Ecological Advisor
   IsAdvisor: 1
   BackgroundColor:
