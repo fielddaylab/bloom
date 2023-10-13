@@ -38,7 +38,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -48,12 +48,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 50
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -128,7 +128,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 50
   - RegionIndex: 65535
     Category: 0
@@ -223,7 +223,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -238,12 +238,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -278,7 +278,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -298,7 +298,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -323,7 +323,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -388,12 +388,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -538,12 +538,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 150
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 49
     Height: 150
   - RegionIndex: 65535
     Category: 1
@@ -638,7 +638,77 @@ MonoBehaviour:
     Type: 1
   Points: []
   Roads: []
-  Modifiers: []
+  Modifiers:
+  - LocalTileIndex: 104
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 105
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 56
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 45
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 44
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 52
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 41
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 61
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 74
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 75
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 4
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 6
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 7
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 22
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
   WaterGroupLocalIndices: 1e001f002b00360041004200430046004e004f005000510052005b005c005d005e00
   WaterGroups:
   - Offset: 0

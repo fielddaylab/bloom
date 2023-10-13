@@ -19,4 +19,4 @@ MonoBehaviour:
   Rock:
   - {fileID: 7038089790863349094, guid: b7bc3d8c9af19204abdff3b87de36e36, type: 3}
   Tree:
-  - {fileID: 7038089790863349094, guid: df01e3d1b34c801419fd46cd28c3ba47, type: 3}
+  - {fileID: 7038089790863349094, guid: b7bc3d8c9af19204abdff3b87de36e36, type: 3}
