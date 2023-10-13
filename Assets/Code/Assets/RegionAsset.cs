@@ -8,7 +8,7 @@ namespace Zavala {
     public enum RegionId
     {
         Hillside,
-        Prairie,
+        Forest,
         Region3,
         Region4,
         Region5
@@ -67,6 +67,12 @@ namespace Zavala {
             public ushort Length;
         }
 
+        [Serializable]
+        public struct BorderPoint {
+            public ushort LocalTileIndex;
+            public TileAdjacencyMask Borders;
+        }
+
         #endregion // Types
 
         [Header("Dimensions")]
@@ -79,6 +85,7 @@ namespace Zavala {
         public PointData[] Points = Array.Empty<PointData>();
         public RoadData[] Roads = Array.Empty<RoadData>();
         public ModifierData[] Modifiers = Array.Empty<ModifierData>();
+        public BorderPoint[] Borders = Array.Empty<BorderPoint>();
 
         [Header("Groups")]
         public ushort[] WaterGroupLocalIndices = Array.Empty<ushort>();

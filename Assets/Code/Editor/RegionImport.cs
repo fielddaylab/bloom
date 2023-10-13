@@ -365,6 +365,39 @@ namespace Zavala.Editor {
             ranges = groupData.ToArray();
         }
 
+        static public void AnalyzeBorderData(in TiledData data, TerrainTileInfo[] tiles, out RegionAsset.BorderPoint[] borderPoints) {
+            List<RegionAsset.BorderPoint> borders = new List<RegionAsset.BorderPoint>();
+
+            HexGridSize.IndexEnumerator idxEnumerator = data.GridSize.GetEnumerator();
+            while(idxEnumerator.MoveNext()) {
+                int idx = idxEnumerator.Current;
+
+                ref TerrainTileInfo tileInfo = ref tiles[idx];
+                if (tileInfo.Category == TerrainCategory.Void) {
+                    continue;
+                }
+
+                HexVector pos = data.GridSize.FastIndexToPos(idx);
+                TileAdjacencyMask borderMask = default;
+
+                for(TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
+                    if (!data.GridSize.IsValidPosOffset(pos, dir, out HexVector next) || tiles[data.GridSize.FastPosToIndex(next)].Category == TerrainCategory.Void) {
+                        borderMask |= dir;
+                    }
+                }
+
+                if (!borderMask.IsEmpty) {
+                    tileInfo.Flags |= TerrainFlags.IsBorder;
+                    borders.Add(new RegionAsset.BorderPoint() {
+                        LocalTileIndex = (ushort) idx,
+                        Borders = borderMask
+                    });
+                }
+            }
+
+            borderPoints = borders.ToArray();
+        }
+
         #region Space Conversion
 
         static public HexVector PixelToHex(in TiledData data, Vector2 pixelLocation) {

@@ -97,8 +97,27 @@ namespace Zavala {
         /// Returns if the given position relative to the current vector is valid.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsValidPosOffset(HexVector vec, TileDirection direction, out HexVector target) {
+            target = HexVector.Offset(vec, direction);
+            return IsValidPos(target);
+        }
+
+        /// <summary>
+        /// Returns if the given position relative to the current vector is valid.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsValidIndexOffset(int index, TileDirection direction) {
             return IsValidPosOffset(IndexToPos(index), direction);
+        }
+
+        /// <summary>
+        /// Returns if the given position relative to the current vector is valid.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsValidIndexOffset(int index, TileDirection direction, out int target) {
+            bool result = IsValidPosOffset(IndexToPos(index), direction, out HexVector targetPos);
+            target = FastPosToIndex(targetPos);
+            return result;
         }
 
         #endregion // Offsets

@@ -56,6 +56,7 @@ namespace Zavala.Editor {
                 EditorGUILayout.IntField("Named Points", region.Points.Length);
                 EditorGUILayout.IntField("Water Groups", region.WaterGroups.Length);
                 EditorGUILayout.IntField("Water Tiles In Groups", region.WaterGroupLocalIndices.Length);
+                EditorGUILayout.IntField("Borders", region.Borders.Length);
             }
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty("Id"));
@@ -94,6 +95,7 @@ namespace Zavala.Editor {
             region.Roads = RegionImport.ReadRoads(tileData, occupiedIndices);
             region.Points = RegionImport.ReadScriptPoints(tileData);
             RegionImport.ReadWaterGroups(tileData, region.Tiles, out region.WaterGroupLocalIndices, out region.WaterGroups);
+            RegionImport.AnalyzeBorderData(tileData, region.Tiles, out region.Borders);
 
             Debug.LogFormat("[RegionEditor] Imported region information from '{0}'!", region.SourceFilePath);
         }

@@ -19,6 +19,7 @@ MonoBehaviour:
   - feature/*
   - improvement/*
   - experimental/*
+  - main
   DevelopmentBuild: 1
   CustomDefines: DEVELOPMENT,PRESERVE_DEBUG_SYMBOLS
   Order: 0

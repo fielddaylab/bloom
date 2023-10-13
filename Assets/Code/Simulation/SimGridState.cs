@@ -113,7 +113,6 @@ namespace Zavala.Sim {
             }
 
             SimWorldState world = Game.SharedState.Get<SimWorldState>();
-            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
 
             world.Palettes[regionIndex] = palette;
 
@@ -154,7 +153,6 @@ namespace Zavala.Sim {
             }
 
             RegenRegionInfo(grid, regionIndex, subRegion);
-            RegenBorderInfo(grid, regionIndex, world);
         }
 
         /// <summary>
@@ -248,58 +246,6 @@ namespace Zavala.Sim {
         }
 
         #endregion // Water Groups
-
-        #region Borders
-
-        /// <summary>
-        /// Recalculates terrain-dependent border info within region
-        /// </summary>
-        static public void RegenBorderInfo(SimGridState grid, int regionIndex, SimWorldState worldState) {
-            Assert.True(regionIndex < grid.RegionCount, "Region {0} is not a part of grid - currently {1} regions", regionIndex, grid.RegionCount);
-            SimBuffer<TerrainTileInfo> infoBuffer = grid.Terrain.Info;
-
-            foreach (var index in grid.HexSize) {
-                EvaluateBorders_Step(index, infoBuffer, grid.HexSize, worldState);
-            }
-        }
-
-        // internal evaluation
-        static private unsafe void EvaluateBorders_Step(int tileIndex, SimBuffer<TerrainTileInfo> infoBuffer, in HexGridSize gridSize, SimWorldState worldState) {
-            bool isBorder = false;
-
-            ref TerrainTileInfo center = ref infoBuffer[tileIndex];
-            HexVector pos = gridSize.FastIndexToPos(tileIndex);
-            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
-                HexVector adjPos = HexVector.Offset(pos, dir);
-
-                // check if bordering void
-                if (!gridSize.IsValidPos(adjPos)) {
-                    isBorder = true;
-                    break;
-                }
-                int adjIndex = gridSize.FastPosToIndex(adjPos);
-                if ((infoBuffer[adjIndex].Category == TerrainCategory.Void)) {
-                    isBorder = true;
-                    break;
-                }
-
-                // check if bordering adj region
-                if (center.RegionIndex != infoBuffer[adjIndex].RegionIndex) {
-                    isBorder = true;
-                    break;
-                }
-            }
-
-            if (isBorder) {
-                center.Flags |= TerrainFlags.IsBorder;
-            }
-            else if ((center.Flags & TerrainFlags.IsBorder) != 0) {
-                // was border, now is not. Somehow?
-                center.Flags -= TerrainFlags.IsBorder;
-            }
-        }
-
-        #endregion // Borders
 
         #region Generation
 
