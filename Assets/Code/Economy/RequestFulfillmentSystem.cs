@@ -10,7 +10,7 @@ using Zavala.Actors;
 using Zavala.Sim;
 
 namespace Zavala.Economy {
-    [SysUpdate(GameLoopPhase.Update, 10)]
+    [SysUpdate(GameLoopPhase.Update, 10, ZavalaGame.SimulationUpdateMask)]
     public sealed class RequestFulfillmentSystem : ComponentSystemBehaviour<RequestFulfiller> {
         public override bool HasWork() {
             return isActiveAndEnabled;

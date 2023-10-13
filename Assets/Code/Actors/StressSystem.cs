@@ -10,6 +10,7 @@ using UnityEngine;
 using Zavala.Economy;
 
 namespace Zavala.Actors {
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class StressSystem : ComponentSystemBehaviour<StressableActor, ActorTimer> {
         public override void ProcessWorkForComponent(StressableActor actor, ActorTimer timer, float deltaTime) {
             if (!timer.Timer.HasAdvanced()) {

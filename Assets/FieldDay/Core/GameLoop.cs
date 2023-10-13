@@ -271,6 +271,27 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Shutting down component manager...");
             Game.Components.Shutdown();
             Game.Components = null;
+
+            // clearing all callbacks
+            OnCanvasPreRender.Clear();
+            OnDebugUpdate.Clear();
+            OnFixedUpdate.Clear();
+            OnFrameAdvance.Clear();
+            OnGuiEvent.Clear();
+            OnLateFixedUpdate.Clear();
+            OnLateUpdate.Clear();
+            OnPreUpdate.Clear();
+            OnShutdown.Clear();
+            OnUnscaledLateUpdate.Clear();
+            OnUnscaledUpdate.Clear();
+            OnUpdate.Clear();
+
+            // clearing all callback queues
+            s_AfterLateUpdateQueue.Clear();
+            s_CanvasPreRenderQueue.Clear();
+            s_EndOfFrameQueue.Clear();
+            s_FrameStartQueue.Clear();
+            s_OnBootQueue.Clear();
         }
 
         private void FixedUpdate() {

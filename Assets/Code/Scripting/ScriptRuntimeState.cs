@@ -18,6 +18,7 @@ namespace FieldDay.Scripting {
         public readonly ScriptThreadMap ThreadMap = new ScriptThreadMap();
         public readonly RingBuffer<LeafThreadHandle> ActiveThreads = new RingBuffer<LeafThreadHandle>(64, RingBufferMode.Expand);
         public LeafThreadHandle Cutscene;
+        public int NestedCutscenePauseCount;
 
         public readonly Dictionary<StringHash32, EventActor> NamedActors = new Dictionary<StringHash32, EventActor>(16, CompareUtils.DefaultEquals<StringHash32>());
 

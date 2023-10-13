@@ -23,7 +23,5 @@ namespace Zavala.Sim {
             SimGridState gridState = ZavalaGame.SimGrid;
             Algae.Create(gridState.HexSize);
         }
-
-
     }
 }

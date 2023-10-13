@@ -5,7 +5,7 @@ using Zavala.Actors;
 using Zavala.Economy;
 
 namespace Zavala.Sim {
-    [SysUpdate(GameLoopPhase.Update, 4)] // Before MarketSystem, After ActorPhosphorusGeneratorSystem
+    [SysUpdate(GameLoopPhase.Update, 4, ZavalaGame.SimulationUpdateMask)] // Before MarketSystem, After ActorPhosphorusGeneratorSystem
     public sealed class StorageRecyclerSystem : ComponentSystemBehaviour<StorageRecycler, ResourceStorage, ActorTimer>
     {
         public override void ProcessWorkForComponent(StorageRecycler recycler, ResourceStorage storage, ActorTimer timer, float deltaTime) {

@@ -7,7 +7,7 @@ using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.Actors {
-    [SysUpdate(GameLoopPhase.Update, 0)]
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class ActorPhosphorusGeneratorSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ActorTimer, ResourceStorage, OccupiesTile> {
         public override void ProcessWork(float deltaTime) {
             SimGridState grid = ZavalaGame.SimGrid;

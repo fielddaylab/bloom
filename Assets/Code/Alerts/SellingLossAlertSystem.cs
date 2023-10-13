@@ -1,4 +1,5 @@
 using BeauUtil.Variants;
+using FieldDay;
 using FieldDay.Systems;
 using Zavala.Actors;
 using Zavala.Economy;
@@ -6,6 +7,7 @@ using Zavala.Scripting;
 
 namespace Zavala.Sim
 {
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public class SellingLossAlertSystem : ComponentSystemBehaviour<ResourceSupplier, ActorTimer, EventActor, OccupiesTile>
     {
         public override void ProcessWorkForComponent(ResourceSupplier supplier, ActorTimer timer, EventActor actor, OccupiesTile tile, float deltaTime) {

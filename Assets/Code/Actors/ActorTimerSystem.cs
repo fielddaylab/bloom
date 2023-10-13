@@ -7,7 +7,7 @@ namespace Zavala.Actors {
     /// We keep this a separate process instead of having separate timers per actor
     /// so multiple actor components can be synced up.
     /// </summary>
-    [SysUpdate(FieldDay.GameLoopPhase.Update, -1)]
+    [SysUpdate(FieldDay.GameLoopPhase.Update, -1, ZavalaGame.SimulationUpdateMask)]
     public sealed class ActorTimerSystem : ComponentSystemBehaviour<ActorTimer> {
         public override void ProcessWork(float deltaTime) {
             SimTimeState timeState = ZavalaGame.SimTime;

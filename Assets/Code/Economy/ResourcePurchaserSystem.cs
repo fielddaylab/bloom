@@ -10,6 +10,7 @@ using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.Economy {
+    [SysUpdate(FieldDay.GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class ResourcePurchaserSystem : ComponentSystemBehaviour<ResourcePurchaser, ActorTimer> {
         public override void ProcessWorkForComponent(ResourcePurchaser purchaser, ActorTimer timer, float deltaTime) {
             if (!timer.Timer.HasAdvanced()) {

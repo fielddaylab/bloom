@@ -11,7 +11,7 @@ namespace Zavala.Actors
     /// <summary>
     ///  Speciifcally, Grain Production
     /// </summary>
-    [SysUpdate(GameLoopPhase.Update, 0)]
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class ProductionRunoffSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ResourceProducer, OccupiesTile>
     {
         public override void ProcessWork(float deltaTime) {

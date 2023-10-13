@@ -9,6 +9,7 @@ using UnityEngine.Rendering.UI;
 using UnityEngine.UIElements;
 using BeauPools;
 using UnityEngine.UI;
+using BeauUtil.Debugger;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -29,13 +30,18 @@ namespace Zavala.Sim {
         /// What has paused the simulation.
         /// </summary>
         [AutoEnum] public SimPauseFlags Paused = 0;
-        public Graphic PauseOverlay;
+
+        private void OnDestroy() {
+            SimTimeUtility.OnPauseUpdated.Clear();
+        }
     }
 
     [Flags]
     public enum SimPauseFlags : uint {
         User = 0x01,
-        Event = 0x02
+        Cutscene = 0x02,
+        Scripted = 0x04,
+        Blueprints = 0x08
     }
 
     /// <summary>
@@ -151,6 +157,11 @@ namespace Zavala.Sim {
     /// </summary>
     static public class SimTimeUtility {
         /// <summary>
+        /// Invoked when simulation pause flags are updated.
+        /// </summary>
+        static public readonly CastableEvent<SimPauseFlags> OnPauseUpdated = new CastableEvent<SimPauseFlags>(4);
+
+        /// <summary>
         /// Advances a timer by simulation-scaled delta time.
         /// Returns if the timer advanced to its next period.
         /// </summary>
@@ -181,6 +192,53 @@ namespace Zavala.Sim {
             }
 
             return deltaTime * timeState.TimeScale;
+        }
+
+        /// <summary>
+        /// Pauses the simulation.
+        /// </summary>
+        static public bool Pause(SimPauseFlags pauseFlags, SimTimeState timeState) {
+            SimPauseFlags old = timeState.Paused;
+            if ((old & pauseFlags) == 0) {
+                timeState.Paused |= pauseFlags;
+                OnPauseUpdated.Invoke(timeState.Paused);
+                if (old == 0) {
+                    PauseSimulation(timeState);
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Unpauses the simulation.
+        /// </summary>
+        static public bool Resume(SimPauseFlags pauseFlags, SimTimeState timeState) {
+            SimPauseFlags old = timeState.Paused;
+            if ((old & pauseFlags) != 0) {
+                timeState.Paused &= ~pauseFlags;
+                OnPauseUpdated.Invoke(timeState.Paused);
+                if (timeState.Paused == 0) {
+                    ResumeSimulation(timeState);
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Pauses the simulation.
+        /// </summary>
+        static private void PauseSimulation(SimTimeState timeState) {
+            GameLoop.SuspendUpdates(ZavalaGame.SimulationUpdateMask);
+            Game.Events.Dispatch(GameEvents.SimPaused);
+        }
+
+        static private void ResumeSimulation(SimTimeState timeState) {
+            GameLoop.ResumeUpdates(ZavalaGame.SimulationUpdateMask);
+            Game.Events.Dispatch(GameEvents.SimResumed);
         }
     }
 }

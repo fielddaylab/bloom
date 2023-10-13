@@ -8,7 +8,7 @@ using Zavala.Scripting;
 
 namespace Zavala.Sim
 {
-    [SysUpdate(GameLoopPhase.Update, 0)] // after SimAlgaeSystem
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)] // after SimAlgaeSystem
     // Set execution order to after SimAlgaeStateSystem
     public class BloomGroupAlertSystem : ComponentSystemBehaviour<EventActor, WaterGroupInstance>
     {

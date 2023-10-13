@@ -9,7 +9,7 @@ using Zavala.Scripting;
 using Zavala.World;
 
 namespace Zavala.Sim {
-    [SysUpdate(GameLoopPhase.Update, -49)] // after phosphorus system
+    [SysUpdate(GameLoopPhase.Update, -49, ZavalaGame.SimulationUpdateMask)] // after phosphorus system
     public sealed class SimAlgaeSystem : SharedStateSystemBehaviour<SimAlgaeState, SimPhosphorusState, SimGridState> {
         // does it make sense to define events in the system or the state?
 

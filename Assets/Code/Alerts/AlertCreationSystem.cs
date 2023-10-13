@@ -9,7 +9,7 @@ using Zavala.World;
 
 namespace Zavala.Scripting
 {
-    [SysUpdate(FieldDay.GameLoopPhase.Update, 100100)] // after EventActorSystem
+    [SysUpdate(FieldDay.GameLoopPhase.Update, 100100, ZavalaGame.SimulationUpdateMask)] // after EventActorSystem
     public sealed class AlertCreationSystem : ComponentSystemBehaviour<EventActor>
     {
         static private readonly Vector3 EventDisplayOffset = new Vector3(0, 0.5f, 0);

@@ -8,7 +8,7 @@ using UnityEngine;
 using Zavala.Actors;
 
 namespace Zavala.Economy {
-    [SysUpdate(GameLoopPhase.Update, 0)]
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class MoneyProducerSystem : ComponentSystemBehaviour<MoneyProducer, ActorTimer, OccupiesTile> {
         public override void ProcessWorkForComponent(MoneyProducer producer, ActorTimer timer, OccupiesTile position, float deltaTime) {
             if (!timer.Timer.HasAdvanced()) {

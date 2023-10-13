@@ -1,3 +1,4 @@
+using System;
 using BeauPools;
 using BeauRoutine;
 using BeauUtil;
@@ -10,10 +11,12 @@ using Leaf.Runtime;
 using UnityEngine;
 using Zavala;
 using Zavala.Scripting;
+using Zavala.Sim;
 
 namespace FieldDay.Scripting {
     public class ScriptPlugin : DefaultLeafManager<ScriptNode> {
         private readonly ScriptRuntimeState m_RuntimeState;
+        private readonly Action LateEndCutsceneDelegate;
 
         public ScriptPlugin(ScriptRuntimeState inHost, CustomVariantResolver inResolver, IMethodCache inCache = null, LeafRuntimeConfiguration inConfiguration = null)
             : base(inHost, inResolver, inCache, inConfiguration) {
@@ -30,6 +33,8 @@ namespace FieldDay.Scripting {
             LeafUtils.ConfigureDefaultHandlers(m_TagHandler, this);
 
             m_TagHandler.Register(LeafUtils.Events.Character, () => { });
+
+            LateEndCutsceneDelegate = LateDecrementNestedPauseCount;
         }
 
         public override LeafThreadHandle Run(ScriptNode inNode, ILeafActor inActor = null, VariantTable inLocals = null, string inName = null, bool inbImmediateTick = true) {
@@ -89,6 +94,11 @@ namespace FieldDay.Scripting {
                     }
                 }
             }
+
+            if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {
+                m_RuntimeState.NestedCutscenePauseCount++;
+                SimTimeUtility.Pause(SimPauseFlags.Cutscene, ZavalaGame.SimTime);
+            }
         }
 
         public override void OnNodeExit(ScriptNode inNode, LeafThreadState<ScriptNode> inThreadState) {
@@ -100,9 +110,24 @@ namespace FieldDay.Scripting {
                 // Close advisor, no policies forced
                 m_RuntimeState.DefaultDialogue.HideAdvisorUI();
             }
+
+            if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {
+                GameLoop.QueueEndOfFrame(LateEndCutsceneDelegate);
+            }
+        }
+
+        private void LateDecrementNestedPauseCount() {
+            m_RuntimeState.NestedCutscenePauseCount--;
+            if (m_RuntimeState.NestedCutscenePauseCount == 0) {
+                SimTimeUtility.Resume(SimPauseFlags.Cutscene, ZavalaGame.SimTime);
+            }
         }
 
         public override void OnEnd(LeafThreadState<ScriptNode> inThreadState) {
+            if (m_RuntimeState.Cutscene == inThreadState.GetHandle()) {
+                m_RuntimeState.Cutscene = default;
+            }
+
             base.OnEnd(inThreadState);
         }
     

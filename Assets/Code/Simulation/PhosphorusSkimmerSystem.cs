@@ -11,6 +11,7 @@ using Zavala.Economy;
 
 namespace Zavala.Sim
 {
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public class PhosphorusSkimmerSystem : ComponentSystemBehaviour<PhosphorusSkimmer, ActorTimer, OccupiesTile>
     {
         public override void ProcessWorkForComponent(PhosphorusSkimmer skimmer, ActorTimer timer, OccupiesTile position, float deltaTime) {

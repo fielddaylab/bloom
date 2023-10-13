@@ -1,4 +1,5 @@
 using BeauUtil.Variants;
+using FieldDay;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Actors;
@@ -6,6 +7,7 @@ using Zavala.Scripting;
 
 namespace Zavala.Sim
 {
+    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public class ExcessRunoffAlertSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ActorTimer, EventActor, OccupiesTile>
     {
         public override void ProcessWorkForComponent(ActorPhosphorusGenerator generator, ActorTimer timer, EventActor actor, OccupiesTile tile, float deltaTime) {

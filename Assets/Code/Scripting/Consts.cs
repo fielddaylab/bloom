@@ -15,6 +15,9 @@ namespace Zavala
         static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
         static public readonly StringHash32 MarketCycleTickCompleted = "sim:market-cycle-completed";
         static public readonly StringHash32 RegionSwitched = "sim:region-switched";
+
+        static public readonly StringHash32 SimPaused = "sim:paused";
+        static public readonly StringHash32 SimResumed = "sim:resumed";
     }
 
     static public class GameTriggers

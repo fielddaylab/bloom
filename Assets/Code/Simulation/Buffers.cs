@@ -87,6 +87,8 @@ namespace Zavala.Sim {
             GrowingTiles = new HashSet<int>(200);
             BloomedTiles = new HashSet<int>(200);
             PeakingTiles = new HashSet<int>(200);
+
+            SimBuffer.Clear(State);
         }
     }
 

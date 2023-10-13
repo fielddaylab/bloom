@@ -17,40 +17,33 @@ namespace Zavala.Sim {
             }
         }
 
-        public static void SetPaused(bool pause, SimPauseFlags flag) {
+        private static void SetPaused(bool pause, SimPauseFlags flag) {
             SimTimeState time = FieldDay.Game.SharedState.Get<SimTimeState>();
             if (pause) {
-                time.Paused |= flag;
-                time.PauseOverlay.gameObject.SetActive(true);
+                SimTimeUtility.Pause(flag, time);
             } else {
-                if (time.Paused > flag) {
-                    Debug.Log("[SimTimeInput] User attempting to unpause an event pause, ignoring...");
-                    // player attempts to unpause an event pause
-                    return;
-                }
-                time.Paused = 0;
-                time.PauseOverlay.gameObject.SetActive(false);
+                SimTimeUtility.Resume(flag, time);
             }
         }
 
         public static void TogglePause(SimPauseFlags flag) {
             SimTimeState time = FieldDay.Game.SharedState.Get<SimTimeState>();
-            SetPaused(time.Paused == 0, flag);
+            SetPaused((time.Paused & flag) == 0, flag);
         }
 
         [LeafMember("TogglePause")]
         public static void TogglePauseEvent() {
-            TogglePause(SimPauseFlags.Event);
+            TogglePause(SimPauseFlags.Scripted);
         }
 
         [LeafMember("Pause")]
         public static void PauseEvent() {
-            SetPaused(true, SimPauseFlags.Event);
+            SetPaused(true, SimPauseFlags.Scripted);
         }
 
         [LeafMember("Unpause")]
         public static void UnpauseEvent() {
-            SetPaused(false, SimPauseFlags.Event);
+            SetPaused(false, SimPauseFlags.Scripted);
         }
 
     }

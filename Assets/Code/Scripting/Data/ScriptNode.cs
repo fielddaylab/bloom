@@ -38,7 +38,7 @@ namespace FieldDay.Scripting {
             Flags |= ScriptNodeFlags.Trigger;
             TriggerOrFunctionId = triggerId;
             if (triggerId == "AlertExamined") {
-                Flags |= ScriptNodeFlags.Queued;
+                Flags |= ScriptNodeFlags.Queued | ScriptNodeFlags.Cutscene;
             }
         }
 

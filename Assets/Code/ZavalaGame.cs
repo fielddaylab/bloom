@@ -8,6 +8,8 @@ using Zavala.World;
 namespace Zavala {
     public class ZavalaGame : Game {
 
+        public const int SimulationUpdateMask = 1 << 0;
+
         /// <summary>
         /// Global timer state.
         /// </summary>

@@ -90,6 +90,8 @@ namespace Zavala.UI {
             });
 
             m_Rect.SetAnchorPos(m_OffscreenY, Axis.Y);
+
+            SimTimeUtility.OnPauseUpdated.Register(HandlePauseFlagsUpdated);
         }
 
         private void RefreshModules(string charName) {
@@ -183,6 +185,10 @@ namespace Zavala.UI {
             yield return 0.1f;
         }
 
+        private void SetCutsceneMode(bool cutscene) {
+            m_CloseButton.gameObject.SetActive(!cutscene);
+        }
+
         #endregion // Display
 
         #region Leaf Flag Interactions
@@ -272,6 +278,10 @@ namespace Zavala.UI {
         #endregion // Routines
 
         #region Handlers
+
+        private void HandlePauseFlagsUpdated(SimPauseFlags pauseFlags) {
+            SetCutsceneMode((pauseFlags & (SimPauseFlags.Scripted | SimPauseFlags.Cutscene)) != 0);
+        }
 
         private void HandlePolicyCloseClicked() {
             m_TransitionRoutine.Replace(HideRoutine());

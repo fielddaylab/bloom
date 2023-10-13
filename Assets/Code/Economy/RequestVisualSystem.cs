@@ -6,7 +6,7 @@ using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.Economy {
-    [SysUpdate(GameLoopPhase.Update, 4)]
+    [SysUpdate(GameLoopPhase.Update, 4, ZavalaGame.SimulationUpdateMask)]
     public class RequestVisualSystem : SharedStateSystemBehaviour<MarketData, RequestVisualState, SimGridState>
     {
         // NOT persistent state - work lists for various updates

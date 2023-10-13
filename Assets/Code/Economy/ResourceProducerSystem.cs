@@ -5,6 +5,7 @@ using UnityEngine;
 using Zavala.Actors;
 
 namespace Zavala.Economy {
+    [SysUpdate(FieldDay.GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class ResourceProducerSystem : ComponentSystemBehaviour<ResourceProducer, ActorTimer> {
         public override void ProcessWorkForComponent(ResourceProducer producer, ActorTimer timer, float deltaTime) {
             if (!timer.Timer.HasAdvanced()) {
