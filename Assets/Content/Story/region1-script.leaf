@@ -8,8 +8,11 @@ $call Pause()
 // Start mentioning blooms only after some start to appear. And leave that to the ecological advisor.
 {local @advisorEcon}    Greetings. Let's get right to business, shall we?
 {local @advisorEcon}    Our lovely <i>Hillside Region</i> is a chunk of blooming real estate with three buildings:
+$call PanToBuilding("region1_city1");
 {local @advisorEcon}    A <i>City</i>... // Insert camera panning here
+$call PanToBuilding("region1_cafo1");
 {local @advisorEcon}    A <i>Dairy Farm</i>... // Insert camera panning here
+$call PanToBuilding("region1_grain1");
 {local @advisorEcon}    And a <i>Grain Farm</i>. // Insert camera panning here
 {local @advisorEcon}    But something else is required before it can truly be considered an economy... <i>Roads</i>!
 {local @advisorEcon}    Start by opening your <i>Funding</i> menu to connect these your two farms with a <i>Road</i>.
@@ -29,7 +32,9 @@ $call Unpause()
 :: roadSelected
 @trigger BuildButtonPressed
 @once
-{local @advisorEcon}    Mmm, yes. Press the button.
+{local @advisorEcon}    With your <i>Road</i> tool selected, click and drag from the source to the destination. 
+{local @advisorEcon}    But each tile will spend from our regional budget! Try to be thrifty.
+
 
 // Step 3: Introduce cities
 :: farmsConnected

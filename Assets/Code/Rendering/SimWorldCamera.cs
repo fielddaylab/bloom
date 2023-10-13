@@ -1,8 +1,11 @@
 using BeauRoutine;
 using FieldDay.SharedState;
 using System.Collections;
-using System.Runtime.CompilerServices;
+using Leaf.Runtime;
 using UnityEngine;
+using BeauUtil;
+using Zavala.Scripting;
+using FieldDay.Scripting;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -25,6 +28,11 @@ namespace Zavala.World {
     }
 
     public static class CameraUtility {
+
+        [LeafMember("PanToBuilding")]
+        public static void PanCameraToBuilding(StringHash32 id) {
+            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform);
+        }
 
         public static void PanCameraToPoint(SimWorldCamera cam, Transform t) {
             cam.PanTarget = t;

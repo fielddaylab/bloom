@@ -7,7 +7,6 @@ using Zavala.Advisor;
 using System;
 using BeauUtil;
 using Leaf.Runtime;
-using System.Runtime.CompilerServices;
 
 namespace Zavala.Cards
 {

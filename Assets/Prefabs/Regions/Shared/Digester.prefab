@@ -90,7 +90,9 @@ MonoBehaviour:
     Grain: 0
     Milk: 0
   Displays:
-  - {fileID: 0}
+  - {fileID: 557731742460646136}
+  StorageExtensionReq: {fileID: 0}
+  StorageExtensionStore: {fileID: 0}
 --- !u!114 &4665823543789613507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +148,13 @@ MonoBehaviour:
   AgeOfUrgency: 20
   IsLocalOption: 0
   InfiniteRequests: 0
+  OverridesBuyPrice: 0
+  OverrideBlock:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
 --- !u!114 &4665823543789613532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +202,7 @@ MonoBehaviour:
   Class:
     m_Source: 
     m_HashValue: 0
-  ActivelyDisplayingEvent: 0
+  EventDisplayOffset: {x: 0, y: 0, z: 0}
 --- !u!135 &3836324915457015385
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -276,6 +285,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 258dfd90efa43984eb2a0c4fce896355, type: 3}
+--- !u!114 &557731742460646136 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 844390064198580658, guid: 258dfd90efa43984eb2a0c4fce896355, type: 3}
+  m_PrefabInstance: {fileID: 867671194487188298}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f96a55061232114e8fe3b0667bedfc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &4342443827263191589 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3479562866714169711, guid: 258dfd90efa43984eb2a0c4fce896355, type: 3}

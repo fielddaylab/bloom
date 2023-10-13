@@ -518,18 +518,18 @@ MonoBehaviour:
   Buildings:
   - LocalTileIndex: 68
     ScriptName:
-      m_Source: CAFO
-      m_HashValue: 2925324310
+      m_Source: region1_cafo1
+      m_HashValue: 3520211273
     Type: 2
   - LocalTileIndex: 38
     ScriptName:
-      m_Source: Farm
-      m_HashValue: 2151182681
+      m_Source: region1_grain1
+      m_HashValue: 3365541027
     Type: 1
   - LocalTileIndex: 75
     ScriptName:
-      m_Source: City
-      m_HashValue: 2422945378
+      m_Source: region1_city1
+      m_HashValue: 51623813
     Type: 3
   Points: []
   Roads: []
