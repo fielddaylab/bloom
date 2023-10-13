@@ -84,6 +84,7 @@ $set intro:citiesConnected = true
 @conditions     intro:citiesConnected, intro:farmsConnected
 @once
 $call Pause()
+$call PanToBuilding("region1_cafo1")
 {local @advisorEcol}    It looks like this dairy farm is letting its manure sit and run off.
 {local @advisorEcon}    Indeed. You'll have to make their alternatives more favorable.
 {local @advisorEcon}    Namely, either a Storage unit or a Grain Farm.
@@ -108,6 +109,7 @@ $call Unpause()
 @conditions     alertType == "excess-runoff", intro:citiesConnected, intro:farmsConnected
 @forcePolicy    Ecology
 @queued
+@once
 $call Pause()
 {local @grainFarmer}    Goodness gracious. This manure just slips off my fields.
 {local @advisorEcol}    There has been excessive runoff!

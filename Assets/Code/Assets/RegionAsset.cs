@@ -9,7 +9,7 @@ namespace Zavala {
     {
         Hillside,
         Forest,
-        Region3,
+        Prairie,
         Region4,
         Region5
     }

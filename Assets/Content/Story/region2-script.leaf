@@ -1,11 +1,11 @@
 
 :: testRegionUnlocked
 @trigger        RegionUnlocked
-@conditions     regionId == "Prairie"
+@conditions     regionId == "Forest"
 @queued
 $call Pause()
-{@advisorEconPrairie}    Howdy there!
-{@advisorEconPrairie}    We've heard about your program over here in Prairie County.
-{@advisorEconPrairie}    We think it shows promise. Maybe we could coordinate to address this muck together? 
+{@advisorEconForest}    Salutations, Director.
+{@advisorEconForest}    We've heard about your program over here in Pine County.
+{@advisorEconForest}    We think it shows promise. Perhaps we could coordinate to address this irksome muck together? 
 $call Unpause()
 

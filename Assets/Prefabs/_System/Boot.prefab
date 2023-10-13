@@ -291,6 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82045728a6c13814eb25bc18daa92820, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NestedCutscenePauseCount: 0
   DefaultDialogue: {fileID: 0}
 --- !u!114 &1204671298359837929
 MonoBehaviour:
@@ -334,6 +335,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 419c257dc7c2fd54ba9a3d941bbcd931, type: 2}
   - {fileID: 11400000, guid: 1700103f886b35d43b0161b9122c2940, type: 2}
   - {fileID: 11400000, guid: 8c0a2e7d7eb460345bf9726a512bcb46, type: 2}
+  - {fileID: 11400000, guid: 28a82e3da320fa14195bf7b2ee104320, type: 2}
+  - {fileID: 11400000, guid: 7a9e9ac94125a5044889a3d0d99104a0, type: 2}
+  - {fileID: 11400000, guid: 22dcc127f73bbc846a686353aeee2feb, type: 2}
+  - {fileID: 11400000, guid: 45a1e5d0bf0d9e6428b6a06d4554ec19, type: 2}
+  - {fileID: 11400000, guid: 2fd415b9331a9d6459bcf3d2661944ad, type: 2}
   - {fileID: 11400000, guid: d6495b2ea23aa874fbeb28b7c6941d06, type: 2}
   - {fileID: 11400000, guid: 9af28242206017444a129e9d565c5a38, type: 2}
   - {fileID: 11400000, guid: 53c73f1b8f76b054ca2a9aac4f9a21d1, type: 2}

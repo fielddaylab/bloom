@@ -17,7 +17,7 @@ MonoBehaviour:
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4280060645
+    rgba: 4280065509
   PanelColor:
     serializedVersion: 2
     rgba: 4288204258
