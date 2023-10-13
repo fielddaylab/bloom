@@ -87,20 +87,16 @@ namespace Zavala
                     lookup = DieOffLocId; break;
                 }
                 case EventActorAlertType.CritImbalance: {
-                    lookup = CritImbalanceLocId;
-                    break;
+                    lookup = CritImbalanceLocId; break;
                 }
                 case EventActorAlertType.UnusedDigester: {
-                    lookup = UnusedDigesterLocId;
-                    break;
+                    lookup = UnusedDigesterLocId; break;
                 }
                 case EventActorAlertType.DecliningPop: {
-                    lookup = DecliningPopLocId;
-                    break;
+                    lookup = DecliningPopLocId; break;
                 }
                 case EventActorAlertType.SellingLoss: {
-                    lookup = SellingLossLocId;
-                    break;
+                    lookup = SellingLossLocId; break;
                 }
             }
             return Loc.Find(lookup);

@@ -594,6 +594,25 @@ namespace ScriptableBake {
             }
         }
 
+        #region Editor Menu
+
+        [MenuItem("Assets/Bake Selection", false, 10000)]
+        static private void Editor_BakeSelection() {
+            BakeObjects(Selection.objects, BakeFlags.Verbose);
+        }
+
+        [MenuItem("Assets/Bake Selection", true, 10000)]
+        static private bool Editor_BakeSelection_Validate() {
+            foreach(var obj in Selection.objects) {
+                if (obj is IBaked) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        #endregion // Editor Menu
+
 #endif // UNITY_EDITOR
     }
 

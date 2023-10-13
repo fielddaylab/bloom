@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Sim;
 
 namespace Zavala.UI {
     public class UIShop : MonoBehaviour
@@ -42,11 +43,13 @@ namespace Zavala.UI {
         }
 
         public void Expand() {
-            m_shopRoutine.Replace(ExpandShopRoutine());
+            SimTimeUtility.Pause(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
+            m_shopRoutine.Replace(ExpandShopRoutine()); 
             m_buttonRoutine.Replace(HideShopButtonRoutine());
         }
 
         public void Collapse() {
+            SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
             m_shopRoutine.Replace(CollapseRoutine());
             m_buttonRoutine.Replace(ShowShopButtonRoutine());
         }

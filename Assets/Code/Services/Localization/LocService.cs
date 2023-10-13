@@ -30,6 +30,7 @@ namespace Zavala
         #region Inspector
 
         [SerializeField, Required] private LocManifest m_EnglishManifest;
+        [SerializeField] private bool DEBUG_ForceBinary;
 
         #endregion // Inspector
 
@@ -72,7 +73,7 @@ namespace Zavala
                 #if PREVIEW || PRODUCTION
                 loadPackages = false;
                 #else
-                loadPackages = manifest.Packages.Length > 0;
+                loadPackages = !DEBUG_ForceBinary && manifest.Packages.Length > 0;
                 #endif // PREVIEW || PRODUCTION
                 if (loadPackages) {
                     Log.Msg("[LocService] Loading '{0}' from {1} packages", manifest.name, manifest.Packages.Length);

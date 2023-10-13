@@ -17,11 +17,11 @@ namespace Zavala.UI {
     public class UIAlert : MonoBehaviour
     {
         [SerializeField] private MultiImageButton m_Button;
-        public EventActor Actor; // The event actor this alert is anchored to
         public TMP_Text EventText;
         public Image AlertBase;
         public Image AlertBanner;
 
+        [NonSerialized] public EventActor Actor; // The event actor this alert is anchored to
         [NonSerialized] public Routine BannerRoutine;
         [NonSerialized] public bool FullyOpened = false;
 

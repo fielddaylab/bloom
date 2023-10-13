@@ -37,7 +37,7 @@ namespace Zavala {
         }
 
         private void OnPauseUpdated(SimPauseFlags flags) {
-            bool hadBlueprints = m_BlueprintsFader;
+            bool hadBlueprints = m_DesiredBlueprints;
             bool hadDefault = m_DesiredDefault;
 
             m_DesiredBlueprints = (flags & SimPauseFlags.Blueprints) != 0;
