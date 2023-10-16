@@ -11,5 +11,11 @@ namespace Zavala.Actors {
         public bool HasAdvanced() {
             return Timer.HasAdvanced();
         }
+
+        protected override void OnDisable() {
+            Timer.Accumulator = 0;
+
+            base.OnDisable();
+        }
     }
 }

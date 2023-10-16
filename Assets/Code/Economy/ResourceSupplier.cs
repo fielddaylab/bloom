@@ -1,4 +1,5 @@
 using System;
+using BeauPools;
 using BeauUtil;
 using FieldDay.Components;
 using UnityEngine;
@@ -27,16 +28,15 @@ namespace Zavala.Economy {
             base.OnEnable();
 
             MarketUtility.RegisterSupplier(this);
-        }
-
-        private void Start() {
-            // Ensure register road anchor happens after OccupiesTile
             RoadUtility.RegisterRoadAnchor(Position);
         }
 
         protected override void OnDisable() {
             MarketUtility.DeregisterSupplier(this);
             RoadUtility.DeregisterRoadAnchor(Position);
+
+            SoldAtALoss = false;
+            Priorities.PrioritizedBuyers.Clear();
 
             base.OnDisable();
         }

@@ -28,16 +28,21 @@ namespace Zavala.Building {
         }
     }
 
+    [SharedStateInitOrder(10)]
     public class BuildToolState : SharedStateComponent, IRegistrationCallbacks {
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public RoadToolState RoadToolState;
         [NonSerialized] public HexVector VecPrev;
+
+        [NonSerialized] public SimBuffer<byte> BlockedTileBuffer;
 
         public void OnDeregister() {
         }
 
         public void OnRegister() {
             ClearRoadTool();
+
+            BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
         }
 
         /// <summary>

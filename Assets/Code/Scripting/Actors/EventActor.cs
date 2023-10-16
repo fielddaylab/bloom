@@ -26,6 +26,13 @@ namespace Zavala.Scripting {
         public RingBuffer<EventActorTrigger> QueuedTriggers = new RingBuffer<EventActorTrigger>(8, RingBufferMode.Expand);
         public RingBuffer<EventActorQueuedEvent> QueuedEvents = new RingBuffer<EventActorQueuedEvent>(8, RingBufferMode.Expand);
 
+        protected override void OnDisable() {
+            QueuedTriggers.Clear();
+            QueuedEvents.Clear();
+
+            base.OnDisable();
+        }
+
         #region Leaf
 
         StringHash32 ILeafActor.Id => Id;

@@ -1,3 +1,4 @@
+using BeauPools;
 using BeauUtil;
 using FieldDay.Components;
 using UnityEngine;
@@ -22,6 +23,12 @@ namespace Zavala.Economy {
 
         public void Start() {
              ResourceStorageUtility.RefreshStorageDisplays(this);
+        }
+
+        protected override void OnDisable() {
+            Current.SetAll(0);
+
+            base.OnDisable();
         }
     }
 

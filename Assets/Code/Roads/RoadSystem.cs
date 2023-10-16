@@ -141,7 +141,7 @@ namespace Zavala.Roads
                                 else {
                                     // if another tile flows into this tile from curr direction
                                     RoadTileInfo adjInfo = infoBuffer[(int)adjIdx];
-                                    TileDirection inverseDir = gridSize.InvertDir(dir);
+                                    TileDirection inverseDir = dir.Reverse();
                                     if (adjInfo.FlowMask[inverseDir]) {
                                         if (SetContains(universalSet, adjIdx)) {
                                             unvisitedNeighborList.Add(adjIdx);

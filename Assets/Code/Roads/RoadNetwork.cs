@@ -18,6 +18,7 @@ namespace Zavala.Roads
     {
         [NonSerialized] public RoadBuffers Roads;
         [NonSerialized] public List<RoadInstanceController> RoadObjects; // The physical instances of road prefabs
+        [NonSerialized] public HashSet<int> AnchorIndices;
 
         [NonSerialized] public Dictionary<int, RingBuffer<RoadPathSummary>> Connections; // key is tile index, values are tiles connected via road
 
@@ -31,6 +32,7 @@ namespace Zavala.Roads
             SimGridState gridState = ZavalaGame.SimGrid;
             Roads.Create(gridState.HexSize);
             RoadObjects = new List<RoadInstanceController>();
+            AnchorIndices = new HashSet<int>(64);
         }
 
         void IRegistrationCallbacks.OnDeregister() {
@@ -183,18 +185,10 @@ namespace Zavala.Roads
 
             RemoveInleadingRoads(network, grid, tileIndex);
 
-            RoadTileInfo centerTileInfo = network.Roads.Info[tileIndex];
+            ref RoadTileInfo centerTileInfo = ref network.Roads.Info[tileIndex];
+            centerTileInfo.FlowMask.Clear();
 
-            // Erase record from center tile
-
-            centerTileInfo.FlowMask[TileDirection.N] = false;
-            centerTileInfo.FlowMask[TileDirection.S] = false;
-            centerTileInfo.FlowMask[TileDirection.SE] = false;
-            centerTileInfo.FlowMask[TileDirection.SW] = false;
-            centerTileInfo.FlowMask[TileDirection.NE] = false;
-            centerTileInfo.FlowMask[TileDirection.NW] = false;
-
-            network.Roads.Info[tileIndex] = centerTileInfo;
+            network.UpdateNeeded = true;
         }
 
         static public void RemoveInleadingRoads(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -214,16 +208,14 @@ namespace Zavala.Roads
                 if (!grid.HexSize.IsValidPos(adjPos)) {
                     continue;
                 }
-                int adjIdx = grid.HexSize.PosToIndex(adjPos);
+                int adjIdx = grid.HexSize.FastPosToIndex(adjPos);
 
-                RoadTileInfo adjTileInfo = network.Roads.Info[adjIdx];
+                ref RoadTileInfo adjTileInfo = ref network.Roads.Info[adjIdx];
 
                 TileDirection currDir = dir; // to stage into curr road
-                TileDirection adjDir = grid.HexSize.InvertDir(currDir); // to stage into prev road
+                TileDirection adjDir = currDir.Reverse(); // to stage into prev road
 
                 adjTileInfo.FlowMask[adjDir] = false;
-
-                network.Roads.Info[adjIdx] = adjTileInfo;
 
                 // Update prev road rendering
                 for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
@@ -253,7 +245,7 @@ namespace Zavala.Roads
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             Assert.NotNull(network);
 
-            network.Roads.Info[position.TileIndex].Flags = RoadFlags.IsRoadAnchor; // roads may connect with buyers/sellers
+            network.Roads.Info[position.TileIndex].Flags |= RoadFlags.IsRoadAnchor; // roads may connect with buyers/sellers
             Debug.Log("[StagingRoad] tile " + position.TileIndex + " is now a road anchor");
         }
 
@@ -264,7 +256,7 @@ namespace Zavala.Roads
 
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             if (network != null && (network.Roads.Info[position.TileIndex].Flags & RoadFlags.IsRoadAnchor) != 0) {
-                network.Roads.Info[position.TileIndex].Flags -= RoadFlags.IsRoadAnchor;
+                network.Roads.Info[position.TileIndex].Flags &= ~RoadFlags.IsRoadAnchor;
             }
         }
 

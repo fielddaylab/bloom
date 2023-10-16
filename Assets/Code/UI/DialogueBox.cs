@@ -241,7 +241,7 @@ namespace Zavala.UI {
             DeactivateModules();
             Pin.Unpin();
             SimTimeInput.UnpauseEvent();
-            ZavalaGame.SimWorld.Overlays = SimWorldOverlayMask.None;
+            Game.Events.Dispatch(GameEvents.DialogueClosing);
             yield return null;
         }
 

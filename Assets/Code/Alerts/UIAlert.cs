@@ -2,6 +2,7 @@ using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Components;
 using FieldDay.Scripting;
 using System;
 using System.Collections;
@@ -14,8 +15,9 @@ using Zavala.Scripting;
 using Zavala.Sim;
 
 namespace Zavala.UI {
-    public class UIAlert : MonoBehaviour
+    public class UIAlert : BatchedComponent
     {
+        [SerializeField] private CanvasGroup m_Group;
         [SerializeField] private MultiImageButton m_Button;
         public TMP_Text EventText;
         public Image AlertBase;
@@ -24,13 +26,31 @@ namespace Zavala.UI {
         [NonSerialized] public EventActor Actor; // The event actor this alert is anchored to
         [NonSerialized] public Routine BannerRoutine;
         [NonSerialized] public bool FullyOpened = false;
+        [NonSerialized] public Routine FadeRoutine;
 
+        protected override void OnEnable() {
+            base.OnEnable();
 
-        private void OnEnable() {
             m_Button.onClick.AddListener(HandleButtonClicked);
+            SimTimeUtility.OnPauseUpdated.Register(OnPauseUpdated);
+
+            OnPauseUpdated(ZavalaGame.SimTime.Paused);
+        }
+
+        protected override void OnDisable() {
+            m_Button.onClick.RemoveListener(HandleButtonClicked);
+            SimTimeUtility.OnPauseUpdated.Deregister(OnPauseUpdated);
+
+            base.OnDisable();
         }
 
         #region Handlers
+
+        private void OnPauseUpdated(SimPauseFlags flags) {
+            bool blueprints = (flags & SimPauseFlags.Blueprints) != 0;
+            m_Group.alpha = blueprints ? 0.1f : 1f;
+            m_Group.blocksRaycasts = !blueprints;
+        }
 
         private void HandleButtonClicked() {
             Assert.NotNull(Actor);

@@ -1,4 +1,5 @@
 using BeauRoutine;
+using FieldDay;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -44,12 +45,14 @@ namespace Zavala.UI {
 
         public void Expand() {
             SimTimeUtility.Pause(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
+            Game.Events.Dispatch(GameEvents.BuildModeStarted);
             m_shopRoutine.Replace(ExpandShopRoutine()); 
             m_buttonRoutine.Replace(HideShopButtonRoutine());
         }
 
         public void Collapse() {
             SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
+            Game.Events.Dispatch(GameEvents.BuildModeEnded);
             m_shopRoutine.Replace(CollapseRoutine());
             m_buttonRoutine.Replace(ShowShopButtonRoutine());
         }

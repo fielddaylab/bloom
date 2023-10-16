@@ -8,7 +8,7 @@ using BeauUtil.Debugger;
 using Zavala.Building;
 
 namespace Zavala {
-    [DisallowMultipleComponent]
+    [DisallowMultipleComponent, DefaultExecutionOrder(-5)]
     public sealed class OccupiesTile : MonoBehaviour, IComponentData {
         [NonSerialized] public int TileIndex;
         [NonSerialized] public HexVector TileVector;

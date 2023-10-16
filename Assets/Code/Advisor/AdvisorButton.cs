@@ -25,6 +25,8 @@ namespace Zavala.Advisor
 
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
             advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
+
+            Game.Events.Register(GameEvents.DialogueClosing, OnDialogueClosing);
         }
 
         #region Handlers
@@ -67,6 +69,14 @@ namespace Zavala.Advisor
 
             //m_Container.HideAdvisorButtons();
             //PoliciesButton.SetActive(false);
+        }
+
+        private void OnDialogueClosing() {
+            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            SimWorldState world = ZavalaGame.SimWorld;
+
+            world.Overlays = SimWorldOverlayMask.None;
+            advisorState.UpdateAdvisor(AdvisorType.None);
         }
 
         #endregion // Handlers

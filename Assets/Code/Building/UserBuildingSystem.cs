@@ -374,7 +374,7 @@ namespace Zavala.Building
                         int prevIdx = adjIdx;
 
                         TileDirection currDir = dir; // to stage into curr road
-                        TileDirection prevDir = grid.HexSize.InvertDir(currDir); // to stage into prev road
+                        TileDirection prevDir = currDir.Reverse(); // to stage into prev road
 
                         // For curr road, add a staging mask that gets merged into flow mask upon successful road build
                         RoadUtility.StageRoad(network, grid, tileIndex, new TileDirection[] { currDir });

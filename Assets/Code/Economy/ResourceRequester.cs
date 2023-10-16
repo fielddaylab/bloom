@@ -37,16 +37,16 @@ namespace Zavala.Economy {
             this.CacheComponent(ref Storage);
 
             MarketUtility.RegisterBuyer(this);
-        }
-
-        private void Start() {
-            // Ensure register road anchor happens after OccupiesTile
             RoadUtility.RegisterRoadAnchor(Position);
         }
 
         protected override void OnDisable() {
             MarketUtility.DeregisterBuyer(this);
             RoadUtility.DeregisterRoadAnchor(Position);
+
+            Requested.SetAll(0);
+            RequestCount = 0;
+            Received.SetAll(0);
 
             base.OnDisable();
         }
