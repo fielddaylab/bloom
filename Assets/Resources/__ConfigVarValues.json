@@ -1,5 +1,8 @@
 {
     "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 25,
     "Zavala.Sim.PhosphorusSim::SteepHeightThreshold": 25,
-    "Zavala.Sim.PhosphorusSim::MaxFlowProportionSteep": 1
+    "Zavala.Sim.PhosphorusSim::MaxFlowProportionSteep": 1,
+    "Zavala.Sim.AlgaeSim::MinPForAlgaeGrowth": 25,
+    "Zavala.Sim.PhosphorusSim::MinFlowThreshold": 7,
+    "Zavala.Sim.PhosphorusSim::RemainAtSourceProportion": 0.699999988079071
 }
