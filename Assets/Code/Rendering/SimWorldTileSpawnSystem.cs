@@ -51,11 +51,19 @@ namespace Zavala.World {
             TileInstance inst;
             if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
                 inst = Instantiate(world.DefaultWaterPrefab, pos, Quaternion.identity);
+            } else if (palette.InnerGroundTile && (tileInfo.Flags & TerrainFlags.CullBase) != 0) {
+                inst = Instantiate(palette.InnerGroundTile, pos, Quaternion.identity);
             } else {
                 inst = Instantiate(palette.GroundTile, pos, Quaternion.identity);
+                if ((tileInfo.Flags & TerrainFlags.CullBase) != 0) {
+                    inst.PillarRenderer.enabled = false;
+                }
             }
             //inst.index = index;
+#if UNITY_EDITOR
             inst.gameObject.name = "Tile " + index.ToStringLookup();
+#endif // UNITY_EDITOR
+
             world.Tiles[index] = inst;
             if ((tileInfo.Flags & TerrainFlags.TopHidden) != 0) {
                 TileEffectRendering.SetTopVisibility(inst, false);

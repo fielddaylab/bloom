@@ -93,7 +93,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -118,12 +118,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -148,7 +148,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -163,7 +163,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 100
   - RegionIndex: 65535
     Category: 2
@@ -208,7 +208,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -218,12 +218,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 49
+    Flags: 177
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -243,12 +243,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 49
+    Flags: 177
     Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 2
+    Flags: 130
     Height: 100
   - RegionIndex: 65535
     Category: 0
@@ -268,12 +268,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 48
+    Flags: 176
     Height: 50
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -283,7 +283,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 48
+    Flags: 176
     Height: 100
   - RegionIndex: 65535
     Category: 2
@@ -328,12 +328,12 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -528,7 +528,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 2
+    Flags: 130
     Height: 150
   - RegionIndex: 65535
     Category: 1

@@ -260,27 +260,6 @@ namespace Zavala.Sim {
             }
         }
 
-        /// <summary>
-        /// Generates a predefined road on the grid. Used for initial testing purposes.
-        /// </summary>
-        static public void GenerateBasicRoad(SimGridState grid, RoadNetwork network) {
-            TileDirection[] allDirs = new TileDirection[] {
-                TileDirection.N,
-                TileDirection.S,
-                TileDirection.NE,
-                TileDirection.NW,
-                TileDirection.SE,
-                TileDirection.SW
-            };
-            RoadUtility.AddRoadImmediate(network, grid, 26, true, allDirs);
-            RoadUtility.AddRoadImmediate(network, grid, 36, false, allDirs);
-            RoadUtility.AddRoadImmediate(network, grid, 46, false, allDirs);
-            RoadUtility.AddRoadImmediate(network, grid, 56, false, allDirs);
-            RoadUtility.AddRoadImmediate(network, grid, 66, false, allDirs);
-            RoadUtility.AddRoadImmediate(network, grid, 76, false, allDirs);
-            RoadUtility.AddRoadImmediate(network, grid, 77, true, allDirs);
-        }
-
         #endregion // Generation
 
     }

@@ -5,13 +5,17 @@ using UnityEngine;
 namespace Zavala.Roads {
     public class RoadInstanceController : MonoBehaviour
     {
-        public GameObject[] DirSegments;
+        public Transform RoadMeshTransform;
+        public MeshFilter RoadMesh;
+    }
 
-        public void UpdateSegmentVisuals(TileAdjacencyMask roadFlowMask) {
-            for (int i = (int)TileDirection.SW; i < (int)TileDirection.COUNT; i++) {
-                // activate / deactivate direction segment base on road flow
-                DirSegments[i - 1].SetActive(roadFlowMask[(TileDirection)i]);   
-            }
+    static public class RoadVisualUtility {
+        static public void UpdateRoadMesh(RoadInstanceController controller, RoadLibrary library, TileAdjacencyMask mask) {
+            library.Lookup(mask, out var roadData);
+
+            controller.RoadMesh.sharedMesh = roadData.Mesh;
+            controller.RoadMeshTransform.localScale = roadData.Scale;
+            controller.RoadMeshTransform.localRotation = roadData.Rotation;
         }
     }
 }

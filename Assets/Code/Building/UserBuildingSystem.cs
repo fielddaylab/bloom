@@ -377,9 +377,9 @@ namespace Zavala.Building
                         TileDirection prevDir = currDir.Reverse(); // to stage into prev road
 
                         // For curr road, add a staging mask that gets merged into flow mask upon successful road build
-                        RoadUtility.StageRoad(network, grid, tileIndex, new TileDirection[] { currDir });
+                        RoadUtility.StageRoad(network, grid, tileIndex, currDir);
                         // For prev road, add a staging mask that gets merged into flow mask upon successful road build
-                        RoadUtility.StageRoad(network, grid, prevTileIndex, new TileDirection[] { prevDir });
+                        RoadUtility.StageRoad(network, grid, prevTileIndex, prevDir);
                         break;
                     }
                 }
@@ -510,7 +510,8 @@ namespace Zavala.Building
                     RoadTileInfo tileInfo = network.Roads.Info[currIndex];
                     for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
                         if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == currIndex) {
-                            network.RoadObjects[r].UpdateSegmentVisuals(tileInfo.FlowMask | tileInfo.StagingMask);
+                            RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask | tileInfo.StagingMask);
+                            //network.RoadObjects[r].UpdateSegmentVisuals(tileInfo.FlowMask | tileInfo.StagingMask);
                         }
                     }
                 }

@@ -5,6 +5,7 @@ namespace Zavala.World {
     public sealed class RegionPrefabPalette : ScriptableObject {
         [Header("Tiles")]
         public TileInstance GroundTile;
+        [Tooltip("Optimized ground tile with no pillar. Used only when it's determined the pillar cannot ever be seen for a given location.")] public TileInstance InnerGroundTile;
 
         [Header("Buildings")]
         public GameObject City;

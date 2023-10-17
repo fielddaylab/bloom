@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: HillsidePalette
   m_EditorClassIdentifier: 
   GroundTile: {fileID: 4929987932592038972, guid: 500c22797ee7e384785494b17cccc1fb, type: 3}
+  InnerGroundTile: {fileID: 764812806168612941, guid: eaa921d9cfd765547a749b1f54950374, type: 3}
   City: {fileID: 7969817350258342186, guid: 167b78c4fbd0c5d419f1f25f22287109, type: 3}
   DairyFarm: {fileID: 2888134989403396560, guid: 47af73b4c61ac7d4bb08ac89e9eb146e, type: 3}
   GrainFarm: {fileID: 5981646520746778409, guid: a60778472af60764cbfa08d6bea8d568, type: 3}

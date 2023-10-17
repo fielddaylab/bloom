@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using BeauUtil;
 using BeauUtil.Debugger;
 using UnityEngine;
 
@@ -534,6 +535,9 @@ namespace Zavala {
 
         #region Offsets
 
+        private const float AngleIncrementRad = Mathf.Deg2Rad * 60; // 60 degrees per turn
+        private const float AngleBaseOffsetRad = Mathf.Deg2Rad * 210; // start at SW (270 - 60)
+
         /// <summary>
         /// HexCoord offset table per direction.
         /// </summary>
@@ -546,6 +550,16 @@ namespace Zavala {
             new HexVector(1, 0),
             new HexVector(0, 1),
             new HexVector(-1, 1),
+        };
+
+        static private readonly Vector2[] s_Vector2dOffsets = new Vector2[] {
+            new Vector2(0, 0),
+            new Vector2(Mathf.Cos(AngleBaseOffsetRad + AngleIncrementRad * 0), Mathf.Sin(AngleBaseOffsetRad+ AngleIncrementRad * 0)),
+            new Vector2(Mathf.Cos(AngleBaseOffsetRad + AngleIncrementRad * 1), Mathf.Sin(AngleBaseOffsetRad + AngleIncrementRad * 1)),
+            new Vector2(Mathf.Cos(AngleBaseOffsetRad + AngleIncrementRad * 2), Mathf.Sin(AngleBaseOffsetRad+ AngleIncrementRad * 2)),
+            new Vector2(Mathf.Cos(AngleBaseOffsetRad + AngleIncrementRad * 3), Mathf.Sin(AngleBaseOffsetRad + AngleIncrementRad * 3)),
+            new Vector2(Mathf.Cos(AngleBaseOffsetRad + AngleIncrementRad * 4), Mathf.Sin(AngleBaseOffsetRad+ AngleIncrementRad * 4)),
+            new Vector2(Mathf.Cos(AngleBaseOffsetRad + AngleIncrementRad * 5), Mathf.Sin(AngleBaseOffsetRad + AngleIncrementRad * 5)),
         };
 
         /// <summary>
@@ -563,6 +577,13 @@ namespace Zavala {
         static public HexVector Offset(in HexVector vec, TileDirection direction) {
             HexVector off = s_VectorOffsets[(int) direction];
             return new HexVector(vec.Q + off.Q, vec.R + off.R, vec.S + off.S);
+        }
+
+        /// <summary>
+        /// Returns the 2D offset for the given direction.
+        /// </summary>
+        static public Vector2 Offset2D(TileDirection direction) {
+            return s_Vector2dOffsets[(int) direction];
         }
 
         #endregion // Offsets
@@ -982,12 +1003,45 @@ namespace Zavala {
         }
     }
 
-    static public class HexExtensions {
+    static public class HexGrid {
         static public TileDirection Reverse(this TileDirection dir) {
             if (dir > 0) {
                 return (TileDirection) (1 + ((((int) dir - 1) + 3) % 6));
             }
             return dir;
         }
+
+        #region Rotation
+
+        private const float AngleIncrementRad = Mathf.Deg2Rad * 60;
+
+        static public Vector3 RotateVector(Vector3 vec, int turns) {
+            float sin = Mathf.Sin(AngleIncrementRad * turns);
+            float cos = Mathf.Cos(AngleIncrementRad * turns);
+            float tx = vec.x;
+            float tz = vec.z;
+            return new Vector3(
+                (cos * tx) - (sin * tz),
+                vec.y,
+                (sin * tx) + (cos * tz)
+            );
+        }
+
+        static public Vector2 RotateVector(Vector2 vec, int turns) {
+            float sin = Mathf.Sin(AngleIncrementRad * turns);
+            float cos = Mathf.Cos(AngleIncrementRad * turns);
+            float tx = vec.x;
+            float ty = vec.y;
+            return new Vector2(
+                (cos * tx) - (sin * ty),
+                (sin * tx) + (cos * ty)
+            );
+        }
+
+        static public Quaternion RotateQuaternion(Quaternion quat, int turns) {
+            return Quaternion.Euler(0, 60 * turns, 0) * quat;
+        }
+
+        #endregion // Rotation
     }
 }

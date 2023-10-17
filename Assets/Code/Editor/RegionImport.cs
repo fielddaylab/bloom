@@ -4,6 +4,7 @@ using BeauData;
 using UnityEngine;
 using Zavala.Sim;
 using UnityEngine.Rendering.Universal;
+using BeauUtil.Debugger;
 
 namespace Zavala.Editor {
     static public class RegionImport {
@@ -396,6 +397,59 @@ namespace Zavala.Editor {
             }
 
             borderPoints = borders.ToArray();
+        }
+
+        private const TerrainFlags IgnoreCullingTerrainFlags = TerrainFlags.IsWater;
+
+        static public void AnalyzeBaseCullingData(in TiledData data, TerrainTileInfo[] tiles) {
+            int culled = 0;
+
+            HexGridSize.IndexEnumerator idxEnumerator = data.GridSize.GetEnumerator();
+            while (idxEnumerator.MoveNext()) {
+                int idx = idxEnumerator.Current;
+
+                ref TerrainTileInfo tileInfo = ref tiles[idx];
+                if (tileInfo.Category == TerrainCategory.Void || (tileInfo.Flags & IgnoreCullingTerrainFlags) != 0) {
+                    continue;
+                }
+
+                HexVector pos = data.GridSize.FastIndexToPos(idx);
+                TileAdjacencyMask lowerMask = default;
+
+                for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
+                    if (IsTowardsCamera(dir)) {
+                        if (data.GridSize.IsValidPosOffset(pos, dir, out HexVector next)) {
+                            var neighbor = tiles[data.GridSize.FastPosToIndex(next)];
+                            if (neighbor.Category == TerrainCategory.Void || neighbor.Category == TerrainCategory.Water) {
+                                lowerMask |= dir;
+                            } else if (neighbor.Height < tileInfo.Height) {
+                                lowerMask |= dir;
+                            }
+                        } else {
+                            lowerMask |= dir;
+                        }
+                    }
+                }
+
+                if (lowerMask.IsEmpty) {
+                    tileInfo.Flags |= TerrainFlags.CullBase;
+                    culled++;
+                }
+            }
+
+            Log.Msg("culling {0} tile bases", culled);
+        }
+
+        static private bool IsTowardsCamera(TileDirection direction) {
+            switch (direction) {
+                case TileDirection.NW:
+                case TileDirection.SW:
+                case TileDirection.S:
+                    return true;
+
+                default:
+                    return false;
+            }
         }
 
         #region Space Conversion

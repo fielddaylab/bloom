@@ -10,10 +10,11 @@ using Zavala.Building;
 namespace Zavala {
     [DisallowMultipleComponent, DefaultExecutionOrder(-5)]
     public sealed class OccupiesTile : MonoBehaviour, IComponentData {
+        [SerializeField] public BuildingType Type;
+        
         [NonSerialized] public int TileIndex;
         [NonSerialized] public HexVector TileVector;
         [NonSerialized] public ushort RegionIndex;
-        [SerializeField] public BuildingType Type;
 
         private void OnEnable() {
             RefreshData();

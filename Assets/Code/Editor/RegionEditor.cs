@@ -96,6 +96,7 @@ namespace Zavala.Editor {
             region.Points = RegionImport.ReadScriptPoints(tileData);
             RegionImport.ReadWaterGroups(tileData, region.Tiles, out region.WaterGroupLocalIndices, out region.WaterGroups);
             RegionImport.AnalyzeBorderData(tileData, region.Tiles, out region.Borders);
+            RegionImport.AnalyzeBaseCullingData(tileData, region.Tiles);
 
             Debug.LogFormat("[RegionEditor] Imported region information from '{0}'!", region.SourceFilePath);
         }

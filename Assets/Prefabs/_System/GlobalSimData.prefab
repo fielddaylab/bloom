@@ -107,7 +107,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TimeScale: 1
   Paused: 0
-  PauseOverlay: {fileID: 0}
 --- !u!114 &7708306960153739430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,6 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e843a7d4f02b7d4aab8adbb1ed959de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Library: {fileID: 11400000, guid: c37dd74468935c84c88035d158d0b4ac, type: 2}
   UpdateNeeded: 0
 --- !u!114 &7708306960153739435
 MonoBehaviour:
