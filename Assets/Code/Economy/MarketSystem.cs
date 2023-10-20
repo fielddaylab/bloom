@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using BeauUtil;
 using BeauUtil.Debugger;
@@ -195,12 +196,38 @@ namespace Zavala.Economy
                     continue;
                 }
 
-                var adjustments = config.UserAdjustmentsPerRegion[supplier.Position.RegionIndex];
+                // Adjust for if is a proxy connection
+                if (connectionSummary.ProxyConnectionIdx != -1) {
+                    // If proxy connection, ensure proxy is for the right type of resource
+                    uint region = ZavalaGame.SimGrid.Terrain.Regions[connectionSummary.ProxyConnectionIdx];
+                    ResourceSupplierProxy relevantProxy = null;
+                    if (network.ExportDepotMap.ContainsKey(region)) {
+                        List<ResourceSupplierProxy> proxies = network.ExportDepotMap[region];
+                        foreach (var proxy in proxies) {
+                            // For each export depot, check if supplier is connected to it.
+                            if (connectionSummary.ProxyConnectionIdx == proxy.Position.TileIndex) {
+                                ResourceMask proxyOverlap = supplier.ShippingMask & proxy.ProxyMask;
+
+                                if (proxyOverlap == 0) {
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                var adjustments = config.UserAdjustmentsPerRegion[requester.Position.RegionIndex];
 
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
                 // TODO: only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + adjustments.ImportTax[primary];
+                if (connectionSummary.ProxyConnectionIdx != -1) {
+                    // add flat rate export depot shipping fee
+                    shippingCost += config.TransportCosts.ExportDepotFlatRate[primary];
+                }
+
                 float profit = 0;
                 if (requester.IsLocalOption) {
                     // no profit associated
@@ -217,7 +244,6 @@ namespace Zavala.Economy
                     profit -= adjustments.RunoffPenalty[primary];
                 }
                 float score = profit - shippingCost;
-                // TODO: implement Let it Sit option. Then if purchaser is letting it sit, find penalties
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue(adjustments.PurchaseTax[primary], adjustments.ImportTax[primary], 0);
 
                 m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo() {
