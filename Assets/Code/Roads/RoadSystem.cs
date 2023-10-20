@@ -35,7 +35,7 @@ namespace Zavala.Roads
                 network.Connections.Clear();
 
                 // Gather new connections data
-                foreach (var index in gridSize) {
+                foreach (var index in m_StateA.DestinationIndices) {
                     // Run shortest path algorithm
                     RingBuffer<RoadPathSummary> connections = FindConnections(index, network.Roads.Info, gridSize);
 
@@ -50,7 +50,7 @@ namespace Zavala.Roads
             }
         }
 
-        private struct GraphNode
+        private struct GraphNode : IEquatable<GraphNode>
         {
             public uint TileIdx;
             public bool Visited;
@@ -60,6 +60,10 @@ namespace Zavala.Roads
                 TileIdx = idx;
                 Visited = false;
                 TentativeDistance = dist;
+            }
+
+            public bool Equals(GraphNode other) {
+                return TileIdx == other.TileIdx;
             }
         }
 
@@ -157,7 +161,7 @@ namespace Zavala.Roads
                         }
 
                         // Mark the current node as visited; remove from the unvisited set, add it to allConnections
-                        allConnections.PushBack(new RoadPathSummary((int)currNode.TileIdx, true, currNode.TentativeDistance));
+                        allConnections.PushBack(new RoadPathSummary((ushort)currNode.TileIdx, (ushort) currNode.TentativeDistance));
                         universalSet.Remove(currNode);
 
                         // set the unvisited with the smallest tentative distance to current, then repeat while unvisited set is not exhausted

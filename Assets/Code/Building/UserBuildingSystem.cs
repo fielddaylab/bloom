@@ -255,6 +255,11 @@ namespace Zavala.Building
                     // TODO: Clear from adj roads
                     RoadUtility.RemoveRoad(network, grid, tileIndex);
                     pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>());
+
+                    ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
+                        TileIndex = (ushort) tileIndex,
+                        Type = VisualUpdateType.Road
+                    });
                     break;
                 case BuildingType.Digester:
                     RoadUtility.RemoveRoad(network, grid, tileIndex);

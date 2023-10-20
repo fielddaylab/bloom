@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TopRenderer: {fileID: 1957287682251005245}
+  TopFilter: {fileID: 4381256484118424055}
   PillarRenderer: {fileID: 0}
   Decorations: []
 --- !u!136 &3680174520802473011
@@ -140,5 +141,10 @@ Transform:
 --- !u!23 &1957287682251005245 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 2f8ae5e6890c48b478e860286380ed0d, type: 3}
+  m_PrefabInstance: {fileID: 930058636845318585}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &4381256484118424055 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: -5754084199372789682, guid: 2f8ae5e6890c48b478e860286380ed0d, type: 3}
   m_PrefabInstance: {fileID: 930058636845318585}
   m_PrefabAsset: {fileID: 0}

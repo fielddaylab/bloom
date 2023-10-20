@@ -187,7 +187,7 @@ namespace Zavala.Sim {
         static public void RegenRegionInfo(SimGridState grid, int regionIndex, HexGridSubregion subregion) {
             Assert.True(regionIndex < grid.RegionCount, "Region {0} is not a part of grid - currently {1} regions", regionIndex, grid.RegionCount);
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
-            regionInfo.MaxHeight = TerrainInfo.GetMaximumHeight(grid.Terrain.Info, grid.HexSize);
+            regionInfo.MaxHeight = TerrainInfo.GetMaximumHeight(grid.Terrain.Info, subregion, (ushort) regionIndex);
             regionInfo.GridArea = subregion;
         }
 

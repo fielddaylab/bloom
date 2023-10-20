@@ -51,6 +51,7 @@ namespace Zavala.World {
 
         [NonSerialized] public int NewRegions;
         [NonSerialized] public SimWorldSpawnBuffer Spawns;
+        [NonSerialized] public RingBuffer<VisualUpdateRecord> QueuedVisualUpdates = new RingBuffer<VisualUpdateRecord>(32, RingBufferMode.Expand);
 
         void IRegistrationCallbacks.OnDeregister() {
         }
@@ -190,5 +191,15 @@ namespace Zavala.World {
         public ushort RegionIndex;
         public StringHash32 Id;
         public T Data;
+    }
+
+    public struct VisualUpdateRecord {
+        public ushort TileIndex;
+        public VisualUpdateType Type;
+    }
+
+    public enum VisualUpdateType : ushort {
+        Road,
+        Water,
     }
 }

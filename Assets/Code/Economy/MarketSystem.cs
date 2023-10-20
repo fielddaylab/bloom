@@ -197,7 +197,7 @@ namespace Zavala.Economy
                 }
 
                 // Adjust for if is a proxy connection
-                if (connectionSummary.ProxyConnectionIdx != -1) {
+                if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
                     // If proxy connection, ensure proxy is for the right type of resource
                     uint region = ZavalaGame.SimGrid.Terrain.Regions[connectionSummary.ProxyConnectionIdx];
                     ResourceSupplierProxy relevantProxy = null;
@@ -223,7 +223,7 @@ namespace Zavala.Economy
                 // TODO: only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + adjustments.ImportTax[primary];
-                if (connectionSummary.ProxyConnectionIdx != -1) {
+                if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
                     // add flat rate export depot shipping fee
                     shippingCost += config.TransportCosts.ExportDepotFlatRate[primary];
                 }
@@ -247,7 +247,7 @@ namespace Zavala.Economy
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue(adjustments.PurchaseTax[primary], adjustments.ImportTax[primary], 0);
 
                 m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo() {
-                    Distance = (int)Math.Ceiling(connectionSummary.Distance),
+                    Distance = connectionSummary.Distance,
                     Mask = overlap,
                     Target = requester,
                     Profit = (int)Math.Ceiling(score),

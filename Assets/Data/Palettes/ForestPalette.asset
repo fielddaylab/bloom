@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GroundTile: {fileID: 4929987932592038972, guid: 0b976d59a11a29341b2cb852bc43199b, type: 3}
   InnerGroundTile: {fileID: 764812806168612941, guid: 01cf09b63075b4746a79c2c924d20600, type: 3}
+  TileTopEmptyMesh: {fileID: -6090058582990662671, guid: 832d02da43077448e85a0bd88a90bfbe, type: 3}
   City: {fileID: 7969817350258342186, guid: c80f1eae9dd8ed04eaa4458297132759, type: 3}
   DairyFarm: {fileID: 2888134989403396560, guid: ea239b7060842b8489d6d2855f8de181, type: 3}
   GrainFarm: {fileID: 5981646520746778409, guid: 64fc9adf09f541f43902c4dbd9ddc80d, type: 3}

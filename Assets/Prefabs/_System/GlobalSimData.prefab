@@ -154,6 +154,12 @@ MonoBehaviour:
       DFertilizer: 3
       Grain: 3
       Milk: 3
+    ExportDepotFlatRate:
+      Manure: 0
+      MFertilizer: 0
+      DFertilizer: 0
+      Grain: 0
+      Milk: 0
   PurchasePerRegion:
   - Buy:
       Manure: 10

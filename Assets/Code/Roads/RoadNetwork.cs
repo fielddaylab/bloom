@@ -45,18 +45,39 @@ namespace Zavala.Roads
         #endregion // Registration
     }
 
+    [Flags]
+    public enum RoadDestinationMask : uint {
+        Manure = ResourceMask.Manure,
+        MFertilizer = ResourceMask.MFertilizer,
+        DFertilizer = ResourceMask.DFertilizer,
+        Grain = ResourceMask.Grain,
+        Milk = ResourceMask.Milk,
+        Tollbooth = Milk << 1
+    }
+
+    public struct RoadDestination {
+        public ushort TileIdx;
+        public ushort RegionIdx;
+        public RoadDestinationMask Type;
+        public RoadDestinationMask Filter;
+        public UnsafeSpan<RoadPathSummary> Connections;
+    }
+
     public struct RoadPathSummary
     {
-        public int TileIndx; // destination index
-        public bool Connected;
-        public float Distance;
-        // TODO: store actual path
-        public int ProxyConnectionIdx; // the proxy tile through which this connection is enabled, e.g. Export Depot tile index
+        public ushort DestinationIdx; // destination index
+        public ushort Distance;
+        public UnsafePtr<ushort> Tiles;
+        public ushort ProxyConnectionIdx; // the proxy tile through which this connection is enabled, e.g. Export Depot tile index
 
-        public RoadPathSummary(int idx, bool connected, float dist, int proxyConnectionIdx = -1) {
-            TileIndx = idx;
-            Connected = connected;
+        public bool Connected {
+            get { return Distance > 0; }
+        }
+
+        public RoadPathSummary(ushort idx, ushort dist, ushort proxyConnectionIdx = Tile.InvalidIndex16) {
+            DestinationIdx = idx;
             Distance = dist;
+            Tiles = default;
             ProxyConnectionIdx = proxyConnectionIdx;
         }
     }
@@ -97,7 +118,7 @@ namespace Zavala.Roads
 
                 // First pass: check if connected directly (takes precedence over export depot)
                 for (int i = 0; i < aConnections.Count; i++) {
-                    if (aConnections[i].TileIndx == tileIdxB) {
+                    if (aConnections[i].DestinationIdx == tileIdxB) {
                         // All info contained in connection
                         return aConnections[i];
                     }
@@ -111,14 +132,14 @@ namespace Zavala.Roads
                     for (int i = 0; i < aConnections.Count; i++) {
                         foreach (var depot in relevantDepots) {
                             // For each export depot, check if supplier is connected to it.
-                            if (aConnections[i].TileIndx == depot.Position.TileIndex) {
+                            if (aConnections[i].DestinationIdx == depot.Position.TileIndex) {
                                 // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy bool
                                 RoadPathSummary proxySummary = aConnections[i];
                                 // set buyer as destination
-                                proxySummary.TileIndx = tileIdxB;
+                                proxySummary.DestinationIdx = (ushort) tileIdxB;
                                 // note: distance already set
                                 // set proxy bool
-                                proxySummary.ProxyConnectionIdx = depot.Position.TileIndex;
+                                proxySummary.ProxyConnectionIdx = (ushort) depot.Position.TileIndex;
 
                                 return proxySummary;
                             }
@@ -128,13 +149,7 @@ namespace Zavala.Roads
             }
 
             // tile A index not found, has no list of connections
-            info.Connected = false;
-            info.TileIndx = tileIdxB;
-            info.ProxyConnectionIdx = -1;
-
-            HexVector a = ZavalaGame.SimGrid.HexSize.FastIndexToPos(tileIdxA);
-            HexVector b = ZavalaGame.SimGrid.HexSize.FastIndexToPos(tileIdxB);
-            info.Distance = HexVector.EuclidianDistance(a, b);
+            info = default;
             return info;
         }
 
@@ -194,6 +209,11 @@ namespace Zavala.Roads
                 Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
                 RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
                 network.RoadObjects.Add(newRoad);
+
+                ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
+                    TileIndex = (ushort) tileIndex,
+                    Type = VisualUpdateType.Road
+                });
             }
         }
 
@@ -205,6 +225,7 @@ namespace Zavala.Roads
 
             ref RoadTileInfo centerTileInfo = ref network.Roads.Info[tileIndex];
             centerTileInfo.FlowMask.Clear();
+            centerTileInfo.Flags &= ~(RoadFlags.IsRoad | RoadFlags.IsRoadAnchor);
 
             network.UpdateNeeded = true;
         }
@@ -256,7 +277,6 @@ namespace Zavala.Roads
 
             Debug.Log("[StagingRoad] Final merged mask: " + info.FlowMask.ToString());
         }
-
 
         #region Register
 

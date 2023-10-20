@@ -64,7 +64,9 @@ namespace Zavala.Sim {
         static public ushort GetMaximumHeight(SimBuffer<TerrainTileInfo> terrainBuffer, in HexGridSize gridSize) {
             uint max = 0;
             foreach(var index in gridSize) {
-                max = Math.Max(max, terrainBuffer[index].Height);
+                if (terrainBuffer[index].Category != TerrainCategory.Void) {
+                    max = Math.Max(max, terrainBuffer[index].Height);
+                }
             }
             return (ushort) max;
         }
@@ -75,7 +77,7 @@ namespace Zavala.Sim {
         static public ushort GetMaximumHeight(SimBuffer<TerrainTileInfo> terrainBuffer, in HexGridSubregion gridRegion, ushort regionIndex) {
             uint max = 0;
             foreach (var index in gridRegion) {
-                if (terrainBuffer[index].RegionIndex == regionIndex) {
+                if (terrainBuffer[index].RegionIndex == regionIndex && terrainBuffer[index].Category != TerrainCategory.Void) {
                     max = Math.Max(max, terrainBuffer[index].Height);
                 }
             }
