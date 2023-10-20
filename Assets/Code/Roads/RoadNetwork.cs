@@ -103,28 +103,31 @@ namespace Zavala.Roads
                     }
                 }
 
-                // Second pass: check if connected through export depots
+                // Second pass: check if connected through export depots if NOT in same region
                 uint currRegion = ZavalaGame.SimGrid.Terrain.Regions[tileIdxA];
-                if (network.ExportDepotMap.ContainsKey(currRegion)) {
-                    List<ResourceSupplierProxy> relevantDepots = network.ExportDepotMap[currRegion];
+                if (currRegion != ZavalaGame.SimGrid.Terrain.Regions[tileIdxB]) {
+                    if (network.ExportDepotMap.ContainsKey(currRegion)) {
+                        List<ResourceSupplierProxy> relevantDepots = network.ExportDepotMap[currRegion];
 
-                    for (int i = 0; i < aConnections.Count; i++) {
-                        foreach (var depot in relevantDepots) {
-                            // For each export depot, check if supplier is connected to it.
-                            if (aConnections[i].TileIndx == depot.Position.TileIndex) {
-                                // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy bool
-                                RoadPathSummary proxySummary = aConnections[i];
-                                // set buyer as destination
-                                proxySummary.TileIndx = tileIdxB;
-                                // note: distance already set
-                                // set proxy bool
-                                proxySummary.ProxyConnectionIdx = depot.Position.TileIndex;
+                        for (int i = 0; i < aConnections.Count; i++) {
+                            foreach (var depot in relevantDepots) {
+                                // For each export depot, check if supplier is connected to it.
+                                if (aConnections[i].TileIndx == depot.Position.TileIndex) {
+                                    // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy bool
+                                    RoadPathSummary proxySummary = aConnections[i];
+                                    // set buyer as destination
+                                    proxySummary.TileIndx = tileIdxB;
+                                    // note: distance already set
+                                    // set proxy bool
+                                    proxySummary.ProxyConnectionIdx = depot.Position.TileIndex;
 
-                                return proxySummary;
+                                    return proxySummary;
+                                }
                             }
                         }
                     }
                 }
+                
             }
 
             // tile A index not found, has no list of connections

@@ -43,6 +43,11 @@ namespace Zavala.Economy {
                     request.Requester.Received += request.Requested;
                     request.Requester.RequestCount--;
                     ResourceStorageUtility.RefreshStorageDisplays(request.Supplier.Storage);
+
+                    // Add generated revenue
+                    BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+                    int revenueAmt = request.Revenue.Sales + request.Revenue.Import + request.Revenue.Penalties;
+                    BudgetUtility.AddToBudget(budgetData, revenueAmt, request.Requester.Position.RegionIndex);
                 }
             }
         }
@@ -55,6 +60,12 @@ namespace Zavala.Economy {
                 Log.Msg("[RequestFulfillmentSystem] Shipment of {0} received by '{1}'", component.Carrying, component.Target.name);
                 DebugDraw.AddWorldText(component.Target.transform.position, "Received!", Color.black, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundLightOpaque);
                 ResourceStorageUtility.RefreshStorageDisplays(component.Target.Storage);
+
+                // Add generated revenue
+                BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+                int revenueAmt = component.Revenue.Sales + component.Revenue.Import + component.Revenue.Penalties;
+                BudgetUtility.AddToBudget(budgetData, revenueAmt, component.Target.Position.RegionIndex);
+
                 int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
                 if (index >= 0) {
                     MarketActiveRequestInfo fulfilling = marketData.ActiveRequests[index];

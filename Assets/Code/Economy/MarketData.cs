@@ -121,21 +121,24 @@ namespace Zavala.Economy
         public ResourceBlock Requested;
         public ResourceBlock Supplied;
         public RequestFulfiller Fulfiller;
+        public GeneratedTaxRevenue Revenue;
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, ResourceBlock request, ResourceBlock supply) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, ResourceBlock request, ResourceBlock supply, GeneratedTaxRevenue revenue) {
             Supplier = supplier;
             Requester = requester;
             Requested = request;
             Supplied = supply;
             Fulfiller = null;
+            Revenue = revenue;
         }
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request, ResourceBlock supplied) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request, ResourceBlock supplied, GeneratedTaxRevenue revenue) {
             Supplier = supplier;
             Requester = request.Requester;
             Requested = request.Requested;
             Supplied = supplied;
             Fulfiller = null;
+            Revenue = revenue;
         }
     }
 
