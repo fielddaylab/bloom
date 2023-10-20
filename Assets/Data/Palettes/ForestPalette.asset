@@ -17,6 +17,7 @@ MonoBehaviour:
   City: {fileID: 7969817350258342186, guid: c80f1eae9dd8ed04eaa4458297132759, type: 3}
   DairyFarm: {fileID: 2888134989403396560, guid: ea239b7060842b8489d6d2855f8de181, type: 3}
   GrainFarm: {fileID: 5981646520746778409, guid: 64fc9adf09f541f43902c4dbd9ddc80d, type: 3}
+  ExportDepot: {fileID: 7291294420475072060, guid: 201bdaeea4b86894797bc4502d768471, type: 3}
   Rock:
   - {fileID: 7038089790863349094, guid: b7bc3d8c9af19204abdff3b87de36e36, type: 3}
   Tree:

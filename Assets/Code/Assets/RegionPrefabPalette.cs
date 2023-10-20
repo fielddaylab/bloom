@@ -11,6 +11,7 @@ namespace Zavala.World {
         public GameObject City;
         public GameObject DairyFarm;
         public GameObject GrainFarm;
+        public GameObject ExportDepot;
 
         [Header("Static Modifiers")]
         public GameObject[] Rock;

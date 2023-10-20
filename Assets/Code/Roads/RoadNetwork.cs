@@ -294,9 +294,11 @@ namespace Zavala.Roads
         }
 
         static public void DeregisterExportDepot(ResourceSupplierProxy proxy) {
-            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            Assert.NotNull(network);
+            if (Game.IsShuttingDown) {
+                return;
+            }
 
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             if (network.ExportDepotMap.ContainsKey(proxy.Position.RegionIndex)) {
                 List<ResourceSupplierProxy> currentDepots = network.ExportDepotMap[proxy.Position.RegionIndex];
                 currentDepots.Remove(proxy);

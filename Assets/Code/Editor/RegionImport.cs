@@ -268,6 +268,17 @@ namespace Zavala.Editor {
                             occupiedTileIndices.Add(pos);
                             break;
                         }
+                        case 7: { // export depot
+                                buildingList.Add(new RegionAsset.BuildingData() {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.ExportDepot,
+                                    ScriptName = scriptName
+                                });
+                                occupiedTileIndices.Add(pos);
+                                // tiles[pos].Flags |= TerrainFlags.TopHidden;
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
+                                break;
+                        }
                     }
                 }
             }

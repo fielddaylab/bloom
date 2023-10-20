@@ -44,6 +44,10 @@ namespace Zavala.World {
                         building = GameObject.Instantiate(palette.GrainFarm, worldPos, Quaternion.identity);
                         break;
                     }
+                    case BuildingType.ExportDepot: {
+                            building = GameObject.Instantiate(palette.ExportDepot, worldPos, Quaternion.identity);
+                            break;
+                    }
                 }
                 Assert.NotNull(building);
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
