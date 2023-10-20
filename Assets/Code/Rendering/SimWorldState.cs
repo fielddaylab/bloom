@@ -11,12 +11,7 @@ using Zavala.Sim;
 namespace Zavala.World {
     [SharedStateInitOrder(10)]
     public sealed class SimWorldState : SharedStateComponent, IRegistrationCallbacks {
-        public struct SpawnRecord<T> {
-            public ushort TileIndex;
-            public ushort RegionIndex;
-            public StringHash32 Id;
-            public T Data;
-        }
+        
 
         #region Inspector
 
@@ -55,8 +50,7 @@ namespace Zavala.World {
         // temporary data
 
         [NonSerialized] public int NewRegions;
-        [NonSerialized] public RingBuffer<SpawnRecord<BuildingType>> QueuedBuildings = new RingBuffer<SpawnRecord<BuildingType>>();
-        [NonSerialized] public RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>> QueuedModifiers = new RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>>();
+        [NonSerialized] public SimWorldSpawnBuffer Spawns;
 
         void IRegistrationCallbacks.OnDeregister() {
         }
@@ -74,6 +68,7 @@ namespace Zavala.World {
             }
 
             Tiles = new TileInstance[grid.HexSize.Size];
+            Spawns.Create();
         }
 
 #if UNITY_EDITOR
@@ -178,5 +173,22 @@ namespace Zavala.World {
         }
 
         #endregion // Centroids
+    }
+
+    public struct SimWorldSpawnBuffer {
+        public RingBuffer<SpawnRecord<BuildingType>> QueuedBuildings;
+        public RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>> QueuedModifiers;
+
+        public void Create() {
+            QueuedBuildings = new RingBuffer<SpawnRecord<BuildingType>>();
+            QueuedModifiers = new RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>>();
+        }
+    }
+
+    public struct SpawnRecord<T> {
+        public ushort TileIndex;
+        public ushort RegionIndex;
+        public StringHash32 Id;
+        public T Data;
     }
 }

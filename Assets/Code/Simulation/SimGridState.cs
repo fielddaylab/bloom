@@ -126,7 +126,7 @@ namespace Zavala.Sim {
             // spawn buildings
             foreach (var obj in asset.Buildings) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                world.QueuedBuildings.PushBack(new SimWorldState.SpawnRecord<BuildingType>() {
+                world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingType>() {
                     TileIndex = (ushort) mapIndex,
                     RegionIndex = regionIndex,
                     Id = obj.ScriptName,
@@ -139,7 +139,7 @@ namespace Zavala.Sim {
             // spawn modifiers
             foreach(var obj in asset.Modifiers) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                world.QueuedModifiers.PushBack(new SimWorldState.SpawnRecord<RegionAsset.TerrainModifier>() {
+                world.Spawns.QueuedModifiers.PushBack(new SpawnRecord<RegionAsset.TerrainModifier>() {
                     TileIndex = (ushort)mapIndex,
                     RegionIndex = regionIndex,
                     Id = obj.ScriptName,

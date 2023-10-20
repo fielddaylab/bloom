@@ -26,7 +26,8 @@ namespace Zavala.World {
         public override void ProcessWork(float deltaTime) {
             PseudoRandom random = new PseudoRandom(m_StateB.WorldData.name);
 
-            while(m_StateA.QueuedBuildings.TryPopFront(out var spawn)) {
+            SimWorldSpawnBuffer buff = m_StateA.Spawns;
+            while(buff.QueuedBuildings.TryPopFront(out var spawn)) {
                 HexVector pos = m_StateB.HexSize.FastIndexToPos(spawn.TileIndex);
                 Vector3 worldPos = HexVector.ToWorld(pos, m_StateB.Terrain.Info[spawn.TileIndex].Height, m_StateA.WorldSpace);
                 RegionPrefabPalette palette = m_StateA.Palettes[spawn.RegionIndex];
@@ -49,7 +50,7 @@ namespace Zavala.World {
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
             }
 
-            while (m_StateA.QueuedModifiers.TryPopFront(out var spawn)) {
+            while (buff.QueuedModifiers.TryPopFront(out var spawn)) {
                 HexVector pos = m_StateB.HexSize.FastIndexToPos(spawn.TileIndex);
                 Vector3 worldPos = HexVector.ToWorld(pos, m_StateB.Terrain.Info[spawn.TileIndex].Height, m_StateA.WorldSpace);
                 RegionPrefabPalette palette = m_StateA.Palettes[spawn.RegionIndex];
