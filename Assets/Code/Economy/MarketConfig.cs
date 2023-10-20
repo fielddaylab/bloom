@@ -19,6 +19,8 @@ namespace Zavala.Economy {
     public struct TransportCosts {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock CostPerTile;
+        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        public ResourceBlock ExportDepotFlatRate;
     }
 
     [Serializable]

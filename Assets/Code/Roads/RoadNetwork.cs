@@ -8,8 +8,8 @@ using UnityEngine;
 using Zavala.Sim;
 using Zavala.World;
 using Zavala.Building;
-using System.IO;
 using FieldDay.Scripting;
+using Zavala.Economy;
 
 namespace Zavala.Roads
 {
@@ -23,6 +23,8 @@ namespace Zavala.Roads
         [NonSerialized] public Dictionary<int, RingBuffer<RoadPathSummary>> Connections; // key is tile index, values are tiles connected via road
 
         public RoadLibrary Library;
+        [NonSerialized] public Dictionary<uint, List<ResourceSupplierProxy>> ExportDepotMap; // Maps region index to export depots in that region
+
         public bool UpdateNeeded; // TEMP for testing; should probably use a more robust signal. Set every time the road system is updated.
 
         #region Registration
@@ -34,6 +36,7 @@ namespace Zavala.Roads
             Roads.Create(gridState.HexSize);
             RoadObjects = new List<RoadInstanceController>();
             DestinationIndices = new HashSet<int>(64);
+            ExportDepotMap = new Dictionary<uint, List<ResourceSupplierProxy>>();
         }
 
         void IRegistrationCallbacks.OnDeregister() {
@@ -48,11 +51,13 @@ namespace Zavala.Roads
         public bool Connected;
         public float Distance;
         // TODO: store actual path
+        public int ProxyConnectionIdx; // the proxy tile through which this connection is enabled, e.g. Export Depot tile index
 
-        public RoadPathSummary(int idx, bool connected, float dist) {
+        public RoadPathSummary(int idx, bool connected, float dist, int proxyConnectionIdx = -1) {
             TileIndx = idx;
             Connected = connected;
             Distance = dist;
+            ProxyConnectionIdx = proxyConnectionIdx;
         }
     }
 
@@ -83,16 +88,41 @@ namespace Zavala.Roads
     static public class RoadUtility
     {
         static public RoadPathSummary IsConnected(RoadNetwork network, HexGridSize gridSize, int tileIdxA, int tileIdxB) {
+            // idxA is supplier, idxB is buyer
             RoadPathSummary info;
 
             // at this point, every tile index has a list of indexes of tiles they are connected to.
             if (network.Connections.ContainsKey(tileIdxA)) {
                 RingBuffer<RoadPathSummary> aConnections = network.Connections[tileIdxA];
 
+                // First pass: check if connected directly (takes precedence over export depot)
                 for (int i = 0; i < aConnections.Count; i++) {
                     if (aConnections[i].TileIndx == tileIdxB) {
                         // All info contained in connection
                         return aConnections[i];
+                    }
+                }
+
+                // Second pass: check if connected through export depots
+                uint currRegion = ZavalaGame.SimGrid.Terrain.Regions[tileIdxA];
+                if (network.ExportDepotMap.ContainsKey(currRegion)) {
+                    List<ResourceSupplierProxy> relevantDepots = network.ExportDepotMap[currRegion];
+
+                    for (int i = 0; i < aConnections.Count; i++) {
+                        foreach (var depot in relevantDepots) {
+                            // For each export depot, check if supplier is connected to it.
+                            if (aConnections[i].TileIndx == depot.Position.TileIndex) {
+                                // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy bool
+                                RoadPathSummary proxySummary = aConnections[i];
+                                // set buyer as destination
+                                proxySummary.TileIndx = tileIdxB;
+                                // note: distance already set
+                                // set proxy bool
+                                proxySummary.ProxyConnectionIdx = depot.Position.TileIndex;
+
+                                return proxySummary;
+                            }
+                        }
                     }
                 }
             }
@@ -100,6 +130,7 @@ namespace Zavala.Roads
             // tile A index not found, has no list of connections
             info.Connected = false;
             info.TileIndx = tileIdxB;
+            info.ProxyConnectionIdx = -1;
 
             HexVector a = ZavalaGame.SimGrid.HexSize.FastIndexToPos(tileIdxA);
             HexVector b = ZavalaGame.SimGrid.HexSize.FastIndexToPos(tileIdxB);
@@ -247,6 +278,29 @@ namespace Zavala.Roads
             if (network != null && (network.Roads.Info[position.TileIndex].Flags & RoadFlags.IsRoadAnchor) != 0) {
                 network.Roads.Info[position.TileIndex].Flags &= ~(RoadFlags.IsRoadAnchor | RoadFlags.IsRoadDestination);
                 network.DestinationIndices.Remove(position.TileIndex);
+            }
+        }
+
+        static public void RegisterExportDepot(ResourceSupplierProxy proxy) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            Assert.NotNull(network);
+
+            if (!network.ExportDepotMap.ContainsKey(proxy.Position.RegionIndex)) {
+                network.ExportDepotMap.Add(proxy.Position.RegionIndex, new List<ResourceSupplierProxy>());
+            }
+            List<ResourceSupplierProxy> currentDepots = network.ExportDepotMap[proxy.Position.RegionIndex];
+            currentDepots.Add(proxy);
+            network.ExportDepotMap[proxy.Position.RegionIndex] = currentDepots;
+        }
+
+        static public void DeregisterExportDepot(ResourceSupplierProxy proxy) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            Assert.NotNull(network);
+
+            if (network.ExportDepotMap.ContainsKey(proxy.Position.RegionIndex)) {
+                List<ResourceSupplierProxy> currentDepots = network.ExportDepotMap[proxy.Position.RegionIndex];
+                currentDepots.Remove(proxy);
+                network.ExportDepotMap[proxy.Position.RegionIndex] = currentDepots;
             }
         }
 

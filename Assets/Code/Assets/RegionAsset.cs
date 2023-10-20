@@ -23,7 +23,8 @@ namespace Zavala {
         Digester,
         Storage,
         Skimmer,
-        Obstacle
+        Obstacle,
+        ExportDepot
     }
 
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]
