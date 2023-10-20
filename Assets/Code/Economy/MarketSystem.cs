@@ -49,7 +49,7 @@ namespace Zavala.Economy
             foreach (var supplier in m_SupplierWorkList) {
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue);
+                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue, out int proxyIdx);
 
                 if (found.HasValue) {
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
@@ -84,7 +84,7 @@ namespace Zavala.Economy
                     GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
                     MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
 
-                    MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested), netTaxRevenue);
+                    MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested), netTaxRevenue, proxyIdx);
                     ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
                     if (baseProfit < 0) { supplier.SoldAtALoss = true; }
 
@@ -114,10 +114,11 @@ namespace Zavala.Economy
             ZavalaGame.Events.Dispatch(GameEvents.MarketCycleTickCompleted);
         }
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out GeneratedTaxRevenue taxRevenue) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out GeneratedTaxRevenue taxRevenue, out int proxyIdx) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current = supplier.Storage.Current;
+            proxyIdx = -1;
 
             for (int i = 0; i < requests.Count; i++) {
                 if (!ResourceBlock.Fulfills(current, requests[i].Requested)) {
@@ -134,6 +135,7 @@ namespace Zavala.Economy
                     MarketRequestInfo request = requests[i];
                     profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
                     taxRevenue = supplier.Priorities.PrioritizedBuyers[priorityIndex].TaxRevenue;
+                    proxyIdx = supplier.Priorities.PrioritizedBuyers[priorityIndex].ProxyIdx;
                     requests.FastRemoveAt(i);
                     return request;
                 }
@@ -148,6 +150,7 @@ namespace Zavala.Economy
                 MarketRequestInfo request = requests[highestPriorityRequestIndex];
                 profit = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Profit;
                 taxRevenue = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].TaxRevenue;
+                proxyIdx = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].ProxyIdx;
                 requests.FastRemoveAt(highestPriorityRequestIndex);
                 return request;
             }
@@ -271,6 +274,7 @@ namespace Zavala.Economy
                     Distance = (int)Math.Ceiling(connectionSummary.Distance),
                     Mask = overlap,
                     Target = requester,
+                    ProxyIdx = connectionSummary.ProxyConnectionIdx,
                     Profit = (int)Math.Ceiling(score),
                     TaxRevenue = taxRevenue
                 });
