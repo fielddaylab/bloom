@@ -16,6 +16,8 @@ namespace Zavala {
         [NonSerialized] public HexVector TileVector;
         [NonSerialized] public ushort RegionIndex;
 
+        public bool IsExternal = false; // true if external commercial fertilizer seller/export depot
+
         private void OnEnable() {
             RefreshData();
             Game.Events.Register(SimGridState.Event_RegionUpdated, RefreshData);
@@ -29,6 +31,10 @@ namespace Zavala {
         }
 
         private void RefreshData() {
+            if (IsExternal) {
+                return;
+            }
+
             SimWorldUtility.TryGetTilePosFromWorld(ZavalaGame.SimGrid, ZavalaGame.SimWorld, transform.position, out TileVector);
             TileIndex = ZavalaGame.SimGrid.HexSize.FastPosToIndex(TileVector);
             RegionIndex = ZavalaGame.SimGrid.Terrain.Regions[TileIndex];

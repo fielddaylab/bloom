@@ -33,17 +33,21 @@ namespace Zavala.Economy {
         private void ProcessFulfillmentQueue(MarketData marketData, MarketPools pools) {
             while (marketData.FulfillQueue.TryPopFront(out MarketActiveRequestInfo request)) {
                 if (!request.Requester.IsLocalOption) {
-                    // TODO: divvy route between trucks and blimps
-                    if (request.ProxyIdx != -1) {
-                        // when using export Depot, final destination is the target. ProxyIdx is the export depot.
-                        // Move toward export depot as a truck. Then move toward final destination as blimp.
-                        // intitialize fulfiller with override?
-
+                    if (request.Supplier.Position.IsExternal) {
+                        // TODO: Straight to blimp
                     }
-                    request.Fulfiller = pools.Trucks.Alloc();
-                    FulfillerUtility.InitializeFulfiller(request.Fulfiller, request);
-                    request.Fulfiller.transform.position = request.Fulfiller.SourceWorldPos;
-                    marketData.ActiveRequests.PushBack(request);
+                    else {
+                        // TODO: divvy route between trucks and blimps
+                        if (request.ProxyIdx != -1) {
+                            // when using export Depot, final destination is the target. ProxyIdx is the export depot.
+                            // Move toward export depot as a truck. Then move toward final destination as blimp.
+                            // intitialize fulfiller with override?
+                        }
+                        request.Fulfiller = pools.Trucks.Alloc();
+                        FulfillerUtility.InitializeFulfiller(request.Fulfiller, request);
+                        request.Fulfiller.transform.position = request.Fulfiller.SourceWorldPos;
+                        marketData.ActiveRequests.PushBack(request);
+                    }
                 }
                 else {
                     // Skip fulfillment system, deliver directly to local tile
