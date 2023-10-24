@@ -10,7 +10,5 @@ namespace Zavala.Economy {
     {
         [NonSerialized] public ResourceSupplier ExternalSupplier; // The supplier selling commercial fertilizer
         [NonSerialized] public ResourceSupplierProxy ExternalDepot; // The depot connecting external imports to individual purchasers
-
-        // Blimp spawn location per region
     }
 }

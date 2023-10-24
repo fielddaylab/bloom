@@ -1,17 +1,20 @@
 using System;
-using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Systems;
 using UnityEngine;
-using Zavala.Actors;
 using Zavala.Sim;
+using Zavala.World;
 
 namespace Zavala.Economy {
     [SysUpdate(GameLoopPhase.Update, 10, ZavalaGame.SimulationUpdateMask)]
     public sealed class RequestFulfillmentSystem : ComponentSystemBehaviour<RequestFulfiller> {
+        private static int AIRSHIP_SPAWN_DIST = 10;
+        private static float AIRSHIP_HOVER_HEIGHT = 2.5f; // TODO: calculate heighest height, or handle about to run into a higher tile
+        private static float AIRSHIP_SPEED = 2;
+
         public override bool HasWork() {
             return isActiveAndEnabled;
         }
@@ -34,18 +37,37 @@ namespace Zavala.Economy {
             while (marketData.FulfillQueue.TryPopFront(out MarketActiveRequestInfo request)) {
                 if (!request.Requester.IsLocalOption) {
                     if (request.Supplier.Position.IsExternal) {
-                        // TODO: Straight to blimp
+                        // Straight to blimp
+                        // Spawn blimp from nebulous external supplier
+                        ExternalState externalState = Game.SharedState.Get<ExternalState>();
+
+                        // blimps start a certain distance from the requester, in the direction of the supplier
+                        Vector3 externalSrcPos = request.Requester.transform.position + externalState.ExternalDepot.transform.position.normalized * AIRSHIP_SPAWN_DIST;
+                        externalSrcPos.y = request.Requester.transform.position.y + AIRSHIP_HOVER_HEIGHT;
+
+                        // differentiate between external and internal blimp prefabs
+                        request.Fulfiller = pools.ExternalAirships.Alloc();
+                        FulfillerUtility.InitializeFulfiller(request.Fulfiller, request, externalSrcPos);
+
+                        OrientAirship(ref request.Fulfiller);
+
+                        marketData.ActiveRequests.PushBack(request);
                     }
                     else {
-                        // TODO: divvy route between trucks and blimps
-                        if (request.ProxyIdx != -1) {
-                            // when using export Depot, final destination is the target. ProxyIdx is the export depot.
-                            // Move toward export depot as a truck. Then move toward final destination as blimp.
-                            // intitialize fulfiller with override?
-                        }
+                        // create a truck
                         request.Fulfiller = pools.Trucks.Alloc();
                         FulfillerUtility.InitializeFulfiller(request.Fulfiller, request);
-                        request.Fulfiller.transform.position = request.Fulfiller.SourceWorldPos;
+
+                        // divvy route between trucks and blimps through proxy, if applicable
+                        if (request.ProxyIdx != -1) {
+                            // truck will be conferring to blimp
+                            request.Fulfiller.IsIntermediary = true;
+
+                            // Override the target position to the export depot, not the final target
+                            request.Fulfiller.TargetTileIndex = request.ProxyIdx;
+                            request.Fulfiller.TargetWorldPos = SimWorldUtility.GetTileCenter(ZavalaGame.SimGrid.HexSize.FastIndexToPos(request.ProxyIdx));
+                        }
+
                         marketData.ActiveRequests.PushBack(request);
                     }
                 }
@@ -64,28 +86,133 @@ namespace Zavala.Economy {
         }
 
         private void ProcessFulfiller(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
+            switch (component.FulfillerType) {
+                case FulfillerType.Truck:
+                    ProcessFulfillerTruck(marketData, pools, component, visualState, deltaTime);
+                    break;
+                case FulfillerType.Airship:
+                    ProcessFulfillerAirship(marketData, pools, component, visualState, deltaTime);
+                    break;
+                case FulfillerType.Parcel:
+                    ProcessFulfillerParcel(marketData, pools, component, visualState, deltaTime);
+                    break;
+                default:
+                    break;
+            }
+           
+        }
+
+        private void ProcessFulfillerTruck(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
             Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, 3 * deltaTime);
             if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
-                component.Target.Received += component.Carrying;
-                component.Target.RequestCount--;
-                Log.Msg("[RequestFulfillmentSystem] Shipment of {0} received by '{1}'", component.Carrying, component.Target.name);
-                DebugDraw.AddWorldText(component.Target.transform.position, "Received!", Color.black, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundLightOpaque);
-                ResourceStorageUtility.RefreshStorageDisplays(component.Target.Storage);
+                if (component.IsIntermediary) {
+                    // create a new blimp w/ src export depot + yOffset, target is request destination; confer fulfiller role
+                    int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
+                    if (index < 0) {
+                        // A request that has a fulfiller was fulfilled by other means. Shouldn't be able to happen.
+                        Debug.LogError("[RequestFulfillmentSystem] En-route fulfiller has no corresponding request to fulfill. Cannot confer fulfillment role.");
+                        return;
+                    }
 
-                // Add generated revenue
-                BudgetData budgetData = Game.SharedState.Get<BudgetData>();
-                int revenueAmt = component.Revenue.Sales + component.Revenue.Import + component.Revenue.Penalties;
-                BudgetUtility.AddToBudget(budgetData, revenueAmt, component.Target.Position.RegionIndex);
+                    // differentiate between external and internal blimp prefabs
+                    RequestFulfiller newFulfiller = pools.InternalAirships.Alloc();
+                    FulfillerUtility.InitializeFulfiller(newFulfiller, marketData.ActiveRequests[index], component.transform.position);
 
-                int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
-                if (index >= 0) {
-                    MarketActiveRequestInfo fulfilling = marketData.ActiveRequests[index];
-                    visualState.FulfilledQueue.PushBack(fulfilling);
-                    marketData.ActiveRequests.FastRemoveAt(index);                    
+                    OrientAirship(ref newFulfiller);
+
+                    marketData.ActiveRequests[index].Fulfiller = newFulfiller;
+                }
+                else {
+                    DeliverFulfillment(marketData, component, visualState);
                 }
                 pools.Trucks.Free(component);
-            } else {
+            }
+            else {
                 component.transform.position = newPos;
+            }
+        }
+
+        private void ProcessFulfillerAirship(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
+            // TODO: fade in
+
+            // travel from src to destination + yOffset
+            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, AIRSHIP_SPEED * deltaTime);
+
+            // when same position, drop parcel
+            if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
+                int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
+                if (index < 0) {
+                    // A request that has a fulfiller was fulfilled by other means. Shouldn't be able to happen.
+                    Debug.LogError("[RequestFulfillmentSystem] En-route fulfiller has no corresponding request to fulfill. Cannot confer fulfillment role.");
+                    return;
+                }
+
+                if (component.IsIntermediary) {
+                    // create a new parcel w/ src airship position, target tile below; pass on fulfiller role
+                    RequestFulfiller newFulfiller = pools.Parcels.Alloc();
+                    FulfillerUtility.InitializeFulfiller(newFulfiller, marketData.ActiveRequests[index], component.transform.position);
+                    marketData.ActiveRequests[index].Fulfiller = newFulfiller;
+
+                    // TODO: continue airship travel for a certain amount of glide time
+
+                    // TODO: fade out
+                }
+
+                // free airship
+                if (marketData.ActiveRequests[index].Supplier.Position.IsExternal) {
+                    pools.ExternalAirships.Free(component);
+                }
+                else {
+                    pools.InternalAirships.Free(component);
+                }
+            }
+            else {
+                component.transform.position = newPos;
+            }
+        }
+
+        private void ProcessFulfillerParcel(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
+            // move parcel from src to target
+            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, 3 * deltaTime);
+
+            // when same position, deliver resource
+            if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
+                DeliverFulfillment(marketData, component, visualState);
+                pools.Parcels.Free(component);
+            }
+            else {
+                component.transform.position = newPos;
+            }
+        }
+
+        private void OrientAirship(ref RequestFulfiller fulfiller) {
+            // blimp will be conferring to parcel
+            fulfiller.IsIntermediary = true;
+
+            // override target position to include hover
+            fulfiller.TargetWorldPos = new Vector3(fulfiller.TargetWorldPos.x, fulfiller.TargetWorldPos.y + AIRSHIP_HOVER_HEIGHT, fulfiller.TargetWorldPos.z);
+
+            // orient the airship, since it doesn't follow roads
+            fulfiller.transform.LookAt(fulfiller.TargetWorldPos);
+        }
+
+        private void DeliverFulfillment(MarketData marketData, RequestFulfiller component, RequestVisualState visualState) {
+            component.Target.Received += component.Carrying;
+            component.Target.RequestCount--;
+            Log.Msg("[RequestFulfillmentSystem] Shipment of {0} received by '{1}'", component.Carrying, component.Target.name);
+            DebugDraw.AddWorldText(component.Target.transform.position, "Received!", Color.black, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundLightOpaque);
+            ResourceStorageUtility.RefreshStorageDisplays(component.Target.Storage);
+
+            // Add generated revenue
+            BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+            int revenueAmt = component.Revenue.Sales + component.Revenue.Import + component.Revenue.Penalties;
+            BudgetUtility.AddToBudget(budgetData, revenueAmt, component.Target.Position.RegionIndex);
+
+            int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
+            if (index >= 0) {
+                MarketActiveRequestInfo fulfilling = marketData.ActiveRequests[index];
+                visualState.FulfilledQueue.PushBack(fulfilling);
+                marketData.ActiveRequests.FastRemoveAt(index);
             }
         }
 

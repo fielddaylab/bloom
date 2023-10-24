@@ -76,7 +76,7 @@ namespace Zavala.World
             }
 
             // Spawn External Supplier
-            Vector3 externalWorldPos = Vector3.zero;
+            Vector3 externalWorldPos = new Vector3(25, 0, 5); // top-right of screen
             GameObject externalDepot = GameObject.Instantiate(m_StateA.ExternalExportDepotPrefab.gameObject, externalWorldPos, Quaternion.identity);
             GameObject externalSupplier = GameObject.Instantiate(m_StateA.ExternalSupplierPrefab.gameObject, externalWorldPos, Quaternion.identity);
 

@@ -245,6 +245,33 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
+  ExternalAirships:
+    m_Prefab: {fileID: 1143183839744756915, guid: 03cf56aa78fbf6242a70edeb7562a1b4, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  InternalAirships:
+    m_Prefab: {fileID: 3890555915158959800, guid: c3019b2e3ab0e9248a57a4d23f7e6503, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  Parcels:
+    m_Prefab: {fileID: 4655861788868773543, guid: 52871017ddfaf1a4a960900b9d2c7356, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
   PoolRoot: {fileID: 0}
 --- !u!114 &7708306960153739437
 MonoBehaviour:
@@ -497,5 +524,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d79f6ea60519045b1c88c0462a66a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExternalSupplier: {fileID: 0}
-  ExternalDepot: {fileID: 0}
