@@ -71,13 +71,13 @@ namespace Zavala.Sim
     }
 
     static public class RegionUnlockUtility {
-        static public void UnlockRegion(SimGridState grid, int region) {
+        static public void UnlockRegion(SimGridState grid, int region, SimWorldState worldState) {
             if (region >= grid.WorldData.Regions.Length) {
                 // region to unlock not registered
                 return;
             }
 
-            SimDataUtility.LoadAndRegenRegionDataFromWorld(grid, grid.WorldData, region);
+            SimDataUtility.LoadAndRegenRegionDataFromWorld(grid, grid.WorldData, region, worldState);
             // TODO: trigger RegionUnlocked for scripting purposes
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("regionId", ((RegionId) region).ToString());
@@ -91,9 +91,10 @@ namespace Zavala.Sim
             DMInfo info = new DMInfo("Regions");
             info.AddButton("Unlock Next Region", () => {
                 var r = Game.SharedState.Get<RegionUnlockState>();
+                var w = Game.SharedState.Get<SimWorldState>();
                 var data = r.UnlockGroups[r.UnlockCount++];
                 foreach(int region in data.RegionIndexUnlocks) {
-                    UnlockRegion(ZavalaGame.SimGrid, region);
+                    UnlockRegion(ZavalaGame.SimGrid, region, w);
                 }
             }, () => Game.SharedState.TryGet(out RegionUnlockState r) && r.UnlockCount < r.UnlockGroups.Count);
             return info;

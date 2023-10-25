@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Economy;
+using Zavala.World;
 
 namespace Zavala.Sim
 {
@@ -52,7 +53,8 @@ namespace Zavala.Sim
             if (passedCheck) {
                 // Unlock regions
                 foreach (int region in currUnlockGroup.RegionIndexUnlocks) {
-                    RegionUnlockUtility.UnlockRegion(m_StateB, region);
+                    SimWorldState worldState = Game.SharedState.Get<SimWorldState>();
+                    RegionUnlockUtility.UnlockRegion(m_StateB, region, worldState);
                 }
 
                 m_StateA.UnlockCount++;

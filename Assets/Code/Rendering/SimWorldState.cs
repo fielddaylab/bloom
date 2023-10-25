@@ -44,6 +44,8 @@ namespace Zavala.World {
         [NonSerialized] public uint RegionCount; // cached from SimDataComponent
         [NonSerialized] public uint RegionCullingMask;
 
+        [NonSerialized] public float MaxHeight;
+
         // phosphorus data
 
         [NonSerialized] public PhosphorusRenderState[] Phosphorus = new PhosphorusRenderState[RegionInfo.MaxRegions];

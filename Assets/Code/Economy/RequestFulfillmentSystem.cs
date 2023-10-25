@@ -5,6 +5,7 @@ using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Systems;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -12,7 +13,7 @@ namespace Zavala.Economy {
     [SysUpdate(GameLoopPhase.Update, 10, ZavalaGame.SimulationUpdateMask)]
     public sealed class RequestFulfillmentSystem : ComponentSystemBehaviour<RequestFulfiller> {
         private static int AIRSHIP_SPAWN_DIST = 10;
-        private static float AIRSHIP_HOVER_HEIGHT = 3f; // TODO: calculate heighest height, or handle about to run into a higher tile
+        private static float AIRSHIP_HOVER_HEIGHT = 3f;
 
         public override bool HasWork() {
             return isActiveAndEnabled;
@@ -39,10 +40,11 @@ namespace Zavala.Economy {
                         // Straight to blimp
                         // Spawn blimp from nebulous external supplier
                         ExternalState externalState = Game.SharedState.Get<ExternalState>();
+                        SimWorldState world = Game.SharedState.Get<SimWorldState>();
 
                         // blimps start a certain distance from the requester, in the direction of the supplier
                         Vector3 externalSrcPos = request.Requester.transform.position + externalState.ExternalDepot.transform.position.normalized * AIRSHIP_SPAWN_DIST;
-                        externalSrcPos.y = request.Requester.transform.position.y + AIRSHIP_HOVER_HEIGHT;
+                        externalSrcPos.y = world.MaxHeight + AIRSHIP_HOVER_HEIGHT; // request.Requester.transform.position.y + AIRSHIP_HOVER_HEIGHT;
 
                         // differentiate between external and internal blimp prefabs
                         request.Fulfiller = pools.ExternalAirships.Alloc();
