@@ -29,6 +29,7 @@ namespace Zavala.Economy {
         [NonSerialized] public Vector3 TargetWorldPos;
 
         [NonSerialized] public bool IsIntermediary; // true if this fulfiller confers responsibility along a chain (e.g. export depot)
+        [NonSerialized] public bool AtTransitionPoint; // true if this fulfiller is ready to change (i.e. from truck to blimp, or when completing delivery)
     }
 
     static public class FulfillerUtility {

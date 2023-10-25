@@ -13,7 +13,6 @@ namespace Zavala.Economy {
     public sealed class RequestFulfillmentSystem : ComponentSystemBehaviour<RequestFulfiller> {
         private static int AIRSHIP_SPAWN_DIST = 10;
         private static float AIRSHIP_HOVER_HEIGHT = 2.5f; // TODO: calculate heighest height, or handle about to run into a higher tile
-        private static float AIRSHIP_SPEED = 2;
 
         public override bool HasWork() {
             return isActiveAndEnabled;
@@ -133,13 +132,8 @@ namespace Zavala.Economy {
         }
 
         private void ProcessFulfillerAirship(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
-            // TODO: fade in
-
-            // travel from src to destination + yOffset
-            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, AIRSHIP_SPEED * deltaTime);
-
             // when same position, drop parcel
-            if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
+            if (component.AtTransitionPoint) {
                 int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
                 if (index < 0) {
                     // A request that has a fulfiller was fulfilled by other means. Shouldn't be able to happen.
@@ -152,22 +146,7 @@ namespace Zavala.Economy {
                     RequestFulfiller newFulfiller = pools.Parcels.Alloc();
                     FulfillerUtility.InitializeFulfiller(newFulfiller, marketData.ActiveRequests[index], component.transform.position);
                     marketData.ActiveRequests[index].Fulfiller = newFulfiller;
-
-                    // TODO: continue airship travel for a certain amount of glide time
-
-                    // TODO: fade out
                 }
-
-                // free airship
-                if (marketData.ActiveRequests[index].Supplier.Position.IsExternal) {
-                    pools.ExternalAirships.Free(component);
-                }
-                else {
-                    pools.InternalAirships.Free(component);
-                }
-            }
-            else {
-                component.transform.position = newPos;
             }
         }
 
