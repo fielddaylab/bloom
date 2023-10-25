@@ -12,7 +12,7 @@ namespace Zavala.Economy {
     [SysUpdate(GameLoopPhase.Update, 10, ZavalaGame.SimulationUpdateMask)]
     public sealed class RequestFulfillmentSystem : ComponentSystemBehaviour<RequestFulfiller> {
         private static int AIRSHIP_SPAWN_DIST = 10;
-        private static float AIRSHIP_HOVER_HEIGHT = 2.5f; // TODO: calculate heighest height, or handle about to run into a higher tile
+        private static float AIRSHIP_HOVER_HEIGHT = 3f; // TODO: calculate heighest height, or handle about to run into a higher tile
 
         public override bool HasWork() {
             return isActiveAndEnabled;

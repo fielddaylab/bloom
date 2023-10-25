@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsExternal: 0
+  Mesh: {fileID: 3324246927386804199}
 --- !u!33 &704513991833160493
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -89,7 +90,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7922251121040759823, guid: cc2e91968f0a0fa4c9488920cc3986b6, type: 3}
+  - {fileID: 2100000, guid: a931222295bd00b438b72a23b80ab852, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -12,12 +12,24 @@ namespace Zavala.Movement
         public enum State : byte { 
             Entering,
             EnRoute,
-            Exiting
+            Exiting,
+            Finished
         }
 
         public bool IsExternal = false;
+        public MeshRenderer Mesh;
 
         [NonSerialized] public State MoveState = State.Entering;
         [NonSerialized] public Routine MovementRoutine;
+
+        private void OnEnable() {
+            // Initialize whenever pool allocated
+            MoveState = State.Entering;
+
+            // start transparent
+            Color color = Mesh.material.color;
+            color.a = 0;
+            Mesh.material.color = color;
+        }
     }
 }
