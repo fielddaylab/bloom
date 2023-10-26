@@ -9,6 +9,7 @@ namespace Zavala.Sim {
         public HexGridSubregion GridArea;
         public ushort MaxHeight;
         public RegionId Id;
+        public UnsafeSpan<ushort> Edges;
     }
 
     public delegate void RegionTileHandlerDelegate(ushort regionIndex, int tileIndex);

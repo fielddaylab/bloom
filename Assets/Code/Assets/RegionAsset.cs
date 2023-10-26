@@ -87,6 +87,7 @@ namespace Zavala {
         public RoadData[] Roads = Array.Empty<RoadData>();
         public ModifierData[] Modifiers = Array.Empty<ModifierData>();
         public BorderPoint[] Borders = Array.Empty<BorderPoint>();
+        public ushort[] EdgeVisualUpdateSet = Array.Empty<ushort>();
 
         [Header("Groups")]
         public ushort[] WaterGroupLocalIndices = Array.Empty<ushort>();

@@ -6,6 +6,7 @@ using BeauUtil.Debugger;
 using FieldDay.Data;
 using UnityEditor;
 using UnityEngine;
+using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -36,6 +37,9 @@ namespace Zavala {
 
         [SerializeField] private float m_RadiusReference = 0.43f;
         [SerializeField] private Mesh m_ErrorMesh = null;
+        [SerializeField] private Mesh m_RampMesh = null;
+        [SerializeField] private Mesh m_SteepRampMesh = null;
+        [SerializeField] private Vector3 m_RampScale = Vector3.one;
 
         [Space]
         [SerializeField] private RotationEntry[] m_RotationEntries = new RotationEntry[64];
@@ -65,6 +69,21 @@ namespace Zavala {
             }
             roadData.Turns = rotData.Rotation;
             return true;
+        }
+
+        public Mesh RampMesh(RoadRampType type) {
+            switch (type) {
+                case RoadRampType.Ramp:
+                    return m_RampMesh;
+                case RoadRampType.Tall:
+                    return m_SteepRampMesh;
+                default:
+                    return null;
+            }
+        }
+
+        public Vector3 RampMeshScale() {
+            return m_RampScale;
         }
 
 #if UNITY_EDITOR

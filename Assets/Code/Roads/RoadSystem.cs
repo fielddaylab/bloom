@@ -70,7 +70,7 @@ namespace Zavala.Roads
         /// <summary>
         /// Runs the Dijkstra's shortest tree algorithm
         /// </summary>
-        static public RingBuffer<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, HexGridSize gridSize) {
+        static public unsafe RingBuffer<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, HexGridSize gridSize) {
             RingBuffer<RoadPathSummary> allConnections = new RingBuffer<RoadPathSummary>();
 
             // TODO: optimize the data structures in this algorithm
@@ -161,7 +161,7 @@ namespace Zavala.Roads
                         }
 
                         // Mark the current node as visited; remove from the unvisited set, add it to allConnections
-                        allConnections.PushBack(new RoadPathSummary((ushort)currNode.TileIdx, (ushort) currNode.TentativeDistance));
+                        allConnections.PushBack(new RoadPathSummary((ushort)currNode.TileIdx, new UnsafeSpan<ushort>(null, (ushort) currNode.TentativeDistance)));
                         universalSet.Remove(currNode);
 
                         // set the unvisited with the smallest tentative distance to current, then repeat while unvisited set is not exhausted

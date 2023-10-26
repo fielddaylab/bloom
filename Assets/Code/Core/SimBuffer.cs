@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using System;
-using UnityEngine.UIElements;
 using BeauUtil.Debugger;
 
 namespace Zavala {
@@ -12,7 +11,7 @@ namespace Zavala {
         public readonly T* Buffer;
         public readonly uint Length;
 
-        public SimBuffer(T* buffer, uint bufferLength, bool zero = false) {
+        public SimBuffer(T* buffer, uint bufferLength) {
             Buffer = buffer;
             Length = bufferLength;
         }
@@ -113,7 +112,6 @@ namespace Zavala {
             if (target.Length != source.Length) {
                 throw new ArgumentException("target buffer must be same length");
             }
-
 
             for (int i = 0; i < source.Length; i++) {
                 target.Buffer[i] = mapper(source.Buffer[i]);

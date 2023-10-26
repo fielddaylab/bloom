@@ -1,7 +1,13 @@
+using System;
+using BeauUtil;
 using FieldDay.Components;
+using UnityEngine;
 
 namespace Zavala.World {
     public class WaterTile : BatchedComponent {
-        public int TileIndex;
+        [NonSerialized] public int TileIndex;
+
+        public MeshRenderer SurfaceRenderer;
+        public MeshRenderer[] EdgeRenderers;
     }
 }

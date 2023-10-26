@@ -268,6 +268,17 @@ namespace Zavala.Editor {
                             occupiedTileIndices.Add(pos);
                             break;
                         }
+                        case 7: { // export depot
+                                buildingList.Add(new RegionAsset.BuildingData() {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.ExportDepot,
+                                    ScriptName = scriptName
+                                });
+                                occupiedTileIndices.Add(pos);
+                                // tiles[pos].Flags |= TerrainFlags.TopHidden;
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
+                                break;
+                        }
                     }
                 }
             }
@@ -366,8 +377,9 @@ namespace Zavala.Editor {
             ranges = groupData.ToArray();
         }
 
-        static public void AnalyzeBorderData(in TiledData data, TerrainTileInfo[] tiles, out RegionAsset.BorderPoint[] borderPoints) {
+        static public void AnalyzeBorderData(in TiledData data, TerrainTileInfo[] tiles, out RegionAsset.BorderPoint[] borderPoints, out ushort[] edgeVisualUpdateSet) {
             List<RegionAsset.BorderPoint> borders = new List<RegionAsset.BorderPoint>();
+            List<ushort> visualUpdateEdges = new List<ushort>();
 
             HexGridSize.IndexEnumerator idxEnumerator = data.GridSize.GetEnumerator();
             while(idxEnumerator.MoveNext()) {
@@ -393,10 +405,15 @@ namespace Zavala.Editor {
                         LocalTileIndex = (ushort) idx,
                         Borders = borderMask
                     });
+
+                    if (IsTowardsCamera(borderMask) && (tileInfo.Flags & TerrainFlags.IsWater) != 0) {
+                        visualUpdateEdges.Add((ushort) idx);
+                    }
                 }
             }
 
             borderPoints = borders.ToArray();
+            edgeVisualUpdateSet = visualUpdateEdges.ToArray();
         }
 
         private const TerrainFlags IgnoreCullingTerrainFlags = TerrainFlags.IsWater;
@@ -438,6 +455,10 @@ namespace Zavala.Editor {
             }
 
             Log.Msg("culling {0} tile bases", culled);
+        }
+
+        static private bool IsTowardsCamera(TileAdjacencyMask direction) {
+            return direction.Has(TileDirection.NW) || direction.Has(TileDirection.SW) || direction.Has(TileDirection.S);
         }
 
         static private bool IsTowardsCamera(TileDirection direction) {

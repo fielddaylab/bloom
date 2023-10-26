@@ -12,6 +12,7 @@ namespace Zavala.Economy {
         [NonSerialized] public ResourceSupplier Source;
         [NonSerialized] public ResourceBlock Carrying;
         [NonSerialized] public ResourceRequester Target;
+        [NonSerialized] public GeneratedTaxRevenue Revenue;
 
         // target positions
         [NonSerialized] public int SourceTileIndex;
@@ -25,6 +26,7 @@ namespace Zavala.Economy {
             unit.Source = request.Supplier;
             unit.Carrying = request.Supplied;
             unit.Target = request.Requester;
+            unit.Revenue = request.Revenue;
 
             unit.TargetWorldPos = unit.Target.transform.position;
             unit.SourceWorldPos = unit.Source.transform.position;

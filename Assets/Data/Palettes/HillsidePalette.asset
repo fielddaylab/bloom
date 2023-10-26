@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GroundTile: {fileID: 4929987932592038972, guid: 500c22797ee7e384785494b17cccc1fb, type: 3}
   InnerGroundTile: {fileID: 764812806168612941, guid: eaa921d9cfd765547a749b1f54950374, type: 3}
-  TileTopEmptyMesh: {fileID: -6090058582990662671, guid: 832d02da43077448e85a0bd88a90bfbe, type: 3}
+  TileTopEmptyMesh:
+    Mesh: {fileID: -6090058582990662671, guid: 832d02da43077448e85a0bd88a90bfbe, type: 3}
+    Material: {fileID: 2100000, guid: 299e9df128dc74bf5a3a6640967fb7f7, type: 2}
   City: {fileID: 7969817350258342186, guid: 167b78c4fbd0c5d419f1f25f22287109, type: 3}
   DairyFarm: {fileID: 2888134989403396560, guid: 47af73b4c61ac7d4bb08ac89e9eb146e, type: 3}
   GrainFarm: {fileID: 5981646520746778409, guid: a60778472af60764cbfa08d6bea8d568, type: 3}
+  ExportDepot: {fileID: 7291294420475072060, guid: 201bdaeea4b86894797bc4502d768471, type: 3}
   Rock:
   - {fileID: 7038089790863349094, guid: a1bb9b6c231870b4d9abca913e16e47b, type: 3}
   Tree:

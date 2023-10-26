@@ -7,12 +7,13 @@ namespace Zavala.World {
         public TileInstance GroundTile;
         [Tooltip("Optimized ground tile with no pillar. Used only when it's determined the pillar cannot ever be seen for a given location.")]
         public TileInstance InnerGroundTile;
-        public Mesh TileTopEmptyMesh;
+        public SimpleMeshConfig TileTopEmptyMesh;
 
         [Header("Buildings")]
         public GameObject City;
         public GameObject DairyFarm;
         public GameObject GrainFarm;
+        public GameObject ExportDepot;
 
         [Header("Static Modifiers")]
         public GameObject[] Rock;

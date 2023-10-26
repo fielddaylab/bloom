@@ -4,9 +4,10 @@ using UnityEditor;
 using UnityEngine;
 using Zavala.Sim;
 using System;
+using FieldDay.Components;
 
 namespace Zavala.World {
-    public class TileInstance : MonoBehaviour {
+    public class TileInstance : BatchedComponent {
         [Header("Tile Top")]
         public MeshRenderer TopRenderer;
         public MeshFilter TopFilter;

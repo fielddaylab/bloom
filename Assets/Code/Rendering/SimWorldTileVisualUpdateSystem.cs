@@ -28,9 +28,9 @@ namespace Zavala.World {
                         TileInstance t = m_StateA.Tiles[record.TileIndex];
                         bool hasRoad = (m_StateC.Roads.Info[record.TileIndex].Flags & RoadFlags.IsRoad) != 0;
                         if (hasRoad) {
-                            t.TopFilter.sharedMesh = m_StateA.Palettes[region].TileTopEmptyMesh;
+                            m_StateA.Palettes[region].TileTopEmptyMesh.Apply(t.TopRenderer, t.TopFilter);
                         } else {
-                            t.TopFilter.sharedMesh = t.TopDefaultConfig.Mesh;
+                            t.TopDefaultConfig.Apply(t.TopRenderer, t.TopFilter);
                         }
                     }
                 } else {

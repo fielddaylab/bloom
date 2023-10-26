@@ -1,13 +1,8 @@
 using BeauUtil;
 using FieldDay.Components;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Zavala.Roads;
-using static UnityEngine.Rendering.CoreUtils;
 
 namespace Zavala.Economy
 {

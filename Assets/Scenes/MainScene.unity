@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731703, g: 0.13414727, b: 0.121078506, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5219,6 +5219,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &155139505
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 155139507}
+  - component: {fileID: 155139506}
+  m_Layer: 0
+  m_Name: RenderTest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &155139506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155139505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988c1229e213c884faa32d8fbb225d67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DEBUG_InitialElements:
+  - Mesh: {fileID: 6862800605819043482, guid: bc3e68134ffea004aac86d220180fac6, type: 3}
+    TRS:
+      Position: {x: 0, y: 100, z: 0}
+      Scale: {x: 1, y: 1, z: 1}
+      Rotation: {x: 0, y: 0.5, z: 0, w: 0.8660254}
+  Layer: 0
+  Material: {fileID: 2100000, guid: c689da3acd6c04bb9b3c6b4b53be3280, type: 2}
+--- !u!4 &155139507
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155139505}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &190549079
 GameObject:
@@ -10822,7 +10874,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 387.5
       objectReference: {fileID: 0}
     - target: {fileID: 8246924889287396043, guid: 85c1cd74b2c80fc4089d6cea04155d2c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -16452,6 +16504,10 @@ PrefabInstance:
     - target: {fileID: 2517140936885967469, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
       propertyPath: PauseOverlay
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517140936885967471, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
+      propertyPath: Scale.y
+      value: 0.0035
       objectReference: {fileID: 0}
     - target: {fileID: 4655940106740399355, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
       propertyPath: m_RootOrder

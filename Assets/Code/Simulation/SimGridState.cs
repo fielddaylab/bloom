@@ -32,6 +32,7 @@ namespace Zavala.Sim {
         [NonSerialized] public SimBuffer<WaterGroupInfo> WaterGroups;
         [NonSerialized] public uint RegionCount;
         [NonSerialized] public uint WaterGroupCount;
+        [NonSerialized] public SimArena<ushort> RegionEdgeArena;
 
         [NonSerialized] public uint CurrRegionIndex;
 
@@ -49,6 +50,7 @@ namespace Zavala.Sim {
             Terrain.Create(HexSize);
             Regions = SimBuffer.Create<RegionInfo>(RegionInfo.MaxRegions);
             WaterGroups = SimBuffer.Create<WaterGroupInfo>(WaterGroupInfo.MaxGroups);
+            RegionEdgeArena = SimArena.Create<ushort>(RegionInfo.MaxRegions * 32);
             RegionCount = 0;
             WaterGroupCount = 0;
 
@@ -112,8 +114,13 @@ namespace Zavala.Sim {
                 currentTile = fromRegion;
             }
 
-            SimWorldState world = Game.SharedState.Get<SimWorldState>();
+            ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
+            regionInfo.Edges = grid.RegionEdgeArena.Alloc((uint) asset.Borders.Length);
+            for(int i = 0; i < regionInfo.Edges.Length; i++) {
+                regionInfo.Edges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.Borders[i].LocalTileIndex);
+            }
 
+            SimWorldState world = Game.SharedState.Get<SimWorldState>();
             world.Palettes[regionIndex] = palette;
 
             // water proxies

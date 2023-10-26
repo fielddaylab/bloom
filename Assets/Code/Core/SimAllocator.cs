@@ -16,8 +16,20 @@ namespace Zavala {
             return (byte*) Unsafe.Alloc(s_Allocator, count);
         }
 
+        static public unsafe T* Alloc<T>() where T : unmanaged {
+            return Unsafe.Alloc<T>(s_Allocator);
+        }
+
         static public unsafe T* Alloc<T>(int count) where T : unmanaged {
             return Unsafe.AllocArray<T>(s_Allocator, count);
+        }
+
+        static public unsafe Unsafe.ArenaHandle AllocArena(int size) {
+            return Unsafe.CreateArena(s_Allocator, size);
+        }
+
+        static public unsafe Unsafe.ArenaHandle AllocArena<T>(int size) where T : unmanaged {
+            return Unsafe.CreateArena(s_Allocator, size * sizeof(T));
         }
 
         static public void Reset() {

@@ -55,7 +55,7 @@ namespace Zavala.Roads
         Tollbooth = Milk << 1
     }
 
-    public struct RoadDestination {
+    public struct RoadPathDestination {
         public ushort TileIdx;
         public ushort RegionIdx;
         public RoadDestinationMask Type;
@@ -66,18 +66,20 @@ namespace Zavala.Roads
     public struct RoadPathSummary
     {
         public ushort DestinationIdx; // destination index
-        public ushort Distance;
-        public UnsafePtr<ushort> Tiles;
+        public UnsafeSpan<ushort> Tiles;
         public ushort ProxyConnectionIdx; // the proxy tile through which this connection is enabled, e.g. Export Depot tile index
 
         public bool Connected {
-            get { return Distance > 0; }
+            get { return Tiles.Length > 0; }
         }
 
-        public RoadPathSummary(ushort idx, ushort dist, ushort proxyConnectionIdx = Tile.InvalidIndex16) {
+        public ushort Distance {
+            get { return (ushort) Tiles.Length; }
+        }
+
+        public RoadPathSummary(ushort idx, UnsafeSpan<ushort> tiles, ushort proxyConnectionIdx = Tile.InvalidIndex16) {
             DestinationIdx = idx;
-            Distance = dist;
-            Tiles = default;
+            Tiles = tiles;
             ProxyConnectionIdx = proxyConnectionIdx;
         }
     }
@@ -124,28 +126,31 @@ namespace Zavala.Roads
                     }
                 }
 
-                // Second pass: check if connected through export depots
+                // Second pass: check if connected through export depots if NOT in same region
                 uint currRegion = ZavalaGame.SimGrid.Terrain.Regions[tileIdxA];
-                if (network.ExportDepotMap.ContainsKey(currRegion)) {
-                    List<ResourceSupplierProxy> relevantDepots = network.ExportDepotMap[currRegion];
+                if (currRegion != ZavalaGame.SimGrid.Terrain.Regions[tileIdxB]) {
+                    if (network.ExportDepotMap.ContainsKey(currRegion)) {
+                        List<ResourceSupplierProxy> relevantDepots = network.ExportDepotMap[currRegion];
 
-                    for (int i = 0; i < aConnections.Count; i++) {
-                        foreach (var depot in relevantDepots) {
-                            // For each export depot, check if supplier is connected to it.
-                            if (aConnections[i].DestinationIdx == depot.Position.TileIndex) {
-                                // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy bool
-                                RoadPathSummary proxySummary = aConnections[i];
-                                // set buyer as destination
-                                proxySummary.DestinationIdx = (ushort) tileIdxB;
-                                // note: distance already set
-                                // set proxy bool
-                                proxySummary.ProxyConnectionIdx = (ushort) depot.Position.TileIndex;
+                        for (int i = 0; i < aConnections.Count; i++) {
+                            foreach (var depot in relevantDepots) {
+                                // For each export depot, check if supplier is connected to it.
+                                if (aConnections[i].DestinationIdx == depot.Position.TileIndex) {
+                                    // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy bool
+                                    RoadPathSummary proxySummary = aConnections[i];
+                                    // set buyer as destination
+                                    proxySummary.DestinationIdx = (ushort) tileIdxB;
+                                    // note: distance already set
+                                    // set proxy bool
+                                    proxySummary.ProxyConnectionIdx = (ushort) depot.Position.TileIndex;
 
-                                return proxySummary;
+                                    return proxySummary;
+                                }
                             }
                         }
                     }
                 }
+                
             }
 
             // tile A index not found, has no list of connections
@@ -209,6 +214,19 @@ namespace Zavala.Roads
                 Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
                 RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
                 network.RoadObjects.Add(newRoad);
+
+                newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
+                    if (c < a - 50) {
+                        o = RoadRampType.Tall;
+                        return true;
+                    } else if (c < a) {
+                        o = RoadRampType.Ramp;
+                        return true;
+                    } else {
+                        o = default;
+                        return false;
+                    }
+                });
 
                 ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
                     TileIndex = (ushort) tileIndex,
@@ -314,9 +332,11 @@ namespace Zavala.Roads
         }
 
         static public void DeregisterExportDepot(ResourceSupplierProxy proxy) {
-            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            Assert.NotNull(network);
+            if (Game.IsShuttingDown) {
+                return;
+            }
 
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             if (network.ExportDepotMap.ContainsKey(proxy.Position.RegionIndex)) {
                 List<ResourceSupplierProxy> currentDepots = network.ExportDepotMap[proxy.Position.RegionIndex];
                 currentDepots.Remove(proxy);

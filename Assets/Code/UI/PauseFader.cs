@@ -10,6 +10,7 @@ namespace Zavala {
     public class PauseFader : MonoBehaviour {
         [SerializeField] private Graphic m_DefaultFader;
         [SerializeField] private Graphic m_BlueprintsFader;
+        [SerializeField] private float m_FadeTime = 0.3f;
 
         [NonSerialized] private float m_DefaultFaderAlpha;
         [NonSerialized] private float m_BlueprintFaderAlpha;
@@ -44,15 +45,15 @@ namespace Zavala {
             m_DesiredDefault = !m_DesiredBlueprints & flags != 0;
 
             if (!hadBlueprints && m_DesiredBlueprints) {
-                m_BlueprintsFadeRoutine.Replace(this, FadeIn(m_BlueprintsFader, m_BlueprintFaderAlpha, 0.3f));
+                m_BlueprintsFadeRoutine.Replace(this, FadeIn(m_BlueprintsFader, m_BlueprintFaderAlpha, m_FadeTime));
             } else if (hadBlueprints && !m_DesiredBlueprints) {
-                m_BlueprintsFadeRoutine.Replace(this, FadeOut(m_BlueprintsFader, 0.3f));
+                m_BlueprintsFadeRoutine.Replace(this, FadeOut(m_BlueprintsFader, m_FadeTime));
             }
 
             if (!hadDefault && m_DesiredDefault) {
-                m_DefaultFadeRoutine.Replace(this, FadeIn(m_DefaultFader, m_DefaultFaderAlpha, 0.3f));
+                m_DefaultFadeRoutine.Replace(this, FadeIn(m_DefaultFader, m_DefaultFaderAlpha, m_FadeTime));
             } else if (hadDefault && !m_DesiredDefault) {
-                m_DefaultFadeRoutine.Replace(this, FadeOut(m_DefaultFader, 0.3f));
+                m_DefaultFadeRoutine.Replace(this, FadeOut(m_DefaultFader, m_FadeTime));
             }
         }
 

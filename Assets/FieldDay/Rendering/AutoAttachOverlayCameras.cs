@@ -8,10 +8,10 @@ using System;
 
 #if USE_SRP
 using UnityEngine.Rendering.Universal;
-using UnityEditor;
 #endif // USE_SRP
 
 #if UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif // UNITY_EDITOR
 
@@ -26,7 +26,7 @@ namespace FieldDay.Rendering {
             if (PrefabStageUtility.GetPrefabStage(gameObject) != null)
                 return;
 
-            if (!Application.IsPlaying(this) && EditorApplication.isPlayingOrWillChangePlaymode || BuildPipeline.isBuildingPlayer) {
+            if (!Application.IsPlaying(this) && (EditorApplication.isPlayingOrWillChangePlaymode || BuildPipeline.isBuildingPlayer)) {
                 return;
             }
 #endif // UNITY_EDITOR

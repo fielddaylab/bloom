@@ -64,6 +64,10 @@ namespace Zavala.World {
             if ((tileInfo.Flags & TerrainFlags.TopHidden) != 0) {
                 TileEffectRendering.SetTopVisibility(inst, false);
             }
+
+            if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
+                inst.GetComponent<WaterTile>().TileIndex = index;
+            }
         }
 
         #endregion // Work

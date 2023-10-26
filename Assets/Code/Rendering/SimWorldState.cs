@@ -200,6 +200,6 @@ namespace Zavala.World {
 
     public enum VisualUpdateType : ushort {
         Road,
-        Water,
+        Border,
     }
 }

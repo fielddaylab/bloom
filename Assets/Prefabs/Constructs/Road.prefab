@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: -7104959141006727276}
   - component: {fileID: 8966737996612447901}
   - component: {fileID: 1930123993508356742}
+  - component: {fileID: 1723040191123504645}
   m_Layer: 8
   m_Name: Road
   m_TagString: PlayerPlaced
@@ -144,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d25850145bfdfb4e84fae25d281edb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HeightOffset: 0.05
+  HeightOffset: 0
   m_initial: 0
   m_hideTop: 0
 --- !u!114 &8966737996612447901
@@ -161,6 +162,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RoadMeshTransform: {fileID: 6519638867684575305}
   RoadMesh: {fileID: 110408958775330870}
+  RampDecorations: {fileID: 1723040191123504645}
+  Radius: 0.35
 --- !u!135 &1930123993508356742
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -174,3 +177,18 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.43
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1723040191123504645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417343884172520992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988c1229e213c884faa32d8fbb225d67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DEBUG_InitialElements: []
+  Layer: 8
+  Material: {fileID: 2100000, guid: c689da3acd6c04bb9b3c6b4b53be3280, type: 2}

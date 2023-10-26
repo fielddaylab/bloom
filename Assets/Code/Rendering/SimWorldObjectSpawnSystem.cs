@@ -1,12 +1,7 @@
-using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
-using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using UnityEngine;
 using Zavala.Building;
 using Zavala.Scripting;
@@ -44,6 +39,10 @@ namespace Zavala.World {
                     case BuildingType.GrainFarm: {
                         building = GameObject.Instantiate(palette.GrainFarm, worldPos, Quaternion.identity);
                         break;
+                    }
+                    case BuildingType.ExportDepot: {
+                            building = GameObject.Instantiate(palette.ExportDepot, worldPos, Quaternion.identity);
+                            break;
                     }
                 }
                 Assert.NotNull(building);
