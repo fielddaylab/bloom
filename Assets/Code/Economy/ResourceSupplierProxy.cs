@@ -19,12 +19,12 @@ namespace Zavala.Economy
 
         private void Start() {
             // Ensure register road anchor happens after OccupiesTile
-            RoadUtility.RegisterRoadAnchor(Position);
+            RoadUtility.RegisterRoadDestination(Position, 0, (RoadDestinationMask) ProxyMask);
             RoadUtility.RegisterExportDepot(this);
         }
 
         protected override void OnDisable() {
-            RoadUtility.DeregisterRoadAnchor(Position);
+            RoadUtility.DeregisterRoadDestination(Position);
             RoadUtility.DeregisterExportDepot(this);
 
             base.OnDisable();

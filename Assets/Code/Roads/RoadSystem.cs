@@ -1,20 +1,13 @@
 using FieldDay.Systems;
 using FieldDay;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Zavala.Economy;
 using Zavala.Sim;
 using BeauUtil.Debugger;
 using BeauUtil;
-using Zavala.Data.Utils;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System;
-using System.Xml;
 
-namespace Zavala.Roads
-{
+namespace Zavala.Roads {
     [SysUpdate(GameLoopPhase.Update, 0)]
     public class RoadSystem : SharedStateSystemBehaviour<RoadNetwork, SimGridState>
     {
@@ -32,12 +25,17 @@ namespace Zavala.Roads
                 RoadNetwork network = m_StateA;
 
                 // Clear old connections data
-                network.Connections.Clear();
+                network.Roads.PathIndexAllocator.Reset();
+                network.Roads.PathInfoAllocator.Reset();
+
+                for(int i = 0; i < m_StateA.Destinations.Count; i++) {
+                    m_StateA.Destinations[i].Connections = default;
+                }
 
                 // Gather new connections data
                 foreach (var index in m_StateA.DestinationIndices) {
                     // Run shortest path algorithm
-                    RingBuffer<RoadPathSummary> connections = FindConnections(index, network.Roads.Info, gridSize);
+                    UnsafeSpan<RoadPathSummary> connections = FindConnections(index, network.Roads.Info, gridSize);
 
                     // Add newfound connections
                     network.Connections.Add(index, connections);
@@ -52,11 +50,11 @@ namespace Zavala.Roads
 
         private struct GraphNode : IEquatable<GraphNode>
         {
-            public uint TileIdx;
+            public ushort TileIdx;
+            public ushort TentativeDistance;
             public bool Visited;
-            public uint TentativeDistance;
 
-            public GraphNode(uint idx, uint dist) {
+            public GraphNode(ushort idx, ushort dist) {
                 TileIdx = idx;
                 Visited = false;
                 TentativeDistance = dist;
@@ -70,7 +68,7 @@ namespace Zavala.Roads
         /// <summary>
         /// Runs the Dijkstra's shortest tree algorithm
         /// </summary>
-        static public unsafe RingBuffer<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, HexGridSize gridSize) {
+        static public unsafe UnsafeSpan<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, HexGridSize gridSize) {
             RingBuffer<RoadPathSummary> allConnections = new RingBuffer<RoadPathSummary>();
 
             // TODO: optimize the data structures in this algorithm
@@ -89,7 +87,7 @@ namespace Zavala.Roads
                     }
 
                     // Node is marked unvisited at the start and assigned tentative distance of uint.MaxValue
-                    GraphNode newNode = new GraphNode((uint)i, uint.MaxValue);
+                    GraphNode newNode = new GraphNode((ushort)i, ushort.MaxValue);
 
                     // special case for initial node
                     if (i == startIdx) {
@@ -176,14 +174,14 @@ namespace Zavala.Roads
             return allConnections;
         }
 
-        private static void UpdateTentativeDistance(List<GraphNode> universalSet, int tileIdx, uint newDist) {
+        private static void UpdateTentativeDistance(List<GraphNode> universalSet, int tileIdx, int newDist) {
             for (int i = 0; i < universalSet.Count; i++) {
                 if (universalSet[i].TileIdx == tileIdx) {
                     GraphNode toUpdate = universalSet[i];
 
                     // Compare new distance to current one assigned to neighbor and assign the smaller.
                     if (newDist < toUpdate.TentativeDistance) {
-                        toUpdate.TentativeDistance = newDist;
+                        toUpdate.TentativeDistance = (ushort) newDist;
                         universalSet[i] = toUpdate;
                     }
                 }

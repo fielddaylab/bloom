@@ -63,15 +63,15 @@ namespace Zavala.Sim {
     public unsafe struct RoadBuffers {
         public SimBuffer<RoadTileInfo> Info;
 
-        public SimArena<RoadPathSummary> PathInfo;
-        public SimArena<ushort> PathData;
+        public SimArena<RoadPathSummary> PathInfoAllocator;
+        public SimArena<ushort> PathIndexAllocator;
 
         public void Create(in HexGridSize size) {
             Info = SimBuffer.Create<RoadTileInfo>(size);
             SimBuffer.Clear(Info);
 
-            PathInfo = SimArena.Create<RoadPathSummary>(MaxPathSummaries);
-            PathData = SimArena.Create<ushort>(MaxPathData);
+            PathInfoAllocator = SimArena.Create<RoadPathSummary>(MaxPathSummaries);
+            PathIndexAllocator = SimArena.Create<ushort>(MaxPathData);
         }
 
         public const int MaxPathSummaries = ushort.MaxValue;

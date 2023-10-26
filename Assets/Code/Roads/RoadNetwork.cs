@@ -17,10 +17,8 @@ namespace Zavala.Roads
     public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks
     {
         [NonSerialized] public RoadBuffers Roads;
-        [NonSerialized] public List<RoadInstanceController> RoadObjects; // The physical instances of road prefabs
-        [NonSerialized] public HashSet<int> DestinationIndices;
-
-        [NonSerialized] public Dictionary<int, RingBuffer<RoadPathSummary>> Connections; // key is tile index, values are tiles connected via road
+        [NonSerialized] public RingBuffer<RoadInstanceController> RoadObjects; // The physical instances of road prefabs
+        [NonSerialized] public RingBuffer<RoadDestinationInfo> Destinations;
 
         public RoadLibrary Library;
         [NonSerialized] public Dictionary<uint, List<ResourceSupplierProxy>> ExportDepotMap; // Maps region index to export depots in that region
@@ -30,12 +28,11 @@ namespace Zavala.Roads
         #region Registration
 
         void IRegistrationCallbacks.OnRegister() {
-            Connections = new Dictionary<int, RingBuffer<RoadPathSummary>>();
             UpdateNeeded = true;
             SimGridState gridState = ZavalaGame.SimGrid;
             Roads.Create(gridState.HexSize);
-            RoadObjects = new List<RoadInstanceController>();
-            DestinationIndices = new HashSet<int>(64);
+            RoadObjects = new RingBuffer<RoadInstanceController>(64, RingBufferMode.Expand);
+            Destinations = new RingBuffer<RoadDestinationInfo>(48, RingBufferMode.Expand);
             ExportDepotMap = new Dictionary<uint, List<ResourceSupplierProxy>>();
         }
 
@@ -52,10 +49,11 @@ namespace Zavala.Roads
         DFertilizer = ResourceMask.DFertilizer,
         Grain = ResourceMask.Grain,
         Milk = ResourceMask.Milk,
-        Tollbooth = Milk << 1
+        Tollbooth = Milk << 1,
+        Export = Milk << 2
     }
 
-    public struct RoadPathDestination {
+    public struct RoadDestinationInfo {
         public ushort TileIdx;
         public ushort RegionIdx;
         public RoadDestinationMask Type;
@@ -125,16 +123,19 @@ namespace Zavala.Roads
 
     static public class RoadUtility
     {
-        static public RoadPathSummary IsConnected(RoadNetwork network, HexGridSize gridSize, int tileIdxA, int tileIdxB) {
+        static public readonly Predicate<RoadDestinationInfo, ushort> FindDestinationByTileIndex = (d, i) => d.TileIdx == i;
+
+        static public unsafe RoadPathSummary IsConnected(RoadNetwork network, HexGridSize gridSize, int tileIdxA, int tileIdxB) {
             // idxA is supplier, idxB is buyer
             RoadPathSummary info;
 
             // at this point, every tile index has a list of indexes of tiles they are connected to.
-            if (network.Connections.ContainsKey(tileIdxA)) {
-                RingBuffer<RoadPathSummary> aConnections = network.Connections[tileIdxA];
+            int startIdx = network.Destinations.FindIndex(FindDestinationByTileIndex, (ushort) tileIdxA);
+            if (startIdx >= 0) {
+                UnsafeSpan<RoadPathSummary> aConnections = network.Destinations[startIdx].Connections;
 
                 // First pass: check if connected directly (takes precedence over export depot)
-                for (int i = 0; i < aConnections.Count; i++) {
+                for (int i = 0; i < aConnections.Length; i++) {
                     if (aConnections[i].DestinationIdx == tileIdxB) {
                         // All info contained in connection
                         return aConnections[i];
@@ -147,7 +148,7 @@ namespace Zavala.Roads
                     if (network.ExportDepotMap.ContainsKey(currRegion)) {
                         List<ResourceSupplierProxy> relevantDepots = network.ExportDepotMap[currRegion];
 
-                        for (int i = 0; i < aConnections.Count; i++) {
+                        for (int i = 0; i < aConnections.Length; i++) {
                             foreach (var depot in relevantDepots) {
                                 // For each export depot, check if supplier is connected to it.
                                 if (aConnections[i].DestinationIdx == depot.Position.TileIndex) {
@@ -228,7 +229,7 @@ namespace Zavala.Roads
                 HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
                 Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
                 RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
-                network.RoadObjects.Add(newRoad);
+                network.RoadObjects.PushBack(newRoad);
 
                 newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
                     if (c < a - 50) {
@@ -313,24 +314,41 @@ namespace Zavala.Roads
 
         #region Register
 
-        static public void RegisterRoadAnchor(OccupiesTile position) {
+        static public void RegisterRoadDestination(OccupiesTile position, RoadDestinationMask pathFilter, RoadDestinationMask incomingMask) {
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             Assert.NotNull(network);
 
             network.Roads.Info[position.TileIndex].Flags |= RoadFlags.IsRoadAnchor | RoadFlags.IsRoadDestination; // roads may connect with buyers/sellers
-            network.DestinationIndices.Add(position.TileIndex);
+
+            int currentIdx = network.Destinations.FindIndex(FindDestinationByTileIndex, (ushort) position.TileIndex);
+            if (currentIdx >= 0) {
+                ref RoadDestinationInfo dInfo = ref network.Destinations[currentIdx];
+                dInfo.Filter |= pathFilter;
+                dInfo.Type |= incomingMask;
+            } else {
+                RoadDestinationInfo dInfo;
+                dInfo.Filter = pathFilter;
+                dInfo.Type = incomingMask;
+                dInfo.TileIdx = (ushort) position.TileIndex;
+                dInfo.RegionIdx = position.RegionIndex;
+                dInfo.Connections = default;
+                network.Destinations.PushBack(dInfo);
+            }
             Debug.Log("[StagingRoad] tile " + position.TileIndex + " is now a road anchor");
         }
 
-        static public void DeregisterRoadAnchor(OccupiesTile position) {
+        static public void DeregisterRoadDestination(OccupiesTile position) {
             if (Game.IsShuttingDown) {
                 return;
             }
 
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            if (network != null && (network.Roads.Info[position.TileIndex].Flags & RoadFlags.IsRoadAnchor) != 0) {
+            if (network != null && (network.Roads.Info[position.TileIndex].Flags & RoadFlags.IsRoadDestination) != 0) {
                 network.Roads.Info[position.TileIndex].Flags &= ~(RoadFlags.IsRoadAnchor | RoadFlags.IsRoadDestination);
-                network.DestinationIndices.Remove(position.TileIndex);
+                int idx = network.Destinations.FindIndex(FindDestinationByTileIndex, (ushort) position.TileIndex);
+                if (idx >= 0) {
+                    network.Destinations.FastRemoveAt(idx);
+                }
             }
         }
 

@@ -15,9 +15,6 @@ namespace Zavala.World {
         [Header("Pillar")]
         public MeshRenderer PillarRenderer;
 
-        [Header("Misc")]
-        public Renderer[] Decorations;
-
         [NonSerialized] public SimpleMeshConfig TopDefaultConfig;
         [NonSerialized] public Material PillarDefaultMat;
 

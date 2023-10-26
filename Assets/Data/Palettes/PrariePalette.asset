@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a5b4b218509de34192fd25dbc3a19fe, type: 3}
-  m_Name: ForestPalette
+  m_Name: PrariePalette
   m_EditorClassIdentifier: 
-  GroundTile: {fileID: 4929987932592038972, guid: 0b976d59a11a29341b2cb852bc43199b, type: 3}
-  InnerGroundTile: {fileID: 764812806168612941, guid: 01cf09b63075b4746a79c2c924d20600, type: 3}
+  GroundTile: {fileID: 1682522120635054893, guid: 0e25536119ba8c34081bf5c1b896fdae, type: 3}
+  InnerGroundTile: {fileID: 4070291153616356264, guid: e80ef02b869c8134e9a7dc02e878444c, type: 3}
   TileTopEmptyMesh:
     Mesh: {fileID: -400652122881840610, guid: f4ee780c21bb31d4d8ce371c97e13c1a, type: 3}
     Material: {fileID: 2100000, guid: e3a8c44238bcdab4e8ab3a7e42884228, type: 2}
-  City: {fileID: 7969817350258342186, guid: c80f1eae9dd8ed04eaa4458297132759, type: 3}
-  DairyFarm: {fileID: 2888134989403396560, guid: ea239b7060842b8489d6d2855f8de181, type: 3}
-  GrainFarm: {fileID: 5981646520746778409, guid: 64fc9adf09f541f43902c4dbd9ddc80d, type: 3}
+  City: {fileID: 8618302430198849950, guid: 0c9f418dca6bd4546be9c1f0ca5d1a63, type: 3}
+  DairyFarm: {fileID: 1341254393580726282, guid: 682e779945c87ce43b6db5333ab96dbd, type: 3}
+  GrainFarm: {fileID: 7472050176056558017, guid: 2ac7c6c892de8fc4e80c44714a601791, type: 3}
   ExportDepot: {fileID: 7291294420475072060, guid: 201bdaeea4b86894797bc4502d768471, type: 3}
   Rock:
-  - {fileID: 7038089790863349094, guid: b7bc3d8c9af19204abdff3b87de36e36, type: 3}
+  - {fileID: 3856404185786449647, guid: 89f80e79a6bef4b439a1ce7e9b3be0b1, type: 3}
   Tree:
-  - {fileID: 7038089790863349094, guid: b7bc3d8c9af19204abdff3b87de36e36, type: 3}
+  - {fileID: 3856404185786449647, guid: 89f80e79a6bef4b439a1ce7e9b3be0b1, type: 3}
