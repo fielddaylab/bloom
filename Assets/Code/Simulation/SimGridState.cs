@@ -38,6 +38,8 @@ namespace Zavala.Sim {
 
         [NonSerialized] public HashSet<uint> UpdatedRegions = new HashSet<uint>();
 
+        [NonSerialized] public int GlobalMaxHeight; // the highest tile height across all regions
+
         // miscellaneous
 
         [NonSerialized] public System.Random Random;
@@ -57,6 +59,8 @@ namespace Zavala.Sim {
             CurrRegionIndex = 0;
             Random = new System.Random((int) (Environment.TickCount ^ DateTime.UtcNow.ToFileTimeUtc()));
 
+            GlobalMaxHeight = 0;
+
             GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this, WorldData));
         }
     }
@@ -64,25 +68,26 @@ namespace Zavala.Sim {
     static public class SimDataUtility {
         static public void LateInitializeData(SimGridState grid, WorldAsset world) {
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
-            LoadRegionDataFromWorld(grid, world, 0);
+            SimWorldState worldState = Game.SharedState.Get<SimWorldState>();
+            LoadRegionDataFromWorld(grid, world, 0, worldState);
             RegenTerrainDependentInfo(grid, phosphorus);
             GenerateRandomPhosphorus(grid, phosphorus);
 
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
         }
 
-        static public void LoadAndRegenRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex) {
+        static public void LoadAndRegenRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex, SimWorldState worldState) {
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
-            LoadRegionDataFromWorld(grid, world, regionIndex);
+            LoadRegionDataFromWorld(grid, world, regionIndex, worldState);
             RegenTerrainDependentInfo(grid, phosphorus);
         }
 
-        static public void LoadRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex) {
+        static public void LoadRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex, SimWorldState worldState) {
             var offsetRegion = world.Regions[regionIndex];
-            LoadRegionData(grid, offsetRegion.Region, offsetRegion.X, offsetRegion.Y, offsetRegion.Elevation, world.Palette(regionIndex));
+            LoadRegionData(grid, offsetRegion.Region, offsetRegion.X, offsetRegion.Y, offsetRegion.Elevation, world.Palette(regionIndex), worldState);
         }
 
-        static public void LoadRegionData(SimGridState grid, RegionAsset asset, uint offsetX, uint offsetY, uint offsetElevation, RegionPrefabPalette palette) {
+        static public void LoadRegionData(SimGridState grid, RegionAsset asset, uint offsetX, uint offsetY, uint offsetElevation, RegionPrefabPalette palette, SimWorldState worldState) {
             HexGridSubregion totalRegion = new HexGridSubregion(grid.HexSize);
             HexGridSubregion subRegion = totalRegion.Subregion((ushort) offsetX, (ushort) offsetY, (ushort) asset.Width, (ushort) asset.Height);
 
@@ -160,6 +165,7 @@ namespace Zavala.Sim {
             }
 
             RegenRegionInfo(grid, regionIndex, subRegion);
+            worldState.MaxHeight = HexVector.ToWorld(new HexVector(), grid.GlobalMaxHeight, worldState.WorldSpace).y;
         }
 
         /// <summary>
@@ -195,6 +201,7 @@ namespace Zavala.Sim {
             Assert.True(regionIndex < grid.RegionCount, "Region {0} is not a part of grid - currently {1} regions", regionIndex, grid.RegionCount);
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
             regionInfo.MaxHeight = TerrainInfo.GetMaximumHeight(grid.Terrain.Info, subregion, (ushort) regionIndex);
+            if (regionInfo.MaxHeight > grid.GlobalMaxHeight) { grid.GlobalMaxHeight = regionInfo.MaxHeight; }
             regionInfo.GridArea = subregion;
         }
 

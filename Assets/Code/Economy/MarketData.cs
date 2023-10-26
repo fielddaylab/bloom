@@ -72,7 +72,7 @@ namespace Zavala.Economy
         public ResourceRequester Target;
         public ResourceMask Mask;
         public int Distance;
-        public int ProxyIdx;
+        public ushort ProxyIdx;
         public int Profit;
         public GeneratedTaxRevenue TaxRevenue;
     }
@@ -119,13 +119,13 @@ namespace Zavala.Economy
     {
         public ResourceSupplier Supplier;
         public ResourceRequester Requester;
-        public int ProxyIdx;
+        public ushort ProxyIdx;
         public ResourceBlock Requested;
         public ResourceBlock Supplied;
         public RequestFulfiller Fulfiller;
         public GeneratedTaxRevenue Revenue;
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, int proxyIdx, ResourceBlock request, ResourceBlock supply, GeneratedTaxRevenue revenue) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, ushort proxyIdx, ResourceBlock request, ResourceBlock supply, GeneratedTaxRevenue revenue) {
             Supplier = supplier;
             Requester = requester;
             ProxyIdx = proxyIdx;
@@ -135,7 +135,7 @@ namespace Zavala.Economy
             Revenue = revenue;
         }
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request, ResourceBlock supplied, GeneratedTaxRevenue revenue, int proxyIdx) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request, ResourceBlock supplied, GeneratedTaxRevenue revenue, ushort proxyIdx) {
             Supplier = supplier;
             Requester = request.Requester;
             ProxyIdx = proxyIdx;

@@ -63,25 +63,40 @@ namespace Zavala.Roads
         public UnsafeSpan<RoadPathSummary> Connections;
     }
 
-    public struct RoadPathSummary
-    {
+    public struct RoadPathSummary {
         public ushort DestinationIdx; // destination index
-        public UnsafeSpan<ushort> Tiles;
         public ushort ProxyConnectionIdx; // the proxy tile through which this connection is enabled, e.g. Export Depot tile index
+        public UnsafeSpan<ushort> Tiles;
+        public RoadPathFlags Flags;
 
         public bool Connected {
-            get { return Tiles.Length > 0; }
+            get { return Tiles.Length > 0 || (Flags & RoadPathFlags.ForceConnection) != 0; }
+            set {
+                if (value) {
+                    Flags |= RoadPathFlags.ForceConnection;
+                } else {
+                    Flags &= ~RoadPathFlags.ForceConnection;
+                }
+            }
         }
 
         public ushort Distance {
             get { return (ushort) Tiles.Length; }
         }
 
-        public RoadPathSummary(ushort idx, UnsafeSpan<ushort> tiles, ushort proxyConnectionIdx = Tile.InvalidIndex16) {
+        public RoadPathSummary(ushort idx, UnsafeSpan<ushort> tiles, RoadPathFlags flags, ushort proxyConnectionIdx = Tile.InvalidIndex16) {
             DestinationIdx = idx;
             Tiles = tiles;
+            Flags = flags;
             ProxyConnectionIdx = proxyConnectionIdx;
         }
+    }
+
+    [Flags]
+    public enum RoadPathFlags : byte {
+        Reversed = 0x01,
+        ForceConnection = 0x02,
+        Proxy = 0x04
     }
 
     /// <summary>

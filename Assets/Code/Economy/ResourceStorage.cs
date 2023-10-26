@@ -21,6 +21,8 @@ namespace Zavala.Economy {
         public ResourceRequester StorageExtensionReq; // mainly for let it sit option
         public ResourceStorage StorageExtensionStore; // mainly for let it sit option
 
+        public bool InfiniteSupply = false;  // true if external commercial fertilizer seller
+
         public void Start() {
              ResourceStorageUtility.RefreshStorageDisplays(this);
         }

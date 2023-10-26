@@ -49,7 +49,7 @@ namespace Zavala.Economy
             foreach (var supplier in m_SupplierWorkList) {
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue, out int proxyIdx);
+                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx);
 
                 if (found.HasValue) {
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
@@ -84,7 +84,13 @@ namespace Zavala.Economy
                     GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
                     MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
 
-                    MarketActiveRequestInfo activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested), netTaxRevenue, proxyIdx);
+                    MarketActiveRequestInfo activeRequest;
+                    if (supplier.Storage.InfiniteSupply) {
+                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, adjustedValueRequested, netTaxRevenue, proxyIdx);
+                    }
+                    else {
+                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested), netTaxRevenue, proxyIdx);
+                    }
                     ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
                     if (baseProfit < 0) { supplier.SoldAtALoss = true; }
 
@@ -114,22 +120,23 @@ namespace Zavala.Economy
             ZavalaGame.Events.Dispatch(GameEvents.MarketCycleTickCompleted);
         }
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out GeneratedTaxRevenue taxRevenue, out int proxyIdx) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current = supplier.Storage.Current;
-            proxyIdx = -1;
+            proxyIdx = Tile.InvalidIndex16;
 
             for (int i = 0; i < requests.Count; i++) {
-                if (!ResourceBlock.Fulfills(current, requests[i].Requested)) {
-                    continue;
+                if (!supplier.Storage.InfiniteSupply) {
+                    if (!ResourceBlock.Fulfills(current, requests[i].Requested)) {
+                        continue;
+                    }
                 }
 
                 int priorityIndex = supplier.Priorities.PrioritizedBuyers.FindIndex((i, b) => i.Target == b, requests[i].Requester);
                 if (priorityIndex < 0) {
                     continue;
                 }
-
 
                 if (priorityIndex == 0) {
                     MarketRequestInfo request = requests[i];
@@ -197,7 +204,18 @@ namespace Zavala.Economy
                     continue;
                 }
 
-                RoadPathSummary connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
+                RoadPathSummary connectionSummary;
+                if (supplier.Position.IsExternal) {
+                    connectionSummary = new RoadPathSummary();
+                    connectionSummary.DestinationIdx = (ushort) requester.Position.TileIndex;
+                    connectionSummary.Connected = true;
+                    // TODO: ProxyId is regionally-based
+                    // connectionSummary.ProxyConnectionIdx = 0;
+                }
+                else {
+                    connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
+                }
+
                 if (!connectionSummary.Connected) {
                     continue;
                 }
@@ -207,30 +225,46 @@ namespace Zavala.Economy
                 }
 
                 bool proxyMatch = false;
-                // Adjust for if is a proxy connection
-                if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
-                    // If proxy connection, ensure proxy is for the right type of resource
-                    uint region = ZavalaGame.SimGrid.Terrain.Regions[connectionSummary.ProxyConnectionIdx];
-                    ResourceSupplierProxy relevantProxy = null;
-                    if (network.ExportDepotMap.ContainsKey(region)) {
-                        List<ResourceSupplierProxy> proxies = network.ExportDepotMap[region];
-                        foreach (var proxy in proxies) {
-                            // For each export depot, check if supplier is connected to it.
-                            if (connectionSummary.ProxyConnectionIdx == proxy.Position.TileIndex) {
-                                ResourceMask proxyOverlap = supplier.ShippingMask & proxy.ProxyMask;
 
-                                if (proxyOverlap != 0) {
-                                    proxyMatch = true;
+                //External case
+                if (supplier.Position.IsExternal) {
+                    /* Only need to check for overlap if we start having various external suppliers selling different types of products through different depots.
+                    ExternalState externalState = Game.SharedState.Get<ExternalState>();
+
+                    ResourceMask proxyOverlap = supplier.ShippingMask & externalState.ExternalDepot.ProxyMask;
+
+                    if (proxyOverlap == 0) {
+                        // no match
+                        continue;
+                    }
+                    */
+                }
+                // Regular case
+                else {
+                    // Adjust for if is a proxy connection
+                    if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
+                        // If proxy connection, ensure proxy is for the right type of resource
+                        uint region = ZavalaGame.SimGrid.Terrain.Regions[connectionSummary.ProxyConnectionIdx];
+                        if (network.ExportDepotMap.ContainsKey(region)) {
+                            List<ResourceSupplierProxy> proxies = network.ExportDepotMap[region];
+                            foreach (var proxy in proxies) {
+                                // For each export depot, check if supplier is connected to it.
+                                if (connectionSummary.ProxyConnectionIdx == proxy.Position.TileIndex) {
+                                    ResourceMask proxyOverlap = supplier.ShippingMask & proxy.ProxyMask;
+
+                                    if (proxyOverlap != 0) {
+                                        proxyMatch = true;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (!proxyMatch) {
-                        continue;
+                        if (!proxyMatch) {
+                            // no match
+                            continue;
+                        }
                     }
                 }
-
 
                 var adjustments = config.UserAdjustmentsPerRegion[requester.Position.RegionIndex];
 
@@ -238,7 +272,7 @@ namespace Zavala.Economy
                 // Only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 int importCost = 0;
-                if (supplier.Position.RegionIndex != requester.Position.RegionIndex) {
+                if (supplier.Position.IsExternal || (supplier.Position.RegionIndex != requester.Position.RegionIndex)) {
                     importCost = adjustments.ImportTax[primary];
                 }
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + importCost;
@@ -250,7 +284,7 @@ namespace Zavala.Economy
 
                 float profit = 0;
                 if (requester.IsLocalOption) {
-                    // no profit associated
+                    profit -= adjustments.RunoffPenalty[primary];
                 }
                 else {
                     if (requester.OverridesBuyPrice) {
@@ -260,9 +294,7 @@ namespace Zavala.Economy
                         profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
                     }
                 }
-                if (requester.IsLocalOption) {
-                    profit -= adjustments.RunoffPenalty[primary];
-                }
+
                 float score = profit - shippingCost;
 
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue();

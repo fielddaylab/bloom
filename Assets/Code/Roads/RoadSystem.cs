@@ -161,7 +161,7 @@ namespace Zavala.Roads
                         }
 
                         // Mark the current node as visited; remove from the unvisited set, add it to allConnections
-                        allConnections.PushBack(new RoadPathSummary((ushort)currNode.TileIdx, new UnsafeSpan<ushort>(null, (ushort) currNode.TentativeDistance)));
+                        allConnections.PushBack(new RoadPathSummary((ushort)currNode.TileIdx, default, RoadPathFlags.ForceConnection));
                         universalSet.Remove(currNode);
 
                         // set the unvisited with the smallest tentative distance to current, then repeat while unvisited set is not exhausted

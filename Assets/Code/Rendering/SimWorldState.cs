@@ -6,6 +6,7 @@ using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zavala.Economy;
 using Zavala.Sim;
 
 namespace Zavala.World {
@@ -38,6 +39,8 @@ namespace Zavala.World {
         [NonSerialized] public uint RegionCount; // cached from SimDataComponent
         [NonSerialized] public uint RegionCullingMask;
 
+        [NonSerialized] public float MaxHeight;
+
         // phosphorus data
 
         [NonSerialized] public PhosphorusRenderState[] Phosphorus = new PhosphorusRenderState[RegionInfo.MaxRegions];
@@ -46,6 +49,10 @@ namespace Zavala.World {
 
         [NonSerialized] public TileInstance[] Tiles;
         [NonSerialized] public RegionPrefabPalette[] Palettes;
+
+        [Header("External Spawning")]
+        public ResourceSupplier ExternalSupplierPrefab;
+        public ResourceSupplierProxy ExternalExportDepotPrefab;
 
         // temporary data
 
