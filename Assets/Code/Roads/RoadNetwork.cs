@@ -17,6 +17,8 @@ namespace Zavala.Roads
     public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks
     {
         [NonSerialized] public RoadBuffers Roads;
+        [NonSerialized] public ConnectionMaskBuffers OutputMasks; // Masks of what a tile is concerned with for shipping to (e.g. dairy farm has a mask of manure and milk. Not grain.) 
+        [NonSerialized] public ConnectionMaskBuffers IntakeMasks; // Masks of what a tile is concerned with for receiving
         [NonSerialized] public List<RoadInstanceController> RoadObjects; // The physical instances of road prefabs
         [NonSerialized] public HashSet<int> DestinationIndices;
 
@@ -34,6 +36,8 @@ namespace Zavala.Roads
             UpdateNeeded = true;
             SimGridState gridState = ZavalaGame.SimGrid;
             Roads.Create(gridState.HexSize);
+            OutputMasks.Create(gridState.HexSize);
+            IntakeMasks.Create(gridState.HexSize);
             RoadObjects = new List<RoadInstanceController>();
             DestinationIndices = new HashSet<int>(64);
             ExportDepotMap = new Dictionary<uint, List<ResourceSupplierProxy>>();
@@ -113,15 +117,20 @@ namespace Zavala.Roads
                             foreach (var depot in relevantDepots) {
                                 // For each export depot, check if supplier is connected to it.
                                 if (aConnections[i].TileIndx == depot.Position.TileIndex) {
-                                    // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy bool
-                                    RoadPathSummary proxySummary = aConnections[i];
-                                    // set buyer as destination
-                                    proxySummary.TileIndx = tileIdxB;
-                                    // note: distance already set
-                                    // set proxy bool
-                                    proxySummary.ProxyConnectionIdx = depot.Position.TileIndex;
+                                    // if supplier is connected to export depot, then we already know the export depot transports a type of resource the supplier is selling
+                                    // Check if connection masks line up between supplier and purchaser
+                                    // Supplier is tileIdxA. Buyer is tileIdxB
+                                    if ((network.OutputMasks.Info[tileIdxA] & network.IntakeMasks.Info[tileIdxB]) != 0) {
+                                        // Create new proxy summary with 1) buyer destination index, 2) distance from supplier to export depot, and 3) proxy index
+                                        RoadPathSummary proxySummary = aConnections[i];
+                                        // set buyer as destination
+                                        proxySummary.TileIndx = tileIdxB;
+                                        // note: distance already set
+                                        // set proxy index
+                                        proxySummary.ProxyConnectionIdx = depot.Position.TileIndex;
 
-                                    return proxySummary;
+                                        return proxySummary;
+                                    }
                                 }
                             }
                         }
@@ -294,6 +303,9 @@ namespace Zavala.Roads
             List<ResourceSupplierProxy> currentDepots = network.ExportDepotMap[proxy.Position.RegionIndex];
             currentDepots.Add(proxy);
             network.ExportDepotMap[proxy.Position.RegionIndex] = currentDepots;
+
+            RegisterOutputMask(proxy.Position, proxy.ProxyMask);
+            RegisterIntakeMask(proxy.Position, proxy.ProxyMask);
         }
 
         static public void DeregisterExportDepot(ResourceSupplierProxy proxy) {
@@ -306,6 +318,46 @@ namespace Zavala.Roads
                 List<ResourceSupplierProxy> currentDepots = network.ExportDepotMap[proxy.Position.RegionIndex];
                 currentDepots.Remove(proxy);
                 network.ExportDepotMap[proxy.Position.RegionIndex] = currentDepots;
+            }
+        }
+
+        static public void RegisterOutputMask(OccupiesTile position, ResourceMask outputMask) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            Assert.NotNull(network);
+
+            network.OutputMasks.Info[position.TileIndex] = outputMask;
+        }
+
+        static public void DeregisterOutputMask(OccupiesTile position) {
+            if (Game.IsShuttingDown) {
+                return;
+            }
+
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            Assert.NotNull(network);
+
+            if (network != null) {
+                network.OutputMasks.Info[position.TileIndex] = new ResourceMask();
+            }
+        }
+
+        static public void RegisterIntakeMask(OccupiesTile position, ResourceMask intakeMask) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            Assert.NotNull(network);
+
+            network.IntakeMasks.Info[position.TileIndex] = intakeMask;
+        }
+
+        static public void DeregisterIntakeMask(OccupiesTile position) {
+            if (Game.IsShuttingDown) {
+                return;
+            }
+
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            Assert.NotNull(network);
+
+            if (network != null) {
+                network.IntakeMasks.Info[position.TileIndex] = new ResourceMask();
             }
         }
 

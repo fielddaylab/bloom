@@ -29,11 +29,13 @@ namespace Zavala.Economy {
 
             MarketUtility.RegisterSupplier(this);
             RoadUtility.RegisterRoadAnchor(Position);
+            RoadUtility.RegisterOutputMask(Position, ShippingMask);
         }
 
         protected override void OnDisable() {
             MarketUtility.DeregisterSupplier(this);
             RoadUtility.DeregisterRoadAnchor(Position);
+            RoadUtility.DeregisterOutputMask(Position);
 
             SoldAtALoss = false;
             Priorities.PrioritizedBuyers.Clear();

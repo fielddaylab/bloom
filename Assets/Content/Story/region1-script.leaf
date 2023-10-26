@@ -6,16 +6,16 @@
 $call Pause()
 // Seems like we only need to talk about market conditions at first.
 // Start mentioning blooms only after some start to appear. And leave that to the ecological advisor.
-{local @advisorEcon}    Greetings. Let's get right to business, shall we?
-{local @advisorEcon}    Our lovely <i>Hillside Region</i> is a chunk of blooming real estate with three buildings:
+{@advisorEconHill}    Greetings. Let's get right to business, shall we?
+{@advisorEconHill}      Our lovely <i>Hillside Region</i> is a chunk of blooming real estate with three buildings:
 $call PanToBuilding("region1_city1");
-{local @advisorEcon}    A <i>City</i>... // Insert camera panning here
+{@advisorEconHill}      A <i>City</i>... // Insert camera panning here
 $call PanToBuilding("region1_cafo1");
-{local @advisorEcon}    A <i>Dairy Farm</i>... // Insert camera panning here
+{@advisorEconHill}      A <i>Dairy Farm</i>... // Insert camera panning here
 $call PanToBuilding("region1_grain1");
-{local @advisorEcon}    And a <i>Grain Farm</i>. // Insert camera panning here
-{local @advisorEcon}    But something else is required before it can truly be considered an economy... <i>Roads</i>!
-{local @advisorEcon}    Start by opening your <i>Funding</i> menu to connect these your two farms with a <i>Road</i>.
+{@advisorEconHill}      And a <i>Grain Farm</i>. // Insert camera panning here
+{@advisorEconHill}      But something else is required before it can truly be considered an economy... <i>Roads</i>!
+{@advisorEconHill}      Start by opening your <i>Funding</i> menu to connect these your two farms with a <i>Road</i>.
 
 // {local @advisorEcon}    Greetings. Let's get right to business, shall we?
 // {local @advisorEcon}    These troublesome algae blooms have been appearing all over. 
@@ -32,8 +32,8 @@ $call Unpause()
 :: roadSelected
 @trigger BuildButtonPressed
 @once
-{local @advisorEcon}    With your <i>Road</i> tool selected, click and drag from the source to the destination. 
-{local @advisorEcon}    But each tile will spend from our regional budget! Try to be thrifty.
+{@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
+{@advisorEconHill}      But each tile will spend from our regional budget! Try to be thrifty.
 
 
 // Step 3: Introduce cities
@@ -42,16 +42,16 @@ $call Unpause()
 @once
 $call Pause()
 $if intro:citiesConnected
-    {local @advisorEcon}    Nice work! Now the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i> and <i>manure</i>.
-    {local @advisorEcon}    And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
+    {@advisorEconHill}      Nice work! Now the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i> and <i>manure</i>.
+    {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect city and dairy
-    {local @advisorEcon}    That's a well-built road, that.
-    {local @advisorEcon}    Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
-    {local @advisorEcon}    And the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i>.
-    {local @advisorEcon}    But who buys the <i>milk</i>, you ask? That'll be the City!
-    {local @advisorEcon}    Build another <i>Road</i> connecting the Dairy Farm and the City.
+    {@advisorEconHill}      That's a well-built road, that.
+    {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
+    {@advisorEconHill}      And the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i>.
+    {@advisorEconHill}      But who buys the <i>milk</i>, you ask? That'll be the City!
+    {@advisorEconHill}      Build another <i>Road</i> connecting the Dairy Farm and the City.
 $endif
 $call Unpause()
 $set intro:farmsConnected = true
@@ -61,23 +61,23 @@ $set intro:farmsConnected = true
 @once
 $call Pause()
 $if intro:farmsConnected
-    {local @advisorEcon}    Nice work! Now the the City can buy <i>milk</i> from the Dairy Farm and turn it into <i>money</i> using TAX MAGIC!
+    {@advisorEconHill}      Nice work! Now the the City can buy <i>milk</i> from the Dairy Farm and turn it into <i>money</i> using TAX MAGIC!
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
-    {local @advisorEcon}    Uh-- hmm. I suppose we can start with the City. I'm not picky about these things.
-    {local @advisorEcon}    With this road, the City can purchase <i>milk</i> from the Dairy Farm to produce <i>money</i>.
-    {local @advisorEcon}    But how does a Dairy Farm make the <i>milk</i>, you ask? They trade with a Grain Farm!
-    {local @advisorEcon}    Build another road between the Dairy Farm and the Grain Farm.
+    {@advisorEconHill}      Uh-- hmm. I suppose we can start with the City. I'm not picky about these things.
+    {@advisorEconHill}      With this road, the City can purchase <i>milk</i> from the Dairy Farm to produce <i>money</i>.
+    {@advisorEconHill}      But how does a Dairy Farm make the <i>milk</i>, you ask? They trade with a Grain Farm!
+    {@advisorEconHill}      Build another road between the Dairy Farm and the Grain Farm.
 $endif
 
 $call Unpause()
 $set intro:citiesConnected = true
 
 :: farmsAndCitiesConnected 
-{local @advisorEcon}    Your Grain Farm is hooked up with the Dairy Farm, and the Dairy Farm with the City.
-{local @advisorEcon}    Now you can start optimizing your <i>manure</i> sources to produce more <i>milk</i> and <i>money</i>!
-{local @advisorEcon}    Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
+{@advisorEconHill}      Your Grain Farm is hooked up with the Dairy Farm, and the Dairy Farm with the City.
+{@advisorEconHill}      Now you can start optimizing your <i>manure</i> sources to produce more <i>milk</i> and <i>money</i>!
+{@advisorEconHill}      Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
 
 :: sittingOmens
 @trigger        LetSat
@@ -85,11 +85,11 @@ $set intro:citiesConnected = true
 @once
 $call Pause()
 $call PanToBuilding("region1_cafo1")
-{local @advisorEcol}    It looks like this dairy farm is letting its manure sit and run off.
-{local @advisorEcon}    Indeed. You'll have to make their alternatives more favorable.
-{local @advisorEcon}    Namely, either a Storage unit or a Grain Farm.
-{local @advisorEcon}    Make sure there's a road connecting them, and that shipping is cheaper than allowing runoff.
-{local @advisorEcol}    This could have ramifications for lake health down the line...
+{@advisorEcolHill}     It looks like this dairy farm is letting its manure sit and run off.
+{@advisorEconHill}      Indeed. You'll have to make their alternatives more favorable.
+{@advisorEconHill}      Namely, either a Storage unit or a Grain Farm.
+{@advisorEconHill}      Make sure there's a road connecting them, and that shipping is cheaper than allowing runoff.
+{@advisorEcolHill}      This could have ramifications for lake health down the line...
 $call Unpause()
 
 :: testEcologyAdvisorOpen

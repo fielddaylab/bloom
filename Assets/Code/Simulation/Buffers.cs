@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Zavala.Economy;
 using Zavala.Roads;
 
 namespace Zavala.Sim {
@@ -64,6 +65,20 @@ namespace Zavala.Sim {
 
         public void Create(in HexGridSize size) {
             Info = SimBuffer.Create<RoadTileInfo>(size);
+            SimBuffer.Clear(Info);
+        }
+    }
+
+
+    /// <summary>
+    /// Struct containing connection mask information buffers.
+    /// </summary>
+    public unsafe struct ConnectionMaskBuffers
+    {
+        public SimBuffer<ResourceMask> Info;
+
+        public void Create(in HexGridSize size) {
+            Info = SimBuffer.Create<ResourceMask>(size);
             SimBuffer.Clear(Info);
         }
     }

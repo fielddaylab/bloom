@@ -18,7 +18,6 @@ namespace Zavala.Roads
     [SysUpdate(GameLoopPhase.Update, 0)]
     public class RoadSystem : SharedStateSystemBehaviour<RoadNetwork, SimGridState>
     {
-
         public override void ProcessWork(float deltaTime) {
             // TODO: implement trigger to notify of needed update
             bool updateNeeded = m_StateA.UpdateNeeded;
@@ -37,7 +36,7 @@ namespace Zavala.Roads
                 // Gather new connections data
                 foreach (var index in gridSize) {
                     // Run shortest path algorithm
-                    RingBuffer<RoadPathSummary> connections = FindConnections(index, network.Roads.Info, gridSize);
+                    RingBuffer<RoadPathSummary> connections = FindConnections(index, network.Roads.Info, network.OutputMasks.Info, network.IntakeMasks.Info, gridSize);
 
                     // Add newfound connections
                     network.Connections.Add(index, connections);
@@ -66,7 +65,7 @@ namespace Zavala.Roads
         /// <summary>
         /// Runs the Dijkstra's shortest tree algorithm
         /// </summary>
-        static public RingBuffer<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, HexGridSize gridSize) {
+        static public RingBuffer<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, SimBuffer<ResourceMask> outputBuffer, SimBuffer<ResourceMask> intakeBuffer, HexGridSize gridSize) {
             RingBuffer<RoadPathSummary> allConnections = new RingBuffer<RoadPathSummary>();
 
             // TODO: optimize the data structures in this algorithm
@@ -156,8 +155,15 @@ namespace Zavala.Roads
                             }
                         }
 
-                        // Mark the current node as visited; remove from the unvisited set, add it to allConnections
-                        allConnections.PushBack(new RoadPathSummary((int)currNode.TileIdx, true, currNode.TentativeDistance));
+                        // Mark the current node as visited; remove from the unvisited set, add it to allConnections if relevant to each other
+                        // Supplier is startIdx. Buyer is currNode.TileIdx
+                        if ((outputBuffer[startIdx] & intakeBuffer[(int)currNode.TileIdx]) != 0) {
+                            allConnections.PushBack(new RoadPathSummary((int)currNode.TileIdx, true, currNode.TentativeDistance));
+                        }
+                        // TODO: more sophisticated check if local option. If so, add to list as connected. Else, don't.
+                        else if (startIdx == currNode.TileIdx) {
+                            allConnections.PushBack(new RoadPathSummary((int)currNode.TileIdx, true, currNode.TentativeDistance));
+                        }
                         universalSet.Remove(currNode);
 
                         // set the unvisited with the smallest tentative distance to current, then repeat while unvisited set is not exhausted

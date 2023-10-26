@@ -210,8 +210,6 @@ namespace Zavala.Economy
                     connectionSummary.TileIndx = requester.Position.TileIndex;
                     connectionSummary.Connected = true;
                     connectionSummary.Distance = 0;
-                    // TODO: ProxyId is regionally-based
-                    // connectionSummary.ProxyConnectionIdx = 0;
                 }
                 else {
                     connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);

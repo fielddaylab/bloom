@@ -38,11 +38,17 @@ namespace Zavala.Economy {
 
             MarketUtility.RegisterBuyer(this);
             RoadUtility.RegisterRoadAnchor(Position);
+            if (!IsLocalOption) {
+                RoadUtility.RegisterIntakeMask(Position, RequestMask);
+            }
         }
 
         protected override void OnDisable() {
             MarketUtility.DeregisterBuyer(this);
             RoadUtility.DeregisterRoadAnchor(Position);
+            if (!IsLocalOption) {
+                RoadUtility.DeregisterIntakeMask(Position);
+            }
 
             Requested.SetAll(0);
             RequestCount = 0;

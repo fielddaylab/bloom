@@ -207,6 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 9
+  IsExternal: 0
 --- !u!114 &7291294420475072054
 MonoBehaviour:
   m_ObjectHideFlags: 0
