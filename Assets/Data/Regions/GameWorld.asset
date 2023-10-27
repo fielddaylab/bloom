@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Regions:
   - Region: {fileID: 11400000, guid: b28b1ec17f3ec544d8bdd870c8ee5216, type: 2}
-    X: 20
-    Y: 12
+    X: 22
+    Y: 10
     Elevation: 4
   - Region: {fileID: 11400000, guid: 580231a10b79d7c42aebdf328771d6be, type: 2}
-    X: 10
+    X: 14
     Y: 10
     Elevation: 0
   Palettes:
