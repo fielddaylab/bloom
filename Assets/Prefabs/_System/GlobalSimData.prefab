@@ -94,6 +94,7 @@ MonoBehaviour:
   WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
   BottomBounds: 0
   BoundsExpand: 1.5
+  TollBoothPrefab: {fileID: 7291294420475072060, guid: e91eaf6fb0d4dfa42acf6c43a5f30133, type: 3}
   ExternalSupplierPrefab: {fileID: 1864174576578226009, guid: 1a7b92472d44a9942b954e734193f495, type: 3}
   ExternalExportDepotPrefab: {fileID: 5510234130325290282, guid: 682e7bf5966b24c4ab5caa79e1879ea0, type: 3}
 --- !u!114 &7708306960153739431

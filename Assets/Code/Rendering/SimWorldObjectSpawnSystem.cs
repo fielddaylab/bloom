@@ -75,6 +75,26 @@ namespace Zavala.World
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
             }
 
+            // Spawn objects which span multiple tiles (toll booths)
+            while (m_StateA.QueuedSpanners.TryPopFront(out var spawn)) {
+                // find midpoint pos
+                HexVector posA = m_StateB.HexSize.FastIndexToPos(spawn.TileIndexA);
+                HexVector posB = m_StateB.HexSize.FastIndexToPos(spawn.TileIndexB);
+                Vector3 worldPosA = HexVector.ToWorld(posA, m_StateB.Terrain.Info[spawn.TileIndexA].Height, m_StateA.WorldSpace);
+                Vector3 worldPosB = HexVector.ToWorld(posB, m_StateB.Terrain.Info[spawn.TileIndexB].Height, m_StateA.WorldSpace);
+                Vector3 worldPos = (worldPosA + worldPosB) / 2;
+                GameObject spanner = null;
+                switch (spawn.Data) {
+                    case BuildingType.TollBooth: {
+                            spanner = GameObject.Instantiate(m_StateA.TollBoothPrefab, worldPos, Quaternion.identity);
+                            spanner.transform.LookAt(worldPosB);
+                            break;
+                        }
+                }
+                Assert.NotNull(spanner);
+                EventActorUtility.RegisterActor(spanner.GetComponent<EventActor>(), spawn.Id);
+            }
+
             // Spawn External Supplier
             Vector3 externalWorldPos = new Vector3(25, 0, 5); // top-right of screen
             GameObject externalDepot = GameObject.Instantiate(m_StateA.ExternalExportDepotPrefab.gameObject, externalWorldPos, Quaternion.identity);

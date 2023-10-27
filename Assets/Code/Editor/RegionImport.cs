@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BeauData;
 using UnityEngine;
 using Zavala.Sim;
-using UnityEngine.Rendering.Universal;
 using BeauUtil.Debugger;
 
 namespace Zavala.Editor {
@@ -198,9 +197,11 @@ namespace Zavala.Editor {
             return buffer;
         }
 
-        static public void ReadStaticConstructions(in TiledData data, HashSet<int> occupiedTileIndices, TerrainTileInfo[] tiles, out RegionAsset.BuildingData[] buildings, out RegionAsset.ModifierData[] modifiers) {
+        static public void ReadStaticConstructions(in TiledData data, HashSet<int> occupiedTileIndices, TerrainTileInfo[] tiles, out RegionAsset.BuildingData[] buildings, out RegionAsset.ModifierData[] modifiers, out RegionAsset.SpannerData[] spanners) {
             List<RegionAsset.BuildingData> buildingList = new List<RegionAsset.BuildingData>(8);
             List<RegionAsset.ModifierData> modifierList = new List<RegionAsset.ModifierData>(8);
+            List<RegionAsset.SpannerData> spannerList = new List<RegionAsset.SpannerData>(8);
+
             JSON objectArray = data.ObjectLayer["objects"];
             foreach(var obj in objectArray.Children) {
                 int gid = obj["gid"].AsInt;
@@ -279,11 +280,21 @@ namespace Zavala.Editor {
                                 tiles[pos].Flags |= TerrainFlags.IsOccupied;
                                 break;
                         }
+                        case 8: { // toll booth
+                                spannerList.Add(new RegionAsset.SpannerData() {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.TollBooth,
+                                    ScriptName = scriptName
+                                });
+                                tiles[pos].Flags |= TerrainFlags.IsToll;
+                                break;
+                            }
                     }
                 }
             }
             buildings = buildingList.ToArray();
             modifiers = modifierList.ToArray();
+            spanners = spannerList.ToArray();
         }
 
         static public RegionAsset.RoadData[] ReadRoads(in TiledData data, HashSet<int> occupiedTileIndices) {

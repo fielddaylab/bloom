@@ -249,7 +249,7 @@ namespace Zavala.Economy
                             foreach (var proxy in proxies) {
                                 // For each export depot, check if supplier is connected to it.
                                 if (connectionSummary.ProxyConnectionIdx == proxy.Position.TileIndex) {
-                                    ResourceMask proxyOverlap = supplier.ShippingMask & proxy.ProxyMask;
+                                    ResourceMask proxyOverlap = overlap & proxy.ProxyMask;
 
                                     if (proxyOverlap != 0) {
                                         proxyMatch = true;

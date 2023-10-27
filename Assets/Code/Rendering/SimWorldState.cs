@@ -19,6 +19,16 @@ namespace Zavala.World {
             public T Data;
         }
 
+        public struct SpanSpawnRecord<T>
+        {
+            public ushort TileIndexA;
+            public ushort TileIndexB;
+            public ushort RegionIndexA;
+            public ushort RegionIndexB;
+            public StringHash32 Id;
+            public T Data;
+        }
+
         #region Inspector
 
         [Header("World Scale")]
@@ -55,6 +65,8 @@ namespace Zavala.World {
         [NonSerialized] public TileInstance[] Tiles;
         [NonSerialized] public RegionPrefabPalette[] Palettes;
 
+        public GameObject TollBoothPrefab; // doesn't fit in palettes because each toll spans multiple regions
+
         [Header("External Spawning")]
         public ResourceSupplier ExternalSupplierPrefab;
         public ResourceSupplierProxy ExternalExportDepotPrefab;
@@ -64,6 +76,8 @@ namespace Zavala.World {
         [NonSerialized] public int NewRegions;
         [NonSerialized] public RingBuffer<SpawnRecord<BuildingType>> QueuedBuildings = new RingBuffer<SpawnRecord<BuildingType>>();
         [NonSerialized] public RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>> QueuedModifiers = new RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>>();
+        [NonSerialized] public RingBuffer<SpanSpawnRecord<BuildingType>> QueuedSpanners = new RingBuffer<SpanSpawnRecord<BuildingType>>();
+
 
         void IRegistrationCallbacks.OnDeregister() {
         }
