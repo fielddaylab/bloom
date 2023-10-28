@@ -171,8 +171,8 @@ namespace Zavala.Sim {
                         world.QueuedSpanners.PushBack(new SimWorldState.SpanSpawnRecord<BuildingType>() {
                             TileIndexA = (ushort)mapIndex,
                             TileIndexB = (ushort)adjIdx,
-                            RegionIndexA = regionIndex,
-                            RegionIndexB = adjTileInfo.RegionIndex,
+                            // RegionIndexA = regionIndex,
+                            // RegionIndexB = adjTileInfo.RegionIndex,
                             Id = obj.ScriptName,
                             Data = obj.Type
                         });

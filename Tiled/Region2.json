@@ -386,6 +386,18 @@
                  "width":64,
                  "x":434.5,
                  "y":162.5
+                }, 
+                {
+                 "gid":41,
+                 "height":55,
+                 "id":161,
+                 "name":"toll_booth",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":336.666666666667,
+                 "y":272.666666666667
                 }],
          "opacity":0.65,
          "type":"objectgroup",
@@ -394,7 +406,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":161,
+ "nextobjectid":162,
  "orientation":"hexagonal",
  "renderorder":"right-up",
  "staggeraxis":"x",

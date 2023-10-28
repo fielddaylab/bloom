@@ -23,8 +23,8 @@ namespace Zavala.World {
         {
             public ushort TileIndexA;
             public ushort TileIndexB;
-            public ushort RegionIndexA;
-            public ushort RegionIndexB;
+            // public ushort RegionIndexA;
+            // public ushort RegionIndexB;
             public StringHash32 Id;
             public T Data;
         }
