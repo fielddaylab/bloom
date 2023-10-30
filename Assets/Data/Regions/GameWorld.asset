@@ -14,16 +14,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Regions:
   - Region: {fileID: 11400000, guid: b28b1ec17f3ec544d8bdd870c8ee5216, type: 2}
-    X: 22
-    Y: 10
-    Elevation: 4
+    X: 18
+    Y: 8
+    Elevation: 6
   - Region: {fileID: 11400000, guid: 580231a10b79d7c42aebdf328771d6be, type: 2}
-    X: 14
+    X: 10
+    Y: 8
+    Elevation: 2
+  - Region: {fileID: 11400000, guid: 4337db1d407d90b4f89b74f7ee9caa2b, type: 2}
+    X: 6
+    Y: 18
+    Elevation: 6
+  - Region: {fileID: 11400000, guid: 86b65f6a008a25e4dbf1e840f208b8d2, type: 2}
+    X: 0
     Y: 10
     Elevation: 0
+  - Region: {fileID: 11400000, guid: 3f9477ee86254f549ac36f590d69e63c, type: 2}
+    X: 12
+    Y: 2
+    Elevation: 2
   Palettes:
   - {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
   - {fileID: 11400000, guid: f8726d719bf5d9c4899bcb5bdee173a7, type: 2}
+  - {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
+  - {fileID: 11400000, guid: f8726d719bf5d9c4899bcb5bdee173a7, type: 2}
+  - {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
   DefaultPalette: {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
   Width: 30
   Height: 30

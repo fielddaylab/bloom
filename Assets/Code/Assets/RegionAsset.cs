@@ -10,8 +10,8 @@ namespace Zavala {
         Hillside,
         Forest,
         Prairie,
-        Region4,
-        Region5
+        Wetland,
+        City
     }
 
     public enum BuildingType : byte {
