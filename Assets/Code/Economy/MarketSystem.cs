@@ -122,6 +122,7 @@ namespace Zavala.Economy
                         if (!ResourceBlock.Fulfills(supplier.Storage.Current, adjustedValueRequested)) {
                             // subtract main storage from whole value
                             mainStorageBlock = ResourceBlock.Consume(ref adjustedValueRequested, supplier.Storage.Current);
+
                             // subtract remaining value from extension storage
                             extensionBlock = ResourceBlock.Consume(ref supplier.Storage.StorageExtensionStore.Current, adjustedValueRequested);
                         }
@@ -283,6 +284,10 @@ namespace Zavala.Economy
                 }
                 if (connectionSummary.Distance != 0 && requester.IsLocalOption) {
                     // Exclude local options from lists of non-local tiles
+                    continue;
+                }
+                if (supplier.Position.TileIndex == requester.Position.TileIndex && !requester.IsLocalOption) {
+                    // Exclude a tile from supplying itself -- storage, I'm looking at you :(
                     continue;
                 }
 

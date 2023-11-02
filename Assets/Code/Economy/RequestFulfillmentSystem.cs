@@ -112,6 +112,7 @@ namespace Zavala.Economy {
             if (component.State == FulfillerState.Init) {
                 if (component.NodeQueue.TryPopFront(out ushort targetPos)) {
                     component.NextNodePos = SimWorldUtility.GetTileCenter(targetPos);
+                    component.transform.LookAt(component.NextNodePos);
                 }
                 component.State = FulfillerState.Traveling;
             }
@@ -122,6 +123,7 @@ namespace Zavala.Economy {
                 if (component.NodeQueue.TryPopFront(out ushort targetPos)) {
                     component.NextNodePos = SimWorldUtility.GetTileCenter(targetPos);
                     component.transform.position = newPos;
+                    component.transform.LookAt(component.NextNodePos);
                 } else {
                     if (component.IsIntermediary) {
                         // create a new blimp w/ src export depot + yOffset, target is request destination; confer fulfiller role

@@ -199,7 +199,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 0
-    Height: 50
+    Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -209,7 +209,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 49
-    Height: 100
+    Height: 150
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
@@ -239,7 +239,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 0
-    Height: 50
+    Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -249,7 +249,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 49
-    Height: 100
+    Height: 150
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
@@ -289,7 +289,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 49
-    Height: 150
+    Height: 200
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
@@ -329,7 +329,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 2
-    Height: 150
+    Height: 200
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
