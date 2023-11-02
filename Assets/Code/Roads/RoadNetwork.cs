@@ -133,8 +133,9 @@ namespace Zavala.Roads
         static public unsafe RoadPathSummary IsConnected(RoadNetwork network, HexGridSize gridSize, int tileIdxA, int tileIdxB) {
             if (tileIdxA == tileIdxB) {
                 return new RoadPathSummary() {
-                    DestinationIdx = (ushort) tileIdxB,
+                    DestinationIdx = (ushort)tileIdxB,
                     Flags = RoadPathFlags.ForceConnection,
+                    ProxyConnectionIdx = Tile.InvalidIndex16,
                 };
             }
 

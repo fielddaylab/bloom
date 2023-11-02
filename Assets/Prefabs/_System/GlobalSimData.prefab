@@ -27,6 +27,7 @@ GameObject:
   - component: {fileID: 7708306960153739474}
   - component: {fileID: 7708306960153739477}
   - component: {fileID: 8787619606803193805}
+  - component: {fileID: 8081782905770933987}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -525,3 +526,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d79f6ea60519045b1c88c0462a66a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8081782905770933987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e61831215869d8409de1b24e44d7764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrState: 0
