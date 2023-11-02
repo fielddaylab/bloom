@@ -9,27 +9,21 @@ using Zavala.World;
 namespace Zavala.Actors {
     [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class ActorPhosphorusGeneratorSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ActorTimer, ResourceStorage, OccupiesTile> {
+        public override bool HasWork() {
+            if (base.HasWork()) {
+                // disable phosphorus generation for tutorial
+                return Game.SharedState.Get<TutorialState>().CurrState >= TutorialState.State.ActiveSim;
+            }
+
+            return false;
+        }
+
         public override void ProcessWork(float deltaTime) {
-            SimGridState grid = ZavalaGame.SimGrid;
-            SimWorldState world = ZavalaGame.SimWorld;
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
 
             foreach(var componentGroup in m_Components) {
                 if (componentGroup.ComponentA.HasAdvanced()) {
-                    int index = componentGroup.ComponentC.TileIndex;
-
-                    int manureMod = 3;
-                    int mFertilizerMod = 2;
-                    int dFertilizerMod = 1;
-
-                    int totalToAdd = componentGroup.Primary.Amount * (
-                        componentGroup.ComponentB.Current.Manure * manureMod +
-                        componentGroup.ComponentB.Current.MFertilizer * mFertilizerMod +
-                        componentGroup.ComponentB.Current.DFertilizer * dFertilizerMod
-                        );
-
-                    SimPhospohorusUtility.AddPhosphorus(phosphorus, index, totalToAdd);
-                    componentGroup.Primary.AmountProducedLastTick = totalToAdd;
+                    SimPhospohorusUtility.GenerateProportionalPhosphorus(phosphorus, componentGroup.ComponentC.TileIndex, componentGroup.Primary, componentGroup.ComponentB.Current);
                 }
             }
         }

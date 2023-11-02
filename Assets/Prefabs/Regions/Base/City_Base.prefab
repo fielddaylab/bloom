@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timer:
-    Period: 8
+    Period: 9
 --- !u!114 &947691686583835043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,6 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 3
+  IsExternal: 0
 --- !u!114 &947691686583835036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,6 +172,7 @@ MonoBehaviour:
   Displays: []
   StorageExtensionReq: {fileID: 0}
   StorageExtensionStore: {fileID: 0}
+  InfiniteSupply: 0
 --- !u!114 &947691686583835033
 MonoBehaviour:
   m_ObjectHideFlags: 0

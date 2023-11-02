@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
+  IsExternal: 0
 --- !u!114 &7207750407103898590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,6 +104,7 @@ MonoBehaviour:
   Displays: []
   StorageExtensionReq: {fileID: 0}
   StorageExtensionStore: {fileID: 0}
+  InfiniteSupply: 0
 --- !u!114 &9191267247866587228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38402e251b5111c4ca6247043c16c6b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Amount: 5
+  Amount: 2
   AmountProducedLastTick: 0
 --- !u!114 &5602663514362957504
 MonoBehaviour:
@@ -170,7 +172,6 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
-  ProducedLastTick: 0
 --- !u!114 &2719164954211423765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,7 +269,7 @@ MonoBehaviour:
     Grain: 8
     Milk: 8
   Current:
-    Manure: 1
+    Manure: 0
     MFertilizer: 0
     DFertilizer: 0
     Grain: 1
@@ -278,6 +279,7 @@ MonoBehaviour:
   - {fileID: 2224641303006806999}
   StorageExtensionReq: {fileID: 7207750407103898590}
   StorageExtensionStore: {fileID: 3038908885332165687}
+  InfiniteSupply: 0
 --- !u!114 &7291294420475072063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,7 +304,6 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 1
     Milk: 0
-  ProducedLastTick: 0
 --- !u!114 &7291294420475072062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,6 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShippingMask: 17
+  SupplierPriority: 0
 --- !u!114 &7291294420475072053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,6 +355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 2
+  IsExternal: 0
 --- !u!114 &7291294420475072054
 MonoBehaviour:
   m_ObjectHideFlags: 0

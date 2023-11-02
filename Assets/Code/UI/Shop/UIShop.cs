@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Building;
 using Zavala.Sim;
 
 namespace Zavala.UI {
@@ -53,6 +54,7 @@ namespace Zavala.UI {
         public void Collapse() {
             SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
             Game.Events.Dispatch(GameEvents.BuildModeEnded);
+            Game.SharedState.Get<BuildToolState>().ActiveTool = UserBuildTool.None;
             m_shopRoutine.Replace(CollapseRoutine());
             m_buttonRoutine.Replace(ShowShopButtonRoutine());
         }

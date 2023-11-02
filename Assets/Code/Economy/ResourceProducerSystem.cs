@@ -36,6 +36,11 @@ namespace Zavala.Economy {
 
         private void QueueRequestForProduction(ResourceProducer producer) {
             Assert.NotNull(producer.Request, "ResourceProducers that require external resources must have a ResourceRequester");
+            if (producer.Request.InfiniteRequests) {
+                // infinite requests posted when they were created
+                return;
+            }
+
             MarketUtility.QueueRequest(producer.Request, producer.Requires);
             DebugDraw.AddWorldText(producer.transform.position, "Requesting!", Color.yellow, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
         }

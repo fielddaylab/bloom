@@ -27,9 +27,11 @@ namespace Zavala.Movement
             MoveState = State.Entering;
 
             // start transparent
+            /* NOTE: disabled until we use a shader that supports transparency
             Color color = Mesh.material.color;
             color.a = 0;
             Mesh.material.color = color;
+            */
         }
     }
 }

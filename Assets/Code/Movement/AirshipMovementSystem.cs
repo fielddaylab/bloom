@@ -80,13 +80,13 @@ namespace Zavala.Movement
 
         private IEnumerator EnterRoutine(RequestFulfiller fulfiller, AirshipInstance airship, SimTimeState timeState) {
             // fade in
-            yield return airship.Mesh.material.FadeTo(0, 0);
+            // yield return airship.Mesh.material.FadeTo(0, 0);
 
             Vector3 descendPos = fulfiller.SourceWorldPos - new Vector3(0, 0.5f, 0) + airship.transform.forward * 0.3f;
 
             // descend
             yield return Routine.Combine(
-                airship.Mesh.material.FadeTo(1, 1.5f).Ease(Curve.SineIn),
+                // airship.Mesh.material.FadeTo(1, 1.5f).Ease(Curve.SineIn),
                 airship.transform.MoveTo(descendPos, 1.5f).Ease(Curve.SineIn)
                 );
 
@@ -116,7 +116,7 @@ namespace Zavala.Movement
 
             // rise and fade out
             yield return Routine.Combine(
-                airship.Mesh.material.FadeTo(0, 1.5f),
+                // airship.Mesh.material.FadeTo(0, 1.5f),
                 airship.transform.MoveTo(risePos, 1.5f)
                 );
 

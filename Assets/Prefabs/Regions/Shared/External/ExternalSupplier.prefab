@@ -117,6 +117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShippingMask: 2
+  SupplierPriority: 10
 --- !u!114 &1864174576578226001
 MonoBehaviour:
   m_ObjectHideFlags: 0

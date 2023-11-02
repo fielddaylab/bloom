@@ -3,9 +3,9 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
+using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -82,6 +82,11 @@ namespace Zavala.Economy {
                     BudgetData budgetData = Game.SharedState.Get<BudgetData>();
                     int revenueAmt = request.Revenue.Sales + request.Revenue.Import + request.Revenue.Penalties;
                     BudgetUtility.AddToBudget(budgetData, revenueAmt, request.Requester.Position.RegionIndex);
+
+                    // leave infinite requests active (cycle back to request queue)
+                    if (request.Requester.InfiniteRequests) {
+                        marketData.RequestQueue.PushBack(new MarketRequestInfo(request.Requester, request.Requested));
+                    }
                 }
             }
         }
@@ -159,6 +164,9 @@ namespace Zavala.Economy {
             // when same position, deliver resource
             if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
                 DeliverFulfillment(marketData, component, visualState);
+                if (component.Source.Position.IsExternal) {
+                    ScriptUtility.Trigger(GameTriggers.ExternalImport);
+                }
                 pools.Parcels.Free(component);
             }
             else {
@@ -192,8 +200,14 @@ namespace Zavala.Economy {
             int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
             if (index >= 0) {
                 MarketActiveRequestInfo fulfilling = marketData.ActiveRequests[index];
-                visualState.FulfilledQueue.PushBack(fulfilling);
+                
+                // leave infinite requests active
+                if (fulfilling.Requester.InfiniteRequests) {
+                    marketData.RequestQueue.PushBack(new MarketRequestInfo(fulfilling.Requester, fulfilling.Requested));
+                }
+
                 marketData.ActiveRequests.FastRemoveAt(index);
+                visualState.FulfilledQueue.PushBack(fulfilling);
             }
         }
 

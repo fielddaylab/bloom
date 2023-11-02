@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BeauPools;
 using BeauUtil;
+using FieldDay;
 using FieldDay.Data;
 using UnityEngine;
 using Zavala.Data;
@@ -335,6 +336,12 @@ namespace Zavala.Sim {
         }
 
         static public void TickPhosphorusHistory(DataHistory[] histories, SimBuffer<RegionInfo> gridRegions, int gridRegionCount) {
+            // only record when out of tutorial
+            TutorialState tutorial = Game.SharedState.Get<TutorialState>();
+            if (tutorial.CurrState <= TutorialState.State.InactiveSim) {
+                return;
+            }
+
             // for each region
             for (int i = 0; i < gridRegionCount; i++) {
                 DataHistory history = histories[i];
@@ -351,11 +358,11 @@ namespace Zavala.Sim {
                     }
 
                     Debug.Log("[History] New History for region " + i + " : " + builder.ToString());
-                    if (history.TryGetAvg(10, out float avg)) {
-                        Debug.Log("[History] Avg produced for region " + i + " over 10 ticks: " + avg);
+                    if (history.TryGetAvg(20, out float avg)) {
+                        Debug.Log("[History] Avg produced for region " + i + " over 20 ticks: " + avg);
                     }
-                    if (history.TryGetTotal(10, out int total)) {
-                        Debug.Log("[History] Total produced for region " + i + " over 10 ticks: " + total);
+                    if (history.TryGetTotal(20, out int total)) {
+                        Debug.Log("[History] Total produced for region " + i + " over 20 ticks: " + total);
                     }
                 }
             }

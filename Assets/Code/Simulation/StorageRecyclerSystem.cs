@@ -9,18 +9,16 @@ namespace Zavala.Sim {
     public sealed class StorageRecyclerSystem : ComponentSystemBehaviour<StorageRecycler, ResourceStorage, ActorTimer>
     {
         public override void ProcessWorkForComponent(StorageRecycler recycler, ResourceStorage storage, ActorTimer timer, float deltaTime) {
-            if (!timer.HasAdvanced()) {
+            if (timer != null && !timer.HasAdvanced()) {
                 return;
             }
-            Debug.Log("[Sitting] Time to recycle storage... ");
 
             if (storage.Current.IsZero) {
-                Debug.Log("[Sitting] recycle storage empty.");
                 return;
             }
 
             if (ResourceBlock.CanAddFull(storage.Current, recycler.ReturnTo.Current, recycler.ReturnTo.Capacity)) {
-                // return the rcyclable storage to the receiver
+                // return the recyclable storage to the receiver
                 recycler.ReturnTo.Current += storage.Current;
 
                 // remove the recyclable storage

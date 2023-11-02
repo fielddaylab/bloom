@@ -23,10 +23,20 @@ namespace Zavala.Economy {
         private void Awake() {
             this.CacheComponent(ref Storage);
             this.CacheComponent(ref Request);
+
+            // Post inifinite requests when enabled
+            if (Request && Request.InfiniteRequests) {
+                MarketUtility.RegisterInifiniteProducer(this);
+            }
         }
 
         protected override void OnDisable() {
             ProducedLastTick = false;
+
+            if (Request && Request.InfiniteRequests) {
+                MarketUtility.DeregisterInfiniteProducer(this);
+            }
+
             base.OnDisable();
         }
     }

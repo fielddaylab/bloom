@@ -5,6 +5,7 @@ using FieldDay.Systems;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Actors;
 using Zavala.Data;
 using Zavala.Economy;
 
@@ -85,7 +86,30 @@ namespace Zavala.Sim
         }
 
         static public void RecordToPhosphorusHistory(SimPhosphorusState state, int regionIndex, int phosphorusDelta) {
+            // only record when out of tutorial
+            TutorialState tutorial = Game.SharedState.Get<TutorialState>();
+            if (tutorial.CurrState <= TutorialState.State.InactiveSim) {
+                return;
+            }
+
             state.HistoryPerRegion[regionIndex].AddPending(phosphorusDelta);
+        }
+
+        static public void GenerateProportionalPhosphorus(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator generator, ResourceBlock resources) {
+            int index = tileIndex;
+
+            int mFertilizerMod = 3;
+            int manureMod = 2;
+            int dFertilizerMod = 1;
+
+            int totalToAdd = generator.Amount * (
+                resources.Manure * manureMod +
+                resources.MFertilizer * mFertilizerMod +
+                resources.DFertilizer * dFertilizerMod
+                );
+
+            AddPhosphorus(phosphorus, index, totalToAdd);
+            generator.AmountProducedLastTick = totalToAdd;
         }
     }
 }

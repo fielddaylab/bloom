@@ -69,7 +69,7 @@ namespace Zavala.Sim {
             SimWorldState worldState = Game.SharedState.Get<SimWorldState>();
             LoadRegionDataFromWorld(grid, world, 0, worldState);
             RegenTerrainDependentInfo(grid, phosphorus);
-            GenerateRandomPhosphorus(grid, phosphorus);
+            // GenerateRandomPhosphorus(grid, phosphorus);
 
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
         }

@@ -10,6 +10,8 @@ namespace Zavala.Economy {
     [RequireComponent(typeof(ResourceStorage), typeof(OccupiesTile))]
     public sealed class ResourceSupplier : BatchedComponent {
         [AutoEnum] public ResourceMask ShippingMask;
+
+        public int SupplierPriority = 0; // determines the batch this supplier is processed in during market cycle
         
         [NonSerialized] public OccupiesTile Position;
 

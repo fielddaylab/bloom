@@ -74,6 +74,7 @@ namespace Zavala.Economy
         public int Distance;
         public int ProxyIdx;
         public int Profit;
+        public int RelativeGain;
         public GeneratedTaxRevenue TaxRevenue;
     }
 
@@ -184,6 +185,18 @@ namespace Zavala.Economy
             MarketData marketData = Game.SharedState.Get<MarketData>();
             if (marketData != null) {
                 marketData.Suppliers.FastRemove(storage);
+            }
+        }
+
+        static public void RegisterInifiniteProducer(ResourceProducer producer) {
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+            Assert.NotNull(marketData);
+            QueueRequest(producer.Request, producer.Requires);
+        }
+
+        static public void DeregisterInfiniteProducer(ResourceProducer producer) {
+            if (Game.IsShuttingDown) {
+                return;
             }
         }
 

@@ -81,10 +81,10 @@ namespace Zavala.Advisor {
             SalesTaxVals[2].SetAll(2);
             SalesTaxVals[3].SetAll(4);
 
-            RunoffPenaltyVals[0].SetAll(-2);
-            RunoffPenaltyVals[1].SetAll(0);
+            RunoffPenaltyVals[0].SetAll(0);
+            RunoffPenaltyVals[1].SetAll(50);
             RunoffPenaltyVals[2].SetAll(100);
-            RunoffPenaltyVals[3].SetAll(200);
+            RunoffPenaltyVals[3].SetAll(1000);
         }
 
         private void InitializePolicyMap() {

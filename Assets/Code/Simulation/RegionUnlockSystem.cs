@@ -12,6 +12,13 @@ namespace Zavala.Sim
     [SysUpdate(GameLoopPhase.Update, 0)]
     public class RegionUnlockSystem : SharedStateSystemBehaviour<RegionUnlockState, SimGridState, SimPhosphorusState, MarketData>
     {
+        public override bool HasWork() {
+            if(base.HasWork()) {
+                return Game.SharedState.Get<TutorialState>().CurrState >= TutorialState.State.ActiveSim;
+            }
+            return false;
+        }
+
         #region Work
 
         public override void ProcessWork(float deltaTime) {

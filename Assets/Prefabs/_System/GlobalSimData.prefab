@@ -154,14 +154,14 @@ MonoBehaviour:
   TransportCosts:
     CostPerTile:
       Manure: 3
-      MFertilizer: 3
-      DFertilizer: 3
+      MFertilizer: 2
+      DFertilizer: 1
       Grain: 3
       Milk: 3
     ExportDepotFlatRate:
       Manure: 0
-      MFertilizer: 0
-      DFertilizer: 0
+      MFertilizer: 20
+      DFertilizer: 5
       Grain: 0
       Milk: 0
   PurchasePerRegion:
@@ -437,10 +437,10 @@ MonoBehaviour:
   - UnlockConditions:
     - Type: 0
       ChecksRegions: 00000000
-      Scope: 10
+      Scope: 20
       TargetRunoff:
         Below: 1
-        Value: 1.5
+        Value: 1.1
       TargetCFertilizer:
         Below: 0
         Value: 0
