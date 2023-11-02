@@ -42,7 +42,7 @@ namespace Zavala.Economy {
         public static long PriceLookup(UserBuildTool building) {
             switch (building) {
                 case UserBuildTool.Road:
-                    return 10;
+                    return 5;
                 case UserBuildTool.Storage:
                     return 20;
                 case UserBuildTool.Digester:

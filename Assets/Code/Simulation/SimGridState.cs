@@ -159,6 +159,37 @@ namespace Zavala.Sim {
                 });
             }
 
+            // spawn toll booths
+            foreach (var obj in asset.Spanners) {
+                int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
+
+                // check if both regions are unlocked (another toll booth is in surrounding tiles)
+                HexVector currPos = grid.HexSize.FastIndexToPos(mapIndex);
+                for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                    HexVector adjPos = HexVector.Offset(currPos, dir);
+                    if (!grid.HexSize.IsValidPos(adjPos)) {
+                        continue;
+                    }
+                    int adjIdx = grid.HexSize.FastPosToIndex(adjPos);
+
+                    ref TerrainTileInfo adjTileInfo = ref grid.Terrain.Info[adjIdx];
+
+                    if ((regionIndex != adjTileInfo.RegionIndex) && (adjTileInfo.Flags & TerrainFlags.IsToll) != 0) {
+                        world.QueuedSpanners.PushBack(new SimWorldState.SpanSpawnRecord<BuildingType>() {
+                            TileIndexA = (ushort)mapIndex,
+                            TileIndexB = (ushort)adjIdx,
+                            // RegionIndexA = regionIndex,
+                            // RegionIndexB = adjTileInfo.RegionIndex,
+                            Id = obj.ScriptName,
+                            Data = obj.Type
+                        });
+
+                        break;
+                    }
+                }
+            }
+
+
             // load script
             if (asset.LeafScript != null) {
                 ScriptDatabaseUtility.LoadNow(ScriptUtility.Database, asset.LeafScript);

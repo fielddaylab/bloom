@@ -126,9 +126,7 @@ namespace Zavala {
         /// Clears the given buffer.
         /// </summary>
         static public void Clear<T>(SimBuffer<T> source) where T : unmanaged {
-            for (int i = 0; i < source.Length; i++) {
-                source.Buffer[i] = default(T);
-            }
+            Unsafe.Clear(source.Buffer, (int) source.Length);
         }
 
         /// <summary>

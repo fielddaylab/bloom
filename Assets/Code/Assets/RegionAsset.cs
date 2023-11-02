@@ -10,8 +10,8 @@ namespace Zavala {
         Hillside,
         Forest,
         Prairie,
-        Region4,
-        Region5
+        Wetland,
+        City
     }
 
     public enum BuildingType : byte {
@@ -24,7 +24,8 @@ namespace Zavala {
         Storage,
         Skimmer,
         Obstacle,
-        ExportDepot
+        ExportDepot,
+        TollBooth
     }
 
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]
@@ -62,6 +63,15 @@ namespace Zavala {
             public TerrainModifier Modifier;
         }
 
+
+        [Serializable]
+        public struct SpannerData
+        {
+            public ushort LocalTileIndex;
+            public SerializedHash32 ScriptName;
+            public BuildingType Type;
+        }
+
         [Serializable]
         public struct WaterGroupRange {
             public ushort Offset;
@@ -87,7 +97,9 @@ namespace Zavala {
         public RoadData[] Roads = Array.Empty<RoadData>();
         public ModifierData[] Modifiers = Array.Empty<ModifierData>();
         public BorderPoint[] Borders = Array.Empty<BorderPoint>();
+        public SpannerData[] Spanners = Array.Empty<SpannerData>();
         public ushort[] EdgeVisualUpdateSet = Array.Empty<ushort>();
+
 
         [Header("Groups")]
         public ushort[] WaterGroupLocalIndices = Array.Empty<ushort>();
