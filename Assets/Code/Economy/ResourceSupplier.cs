@@ -28,12 +28,12 @@ namespace Zavala.Economy {
             base.OnEnable();
 
             MarketUtility.RegisterSupplier(this);
-            RoadUtility.RegisterRoadDestination(Position, (RoadDestinationMask) ShippingMask | RoadDestinationMask.Tollbooth | RoadDestinationMask.Export, 0);
+            RoadUtility.RegisterSource(Position, (RoadDestinationMask) ShippingMask | RoadDestinationMask.Tollbooth | RoadDestinationMask.Export);
         }
 
         protected override void OnDisable() {
             MarketUtility.DeregisterSupplier(this);
-            RoadUtility.DeregisterRoadDestination(Position);
+            RoadUtility.DeregisterSource(Position);
 
             SoldAtALoss = false;
             Priorities.PrioritizedBuyers.Clear();

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using BeauUtil;
 using Zavala.Roads;
 
 namespace Zavala.Sim {
@@ -19,7 +18,7 @@ namespace Zavala.Sim {
             Height = SimBuffer.Create<ushort>(size);
             Regions = SimBuffer.Create<ushort>(size);
 
-            SimBuffer.Clear(Regions, (ushort) 0);
+            SimBuffer.Clear(Regions);
         }
     }
 

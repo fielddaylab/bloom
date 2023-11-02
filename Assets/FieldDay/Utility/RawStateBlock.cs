@@ -19,7 +19,7 @@ namespace FieldDay {
             Assert.True(tSize <= MaxSize, "Unmanaged type '{0}' of size {1}b cannot fit in RawStateBlock64", typeof(T).FullName, tSize.ToStringLookup());
             unsafe {
                 fixed (ulong* buff = m_State) {
-                    return Unsafe.Reinterpret<ulong, T>(buff);
+                    return Unsafe.FastReinterpret<ulong, T>(buff);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace FieldDay {
             Assert.True(tSize <= MaxSize, "Unmanaged type '{0}' of size {1}b cannot fit in RawStateBlock256", typeof(T).FullName, tSize.ToStringLookup());
             unsafe {
                 fixed (ulong* buff = m_State) {
-                    return Unsafe.Reinterpret<ulong, T>(buff);
+                    return Unsafe.FastReinterpret<ulong, T>(buff);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace FieldDay {
             Assert.True(tSize <= MaxSize, "Unmanaged type '{0}' of size {1}b cannot fit in RawStateBlock1k", typeof(T).FullName, tSize.ToStringLookup());
             unsafe {
                 fixed (ulong* buff = m_State) {
-                    return Unsafe.Reinterpret<ulong, T>(buff);
+                    return Unsafe.FastReinterpret<ulong, T>(buff);
                 }
             }
         }

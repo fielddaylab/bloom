@@ -6,12 +6,12 @@ using Zavala.Sim;
 using BeauUtil.Debugger;
 using BeauUtil;
 using System;
+using UnityEngine;
 
 namespace Zavala.Roads {
     [SysUpdate(GameLoopPhase.Update, 0)]
     public class RoadSystem : SharedStateSystemBehaviour<RoadNetwork, SimGridState>
     {
-
         public override void ProcessWork(float deltaTime) {
             // TODO: implement trigger to notify of needed update
             bool updateNeeded = m_StateA.UpdateNeeded;
@@ -24,21 +24,35 @@ namespace Zavala.Roads {
                 HexGridSize gridSize = m_StateB.HexSize;
                 RoadNetwork network = m_StateA;
 
-                // Clear old connections data
-                network.Roads.PathIndexAllocator.Reset();
-                network.Roads.PathInfoAllocator.Reset();
+                using (Profiling.Sample("Road Network Rebuild")) {
 
-                for(int i = 0; i < m_StateA.Destinations.Count; i++) {
-                    m_StateA.Destinations[i].Connections = default;
-                }
+                    // Clear old connections data
+                    network.Roads.PathIndexAllocator.Reset();
+                    network.Roads.PathInfoAllocator.Reset();
 
-                // Gather new connections data
-                foreach (var index in m_StateA.DestinationIndices) {
-                    // Run shortest path algorithm
-                    UnsafeSpan<RoadPathSummary> connections = FindConnections(index, network.Roads.Info, gridSize);
+                    for (int i = 0; i < m_StateA.Sources.Count; i++) {
+                        m_StateA.Sources[i].Connections = default;
+                    }
 
-                    // Add newfound connections
-                    network.Connections.Add(index, connections);
+                    if (m_StateA.Destinations.Count > 0 && m_StateA.Sources.Count > 0) {
+                        TraversalResources resources;
+                        resources.NodeQueue = new UnsafeQueue<ushort>(Frame.AllocSpan<ushort>(1024));
+                        resources.TraversalMap = Frame.AllocSpan<TileDirection>((int) gridSize.Size);
+                        resources.SummaryAccumulator = Frame.AllocSpan<RoadPathSummary>(m_StateA.Destinations.Count);
+                        resources.PathNodeAccumulator = Frame.AllocSpan<ushort>((int) gridSize.Size);
+                        resources.SummaryAllocator = network.Roads.PathInfoAllocator;
+                        resources.PathNodeAllocator = network.Roads.PathIndexAllocator;
+                        resources.Sources = network.Sources;
+                        resources.Destinations = network.Destinations;
+                        resources.RegionInfo = m_StateB.Terrain.Regions;
+
+                        for (int i = 0; i < m_StateA.Sources.Count; i++) {
+                            ref RoadSourceInfo src = ref m_StateA.Sources[i];
+                            src.Connections = FindConnections(src.TileIdx, src.Filter, network.Roads.Info, resources, i, gridSize);
+
+                            resources.Clear();
+                        }
+                    }
                 }
 
                 MarketData marketData = Game.SharedState.Get<MarketData>();
@@ -48,174 +62,149 @@ namespace Zavala.Roads {
             }
         }
 
-        private struct GraphNode : IEquatable<GraphNode>
-        {
-            public ushort TileIdx;
-            public ushort TentativeDistance;
-            public bool Visited;
+        private struct TraversalResources {
+            public UnsafeQueue<ushort> NodeQueue;
+            public UnsafeSpan<TileDirection> TraversalMap;
 
-            public GraphNode(ushort idx, ushort dist) {
-                TileIdx = idx;
-                Visited = false;
-                TentativeDistance = dist;
+            public UnsafeSpan<RoadPathSummary> SummaryAccumulator;
+            public SimArena<RoadPathSummary> SummaryAllocator;
+
+            public UnsafeSpan<ushort> PathNodeAccumulator;
+            public SimArena<ushort> PathNodeAllocator;
+
+            public SimBuffer<ushort> RegionInfo;
+            public RingBuffer<RoadSourceInfo> Sources;
+            public RingBuffer<RoadDestinationInfo> Destinations;
+
+            public void Clear() {
+                Unsafe.Clear(TraversalMap);
+                NodeQueue.Clear();
+            }
+        }
+
+        private struct UnsafeQueue<T> where T : unmanaged {
+            public UnsafeSpan<T> Data;
+            public int Head;
+            public int Tail;
+            public int Count;
+
+            public UnsafeQueue(UnsafeSpan<T> backing) {
+                Data = backing;
+                Head = Tail = Count = 0;
             }
 
-            public bool Equals(GraphNode other) {
-                return TileIdx == other.TileIdx;
+            public void Clear() {
+                Head = Tail = Count = 0;
+            }
+
+            public void Enqueue(T item) {
+                Assert.True(Count < Data.Length);
+                Data[Tail] = item;
+                Tail = (Tail + 1) % Data.Length;
+                Count++;
+            }
+
+            public T Dequeue() {
+                Assert.True(Count > 0);
+                T item = Data[Head];
+                Count--;
+                Head = (Head + 1) % Data.Length;
+                return item;
             }
         }
 
         /// <summary>
-        /// Runs the Dijkstra's shortest tree algorithm
+        /// BFS search (roads are equally weighted)
         /// </summary>
-        static public unsafe UnsafeSpan<RoadPathSummary> FindConnections(int startIdx, SimBuffer<RoadTileInfo> infoBuffer, HexGridSize gridSize) {
-            RingBuffer<RoadPathSummary> allConnections = new RingBuffer<RoadPathSummary>();
+        static private unsafe UnsafeSpan<RoadPathSummary> FindConnections(ushort startIdx, RoadDestinationMask destinationMask, SimBuffer<RoadTileInfo> infoBuffer, TraversalResources resources, int reverseSearchCount, HexGridSize gridSize) {
+            int pathsFound = 0;
 
-            // TODO: optimize the data structures in this algorithm
+            resources.NodeQueue.Enqueue(startIdx);
+            while(pathsFound < resources.SummaryAccumulator.Length && resources.NodeQueue.Count > 0) {
+                ushort idx = resources.NodeQueue.Dequeue();
 
-            // Run Dijkstra's
-            {
-                // Create a set of all unvisited nodes 'universalSet'
-                List<GraphNode> universalSet = new List<GraphNode>();
-                GraphNode currNode = new GraphNode();
+                RoadTileInfo tileInfo = infoBuffer[idx];
+                bool skipOutgoing = false;
 
-                bool startNodeFound = false;
-                // Generate graph nodes
-                for (int i = 0; i < gridSize.Size; i++) {
-                    if (!gridSize.IsValidIndex(i)) { // if bugs arise, may need to make graph nodes for invalid indices as well
-                        continue;
-                    }
+                // check destination
+                if (idx != startIdx && (tileInfo.Flags & RoadFlags.IsDestination) != 0) {
+                    RoadDestinationInfo destInfo = resources.Destinations.Find(RoadUtility.FindDestinationByTileIndex, idx);
+                    Assert.True(destInfo.Type != 0);
+                    if ((destinationMask & destInfo.Type) != 0) {
 
-                    // Node is marked unvisited at the start and assigned tentative distance of uint.MaxValue
-                    GraphNode newNode = new GraphNode((ushort)i, ushort.MaxValue);
+                        // TODO: find reversed paths
 
-                    // special case for initial node
-                    if (i == startIdx) {
-                        // initial node starts with tentative distance of 0
-                        newNode.TentativeDistance = 0;
+                        UnsafeSpan<ushort> allocatedPath = TraverseBackwards(resources, idx, gridSize, out ushort crossedBorders);
+                        ref RoadPathSummary summary = ref resources.SummaryAccumulator[pathsFound++];
+                        summary.ProxyConnectionIdx = Tile.InvalidIndex16;
+                        summary.RegionsCrossed = (byte) crossedBorders;
+                        summary.DestinationIdx = idx;
+                        summary.Flags = 0;
+                        summary.Tiles = allocatedPath;
 
-                        // Set initial node as current
-                        currNode = newNode;
-
-                        startNodeFound = true;
-                    }
-
-                    universalSet.Add(newNode);
-                }
-
-                // TODO: do we need to consider a case where start node is not found?
-                Assert.True(startNodeFound);
-
-                // At the start, there will always be at least the first node
-                bool setExhausted = false;
-                bool startingNode = true;
-
-                // Algorithm finishes when the smallest tentative distance among nodes in the unvisited set is infinity (uint.MaxValue), or if the unvisited set is empty
-                while (!setExhausted) {
-                    // For the current node, check all (valid) unvisited neighbors and calculate tentative distances to current node.
-                    {
-                        bool isRoad = (infoBuffer[(int)currNode.TileIdx].Flags & RoadFlags.IsRoad) != 0;
-                        bool isRoadAnchor = (infoBuffer[(int)currNode.TileIdx].Flags & RoadFlags.IsRoadAnchor) != 0;
-                        if (isRoadAnchor && !isRoad && !startingNode) {
-                            // stop road path search at a roadAnchor, unless it is also a road or the starting node
-                        }
-                        else {
-                            // Get all tiles connected by roads leading out of current tile
-                            List<int> unvisitedNeighborList = new List<int>();
-
-                            // TODO: maybe package this code block into a reusable function (originally repurposed from Tile.GatherAdjacencySetWithIdx<>)
-                            RoadTileInfo center = infoBuffer[(int)currNode.TileIdx];
-                            HexVector pos = gridSize.FastIndexToPos((int)currNode.TileIdx);
-                            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
-                                HexVector adjPos = HexVector.Offset(pos, dir);
-                                if (!gridSize.IsValidPos(adjPos)) {
-                                    continue;
-                                }
-
-                                // if this tile flows out to curr direction
-                                int adjIdx = gridSize.FastPosToIndex(adjPos);
-                                if (center.FlowMask[dir]) {
-                                    // Distill to only those in the unvisited set
-                                    if (SetContains(universalSet, adjIdx)) {
-                                        unvisitedNeighborList.Add(adjIdx);
-                                    }
-                                }
-                                else {
-                                    // if another tile flows into this tile from curr direction
-                                    RoadTileInfo adjInfo = infoBuffer[(int)adjIdx];
-                                    TileDirection inverseDir = dir.Reverse();
-                                    if (adjInfo.FlowMask[inverseDir]) {
-                                        if (SetContains(universalSet, adjIdx)) {
-                                            unvisitedNeighborList.Add(adjIdx);
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Update distances for all unvisited neighbors
-                            for (int i = 0; i < unvisitedNeighborList.Count; i++) {
-                                UpdateTentativeDistance(universalSet, unvisitedNeighborList[i], currNode.TentativeDistance + 1);
-                            }
+                        if (pathsFound >= resources.SummaryAccumulator.Length) {
+                            break;
                         }
 
-                        // Mark the current node as visited; remove from the unvisited set, add it to allConnections
-                        allConnections.PushBack(new RoadPathSummary((ushort)currNode.TileIdx, default, RoadPathFlags.ForceConnection));
-                        universalSet.Remove(currNode);
+                        // if tollbooth, we can continue traversing
+                        // otherwise, terminate here. no paths leading through buildings
+                        skipOutgoing = (destInfo.Type & RoadDestinationMask.Tollbooth) == 0;
+                    }
+                }
+                
+                if (skipOutgoing) {
+                    continue;
+                }
 
-                        // set the unvisited with the smallest tentative distance to current, then repeat while unvisited set is not exhausted
-                        GraphNode nextNode;
-                        setExhausted = !TryGetNextNode(universalSet, out nextNode);
-                        currNode = nextNode;
-                        startingNode = false;
+                TileAdjacencyMask flow = tileInfo.FlowMask;
+                if (!flow.IsEmpty) {
+                    for (TileDirection dir = (TileDirection) 1; dir < TileDirection.COUNT; dir++) {
+                        if (!flow.Has(dir)) {
+                            continue;
+                        }
+
+                        ushort nextIdx = (ushort) gridSize.OffsetIndexFrom(idx, dir);
+                        if (nextIdx != startIdx && resources.TraversalMap[nextIdx] == 0) {
+                            resources.TraversalMap[nextIdx] = dir;
+                            resources.NodeQueue.Enqueue(nextIdx);
+                        }
                     }
                 }
             }
+        
+            if (pathsFound <= 0) {
+                return default;
+            }
 
-            return allConnections;
+            UnsafeSpan<RoadPathSummary> allocatedSummaries = resources.SummaryAllocator.Alloc((uint) pathsFound);
+            Unsafe.CopyArray(resources.SummaryAccumulator.Ptr, pathsFound, allocatedSummaries.Ptr);
+            return allocatedSummaries;
         }
 
-        private static void UpdateTentativeDistance(List<GraphNode> universalSet, int tileIdx, int newDist) {
-            for (int i = 0; i < universalSet.Count; i++) {
-                if (universalSet[i].TileIdx == tileIdx) {
-                    GraphNode toUpdate = universalSet[i];
+        static private unsafe UnsafeSpan<ushort> TraverseBackwards(in TraversalResources resources, ushort start, HexGridSize gridSize, out ushort bordersCrossed) {
+            UnsafeSpan<ushort> writeBuf = resources.PathNodeAccumulator;
+            UnsafeSpan<TileDirection> map = resources.TraversalMap;
+            int writeOffset = writeBuf.Length - 1;
 
-                    // Compare new distance to current one assigned to neighbor and assign the smaller.
-                    if (newDist < toUpdate.TentativeDistance) {
-                        toUpdate.TentativeDistance = (ushort) newDist;
-                        universalSet[i] = toUpdate;
-                    }
+            bordersCrossed = 0;
+            ushort idx = start;
+            ushort currentRegion = resources.RegionInfo[idx];
+            writeBuf[writeOffset--] = idx;
+            while (map[idx] != 0) {
+                if (currentRegion != resources.RegionInfo[idx]) {
+                    currentRegion = resources.RegionInfo[idx];
+                    bordersCrossed++;
                 }
-            }
-        }
-
-        static private bool SetContains(List<GraphNode> set, int idx) {
-            for (int i = 0; i < set.Count; i++) {
-                if (set[i].TileIdx == idx) {
-                    return true;
-                }
+                idx = (ushort) gridSize.OffsetIndexFrom(idx, map[idx].Reverse());
+                writeBuf[writeOffset--] = idx;
             }
 
-            return false;
-        }
+            int head = writeOffset + 1;
+            int length = writeBuf.Length - head;
 
-        static private bool TryGetNextNode(List<GraphNode> universalSet, out GraphNode nextNode) {
-            // Algorithm finishes when the smallest tentative distance among nodes in the unvisited set is infinity (uint.MaxValue), or if the unvisited set is empty
-            uint lowestVal = uint.MaxValue;
-            int lowestIdx = -1;
-            for (int i = 0; i < universalSet.Count; i++) {
-                if (universalSet[i].TentativeDistance < lowestVal) {
-                    lowestVal = universalSet[i].TentativeDistance;
-                    lowestIdx = i;
-                }
-            }
-
-            if (lowestIdx == -1) {
-                nextNode = new GraphNode();
-                return false;
-            }
-
-            nextNode = universalSet[lowestIdx];
-            return true;
+            UnsafeSpan<ushort> allocated = resources.PathNodeAllocator.Alloc((uint) length);
+            Unsafe.CopyArray(writeBuf.Ptr + head, length, allocated.Ptr);
+            return allocated;
         }
     }
 }

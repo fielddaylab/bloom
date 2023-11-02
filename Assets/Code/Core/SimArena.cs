@@ -17,8 +17,7 @@ namespace Zavala {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe UnsafeSpan<T> Alloc(uint count) {
-            T* ptr = Unsafe.AllocArray<T>(m_ArenaHandle, (int) count);
-            return new UnsafeSpan<T>(ptr, count);
+            return Unsafe.AllocSpan<T>(m_ArenaHandle, (int) count);
         }
 
         /// <summary>

@@ -242,7 +242,7 @@ namespace Zavala.Building
         private void DestroyBuilding(SimGridState grid, Collider hit) {
             SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int tileIndex);
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsRoadAnchor;
+            network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsAnchor;
             grid.Terrain.Info[tileIndex].Flags &= ~TerrainFlags.IsOccupied;
             if (hit.gameObject.TryGetComponent(out SnapToTile snap) && snap.m_hideTop) {
                 TileEffectRendering.SetTopVisibility(ZavalaGame.SimWorld.Tiles[tileIndex], true);
@@ -282,7 +282,7 @@ namespace Zavala.Building
                 // Start building road (this would be the first road piece)
 
                 // Check if a valid start, (ResourceSupplier, ResourceRequester, or Road)
-                if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsRoadAnchor) != 0) {
+                if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
                     StageRoad(grid, network, tileIndex);
                     Debug.Log("[UserBuildingSystem] Is road anchor. Added new tile to road path");
                 }
@@ -321,7 +321,7 @@ namespace Zavala.Building
                     if (passedTollCheck) {
 
                         // Check if reached a road anchor
-                        if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsRoadAnchor) != 0) {
+                        if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
                             // stage road
                             StageRoad(grid, network, tileIndex);
                             Debug.Log("[UserBuildingSystem] Is road anchor. Added new tile to road path");

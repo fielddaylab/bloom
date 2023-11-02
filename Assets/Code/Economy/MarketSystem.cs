@@ -49,7 +49,7 @@ namespace Zavala.Economy
             foreach (var supplier in m_SupplierWorkList) {
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx);
+                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary);
 
                 if (found.HasValue) {
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
@@ -86,10 +86,10 @@ namespace Zavala.Economy
 
                     MarketActiveRequestInfo activeRequest;
                     if (supplier.Storage.InfiniteSupply) {
-                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, adjustedValueRequested, netTaxRevenue, proxyIdx);
+                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, adjustedValueRequested, netTaxRevenue, proxyIdx, summary);
                     }
                     else {
-                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested), netTaxRevenue, proxyIdx);
+                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested), netTaxRevenue, proxyIdx, summary);
                     }
                     ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
                     if (baseProfit < 0) { supplier.SoldAtALoss = true; }
@@ -120,7 +120,7 @@ namespace Zavala.Economy
             ZavalaGame.Events.Dispatch(GameEvents.MarketCycleTickCompleted);
         }
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current = supplier.Storage.Current;
@@ -143,6 +143,7 @@ namespace Zavala.Economy
                     profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
                     taxRevenue = supplier.Priorities.PrioritizedBuyers[priorityIndex].TaxRevenue;
                     proxyIdx = supplier.Priorities.PrioritizedBuyers[priorityIndex].ProxyIdx;
+                    path = supplier.Priorities.PrioritizedBuyers[priorityIndex].Path;
                     requests.FastRemoveAt(i);
                     return request;
                 }
@@ -158,12 +159,14 @@ namespace Zavala.Economy
                 profit = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Profit;
                 taxRevenue = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].TaxRevenue;
                 proxyIdx = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].ProxyIdx;
+                path = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Path;
                 requests.FastRemoveAt(highestPriorityRequestIndex);
                 return request;
             }
 
             profit = 0;
             taxRevenue = new GeneratedTaxRevenue(0, 0, 0);
+            path = default;
             return null;
         }
 
@@ -209,8 +212,6 @@ namespace Zavala.Economy
                     connectionSummary = new RoadPathSummary();
                     connectionSummary.DestinationIdx = (ushort) requester.Position.TileIndex;
                     connectionSummary.Connected = true;
-                    // TODO: ProxyId is regionally-based
-                    // connectionSummary.ProxyConnectionIdx = 0;
                 }
                 else {
                     connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
@@ -307,6 +308,7 @@ namespace Zavala.Economy
                     Mask = overlap,
                     Target = requester,
                     ProxyIdx = connectionSummary.ProxyConnectionIdx,
+                    Path = connectionSummary,
                     Profit = (int)Math.Ceiling(score),
                     TaxRevenue = taxRevenue
                 });

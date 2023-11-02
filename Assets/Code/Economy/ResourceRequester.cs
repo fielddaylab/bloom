@@ -37,12 +37,16 @@ namespace Zavala.Economy {
             this.CacheComponent(ref Storage);
 
             MarketUtility.RegisterBuyer(this);
-            RoadUtility.RegisterRoadDestination(Position, 0, (RoadDestinationMask) RequestMask);
+            if (!IsLocalOption) {
+                RoadUtility.RegisterDestination(Position, (RoadDestinationMask) RequestMask);
+            }
         }
 
         protected override void OnDisable() {
             MarketUtility.DeregisterBuyer(this);
-            RoadUtility.DeregisterRoadDestination(Position);
+            if (!IsLocalOption) {
+                RoadUtility.DeregisterDestination(Position);
+            }
 
             Requested.SetAll(0);
             RequestCount = 0;

@@ -169,7 +169,16 @@ namespace FieldDay {
         /// </summary>
         static public unsafe T* AllocArray<T>(int size) where T : unmanaged {
             T* addr = Unsafe.AllocArray<T>(s_Allocator, size);
-            Assert.True(addr != null, "Per-frame allocator out of space");
+            Assert.True(size <= 0 || addr != null, "Per-frame allocator out of space");
+            return addr;
+        }
+
+        /// <summary>
+        /// Allocates an array of an ummanaged type from the per-frame allocator.
+        /// </summary>
+        static public unsafe UnsafeSpan<T> AllocSpan<T>(int size) where T : unmanaged {
+            UnsafeSpan<T> addr = Unsafe.AllocSpan<T>(s_Allocator, size);
+            Assert.True(size <= 0 || addr.Ptr != null, "Per-frame allocator out of space");
             return addr;
         }
 
@@ -178,7 +187,7 @@ namespace FieldDay {
         /// </summary>
         static public unsafe void* Alloc(int size) {
             void* addr = Unsafe.Alloc(s_Allocator, size);
-            Assert.True(addr != null, "Per-frame allocator out of space");
+            Assert.True(size <= 0 || addr != null, "Per-frame allocator out of space");
             return addr;
         }
 
