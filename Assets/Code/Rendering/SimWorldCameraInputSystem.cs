@@ -9,9 +9,9 @@ using Zavala.UI;
 
 namespace Zavala.World {
     [SysUpdate(GameLoopPhase.UnscaledUpdate, 100)]
-    public sealed class SimWorldCameraInputSystem : SharedStateSystemBehaviour<SimWorldCamera, InputState> {
+    public sealed class SimWorldCameraInputSystem : SharedStateSystemBehaviour<SimWorldCamera, InputState, SimWorldState> {
         public override void ProcessWork(float deltaTime) {
-            Vector2 moveDist = m_StateB.NormalizedKeyboardMoveVector * (m_StateA.CameraMoveSpeed * deltaTime);
+            Vector2 moveDist = m_StateB.NormalizedKeyboardMoveVector * ((m_StateA.CameraMoveSpeed + 0.75f * m_StateC.RegionCount) * deltaTime);
             if (moveDist.sqrMagnitude > 0) {
                 Vector3 cameraRotEuler = m_StateA.LookTarget.localEulerAngles;
                 Quaternion cameraRot = Quaternion.Euler(0, cameraRotEuler.y, 0);
@@ -28,10 +28,17 @@ namespace Zavala.World {
             
             Vector3 camPos = m_StateA.Camera.transform.position;
             Log.Msg("[SimWorldCameraSystem] Scroll zoom detected, scrolling to {0}", (camPos.z + zoomDelta));
-            if (camPos.z + zoomDelta <= m_StateA.CameraMaxZoomDist && camPos.z + zoomDelta >= m_StateA.CameraMinZoomDist) {
+            if (camPos.z + zoomDelta <= m_StateA.CameraMaxZoomDist && camPos.z + zoomDelta >= m_StateA.CameraMinZoomDist - 1 * m_StateC.RegionCount) {
                 m_StateA.Camera.transform.Translate(0, 0, zoomDelta);
-            } else {
+            }
+            else {
                 Log.Msg("[SimWorldCameraSystem] Scroll {0} out of bounds", (camPos.z + zoomDelta));
+                if (zoomDelta > 0) {
+                    camPos.z = m_StateA.CameraMaxZoomDist;
+                }
+                else {
+                    camPos.z = m_StateA.CameraMinZoomDist - 1 * m_StateC.RegionCount;
+                }
             }
         }
     }

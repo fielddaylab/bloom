@@ -80,7 +80,7 @@ namespace Zavala.Economy {
 
                     // Add generated revenue
                     BudgetData budgetData = Game.SharedState.Get<BudgetData>();
-                    int revenueAmt = request.Revenue.Sales + request.Revenue.Import + request.Revenue.Penalties;
+                    int revenueAmt = request.Revenue.Sales + request.Revenue.Import; //+ request.Revenue.Penalties;
                     BudgetUtility.AddToBudget(budgetData, revenueAmt, request.Requester.Position.RegionIndex);
 
                     // leave infinite requests active (cycle back to request queue)
@@ -208,7 +208,7 @@ namespace Zavala.Economy {
 
             // Add generated revenue
             BudgetData budgetData = Game.SharedState.Get<BudgetData>();
-            int revenueAmt = component.Revenue.Sales + component.Revenue.Import + component.Revenue.Penalties;
+            int revenueAmt = component.Revenue.Sales + component.Revenue.Import; // + component.Revenue.Penalties;
             BudgetUtility.AddToBudget(budgetData, revenueAmt, component.Target.Position.RegionIndex);
 
             int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
