@@ -4,15 +4,12 @@ using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using Zavala.Economy;
 using Zavala.World;
 
-namespace Zavala.Sim
-{
+namespace Zavala.Sim {
     public enum UnlockConditionType {
         AvgPhosphorusRunoff,
         TotalPhosphorusRunoff,

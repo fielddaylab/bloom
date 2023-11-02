@@ -61,7 +61,7 @@ namespace Zavala.Economy
             foreach (var supplier in m_SupplierWorkList) {
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out int proxyIdx);
+                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary);
 
                 if (found.HasValue) {
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
@@ -113,7 +113,7 @@ namespace Zavala.Economy
 
                     MarketActiveRequestInfo activeRequest;
                     if (supplier.Storage.InfiniteSupply) {
-                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, adjustedValueRequested, netTaxRevenue, proxyIdx);
+                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, adjustedValueRequested, netTaxRevenue, proxyIdx, summary);
                     }
                     else {
                         ResourceBlock mainStorageBlock;
@@ -129,7 +129,7 @@ namespace Zavala.Economy
                             mainStorageBlock = ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested);
                         }
 
-                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, mainStorageBlock + extensionBlock, netTaxRevenue, proxyIdx);
+                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, mainStorageBlock + extensionBlock, netTaxRevenue, proxyIdx, summary);
                     }
                     ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
                     if (baseProfit - relativeGain < 0) {
@@ -165,12 +165,12 @@ namespace Zavala.Economy
             ZavalaGame.Events.Dispatch(GameEvents.MarketCycleTickCompleted);
         }
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out int proxyIdx) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current;
 
-            proxyIdx = -1;
+            proxyIdx = Tile.InvalidIndex16;
 
             for (int i = 0; i < requests.Count; i++) {
                 if (!supplier.Storage.InfiniteSupply) {
@@ -201,6 +201,7 @@ namespace Zavala.Economy
                     relativeGain = supplier.Priorities.PrioritizedBuyers[priorityIndex].RelativeGain;
                     taxRevenue = supplier.Priorities.PrioritizedBuyers[priorityIndex].TaxRevenue;
                     proxyIdx = supplier.Priorities.PrioritizedBuyers[priorityIndex].ProxyIdx;
+                    path = supplier.Priorities.PrioritizedBuyers[priorityIndex].Path;
                     requests.FastRemoveAt(i);
                     return request;
                 }
@@ -217,6 +218,7 @@ namespace Zavala.Economy
                 relativeGain = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].RelativeGain;
                 taxRevenue = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].TaxRevenue;
                 proxyIdx = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].ProxyIdx;
+                path = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Path;
                 requests.FastRemoveAt(highestPriorityRequestIndex);
                 return request;
             }
@@ -224,6 +226,7 @@ namespace Zavala.Economy
             profit = 0;
             relativeGain = 0;
             taxRevenue = new GeneratedTaxRevenue(0, 0, 0);
+            path = default;
             return null;
         }
 
@@ -268,9 +271,8 @@ namespace Zavala.Economy
                 RoadPathSummary connectionSummary;
                 if (supplier.Position.IsExternal) {
                     connectionSummary = new RoadPathSummary();
-                    connectionSummary.TileIndx = requester.Position.TileIndex;
+                    connectionSummary.DestinationIdx = (ushort) requester.Position.TileIndex;
                     connectionSummary.Connected = true;
-                    connectionSummary.Distance = 0;
                 }
                 else {
                     connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
@@ -296,7 +298,7 @@ namespace Zavala.Economy
                 // Regular case
                 else {
                     // Adjust for if is a proxy connection
-                    if (connectionSummary.ProxyConnectionIdx != -1) {
+                    if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
                         // If proxy connection, ensure proxy is for the right type of resource
                         uint region = ZavalaGame.SimGrid.Terrain.Regions[connectionSummary.ProxyConnectionIdx];
                         if (network.ExportDepotMap.ContainsKey(region)) {
@@ -331,7 +333,7 @@ namespace Zavala.Economy
                 }
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + importCost;
 
-                if (connectionSummary.ProxyConnectionIdx != -1) {
+                if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
                     // add flat rate export depot shipping fee
                     shippingCost += config.TransportCosts.ExportDepotFlatRate[primary];
                 }
@@ -363,10 +365,11 @@ namespace Zavala.Economy
                 taxRevenue.Penalties = requester.IsLocalOption ? adjustments.RunoffPenalty[primary] : 0;
 
                 m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo() {
-                    Distance = (int)Math.Ceiling(connectionSummary.Distance),
+                    Distance = connectionSummary.Distance,
                     Mask = overlap,
                     Target = requester,
                     ProxyIdx = connectionSummary.ProxyConnectionIdx,
+                    Path = connectionSummary,
                     Profit = (int)Math.Ceiling(score),
                     RelativeGain = (int)Math.Ceiling(relativeGain),
                     TaxRevenue = taxRevenue

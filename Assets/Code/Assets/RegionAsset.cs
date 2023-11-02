@@ -98,6 +98,7 @@ namespace Zavala {
         public ModifierData[] Modifiers = Array.Empty<ModifierData>();
         public BorderPoint[] Borders = Array.Empty<BorderPoint>();
         public SpannerData[] Spanners = Array.Empty<SpannerData>();
+        public ushort[] EdgeVisualUpdateSet = Array.Empty<ushort>();
 
 
         [Header("Groups")]

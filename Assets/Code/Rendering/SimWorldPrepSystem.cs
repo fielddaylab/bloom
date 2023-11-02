@@ -39,9 +39,9 @@ namespace Zavala.World {
 
             m_StateA.RegionCullingMask = CullingHelper.EvaluateRegionVisibilityMask(m_StateA.RegionBounds, (int) m_StateA.RegionCount, m_CachedPlaneArray);
 
-            for(int i = 0; i < m_StateA.RegionCount; i++) {
-                DebugDraw.AddBounds(m_StateA.RegionBounds[i], (m_StateA.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red, 1, 0, true, 0);
-            }
+            //for(int i = 0; i < m_StateA.RegionCount; i++) {
+            //    DebugDraw.AddBounds(m_StateA.RegionBounds[i], (m_StateA.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red, 1, 0, true, -1);
+            //}
         }
 
         #endregion // Work
@@ -52,10 +52,10 @@ namespace Zavala.World {
     /// </summary>
     static public class CullingHelper {
         // TODO: more robust intersection tests? culling with frustum planes to aabb has a lot of false positives
-        static public uint EvaluateRegionVisibilityMask(SimBuffer<Bounds> regionCounts, int count, Plane[] frustumPlanes) {
+        static public uint EvaluateRegionVisibilityMask(SimBuffer<Bounds> regionBounds, int count, Plane[] frustumPlanes) {
             uint mask = 0;
             for(int i = 0; i < count; i++) {
-                if (GeometryUtility.TestPlanesAABB(frustumPlanes, regionCounts[i])) {
+                if (GeometryUtility.TestPlanesAABB(frustumPlanes, regionBounds[i])) {
                     mask |= 1u << i;
                 }
             }

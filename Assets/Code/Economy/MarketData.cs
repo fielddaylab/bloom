@@ -72,7 +72,8 @@ namespace Zavala.Economy
         public ResourceRequester Target;
         public ResourceMask Mask;
         public int Distance;
-        public int ProxyIdx;
+        public ushort ProxyIdx;
+        public RoadPathSummary Path;
         public int Profit;
         public int RelativeGain;
         public GeneratedTaxRevenue TaxRevenue;
@@ -120,13 +121,14 @@ namespace Zavala.Economy
     {
         public ResourceSupplier Supplier;
         public ResourceRequester Requester;
-        public int ProxyIdx;
+        public ushort ProxyIdx;
         public ResourceBlock Requested;
         public ResourceBlock Supplied;
         public RequestFulfiller Fulfiller;
         public GeneratedTaxRevenue Revenue;
+        public RoadPathSummary Path;
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, int proxyIdx, ResourceBlock request, ResourceBlock supply, GeneratedTaxRevenue revenue) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, ResourceRequester requester, ushort proxyIdx, ResourceBlock request, ResourceBlock supply, GeneratedTaxRevenue revenue, RoadPathSummary summary) {
             Supplier = supplier;
             Requester = requester;
             ProxyIdx = proxyIdx;
@@ -134,9 +136,10 @@ namespace Zavala.Economy
             Supplied = supply;
             Fulfiller = null;
             Revenue = revenue;
+            Path = summary;
         }
 
-        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request, ResourceBlock supplied, GeneratedTaxRevenue revenue, int proxyIdx) {
+        public MarketActiveRequestInfo(ResourceSupplier supplier, MarketRequestInfo request, ResourceBlock supplied, GeneratedTaxRevenue revenue, ushort proxyIdx, RoadPathSummary summary) {
             Supplier = supplier;
             Requester = request.Requester;
             ProxyIdx = proxyIdx;
@@ -144,6 +147,7 @@ namespace Zavala.Economy
             Supplied = supplied;
             Fulfiller = null;
             Revenue = revenue;
+            Path = summary;
         }
     }
 

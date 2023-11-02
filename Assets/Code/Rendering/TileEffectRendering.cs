@@ -13,7 +13,7 @@ namespace Zavala.World
     {
         static public void RestoreDefaultMaterial(TileInstance tile) {
             if (tile.TopRenderer) {
-                tile.TopRenderer.sharedMaterial = tile.TopDefaultMat;
+                tile.TopRenderer.sharedMaterial = tile.TopDefaultConfig.Material;
             }
             if (tile.PillarRenderer) {
                 tile.PillarRenderer.sharedMaterial = tile.PillarDefaultMat;
@@ -22,11 +22,6 @@ namespace Zavala.World
 
         static public void SetMaterial(TileInstance tile, Material newMat) {
             if (tile.TopRenderer) {
-                if (tile.TopDefaultMat == null) {
-                    // handle an unassigned default material
-                    tile.TopDefaultMat = tile.TopRenderer.sharedMaterial;
-                }
-
                 // assign new material
                 tile.TopRenderer.sharedMaterial = newMat;
             }

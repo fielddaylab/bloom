@@ -4,18 +4,22 @@ using UnityEditor;
 using UnityEngine;
 using Zavala.Sim;
 using System;
+using FieldDay.Components;
 
 namespace Zavala.World {
-    public class TileInstance : MonoBehaviour {
-        public Renderer TopRenderer;
-        public Renderer PillarRenderer;
-        public Renderer[] Decorations;
+    public class TileInstance : BatchedComponent {
+        [Header("Tile Top")]
+        public MeshRenderer TopRenderer;
+        public MeshFilter TopFilter;
 
-        [NonSerialized] public Material TopDefaultMat;
+        [Header("Pillar")]
+        public MeshRenderer PillarRenderer;
+
+        [NonSerialized] public SimpleMeshConfig TopDefaultConfig;
         [NonSerialized] public Material PillarDefaultMat;
 
         private void Awake() {
-            TopDefaultMat = TopRenderer ? TopRenderer.sharedMaterial : null;
+            TopDefaultConfig = new SimpleMeshConfig(TopRenderer, TopFilter);
             PillarDefaultMat = PillarRenderer ? PillarRenderer.sharedMaterial : null;
         }
     }

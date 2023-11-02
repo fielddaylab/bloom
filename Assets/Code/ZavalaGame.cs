@@ -1,3 +1,4 @@
+using BeauUtil;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
@@ -32,7 +33,7 @@ namespace Zavala {
 
         [InvokePreBoot]
         static private void OnPreBoot() {
-            SimAllocator.Initialize(4 * 1024 * 1024); // 4 MB simulation allocation buffer
+            SimAllocator.Initialize(4 * Unsafe.MiB); // 6 MB simulation allocation buffer
             Events = new EventDispatcher<object>();
             Game.SetEventDispatcher(Events);
 

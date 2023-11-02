@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UI;
 
-namespace FieldDay.UI {
+namespace UnityEngine.UI {
     /// <summary>
     /// Offset for a RectTransform's anchoredPosition.
     /// </summary>
@@ -83,7 +83,11 @@ namespace FieldDay.UI {
 #if UNITY_EDITOR
 
         private void OnValidate() {
-            if (!Frame.IsActive(this)) {
+            if (!isActiveAndEnabled) {
+                return;
+            }
+
+            if (!Application.IsPlaying(this) && UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) {
                 return;
             }
 

@@ -6,13 +6,14 @@ using FieldDay.Scenes;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Input;
+using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.Debugging {
 
     [SysUpdate(GameLoopPhase.DebugUpdate, 1000)]
-    public class SimGridDebugger : SharedStateSystemBehaviour<SimGridState, SimWorldState, SimWorldCamera>, IDevModeOnly {
+    public class SimGridDebugger : SharedStateSystemBehaviour<SimGridState, SimWorldState, SimWorldCamera, RoadNetwork>, IDevModeOnly {
         public override bool HasWork() {
             return s_MenuActive && base.HasWork();
         }
@@ -32,6 +33,24 @@ namespace Zavala.Debugging {
                 DebugDraw.AddPoint(hitCenter, 0.1f, Color.white.WithAlpha(0.5f));
                 OccupiesTile occupies = hitInfo.collider.GetComponent<OccupiesTile>();
                 DebugDraw.AddWorldText(hitCenter, string.Format("{0}\nPosition {1} [{2}]\nRegion {3}", occupies.gameObject.name, occupies.TileVector, occupies.TileIndex, occupies.RegionIndex), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
+
+                if (!m_StateD.UpdateNeeded) {
+                    RoadSourceInfo sourceData = m_StateD.Sources.Find(RoadUtility.FindSourceByTileIndex, (ushort) occupies.TileIndex);
+                    if (sourceData.Connections.Length > 0) {
+                        for (int i = 0; i < sourceData.Connections.Length; i++) {
+                            UnsafeSpan<ushort> path = sourceData.Connections[i].Tiles;
+                            for(int j = 1; j < path.Length; j++) {
+                                ushort prev = path[j - 1];
+                                ushort now = path[j];
+
+                                Vector3 prevPos = SimWorldUtility.GetTileCenter(prev) + Vector3.up * 0.3f;
+                                Vector3 nowPos = SimWorldUtility.GetTileCenter(now) + Vector3.up * 0.3f;
+
+                                DebugDraw.AddLine(prevPos, nowPos, Color.yellow, 1);
+                            }
+                        }
+                    }
+                }
             }
             return hit;
         }

@@ -32,6 +32,7 @@ namespace Zavala.Sim {
         [NonSerialized] public SimBuffer<WaterGroupInfo> WaterGroups;
         [NonSerialized] public uint RegionCount;
         [NonSerialized] public uint WaterGroupCount;
+        [NonSerialized] public SimArena<ushort> RegionEdgeArena;
 
         [NonSerialized] public uint CurrRegionIndex;
 
@@ -51,6 +52,7 @@ namespace Zavala.Sim {
             Terrain.Create(HexSize);
             Regions = SimBuffer.Create<RegionInfo>(RegionInfo.MaxRegions);
             WaterGroups = SimBuffer.Create<WaterGroupInfo>(WaterGroupInfo.MaxGroups);
+            RegionEdgeArena = SimArena.Create<ushort>(RegionInfo.MaxRegions * 32);
             RegionCount = 0;
             WaterGroupCount = 0;
 
@@ -117,8 +119,13 @@ namespace Zavala.Sim {
                 currentTile = fromRegion;
             }
 
-            SimWorldState world = Game.SharedState.Get<SimWorldState>();
+            ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
+            regionInfo.Edges = grid.RegionEdgeArena.Alloc((uint) asset.Borders.Length);
+            for(int i = 0; i < regionInfo.Edges.Length; i++) {
+                regionInfo.Edges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.Borders[i].LocalTileIndex);
+            }
 
+            SimWorldState world = Game.SharedState.Get<SimWorldState>();
             world.Palettes[regionIndex] = palette;
 
             // water proxies
@@ -131,7 +138,7 @@ namespace Zavala.Sim {
             // spawn buildings
             foreach (var obj in asset.Buildings) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                world.QueuedBuildings.PushBack(new SimWorldState.SpawnRecord<BuildingType>() {
+                world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingType>() {
                     TileIndex = (ushort) mapIndex,
                     RegionIndex = regionIndex,
                     Id = obj.ScriptName,
@@ -144,7 +151,7 @@ namespace Zavala.Sim {
             // spawn modifiers
             foreach(var obj in asset.Modifiers) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                world.QueuedModifiers.PushBack(new SimWorldState.SpawnRecord<RegionAsset.TerrainModifier>() {
+                world.Spawns.QueuedModifiers.PushBack(new SpawnRecord<RegionAsset.TerrainModifier>() {
                     TileIndex = (ushort)mapIndex,
                     RegionIndex = regionIndex,
                     Id = obj.ScriptName,
@@ -224,7 +231,7 @@ namespace Zavala.Sim {
         static public void RegenRegionInfo(SimGridState grid, int regionIndex, HexGridSubregion subregion) {
             Assert.True(regionIndex < grid.RegionCount, "Region {0} is not a part of grid - currently {1} regions", regionIndex, grid.RegionCount);
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
-            regionInfo.MaxHeight = TerrainInfo.GetMaximumHeight(grid.Terrain.Info, grid.HexSize);
+            regionInfo.MaxHeight = TerrainInfo.GetMaximumHeight(grid.Terrain.Info, subregion, (ushort) regionIndex);
             if (regionInfo.MaxHeight > grid.GlobalMaxHeight) { grid.GlobalMaxHeight = regionInfo.MaxHeight; }
             regionInfo.GridArea = subregion;
         }

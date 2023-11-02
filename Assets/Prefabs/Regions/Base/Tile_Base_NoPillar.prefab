@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TopRenderer: {fileID: 1957287682251005245}
+  TopFilter: {fileID: 4381256484118424055}
   PillarRenderer: {fileID: 0}
   Decorations: []
 --- !u!136 &3680174520802473011
@@ -128,7 +129,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 9534f51420a9b42e68bafa2378c85b04, type: 2}
     - target: {fileID: 919132149155446097, guid: 2f8ae5e6890c48b478e860286380ed0d, type: 3}
       propertyPath: m_Name
-      value: Hillside_Landscape00
+      value: Top
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f8ae5e6890c48b478e860286380ed0d, type: 3}
@@ -140,5 +141,10 @@ Transform:
 --- !u!23 &1957287682251005245 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 2f8ae5e6890c48b478e860286380ed0d, type: 3}
+  m_PrefabInstance: {fileID: 930058636845318585}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &4381256484118424055 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: -5754084199372789682, guid: 2f8ae5e6890c48b478e860286380ed0d, type: 3}
   m_PrefabInstance: {fileID: 930058636845318585}
   m_PrefabAsset: {fileID: 0}

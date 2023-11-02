@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Zavala.Economy;
 using Zavala.Roads;
 
 namespace Zavala.Sim {
@@ -19,7 +18,7 @@ namespace Zavala.Sim {
             Height = SimBuffer.Create<ushort>(size);
             Regions = SimBuffer.Create<ushort>(size);
 
-            SimBuffer.Clear(Regions, (ushort) 0);
+            SimBuffer.Clear(Regions);
         }
     }
 
@@ -63,24 +62,19 @@ namespace Zavala.Sim {
     public unsafe struct RoadBuffers {
         public SimBuffer<RoadTileInfo> Info;
 
+        public SimArena<RoadPathSummary> PathInfoAllocator;
+        public SimArena<ushort> PathIndexAllocator;
+
         public void Create(in HexGridSize size) {
             Info = SimBuffer.Create<RoadTileInfo>(size);
             SimBuffer.Clear(Info);
+
+            PathInfoAllocator = SimArena.Create<RoadPathSummary>(MaxPathSummaries);
+            PathIndexAllocator = SimArena.Create<ushort>(MaxPathData);
         }
-    }
 
-
-    /// <summary>
-    /// Struct containing connection mask information buffers.
-    /// </summary>
-    public unsafe struct ConnectionMaskBuffers
-    {
-        public SimBuffer<ResourceMask> Info;
-
-        public void Create(in HexGridSize size) {
-            Info = SimBuffer.Create<ResourceMask>(size);
-            SimBuffer.Clear(Info);
-        }
+        public const int MaxPathSummaries = ushort.MaxValue;
+        public const int MaxPathData = 2 << 18;
     }
 
     /// <summary>

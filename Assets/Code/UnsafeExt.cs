@@ -236,7 +236,7 @@ namespace Zavala {
                 return false;
             }
 
-            header = Unsafe.Reinterpret<byte, CompressionHeader>(src);
+            header = Unsafe.FastReinterpret<byte, CompressionHeader>(src);
             return header.Magic[0] == 'L' && header.Magic[1] == 'Z' && header.Magic[2] == 'B' && header.Magic[3] == '0';
         }
 

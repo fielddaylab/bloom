@@ -5,11 +5,10 @@ using UnityEngine;
 
 namespace FieldDay.Audio {
     /// <summary>
-    /// Origin for the audio listener.
+    /// Tagged reference position for the audio system.
     /// </summary>
-    public sealed class AudioListenerOrigin : MonoBehaviour {
-        [EditModeOnly] public int Priority = 0;
-        
+    [AddComponentMenu("Field Day/Audio/Position Reference")]
+    public sealed class AudioPositionReference : MonoBehaviour {
         private void OnEnable() {
             
         }

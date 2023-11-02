@@ -57,10 +57,10 @@ namespace Zavala.Economy {
                     else {
                         // create a truck
                         request.Fulfiller = pools.Trucks.Alloc();
-                        FulfillerUtility.InitializeFulfiller(request.Fulfiller, request);
+                        FulfillerUtility.InitializeFulfiller(request.Fulfiller, request, request.Path);
 
                         // divvy route between trucks and blimps through proxy, if applicable
-                        if (request.ProxyIdx != -1) {
+                        if (request.ProxyIdx != Tile.InvalidIndex16) {
                             // truck will be conferring to blimp
                             request.Fulfiller.IsIntermediary = true;
 
@@ -109,29 +109,41 @@ namespace Zavala.Economy {
         }
 
         private void ProcessFulfillerTruck(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
-            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, 3 * deltaTime);
-            if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
-                if (component.IsIntermediary) {
-                    // create a new blimp w/ src export depot + yOffset, target is request destination; confer fulfiller role
-                    int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
-                    if (index < 0) {
-                        // A request that has a fulfiller was fulfilled by other means. Shouldn't be able to happen.
-                        Debug.LogError("[RequestFulfillmentSystem] En-route fulfiller has no corresponding request to fulfill. Cannot confer fulfillment role.");
-                        return;
+            if (component.State == FulfillerState.Init) {
+                if (component.NodeQueue.TryPopFront(out ushort targetPos)) {
+                    component.NextNodePos = SimWorldUtility.GetTileCenter(targetPos);
+                }
+                component.State = FulfillerState.Traveling;
+            }
+
+            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.NextNodePos, 3 * deltaTime);
+            
+            if (Mathf.Approximately(Vector3.Distance(newPos, component.NextNodePos), 0)) {
+                if (component.NodeQueue.TryPopFront(out ushort targetPos)) {
+                    component.NextNodePos = SimWorldUtility.GetTileCenter(targetPos);
+                    component.transform.position = newPos;
+                } else {
+                    if (component.IsIntermediary) {
+                        // create a new blimp w/ src export depot + yOffset, target is request destination; confer fulfiller role
+                        int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
+                        if (index < 0) {
+                            // A request that has a fulfiller was fulfilled by other means. Shouldn't be able to happen.
+                            Debug.LogError("[RequestFulfillmentSystem] En-route fulfiller has no corresponding request to fulfill. Cannot confer fulfillment role.");
+                            return;
+                        }
+
+                        // differentiate between external and internal blimp prefabs
+                        RequestFulfiller newFulfiller = pools.InternalAirships.Alloc();
+                        FulfillerUtility.InitializeFulfiller(newFulfiller, marketData.ActiveRequests[index], component.transform.position);
+
+                        OrientAirship(ref newFulfiller);
+
+                        marketData.ActiveRequests[index].Fulfiller = newFulfiller;
+                    } else {
+                        DeliverFulfillment(marketData, component, visualState);
                     }
-
-                    // differentiate between external and internal blimp prefabs
-                    RequestFulfiller newFulfiller = pools.InternalAirships.Alloc();
-                    FulfillerUtility.InitializeFulfiller(newFulfiller, marketData.ActiveRequests[index], component.transform.position);
-
-                    OrientAirship(ref newFulfiller);
-
-                    marketData.ActiveRequests[index].Fulfiller = newFulfiller;
+                    pools.Trucks.Free(component);
                 }
-                else {
-                    DeliverFulfillment(marketData, component, visualState);
-                }
-                pools.Trucks.Free(component);
             }
             else {
                 component.transform.position = newPos;

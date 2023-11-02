@@ -46,6 +46,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: d4de8aff33c6aa941ad3f9252596ee62, type: 3}
     - {fileID: 102900000, guid: d2e878fa16908b34a84db9858f923d73, type: 3}
+    - {fileID: 2800000, guid: 767dd87e72022f14a9a64358bca57712, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -74,6 +75,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 00f98d77587e0e04fb22f8604087f7d4, type: 3}
   - {fileID: 21300000, guid: 6e980b87d98ae3442b2a5dd8ff5be0b7, type: 3}
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
+  - {fileID: 21300000, guid: 0acbcf2895103dc46bd2d52e01e2e3b3, type: 3}
   - {fileID: 21300000, guid: 984fd538a6379ae4f8c3442531df8bbb, type: 3}
   - {fileID: 21300000, guid: 2b866278671d94a409f43caf09274d0f, type: 3}
   - {fileID: 21300000, guid: d8120c88b3a67124086628f192bafcc0, type: 3}
@@ -89,7 +91,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 9f7db99d52215234fb299dca8c6346c7, type: 3}
   - {fileID: 21300000, guid: fab52f1e1c3fcc448a0241831b299c14, type: 3}
   - {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
+  - {fileID: 21300000, guid: 767dd87e72022f14a9a64358bca57712, type: 3}
   - {fileID: 21300000, guid: 24ba8fce21db8d846a69f995fb37c59b, type: 3}
+  - {fileID: 21300000, guid: 54cfc3fe99abf0c4086d8577ee156cf5, type: 3}
   - {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
   - {fileID: 21300000, guid: 113e8a6f0a4ed994f9d32ce12b79be89, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -116,6 +120,7 @@ SpriteAtlas:
   - resource_Manure
   - base_declining-pop
   - banner_declining-pop
+  - money
   - excl
   - resource_Grain
   - ToolImageRoad
@@ -131,7 +136,9 @@ SpriteAtlas:
   - urgent-request
   - ToolImageStorage
   - ToolImageDigester
+  - Square
   - dialog-arrow
+  - PurchaseReceipt
   - advisor-logobutton-ecol
   - resource_Milk
   m_RenderDataMap: {}

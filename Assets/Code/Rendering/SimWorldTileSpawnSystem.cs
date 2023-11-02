@@ -1,11 +1,7 @@
-using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
-using System;
-using System.ComponentModel;
-using System.Globalization;
 using UnityEngine;
 using Zavala.Sim;
 
@@ -67,6 +63,10 @@ namespace Zavala.World {
             world.Tiles[index] = inst;
             if ((tileInfo.Flags & TerrainFlags.TopHidden) != 0) {
                 TileEffectRendering.SetTopVisibility(inst, false);
+            }
+
+            if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
+                inst.GetComponent<WaterTile>().TileIndex = index;
             }
         }
 

@@ -910,6 +910,7 @@ MonoBehaviour:
       m_Source: toll_booth2to5
       m_HashValue: 864632553
     Type: 10
+  EdgeVisualUpdateSet: 05001e0070007100
   WaterGroupLocalIndices: 05000b000c000d0010001100150017001a001b001c001e00220023002400250026002c002d002e0037003f004000490053005c0066006700700071007200
   WaterGroups:
   - Offset: 0

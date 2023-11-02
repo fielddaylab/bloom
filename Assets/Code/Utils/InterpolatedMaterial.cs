@@ -52,6 +52,10 @@ namespace Zavala {
             Load();
         }
 
+        private void OnDisable() {
+            OnDestroy();
+        }
+
         private void OnDestroy() {
             m_LoadHandle.Cancel();
             if (m_Range != null) {
@@ -95,6 +99,9 @@ namespace Zavala {
             fill[0] = start;
             for (int i = 1; i < increments; i++) {
                 (fill[i] = new Material(start)).Lerp(start, end, (float) i / increments);
+#if UNITY_EDITOR
+                fill[i].name += "_" + i.ToStringLookup();
+#endif // UNITY_EDITOR
             }
             fill[increments] = end;
             return fill;
@@ -104,10 +111,13 @@ namespace Zavala {
             int increments = fill.Length - 1;
             for(int i = 1; i < increments; i++) {
                 fill[i].Lerp(start, end, (float) i / increments);
+#if UNITY_EDITOR
+                fill[i].name += "_" + i.ToStringLookup();
+#endif // UNITY_EDITOR
                 yield return null;
             }
         }
 
-        #endregion // Generation
+#endregion // Generation
     }
 }

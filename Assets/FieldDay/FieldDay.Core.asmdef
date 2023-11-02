@@ -10,7 +10,8 @@
         "BeauData",
         "BeauUtil.Parse",
         "BeauRoutine-Extensions",
-        "BeauRoutine-Spline"
+        "BeauRoutine-Spline",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

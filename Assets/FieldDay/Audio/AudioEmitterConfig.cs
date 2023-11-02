@@ -21,6 +21,12 @@ namespace FieldDay.Audio {
         [AutoEnum] public AudioRolloffMode Rolloff;
 
         /// <summary>
+        /// Index of the custom rolloff curve.
+        /// </summary>
+        [Tooltip("Custom rolloff curve index")]
+        public int CustomRolloffCurveIndex;
+
+        /// <summary>
         /// Rolloff minimum distance.
         /// </summary>
         [Tooltip("Minimum rolloff distance")]
@@ -66,13 +72,28 @@ namespace FieldDay.Audio {
     /// </summary>
     [LabeledEnum(false)]
     public enum AudioEmitterMode : byte {
-        [Label("2D")]
+        [Label("2D (XY)")]
         Flat,
+
+        [Label("2D (XZ)")]
+        FlatXZ,
+
+        [Label("2D (YZ)")]
+        FlatYZ,
 
         [Label("3D")]
         World,
 
         [Label("3D (Relative to Listener)")]
-        ListenerRelative
+        ListenerRelative,
+
+        [Label("Screen Space")]
+        ScreenSpace,
+
+        [Label("Custom A")]
+        CustomA,
+
+        [Label("Custom B")]
+        CustomB
     }
 }
