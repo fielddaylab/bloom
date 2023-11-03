@@ -44,9 +44,9 @@ namespace Zavala.Economy {
                 case UserBuildTool.Road:
                     return 5;
                 case UserBuildTool.Storage:
-                    return 20;
+                    return 100;
                 case UserBuildTool.Digester:
-                    return 30;
+                    return 200;
                 default:
                     return 0;
             }
