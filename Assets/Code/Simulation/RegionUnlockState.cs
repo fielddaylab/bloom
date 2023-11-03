@@ -16,7 +16,8 @@ namespace Zavala.Sim {
         MarketShareTargets,
         RevenueTargets,
         AccrueWealth,
-        WaterHealth
+        WaterHealth,
+        RegionAge
     }
 
     [Serializable]
@@ -47,6 +48,10 @@ namespace Zavala.Sim {
         [Space(5)]
         [Header("AccrueWealth")]
         public TargetThreshold TargetWealth; // Budget needed to satisfy condition
+
+        [Space(5)]
+        [Header("RegionAge")]
+        public TargetThreshold TargetAge;
 
         /* TODO
         [Space(5)]

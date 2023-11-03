@@ -28,6 +28,7 @@ GameObject:
   - component: {fileID: 7708306960153739477}
   - component: {fileID: 8787619606803193805}
   - component: {fileID: 8081782905770933987}
+  - component: {fileID: 1955328063047237028}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -436,7 +437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnlockGroups:
   - UnlockConditions:
-    - Type: 0
+    - Type: 6
       ChecksRegions: 00000000
       Scope: 20
       TargetRunoff:
@@ -463,6 +464,9 @@ MonoBehaviour:
       TargetWealth:
         Below: 0
         Value: 0
+      TargetAge:
+        Below: 0
+        Value: 30
     RegionIndexUnlocks: 0100000002000000
   - UnlockConditions:
     - Type: 0
@@ -492,6 +496,9 @@ MonoBehaviour:
       TargetWealth:
         Below: 0
         Value: 0
+      TargetAge:
+        Below: 0
+        Value: 0
     - Type: 0
       ChecksRegions: 02000000
       Scope: 10
@@ -517,6 +524,9 @@ MonoBehaviour:
         Below: 0
         Value: 0
       TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
         Below: 0
         Value: 0
     RegionIndexUnlocks: 0300000004000000
@@ -566,3 +576,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrState: 0
+--- !u!114 &1955328063047237028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 845afbaf5df378348822b9f7ea2a5d49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

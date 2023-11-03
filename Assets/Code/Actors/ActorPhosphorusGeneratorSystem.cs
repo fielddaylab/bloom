@@ -23,7 +23,15 @@ namespace Zavala.Actors {
 
             foreach(var componentGroup in m_Components) {
                 if (componentGroup.ComponentA.HasAdvanced()) {
-                    SimPhospohorusUtility.GenerateProportionalPhosphorus(phosphorus, componentGroup.ComponentC.TileIndex, componentGroup.Primary, componentGroup.ComponentB.Current);
+                    SimPhospohorusUtility.GenerateProportionalPhosphorus(
+                        phosphorus,
+                        componentGroup.ComponentC.TileIndex,
+                        componentGroup.Primary,
+                        componentGroup.ComponentB.Current,
+                        RunoffParams.SittingManureRunoffProportion,
+                        RunoffParams.MFertilizerRunoffProportion,
+                        RunoffParams.DFertilizerRunoffProportion
+                        );
                 }
             }
         }

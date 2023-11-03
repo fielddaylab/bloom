@@ -6,7 +6,7 @@ using FieldDay.Systems;
 
 namespace Zavala.Sim {
     [SysUpdate(GameLoopPhase.Update, -50)]
-    public sealed class SimPhosphorusSystem : SharedStateSystemBehaviour<SimPhosphorusState, SimGridState, RegionUnlockState> {
+    public sealed class SimPhosphorusSystem : SharedStateSystemBehaviour<SimPhosphorusState, SimGridState> {
         private Action m_ResetCallback;
         
         #region Work
@@ -18,7 +18,12 @@ namespace Zavala.Sim {
                     PhosphorusSim.Tick(m_StateA.Phosphorus.Info, m_StateA.Phosphorus.CurrentState(), m_StateA.Phosphorus.NextState(), m_StateB.HexSize, m_StateB.Random, m_StateA.Phosphorus.Changes);
                     m_StateA.Phosphorus.StateIndex = 1 - m_StateA.Phosphorus.StateIndex;
                     PhosphorusSim.TickPhosphorusHistory(m_StateA.HistoryPerRegion, m_StateB.Regions, (int) m_StateB.RegionCount);
-                    RegionUnlockUtility.RegisterPTimerAdvanced(m_StateC);
+
+                    RegionUnlockState unlockState = Game.SharedState.Get<RegionUnlockState>();
+                    RegionAgeState ageState = Game.SharedState.Get<RegionAgeState>();
+
+                    RegionUnlockUtility.RegisterPTimerAdvanced(unlockState);
+                    RegionAgeUtility.RegisterPTimerAdvanced(ageState);
                 }
             }
 

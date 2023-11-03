@@ -9,7 +9,7 @@ using Zavala.World;
 namespace Zavala.Actors
 {
     /// <summary>
-    ///  Speciifcally, phosphorus application during Grain production
+    ///  Specifically, phosphorus application during Grain production
     /// </summary>
     [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
     public sealed class ProductionRunoffSystem : ComponentSystemBehaviour<ActorPhosphorusGenerator, ResourceProducer, OccupiesTile>
@@ -46,7 +46,15 @@ namespace Zavala.Actors
 
                     int index = componentGroup.ComponentB.TileIndex;
 
-                    SimPhospohorusUtility.GenerateProportionalPhosphorus(phosphorus, index, componentGroup.Primary, lastRequired);
+                    SimPhospohorusUtility.GenerateProportionalPhosphorus(
+                        phosphorus,
+                        index,
+                        componentGroup.Primary,
+                        lastRequired,
+                        RunoffParams.AppliedManureRunoffProportion,
+                        RunoffParams.MFertilizerRunoffProportion,
+                        RunoffParams.DFertilizerRunoffProportion
+                        );
                 }
             }
         }

@@ -95,17 +95,13 @@ namespace Zavala.Sim
             state.HistoryPerRegion[regionIndex].AddPending(phosphorusDelta);
         }
 
-        static public void GenerateProportionalPhosphorus(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator generator, ResourceBlock resources) {
+        static public void GenerateProportionalPhosphorus(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator generator, ResourceBlock resources, int manureMod, int mFertMod, int dFertMod) {
             int index = tileIndex;
-
-            int mFertilizerMod = 3;
-            int manureMod = 2;
-            int dFertilizerMod = 1;
 
             int totalToAdd = generator.Amount * (
                 resources.Manure * manureMod +
-                resources.MFertilizer * mFertilizerMod +
-                resources.DFertilizer * dFertilizerMod
+                resources.MFertilizer * mFertMod +
+                resources.DFertilizer * dFertMod
                 );
 
             AddPhosphorus(phosphorus, index, totalToAdd);

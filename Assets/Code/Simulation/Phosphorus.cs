@@ -368,4 +368,20 @@ namespace Zavala.Sim {
             }
         }
     }
+
+    static public class RunoffParams {
+        #region Tunable Parameters
+
+        // runoff
+        [ConfigVar("Runoff Per Sitting Manure Unit", 0, 10, 1)] static public int SittingManureRunoffProportion = 4;
+        [ConfigVar("Runoff Per Applied Manure Unit", 0, 10, 1)] static public int AppliedManureRunoffProportion = 2;
+        [ConfigVar("Runoff Per Mineral Fertilizer Unit", 0, 10, 1)] static public int MFertilizerRunoffProportion = 3;
+        [ConfigVar("Runoff Per Digested Fertilizer Unit", 0, 10, 1)] static public int DFertilizerRunoffProportion = 1;
+
+        // Alert Threshold
+        [ConfigVar("Excess Alert Threshold", 1, 30, 2)] static public int ExcessRunoffThreshold = 12;
+
+
+        #endregion // Tunable Parameters
+    }
 }

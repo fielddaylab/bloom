@@ -60,6 +60,9 @@ namespace Zavala.Sim
                     case UnlockConditionType.WaterHealth:
                         EvaluateWaterHealthTargetPassed(ref passedCheck, conditionGroup);
                         break;
+                    case UnlockConditionType.RegionAge:
+                        EvaluateRegionAgeTargetPassed(ref passedCheck, conditionGroup);
+                        break;
                     default:
                         break;
                 }
@@ -194,6 +197,16 @@ namespace Zavala.Sim
             }
 
             passedCheck = false;
+        }
+
+        private void EvaluateRegionAgeTargetPassed(ref bool passedCheck, UnlockConditionGroup conditionGroup) {
+            foreach (int region in conditionGroup.ChecksRegions) {
+                if (!MarketUtility.EvaluateTargetThreshold(m_StateB.Regions[region].Age, conditionGroup.TargetAge)) {
+                    // did not meet threshold
+                    passedCheck = false;
+                    return;
+                }
+            }
         }
 
 
