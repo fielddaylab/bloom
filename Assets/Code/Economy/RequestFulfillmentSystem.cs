@@ -117,7 +117,7 @@ namespace Zavala.Economy {
                 component.State = FulfillerState.Traveling;
             }
 
-            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.NextNodePos, 3 * deltaTime);
+            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.NextNodePos, MarketParams.TruckSpeed * deltaTime);
             
             if (Mathf.Approximately(Vector3.Distance(newPos, component.NextNodePos), 0)) {
                 if (component.NodeQueue.TryPopFront(out ushort targetPos)) {
@@ -173,7 +173,7 @@ namespace Zavala.Economy {
 
         private void ProcessFulfillerParcel(MarketData marketData, MarketPools pools, RequestFulfiller component, RequestVisualState visualState, float deltaTime) {
             // move parcel from src to target
-            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, 3 * deltaTime);
+            Vector3 newPos = Vector3.MoveTowards(component.transform.position, component.TargetWorldPos, MarketParams.ParcelSpeed * deltaTime);
 
             // when same position, deliver resource
             if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {

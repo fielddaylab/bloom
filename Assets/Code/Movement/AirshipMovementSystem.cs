@@ -16,8 +16,6 @@ namespace Zavala.Movement
 
     public class AirshipMovementSystem : ComponentSystemBehaviour<RequestFulfiller, AirshipInstance>
     {
-        private static float AIRSHIP_SPEED = 2;
-
         public override void ProcessWork(float deltaTime) {
             SimTimeState timeState = ZavalaGame.SimTime;
             MarketPools pools = Game.SharedState.Get<MarketPools>();
@@ -101,7 +99,7 @@ namespace Zavala.Movement
             do {
                 float deltaTime = Time.deltaTime;
 
-                newPos = Vector3.MoveTowards(fulfiller.transform.position, fulfiller.TargetWorldPos, AIRSHIP_SPEED * deltaTime);
+                newPos = Vector3.MoveTowards(fulfiller.transform.position, fulfiller.TargetWorldPos, MarketParams.AirshipSpeed * deltaTime);
                 fulfiller.transform.position = newPos;
                 yield return null;
             }

@@ -158,7 +158,7 @@ MonoBehaviour:
       MFertilizer: 2
       DFertilizer: 1
       Grain: 3
-      Milk: 3
+      Milk: 1
     ExportDepotFlatRate:
       Manure: 0
       MFertilizer: 20

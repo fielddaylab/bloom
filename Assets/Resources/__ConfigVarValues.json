@@ -1,5 +1,6 @@
 {
     "Zavala.Sim.AlgaeSim::MinPForAlgaeGrowth": 15,
+    "Zavala.Economy.MarketParams::ParcelSpeed": 2.20000004768372,
     "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 25,
     "Zavala.Sim.PhosphorusSim::SteepHeightThreshold": 25,
     "Zavala.Sim.PhosphorusSim::MinFlowThreshold": 7,
