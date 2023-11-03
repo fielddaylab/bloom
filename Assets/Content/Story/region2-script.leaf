@@ -1,5 +1,6 @@
+# basePath   region2
 
-:: testRegionUnlocked
+:: regionUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
 @queued

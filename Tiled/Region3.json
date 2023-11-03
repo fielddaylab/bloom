@@ -110,7 +110,7 @@
                  "gid":33,
                  "height":55,
                  "id":93,
-                 "name":"region3_grain3",
+                 "name":"region3_grain2",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -127,20 +127,8 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":435,
-                 "y":323.5
-                }, 
-                {
-                 "gid":33,
-                 "height":55,
-                 "id":95,
-                 "name":"region3_grain2",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":193.666666666667,
-                 "y":129.833333333333
+                 "x":431.888094021461,
+                 "y":323.188553909044
                 }, 
                 {
                  "gid":36,

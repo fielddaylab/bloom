@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
+  m_Name: advisorEcolWetland
+  m_EditorClassIdentifier: 
+  NameId: Dalia
+  TitleId: Ecological Advisor
+  IsAdvisor: 1
+  BackgroundColor:
+    serializedVersion: 2
+    rgba: 4278225962
+  PanelColor:
+    serializedVersion: 2
+    rgba: 4289264080
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 4279199253
+  NameColor:
+    serializedVersion: 2
+    rgba: 4278452363
+  TitleColor:
+    serializedVersion: 2
+    rgba: 4278386823
+  TextColor:
+    serializedVersion: 2
+    rgba: 4279633162
+  PortraitArt: {fileID: 21300000, guid: 479a03262c720c74b8ced10525243aef, type: 3}
+  PortraitBackground: {fileID: 0}

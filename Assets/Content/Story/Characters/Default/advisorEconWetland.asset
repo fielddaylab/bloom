@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
+  m_Name: advisorEconWetland
+  m_EditorClassIdentifier: 
+  NameId: Frigg
+  TitleId: Economic Advisor
+  IsAdvisor: 1
+  BackgroundColor:
+    serializedVersion: 2
+    rgba: 4280165728
+  PanelColor:
+    serializedVersion: 2
+    rgba: 4283217400
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 4284925577
+  NameColor:
+    serializedVersion: 2
+    rgba: 4278265026
+  TitleColor:
+    serializedVersion: 2
+    rgba: 4278265026
+  TextColor:
+    serializedVersion: 2
+    rgba: 4283217400
+  PortraitArt: {fileID: 21300000, guid: 6b7ffe1aa44a7194ab4cc3392086cc05, type: 3}
+  PortraitBackground: {fileID: 0}

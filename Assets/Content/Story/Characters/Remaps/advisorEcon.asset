@@ -19,3 +19,7 @@ MonoBehaviour:
     CharDef: {fileID: 11400000, guid: 7a9e9ac94125a5044889a3d0d99104a0, type: 2}
   - Region: 2
     CharDef: {fileID: 11400000, guid: 9af28242206017444a129e9d565c5a38, type: 2}
+  - Region: 3
+    CharDef: {fileID: 11400000, guid: 19449c412432194459fea6717f8a6e55, type: 2}
+  - Region: 4
+    CharDef: {fileID: 11400000, guid: 5e240a5063e92ab4d882ce8bee4d303e, type: 2}

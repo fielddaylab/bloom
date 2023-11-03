@@ -578,7 +578,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 48
+    Flags: 0
     Height: 150
   - RegionIndex: 65535
     Category: 1
@@ -688,18 +688,13 @@ MonoBehaviour:
     Type: 2
   - LocalTileIndex: 63
     ScriptName:
-      m_Source: region3_grain3
-      m_HashValue: 1480197967
+      m_Source: region3_grain2
+      m_HashValue: 1463420348
     Type: 1
   - LocalTileIndex: 69
     ScriptName:
       m_Source: region3_grain1
       m_HashValue: 1513753205
-    Type: 1
-  - LocalTileIndex: 112
-    ScriptName:
-      m_Source: region3_grain2
-      m_HashValue: 1463420348
     Type: 1
   Points: []
   Roads: []

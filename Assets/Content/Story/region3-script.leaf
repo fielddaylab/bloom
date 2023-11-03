@@ -1,0 +1,11 @@
+# basePath   region3
+
+:: regionUnlocked
+@trigger        RegionUnlocked
+@conditions     regionId == "Prairie"
+@queued
+$call Pause()
+{@advisorEconPrairie}    Hello! We on the Prairie have lots of Grain Farms and a thriving research university.
+{@advisorEconPrairie}    We could use your help too. Meanwhile, we'll be doing research about the lake situation.
+$call Unpause()
+
