@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timer:
-    Period: 9
+    Period: 12
 --- !u!114 &947691686583835043
 MonoBehaviour:
   m_ObjectHideFlags: 0

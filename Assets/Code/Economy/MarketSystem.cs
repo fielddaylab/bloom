@@ -371,7 +371,7 @@ namespace Zavala.Economy
                     }
                 }
 
-                float score = profit - shippingCost;
+                float score = profit + relativeGain - shippingCost;
 
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue();
                 taxRevenue.Sales = adjustments.PurchaseTax[primary];

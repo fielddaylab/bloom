@@ -4,27 +4,16 @@
 @trigger GameBooted
 @once
 $call Pause()
-// Seems like we only need to talk about market conditions at first.
-// Start mentioning blooms only after some start to appear. And leave that to the ecological advisor.
 {@advisorEconHill}    Greetings. Let's get right to business, shall we?
 {@advisorEconHill}      Our lovely <i>Hillside Region</i> is a chunk of blooming real estate with three buildings:
 $call PanToBuilding("region1_city1");
-{@advisorEconHill}      A <i>City</i>... // Insert camera panning here
+{@advisorEconHill}      A <i>City</i>...
 $call PanToBuilding("region1_cafo1");
-{@advisorEconHill}      A <i>Dairy Farm</i>... // Insert camera panning here
+{@advisorEconHill}      A <i>Dairy Farm</i>...
 $call PanToBuilding("region1_grain1");
-{@advisorEconHill}      And a <i>Grain Farm</i>. // Insert camera panning here
+{@advisorEconHill}      And a <i>Grain Farm</i>.
 {@advisorEconHill}      But something else is required before it can truly be considered an economy... <i>Roads</i>!
 {@advisorEconHill}      Start by opening your <i>Funding</i> menu to connect these your two farms with a <i>Road</i>.
-
-// {local @advisorEcon}    Greetings. Let's get right to business, shall we?
-// {local @advisorEcon}    These troublesome algae blooms have been appearing all over. 
-// {local @advisorEcon}    I'm here to fill you in on the market conditions driving this trend.
-// {local @advisorEcon}    It starts with the Grain Farms: they import mineral phosphorus to fertilize their fields.
-// {local @advisorEcon}    The Dairy Farms will buy their grain to feed cows... 
-// {local @advisorEcon}    But then their phosphorus-filled manure runs into the lakes.
-// {local @advisorEcon}    Seems to me they could help each other out, no?
-// {local @advisorEcon}    Start by opening your Funding menu to connect these farms with a Road.
 $call Unpause()
 
 
@@ -148,7 +137,6 @@ $call Unpause()
 :: testSellAtLossTrigger
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss"
-@forcePolicy    Economy
 @queued
 $call Pause()
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?

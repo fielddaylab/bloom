@@ -63,7 +63,7 @@ namespace Zavala.Sim {
     public struct UnlockGroup
     {
         public List<UnlockConditionGroup> UnlockConditions;
-        public RegionId[] RegionIndexUnlocks; // TODO: maybe make this enum region id?
+        public RegionId[] RegionIndexUnlocks;
     }
 
     public class RegionUnlockState : SharedStateComponent
@@ -82,7 +82,6 @@ namespace Zavala.Sim {
             }
 
             SimDataUtility.LoadAndRegenRegionDataFromWorld(grid, grid.WorldData, region, worldState);
-            // TODO: trigger RegionUnlocked for scripting purposes
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("regionId", ((RegionId) region).ToString());
                 ScriptUtility.Trigger(GameTriggers.RegionUnlocked, varTable);

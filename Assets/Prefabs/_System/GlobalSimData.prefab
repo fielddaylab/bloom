@@ -501,12 +501,42 @@ MonoBehaviour:
         Value: 20
     RegionIndexUnlocks: 02000000
   - UnlockConditions:
-    - Type: 6
+    - Type: 0
+      ChecksRegions: 00000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.2
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+    - Type: 0
       ChecksRegions: 01000000
       Scope: 10
       TargetRunoff:
         Below: 1
-        Value: 0.5
+        Value: 0.2
       TargetCFertilizer:
         Below: 0
         Value: 0
