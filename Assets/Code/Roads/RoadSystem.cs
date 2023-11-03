@@ -46,6 +46,8 @@ namespace Zavala.Roads {
                         resources.Destinations = network.Destinations;
                         resources.RegionInfo = m_StateB.Terrain.Regions;
 
+                        Unsafe.Clear(resources.TraversalMap);
+
                         for (int i = 0; i < m_StateA.Sources.Count; i++) {
                             ref RoadSourceInfo src = ref m_StateA.Sources[i];
                             src.Connections = FindConnections(src.TileIdx, src.Filter, network.Roads.Info, resources, i, gridSize);
@@ -145,11 +147,11 @@ namespace Zavala.Roads {
                         if (pathsFound >= resources.SummaryAccumulator.Length) {
                             break;
                         }
-
-                        // if tollbooth, we can continue traversing
-                        // otherwise, terminate here. no paths leading through buildings
-                        skipOutgoing = (destInfo.Type & RoadDestinationMask.Tollbooth) == 0;
                     }
+
+                    // if tollbooth, we can continue traversing
+                    // otherwise, terminate here. no paths leading through buildings
+                    skipOutgoing = (destInfo.Type & RoadDestinationMask.Tollbooth) == 0;
                 }
                 
                 if (skipOutgoing) {
