@@ -358,11 +358,11 @@ namespace Zavala.Sim {
                     }
 
                     Debug.Log("[History] New History for region " + i + " : " + builder.ToString());
-                    if (history.TryGetAvg(20, out float avg)) {
-                        Debug.Log("[History] Avg produced for region " + i + " over 20 ticks: " + avg);
+                    if (history.TryGetAvg(10, out float avg)) {
+                        Debug.Log("[History] Avg produced for region " + i + " over 10 ticks: " + avg);
                     }
-                    if (history.TryGetTotal(20, out int total)) {
-                        Debug.Log("[History] Total produced for region " + i + " over 20 ticks: " + total);
+                    if (history.TryGetTotal(10, out int total)) {
+                        Debug.Log("[History] Total produced for region " + i + " over 10 ticks: " + total);
                     }
                 }
             }

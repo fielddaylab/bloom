@@ -1,6 +1,7 @@
 using BeauUtil.Debugger;
 using FieldDay.Debugging;
 using FieldDay.Systems;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using Zavala.Actors;
 
@@ -29,7 +30,7 @@ namespace Zavala.Economy {
                     QueueRequestForProduction(producer);
                 }
             }
-            else if (producer.Requires.IsPositive) {
+            else if (producer.Requires.IsPositive && ResourceBlock.CanAddFull(producer.Storage.Current, producer.Produces, producer.Storage.Capacity)) {
                QueueRequestForProduction(producer);
             }
         }

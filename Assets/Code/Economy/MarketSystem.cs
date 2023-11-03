@@ -64,6 +64,8 @@ namespace Zavala.Economy
                 MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary);
 
                 if (found.HasValue) {
+                    string supplierName = supplier.gameObject.name;
+                    string foundName = found.Value.Requester.gameObject.name;
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
                     MarketRequestInfo? adjustedFound = found;
 
@@ -186,8 +188,15 @@ namespace Zavala.Economy
                         current = supplier.Storage.Current + supplier.Storage.StorageExtensionStore.Current;
                     }
 
-                    if (!ResourceBlock.Fulfills(current, requests[i].Requested) && !requests[i].Requester.InfiniteRequests) {
-                        continue;
+                    // current resources must fulfill the request unless the request is infinite AND a local option
+                    if (!ResourceBlock.Fulfills(current, requests[i].Requested)) {
+                        if (requests[i].Requester.InfiniteRequests && requests[i].Requester.IsLocalOption) {
+                            // no need to fulfill the request to consider it
+                        }
+                        else {
+                            // not a valid buyer, since this supplier cannot fulfill the request
+                            continue;
+                        }
                     }
                 }
 

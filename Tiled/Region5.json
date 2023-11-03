@@ -198,6 +198,18 @@
                  "width":64,
                  "x":193,
                  "y":239.5
+                }, 
+                {
+                 "gid":40,
+                 "height":55,
+                 "id":114,
+                 "name":"region5_export1",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":529.810568717867,
+                 "y":266.520167488207
                 }],
          "opacity":0.45,
          "type":"objectgroup",
@@ -206,7 +218,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":114,
+ "nextobjectid":115,
  "orientation":"hexagonal",
  "renderorder":"right-up",
  "staggeraxis":"x",

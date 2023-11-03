@@ -65,6 +65,8 @@ namespace Zavala.Sim {
     {
         public List<UnlockGroup> UnlockGroups;
         [NonSerialized] public int UnlockCount;
+
+        [NonSerialized] public bool SimPhosphorusAdvanced;
     }
 
     static public class RegionUnlockUtility {
@@ -81,6 +83,10 @@ namespace Zavala.Sim {
                 ScriptUtility.Trigger(GameTriggers.RegionUnlocked, varTable);
             }
             Debug.Log("[RegionUnlockSystem] Unlocked region " + region);
+        }
+
+        static public void RegisterPTimerAdvanced(RegionUnlockState unlockState) {
+            unlockState.SimPhosphorusAdvanced = true;
         }
 
         [DebugMenuFactory]

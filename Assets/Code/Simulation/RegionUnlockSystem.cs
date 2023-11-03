@@ -25,6 +25,14 @@ namespace Zavala.Sim
             if (m_StateA.UnlockCount >= m_StateA.UnlockGroups.Count) {
                 return;
             }
+
+            // Only check unlocks every sim tick
+            if (!m_StateA.SimPhosphorusAdvanced) {
+                return;
+            }
+            else {
+                m_StateA.SimPhosphorusAdvanced = false;
+            }
             
             UnlockGroup currUnlockGroup = m_StateA.UnlockGroups[m_StateA.UnlockCount];
 
