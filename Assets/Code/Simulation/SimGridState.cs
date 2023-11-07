@@ -209,6 +209,7 @@ namespace Zavala.Sim {
             regionInfo.GridArea = region;
             regionInfo.MaxHeight = 0;
             regionInfo.Id = id;
+            regionInfo.Age = 0;
             grid.RegionCount++;
             foreach(var index in region) {
                 grid.Terrain.Regions[index] = (ushort)regionIndex;
