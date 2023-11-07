@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Trucks:
-    m_Prefab: {fileID: 2981774100162078211, guid: 535b903f1a66032489ba37c5037d90fe, type: 3}
+    m_Prefab: {fileID: 8669542121279567155, guid: 873b8de4cc0f34cdfb12da75eabaf73d, type: 3}
     m_Name: 
     m_InitialCapacity: 32
     m_PrewarmOnInitialize: 1
