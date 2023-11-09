@@ -12,26 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
   m_Name: grainWetland
   m_EditorClassIdentifier: 
-  NameId: Emmett
+  NameId: Cindy
   TitleId: Grain Farmer
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4293131263
+    rgba: 4290046446
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4288013000
+    rgba: 4289579020
   NameColor:
     serializedVersion: 2
-    rgba: 4279058063
+    rgba: 4278957811
   TitleColor:
     serializedVersion: 2
-    rgba: 4280506016
+    rgba: 4281157122
   TextColor:
     serializedVersion: 2
-    rgba: 4279310152
-  PortraitArt: {fileID: 21300000, guid: 3221538a6ea084f42bdadc9ce3f60b40, type: 3}
+    rgba: 4281222915
+  PortraitArt: {fileID: 21300000, guid: 2fec7a1da840dee489f3d26206010190, type: 3}
   PortraitBackground: {fileID: 0}

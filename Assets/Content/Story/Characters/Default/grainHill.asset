@@ -23,10 +23,10 @@ MonoBehaviour:
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4288013000
+    rgba: 4282745633
   NameColor:
     serializedVersion: 2
-    rgba: 4279058063
+    rgba: 4280298420
   TitleColor:
     serializedVersion: 2
     rgba: 4280506016

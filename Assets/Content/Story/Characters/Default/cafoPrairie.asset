@@ -12,26 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
   m_Name: cafoPrairie
   m_EditorClassIdentifier: 
-  NameId: Squinkle
+  NameId: Winnie
   TitleId: CAFO Farmer
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4283545344
+    rgba: 4288797163
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 0
+    rgba: 4278302447
   NameColor:
     serializedVersion: 2
-    rgba: 4290693832
+    rgba: 4285042432
   TitleColor:
     serializedVersion: 2
-    rgba: 4282955560
+    rgba: 4281750225
   TextColor:
     serializedVersion: 2
-    rgba: 4290693832
-  PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+    rgba: 4280050649
+  PortraitArt: {fileID: 21300000, guid: b5856c6b79034744a908a20f8f16be45, type: 3}
   PortraitBackground: {fileID: 0}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
   m_Name: advisorEcolWetland
   m_EditorClassIdentifier: 
-  NameId: Dalia
+  NameId: Ethan
   TitleId: Ecological Advisor
   IsAdvisor: 1
   BackgroundColor:
@@ -33,5 +33,5 @@ MonoBehaviour:
   TextColor:
     serializedVersion: 2
     rgba: 4279633162
-  PortraitArt: {fileID: 21300000, guid: 479a03262c720c74b8ced10525243aef, type: 3}
+  PortraitArt: {fileID: 21300000, guid: 515091a6475be6c4c990770f321dea50, type: 3}
   PortraitBackground: {fileID: 0}
