@@ -54,13 +54,10 @@ namespace Zavala.Economy {
 
         #region Tunable Parameters
 
-        // begin growing algae when this P threshold is exceeded
         [ConfigVar("TruckSpeed", 0.2f, 5, 0.2f)] static public float TruckSpeed = 1;
 
-        // begin growing algae when this P threshold is exceeded
         [ConfigVar("AirshipSpeed", 0.2f, 5, 0.2f)] static public float AirshipSpeed = 2;
 
-        // begin growing algae when this P threshold is exceeded
         [ConfigVar("ParcelSpeed", 0.2f, 5, 0.2f)] static public float ParcelSpeed = 2.2f;
 
         #endregion

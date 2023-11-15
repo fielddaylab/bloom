@@ -6,5 +6,5 @@
 @queued
 $call Pause()
 {@advisorEcolWetland}    Welcome to the wetlands!
-{@advisorEcolCity}       And the Urban zone!
+$call PanToBuilding("region4_city1")
 $call Unpause()

@@ -1,2 +1,10 @@
 # basePath   region5
 
+:: regionUnlocked
+@trigger        RegionUnlocked
+@conditions     regionId == "Urban"
+@queued
+$call Pause()
+{@advisorEcolUrban}    Sup. Welcome to Smokestack City.
+$call PanToBuilding("region5_city1")
+$call Unpause()

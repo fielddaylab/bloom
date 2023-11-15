@@ -4,16 +4,22 @@
 @trigger GameBooted
 @once
 $call Pause()
-{@advisorEconHill}    Greetings. Let's get right to business, shall we?
-{@advisorEconHill}      Our lovely <i>Hillside Region</i> is a chunk of blooming real estate with three buildings:
-$call PanToBuilding("region1_city1");
-{@advisorEconHill}      A <i>City</i>...
-$call PanToBuilding("region1_cafo1");
-{@advisorEconHill}      A <i>Dairy Farm</i>...
-$call PanToBuilding("region1_grain1");
-{@advisorEconHill}      And a <i>Grain Farm</i>.
-{@advisorEconHill}      But something else is required before it can truly be considered an economy... <i>Roads</i>!
-{@advisorEconHill}      Start by opening your <i>Funding</i> menu to connect these your two farms with a <i>Road</i>.
+{@advisorEconHill}      Greetings. You must be the Director.
+{@advisorEconHill}      I'm here to advise you on economic matters in Knoll County.
+{@advisorEconHill}      As you can see, we are a chunk of blooming real estate.
+{@advisorEconHill}      I'll give you the tour.
+$call PanToBuilding("region1_city1")
+// TODO: add localized display names for these tiles - e.g. "Oakvale" rather than region1_city1
+{@advisorEconHill}      There's the <i>City</i> of Oakvale...
+$call PanToBuilding("region1_grain1")
+{@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
+$call PanToBuilding("region1_cafo1")
+{@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
+{@advisorEcolHill}      "Dairy farm?" Oh, please.
+{@advisorEcolHill}      I would call that a <i>concentrated animal feed operation</i>... a CAFO.
+{@advisorEconHill}      Right, yes. My colleague here will inform you on environmental concerns.
+{@advisorEconHill}      But back to <i>important</i> things. Like establishing trade routes!
+{@advisorEconHill}      Start by opening your <i>Funding</i> menu to connect our two farms.
 $call Unpause()
 
 
@@ -32,16 +38,16 @@ $call Unpause()
 $call Pause()
 $set intro:farmsConnected = true
 $if intro:citiesConnected
-    {@advisorEconHill}      Nice work! Now the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i> and <i>manure</i>.
-    {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
+    {@advisorEconHill}      Nice work! Now the CAFO can buy <i>grain</i> from the Grain Farm to produce <i>milk</i> and <i>manure</i>.
+    // {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect city and dairy
     {@advisorEconHill}      That's a well-built road, that.
-    {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
+    // {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
     {@advisorEconHill}      And the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i>.
     {@advisorEconHill}      But who buys the <i>milk</i>, you ask? That'll be the City!
-    $call PanToBuilding("region1_city1");
+    $call PanToBuilding("region1_city1")
     {@advisorEconHill}      Build another <i>Road</i> connecting the Dairy Farm and the City.
 $endif
 $call Unpause()
@@ -52,14 +58,14 @@ $call Unpause()
 $call Pause()
 $set intro:citiesConnected = true
 $if intro:farmsConnected
-    {@advisorEconHill}      Nice work! Now the the City can buy <i>milk</i> from the Dairy Farm and turn it into <i>money</i> using TAX MAGIC!
+    {@advisorEconHill}      Excellent! Now the the City can buy <i>milk</i> and turn it into <i>money</i> using TAX MAGIC!
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
     {@advisorEconHill}      Uh-- hmm. I suppose we can start with the City. I'm not picky about these things.
     {@advisorEconHill}      With this road, the City can purchase <i>milk</i> from the Dairy Farm to produce <i>money</i>.
     {@advisorEconHill}      But how does a Dairy Farm make the <i>milk</i>, you ask? They trade with a Grain Farm!
-    $call PanToBuilding("region1_grain1");
+    $call PanToBuilding("region1_grain1")
     {@advisorEconHill}      Build another road between the Dairy Farm and the Grain Farm.
 $endif
 
@@ -68,31 +74,31 @@ $call Unpause()
 :: farmsAndCitiesConnected 
 $call ActivateSim()
 {@advisorEconHill}      Your Grain Farm is hooked up with the Dairy Farm, and the Dairy Farm with the City.
-{@advisorEconHill}      Now you can start optimizing your <i>manure</i> sources to produce more <i>milk</i> and <i>money</i>!
+{@advisorEconHill}      Now you can start optimizing the routes to produce more <i>milk</i> and <i>money</i>!
 {@advisorEconHill}      Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
 
-:: sittingOmens
-@trigger        LetSat
-@conditions     intro:citiesConnected, intro:farmsConnected
-@once
-$call Pause()
-$call PanToBuilding("region1_cafo1")
-{@advisorEcolHill}     It looks like this dairy farm is letting its manure sit and run off.
-{@advisorEconHill}      Indeed. You'll have to make their alternatives more favorable.
-{@advisorEconHill}      Namely, either a Storage unit or a Grain Farm.
-{@advisorEconHill}      Make sure there's a road connecting them, and that shipping is cheaper than allowing runoff.
-{@advisorEcolHill}      This could have ramifications for lake health down the line...
-$call Unpause()
+// :: sittingOmens
+// @trigger        LetSat
+// @conditions     intro:citiesConnected, intro:farmsConnected
+// @once
+// $call Pause()
+// $call PanToBuilding("region1_cafo1")
+// {@advisorEcolHill}      It looks like this dairy farm is letting its manure sit and run off.
+// {@advisorEconHill}      Indeed. They simply have no more favorable alternatives.
+// {@advisorEcolHill}      This could have ramifications for lake health down the line...
+// $call Unpause()
 
 :: specialDelivery
 @trigger    ExternalImport
 @once
 $call Pause()
-$call PanToBuilding("region1_grain1");
+$call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
-{@advisorEconHill}      Your Grain Farm imported some <i>commercial fertilizer</i> from an outside supplier called Moose Minerals.
-{@advisorEconHill}      Guess it's cheaper than any local manure options. Or local supply isn't enough to cover 100% of the requests.
-{@advisorEcolHill}      Commercial fertilizer may be cheaper, but it also results in more phosphorus runoff when it's applied.
+{@advisorEconHill}      Henrietta's grain farm imported some <i>commercial fertilizer</i> from an outside supplier.
+{local @grainFarmer}    Moose Minerals is great! My crops need that phosphorus, and it ships right to my farm.
+{@advisorEcolHill}      Careful now... All that extra phosphorus could leach into the lakes!
+{@advisorEconHill}      Well, I'm afraid this is the only economically feasible option.
+{@advisorEcolHill}      There must be another source of phosphorus here somewhere...
 $call Unpause()
 
 :: testEcologyAdvisorOpen
@@ -105,6 +111,7 @@ $call Unpause()
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy"
 @forcePolicy    Economy
+// TODO: read current PolicyState?
 {local @advisorEcon}    Here are the economic policies.
 
 :: runoffTrigger
@@ -114,11 +121,12 @@ $call Unpause()
 @queued
 @once
 $call Pause()
-{local @grainFarmer}    Goodness gracious. This manure just slips off my fields.
-{local @advisorEcol}    There has been excessive runoff!
-{local @advisorEcol}    Looks like it's still cheaper for the dairy farm to let the manure sit.
-{local @advisorEcol}    We've been authorized to implement a penalty for allowing manure runoff.
-{local @advisorEcon}    That could incentivize selling, but if it's too high it'll disrupt the supply chain.
+{local @advisorEcol}    This farm is just letting manure slip off their fields!
+{local @advisorEcon}    Indeed. They simply have no more favorable alternatives.
+{local @advisorEcol}    Well, let's make it less favorable. How about a fine for runoff?
+{local @cafoFarmer}     A fine!? 
+{local @advisorEcon}    Well, that <i>could</i> incentivize selling...
+{local @advisorEcon}    But if it's too high, it could disrupt the supply chain.
 {local @advisorEcol}    What do you think, boss?
 $call UnlockCards(RunoffPolicy)
 
@@ -128,18 +136,22 @@ $call UnlockCards(RunoffPolicy)
 @forcePolicy    Ecology
 @once
 $call Pause()
-{local @advisorEcol}    Oh dear. We're getting algae blooms here in our lake.
-{local @advisorEcol}    We've been authorized to implement a runoff penalty to disincentivize sitting manure.
+{@advisorEcolHill}    Oh dear. It looks like algae blooms are coming to our lakes.
+{@advisorEcolHill}    Our policies may need some adjustment...
+{@advisorEcolHill}    A runoff penalty might help disincentivize letting manure sit.
 $call UnlockCards(RunoffPolicy)
 $call Unpause()
 
+// TODO: add event/trigger for city stress (nearby bloom and/or lacking milk)
 
 :: testSellAtLossTrigger
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss"
+@forcePolicy    Economy
 @queued
 $call Pause()
+// TODO: use grainFarmer for grain farm tiles, cafoFarmer for cafo tiles?
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
 {local @advisorEcon}    This supplier is selling at a loss.
-{local @advisorEcon}    If we want to keep business running smoothly, we'd best decrease costs.
+{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to decrease costs.
 $call Unpause()
