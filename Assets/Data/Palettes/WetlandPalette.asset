@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5b4b218509de34192fd25dbc3a19fe, type: 3}
+  m_Name: WetlandPalette
+  m_EditorClassIdentifier: 
+  GroundTile: {fileID: 7097652779095066658, guid: 623feb395f15dfe478b356a8628ab6e2, type: 3}
+  InnerGroundTile: {fileID: 8646880712342134390, guid: effdabc0729ff13419acd49ad0da06b2, type: 3}
+  TileTopEmptyMesh:
+    Mesh: {fileID: 7598437945485548197, guid: 6b6e80f6ccd1c844ba8dac1ae1e2dc8d, type: 3}
+    Material: {fileID: 2100000, guid: 1248b131f830ef64c9cbee84973ff29f, type: 2}
+  City: {fileID: 7923277801408494104, guid: 13608a3b484edc1499ca56b05dd0be44, type: 3}
+  DairyFarm: {fileID: 7867109224890221971, guid: 139595a6b2066164b936c6b22c40c55b, type: 3}
+  GrainFarm: {fileID: 3996902326369784312, guid: c5dd383949fb37040915a9762881f30e, type: 3}
+  ExportDepot: {fileID: 7291294420475072060, guid: 201bdaeea4b86894797bc4502d768471, type: 3}
+  Rock:
+  - {fileID: 6623382123354219134, guid: f2242a7bf2b3710409251bac43483f7e, type: 3}
+  Tree:
+  - {fileID: 6623382123354219134, guid: f2242a7bf2b3710409251bac43483f7e, type: 3}

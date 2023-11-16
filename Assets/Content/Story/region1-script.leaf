@@ -152,6 +152,6 @@ $call Unpause()
 $call Pause()
 // TODO: use grainFarmer for grain farm tiles, cafoFarmer for cafo tiles?
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
-{local @advisorEcon}    This supplier is selling at a loss.
+{local @advisorEcon}    Hmm... This supplier is selling at a loss.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to decrease costs.
 $call Unpause()

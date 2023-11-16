@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
-  m_Name: grainCity
+  m_Name: cityUrban
   m_EditorClassIdentifier: 
-  NameId: CITY GRAIN
-  TitleId: Grain Farmer
+  NameId: Francis
+  TitleId: Urbanite
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4293131263
+    rgba: 4287879919
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4288013000
+    rgba: 4291366036
   NameColor:
     serializedVersion: 2
-    rgba: 4279058063
+    rgba: 4278210549
   TitleColor:
     serializedVersion: 2
-    rgba: 4280506016
+    rgba: 4278288126
   TextColor:
     serializedVersion: 2
-    rgba: 4279310152
-  PortraitArt: {fileID: 21300000, guid: 3221538a6ea084f42bdadc9ce3f60b40, type: 3}
+    rgba: 4281664551
+  PortraitArt: {fileID: 21300000, guid: 575feb5b6c84f1345b78c0122c23f4db, type: 3}
   PortraitBackground: {fileID: 0}

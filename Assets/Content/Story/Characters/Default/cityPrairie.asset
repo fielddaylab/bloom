@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
-  m_Name: urbanWetland
+  m_Name: cityPrairie
   m_EditorClassIdentifier: 
-  NameId: Trudy
+  NameId: Winston
   TitleId: Urbanite
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4290046446
+    rgba: 4288862186
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4289054221
+    rgba: 4278499826
   NameColor:
     serializedVersion: 2
-    rgba: 4278435053
+    rgba: 4285043968
   TitleColor:
     serializedVersion: 2
-    rgba: 4281223169
+    rgba: 4281750225
   TextColor:
     serializedVersion: 2
-    rgba: 4281222915
-  PortraitArt: {fileID: 21300000, guid: 93a0faff47d02034fa7bdfa072c21e7f, type: 3}
+    rgba: 4280050906
+  PortraitArt: {fileID: 21300000, guid: bc63a7fc653ba5a4c83efe06deca11d5, type: 3}
   PortraitBackground: {fileID: 0}
