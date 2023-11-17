@@ -95,7 +95,7 @@ namespace Zavala.UI {
                 ScriptUtility.Runtime.Plugin.Run(node, alert.Actor, varTable);
                 varTable.Clear();
 
-                alert.BannerRoutine.Replace(CloseRoutine(alert, true));
+                //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
             }
         }
 
@@ -112,12 +112,13 @@ namespace Zavala.UI {
             yield return alert.AlertBanner.rectTransform.AnchorPosTo(new Vector2(0, 0), 0.3f).Ease(Curve.CubeIn);
             alert.FullyOpened = true;
             alert.BannerRoutine.Replace(HoldRoutine(alert, 5.0f));
+            ClickAlert(alert);
             yield return null;
         }
 
         public static IEnumerator HoldRoutine(UIAlert alert, float sec) {
             yield return Routine.WaitRealSeconds(sec);
-            alert.BannerRoutine.Replace(CloseRoutine(alert, false));
+            alert.BannerRoutine.Replace(CloseRoutine(alert, true));
             yield return null;
         }
         public static IEnumerator CloseRoutine(UIAlert alert, bool freeOnClose) {

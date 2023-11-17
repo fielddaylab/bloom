@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5b4b218509de34192fd25dbc3a19fe, type: 3}
+  m_Name: UrbanPalette
+  m_EditorClassIdentifier: 
+  GroundTile: {fileID: 7097652779095066658, guid: 995fffecbcb4da944960ebfb39971932, type: 3}
+  InnerGroundTile: {fileID: 7097652779095066658, guid: 38e5d25378982a247aff6b77e9af9d34, type: 3}
+  TileTopEmptyMesh:
+    Mesh: {fileID: 2810960467159843297, guid: 4277ba694297c8c4fb8d69d395bd2bb2, type: 3}
+    Material: {fileID: 2100000, guid: c03543a3bf914334486d0a7f247f177a, type: 2}
+  City: {fileID: 947691686583835045, guid: 8d720e143ede0a545b618c6297cca2ea, type: 3}
+  DairyFarm: {fileID: 7291294420475072060, guid: d8c29bceed6587a49bf00dc8815316aa, type: 3}
+  GrainFarm: {fileID: 5421243799934890597, guid: 30fecbc64787db9469323e9d8931b102, type: 3}
+  ExportDepot: {fileID: 7291294420475072060, guid: 201bdaeea4b86894797bc4502d768471, type: 3}
+  Rock:
+  - {fileID: 947691686583835045, guid: bef67078d89cd764ab2b93937d4835e8, type: 3}
+  Tree:
+  - {fileID: 947691686583835045, guid: bef67078d89cd764ab2b93937d4835e8, type: 3}

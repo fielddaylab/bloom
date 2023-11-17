@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
-  m_Name: urbanPrairie
+  m_Name: cafoUrban
   m_EditorClassIdentifier: 
-  NameId: Winston
-  TitleId: Urbanite
+  NameId: Tabitha
+  TitleId: CAFO Farmer
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4288862186
+    rgba: 4287025902
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4278499826
+    rgba: 4291821963
   NameColor:
     serializedVersion: 2
-    rgba: 4285043968
+    rgba: 4278207211
   TitleColor:
     serializedVersion: 2
-    rgba: 4281750225
+    rgba: 4279279603
   TextColor:
     serializedVersion: 2
-    rgba: 4280050906
-  PortraitArt: {fileID: 21300000, guid: bc63a7fc653ba5a4c83efe06deca11d5, type: 3}
+    rgba: 4281271331
+  PortraitArt: {fileID: 21300000, guid: ff2dd5229d6166b4a88bf4da5c58f5ea, type: 3}
   PortraitBackground: {fileID: 0}

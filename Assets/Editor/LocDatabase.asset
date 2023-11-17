@@ -43,9 +43,9 @@ MonoBehaviour:
     LastLine: 0
     Records:
     - Id: cards.severity.low
-      Content: Low
+      Content: None
     - Id: cards.severity.med
-      Content: Medium
+      Content: Low
     - Id: cards.severity.high
       Content: High
     - Id: cards.RunoffPolicy.category

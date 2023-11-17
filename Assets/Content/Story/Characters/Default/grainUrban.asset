@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
-  m_Name: advisorEconCity
+  m_Name: grainUrban
   m_EditorClassIdentifier: 
-  NameId: Ithaca
-  TitleId: Economic Advisor
-  IsAdvisor: 1
+  NameId: Tom
+  TitleId: Grain Farmer
+  IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4280165728
+    rgba: 4287685368
   PanelColor:
     serializedVersion: 2
-    rgba: 4283217400
+    rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4284925577
+    rgba: 4291690892
   NameColor:
     serializedVersion: 2
-    rgba: 4278265026
+    rgba: 4278207477
   TitleColor:
     serializedVersion: 2
-    rgba: 4278265026
+    rgba: 4279149045
   TextColor:
     serializedVersion: 2
-    rgba: 4283217400
-  PortraitArt: {fileID: 21300000, guid: 6b7ffe1aa44a7194ab4cc3392086cc05, type: 3}
+    rgba: 4281205795
+  PortraitArt: {fileID: 21300000, guid: f7c9c8346839ee947aa798fa8bc6ce79, type: 3}
   PortraitBackground: {fileID: 0}

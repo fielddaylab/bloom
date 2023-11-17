@@ -37,8 +37,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
   - {fileID: 11400000, guid: f8726d719bf5d9c4899bcb5bdee173a7, type: 2}
   - {fileID: 11400000, guid: 9bea9daa84f610d4b98bf872f9dd0f62, type: 2}
-  - {fileID: 11400000, guid: f8726d719bf5d9c4899bcb5bdee173a7, type: 2}
-  - {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
+  - {fileID: 11400000, guid: efb13603bd987a2448548463109e5c43, type: 2}
+  - {fileID: 11400000, guid: 4273b3cc27be81048acfa10b2821c44b, type: 2}
   DefaultPalette: {fileID: 11400000, guid: 2cc12c4cd3a8d2a46b380d3b9b48d899, type: 2}
   Width: 30
   Height: 30
