@@ -168,6 +168,7 @@ namespace FieldDay.Scenes {
         public readonly CastableEvent<SceneEventArgs> OnPrepareScene = new CastableEvent<SceneEventArgs>();
         public readonly CastableEvent<SceneEventArgs> OnScenePreload = new CastableEvent<SceneEventArgs>();
         public readonly CastableEvent<SceneEventArgs> OnSceneReady = new CastableEvent<SceneEventArgs>();
+        public readonly ActionEvent OnMainSceneReady = new ActionEvent();
         public readonly CastableEvent<SceneEventArgs> OnSceneUnload = new CastableEvent<SceneEventArgs>();
 
         #endregion // Exposed Events
@@ -616,7 +617,8 @@ namespace FieldDay.Scenes {
                 if (data.DynamicSubscenes.Length + data.SubScenes.Length > 0) {
                     m_SubSceneQueue.PushBack(new QueueSubScenesArgs() {
                         Data = data,
-                        Counter = args.Counter
+                        Counter = args.Counter,
+                        Queue = args.Queue
                     });
                     args.Counter.Increment();
                 } else {
@@ -935,6 +937,12 @@ namespace FieldDay.Scenes {
                         LoadType = data.SceneType
                     });
                 }
+
+                if (args.Type == SceneType.Main) {
+                    OnMainSceneReady.Invoke();
+                }
+
+                Game.Events.Dispatch(SceneUtility.Events.Ready);
             }
         }
 
@@ -955,5 +963,14 @@ namespace FieldDay.Scenes {
     public enum SceneLoadPriority {
         Default,
         High
+    }
+
+    /// <summary>
+    /// Scene utility methods.
+    /// </summary>
+    static public class SceneUtility {
+        static public class Events {
+            static public readonly StringHash32 Ready = "SceneMgr::Ready";
+        }
     }
 }

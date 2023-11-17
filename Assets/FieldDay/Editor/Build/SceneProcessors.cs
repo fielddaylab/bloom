@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
@@ -134,7 +133,7 @@ namespace FieldDay.Editor {
             using (Profiling.Time("generating SceneDataExt")) {
 
                 List<SceneDataExt> list = new List<SceneDataExt>();
-                scene.GetAllComponents(list);
+                scene.GetAllComponents(true, list);
                 SceneDataExt ext = list.Count > 0 ? list[0] : null;
                 if (ext == null) {
                     GameObject extGO = new GameObject("__SceneDataExt");
@@ -146,17 +145,20 @@ namespace FieldDay.Editor {
                 ext.Preload = PreloadManifest.Generate(scene);
 
                 // late enabled objects
-                LateEnable[] allLateEnables = GameObject.FindObjectsOfType<LateEnable>();
-                Array.Sort(allLateEnables, (a, b) => a.Order - b.Order);
-                ext.LateEnable = new GameObject[allLateEnables.Length];
-                for (int i = 0; i < allLateEnables.Length; i++) {
+                List<LateEnable> allLateEnables = new List<LateEnable>(32);
+                scene.GetAllComponents(true, allLateEnables);
+                allLateEnables.Sort((a, b) => a.Order - b.Order);
+                ext.LateEnable = new GameObject[allLateEnables.Count];
+                for (int i = 0; i < allLateEnables.Count; i++) {
                     ext.LateEnable[i] = allLateEnables[i].gameObject;
                     ext.LateEnable[i].SetActive(false);
                     Baking.Destroy(allLateEnables[i]);
                 }
 
                 // remaining ImportScene objects
-                ext.SubScenes = GameObject.FindObjectsOfType<ImportScene>();
+                List<ImportScene> allSubscenes = new List<ImportScene>(4);
+                scene.GetAllComponents(true, allSubscenes);
+                ext.SubScenes = allSubscenes.ToArray();
 
                 // dynamic scene import components
                 List<IDynamicSceneImport> dynamicImports = new List<IDynamicSceneImport>();

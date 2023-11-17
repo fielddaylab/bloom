@@ -7,6 +7,7 @@ using BeauRoutine.Extensions;
 using BeauUtil;
 using BeauUtil.Tags;
 using FieldDay;
+using FieldDay.Scenes;
 using FieldDay.Scripting;
 using Leaf;
 using Leaf.Defaults;
@@ -24,7 +25,7 @@ using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.UI {
-    public class DialogueBox : MonoBehaviour, ITextDisplayer, IChoiceDisplayer {
+    public class DialogueBox : MonoBehaviour, ITextDisplayer, IChoiceDisplayer, IScenePreload {
         #region Inspector
 
         public DialogueBoxContents Contents;
@@ -294,6 +295,11 @@ namespace Zavala.UI {
             if (m_FullyExpanded) {
                 m_TransitionRoutine.Replace(HideRoutine());
             }
+        }
+
+        IEnumerator<WorkSlicer.Result?> IScenePreload.Preload() {
+            m_AdvisorButtons = FindAnyObjectByType<AdvisorButtonContainer>(FindObjectsInactive.Include);
+            return null;
         }
 
         #endregion // Handlers

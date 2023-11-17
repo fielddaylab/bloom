@@ -2,6 +2,7 @@ using BeauUtil;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
+using UnityEngine;
 using UnityEngine.Scripting;
 using Zavala.Sim;
 using Zavala.World;
@@ -42,11 +43,19 @@ namespace Zavala {
 
         [InvokeOnBoot]
         static private void OnBoot() {
-            ScriptUtility.Trigger(GameTriggers.GameBooted);
+            Scenes.OnMainSceneReady.Register(() => {
+                ScriptUtility.Trigger(GameTriggers.GameBooted);
+            });
         }
 
         static private void OnShutdown() {
             SimAllocator.Destroy();
         }
+    }
+
+    static public class ZavalaColors {
+        static public readonly Color InterfaceBackgroundLightest = Colors.Hex("FFFBE3");
+        static public readonly Color InterfaceBackgroundLight = Colors.Hex("F9F5E0");
+        static public readonly Color InterfaceBackgroundMid = Colors.Hex("EFE6AB");
     }
 }

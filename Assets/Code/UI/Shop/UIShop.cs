@@ -36,7 +36,6 @@ namespace Zavala.UI {
                 m_expandBtn.onClick.AddListener(HandleExpandBtnClicked);
             m_collapseBtn.onClick.AddListener(HandleCollapeBtnClicked);
             Collapse();
-            
         }
 
         private void OnDisable() {

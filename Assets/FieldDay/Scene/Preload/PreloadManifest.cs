@@ -75,9 +75,9 @@ namespace FieldDay.Scenes {
             if (preloaders.Count > 0) {
                 List<BucketInfo> buckets = new List<BucketInfo>(4);
 
-                int loaderPtr = 1, bucketOrder = OrderAttribute.Get(preloaders[0]), bucketStart = 0;
+                int loaderPtr = 1, bucketOrder = OrderAttribute.Get(preloaders[0].GetType()), bucketStart = 0;
                 while (loaderPtr < preloaders.Count) {
-                    int nextBucket = OrderAttribute.Get(preloaders[loaderPtr]);
+                    int nextBucket = OrderAttribute.Get(preloaders[loaderPtr].GetType());
                     if (nextBucket != bucketOrder) {
                         int count = loaderPtr - bucketStart;
                         if (count > 0) {

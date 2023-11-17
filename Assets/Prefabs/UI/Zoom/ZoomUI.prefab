@@ -64,6 +64,8 @@ GameObject:
   - component: {fileID: 7452098553122674633}
   - component: {fileID: 7452098553122674636}
   - component: {fileID: 8101111885531517210}
+  - component: {fileID: 4934111359958380487}
+  - component: {fileID: 8245574521124428354}
   m_Layer: 5
   m_Name: ZoomUI
   m_TagString: Untagged
@@ -165,6 +167,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a539f5caad7a174abd656d65916f57c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4934111359958380487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7452098553122674632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99d443299734bde40a3522afeaaa1074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8245574521124428354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7452098553122674632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d9fc62a20dc6ff49be79af48fdde74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 0
 --- !u!1001 &1848176304420158918
 PrefabInstance:
   m_ObjectHideFlags: 0
