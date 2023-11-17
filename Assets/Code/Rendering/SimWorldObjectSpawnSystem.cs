@@ -83,7 +83,16 @@ namespace Zavala.World
                 switch (spawn.Data) {
                     case BuildingType.TollBooth: {
                             spanner = GameObject.Instantiate(m_StateA.TollBoothPrefab, worldPos, Quaternion.identity);
+                            spanner.SetActive(false);
                             spanner.transform.LookAt(worldPosB);
+                            TollBooth tb = spanner.GetComponent<TollBooth>();
+                            Transform tileA = tb.TileA.transform;
+                            Transform tileB = tb.TileA.transform;
+                            tileA.position = worldPosA;
+                            tileB.position = worldPosB;
+                            tileA.gameObject.SetActive(true);
+                            tileB.gameObject.SetActive(true);
+                            spanner.SetActive(true);
                             break;
                         }
                 }

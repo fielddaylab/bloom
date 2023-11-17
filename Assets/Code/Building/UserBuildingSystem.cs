@@ -294,7 +294,7 @@ namespace Zavala.Building
                 // Continue building road
 
                 // Verify road is continuous
-                if (!IsContinuous(grid.HexSize, m_StateC.RoadToolState.PrevTileIndex, tileIndex)) {
+                if (!IsContinuous(grid.HexSize, m_StateC.RoadToolState.PrevTileIndex, tileIndex, grid)) {
                     Debug.Log("[UserBuildingSystem] Cannot build a non-continuous road");
                     CancelRoad(grid, network);
                     return;
@@ -398,7 +398,7 @@ namespace Zavala.Building
             // RoadUtility.AddRoadImmediate(Game.SharedState.Get<RoadNetwork>(), grid, tileIndex); // temp debug
         }
 
-        private bool IsContinuous(HexGridSize hexSize, int prevIndex, int currIndex) {
+        private bool IsContinuous(HexGridSize hexSize, int prevIndex, int currIndex, SimGridState grid) {
             HexVector currPos = hexSize.FastIndexToPos(currIndex);
             for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
                 HexVector adjPos = HexVector.Offset(currPos, dir);
@@ -406,10 +406,14 @@ namespace Zavala.Building
                     continue;
                 }
                 int adjIdx = hexSize.PosToIndex(adjPos);
-                if (adjIdx == prevIndex) {
+                if (adjIdx != prevIndex) {
                     // prev tile found in adj neighbors
-                    return true;
+                    continue;
                 }
+                if (grid.Terrain.Regions[prevIndex] != grid.Terrain.Regions[currIndex]) {
+                    continue;
+                }
+                return true;
             }
 
             // prev tile not found anywhere in adj neighbors
