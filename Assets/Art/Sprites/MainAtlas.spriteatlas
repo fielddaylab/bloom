@@ -70,8 +70,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: acc941f56bfbc8b4ca37f79604295118, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
   - {fileID: 21300000, guid: 0a49d7a676c7e7a41938c7fad1f49f83, type: 3}
+  - {fileID: 21300000, guid: dca573b61428d5849bfe71e79ddc9e73, type: 3}
   - {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
   - {fileID: 21300000, guid: 94bb47f60026b934b86cc4302f2fdf39, type: 3}
+  - {fileID: 21300000, guid: 5bb9af077c70e7c41b68f0d02ee97e6d, type: 3}
   - {fileID: 21300000, guid: 00f98d77587e0e04fb22f8604087f7d4, type: 3}
   - {fileID: 21300000, guid: 6e980b87d98ae3442b2a5dd8ff5be0b7, type: 3}
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
@@ -115,8 +117,10 @@ SpriteAtlas:
   - alert_Manure
   - ShopToggle
   - alert-base-old
+  - econ_barchart
   - card-slot-white
   - banner_bloom
+  - econ_marketshare
   - resource_Manure
   - base_declining-pop
   - banner_declining-pop
