@@ -28,7 +28,8 @@ $call Unpause()
 @trigger BuildButtonPressed
 @once
 {@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
-{@advisorEconHill}      But each tile will spend from our regional budget! Try to be thrifty.
+{@advisorEcolHill}      But don't try to build over any of those forests. Those are protected lands!
+{@advisorEconHill}      And each tile will spend from our regional budget! Try to be thrifty.
 
 
 // Step 3: Introduce cities

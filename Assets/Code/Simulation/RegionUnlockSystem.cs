@@ -1,3 +1,4 @@
+using BeauUtil;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
@@ -62,6 +63,9 @@ namespace Zavala.Sim
                         break;
                     case UnlockConditionType.RegionAge:
                         EvaluateRegionAgeTargetPassed(ref passedCheck, conditionGroup);
+                        break;
+                    case UnlockConditionType.NodeReached:
+                        EvaluateNodeReachedPassed(ref passedCheck, conditionGroup);
                         break;
                     default:
                         break;
@@ -209,6 +213,20 @@ namespace Zavala.Sim
             }
         }
 
+        private void EvaluateNodeReachedPassed(ref bool passedCheck, UnlockConditionGroup conditionGroup) {
+            // if this is the first evaluation, create a hash and assign it there
+            string title = conditionGroup.NodeTitle;
+            if (title != null && conditionGroup.NodeHash == null) {
+                if (!title.Contains("region")) {
+                    Debug.LogWarning("[RegionUnlockSystem] NodeReached Condition: use format region1.nodeTitle. Yours: " + title);
+                }
+                conditionGroup.NodeHash = new StringHash32(title);
+            }
+            if (!ScriptUtility.Persistence.RecentViewedNodeIds.Contains(conditionGroup.NodeHash)) {
+                passedCheck = false;
+                return;
+            }
+        }
 
         #endregion // Helpers
     }

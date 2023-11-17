@@ -8,6 +8,6 @@ $call Pause()
 {@advisorEconForest}    Salutations, Director.
 $call PanToBuilding("region2_city1")
 {@advisorEconForest}    We've heard about your program over here in Pine County.
-{@advisorEconForest}    Perhaps we could coordinate to address this irksome muck together? 
+{@advisorEconForest}    Perhaps we could make use of your insights here?
 $call Unpause()
 

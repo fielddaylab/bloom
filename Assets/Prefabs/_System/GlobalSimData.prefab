@@ -467,6 +467,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 30
+      NodeTitle: 
     RegionIndexUnlocks: 01000000
   - UnlockConditions:
     - Type: 6
@@ -499,6 +500,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
+      NodeTitle: 
     RegionIndexUnlocks: 02000000
   - UnlockConditions:
     - Type: 0
@@ -531,6 +533,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
+      NodeTitle: 
     - Type: 0
       ChecksRegions: 01000000
       Scope: 10
@@ -561,6 +564,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
+      NodeTitle: 
     - Type: 6
       ChecksRegions: 02000000
       Scope: 10
@@ -591,7 +595,103 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-    RegionIndexUnlocks: 0300000004000000
+      NodeTitle: 
+    RegionIndexUnlocks: 03000000
+  - UnlockConditions:
+    - Type: 0
+      ChecksRegions: 00000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.2
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+    - Type: 0
+      ChecksRegions: 01000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.2
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+    - Type: 6
+      ChecksRegions: 02000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.3
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+    RegionIndexUnlocks: 04000000
 --- !u!114 &7708306960153739477
 MonoBehaviour:
   m_ObjectHideFlags: 0

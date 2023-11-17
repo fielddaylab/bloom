@@ -1,3 +1,4 @@
+using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
@@ -17,7 +18,8 @@ namespace Zavala.Sim {
         RevenueTargets,
         AccrueWealth,
         WaterHealth,
-        RegionAge
+        RegionAge,
+        NodeReached
     }
 
     [Serializable]
@@ -52,6 +54,13 @@ namespace Zavala.Sim {
         [Space(5)]
         [Header("RegionAge")]
         public TargetThreshold TargetAge;
+
+        [Space(5)]
+        [Header("NodeReached")]
+        // string for serialized input, hash for storing the actual lookup
+        public string NodeTitle;
+        [NonSerialized]
+        public StringHash32 NodeHash;
 
         /* TODO
         [Space(5)]
