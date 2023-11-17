@@ -6,6 +6,9 @@ using UnityEditor.SceneManagement;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.UI {
+    /// <summary>
+    /// Automatically attaches the given canvas to the best ccamera that can render it.
+    /// </summary>
     [RequireComponent(typeof(Canvas)), ExecuteAlways]
     public class AutoAttachToCamera : MonoBehaviour {
         private void OnEnable() {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
+using static UnityEditor.Experimental.GraphView.Port;
 
 namespace FieldDay.Processes {
     /// <summary>
@@ -23,11 +24,13 @@ namespace FieldDay.Processes {
 
         private ProcessStateTable(int inCapacity, ProcessStateTable parent) {
             m_StateMap = new Dictionary<StringHash32, ProcessStateDefinition>(inCapacity, CompareUtils.DefaultEquals<StringHash32>());
+            m_TransitionMap = new Dictionary<StringHash32, List<ProcessStateTableTransitionData>>(inCapacity, CompareUtils.DefaultEquals<StringHash32>());
             Parent = parent;
         }
 
         private ProcessStateTable(Dictionary<StringHash32, ProcessStateDefinition> copyFrom, StringHash32 defaultId) {
             m_StateMap = new Dictionary<StringHash32, ProcessStateDefinition>(copyFrom, CompareUtils.DefaultEquals<StringHash32>());
+            m_TransitionMap = new Dictionary<StringHash32, List<ProcessStateTableTransitionData>>(m_StateMap.Count, CompareUtils.DefaultEquals<StringHash32>());
             DefaultId = defaultId;
         }
 

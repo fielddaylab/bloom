@@ -16,6 +16,9 @@ using UnityEditor.SceneManagement;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.Rendering {
+    /// <summary>
+    /// Automatically attaches overlay cameras to this camera.
+    /// </summary>
     [RequireComponent(typeof(Camera)), ExecuteAlways]
     public sealed class AutoAttachOverlayCameras : MonoBehaviour {
         [SerializeField, UnityTag] private string[] m_Tags;
@@ -31,6 +34,7 @@ namespace FieldDay.Rendering {
             }
 #endif // UNITY_EDITOR
 
+#if USE_SRP
             Camera c = GetComponent<Camera>();
             var data = c.GetUniversalAdditionalCameraData();
             var stack = data.cameraStack;
@@ -44,6 +48,7 @@ namespace FieldDay.Rendering {
                     m_CachedAddedCameras.PushBack(cam);
                 }
             }
+#endif // USE_SRP
         }
 
         private void OnDisable() {

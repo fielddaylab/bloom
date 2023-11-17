@@ -11,7 +11,10 @@
         "BeauUtil.Parse",
         "BeauRoutine-Extensions",
         "BeauRoutine-Spline",
-        "Unity.RenderPipelines.Universal.Runtime"
+        "Unity.RenderPipelines.Universal.Runtime",
+        "ScriptableBake",
+        "UWTStream",
+        "EasyAssetStreaming"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

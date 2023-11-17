@@ -519,7 +519,11 @@ namespace FieldDay.Data {
         /// Returns if there are user overrides in player prefs.
         /// </summary>
         static public bool HasUserPrefs() {
+#if DEVELOPMENT
             return PlayerPrefs.HasKey(PlayerPrefsKey);
+#else
+            return false;
+#endif // DEVELOPMENT
         }
 
         #endregion // Serialization

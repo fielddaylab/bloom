@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading;
 using BeauUtil;
 using BeauUtil.Editor;
 using UnityEditor;

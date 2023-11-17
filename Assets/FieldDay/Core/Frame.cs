@@ -256,6 +256,8 @@ namespace FieldDay {
 
         [InitializeOnLoadMethod]
         static private void EditorInitialize() {
+            EditorApplication.update -= EditorAdvance;
+
             EditorApplication.playModeStateChanged += (state) => {
                 if (state == PlayModeStateChange.ExitingEditMode) {
                     DestroyAllocator();

@@ -3,6 +3,10 @@ using FieldDay.SharedState;
 using FieldDay.Components;
 using FieldDay.Processes;
 using FieldDay.Audio;
+using System.Runtime.CompilerServices;
+using FieldDay.Scenes;
+
+[assembly: InternalsVisibleTo("FieldDay.Core.Editor")]
 
 namespace FieldDay {
     /// <summary>
@@ -33,6 +37,11 @@ namespace FieldDay {
         /// Process manager. Maintains process states.
         /// </summary>
         static public ProcessMgr Processes { get; internal set; }
+
+        /// <summary>
+        /// Scene manager. Maintains scene loading.
+        /// </summary>
+        static public SceneMgr Scenes { get; internal set; }
 
         /// <summary>
         /// Event dispatcher. Maintains event dispatch.

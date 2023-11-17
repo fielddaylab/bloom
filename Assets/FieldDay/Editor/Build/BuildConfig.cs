@@ -1,8 +1,3 @@
-using System;
-using BeauUtil;
-using BeauUtil.Editor;
-using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace FieldDay.Editor {

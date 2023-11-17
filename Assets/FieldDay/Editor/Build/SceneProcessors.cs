@@ -1,13 +1,16 @@
+using System;
 using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Data;
 using FieldDay.Debugging;
+using FieldDay.Rendering;
 using FieldDay.Scenes;
 using ScriptableBake;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +22,7 @@ namespace FieldDay.Editor {
         public int callbackOrder { get { return 10000; } }
 
         public void OnProcessScene(Scene scene, BuildReport report) {
-            if (EditorApplication.isPlayingOrWillChangePlaymode) {
+            if (!BuildPipeline.isBuildingPlayer) {
                 return;
             }
 
@@ -44,7 +47,7 @@ namespace FieldDay.Editor {
         public int callbackOrder { get { return 10; } }
 
         public void OnProcessScene(Scene scene, BuildReport report) {
-            if (EditorApplication.isPlayingOrWillChangePlaymode) {
+            if (!BuildPipeline.isBuildingPlayer) {
                 return;
             }
 
@@ -115,12 +118,126 @@ namespace FieldDay.Editor {
         public int callbackOrder { get { return 20; } }
 
         public void OnProcessScene(Scene scene, BuildReport report) {
-            if (EditorApplication.isPlayingOrWillChangePlaymode) {
-                return;
-            }
-
             using(Profiling.Time("baking objects")) {
                 Baking.BakeScene(scene, 0);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Generates the SceneDataExt object.
+    /// </summary>
+    public class GenerateSceneDataExtProcessor : IProcessSceneWithReport {
+        public int callbackOrder { get { return 30; } }
+
+        public void OnProcessScene(Scene scene, BuildReport report) {
+            using (Profiling.Time("generating SceneDataExt")) {
+
+                List<SceneDataExt> list = new List<SceneDataExt>();
+                scene.GetAllComponents(list);
+                SceneDataExt ext = list.Count > 0 ? list[0] : null;
+                if (ext == null) {
+                    GameObject extGO = new GameObject("__SceneDataExt");
+                    SceneManager.MoveGameObjectToScene(extGO, scene);
+                    ext = extGO.AddComponent<SceneDataExt>();
+                }
+
+                // preload manifest
+                ext.Preload = PreloadManifest.Generate(scene);
+
+                // late enabled objects
+                LateEnable[] allLateEnables = GameObject.FindObjectsOfType<LateEnable>();
+                Array.Sort(allLateEnables, (a, b) => a.Order - b.Order);
+                ext.LateEnable = new GameObject[allLateEnables.Length];
+                for (int i = 0; i < allLateEnables.Length; i++) {
+                    ext.LateEnable[i] = allLateEnables[i].gameObject;
+                    ext.LateEnable[i].SetActive(false);
+                    Baking.Destroy(allLateEnables[i]);
+                }
+
+                // remaining ImportScene objects
+                ext.SubScenes = GameObject.FindObjectsOfType<ImportScene>();
+
+                // dynamic scene import components
+                List<IDynamicSceneImport> dynamicImports = new List<IDynamicSceneImport>();
+                SceneHelper.GetAllComponents(scene, dynamicImports);
+                ext.DynamicSubscenes = new Component[dynamicImports.Count];
+                for (int i = 0; i < dynamicImports.Count; i++) {
+                    ext.DynamicSubscenes[i] = (Component) dynamicImports[i];
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Merges in any scenes that should be merged into the main scene.
+    /// </summary>
+    public class ImportMergeScenesSceneProcessor : IProcessSceneWithReport {
+        public int callbackOrder { get { return -10; } }
+
+        public void OnProcessScene(Scene scene, BuildReport report) {
+            using (Profiling.Time("importing scenes")) {
+                RingBuffer<ImportScene> importQueue = new RingBuffer<ImportScene>();
+
+                HashSet<string> visitedScenes = new HashSet<string>();
+                visitedScenes.Add(scene.path);
+
+                List<ImportScene> importBuffer = new List<ImportScene>();
+                scene.GetAllComponents(true, importBuffer);
+
+                foreach(var import in importBuffer) {
+                    importQueue.PushBack(import);
+                }
+
+                while(importQueue.TryPopFront(out ImportScene import)) {
+                    if (!import.Merge) {
+                        continue;
+                    }
+
+                    if (!visitedScenes.Add(import.Scene.Path)) {
+                        continue;
+                    }
+
+                    SceneImportSettings settings = import.GetImportSettings();
+
+                    if (import.DestroyGameObject && Baking.IsEmptyLeaf(import.transform)) {
+                        Baking.Destroy(import.gameObject);
+                    } else {
+                        Baking.Destroy(import);
+                    }
+
+                    Scene subsceneRef = EditorSceneManager.GetSceneByPath(settings.Path);
+
+                    EditorSceneManager.OpenScene(settings.Path, OpenSceneMode.Additive);
+                    foreach (var root in subsceneRef.GetRootGameObjects()) {
+                        root.GetComponentsInChildren(true, importBuffer);
+                        foreach(var subImport in importBuffer) {
+                            importQueue.PushBack(subImport);
+                        }
+
+                        SceneManager.MoveGameObjectToScene(root, scene);
+                        ImportScene.TransformRoot(root.transform, settings.RootMatrix);
+                    }
+
+                    if ((settings.Flags & SceneImportFlags.ImportLightingSettings) != 0) {
+                        LightUtility.CopySettings(subsceneRef, scene);
+                    }
+
+                    EditorSceneManager.CloseScene(subsceneRef, true);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Cleans up missing components on gameobjects.
+    /// </summary>
+    public class CleanUpMissingComponentsSceneProcessor : IProcessSceneWithReport {
+        public int callbackOrder { get { return 30; } }
+
+        public void OnProcessScene(Scene scene, BuildReport report) {
+            if (Baking.CleanUpMissingComponents(scene.GetRootGameObjects())) {
+                Debug.LogWarningFormat("[CleanUpMissingComponentsSceneProcessor] Missing component types cleaned up in '{0}'", scene.path);
             }
         }
     }

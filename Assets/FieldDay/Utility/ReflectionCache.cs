@@ -16,7 +16,6 @@ namespace FieldDay {
             public string[] Names;
         }
 
-        static private Assembly[] s_CachedUserAssemblies;
         static private readonly Dictionary<Type, EnumInfoCache> s_CachedEnumInfo = new Dictionary<Type, EnumInfoCache>(4);
 
         #region Assemblies
@@ -24,14 +23,9 @@ namespace FieldDay {
         /// <summary>
         /// Array of all user assemblies.
         /// </summary>
-        static public Assembly[] UserAssemblies {
+        static public IEnumerable<Assembly> UserAssemblies {
             get {
-                if (s_CachedUserAssemblies == null) {
-                    List<Assembly> userAssemblies = new List<Assembly>(16);
-                    userAssemblies.AddRange(Reflect.FindAllUserAssemblies());
-                    s_CachedUserAssemblies = userAssemblies.ToArray();
-                }
-                return s_CachedUserAssemblies;
+                return Reflect.FindAllUserAssemblies();
             }
         }
 

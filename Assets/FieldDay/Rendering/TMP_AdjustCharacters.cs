@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 
 namespace TMPro {
+    /// <summary>
+    /// Adjusts individual characters.
+    /// </summary>
     [RequireComponent(typeof(TMP_Text)), ExecuteAlways]
     public class TMP_AdjustCharacters : MonoBehaviour {
 

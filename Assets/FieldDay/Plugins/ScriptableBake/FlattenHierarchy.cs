@@ -31,7 +31,17 @@ namespace ScriptableBake {
         }
 
         bool IBaked.Bake(BakeFlags flags, BakeContext context) {
-            Baking.FlattenHierarchy(transform, DestroyInactiveChildren, Recursive, IgnoreAnimators);
+            FlattenFlags flattenFlags = 0;
+            if (DestroyInactiveChildren) {
+                flattenFlags |= FlattenFlags.DestroyInactive;
+            }
+            if (Recursive) {
+                flattenFlags |= FlattenFlags.Recursive;
+            }
+            if (IgnoreAnimators) {
+                flattenFlags |= FlattenFlags.SkipAnimators;
+            }
+            Baking.FlattenHierarchy(transform, flattenFlags);
             Baking.Destroy(DestroyGameObject ? (UnityEngine.Object) gameObject : this);
             return true;
         }

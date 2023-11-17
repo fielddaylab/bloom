@@ -7,7 +7,7 @@ namespace FieldDay.Scenes {
     /// <summary>
     /// Contains a scene preload callback.
     /// </summary>
-    public interface IScenePreloader {
+    public interface IScenePreload {
         IEnumerator<WorkSlicer.Result?> Preload();
     }
 

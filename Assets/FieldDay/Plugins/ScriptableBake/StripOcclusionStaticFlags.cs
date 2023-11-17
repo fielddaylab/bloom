@@ -13,9 +13,6 @@ namespace ScriptableBake {
         [Tooltip("If true, the full hierarchy beneath this object will have its static flags stripped.")]
         public bool Recursive = false;
 
-        [Tooltip("Whether or not to destroy the GameObject once static flags have been set")]
-        public bool DestroyGameObject = false;
-
         #region IBaked
 
         #if UNITY_EDITOR
@@ -26,7 +23,7 @@ namespace ScriptableBake {
 
         bool IBaked.Bake(BakeFlags flags, BakeContext context) {
             Baking.RemoveStaticFlags(gameObject, UnityEditor.StaticEditorFlags.OccludeeStatic | UnityEditor.StaticEditorFlags.OccluderStatic, Recursive);
-            Baking.Destroy(DestroyGameObject ? (UnityEngine.Object) gameObject : this);
+            Baking.Destroy(this);
             return true;
         }
 

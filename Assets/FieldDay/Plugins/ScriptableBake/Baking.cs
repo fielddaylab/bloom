@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -231,10 +232,10 @@ namespace ScriptableBake {
         /// <summary>
         /// Flattens the hierarchy at this transform. Children will become siblings.
         /// </summary>
-        static public void FlattenHierarchy(Transform transform, bool destroyInactive, bool recursive = false, bool ignoreAnimators = true) {
-            if (recursive) {
+        static public void FlattenHierarchy(Transform transform, FlattenFlags flags) {
+            if ((flags & FlattenFlags.Recursive) != 0) {
                 int placeIdx = transform.GetSiblingIndex() + 1;
-                FlattenHierarchyRecursive(transform, transform.parent, destroyInactive, ignoreAnimators, ref placeIdx);
+                FlattenHierarchyRecursive(transform, transform.parent, flags, ref placeIdx);
                 return;
             }
 
@@ -244,7 +245,7 @@ namespace ScriptableBake {
                     PrefabUtility.UnpackPrefabInstance(root, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
             }
 
-            if (ignoreAnimators && transform.GetComponent<Animator>()) {
+            if ((flags & FlattenFlags.SkipAnimators) != 0 && transform.GetComponent<Animator>()) {
                 return;
             }
 
@@ -254,7 +255,7 @@ namespace ScriptableBake {
             int siblingIdx = transform.GetSiblingIndex() + 1;
             while (childCount-- > 0) {
                 child = transform.GetChild(0);
-                if (destroyInactive && !child.gameObject.activeSelf) {
+                if ((flags & FlattenFlags.DestroyInactive) != 0 && !child.gameObject.activeSelf) {
                     GameObject.DestroyImmediate(child.gameObject);
                 } else {
                     child.SetParent(parent, true);
@@ -263,14 +264,14 @@ namespace ScriptableBake {
             }
         }
 
-        static private void FlattenHierarchyRecursive(Transform transform, Transform parent, bool destroyInactive, bool ignoreAnimators, ref int siblingIndex) {
+        static private void FlattenHierarchyRecursive(Transform transform, Transform parent, FlattenFlags flags, ref int siblingIndex) {
             if (!Application.isPlaying) {
                 GameObject root = PrefabUtility.GetOutermostPrefabInstanceRoot(transform);
                 if (root != null)
                     PrefabUtility.UnpackPrefabInstance(root, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
             }
 
-            if (ignoreAnimators && transform.GetComponent<Animator>()) {
+            if ((flags & FlattenFlags.SkipAnimators) != 0 && transform.GetComponent<Animator>()) {
                 return;
             }
 
@@ -278,12 +279,12 @@ namespace ScriptableBake {
             int childCount = transform.childCount;
             while (childCount-- > 0) {
                 child = transform.GetChild(0);
-                if (destroyInactive && !child.gameObject.activeSelf) {
+                if ((flags & FlattenFlags.DestroyInactive) != 0 && !child.gameObject.activeSelf) {
                     GameObject.DestroyImmediate(child.gameObject);
                 } else {
                     child.SetParent(parent, true);
                     child.SetSiblingIndex(siblingIndex++);
-                    FlattenHierarchyRecursive(child, parent, destroyInactive, ignoreAnimators, ref siblingIndex);
+                    FlattenHierarchyRecursive(child, parent, flags, ref siblingIndex);
                 }
             }
         }
@@ -306,11 +307,37 @@ namespace ScriptableBake {
             return count == 1; // transform is included, so must be more than 1
         }
 
+        /// <summary>
+        /// Retrieves a list of all transforms in the given hierarchy.
+        /// </summary>
+        static public Transform[] GetDeepHierarchy(Transform root) {
+            List<Transform> found = new List<Transform>(root.hierarchyCount);
+            DeepHierarchyExplore(root, found);
+            return found.ToArray();
+        }
+
+        /// <summary>
+        /// Retrieves a list of all transforms in the given hierarchy.
+        /// </summary>
+        static public Transform[] GetDeepHierarchy(GameObject[] roots) {
+            List<Transform> found = new List<Transform>(1024);
+            foreach (var root in roots) {
+                DeepHierarchyExplore(root.transform, found);
+            }
+            return found.ToArray();
+        }
+
+        static private void DeepHierarchyExplore(Transform root, List<Transform> found) {
+            found.Add(root);
+            int childCount = root.childCount;
+            for(int i = 0; i < childCount; i++) {
+                DeepHierarchyExplore(root.GetChild(i), found);
+            }
+        }
+
         #endregion // Hierarchy
 
         #region Static Flags
-
-        #if UNITY_EDITOR
 
         public delegate StaticEditorFlags ModifyStaticFlagsDelegate(StaticEditorFlags current);
 
@@ -432,17 +459,16 @@ namespace ScriptableBake {
             }
         }
 
-
-        #endif // UNITY_EDITOR
-
         #endregion // Static Flags
 
         /// <summary>
         /// Destroys an object.
         /// </summary>
         static public void Destroy(UnityEngine.Object obj) {
+            if (obj is Transform) {
+                obj = ((Transform) obj).gameObject;
+            }
             if (!Application.isPlaying) {
-                #if UNITY_EDITOR
                 if (obj is GameObject) {
                     GameObject prefabRoot = PrefabUtility.GetOutermostPrefabInstanceRoot(obj);
                     if (prefabRoot != null) {
@@ -451,18 +477,296 @@ namespace ScriptableBake {
                 } else if (obj is Component) {
                     SetDirty(((Component) obj).gameObject);
                 }
-                #endif // UNITY_EDITOR
                 GameObject.DestroyImmediate(obj);
             } else {
                 GameObject.Destroy(obj);
             }
         }
 
+        /// <summary>
+        /// Sets the given object as dirty.
+        /// </summary>
         static public void SetDirty(UnityEngine.Object obj) {
-            #if UNITY_EDITOR
             EditorUtility.SetDirty(obj);
-            #endif // UNITY_EDITOR
         }
+
+        /// <summary>
+        /// Prepares for an undo and sets the given object as dirty.
+        /// </summary>
+        static public void PrepareUndo(UnityEngine.Object obj, string undoString) {
+            Undo.RecordObject(obj, undoString);
+            EditorUtility.SetDirty(obj);
+        }
+
+        #region Reversions
+
+        /// <summary>
+        /// Attempts to revert any overrides to the given prefab.
+        /// </summary>
+        static public bool TryRevertPrefabOverrides(GameObject obj) {
+            if (!PrefabUtility.IsPartOfPrefabInstance(obj)) {
+                return false;
+            }
+
+            GameObject prefabRoot;
+            if (prefabRoot = PrefabUtility.GetNearestPrefabInstanceRoot(obj)) {
+                if (PrefabUtility.HasPrefabInstanceAnyOverrides(prefabRoot, true)) {
+                    PrefabUtility.RevertPrefabInstance(prefabRoot, InteractionMode.AutomatedAction);
+                    SetDirty(prefabRoot);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Cleans up missing components in the given gameObjects.
+        /// </summary>
+        static public bool CleanUpMissingComponents(GameObject[] roots) {
+            Transform[] linearized = GetDeepHierarchy(roots);
+
+            int affected = 0;
+            foreach(var transform in linearized) {
+                GameObject go = transform.gameObject;
+                int missingComponents = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(go);
+                if (missingComponents > 0) {
+                    Undo.RegisterCompleteObjectUndo(go, "Removing missing scripts");
+                    int removed = GameObjectUtility.RemoveMonoBehavioursWithMissingScript(go);
+                    if (removed > 0) {
+                        affected++;
+                        SetDirty(go);
+                    }
+                }
+            }
+
+            return affected > 0;
+        }
+
+        #endregion // Reversions
+
+        #region Lookups
+
+        /// <summary>
+        /// Returns the directory for the given asset.
+        /// </summary>
+        static public string GetAssetDirectory(UnityEngine.Object obj) {
+            string path = AssetDatabase.GetAssetPath(obj);
+            if (!string.IsNullOrEmpty(path)) {
+                return Path.GetDirectoryName(path);
+            } else {
+                return string.Empty;
+            }
+        }
+
+        #region Assets
+
+        /// <summary>
+        /// Finds the asset with the given type.
+        /// </summary>
+        static public TAsset FindAsset<TAsset>() where TAsset : UnityEngine.Object {
+            foreach(var path in AssetPaths(SearchFilter(typeof(TAsset)))) {
+                foreach(var obj in AssetDatabase.LoadAllAssetsAtPath(path)) {
+                    TAsset asset = obj as TAsset;
+                    if (asset) {
+                        return asset;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the asset with the given name and type.
+        /// </summary>
+        static public TAsset FindAsset<TAsset>(string name) where TAsset : UnityEngine.Object {
+            foreach (var path in AssetPaths(SearchFilter(typeof(TAsset), name))) {
+                foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path)) {
+                    TAsset asset = obj as TAsset;
+                    if (asset && asset.name.Equals(name, StringComparison.Ordinal)) {
+                        return asset;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds all assets with the given type.
+        /// </summary>
+        static public TAsset[] FindAssets<TAsset>() where TAsset : UnityEngine.Object {
+            HashSet<TAsset> found = new HashSet<TAsset>();
+            foreach (var path in AssetPaths(SearchFilter(typeof(TAsset)))) {
+                foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path)) {
+                    TAsset asset = obj as TAsset;
+                    if (asset) {
+                        found.Add(asset);
+                    }
+                }
+            }
+
+            TAsset[] output = new TAsset[found.Count];
+            found.CopyTo(output);
+            return output;
+        }
+
+        /// <summary>
+        /// Finds all assets with the given type in the given directories.
+        /// </summary>
+        static public TAsset[] FindAssets<TAsset>(params string[] directories) where TAsset : UnityEngine.Object {
+            HashSet<TAsset> found = new HashSet<TAsset>();
+            foreach (var path in AssetPaths(SearchFilter(typeof(TAsset)), directories)) {
+                foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path)) {
+                    TAsset asset = obj as TAsset;
+                    if (asset) {
+                        found.Add(asset);
+                    }
+                }
+            }
+
+            TAsset[] output = new TAsset[found.Count];
+            found.CopyTo(output);
+            return output;
+        }
+
+        /// <summary>
+        /// Finds all assets with the given type in the given directories that match the given predicate.
+        /// </summary>
+        static public TAsset[] FindAssets<TAsset>(Predicate<TAsset> predicate, params string[] directories) where TAsset : UnityEngine.Object {
+            HashSet<TAsset> found = new HashSet<TAsset>();
+            foreach (var path in AssetPaths(SearchFilter(typeof(TAsset)), directories)) {
+                foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path)) {
+                    TAsset asset = obj as TAsset;
+                    if (asset && predicate(asset)) {
+                        found.Add(asset);
+                    }
+                }
+            }
+
+            TAsset[] output = new TAsset[found.Count];
+            found.CopyTo(output);
+            return output;
+        }
+
+        #endregion // Assets
+
+        #region Scenes
+
+        /// <summary>
+        /// Finds the scene with the given name.
+        /// </summary>
+        static public SceneAsset FindScene(string name) {
+            foreach (var path in AssetPaths(SearchFilter(typeof(SceneAsset), name))) {
+                SceneAsset asset = AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
+                if (asset && asset.name.Equals(name, StringComparison.Ordinal)) {
+                    return asset;
+                }
+            }
+
+            return null;
+        }
+
+        #endregion // Scenes
+
+        #region Prefabs
+
+        /// <summary>
+        /// Finds the first prefab with the given name component type.
+        /// </summary>
+        static public TComponent FindPrefab<TComponent>(string name) where TComponent : UnityEngine.Component {
+            foreach (var path in AssetPaths(SearchFilter(typeof(GameObject), name))) {
+                GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (go && go.name.Equals(name, StringComparison.Ordinal) && go.TryGetComponent<TComponent>(out TComponent component)) {
+                    return component;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the first prefab with the given name and component type in the given directories.
+        /// </summary>
+        static public TComponent FindPrefab<TComponent>(string name, params string[] directories) where TComponent : UnityEngine.Component {
+            foreach (var path in AssetPaths(SearchFilter(typeof(GameObject), name), directories)) {
+                GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (go && go.name.Equals(name, StringComparison.Ordinal) && go.TryGetComponent<TComponent>(out TComponent component)) {
+                    return component;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds all prefabs with the given component type.
+        /// </summary>
+        static public TComponent[] FindPrefabs<TComponent>() where TComponent : UnityEngine.Component {
+            HashSet<TComponent> found = new HashSet<TComponent>();
+            foreach (var path in AssetPaths(SearchFilter(typeof(GameObject)))) {
+                GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (go && go.TryGetComponent<TComponent>(out TComponent component)) {
+                    found.Add(component);
+                }
+            }
+
+            TComponent[] output = new TComponent[found.Count];
+            found.CopyTo(output);
+            return output;
+        }
+
+        /// <summary>
+        /// Finds all prefabs with the given component type in the given directories.
+        /// </summary>
+        static public TComponent[] FindPrefabs<TComponent>(params string[] directories) where TComponent : UnityEngine.Component {
+            HashSet<TComponent> found = new HashSet<TComponent>();
+            foreach (var path in AssetPaths(SearchFilter(typeof(GameObject)), directories)) {
+                GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (go && go.TryGetComponent<TComponent>(out TComponent component)) {
+                    found.Add(component);
+                }
+            }
+
+            TComponent[] output = new TComponent[found.Count];
+            found.CopyTo(output);
+            return output;
+        }
+
+        #endregion // Prefabs
+
+        static private IEnumerable<string> AssetPaths(string filter) {
+            string[] guids = AssetDatabase.FindAssets(filter);
+            if (guids != null) {
+                for(int i = 0; i < guids.Length; i++) {
+                    yield return AssetDatabase.GUIDToAssetPath(guids[i]);
+                }
+            }
+        }
+
+        static private IEnumerable<string> AssetPaths(string filter, params string[] directories) {
+            string[] guids = AssetDatabase.FindAssets(filter, directories);
+            if (guids != null) {
+                for (int i = 0; i < guids.Length; i++) {
+                    yield return AssetDatabase.GUIDToAssetPath(guids[i]);
+                }
+            }
+        }
+
+        static private string SearchFilter(Type type, string name = null) {
+            string typeName = type.FullName;
+            if (typeName.StartsWith("UnityEngine.") || typeName.StartsWith("UnityEditor.")) {
+                typeName = typeName.Substring(12);
+            }
+            if (!string.IsNullOrEmpty(name)) {
+                return name + " t:" + typeName;
+            } else {
+                return "t:" + typeName;
+            }
+        }
+
+        #endregion // Lookups
 
         static private IEnumerator Process(List<IBaked> baked, string source, BakeFlags flags, BakeContext context, Action<UnityEngine.Object> onModify) {
             bool bVerbose = (flags & BakeFlags.Verbose) != 0;
@@ -500,6 +804,8 @@ namespace ScriptableBake {
             if (bVerbose) {
                 Debug.LogFormat("[Bake] Found {0} bakeable objects in {1}", baked.Count, source);
             }
+
+            List<Exception> exceptionsEncountered = new List<Exception>();
 
             try {
                 if (baked.Count > 0) {
@@ -546,6 +852,7 @@ namespace ScriptableBake {
                         }
                         catch(Exception e) {
                             Debug.LogException(e);
+                            exceptionsEncountered.Add(e);
                             bError = true;
                         }
                         yield return null;
@@ -581,7 +888,7 @@ namespace ScriptableBake {
             }
 
             if (bError) {
-                throw new BakeException("Baking failed");
+                throw new BakeException("Baking failed", new AggregateException(exceptionsEncountered));
             }
         }
 
@@ -596,12 +903,12 @@ namespace ScriptableBake {
 
         #region Editor Menu
 
-        [MenuItem("Assets/Bake Selection", false, 10000)]
+        [MenuItem("Assets/Bake/Bake Selection", false, 10000)]
         static private void Editor_BakeSelection() {
             BakeObjects(Selection.objects, BakeFlags.Verbose);
         }
 
-        [MenuItem("Assets/Bake Selection", true, 10000)]
+        [MenuItem("Assets/Bake/Bake Selection", true, 10000)]
         static private bool Editor_BakeSelection_Validate() {
             foreach(var obj in Selection.objects) {
                 if (obj is IBaked) {
@@ -609,6 +916,16 @@ namespace ScriptableBake {
                 }
             }
             return false;
+        }
+
+        [MenuItem("Assets/Bake/Bake All Assets", false, 10001)]
+        static private void Editor_BakeAssets() {
+            BakeAssets(BakeFlags.Verbose);
+        }
+
+        [MenuItem("Assets/Bake/Bake All Assets", true, 10001)]
+        static private bool Editor_BakeAssets_Validate() {
+            return !EditorApplication.isPlayingOrWillChangePlaymode;
         }
 
         #endregion // Editor Menu
@@ -624,8 +941,8 @@ namespace ScriptableBake {
             : base("Baking failed", inner)
         { }
 
-        public BakeException(string msg)
-            : base(msg)
+        public BakeException(string msg, AggregateException aggregate)
+            : base(msg, aggregate)
         { }
 
         public BakeException(string msg, params object[] args)
@@ -644,8 +961,21 @@ namespace ScriptableBake {
     }
 
     /// <summary>
+    /// Flags to modify transform flattening behavior.
+    /// </summary>
+    [Flags]
+    public enum FlattenFlags {
+        DestroyInactive = 0x01,
+        Recursive = 0x02,
+        SkipAnimators = 0x04,
+
+        Default = SkipAnimators
+    }
+
+    /// <summary>
     /// Flags to modify bake behavior.
     /// </summary>
+    [Flags]
     public enum BakeFlags {
 
         // Disabled scene objects will be ignored.

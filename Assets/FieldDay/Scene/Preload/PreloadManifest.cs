@@ -19,8 +19,8 @@ namespace FieldDay.Scenes {
             public int LoaderCount;
         }
 
-        internal Component[] Loaders;
-        internal BucketInfo[] Buckets;
+        [SerializeField] internal Component[] Loaders;
+        [SerializeField] internal BucketInfo[] Buckets;
 
         #region Generation
 
@@ -28,7 +28,7 @@ namespace FieldDay.Scenes {
 
         static private readonly AttributeCache<PreloadOrderAttribute, int> OrderAttribute = new AttributeCache<PreloadOrderAttribute, int>((a, m) => a.Order, 8);
 
-        static private readonly Comparison<IScenePreloader> Sorter = (a, b) => {
+        static private readonly Comparison<IScenePreload> Sorter = (a, b) => {
             Type typeA = a.GetType(), typeB = b.GetType();
             int orderComp = OrderAttribute.Get(typeA) - OrderAttribute.Get(typeB);
             if (orderComp != 0) {
@@ -43,7 +43,7 @@ namespace FieldDay.Scenes {
         /// <summary>
         /// Generates a preload manifest for the given scene.
         /// </summary>
-        static public PreloadManifest Generate(Scene scene, int maxBlockSize = 32) {
+        static public PreloadManifest Generate(Scene scene) {
             GameObject[] roots = scene.GetRootGameObjects();
             return Generate(roots);
         }
@@ -59,11 +59,11 @@ namespace FieldDay.Scenes {
         /// Generates a preload manifest for the given set of Transform roots.
         /// </summary>
         static public PreloadManifest Generate(IEnumerable<Transform> roots) {
-            List<IScenePreloader> preloaders = new List<IScenePreloader>(128);
-            List<IScenePreloader> preloadersTemp = new List<IScenePreloader>(16);
+            List<IScenePreload> preloaders = new List<IScenePreload>(128);
+            List<IScenePreload> preloadersTemp = new List<IScenePreload>(16);
 
             foreach (var transform in roots) {
-                transform.GetComponentsInChildren<IScenePreloader>(true, preloadersTemp);
+                transform.GetComponentsInChildren<IScenePreload>(true, preloadersTemp);
                 preloaders.AddRange(preloadersTemp);
             }
 
@@ -181,7 +181,7 @@ namespace FieldDay.Scenes {
             /// <summary>
             /// Reads the next block of preloaders.
             /// </summary>
-            public int Read(IList<IScenePreloader> nextBlock) {
+            public int Read(IList<IScenePreload> nextBlock) {
                 BitSet64 readMask = GetNextManifestReadMask();
                 if (readMask) {
                     return ReadManifests(readMask, nextBlock);
@@ -190,6 +190,10 @@ namespace FieldDay.Scenes {
             }
 
             private BitSet64 GetNextManifestReadMask() {
+                if (m_ReadingManifestMask.IsEmpty) {
+                    return default;
+                }
+
                 int lowest = int.MaxValue;
                 int length = m_ManifestCount;
                 BitSet64 toRead = default;
@@ -214,7 +218,7 @@ namespace FieldDay.Scenes {
                 return toRead;
             }
 
-            private int ReadManifests(BitSet64 mask, IList<IScenePreloader> preloadBlock) {
+            private int ReadManifests(BitSet64 mask, IList<IScenePreload> preloadBlock) {
                 int length = m_ManifestCount;
                 int count = 0;
                 for (int i = 0; i < length; i++) {
@@ -226,7 +230,7 @@ namespace FieldDay.Scenes {
                     ref int idx = ref m_BucketIndices[i];
                     var range = manifest.Buckets[idx];
                     for(int j = 0; j < range.LoaderCount; j++) {
-                        preloadBlock.Add((IScenePreloader) manifest.Loaders[range.LoaderOffset + j]);
+                        preloadBlock.Add((IScenePreload) manifest.Loaders[range.LoaderOffset + j]);
                     }
                     count += range.LoaderCount;
 
@@ -254,7 +258,7 @@ namespace FieldDay.Scenes {
         /// <summary>
         /// WorkSlider operation.
         /// </summary>
-        static public readonly WorkSlicer.EnumeratedElementOperation<IScenePreloader> ExecutePreloader = (a) => a.Preload();
+        static public readonly WorkSlicer.EnumeratedElementOperation<IScenePreload> ExecutePreloader = (a) => a.Preload();
 
         #endregion // Reader
     }
