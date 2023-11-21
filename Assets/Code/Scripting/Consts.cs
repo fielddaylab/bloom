@@ -19,8 +19,8 @@ namespace Zavala
         static public readonly StringHash32 SimPaused = "sim:paused";
         static public readonly StringHash32 SimResumed = "sim:resumed";
 
-        static public readonly StringHash32 BuildModeStarted = "build:started";
-        static public readonly StringHash32 BuildModeEnded = "build:ended";
+        static public readonly StringHash32 BlueprintModeStarted = "blueprint:started";
+        static public readonly StringHash32 BlueprintModeEnded = "blueprint:ended";
 
         static public readonly StringHash32 DialogueClosing = "dialog:closing";
     }

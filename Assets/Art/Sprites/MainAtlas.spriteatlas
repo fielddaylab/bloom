@@ -52,7 +52,6 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 57076f507c492534bb553b684eb0ce7a, type: 3}
   - {fileID: 21300000, guid: 71e8b7a1d6ae34847875b1f5bb100f6b, type: 3}
   - {fileID: 21300000, guid: 485233e1e34500c419e4648865a72492, type: 3}
   - {fileID: 21300000, guid: bae214028ce35f74fb50e3c2ac6e846e, type: 3}
@@ -67,6 +66,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a1879e24680c1ba48a492b6cee354375, type: 3}
   - {fileID: 21300000, guid: 9b075354cb0ae484aad11631c2a0eecd, type: 3}
   - {fileID: 21300000, guid: f539e1946dd638d43a715d35ef12abc8, type: 3}
+  - {fileID: 21300000, guid: 71655035bb0de734c99669adc790e169, type: 3}
   - {fileID: 21300000, guid: 846a4735a6935e24886914f391495f0b, type: 3}
   - {fileID: 21300000, guid: 61db9685c1b7ea243a4c109811110530, type: 3}
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
@@ -86,6 +86,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 99002e29e1c7b3b42941c13ae3f483b2, type: 3}
   - {fileID: 21300000, guid: 3cbb6d596834a1e4eb1a7110494be0f4, type: 3}
   - {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
+  - {fileID: 21300000, guid: 7fdf6d5b4cb42ca46bdb089e269472a9, type: 3}
   - {fileID: 21300000, guid: 2221949b943795844a143b042d89dd3e, type: 3}
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
   - {fileID: 21300000, guid: 76b2b02c1f99b324b82b1a82869a4100, type: 3}
@@ -103,7 +104,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 113e8a6f0a4ed994f9d32ce12b79be89, type: 3}
   - {fileID: 21300000, guid: 1341e9af6cc32cd4c90c6902052dc310, type: 3}
   m_PackedSpriteNamesToIndex:
-  - ShopHubButton
   - base_selling-loss
   - UndoIcon
   - advisor-button_ecol
@@ -118,6 +118,7 @@ SpriteAtlas:
   - CloseRound
   - CostBGWhite
   - banner_excess-runoff
+  - ShopHubButton
   - alert-banner
   - base_unused-digester
   - advisor-dialogue-white
@@ -137,6 +138,7 @@ SpriteAtlas:
   - banner_unused-digester
   - alert_Milk
   - card-slot-locked-white
+  - ShopButtonBorder
   - policy-button-white
   - base_excess-runoff
   - ShopToggleBlank

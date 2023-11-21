@@ -45,7 +45,7 @@ namespace Zavala.UI
         private void ClearSelected() {
             // unselect current button
             if (m_selectedIndex != -1) {
-                m_shopItemBtns[m_selectedIndex].Button.image.color = m_shopItemBtns[m_selectedIndex].UnselectedColor;
+                m_shopItemBtns[m_selectedIndex].Button.image.color = ZavalaColors.ShopItemDefault;
                 m_selectedIndex = -1;
             }
         }
@@ -83,7 +83,7 @@ namespace Zavala.UI
                 bts.ActiveTool = button.BuildTool;
 
                 // set selected color
-                m_shopItemBtns[selectedIndex].Button.image.color = m_shopItemBtns[selectedIndex].SelectedColor;
+                m_shopItemBtns[selectedIndex].Button.image.color = ZavalaColors.ShopItemSelected;
 
                 m_selectedIndex = selectedIndex;
             }

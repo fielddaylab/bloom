@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BeauRoutine;
 using BeauUtil;
+using FieldDay;
 using FieldDay.Scenes;
 using ScriptableBake;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Zavala.UI {
 
         #endregion // Inspector
 
-        [NonSerialized] private bool m_InBuildMode;
+        [NonSerialized] private bool m_InBlueprintMode;
         [NonSerialized] private bool m_Locked;
         private Routine m_SliderRoutine;
 
@@ -35,6 +36,14 @@ namespace Zavala.UI {
             m_Button.onClick.AddListener(HandleClick);
             return null;
         }
+
+        #region Accessors 
+
+        public void SetLocked(bool locked) {
+            m_Locked = locked;
+        }
+
+        #endregion // Accessors
 
         #region Handlers
 
@@ -44,12 +53,15 @@ namespace Zavala.UI {
                 return;
             }
 
-            m_InBuildMode = !m_InBuildMode;
+            m_InBlueprintMode = !m_InBlueprintMode;
             m_SliderRoutine.Replace(this, AppearanceTransition());
+
+            if (m_InBlueprintMode) { Game.Events.Dispatch(GameEvents.BlueprintModeStarted); }
+            else { Game.Events.Dispatch(GameEvents.BlueprintModeEnded); }
         }
 
         private IEnumerator AppearanceTransition() {
-            if (m_InBuildMode) {
+            if (m_InBlueprintMode) {
                 yield return Routine.Combine(
                     m_PlayModeIcon.ColorTo(ZavalaColors.InterfaceBackgroundMid, 0.1f),
                     m_BuildModeIcon.ColorTo(ZavalaColors.InterfaceBackgroundLight, 0.1f),

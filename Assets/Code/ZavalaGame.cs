@@ -57,5 +57,8 @@ namespace Zavala {
         static public readonly Color InterfaceBackgroundLightest = Colors.Hex("FFFBE3");
         static public readonly Color InterfaceBackgroundLight = Colors.Hex("F9F5E0");
         static public readonly Color InterfaceBackgroundMid = Colors.Hex("EFE6AB");
+
+        static public readonly Color ShopItemDefault = Colors.Hex("7BE3EB");
+        static public readonly Color ShopItemSelected = Colors.Hex("FFE27D");
     }
 }

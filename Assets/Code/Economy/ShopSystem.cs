@@ -36,7 +36,6 @@ namespace Zavala.Economy {
             uint idx = gridState.CurrRegionIndex;
             shopState.ShopUI.NetText.text = /*"Net: " +*/ budgetData.BudgetsPerRegion[idx].Net.ToString();
             shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[idx].Net);
-            shopState.ShopUI.RegionName.text = ((RegionId)idx).ToString();
         }
 
         public static long PriceLookup(UserBuildTool building) {
