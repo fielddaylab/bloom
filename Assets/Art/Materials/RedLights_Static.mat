@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RedLights00
+  m_Name: RedLights_Static
   m_Shader: {fileID: -6465566751694194690, guid: 1532f61e78895411cb0fbea1e6ea20f5, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -79,6 +79,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _BendSpeed: 2.5
+    - _BendStrength: 1
     - _Blend: 0
     - _BlendOp: 0
     - _BumpScale: 1
@@ -110,6 +112,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
+    - _BendDirection: {r: 1.65, g: 2.1, b: 0, a: 0}
     - _Color: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EndColor: {r: 1, g: 0.007843138, b: 0, a: 0}
