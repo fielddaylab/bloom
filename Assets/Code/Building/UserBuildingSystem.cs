@@ -16,7 +16,7 @@ namespace Zavala.Building
 {
     // TODO: is this the right update phase?
     [SysUpdate(GameLoopPhase.Update)]
-    public class UserBuildingSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BuildToolState>
+    public class UserBuildingSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BuildToolState, ShopState>
     {
         private static int CODE_INVALID = -1; // tried to use a tool on an invalid spot
         private static int CODE_UNCHANGED = -2; // tried to use a tool on the same spot as last work process
@@ -78,7 +78,7 @@ namespace Zavala.Building
         }
 
         /// <summary>
-        /// Try to get a tile index by raycasting to a tile. 
+        /// Try to get a tile index by raycasting to a tile.
         /// </summary>
         private int RaycastTileIndex(SimWorldState world, SimGridState grid) {
             // do a raycast
@@ -182,7 +182,7 @@ namespace Zavala.Building
                 return false;
             }
 
-            if (!TryPurchaseBuild(activeTool, grid.CurrRegionIndex)) {
+            if (!CanPurchaseBuild(activeTool, grid.CurrRegionIndex, m_StateD.GetRunningCost(), out int price)) {
                 return false;
             }
 
@@ -200,6 +200,12 @@ namespace Zavala.Building
                 default:
                     break;
             }
+            // Add cost to receipt queue
+            m_StateD.EnqueueCost(price);
+
+            // Deselect tools
+            m_StateC.ActiveTool = UserBuildTool.None;
+            Game.Events.Dispatch(GameEvents.BuildToolDeselected);
 
             return true;
         }
@@ -212,8 +218,8 @@ namespace Zavala.Building
             pool.Alloc(worldPos);
         }
 
-        private bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion) {
-            return ShopUtility.TryPurchaseBuild(currTool, currentRegion, 1);
+        private bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int runningCost, out int price) {
+            return ShopUtility.CanPurchaseBuild(currTool, currentRegion, 1, runningCost, out price);
         }
 
         /// <summary>
@@ -498,7 +504,7 @@ namespace Zavala.Building
                 return false;
             }
 
-            bool purchaseSuccessful = ShopUtility.TryPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum);
+            bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.GetRunningCost(), out int price);
 
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");
@@ -520,6 +526,8 @@ namespace Zavala.Building
                         }
                     }
                 }
+                // Add cost to receipt queue
+                m_StateD.EnqueueCost(price);
 
                 m_StateC.RoadToolState.ClearState();
 

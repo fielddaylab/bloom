@@ -11,7 +11,7 @@ using Zavala.Sim;
 
 namespace Zavala.Economy {
     [SysUpdate(GameLoopPhase.Update, 0)]
-    public sealed class ShopSystem : SharedStateSystemBehaviour<BudgetData, ShopState, SimGridState>, IRegistrationCallbacks
+    public sealed class ShopSystem : SharedStateSystemBehaviour<BudgetData, ShopState, SimGridState, BlueprintState>, IRegistrationCallbacks
     {
         public override void ProcessWork(float deltaTime) {
             if (m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Updated /* || region changed*/) {
@@ -19,6 +19,14 @@ namespace Zavala.Economy {
                 ShopUtility.RefreshShop(m_StateA, m_StateB, m_StateC);
                 // TODO: may eventually need more control over when budgets are marked as updated if other systems also use that flag
                 m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Updated = false;
+            }
+
+            // process running tally queue
+            while (m_StateB.CostQueue.Count > 0)
+            {
+                int deltaCost = m_StateB.CostQueue.PopFront();
+                m_StateB.ModifyRunningCost(deltaCost);
+                m_StateD.UpdateRunningCostDisplay(m_StateB.GetRunningCost(), deltaCost, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
             }
         }
 
@@ -38,7 +46,7 @@ namespace Zavala.Economy {
             shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[idx].Net);
         }
 
-        public static long PriceLookup(UserBuildTool building) {
+        public static int PriceLookup(UserBuildTool building) {
             switch (building) {
                 case UserBuildTool.Road:
                     return 5;
@@ -52,13 +60,30 @@ namespace Zavala.Economy {
         }
 
         /// <summary>
+        /// Check if the current region can afford to purchase the given buildings
+        /// </summary>
+        /// <param name="currTool">Building tool to purchase</param>
+        /// <param name="currentRegion">Region whose budget to test</param>
+        /// <param name="num">Number of buildings purchased (used only for roads)</param>
+        /// <returns></returns>
+        public static bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int num, int runningCost, out int price) {
+            BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+            price = ShopUtility.PriceLookup(currTool) * num;
+
+            bool purchaseSuccessful = BudgetUtility.CanSpendBudget(budgetData, runningCost + price, currentRegion);
+            // bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, price, currentRegion);
+            return purchaseSuccessful;
+        }
+
+        /// <summary>
         /// Check if the current region can afford to purchase the given buildings, and deduct the price if so.
         /// </summary>
         /// <param name="currTool">Building tool to purchase</param>
         /// <param name="currentRegion">Region whose budget to test</param>
         /// <param name="num">Number of buildings purchased (used only for roads)</param>
         /// <returns></returns>
-        public static bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion, int num) {
+        public static bool TryPurchaseBuild(UserBuildTool currTool, uint currentRegion, int num)
+        {
             BudgetData budgetData = Game.SharedState.Get<BudgetData>();
             long price = ShopUtility.PriceLookup(currTool) * num;
             bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, price, currentRegion);

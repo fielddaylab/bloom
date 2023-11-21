@@ -1,4 +1,6 @@
+using BeauUtil;
 using FieldDay;
+using FieldDay.Scenes;
 using FieldDay.Scripting;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using Zavala.Economy;
 
 namespace Zavala.UI
 {
-    public class ShopButtonHub : MonoBehaviour
+    public class ShopButtonHub : MonoBehaviour, IScenePreload
     {
         private int m_selectedIndex;
 
@@ -18,6 +20,13 @@ namespace Zavala.UI
         [SerializeField] private Color m_affordableColor;
         [SerializeField] private Color m_unaffordableColor;
         [SerializeField] private float m_ySpacing;
+
+        public IEnumerator<WorkSlicer.Result?> Preload()
+        {
+            Game.Events.Register(GameEvents.BuildToolDeselected, HandleBuildToolDeselected);
+
+            return null;
+        }
 
         public void Activate() {
             this.gameObject.SetActive(true);
@@ -65,6 +74,8 @@ namespace Zavala.UI
             if (selectedIndex == m_selectedIndex) {
                 // selected current button; should unselect it and return
                 ClearSelected();
+
+                Game.Events.Dispatch(GameEvents.BuildToolDeselected);
                 return;
             }
 
@@ -86,10 +97,17 @@ namespace Zavala.UI
                 m_shopItemBtns[selectedIndex].Button.image.color = ZavalaColors.ShopItemSelected;
 
                 m_selectedIndex = selectedIndex;
+
+                Game.Events.Dispatch(GameEvents.BuildToolSelected);
             }
             else {
                 // some disallow routine? error sound, red flash, queue Balthazar, etc.
             }
+        }
+
+        private void HandleBuildToolDeselected()
+        {
+            ClearSelected();
         }
 
         #endregion // Handlers

@@ -21,6 +21,8 @@ namespace Zavala
 
         static public readonly StringHash32 BlueprintModeStarted = "blueprint:started";
         static public readonly StringHash32 BlueprintModeEnded = "blueprint:ended";
+        static public readonly StringHash32 BuildToolSelected = "blueprint:build-tool-selected";
+        static public readonly StringHash32 BuildToolDeselected = "blueprint:build-tool-deselected";
 
         static public readonly StringHash32 DialogueClosing = "dialog:closing";
     }

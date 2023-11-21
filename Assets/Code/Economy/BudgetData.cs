@@ -49,6 +49,12 @@ namespace Zavala.Economy
             budgetData.BudgetsPerRegion[regionIndex].Updated = true;
         }
 
+        static public bool CanSpendBudget(BudgetData budgetData, long toSpend, uint regionIndex)
+        {
+            long net = budgetData.BudgetsPerRegion[regionIndex].Net;
+            return net - toSpend >= 0;
+        }
+
         static public bool TrySpendBudget(BudgetData budgetData, long toSpend, uint regionIndex) {
             long net = budgetData.BudgetsPerRegion[regionIndex].Net;
             if (net - toSpend >= 0) {
