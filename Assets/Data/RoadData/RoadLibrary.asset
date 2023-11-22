@@ -20,131 +20,131 @@ MonoBehaviour:
   m_RotationEntries:
   - TileIndex: 65535
     Rotation: 0
-  - TileIndex: 65535
-    Rotation: 0
-  - TileIndex: 65535
+  - TileIndex: 6
+    Rotation: 1
+  - TileIndex: 6
     Rotation: 0
   - TileIndex: 1
     Rotation: 4
-  - TileIndex: 65535
-    Rotation: 0
+  - TileIndex: 6
+    Rotation: 5
   - TileIndex: 2
     Rotation: 5
   - TileIndex: 1
     Rotation: 3
   - TileIndex: 3
-    Rotation: 0
-  - TileIndex: 65535
-    Rotation: 0
-  - TileIndex: 8
-    Rotation: 1
-  - TileIndex: 2
-    Rotation: 4
-  - TileIndex: 4
-    Rotation: 4
-  - TileIndex: 1
-    Rotation: 2
-  - TileIndex: 5
-    Rotation: 1
-  - TileIndex: 3
-    Rotation: 5
-  - TileIndex: 0
-    Rotation: 5
-  - TileIndex: 65535
-    Rotation: 0
-  - TileIndex: 2
-    Rotation: 1
-  - TileIndex: 8
-    Rotation: 0
-  - TileIndex: 5
-    Rotation: 3
-  - TileIndex: 2
-    Rotation: 3
-  - TileIndex: 11
-    Rotation: 1
-  - TileIndex: 4
-    Rotation: 3
-  - TileIndex: 9
-    Rotation: 3
-  - TileIndex: 1
-    Rotation: 1
-  - TileIndex: 4
-    Rotation: 1
-  - TileIndex: 5
-    Rotation: 0
-  - TileIndex: 10
-    Rotation: 1
-  - TileIndex: 3
-    Rotation: 4
-  - TileIndex: 9
-    Rotation: 1
-  - TileIndex: 0
-    Rotation: 4
-  - TileIndex: 7
-    Rotation: 1
-  - TileIndex: 65535
-    Rotation: 0
-  - TileIndex: 1
-    Rotation: 5
-  - TileIndex: 2
-    Rotation: 0
-  - TileIndex: 3
-    Rotation: 1
-  - TileIndex: 8
-    Rotation: 2
-  - TileIndex: 4
-    Rotation: 5
-  - TileIndex: 5
-    Rotation: 2
-  - TileIndex: 0
-    Rotation: 0
-  - TileIndex: 2
-    Rotation: 2
-  - TileIndex: 5
-    Rotation: 4
-  - TileIndex: 11
-    Rotation: 0
-  - TileIndex: 9
-    Rotation: 4
-  - TileIndex: 4
-    Rotation: 2
-  - TileIndex: 10
-    Rotation: 2
-  - TileIndex: 9
-    Rotation: 2
-  - TileIndex: 7
-    Rotation: 2
-  - TileIndex: 1
-    Rotation: 0
-  - TileIndex: 3
-    Rotation: 2
-  - TileIndex: 4
-    Rotation: 0
-  - TileIndex: 0
-    Rotation: 1
-  - TileIndex: 5
-    Rotation: 5
-  - TileIndex: 9
-    Rotation: 5
-  - TileIndex: 10
-    Rotation: 0
-  - TileIndex: 7
-    Rotation: 3
-  - TileIndex: 3
-    Rotation: 3
-  - TileIndex: 0
-    Rotation: 2
-  - TileIndex: 9
-    Rotation: 0
-  - TileIndex: 7
-    Rotation: 4
-  - TileIndex: 0
-    Rotation: 3
-  - TileIndex: 7
-    Rotation: 5
-  - TileIndex: 7
     Rotation: 0
   - TileIndex: 6
+    Rotation: 4
+  - TileIndex: 9
+    Rotation: 1
+  - TileIndex: 2
+    Rotation: 4
+  - TileIndex: 4
+    Rotation: 4
+  - TileIndex: 1
+    Rotation: 2
+  - TileIndex: 5
+    Rotation: 1
+  - TileIndex: 3
+    Rotation: 5
+  - TileIndex: 0
+    Rotation: 5
+  - TileIndex: 6
+    Rotation: 3
+  - TileIndex: 2
+    Rotation: 1
+  - TileIndex: 9
+    Rotation: 0
+  - TileIndex: 5
+    Rotation: 3
+  - TileIndex: 2
+    Rotation: 3
+  - TileIndex: 12
+    Rotation: 1
+  - TileIndex: 4
+    Rotation: 3
+  - TileIndex: 10
+    Rotation: 3
+  - TileIndex: 1
+    Rotation: 1
+  - TileIndex: 4
+    Rotation: 1
+  - TileIndex: 5
+    Rotation: 0
+  - TileIndex: 11
+    Rotation: 1
+  - TileIndex: 3
+    Rotation: 4
+  - TileIndex: 10
+    Rotation: 1
+  - TileIndex: 0
+    Rotation: 4
+  - TileIndex: 8
+    Rotation: 1
+  - TileIndex: 6
+    Rotation: 2
+  - TileIndex: 1
+    Rotation: 5
+  - TileIndex: 2
+    Rotation: 0
+  - TileIndex: 3
+    Rotation: 1
+  - TileIndex: 9
+    Rotation: 2
+  - TileIndex: 4
+    Rotation: 5
+  - TileIndex: 5
+    Rotation: 2
+  - TileIndex: 0
+    Rotation: 0
+  - TileIndex: 2
+    Rotation: 2
+  - TileIndex: 5
+    Rotation: 4
+  - TileIndex: 12
+    Rotation: 0
+  - TileIndex: 10
+    Rotation: 4
+  - TileIndex: 4
+    Rotation: 2
+  - TileIndex: 11
+    Rotation: 2
+  - TileIndex: 10
+    Rotation: 2
+  - TileIndex: 8
+    Rotation: 2
+  - TileIndex: 1
+    Rotation: 0
+  - TileIndex: 3
+    Rotation: 2
+  - TileIndex: 4
+    Rotation: 0
+  - TileIndex: 0
+    Rotation: 1
+  - TileIndex: 5
+    Rotation: 5
+  - TileIndex: 10
+    Rotation: 5
+  - TileIndex: 11
+    Rotation: 0
+  - TileIndex: 8
+    Rotation: 3
+  - TileIndex: 3
+    Rotation: 3
+  - TileIndex: 0
+    Rotation: 2
+  - TileIndex: 10
+    Rotation: 0
+  - TileIndex: 8
+    Rotation: 4
+  - TileIndex: 0
+    Rotation: 3
+  - TileIndex: 8
+    Rotation: 5
+  - TileIndex: 8
+    Rotation: 0
+  - TileIndex: 7
     Rotation: 0
   m_Tiles:
   - Mesh: {fileID: -5031213115080317316, guid: c0938dc8a975204468311a3aa5e1acd4, type: 3}
@@ -171,6 +171,10 @@ MonoBehaviour:
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
     Scale: 1.0290698
     FlipX: 1
+  - Mesh: {fileID: 8169044024069081611, guid: 870e11741a0aa5348935b3e5a9db52bd, type: 3}
+    Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    Scale: 1.0290698
+    FlipX: 0
   - Mesh: {fileID: -7111516067272048804, guid: 6f5251317db69624081ece513d808f65, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
     Scale: 1.0290698

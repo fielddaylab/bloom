@@ -210,6 +210,8 @@ namespace Zavala.Roads
             Debug.Log("[StagingRoad] New staging mask for tile " + tileIndex + " : " + tileInfo.StagingMask.ToString());
 
             network.Roads.Info[tileIndex] = tileInfo;
+
+            RoadUtility.UpdateRoadVisuals(network, tileIndex);
         }
 
         static public void UnstageRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -220,6 +222,10 @@ namespace Zavala.Roads
             Debug.Log("[StagingRoad] Unstaged tile " + tileIndex);
 
             network.Roads.Info[tileIndex] = tileInfo;
+
+            // TODO: remove road object
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            RemoveStagedRoadObj(network, pools, tileIndex);
         }
 
         static public void UnstageForward(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -248,33 +254,80 @@ namespace Zavala.Roads
 
             // Do not create road objects on endpoints
             if (!isEndpoint) {
-                // TEMP add road, snap to tile
-                HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
-                Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
-                RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
-                network.RoadObjects.PushBack(newRoad);
+                // add road, snap to tile
+                // CreateRoadObject(network, grid, pools, tileIndex, holoMat);
+            }
+        }
 
-                // temporarily render the build as holo
-                var matSwap = newRoad.GetComponent<MaterialSwap>();
-                if (matSwap) { matSwap.SetMaterial(holoMat); }
+        static public void CreateRoadObject(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, Material holoMat)
+        {
+            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+            RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
+            network.RoadObjects.PushBack(newRoad);
 
-                newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
-                    if (c < a - 50) {
-                        o = RoadRampType.Tall;
-                        return true;
-                    } else if (c < a) {
-                        o = RoadRampType.Ramp;
-                        return true;
-                    } else {
-                        o = default;
-                        return false;
-                    }
-                });
+            // temporarily render the build as holo
+            var matSwap = newRoad.GetComponent<MaterialSwap>();
+            if (matSwap) { matSwap.SetMaterial(holoMat); }
 
-                ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
-                    TileIndex = (ushort) tileIndex,
-                    Type = VisualUpdateType.Road
-                });
+            newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
+                if (c < a - 50)
+                {
+                    o = RoadRampType.Tall;
+                    return true;
+                }
+                else if (c < a)
+                {
+                    o = RoadRampType.Ramp;
+                    return true;
+                }
+                else
+                {
+                    o = default;
+                    return false;
+                }
+            });
+
+            RoadUtility.UpdateRoadVisuals(network, tileIndex);
+
+            ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
+            {
+                TileIndex = (ushort)tileIndex,
+                Type = VisualUpdateType.Road
+            });
+        }
+
+        static public void RemoveStagedRoadObj(RoadNetwork network, BuildingPools pools, int tileIndex)
+        {
+            for (int i = network.RoadObjects.Count - 1; i >= 0; i--)
+            {
+                if (network.RoadObjects[i].GetComponent<OccupiesTile>().TileIndex == tileIndex)
+                {
+                    pools.Roads.Free(network.RoadObjects[i]);
+                    network.RoadObjects.RemoveAt(i);
+
+                    /*
+                    ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
+                    {
+                        TileIndex = (ushort)tileIndex,
+                        Type = VisualUpdateType.Road
+                    });
+                    */
+
+                    break;
+                }
+            }
+        }
+
+        static public void UpdateRoadVisuals(RoadNetwork network, int roadTileIndex)
+        {
+            RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
+            for (int r = network.RoadObjects.Count - 1; r >= 0; r--)
+            {
+                if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == roadTileIndex)
+                {
+                    RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask | tileInfo.StagingMask);
+                }
             }
         }
 
@@ -318,12 +371,7 @@ namespace Zavala.Roads
                 adjTileInfo.FlowMask[adjDir] = false;
 
                 // Update prev road rendering
-                for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
-                    if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == adjIdx) {
-                        RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, network.Roads.Info[adjIdx].FlowMask);
-                        //network.RoadObjects[r].UpdateSegmentVisuals(network.Roads.Info[adjIdx].FlowMask);
-                    }
-                }
+                RoadUtility.UpdateRoadVisuals(network, adjIdx);
             }
         }
 

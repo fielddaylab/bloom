@@ -225,7 +225,7 @@ namespace Zavala.Building
             var matSwap = obj.GetComponent<MaterialSwap>();
             if (matSwap) { matSwap.SetMaterial(m_ValidHoloMaterial); }
             BlueprintState blueprintState = Game.SharedState.Get<BlueprintState>();
-            BlueprintUtility.CommitBuild(blueprintState, new BuildCommit(price, tileIndex, matSwap));
+            BlueprintUtility.CommitBuild(blueprintState, new ActionCommit(obj.Type, ActionType.Build, price, tileIndex, matSwap));
         }
 
         private bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int runningCost, out int price) {
@@ -270,6 +270,7 @@ namespace Zavala.Building
                 case BuildingType.Road:
                     // TODO: Clear from adj roads
                     RoadUtility.RemoveRoad(network, grid, tileIndex);
+
                     pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>());
 
                     ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
@@ -404,6 +405,9 @@ namespace Zavala.Building
                         break;
                     }
                 }
+
+                BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                RoadUtility.CreateRoadObject(network, grid, pools, tileIndex, m_ValidHoloMaterial);
             }
 
             m_StateC.RoadToolState.PrevTileIndex = tileIndex;
@@ -506,6 +510,12 @@ namespace Zavala.Building
                 else if (isEndpoint) {
                     // only if counting each half of a road
                     // deductNum++;
+
+                    if (i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
+                    {
+                        BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                        RoadUtility.RemoveStagedRoadObj(network, pools, currIndex);
+                    }
                 }
             }
 
@@ -527,14 +537,8 @@ namespace Zavala.Building
                     int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
-                    // TEMP update road visuals
-                    RoadTileInfo tileInfo = network.Roads.Info[currIndex];
-                    for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
-                        if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == currIndex) {
-                            RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask | tileInfo.StagingMask);
-                            //network.RoadObjects[r].UpdateSegmentVisuals(tileInfo.FlowMask | tileInfo.StagingMask);
-                        }
-                    }
+                    // update road visuals
+                    RoadUtility.UpdateRoadVisuals(network, currIndex);
                 }
                 // Add cost to receipt queue
                 ShopUtility.EnqueueCost(m_StateD, price);

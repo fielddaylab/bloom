@@ -9,26 +9,44 @@ using Zavala.UI;
 
 namespace Zavala.Economy
 {
+
+    // Commit Chain composed of BuildCommits. Roads use CommitChains. Destroy sequence uses a CommitChain. Other builds are a CommitChain of length 1.
+
+    public enum ActionType : byte
+    {
+        Build,
+        Destroy
+    }
+
     /// <summary>
     /// Struct for history of build queue during blueprint mode
     /// </summary>
-    public struct BuildCommit
+    public struct ActionCommit
     {
-        public int Cost;
+        public BuildingType BuildType;
+        public ActionType ActionType;
+        public int Cost;                    // The price to build / remove. Negative if the player receives money back
         public int TileIndex;
-        public MaterialSwap MatSwap; // The component controlling the material swap
+        public MaterialSwap MatSwap;        // The component controlling the material swap
 
-        public BuildCommit(int cost, int tileIndex, MaterialSwap matSwap)
+        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, MaterialSwap matSwap)
         {
+            BuildType = bType;
+            ActionType = aType;
             Cost = cost;
             TileIndex = tileIndex;
             MatSwap = matSwap;
         }
     }
 
+    public struct CommitChain
+    {
+        public RingBuffer<ActionCommit> Chain;
+    }
+
     public class BlueprintState : SharedStateComponent, IScenePreload
     {
-        public RingBuffer<BuildCommit> Commits;
+        public RingBuffer<CommitChain> Commits;
         public bool NewBuildConfirmed;
 
         private UIBlueprint m_BlueprintUI;
@@ -36,7 +54,7 @@ namespace Zavala.Economy
         public IEnumerator<WorkSlicer.Result?> Preload()
         {
             m_BlueprintUI = FindAnyObjectByType<UIBlueprint>(FindObjectsInactive.Include);
-            Commits = new RingBuffer<BuildCommit>(8);
+            Commits = new RingBuffer<CommitChain>(8);
             return null;
         }
 
@@ -53,9 +71,13 @@ namespace Zavala.Economy
         /// </summary>
         /// <param name="blueprintState"></param>
         /// <param name="commit"></param>
-        public static void CommitBuild(BlueprintState blueprintState, BuildCommit commit)
+        public static void CommitBuild(BlueprintState blueprintState, ActionCommit commit)
         {
-            blueprintState.Commits.PushBack(commit);
+            CommitChain newChain = new CommitChain();
+            newChain.Chain = new RingBuffer<ActionCommit>(1);
+            newChain.Chain.PushBack(commit);
+
+            blueprintState.Commits.PushBack(newChain);
         }
 
         /// <summary>
@@ -64,9 +86,14 @@ namespace Zavala.Economy
         /// <param name="blueprintState"></param>
         public static void Undo(BlueprintState blueprintState)
         {
-            BuildCommit prevCommit = blueprintState.Commits.PopBack();
+            CommitChain prevChain = blueprintState.Commits.PopBack();
 
-            // TODO: Unbuild the building
+            foreach(ActionCommit commit in prevChain.Chain)
+            {
+                // TODO: process undo (unbuild, restore flags, modify funds, etc.)
+            }
+
+            prevChain.Chain.Clear();
         }
 
         /// <summary>
@@ -84,12 +111,15 @@ namespace Zavala.Economy
             ShopUtility.ResetRunningCost(shop);
 
             // Process commits
-            foreach (var commit in blueprintState.Commits)
+            foreach (var commitChain in blueprintState.Commits)
             {
-                // change material
-                commit.MatSwap.ResetMaterial();
+                foreach(var commitAction in commitChain.Chain)
+                {
+                    // change material
+                    commitAction.MatSwap.ResetMaterial();
 
-                // TODO: handle multiple materials per 1 commit (e.g. roads)
+                    // TODO: handle multiple materials per 1 commit (e.g. roads)
+                }
             }
 
             blueprintState.Commits.Clear();
