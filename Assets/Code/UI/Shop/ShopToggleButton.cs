@@ -73,7 +73,7 @@ namespace Zavala.UI {
             m_SliderRoutine.Replace(this, AppearanceTransition());
 
             if (m_InBlueprintMode) { Game.Events.Dispatch(GameEvents.BlueprintModeStarted); }
-            else { Game.Events.Dispatch(GameEvents.BlueprintModeEnded); }
+            else { Game.Events?.Dispatch(GameEvents.BlueprintModeEnded); }
         }
 
         private IEnumerator AppearanceTransition() {

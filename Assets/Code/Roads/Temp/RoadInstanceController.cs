@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Rendering;
 
 namespace Zavala.Roads {
     public class RoadInstanceController : MonoBehaviour
@@ -10,6 +11,7 @@ namespace Zavala.Roads {
         public DecorationRenderer RampDecorations;
         public TileAdjacencyDataSet<RoadRampType> Ramps;
         public float Radius;
+        public MaterialSwap MatSwap;
     }
 
     public enum RoadRampType : byte {

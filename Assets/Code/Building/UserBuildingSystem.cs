@@ -12,6 +12,7 @@ using Zavala.World;
 using Zavala.UI;
 using UnityEngine.EventSystems;
 using Zavala.Rendering;
+using System.Collections.Generic;
 
 namespace Zavala.Building
 {
@@ -225,7 +226,7 @@ namespace Zavala.Building
             var matSwap = obj.GetComponent<MaterialSwap>();
             if (matSwap) { matSwap.SetMaterial(m_ValidHoloMaterial); }
             BlueprintState blueprintState = Game.SharedState.Get<BlueprintState>();
-            BlueprintUtility.CommitBuild(blueprintState, new ActionCommit(obj.Type, ActionType.Build, price, tileIndex, matSwap));
+            BlueprintUtility.CommitBuild(blueprintState, new ActionCommit(obj.Type, ActionType.Build, price, tileIndex, new List<TileDirection>()));
         }
 
         private bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int runningCost, out int price) {
@@ -542,8 +543,9 @@ namespace Zavala.Building
                     int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
-                    // TODO: pass in material swap for each road object
-                    roadChain.Chain.PushBack(new ActionCommit(BuildingType.Road, ActionType.Build, unitCost, currIndex, null));
+                    // Pass in material swap for each road object
+                    MaterialSwap matSwap = null; //  network.RoadObjects[roadObjIdx].MatSwap;
+                    roadChain.Chain.PushBack(new ActionCommit(BuildingType.Road, ActionType.Build, unitCost, currIndex, new List<TileDirection>()));
 
                     // update road visuals
                     RoadUtility.UpdateRoadVisuals(network, currIndex);

@@ -1,3 +1,4 @@
+using FieldDay;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Zavala.Rendering
         private void OnEnable()
         {
             if (m_Renderer) { m_OriginalMat = m_Renderer.sharedMaterial; }
+            Game.Events.Register(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
         }
 
         #endregion // Unity Callbacks
@@ -27,5 +29,19 @@ namespace Zavala.Rendering
         {
             m_Renderer.sharedMaterial = m_OriginalMat;
         }
+
+        #region Handlers
+
+        private void HandleBlueprintModeEnded()
+        {
+            ResetMaterial();
+
+            // Once put into place, never need this swap again
+            Destroy(this);
+        }
+
+        #endregion // Handlers
+
+
     }
 }

@@ -166,6 +166,7 @@ MonoBehaviour:
   RoadMesh: {fileID: 110408958775330870}
   RampDecorations: {fileID: 1723040191123504645}
   Radius: 0.35
+  MatSwap: {fileID: 7418557678709288407}
 --- !u!135 &1930123993508356742
 SphereCollider:
   m_ObjectHideFlags: 0

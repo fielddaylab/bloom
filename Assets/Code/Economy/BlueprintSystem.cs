@@ -42,7 +42,7 @@ namespace Zavala.Economy
             {
                 m_StateA.UndoClickedBuild = false;
 
-                BlueprintUtility.OnUndoClicked(m_StateA);
+                BlueprintUtility.OnUndoClicked(m_StateA, m_StateB);
             }
         }
     }

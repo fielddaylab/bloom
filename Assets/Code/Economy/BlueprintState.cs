@@ -1,4 +1,5 @@
 using BeauUtil;
+using FieldDay;
 using FieldDay.Scenes;
 using FieldDay.SharedState;
 using System.Collections;
@@ -25,17 +26,17 @@ namespace Zavala.Economy
     {
         public BuildingType BuildType;
         public ActionType ActionType;
-        public int Cost;                    // The price to build / remove. Negative if the player receives money back
+        public int Cost;                                 // The price to build / remove. Negative if the player receives money back
         public int TileIndex;
-        public MaterialSwap MatSwap;        // The component controlling the material swap
+        public List<TileDirection> InleadingRemoved;     // Inleading road dirs removed when this was destroyed
 
-        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, MaterialSwap matSwap)
+        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved)
         {
             BuildType = bType;
             ActionType = aType;
             Cost = cost;
             TileIndex = tileIndex;
-            MatSwap = matSwap;
+            InleadingRemoved = inleadingRemoved;
         }
     }
 
@@ -98,13 +99,14 @@ namespace Zavala.Economy
         /// Undoes the last commit in the build stack
         /// </summary>
         /// <param name="blueprintState"></param>
-        public static void Undo(BlueprintState blueprintState)
+        public static void Undo(BlueprintState blueprintState, ShopState shopState)
         {
             CommitChain prevChain = blueprintState.Commits.PopBack();
 
-            foreach(ActionCommit commit in prevChain.Chain)
+            foreach (ActionCommit commit in prevChain.Chain)
             {
-                // TODO: process undo (unbuild, restore flags, modify funds, etc.)
+                // TODO: Process undo (unbuild, restore flags, modify funds, etc.)
+                ShopUtility.EnqueueCost(shopState, -commit.Cost);
             }
 
             blueprintState.NumCommitsChanged = true;
@@ -129,8 +131,7 @@ namespace Zavala.Economy
             {
                 foreach(var commitAction in commitChain.Chain)
                 {
-                    // change material
-                    commitAction.MatSwap.ResetMaterial();
+                    // Process any confirm-time things
                 }
             }
 
@@ -154,9 +155,9 @@ namespace Zavala.Economy
             ClearCommits(blueprintState);
         }
 
-        public static void OnUndoClicked(BlueprintState blueprintState)
+        public static void OnUndoClicked(BlueprintState blueprintState, ShopState shop)
         {
-            Undo(blueprintState);
+            Undo(blueprintState, shop);
         }
 
         #region Helpers

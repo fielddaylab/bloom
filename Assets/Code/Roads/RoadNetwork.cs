@@ -252,11 +252,13 @@ namespace Zavala.Roads
 
             network.UpdateNeeded = true;
 
+            /*
             // Do not create road objects on endpoints
             if (!isEndpoint) {
                 // add road, snap to tile
                 // CreateRoadObject(network, grid, pools, tileIndex, holoMat);
             }
+            */
         }
 
         static public void CreateRoadObject(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, Material holoMat)
