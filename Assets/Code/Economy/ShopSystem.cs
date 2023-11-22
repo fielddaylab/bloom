@@ -25,8 +25,14 @@ namespace Zavala.Economy {
             while (m_StateB.CostQueue.Count > 0)
             {
                 int deltaCost = m_StateB.CostQueue.PopFront();
-                m_StateB.ModifyRunningCost(deltaCost);
-                m_StateD.UpdateRunningCostDisplay(m_StateB.GetRunningCost(), deltaCost, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
+                ShopUtility.ModifyRunningCost(m_StateB, deltaCost);
+                m_StateD.UpdateRunningCostDisplay(m_StateB.RunningCost, deltaCost, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
+            }
+
+            if (m_StateB.ManulUpdateRequested)
+            {
+                m_StateD.UpdateRunningCostDisplay(m_StateB.RunningCost, 0, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
+                m_StateB.ManulUpdateRequested = false;
             }
         }
 
@@ -88,6 +94,35 @@ namespace Zavala.Economy {
             long price = ShopUtility.PriceLookup(currTool) * num;
             bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, price, currentRegion);
             return purchaseSuccessful;
+        }
+
+        /// <summary>
+        /// Check if the current region can afford to purchase the given buildings, and deduct the price if so.
+        /// </summary>
+        /// <param name="currTool">Building tool to purchase</param>
+        /// <param name="currentRegion">Region whose budget to test</param>
+        /// <param name="num">Number of buildings purchased (used only for roads)</param>
+        /// <returns></returns>
+        public static bool TryPurchaseAll(int totalCost, uint currentRegion)
+        {
+            BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+            bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, totalCost, currentRegion);
+            return purchaseSuccessful;
+        }
+
+        public static void ResetRunningCost(ShopState shop)
+        {
+            shop.RunningCost = 0;
+        }
+
+        public static void ModifyRunningCost(ShopState shop, int deltaCost)
+        {
+            shop.RunningCost += deltaCost;
+        }
+
+        public static void EnqueueCost(ShopState shop, int cost)
+        {
+            shop.CostQueue.PushBack(cost);
         }
     }
 

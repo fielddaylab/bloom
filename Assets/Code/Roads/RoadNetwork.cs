@@ -10,6 +10,7 @@ using Zavala.World;
 using Zavala.Building;
 using FieldDay.Scripting;
 using Zavala.Economy;
+using Zavala.Rendering;
 
 namespace Zavala.Roads
 {
@@ -232,7 +233,7 @@ namespace Zavala.Roads
             network.Roads.Info[tileIndex] = tileInfo;
         }
 
-        static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint) {
+        static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint, Material holoMat) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
 
             RoadUtility.MergeStagedRoadMask(ref tileInfo);
@@ -252,6 +253,10 @@ namespace Zavala.Roads
                 Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
                 RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
                 network.RoadObjects.PushBack(newRoad);
+
+                // temporarily render the build as holo
+                var matSwap = newRoad.GetComponent<MaterialSwap>();
+                if (matSwap) { matSwap.SetMaterial(holoMat); }
 
                 newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
                     if (c < a - 50) {

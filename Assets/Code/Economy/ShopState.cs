@@ -15,35 +15,14 @@ namespace Zavala.Economy
         public UIShop ShopUI;
         public RingBuffer<int> CostQueue; // queue of new costs to add to the running tally in blueprint mode
 
-        private int m_RunningCost = 0;
+        public int RunningCost = 0;
+
+        public bool ManulUpdateRequested;
 
         public IEnumerator<WorkSlicer.Result?> Preload() {
             ShopUI = FindAnyObjectByType<UIShop>(FindObjectsInactive.Include);
             CostQueue = new RingBuffer<int>(8);
             return null;
-        }
-
-
-        public void ResetRunningCost()
-        {
-            m_RunningCost = 0;
-        }
-
-        public void ModifyRunningCost(int deltaCost)
-        {
-            m_RunningCost += deltaCost;
-        }
-
-        public int GetRunningCost()
-        {
-            return m_RunningCost;
-        }
-
-
-        public void EnqueueCost(int cost)
-        {
-            Debug.Log("[Cost] Enqueueing cost: $" + cost);
-            CostQueue.PushBack(cost);
         }
     }
 }

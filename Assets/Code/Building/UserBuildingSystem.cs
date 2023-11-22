@@ -11,6 +11,7 @@ using Zavala.Sim;
 using Zavala.World;
 using Zavala.UI;
 using UnityEngine.EventSystems;
+using Zavala.Rendering;
 
 namespace Zavala.Building
 {
@@ -28,7 +29,9 @@ namespace Zavala.Building
 
         #region Inspector
 
-        [SerializeField] private Material m_stagingMaterial; // material applied to tiles being staged
+        [SerializeField] private Material m_StagingMaterial; // material applied to ground beneath road tiles being staged
+        [SerializeField] private Material m_ValidHoloMaterial; // material applied to buildings being staged
+        [SerializeField] private Material m_InvalidHoloMaterial; // material applied to buildings being staged
 
         #endregion // Inspector
 
@@ -182,26 +185,27 @@ namespace Zavala.Building
                 return false;
             }
 
-            if (!CanPurchaseBuild(activeTool, grid.CurrRegionIndex, m_StateD.GetRunningCost(), out int price)) {
+            if (!CanPurchaseBuild(activeTool, grid.CurrRegionIndex, m_StateD.RunningCost, out int price)) {
                 return false;
             }
 
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
             switch (activeTool) {
                 case UserBuildTool.Digester:
-                    BuildOnTile(grid, pools.Digesters, tileIndex);
+                    BuildOnTile(grid, pools.Digesters, tileIndex, price);
                     break;
                 case UserBuildTool.Storage:
-                    BuildOnTile(grid, pools.Storages, tileIndex);
+                    BuildOnTile(grid, pools.Storages, tileIndex, price);
                     break;
                 case UserBuildTool.Skimmer:
-                    BuildOnTile(grid, pools.Skimmers, tileIndex);
+                    BuildOnTile(grid, pools.Skimmers, tileIndex, price);
                     break;
                 default:
                     break;
             }
+
             // Add cost to receipt queue
-            m_StateD.EnqueueCost(price);
+            ShopUtility.EnqueueCost(m_StateD, price);
 
             // Deselect tools
             m_StateC.ActiveTool = UserBuildTool.None;
@@ -210,12 +214,18 @@ namespace Zavala.Building
             return true;
         }
 
-        private void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex) {
+        private void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex, int price) {
             // add build, snap to tile
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             grid.Terrain.Info[tileIndex].Flags |= TerrainFlags.IsOccupied;
-            pool.Alloc(worldPos);
+            var obj = pool.Alloc(worldPos);
+
+            // temporarily render the build as holo and commit to build queue
+            var matSwap = obj.GetComponent<MaterialSwap>();
+            if (matSwap) { matSwap.SetMaterial(m_ValidHoloMaterial); }
+            BlueprintState blueprintState = Game.SharedState.Get<BlueprintState>();
+            BlueprintUtility.CommitBuild(blueprintState, new BuildCommit(price, tileIndex, matSwap));
         }
 
         private bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int runningCost, out int price) {
@@ -456,7 +466,7 @@ namespace Zavala.Building
         }
 
         private void FinalizeRoad(SimGridState grid, RoadNetwork network, BuildingPools pools, int tileIndex, bool isEndpoint) {
-            RoadUtility.FinalizeRoad(network, grid, pools, tileIndex, isEndpoint);
+            RoadUtility.FinalizeRoad(network, grid, pools, tileIndex, isEndpoint, m_ValidHoloMaterial);
 
             // remove staging visuals
             SetStagingRenderer(tileIndex, false);
@@ -465,7 +475,7 @@ namespace Zavala.Building
         private void SetStagingRenderer(int tileIndex, bool isStaging) {
             SimWorldState world = ZavalaGame.SimWorld;
             if (isStaging) {
-                TileEffectRendering.SetMaterial(world.Tiles[tileIndex], m_stagingMaterial);
+                TileEffectRendering.SetMaterial(world.Tiles[tileIndex], m_StagingMaterial);
             }
             else {
                 TileEffectRendering.RestoreDefaultMaterial(world.Tiles[tileIndex]);
@@ -504,7 +514,7 @@ namespace Zavala.Building
                 return false;
             }
 
-            bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.GetRunningCost(), out int price);
+            bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.RunningCost, out int price);
 
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");
@@ -527,7 +537,7 @@ namespace Zavala.Building
                     }
                 }
                 // Add cost to receipt queue
-                m_StateD.EnqueueCost(price);
+                ShopUtility.EnqueueCost(m_StateD, price);
 
                 m_StateC.RoadToolState.ClearState();
 

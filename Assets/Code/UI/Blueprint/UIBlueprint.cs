@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Economy;
+using Zavala.Sim;
 
 namespace Zavala.UI
 {
@@ -33,7 +35,7 @@ namespace Zavala.UI
         [SerializeField] private CanvasGroup m_ReceiptGroup;
         [SerializeField] private TMP_Text m_RunningCostText;
         [SerializeField] private TMP_Text m_FundsRemainingText;
-
+        [SerializeField] private Button m_BuildButton;
 
         private Routine m_TopBarRoutine;
         private Routine m_CommandLayoutRoutine;
@@ -53,13 +55,24 @@ namespace Zavala.UI
             return null;
         }
 
+        private void OnEnable()
+        {
+            m_BuildButton.onClick.AddListener(HandleBuildButtonClicked);
+        }
+
+        private void OnDisable()
+        {
+            m_BuildButton.onClick.RemoveListener(HandleBuildButtonClicked);
+        }
+
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds)
         {
             // Change total to new total
-            m_RunningCostText.text = "-" + totalCost;
+            m_RunningCostText.text = totalCost == 0 ? "" + totalCost : "-" + totalCost;
 
             // TODO: Flash delta cost animation
-
+            
+            // Update funds remaining
             m_FundsRemainingText.text = "" + (playerFunds - totalCost);
         }
 
@@ -87,6 +100,15 @@ namespace Zavala.UI
             m_CommandLayoutRoutine.Replace(this, CommandAppearanceTransition(true));
         }
 
+        private void HandleBuildButtonClicked()
+        {
+            var blueprintState = Game.SharedState.Get<BlueprintState>();
+            blueprintState.NewBuildConfirmed = true;
+
+            // Exit blueprint mode
+            m_ShopToggle.ManualAppear(false);
+        }
+
         #endregion // Handlers
 
         #region Routines
@@ -95,6 +117,9 @@ namespace Zavala.UI
         {
             if (inBMode)
             {
+                var shopState = Game.SharedState.Get<ShopState>();
+                shopState.ManulUpdateRequested = true;
+
                 yield return Routine.Combine(
                     m_TopBarBG.ColorTo(m_TBBlueprint, 0.1f),
                     m_ReceiptGroup.FadeTo(1, .1f),

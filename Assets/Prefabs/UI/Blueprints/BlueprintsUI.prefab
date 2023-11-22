@@ -284,6 +284,7 @@ MonoBehaviour:
   m_ReceiptGroup: {fileID: 3924927606052771427}
   m_RunningCostText: {fileID: 6217443432774026198}
   m_FundsRemainingText: {fileID: 3798134835055417067}
+  m_BuildButton: {fileID: 1462308717285739036}
 --- !u!223 &8179148152212664116
 Canvas:
   m_ObjectHideFlags: 0
@@ -1677,6 +1678,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a3ee03a5fada3942b82c53c377b7113, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1462308717285739036 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8241216000688339893, guid: 419a70af98547a94ba0732a066ef72bc, type: 3}
+  m_PrefabInstance: {fileID: 7355931037786780073}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2537929111290850270 stripped

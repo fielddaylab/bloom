@@ -43,6 +43,16 @@ namespace Zavala.UI {
             m_Locked = locked;
         }
 
+        /// <summary>
+        /// Manually trigger appear/disappear routines
+        /// </summary>
+        /// <param name="appear"></param>
+        public void ManualAppear(bool appearing)
+        {
+            m_InBlueprintMode = appearing;
+            TriggerAppearance();
+        }
+
         #endregion // Accessors
 
         #region Handlers
@@ -54,6 +64,12 @@ namespace Zavala.UI {
             }
 
             m_InBlueprintMode = !m_InBlueprintMode;
+
+            TriggerAppearance();
+        }
+
+        private void TriggerAppearance()
+        {
             m_SliderRoutine.Replace(this, AppearanceTransition());
 
             if (m_InBlueprintMode) { Game.Events.Dispatch(GameEvents.BlueprintModeStarted); }
