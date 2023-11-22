@@ -47,27 +47,30 @@ namespace Zavala.Economy
     public class BlueprintState : SharedStateComponent, IScenePreload
     {
         public RingBuffer<CommitChain> Commits;
-        public bool NewBuildConfirmed;
 
-        private UIBlueprint m_BlueprintUI;
+        #region Triggers
+
+        public bool NewBuildConfirmed;
+        public bool NumCommitsChanged;
+        public bool ExitedBlueprintMode;
+        public bool UndoClickedBuild;
+
+        #endregion // Triggers
+
+        public UIBlueprint UI;
 
         public IEnumerator<WorkSlicer.Result?> Preload()
         {
-            m_BlueprintUI = FindAnyObjectByType<UIBlueprint>(FindObjectsInactive.Include);
+            UI = FindAnyObjectByType<UIBlueprint>(FindObjectsInactive.Include);
             Commits = new RingBuffer<CommitChain>(8);
             return null;
-        }
-
-        public void UpdateRunningCostDisplay(int runningCost, int deltaCost, long playerFunds)
-        {
-            m_BlueprintUI.UpdateTotalCost(runningCost, deltaCost, playerFunds);
         }
     }
 
     public static class BlueprintUtility
     {
         /// <summary>
-        /// Adds to the build stack
+        /// Adds one building to the build stack
         /// </summary>
         /// <param name="blueprintState"></param>
         /// <param name="commit"></param>
@@ -78,6 +81,17 @@ namespace Zavala.Economy
             newChain.Chain.PushBack(commit);
 
             blueprintState.Commits.PushBack(newChain);
+            blueprintState.NumCommitsChanged = true;
+        }
+
+        /// <summary>
+        /// Adds a chain of structures to the build stack
+        /// </summary>
+        /// <param name="blueprintState"></param>
+        public static void CommitBuildChain(BlueprintState blueprintState, CommitChain inChain)
+        {
+            blueprintState.Commits.PushBack(inChain);
+            blueprintState.NumCommitsChanged = true;
         }
 
         /// <summary>
@@ -93,7 +107,7 @@ namespace Zavala.Economy
                 // TODO: process undo (unbuild, restore flags, modify funds, etc.)
             }
 
-            prevChain.Chain.Clear();
+            blueprintState.NumCommitsChanged = true;
         }
 
         /// <summary>
@@ -117,14 +131,42 @@ namespace Zavala.Economy
                 {
                     // change material
                     commitAction.MatSwap.ResetMaterial();
-
-                    // TODO: handle multiple materials per 1 commit (e.g. roads)
                 }
             }
 
-            blueprintState.Commits.Clear();
+            ClearCommits(blueprintState);
 
             // Exit build state
         }
+
+        public static void UpdateRunningCostDisplay(BlueprintState blueprintState, int runningCost, int deltaCost, long playerFunds)
+        {
+            blueprintState.UI.UpdateTotalCost(runningCost, deltaCost, playerFunds);
+        }
+
+        public static void OnNumCommitsChanged(BlueprintState blueprintState)
+        {
+            blueprintState.UI.OnNumCommitsChanged(blueprintState.Commits.Count);
+        }
+
+        public static void OnExitedBlueprintMode(BlueprintState blueprintState)
+        {
+            ClearCommits(blueprintState);
+        }
+
+        public static void OnUndoClicked(BlueprintState blueprintState)
+        {
+            Undo(blueprintState);
+        }
+
+        #region Helpers
+
+        private static void ClearCommits(BlueprintState blueprintState)
+        {
+            blueprintState.Commits.Clear();
+            blueprintState.NumCommitsChanged = true;
+        }
+
+        #endregion // Helpers
     }
 }

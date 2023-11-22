@@ -20,6 +20,7 @@ namespace Zavala.UI
 
         [SerializeField] private ShopToggleButton m_ShopToggle;
         [SerializeField] private CanvasGroup m_CommandLayout;
+        [SerializeField] private RectTransform m_CommandRect;
         [SerializeField] private Button m_DestroyButton;
         [SerializeField] private Button m_UndoButton;
 
@@ -52,17 +53,12 @@ namespace Zavala.UI
             m_ReceiptGroup.alpha = 0;
             m_BuildingModeText.alpha = 0;
             m_CommandLayout.alpha = 0;
-            return null;
-        }
+            m_UndoButton.gameObject.SetActive(false);
 
-        private void OnEnable()
-        {
             m_BuildButton.onClick.AddListener(HandleBuildButtonClicked);
-        }
+            m_UndoButton.onClick.AddListener(HandleUndoButtonClicked);
 
-        private void OnDisable()
-        {
-            m_BuildButton.onClick.RemoveListener(HandleBuildButtonClicked);
+            return null;
         }
 
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds)
@@ -88,6 +84,9 @@ namespace Zavala.UI
         {
             m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
             m_CommandLayoutRoutine.Replace(this, CommandAppearanceTransition(false));
+
+            BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
+            bpState.ExitedBlueprintMode = true;
         }
 
         private void HandleBuildToolSelected()
@@ -107,6 +106,18 @@ namespace Zavala.UI
 
             // Exit blueprint mode
             m_ShopToggle.ManualAppear(false);
+        }
+
+        private void HandleUndoButtonClicked()
+        {
+            var blueprintState = Game.SharedState.Get<BlueprintState>();
+            blueprintState.UndoClickedBuild = true;
+        }
+
+        // Handle when number of build commits changes
+        public void OnNumCommitsChanged(int num)
+        {
+            m_UndoButton.gameObject.SetActive(num > 0);
         }
 
         #endregion // Handlers
@@ -144,6 +155,7 @@ namespace Zavala.UI
         {
             if (appearing)
             {
+                // nothing to undo at first
                 SetCommandLayoutInteractable(true);
                 yield return Routine.Combine(
                     m_CommandLayout.FadeTo(1, .1f)

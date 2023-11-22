@@ -26,12 +26,12 @@ namespace Zavala.Economy {
             {
                 int deltaCost = m_StateB.CostQueue.PopFront();
                 ShopUtility.ModifyRunningCost(m_StateB, deltaCost);
-                m_StateD.UpdateRunningCostDisplay(m_StateB.RunningCost, deltaCost, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
+                BlueprintUtility.UpdateRunningCostDisplay(m_StateD, m_StateB.RunningCost, deltaCost, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
             }
 
             if (m_StateB.ManulUpdateRequested)
             {
-                m_StateD.UpdateRunningCostDisplay(m_StateB.RunningCost, 0, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
+                BlueprintUtility.UpdateRunningCostDisplay(m_StateD, m_StateB.RunningCost, 0, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
                 m_StateB.ManulUpdateRequested = false;
             }
         }

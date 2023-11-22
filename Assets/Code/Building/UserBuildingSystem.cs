@@ -524,12 +524,17 @@ namespace Zavala.Building
                 return false;
             }
 
-            bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.RunningCost, out int price);
+            bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.RunningCost, out int totalPrice);
 
+            int unitCost = ShopUtility.PriceLookup(UserBuildTool.Road); // price for 1 segment
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");
 
                 BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
+
+                CommitChain roadChain = new CommitChain();
+                roadChain.Chain = new RingBuffer<ActionCommit>(m_StateC.RoadToolState.TracedTileIdxs.Count);
 
                 // Merge staged masks into flow masks
                 for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
@@ -537,11 +542,21 @@ namespace Zavala.Building
                     int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
+                    // TODO: pass in material swap for each road object
+                    roadChain.Chain.PushBack(new ActionCommit(BuildingType.Road, ActionType.Build, unitCost, currIndex, null));
+
                     // update road visuals
                     RoadUtility.UpdateRoadVisuals(network, currIndex);
                 }
+                // Commit chain to build stack
+                BlueprintUtility.CommitBuildChain(bpState, roadChain);
+
+                // Deselect tools
+                m_StateC.ActiveTool = UserBuildTool.None;
+                Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+
                 // Add cost to receipt queue
-                ShopUtility.EnqueueCost(m_StateD, price);
+                ShopUtility.EnqueueCost(m_StateD, totalPrice);
 
                 m_StateC.RoadToolState.ClearState();
 

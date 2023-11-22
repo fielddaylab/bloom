@@ -171,9 +171,9 @@ MonoBehaviour:
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
     Scale: 1.0290698
     FlipX: 1
-  - Mesh: {fileID: 8169044024069081611, guid: 870e11741a0aa5348935b3e5a9db52bd, type: 3}
+  - Mesh: {fileID: 3228895108434126737, guid: e8a9c959ea2264512b042d464d12ec07, type: 3}
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-    Scale: 1.0290698
+    Scale: 0.5
     FlipX: 0
   - Mesh: {fileID: -7111516067272048804, guid: 6f5251317db69624081ece513d808f65, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}

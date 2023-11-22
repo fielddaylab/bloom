@@ -28,6 +28,7 @@ namespace Zavala.Roads {
 
             controller.RampDecorations.Decorations.Clear();
 
+            // TODO: Set material based on current blueprint state
             for(TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
                 if (mask.Has(dir) && controller.Ramps.TryGet(dir, out RoadRampType ramp)) {
                     int turns = (int) dir - (int) TileDirection.S;
