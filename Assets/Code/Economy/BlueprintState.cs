@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Rendering;
+using Zavala.Roads;
+using Zavala.Sim;
 using Zavala.UI;
 
 namespace Zavala.Economy
@@ -29,14 +31,20 @@ namespace Zavala.Economy
         public int Cost;                                 // The price to build / remove. Negative if the player receives money back
         public int TileIndex;
         public List<TileDirection> InleadingRemoved;     // Inleading road dirs removed when this was destroyed
+        public GameObject BuiltObj;                      // The physical object built
+        public RoadFlags RoadFlagSnapshot;
+        public TerrainFlags TerrainFlagSnapshot;
 
-        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved)
+        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags)
         {
             BuildType = bType;
             ActionType = aType;
             Cost = cost;
             TileIndex = tileIndex;
             InleadingRemoved = inleadingRemoved;
+            BuiltObj = builtObj;
+            RoadFlagSnapshot = rFlags;
+            TerrainFlagSnapshot = tFlags;
         }
     }
 
@@ -99,14 +107,40 @@ namespace Zavala.Economy
         /// Undoes the last commit in the build stack
         /// </summary>
         /// <param name="blueprintState"></param>
-        public static void Undo(BlueprintState blueprintState, ShopState shopState)
+        public static void Undo(BlueprintState blueprintState, ShopState shopState, SimGridState grid)
         {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+
             CommitChain prevChain = blueprintState.Commits.PopBack();
 
             foreach (ActionCommit commit in prevChain.Chain)
             {
                 // TODO: Process undo (unbuild, restore flags, modify funds, etc.)
-                ShopUtility.EnqueueCost(shopState, -commit.Cost);
+                switch (commit.ActionType)
+                {
+                    case ActionType.Build:
+                        // Refund the cost
+                        ShopUtility.EnqueueCost(shopState, -commit.Cost);
+
+                        // Remove the building
+                        SimDataUtility.DestroyBuildingDirect(grid, commit.BuiltObj, commit.TileIndex, commit.BuildType);
+
+                        // Restore flags
+                        SimDataUtility.RestoreFlagSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot);
+
+                        break;
+                    case ActionType.Destroy:
+                        // If was staged, re-add the cost
+                        // Else apply cost of removal
+
+                        // Remove the building
+
+                        // Update the flags
+
+                        break;
+                    default:
+                        break;
+                }
             }
 
             blueprintState.NumCommitsChanged = true;
@@ -150,17 +184,26 @@ namespace Zavala.Economy
             blueprintState.UI.OnNumCommitsChanged(blueprintState.Commits.Count);
         }
 
-        public static void OnExitedBlueprintMode(BlueprintState blueprintState)
+        public static void OnExitedBlueprintMode(BlueprintState blueprintState, ShopState shop, SimGridState grid)
         {
-            ClearCommits(blueprintState);
+            CancelPendingCommits(blueprintState, shop, grid);
         }
 
-        public static void OnUndoClicked(BlueprintState blueprintState, ShopState shop)
+        public static void OnUndoClicked(BlueprintState blueprintState, ShopState shop, SimGridState grid)
         {
-            Undo(blueprintState, shop);
+            Undo(blueprintState, shop, grid);
         }
 
         #region Helpers
+
+        private static void CancelPendingCommits(BlueprintState blueprintState, ShopState shop, SimGridState grid)
+        {
+            while (blueprintState.Commits.Count > 0)
+            {
+                Undo(blueprintState, shop, grid);
+            }
+            ClearCommits(blueprintState);
+        }
 
         private static void ClearCommits(BlueprintState blueprintState)
         {

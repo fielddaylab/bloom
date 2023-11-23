@@ -274,6 +274,93 @@ namespace Zavala.Sim {
             return false;
         }
 
+        /// <summary>
+        /// Destroys a building with the hit collider
+        /// </summary>
+        /// <param name="hit">Collider hit by a raycast</param>
+        public static void DestroyBuildingFromHit(SimGridState grid, GameObject hitObj)
+        {
+            SimWorldUtility.TryGetTileIndexFromWorld(hitObj.transform.position, out int tileIndex);
+
+            DestroyBuilding(grid, hitObj, tileIndex, hitObj.GetComponent<OccupiesTile>().Type);
+        }
+
+
+        /// <summary>
+        /// Destroys a building directly
+        /// </summary>
+        /// <param name="hit">Collider hit by a raycast</param>
+        public static void DestroyBuildingDirect(SimGridState grid, GameObject hitObj, int tileIndex, BuildingType buildingType)
+        {
+            DestroyBuilding(grid, hitObj, tileIndex, buildingType);
+        }
+
+        /// <summary>
+        /// Destroys a building at the given tile, with optional functionality if there is an object attached with the building.
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="hitObj">May be null</param>
+        /// <param name="tileIndex"></param>
+        public static void DestroyBuilding(SimGridState grid, GameObject buildingObj, int tileIndex, BuildingType buildingType)
+        {
+            // TODO: how to remove the changed flags? Save the old flags in the commit
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsAnchor;
+            grid.Terrain.Info[tileIndex].Flags &= ~TerrainFlags.IsOccupied;
+
+            if (buildingObj)
+            {
+                if (buildingObj.TryGetComponent(out SnapToTile snap) && snap.m_hideTop)
+                {
+                    TileEffectRendering.SetTopVisibility(ZavalaGame.SimWorld.Tiles[tileIndex], true);
+                }
+            }
+           
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            Log.Msg("[UserBuildingSystem] Attempting delete, found type {0}", buildingType.ToString());
+            switch (buildingType)
+            {
+                case BuildingType.Road:
+                    // Clear from adj roads
+                    RoadUtility.RemoveRoad(network, grid, tileIndex);
+
+                    if (buildingObj)
+                    {
+                        pools.Roads.Free(buildingObj.GetComponent<RoadInstanceController>());
+
+                        ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
+                        {
+                            TileIndex = (ushort)tileIndex,
+                            Type = VisualUpdateType.Road
+                        });
+                    }
+                    break;
+                case BuildingType.Digester:
+                    RoadUtility.RemoveRoad(network, grid, tileIndex);
+                    if (buildingObj)
+                    {
+                        pools.Digesters.Free(buildingObj.GetComponent<OccupiesTile>());
+                    }
+                    break;
+                case BuildingType.Storage:
+                    Debug.Log("storage");
+                    RoadUtility.RemoveRoad(network, grid, tileIndex);
+                    if (buildingObj)
+                    {
+                        pools.Storages.Free(buildingObj.GetComponent<OccupiesTile>());
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public static void RestoreFlagSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags)
+        {
+            network.Roads.Info[tileIndex].Flags = rFlags;
+            grid.Terrain.Info[tileIndex].Flags = tFlags;
+        }
+
         #region Water Groups
 
         static public ushort AddWaterGroup(SimGridState grid, HexGridSubregion region, ushort regionIndex, ushort[] tileIndices, OffsetLengthU16 range) {

@@ -33,6 +33,7 @@ namespace Zavala.Building {
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public RoadToolState RoadToolState;
         [NonSerialized] public HexVector VecPrev;
+        [NonSerialized] public bool VecPrevValid;
 
         [NonSerialized] public SimBuffer<byte> BlockedTileBuffer;
 

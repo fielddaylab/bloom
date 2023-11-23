@@ -34,7 +34,7 @@ namespace Zavala.Economy
             {
                 m_StateA.ExitedBlueprintMode = false;
 
-                BlueprintUtility.OnExitedBlueprintMode(m_StateA);
+                BlueprintUtility.OnExitedBlueprintMode(m_StateA, m_StateB, m_StateC);
             }
 
             // Clicked the Undo button (in Build mode)
@@ -42,7 +42,7 @@ namespace Zavala.Economy
             {
                 m_StateA.UndoClickedBuild = false;
 
-                BlueprintUtility.OnUndoClicked(m_StateA, m_StateB);
+                BlueprintUtility.OnUndoClicked(m_StateA, m_StateB, m_StateC);
             }
         }
     }

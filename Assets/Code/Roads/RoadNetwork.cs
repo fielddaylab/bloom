@@ -211,7 +211,10 @@ namespace Zavala.Roads
 
             network.Roads.Info[tileIndex] = tileInfo;
 
-            RoadUtility.UpdateRoadVisuals(network, tileIndex);
+            if ((tileInfo.Flags & RoadFlags.IsRoad) != 0)
+            {
+                RoadUtility.UpdateRoadVisuals(network, tileIndex);
+            }
         }
 
         static public void UnstageRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -225,7 +228,7 @@ namespace Zavala.Roads
 
             // TODO: remove road object
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-            RemoveStagedRoadObj(network, pools, tileIndex);
+            RemoveStagedRoadObj(network, pools, tileIndex, !tileInfo.FlowMask.IsEmpty);
         }
 
         static public void UnstageForward(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -299,12 +302,19 @@ namespace Zavala.Roads
             });
         }
 
-        static public void RemoveStagedRoadObj(RoadNetwork network, BuildingPools pools, int tileIndex)
+        static public void RemoveStagedRoadObj(RoadNetwork network, BuildingPools pools, int tileIndex, bool someRoadExists)
         {
+            if (someRoadExists)
+            {
+                return;
+            }
+
+            // TODO: differentiate between staged road objs and existing road objs
             for (int i = network.RoadObjects.Count - 1; i >= 0; i--)
             {
                 if (network.RoadObjects[i].GetComponent<OccupiesTile>().TileIndex == tileIndex)
                 {
+                    // TODO: Check if there is nothing after staging mask is removed
                     pools.Roads.Free(network.RoadObjects[i]);
                     network.RoadObjects.RemoveAt(i);
 

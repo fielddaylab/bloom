@@ -97,7 +97,7 @@ namespace Zavala.Building
             if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMask.GetMask(TILE_LAYER))) {
                 if (!hit.collider) return CODE_INVALID;
                 HexVector vec = HexVector.FromWorld(hit.collider.transform.position, world.WorldSpace);
-                if (vec.Equals(m_StateC.VecPrev)) {
+                if (m_StateC.VecPrevValid && vec.Equals(m_StateC.VecPrev)) {
                     // same as last
                     return CODE_UNCHANGED;
                 }
@@ -107,6 +107,8 @@ namespace Zavala.Building
                 // TODO: check if valid neighbor (otherwise try to draw line between current and previous, or wait for return)
 
                 m_StateC.VecPrev = vec;
+                m_StateC.VecPrevValid = true;
+
                 return i;
             }
             else {
@@ -151,6 +153,8 @@ namespace Zavala.Building
             }
             if (tileIndex == CODE_UNCHANGED) {
                 // player has not moved to a new tile yet, and has not stopped applying the build tool
+                // if (activeTool == UserBuildTool.Road) { return; }
+
                 return;
             }
             if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.NonBuildable) != 0) {
@@ -211,11 +215,16 @@ namespace Zavala.Building
             // Deselect tools
             m_StateC.ActiveTool = UserBuildTool.None;
             Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+            m_StateC.VecPrevValid = false;
 
             return true;
         }
 
         private void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex, int price) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
+            TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
+
             // add build, snap to tile
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
@@ -225,8 +234,18 @@ namespace Zavala.Building
             // temporarily render the build as holo and commit to build queue
             var matSwap = obj.GetComponent<MaterialSwap>();
             if (matSwap) { matSwap.SetMaterial(m_ValidHoloMaterial); }
+
             BlueprintState blueprintState = Game.SharedState.Get<BlueprintState>();
-            BlueprintUtility.CommitBuild(blueprintState, new ActionCommit(obj.Type, ActionType.Build, price, tileIndex, new List<TileDirection>()));
+            BlueprintUtility.CommitBuild(blueprintState, new ActionCommit(
+                obj.Type,
+                ActionType.Build,
+                price,
+                tileIndex,
+                new List<TileDirection>(),
+                obj.gameObject,
+                rFlagSnapshot,
+                tFlagSnapshot
+                ));
         }
 
         private bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int runningCost, out int price) {
@@ -245,52 +264,11 @@ namespace Zavala.Building
             if (hit != null && hit.gameObject.tag == PLAYERPLACED_TAG) {
                 Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + new Vector3(0,0.5f,0));
                 BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {
-                    DestroyBuilding(grid, hit);
+                    SimDataUtility.DestroyBuildingFromHit(grid, hit.gameObject);
                 }, null);
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Destroys a building with the hit collider
-        /// </summary>
-        /// <param name="hit">Collider hit by a raycast</param>
-        private void DestroyBuilding(SimGridState grid, Collider hit) {
-            SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int tileIndex);
-            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsAnchor;
-            grid.Terrain.Info[tileIndex].Flags &= ~TerrainFlags.IsOccupied;
-            if (hit.gameObject.TryGetComponent(out SnapToTile snap) && snap.m_hideTop) {
-                TileEffectRendering.SetTopVisibility(ZavalaGame.SimWorld.Tiles[tileIndex], true);
-            }
-            OccupiesTile ot = hit.gameObject.GetComponent<OccupiesTile>();
-            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-            Log.Msg("[UserBuildingSystem] Attempting delete, found type {0}", ot.Type.ToString());
-            switch (ot.Type) {
-                case BuildingType.Road:
-                    // TODO: Clear from adj roads
-                    RoadUtility.RemoveRoad(network, grid, tileIndex);
-
-                    pools.Roads.Free(hit.gameObject.GetComponent<RoadInstanceController>());
-
-                    ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
-                        TileIndex = (ushort) tileIndex,
-                        Type = VisualUpdateType.Road
-                    });
-                    break;
-                case BuildingType.Digester:
-                    RoadUtility.RemoveRoad(network, grid, tileIndex);
-                    pools.Digesters.Free(ot);
-                    break;
-                case BuildingType.Storage:
-                    Debug.Log("storage");
-                    RoadUtility.RemoveRoad(network, grid, tileIndex);
-                    pools.Storages.Free(ot);
-                    break;
-                default:
-                    break;
-            }
         }
 
         #region Road Building
@@ -407,8 +385,12 @@ namespace Zavala.Building
                     }
                 }
 
-                BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-                RoadUtility.CreateRoadObject(network, grid, pools, tileIndex, m_ValidHoloMaterial);
+                RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+                if ((tileInfo.Flags & RoadFlags.IsAnchor) == 0)
+                {
+                    BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                    RoadUtility.CreateRoadObject(network, grid, pools, tileIndex, m_ValidHoloMaterial);
+                }
             }
 
             m_StateC.RoadToolState.PrevTileIndex = tileIndex;
@@ -515,7 +497,7 @@ namespace Zavala.Building
                     if (i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
                     {
                         BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-                        RoadUtility.RemoveStagedRoadObj(network, pools, currIndex);
+                        RoadUtility.RemoveStagedRoadObj(network, pools, currIndex, !tileInfo.FlowMask.IsEmpty);
                     }
                 }
             }
@@ -527,6 +509,7 @@ namespace Zavala.Building
 
             bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.RunningCost, out int totalPrice);
 
+
             int unitCost = ShopUtility.PriceLookup(UserBuildTool.Road); // price for 1 segment
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");
@@ -537,18 +520,38 @@ namespace Zavala.Building
                 CommitChain roadChain = new CommitChain();
                 roadChain.Chain = new RingBuffer<ActionCommit>(m_StateC.RoadToolState.TracedTileIdxs.Count);
 
+                int roadObjIdx = network.RoadObjects.Count - 1;
+
                 // Merge staged masks into flow masks
                 for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
                     bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
                     int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
+
+                    RoadFlags rFlagsSnapshot = network.Roads.Info[currIndex].Flags;
+                    TerrainFlags tFlagsSnapshot = grid.Terrain.Info[currIndex].Flags;
+
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
-                    // Pass in material swap for each road object
-                    MaterialSwap matSwap = null; //  network.RoadObjects[roadObjIdx].MatSwap;
-                    roadChain.Chain.PushBack(new ActionCommit(BuildingType.Road, ActionType.Build, unitCost, currIndex, new List<TileDirection>()));
+                    // Add the road commit to the overall chain
+                    GameObject roadObj = isEndpoint ? null : network.RoadObjects[roadObjIdx].gameObject;
+                    roadChain.Chain.PushBack(new ActionCommit(
+                        BuildingType.Road,
+                        ActionType.Build,
+                        unitCost,
+                        currIndex,
+                        new List<TileDirection>(),
+                        roadObj,
+                        rFlagsSnapshot,
+                        tFlagsSnapshot
+                        ));
 
                     // update road visuals
                     RoadUtility.UpdateRoadVisuals(network, currIndex);
+
+                    if (!isEndpoint)
+                    {
+                        roadObjIdx--;
+                    }
                 }
                 // Commit chain to build stack
                 BlueprintUtility.CommitBuildChain(bpState, roadChain);
@@ -560,7 +563,7 @@ namespace Zavala.Building
                 // Add cost to receipt queue
                 ShopUtility.EnqueueCost(m_StateD, totalPrice);
 
-                m_StateC.RoadToolState.ClearState();
+                ClearRoadToolState();
 
                 return true;
             }
@@ -587,6 +590,7 @@ namespace Zavala.Building
         /// </summary>
         private void ClearRoadToolState() {
             m_StateC.RoadToolState.ClearState();
+            m_StateC.VecPrevValid = false;
         }
 
         #endregion // Road Building

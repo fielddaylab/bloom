@@ -1,11 +1,14 @@
+using BeauUtil;
 using FieldDay;
+using FieldDay.Components;
+using FieldDay.Scenes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Zavala.Rendering
 {
-    public class MaterialSwap : MonoBehaviour
+    public class MaterialSwap : BatchedComponent
     {
         [SerializeField] private MeshRenderer m_Renderer;
         private Material m_OriginalMat;
@@ -14,7 +17,9 @@ namespace Zavala.Rendering
 
         private void OnEnable()
         {
-            if (m_Renderer) { m_OriginalMat = m_Renderer.sharedMaterial; }
+            if (m_Renderer && !m_OriginalMat) { m_OriginalMat = m_Renderer.sharedMaterial; }
+
+            Game.Events.Deregister(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
             Game.Events.Register(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
         }
 
@@ -35,10 +40,8 @@ namespace Zavala.Rendering
         private void HandleBlueprintModeEnded()
         {
             ResetMaterial();
-
-            // Once put into place, never need this swap again
-            Destroy(this);
         }
+
 
         #endregion // Handlers
 
