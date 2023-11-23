@@ -34,8 +34,9 @@ namespace Zavala.Economy
         public GameObject BuiltObj;                      // The physical object built
         public RoadFlags RoadFlagSnapshot;
         public TerrainFlags TerrainFlagSnapshot;
+        public TileAdjacencyMask FlowMaskSnapshot;
 
-        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags)
+        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)
         {
             BuildType = bType;
             ActionType = aType;
@@ -45,6 +46,7 @@ namespace Zavala.Economy
             BuiltObj = builtObj;
             RoadFlagSnapshot = rFlags;
             TerrainFlagSnapshot = tFlags;
+            FlowMaskSnapshot = flowSnapshot;
         }
     }
 
@@ -123,10 +125,10 @@ namespace Zavala.Economy
                         ShopUtility.EnqueueCost(shopState, -commit.Cost);
 
                         // Remove the building
-                        SimDataUtility.DestroyBuildingDirect(grid, commit.BuiltObj, commit.TileIndex, commit.BuildType);
+                        SimDataUtility.DestroyBuildingFromUndo(grid, commit.BuiltObj, commit.TileIndex, commit.BuildType);
 
-                        // Restore flags
-                        SimDataUtility.RestoreFlagSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot);
+                        // Restore flags and flow masks
+                        SimDataUtility.RestoreSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot, commit.FlowMaskSnapshot);
 
                         break;
                     case ActionType.Destroy:
@@ -141,7 +143,14 @@ namespace Zavala.Economy
                     default:
                         break;
                 }
+
+                if (!commit.FlowMaskSnapshot.IsEmpty)
+                {
+                    RoadUtility.UpdateRoadVisuals(network, commit.TileIndex);
+                }
             }
+
+
 
             blueprintState.NumCommitsChanged = true;
         }

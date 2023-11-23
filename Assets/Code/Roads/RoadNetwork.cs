@@ -211,10 +211,15 @@ namespace Zavala.Roads
 
             network.Roads.Info[tileIndex] = tileInfo;
 
+            // TODO: Handle ramps appearing on non-road tiles
+            RoadUtility.UpdateRoadVisuals(network, tileIndex);
+
+            /*
             if ((tileInfo.Flags & RoadFlags.IsRoad) != 0)
             {
                 RoadUtility.UpdateRoadVisuals(network, tileIndex);
             }
+            */
         }
 
         static public void UnstageRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -226,7 +231,7 @@ namespace Zavala.Roads
 
             network.Roads.Info[tileIndex] = tileInfo;
 
-            // TODO: remove road object
+            // remove road object
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
             RemoveStagedRoadObj(network, pools, tileIndex, !tileInfo.FlowMask.IsEmpty);
         }
@@ -318,17 +323,17 @@ namespace Zavala.Roads
                     pools.Roads.Free(network.RoadObjects[i]);
                     network.RoadObjects.RemoveAt(i);
 
-                    /*
                     ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
                     {
                         TileIndex = (ushort)tileIndex,
                         Type = VisualUpdateType.Road
                     });
-                    */
 
                     break;
                 }
             }
+
+            RoadUtility.UpdateRoadVisuals(network, tileIndex);
         }
 
         static public void UpdateRoadVisuals(RoadNetwork network, int roadTileIndex)
@@ -343,11 +348,14 @@ namespace Zavala.Roads
             }
         }
 
-        static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
+        static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool removeInleading) {
 
             // Erase record from adj nodes
 
-            RemoveInleadingRoads(network, grid, tileIndex);
+            if (removeInleading)
+            {
+                RemoveInleadingRoads(network, grid, tileIndex);
+            }
 
             ref RoadTileInfo centerTileInfo = ref network.Roads.Info[tileIndex];
             centerTileInfo.FlowMask.Clear();

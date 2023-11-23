@@ -282,7 +282,7 @@ namespace Zavala.Sim {
         {
             SimWorldUtility.TryGetTileIndexFromWorld(hitObj.transform.position, out int tileIndex);
 
-            DestroyBuilding(grid, hitObj, tileIndex, hitObj.GetComponent<OccupiesTile>().Type);
+            DestroyBuilding(grid, hitObj, tileIndex, hitObj.GetComponent<OccupiesTile>().Type, true);
         }
 
 
@@ -290,9 +290,9 @@ namespace Zavala.Sim {
         /// Destroys a building directly
         /// </summary>
         /// <param name="hit">Collider hit by a raycast</param>
-        public static void DestroyBuildingDirect(SimGridState grid, GameObject hitObj, int tileIndex, BuildingType buildingType)
+        public static void DestroyBuildingFromUndo(SimGridState grid, GameObject hitObj, int tileIndex, BuildingType buildingType)
         {
-            DestroyBuilding(grid, hitObj, tileIndex, buildingType);
+            DestroyBuilding(grid, hitObj, tileIndex, buildingType, false);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace Zavala.Sim {
         /// <param name="grid"></param>
         /// <param name="hitObj">May be null</param>
         /// <param name="tileIndex"></param>
-        public static void DestroyBuilding(SimGridState grid, GameObject buildingObj, int tileIndex, BuildingType buildingType)
+        public static void DestroyBuilding(SimGridState grid, GameObject buildingObj, int tileIndex, BuildingType buildingType, bool removeInleadingRoads)
         {
             // TODO: how to remove the changed flags? Save the old flags in the commit
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
@@ -322,7 +322,7 @@ namespace Zavala.Sim {
             {
                 case BuildingType.Road:
                     // Clear from adj roads
-                    RoadUtility.RemoveRoad(network, grid, tileIndex);
+                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads);
 
                     if (buildingObj)
                     {
@@ -336,7 +336,7 @@ namespace Zavala.Sim {
                     }
                     break;
                 case BuildingType.Digester:
-                    RoadUtility.RemoveRoad(network, grid, tileIndex);
+                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads);
                     if (buildingObj)
                     {
                         pools.Digesters.Free(buildingObj.GetComponent<OccupiesTile>());
@@ -344,7 +344,7 @@ namespace Zavala.Sim {
                     break;
                 case BuildingType.Storage:
                     Debug.Log("storage");
-                    RoadUtility.RemoveRoad(network, grid, tileIndex);
+                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads);
                     if (buildingObj)
                     {
                         pools.Storages.Free(buildingObj.GetComponent<OccupiesTile>());
@@ -355,10 +355,11 @@ namespace Zavala.Sim {
             }
         }
 
-        public static void RestoreFlagSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags)
+        public static void RestoreSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)
         {
             network.Roads.Info[tileIndex].Flags = rFlags;
             grid.Terrain.Info[tileIndex].Flags = tFlags;
+            network.Roads.Info[tileIndex].FlowMask = flowSnapshot;
         }
 
         #region Water Groups

@@ -224,6 +224,7 @@ namespace Zavala.Building
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
             TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
+            TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
 
             // add build, snap to tile
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
@@ -244,7 +245,8 @@ namespace Zavala.Building
                 new List<TileDirection>(),
                 obj.gameObject,
                 rFlagSnapshot,
-                tFlagSnapshot
+                tFlagSnapshot,
+                flowSnapshot
                 ));
         }
 
@@ -386,6 +388,7 @@ namespace Zavala.Building
                 }
 
                 RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+                // If not the end of a road, create a road object
                 if ((tileInfo.Flags & RoadFlags.IsAnchor) == 0)
                 {
                     BuildingPools pools = Game.SharedState.Get<BuildingPools>();
@@ -529,6 +532,8 @@ namespace Zavala.Building
 
                     RoadFlags rFlagsSnapshot = network.Roads.Info[currIndex].Flags;
                     TerrainFlags tFlagsSnapshot = grid.Terrain.Info[currIndex].Flags;
+                    TileAdjacencyMask flowSnapshot = network.Roads.Info[currIndex].FlowMask;
+
 
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
@@ -542,7 +547,8 @@ namespace Zavala.Building
                         new List<TileDirection>(),
                         roadObj,
                         rFlagsSnapshot,
-                        tFlagsSnapshot
+                        tFlagsSnapshot,
+                        flowSnapshot
                         ));
 
                     // update road visuals
