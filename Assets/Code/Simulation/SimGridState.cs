@@ -1,3 +1,4 @@
+using BeauPools;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Building;
 using Zavala.Economy;
+using Zavala.Rendering;
 using Zavala.Roads;
 using Zavala.Scripting;
 using Zavala.World;
@@ -278,11 +280,51 @@ namespace Zavala.Sim {
         /// Destroys a building with the hit collider
         /// </summary>
         /// <param name="hit">Collider hit by a raycast</param>
-        public static void DestroyBuildingFromHit(SimGridState grid, GameObject hitObj)
+        public static void DestroyBuildingFromHit(SimGridState grid, BlueprintState bpState, GameObject hitObj)
         {
             SimWorldUtility.TryGetTileIndexFromWorld(hitObj.transform.position, out int tileIndex);
 
-            DestroyBuilding(grid, hitObj, tileIndex, hitObj.GetComponent<OccupiesTile>().Type, true);
+            OccupiesTile ot = hitObj.GetComponent<OccupiesTile>();
+
+            // TODO: check if obj is staging/pending or already built
+            bool pending = true;
+            int costToRemove = 0;
+
+            if (pending)
+            {
+                // negative price of building
+                costToRemove = -ShopUtility.PriceLookup(ot.Type);
+            }
+            else
+            {
+                // removal cost
+                costToRemove = 5;
+            }
+
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+
+            RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
+            TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
+            TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
+
+            DestroyBuilding(grid, network, hitObj, tileIndex, ot.Type, true, out List<TileDirection> inleadingDirsRemoved);
+
+            // Commit the destroy action
+            BlueprintUtility.CommitDestroyAction(bpState, new ActionCommit(
+                ot.Type,
+                ActionType.Destroy,
+                costToRemove,
+                tileIndex,
+                inleadingDirsRemoved,
+                hitObj.gameObject,
+                rFlagSnapshot,
+                tFlagSnapshot,
+                flowSnapshot
+                ));
+
+            // Add cost to receipt queue
+            ShopState shop = Game.SharedState.Get<ShopState>();
+            ShopUtility.EnqueueCost(shop, costToRemove);
         }
 
 
@@ -290,9 +332,9 @@ namespace Zavala.Sim {
         /// Destroys a building directly
         /// </summary>
         /// <param name="hit">Collider hit by a raycast</param>
-        public static void DestroyBuildingFromUndo(SimGridState grid, GameObject hitObj, int tileIndex, BuildingType buildingType)
+        public static void DestroyBuildingFromUndo(SimGridState grid, RoadNetwork network, GameObject hitObj, int tileIndex, BuildingType buildingType)
         {
-            DestroyBuilding(grid, hitObj, tileIndex, buildingType, false);
+            DestroyBuilding(grid, network, hitObj, tileIndex, buildingType, false, out List<TileDirection> inleadingDirsRemoved);
         }
 
         /// <summary>
@@ -301,10 +343,10 @@ namespace Zavala.Sim {
         /// <param name="grid"></param>
         /// <param name="hitObj">May be null</param>
         /// <param name="tileIndex"></param>
-        public static void DestroyBuilding(SimGridState grid, GameObject buildingObj, int tileIndex, BuildingType buildingType, bool removeInleadingRoads)
+        public static void DestroyBuilding(SimGridState grid, RoadNetwork network, GameObject buildingObj, int tileIndex, BuildingType buildingType, bool removeInleadingRoads, out List<TileDirection> inleadingDirsRemoved)
         {
-            // TODO: how to remove the changed flags? Save the old flags in the commit
-            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            inleadingDirsRemoved = new List<TileDirection>();
+
             network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsAnchor;
             grid.Terrain.Info[tileIndex].Flags &= ~TerrainFlags.IsOccupied;
 
@@ -322,7 +364,7 @@ namespace Zavala.Sim {
             {
                 case BuildingType.Road:
                     // Clear from adj roads
-                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads);
+                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
 
                     if (buildingObj)
                     {
@@ -336,15 +378,14 @@ namespace Zavala.Sim {
                     }
                     break;
                 case BuildingType.Digester:
-                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads);
+                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
                     if (buildingObj)
                     {
                         pools.Digesters.Free(buildingObj.GetComponent<OccupiesTile>());
                     }
                     break;
                 case BuildingType.Storage:
-                    Debug.Log("storage");
-                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads);
+                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
                     if (buildingObj)
                     {
                         pools.Storages.Free(buildingObj.GetComponent<OccupiesTile>());
@@ -353,6 +394,60 @@ namespace Zavala.Sim {
                 default:
                     break;
             }
+        }
+
+        public static void BuildOnTileFromHit(SimGridState grid, UserBuildTool activeTool, int tileIndex, Material inMat, out OccupiesTile occupies)
+        {
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            switch (activeTool)
+            {
+                case UserBuildTool.Digester:
+                    SimDataUtility.BuildOnTile(grid, pools.Digesters, tileIndex, inMat, out occupies);
+                    break;
+                case UserBuildTool.Storage:
+                    SimDataUtility.BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies);
+                    break;
+                case UserBuildTool.Skimmer:
+                    SimDataUtility.BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies);
+                    break;
+                default:
+                    occupies = null;
+                    break;
+            }
+        }
+
+        public static void BuildOnTileFromUndo(SimGridState grid, BuildingType buildingType, int tileIndex, Material inMat)
+        {
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            OccupiesTile occupies;
+            switch (buildingType)
+            {
+                case BuildingType.Digester:
+                    BuildOnTile(grid, pools.Digesters, tileIndex, inMat, out occupies);
+                    break;
+                case BuildingType.Storage:
+                    BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies);
+                    break;
+                case BuildingType.Skimmer:
+                    BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies);
+                    break;
+                default:
+                    occupies = null;
+                    break;
+            }
+        }
+
+        private static void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex, Material inMat, out OccupiesTile occupies)
+        {
+            // add build, snap to tile
+            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+            grid.Terrain.Info[tileIndex].Flags |= TerrainFlags.IsOccupied;
+            occupies = pool.Alloc(worldPos);
+
+            // temporarily render the build as holo and commit to build queue
+            var matSwap = occupies.GetComponent<MaterialSwap>();
+            if (matSwap) { matSwap.SetMaterial(inMat); }
         }
 
         public static void RestoreSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)

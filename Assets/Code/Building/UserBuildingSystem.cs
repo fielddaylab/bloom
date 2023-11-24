@@ -40,8 +40,10 @@ namespace Zavala.Building
             UserBuildTool toolInUse = ToolInUse(); // the tool that is actively being applied via button inputs
             SimGridState grid = ZavalaGame.SimGrid;
             SimWorldState world = ZavalaGame.SimWorld;
+            BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
+
             if (toolInUse == UserBuildTool.Destroy) {
-                TryDestroyClickedBuilding(world, grid);
+                TryDestroyClickedBuilding(world, grid, bpState);
             } else if (toolInUse != UserBuildTool.None) {
                 TryApplyTool(grid, toolInUse, RaycastTileIndex(world, grid));
             } else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
@@ -194,20 +196,28 @@ namespace Zavala.Building
                 return false;
             }
 
-            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-            switch (activeTool) {
-                case UserBuildTool.Digester:
-                    BuildOnTile(grid, pools.Digesters, tileIndex, price);
-                    break;
-                case UserBuildTool.Storage:
-                    BuildOnTile(grid, pools.Storages, tileIndex, price);
-                    break;
-                case UserBuildTool.Skimmer:
-                    BuildOnTile(grid, pools.Skimmers, tileIndex, price);
-                    break;
-                default:
-                    break;
-            }
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
+            TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
+            TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
+
+            SimDataUtility.BuildOnTileFromHit(grid, activeTool, tileIndex, m_ValidHoloMaterial, out OccupiesTile occupies);
+
+            Assert.NotNull(occupies);
+
+            // Create the build commit
+            BlueprintState blueprintState = Game.SharedState.Get<BlueprintState>();
+            BlueprintUtility.CommitBuild(blueprintState, new ActionCommit(
+                occupies.Type,
+                ActionType.Build,
+                price,
+                tileIndex,
+                new List<TileDirection>(),
+                occupies.gameObject,
+                rFlagSnapshot,
+                tFlagSnapshot,
+                flowSnapshot
+                ));
 
             // Add cost to receipt queue
             ShopUtility.EnqueueCost(m_StateD, price);
@@ -220,36 +230,6 @@ namespace Zavala.Building
             return true;
         }
 
-        private void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex, int price) {
-            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-            RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
-            TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
-            TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
-
-            // add build, snap to tile
-            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
-            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
-            grid.Terrain.Info[tileIndex].Flags |= TerrainFlags.IsOccupied;
-            var obj = pool.Alloc(worldPos);
-
-            // temporarily render the build as holo and commit to build queue
-            var matSwap = obj.GetComponent<MaterialSwap>();
-            if (matSwap) { matSwap.SetMaterial(m_ValidHoloMaterial); }
-
-            BlueprintState blueprintState = Game.SharedState.Get<BlueprintState>();
-            BlueprintUtility.CommitBuild(blueprintState, new ActionCommit(
-                obj.Type,
-                ActionType.Build,
-                price,
-                tileIndex,
-                new List<TileDirection>(),
-                obj.gameObject,
-                rFlagSnapshot,
-                tFlagSnapshot,
-                flowSnapshot
-                ));
-        }
-
         private bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int runningCost, out int price) {
             return ShopUtility.CanPurchaseBuild(currTool, currentRegion, 1, runningCost, out price);
         }
@@ -260,14 +240,16 @@ namespace Zavala.Building
         /// <param name="world"></param>
         /// <param name="grid"></param>
         /// <returns>true if building destroy dialog spawned, false otherwise</returns>
-        private bool TryDestroyClickedBuilding(SimWorldState world, SimGridState grid) {
+        private bool TryDestroyClickedBuilding(SimWorldState world, SimGridState grid, BlueprintState blueprintState) {
             // TODO: streamline this?
             Collider hit = RaycastBuilding(world, grid);
             if (hit != null && hit.gameObject.tag == PLAYERPLACED_TAG) {
                 Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + new Vector3(0,0.5f,0));
-                BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {
+                SimDataUtility.DestroyBuildingFromHit(grid, blueprintState, hit.gameObject);
+
+                /*BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {
                     SimDataUtility.DestroyBuildingFromHit(grid, hit.gameObject);
-                }, null);
+                }, null);*/
                 return true;
             }
             return false;
@@ -560,7 +542,7 @@ namespace Zavala.Building
                     }
                 }
                 // Commit chain to build stack
-                BlueprintUtility.CommitBuildChain(bpState, roadChain);
+                BlueprintUtility.CommitChain(bpState, roadChain);
 
                 // Deselect tools
                 m_StateC.ActiveTool = UserBuildTool.None;

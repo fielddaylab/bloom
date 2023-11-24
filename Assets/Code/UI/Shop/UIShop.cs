@@ -29,6 +29,8 @@ namespace Zavala.UI {
 
             Game.Events.Register(GameEvents.BlueprintModeStarted, HandleStartBlueprintMode);
             Game.Events.Register(GameEvents.BlueprintModeEnded, HandleEndBlueprintMode);
+            Game.Events.Register(GameEvents.DestroyModeStarted, HandleStartDestroyMode);
+            Game.Events.Register(GameEvents.DestroyModeEnded, HandleEndDestroyModeMode);
 
             Collapse();
         }
@@ -40,7 +42,10 @@ namespace Zavala.UI {
 
         public void Collapse() {
             SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
-            Game.SharedState.Get<BuildToolState>().ActiveTool = UserBuildTool.None;
+
+            var currTool = Game.SharedState.Get<BuildToolState>().ActiveTool;
+            if (currTool != UserBuildTool.Destroy) { Game.SharedState.Get<BuildToolState>().ActiveTool = UserBuildTool.None; }
+
             m_shopRoutine.Replace(CollapseRoutine());
         }
 
@@ -56,6 +61,16 @@ namespace Zavala.UI {
 
         private void HandleEndBlueprintMode() {
             Collapse();
+        }
+
+        private void HandleStartDestroyMode()
+        {
+            Collapse();
+        }
+
+        private void HandleEndDestroyModeMode()
+        {
+            Expand();
         }
 
         #endregion // Handlers

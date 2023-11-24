@@ -311,7 +311,11 @@ namespace Zavala.Roads
         {
             if (someRoadExists)
             {
-                return;
+                if (!network.Roads.Info[tileIndex].FlowMask.IsEmpty)
+                {
+                    RoadUtility.UpdateRoadVisuals(network, tileIndex);
+                    return;
+                }
             }
 
             // TODO: differentiate between staged road objs and existing road objs
@@ -348,13 +352,17 @@ namespace Zavala.Roads
             }
         }
 
-        static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool removeInleading) {
+        static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool removeInleading, out List<TileDirection> inleadingDirsRemoved) {
 
             // Erase record from adj nodes
 
             if (removeInleading)
             {
-                RemoveInleadingRoads(network, grid, tileIndex);
+                RemoveInleadingRoads(network, grid, tileIndex, out inleadingDirsRemoved);
+            }
+            else
+            {
+                inleadingDirsRemoved = new List<TileDirection>();
             }
 
             ref RoadTileInfo centerTileInfo = ref network.Roads.Info[tileIndex];
@@ -364,7 +372,8 @@ namespace Zavala.Roads
             network.UpdateNeeded = true;
         }
 
-        static public void RemoveInleadingRoads(RoadNetwork network, SimGridState grid, int tileIndex) {
+        static public void RemoveInleadingRoads(RoadNetwork network, SimGridState grid, int tileIndex, out List<TileDirection> inleadingDirsRemoved) {
+            inleadingDirsRemoved = new List<TileDirection>();
 
             RoadTileInfo centerTileInfo = network.Roads.Info[tileIndex];
 
@@ -385,10 +394,12 @@ namespace Zavala.Roads
 
                 ref RoadTileInfo adjTileInfo = ref network.Roads.Info[adjIdx];
 
-                TileDirection currDir = dir; // to stage into curr road
-                TileDirection adjDir = currDir.Reverse(); // to stage into prev road
+                TileDirection currDir = dir;
+                TileDirection adjDir = currDir.Reverse();
 
                 adjTileInfo.FlowMask[adjDir] = false;
+
+                inleadingDirsRemoved.Add(currDir);
 
                 // Update prev road rendering
                 RoadUtility.UpdateRoadVisuals(network, adjIdx);

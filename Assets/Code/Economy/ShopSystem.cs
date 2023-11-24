@@ -45,7 +45,11 @@ namespace Zavala.Economy {
     }
 
 
-    static public class ShopUtility { 
+    static public class ShopUtility {
+        private const int ROAD_COST = 5;
+        private const int STORAGE_COST = 100;
+        private const int DIGESTER_COST = 200;
+
         static public void RefreshShop(BudgetData budgetData, ShopState shopState, SimGridState gridState) {
             uint idx = gridState.CurrRegionIndex;
             shopState.ShopUI.NetText.text = /*"Net: " +*/ budgetData.BudgetsPerRegion[idx].Net.ToString();
@@ -55,11 +59,26 @@ namespace Zavala.Economy {
         public static int PriceLookup(UserBuildTool building) {
             switch (building) {
                 case UserBuildTool.Road:
-                    return 5;
+                    return ROAD_COST;
                 case UserBuildTool.Storage:
-                    return 100;
+                    return STORAGE_COST;
                 case UserBuildTool.Digester:
-                    return 200;
+                    return DIGESTER_COST;
+                default:
+                    return 0;
+            }
+        }
+
+        public static int PriceLookup(BuildingType building)
+        {
+            switch (building)
+            {
+                case BuildingType.Road:
+                    return ROAD_COST;
+                case BuildingType.Storage:
+                    return STORAGE_COST;
+                case BuildingType.Digester:
+                    return DIGESTER_COST;
                 default:
                     return 0;
             }

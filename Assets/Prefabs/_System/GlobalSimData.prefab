@@ -317,6 +317,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShopUI: {fileID: 0}
+  RunningCost: 0
+  ManulUpdateRequested: 0
 --- !u!114 &1300373136511585418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,6 +331,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220e096249e7967428851ab8f6c65b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CommandState: 0
+  m_ValidHoloMaterial: {fileID: 2100000, guid: 2b53b71440690c74e8dc28c399e4d8a1, type: 2}
+  NewBuildConfirmed: 0
+  NumBuildCommitsChanged: 0
+  NumDestroyActionsChanged: 0
+  ExitedBlueprintMode: 0
+  UndoClickedBuild: 0
+  UndoClickedDestroy: 0
+  DestroyModeClicked: 0
+  ExitedDestroyMode: 0
+  UI: {fileID: 0}
 --- !u!114 &7708306960153739438
 MonoBehaviour:
   m_ObjectHideFlags: 0
