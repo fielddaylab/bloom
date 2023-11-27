@@ -1,3 +1,7 @@
+using BeauRoutine;
+using BeauUtil;
+using FieldDay;
+using FieldDay.Scenes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,8 +12,10 @@ namespace Zavala.Roads {
     {
         public Transform RoadMeshTransform;
         public MeshFilter RoadMesh;
-        public DecorationRenderer RampDecorations;
+        public DecorationRenderer RampSolidDecorations;
+        public DecorationRenderer RampStagedDecorations;
         public TileAdjacencyDataSet<RoadRampType> Ramps;
+        public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
         public float Radius;
         public MaterialSwap MatSwap;
     }
@@ -21,22 +27,50 @@ namespace Zavala.Roads {
     }
 
     static public class RoadVisualUtility {
-        static public void UpdateRoadMesh(RoadInstanceController controller, RoadLibrary library, TileAdjacencyMask mask) {
-            library.Lookup(mask, out var roadData);
+        static public void UpdateRoadMesh(RoadInstanceController controller, RoadLibrary library, TileAdjacencyMask flowMask, TileAdjacencyMask stageMask) {
+            library.Lookup(flowMask | stageMask, out var roadData);
 
             controller.RoadMesh.sharedMesh = roadData.Mesh;
             controller.RoadMeshTransform.localScale = roadData.Scale;
             controller.RoadMeshTransform.localRotation = roadData.Rotation;
 
-            controller.RampDecorations.Decorations.Clear();
+            if (!stageMask.IsEmpty)
+            {
+                controller.BPCompareMask = stageMask;
+            }
 
-            // TODO: Set material based on current blueprint state
-            for(TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
-                if (mask.Has(dir) && controller.Ramps.TryGet(dir, out RoadRampType ramp)) {
-                    int turns = (int) dir - (int) TileDirection.S;
+            UpdateRampDecorations(controller, library, stageMask, true);
+            UpdateRampDecorations(controller, library, flowMask, false);
+        }
+
+        static public void ClearBPMask(RoadNetwork network, int tileIndex)
+        {
+            for (int r = network.RoadObjects.Count - 1; r >= 0; r--)
+            {
+                if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == tileIndex)
+                {
+                    network.RoadObjects[r].BPCompareMask.Clear();
+                }
+            }
+
+        }
+
+        static private void UpdateRampDecorations(RoadInstanceController controller, RoadLibrary library, TileAdjacencyMask mask, bool isStaging)
+        {
+            if (isStaging) { controller.RampStagedDecorations.Decorations.Clear(); }
+            else { controller.RampSolidDecorations.Decorations.Clear(); }
+
+            for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++)
+            {
+                if (mask.Has(dir) && controller.Ramps.TryGet(dir, out RoadRampType ramp))
+                {
+                    int turns = (int)dir - (int)TileDirection.S;
                     Vector3 offset = HexGrid.RotateVector(new Vector3(0, 0, -controller.Radius), turns);
                     Quaternion rot = Quaternion.Euler(0, turns * -60, 0);
-                    DecorationUtility.AddDecoration(controller.RampDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale()));
+
+                    bool blueprintOverride = controller.BPCompareMask[dir] && mask[dir];
+                    if (isStaging || blueprintOverride) { DecorationUtility.AddDecoration(controller.RampStagedDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale())); }
+                    else { DecorationUtility.AddDecoration(controller.RampSolidDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale())); }
                 }
             }
         }

@@ -214,12 +214,6 @@ namespace Zavala.Roads
             // TODO: Handle ramps appearing on non-road tiles
             RoadUtility.UpdateRoadVisuals(network, tileIndex);
 
-            /*
-            if ((tileInfo.Flags & RoadFlags.IsRoad) != 0)
-            {
-                RoadUtility.UpdateRoadVisuals(network, tileIndex);
-            }
-            */
         }
 
         static public void UnstageRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -299,12 +293,6 @@ namespace Zavala.Roads
             });
 
             RoadUtility.UpdateRoadVisuals(network, tileIndex);
-
-            ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
-            {
-                TileIndex = (ushort)tileIndex,
-                Type = VisualUpdateType.Road
-            });
         }
 
         static public void RemoveStagedRoadObj(RoadNetwork network, BuildingPools pools, int tileIndex, bool someRoadExists)
@@ -326,13 +314,6 @@ namespace Zavala.Roads
                     // TODO: Check if there is nothing after staging mask is removed
                     pools.Roads.Free(network.RoadObjects[i]);
                     network.RoadObjects.RemoveAt(i);
-
-                    ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
-                    {
-                        TileIndex = (ushort)tileIndex,
-                        Type = VisualUpdateType.Road
-                    });
-
                     break;
                 }
             }
@@ -347,9 +328,15 @@ namespace Zavala.Roads
             {
                 if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == roadTileIndex)
                 {
-                    RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask | tileInfo.StagingMask);
+                    RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
                 }
             }
+
+            ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
+            {
+                TileIndex = (ushort)roadTileIndex,
+                Type = VisualUpdateType.Road
+            });
         }
 
         static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool removeInleading, out List<TileDirection> inleadingDirsRemoved) {

@@ -234,12 +234,19 @@ namespace Zavala.Economy
 
             ShopUtility.ResetRunningCost(shop);
 
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+
             // Process commits
             foreach (var commitChain in blueprintState.Commits)
             {
                 foreach(var commitAction in commitChain.Chain)
                 {
                     // Process any confirm-time things
+                    if (commitAction.BuildType == BuildingType.Road)
+                    {
+                        RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
+                        RoadUtility.UpdateRoadVisuals(network, commitAction.TileIndex);
+                    }
                 }
             }
 
