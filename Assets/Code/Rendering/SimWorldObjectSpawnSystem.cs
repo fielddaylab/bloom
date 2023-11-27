@@ -87,7 +87,7 @@ namespace Zavala.World
                             spanner.transform.LookAt(worldPosB);
                             TollBooth tb = spanner.GetComponent<TollBooth>();
                             Transform tileA = tb.TileA.transform;
-                            Transform tileB = tb.TileA.transform;
+                            Transform tileB = tb.TileB.transform;
                             tileA.position = worldPosA;
                             tileB.position = worldPosB;
                             tileA.gameObject.SetActive(true);
