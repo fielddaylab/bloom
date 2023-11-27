@@ -61,12 +61,14 @@ namespace Zavala.Roads
         public ushort RegionIdx;
         public RoadDestinationMask Filter;
         public UnsafeSpan<RoadPathSummary> Connections;
+        public bool IsExternal;
     }
 
     public struct RoadDestinationInfo {
         public ushort TileIdx;
         public ushort RegionIdx;
         public RoadDestinationMask Type;
+        public bool isExternal;
     }
 
     public struct RoadPathSummary {
@@ -421,11 +423,14 @@ namespace Zavala.Roads
             if (currentIdx >= 0) {
                 ref RoadDestinationInfo dInfo = ref network.Destinations[currentIdx];
                 dInfo.Type |= incomingMask;
-            } else {
+                dInfo.isExternal = position.IsExternal;
+            }
+            else {
                 RoadDestinationInfo dInfo;
                 dInfo.Type = incomingMask;
                 dInfo.TileIdx = (ushort) position.TileIndex;
                 dInfo.RegionIdx = position.RegionIndex;
+                dInfo.isExternal = position.IsExternal;
                 network.Destinations.PushBack(dInfo);
             }
             Debug.Log("[StagingRoad] tile " + position.TileIndex + " is now a road anchor");
@@ -505,12 +510,14 @@ namespace Zavala.Roads
             if (currentIdx >= 0) {
                 ref RoadSourceInfo sInfo = ref network.Sources[currentIdx];
                 sInfo.Filter |= outputMask;
+                sInfo.IsExternal = position.IsExternal;
             } else {
                 RoadSourceInfo sInfo;
                 sInfo.Filter = outputMask;
                 sInfo.TileIdx = (ushort) position.TileIndex;
                 sInfo.RegionIdx = position.RegionIndex;
                 sInfo.Connections = default;
+                sInfo.IsExternal = position.IsExternal;
                 network.Sources.PushBack(sInfo);
             }
         }

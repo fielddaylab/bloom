@@ -71,9 +71,13 @@ namespace Zavala.UI
         #region Handlers
 
         private void HandleButtonSelected(int selectedIndex) {
+            BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+
             if (selectedIndex == m_selectedIndex) {
                 // selected current button; should unselect it and return
                 ClearSelected();
+
+                bts.ActiveTool = UserBuildTool.None;
 
                 Game.Events.Dispatch(GameEvents.BuildToolDeselected);
                 return;
@@ -90,7 +94,6 @@ namespace Zavala.UI
 
             if (button.CanAfford) {
                 // set tool
-                BuildToolState bts = Game.SharedState.Get<BuildToolState>();
                 bts.ActiveTool = button.BuildTool;
 
                 // set selected color

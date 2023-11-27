@@ -31,6 +31,7 @@ GameObject:
   - component: {fileID: 8081782905770933987}
   - component: {fileID: 1955328063047237028}
   - component: {fileID: 1043285027284261608}
+  - component: {fileID: 2876602851293507836}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -331,16 +332,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220e096249e7967428851ab8f6c65b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsActive: 0
   CommandState: 0
   m_ValidHoloMaterial: {fileID: 2100000, guid: 2b53b71440690c74e8dc28c399e4d8a1, type: 2}
   NewBuildConfirmed: 0
   NumBuildCommitsChanged: 0
   NumDestroyActionsChanged: 0
+  StartBlueprintMode: 0
   ExitedBlueprintMode: 0
   UndoClickedBuild: 0
   UndoClickedDestroy: 0
   DestroyModeClicked: 0
-  ExitedDestroyMode: 0
+  NewDestroyConfirmed: 0
+  CanceledDestroyMode: 0
   UI: {fileID: 0}
 --- !u!114 &7708306960153739438
 MonoBehaviour:
@@ -402,6 +406,15 @@ MonoBehaviour:
     m_InitialCapacity: 8
     m_PrewarmOnInitialize: 1
     m_InitialPrewarm: 4
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  VizAnchors:
+    m_Prefab: {fileID: 1211290126235049584, guid: 35cf584d2f568f64cad0fbc518465a4e, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
@@ -690,3 +703,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Order: 0
+--- !u!114 &2876602851293507836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9a244540b05b649abd2cca54b9b828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

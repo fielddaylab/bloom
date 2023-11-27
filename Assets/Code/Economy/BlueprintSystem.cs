@@ -19,9 +19,19 @@ namespace Zavala.Economy
             {
                 m_StateA.StartBlueprintMode = false;
 
+                m_StateA.IsActive = true;
                 SimTimeUtility.Pause(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
-
                 BlueprintUtility.OnStartBlueprintMode(m_StateA);
+            }
+
+            // Exited blueprint mode
+            if (m_StateA.ExitedBlueprintMode)
+            {
+                m_StateA.ExitedBlueprintMode = false;
+
+                m_StateA.IsActive = true;
+                SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
+                BlueprintUtility.OnExitedBlueprintMode(m_StateA, m_StateB, m_StateC);
             }
 
             // Build clicked
@@ -48,16 +58,6 @@ namespace Zavala.Economy
 
                 // Update Undo button
                 BlueprintUtility.OnNumDestroyActionsChanged(m_StateA);
-            }
-
-            // Exited blueprint mode
-            if (m_StateA.ExitedBlueprintMode)
-            {
-                m_StateA.ExitedBlueprintMode = false;
-
-                SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
-
-                BlueprintUtility.OnExitedBlueprintMode(m_StateA, m_StateB, m_StateC);
             }
 
             // Clicked the Undo button (in Build mode)

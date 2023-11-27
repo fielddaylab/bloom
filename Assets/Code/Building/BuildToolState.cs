@@ -34,6 +34,7 @@ namespace Zavala.Building {
         [NonSerialized] public RoadToolState RoadToolState;
         [NonSerialized] public HexVector VecPrev;
         [NonSerialized] public bool VecPrevValid;
+        [NonSerialized] public bool ToolUpdated;
 
         [NonSerialized] public SimBuffer<byte> BlockedTileBuffer;
 

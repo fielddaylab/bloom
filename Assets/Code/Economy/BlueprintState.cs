@@ -58,6 +58,7 @@ namespace Zavala.Economy
 
     public class BlueprintState : SharedStateComponent, IScenePreload
     {
+        public bool IsActive;           // Whether blueprint mode is engaged
         public RingBuffer<CommitChain> Commits;
         public CommitChain DestroyChain; // The chain that gets built during Destroy Mode
         public ActionType CommandState; // Build mode or Destroy mode
