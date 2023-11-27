@@ -11,3 +11,12 @@ $call PanToBuilding("region2_city1")
 {@advisorEconForest}    Perhaps we could make use of your insights here?
 $call Unpause()
 
+
+:: firstConnection
+@trigger FarmConnection
+@queued 
+@once
+{@advisorEcolForest}    Enjoying Pine County?
+{@advisorEcolForest}    The finest forests in the state, if I do say so myself.
+{@advisorEcolForest}    And it's all thanks to our stellar ecosystem management.
+{@advisorEcolForest}    Definitely better than those <i>hill dwellers</i> over in Knoll County.

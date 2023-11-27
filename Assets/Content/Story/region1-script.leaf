@@ -9,7 +9,7 @@ $call Pause()
 {@advisorEconHill}      As you can see, we are a chunk of blooming real estate.
 {@advisorEconHill}      I'll give you the tour.
 $call PanToBuilding("region1_city1")
-// TODO: add localized display names for these tiles - e.g. "Oakvale" rather than region1_city1
+// TODO: add system for translating tile names ("region1_city1") to localized display names ("Oakvale")
 {@advisorEconHill}      There's the <i>City</i> of Oakvale...
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
@@ -28,7 +28,7 @@ $call Unpause()
 @trigger BuildButtonPressed
 @once
 {@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
-{@advisorEcolHill}      But don't try to build over any of those forests. Those are protected lands!
+{@advisorEcolHill}      But don't try to build over any of our forests. Those are protected lands!
 {@advisorEconHill}      And each tile will spend from our regional budget! Try to be thrifty.
 
 
@@ -77,6 +77,7 @@ $call ActivateSim()
 {@advisorEconHill}      Your Grain Farm is hooked up with the Dairy Farm, and the Dairy Farm with the City.
 {@advisorEconHill}      Now you can start optimizing the routes to produce more <i>milk</i> and <i>money</i>!
 {@advisorEconHill}      Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
+{@advisorEconHill}      Now just close the Funding menu to get things going.
 
 // :: sittingOmens
 // @trigger        LetSat
@@ -96,8 +97,8 @@ $call Pause()
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
 {@advisorEconHill}      Henrietta's grain farm imported some <i>commercial fertilizer</i> from an outside supplier.
-{local @grainFarmer}    Moose Minerals is great! My crops need that phosphorus, and it ships right to my farm.
-{@advisorEcolHill}      Careful now... All that extra phosphorus could leach into the lakes!
+{local @grainFarmer}    Phos 4 Us is great! My crops need that phosphorus, and it ships right to my farm.
+{@advisorEcolHill}      Careful now... All those extra nutrients could disrupt the ecological balance.
 {@advisorEconHill}      Well, I'm afraid this is the only economically feasible option.
 {@advisorEcolHill}      There must be another source of phosphorus here somewhere...
 $call Unpause()
@@ -117,7 +118,7 @@ $call Unpause()
 
 :: runoffTrigger
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", intro:citiesConnected, intro:farmsConnected
+@conditions     alertType == "excess-runoff", intro:citiesConnected, intro:farmsConnected 
 @forcePolicy    Ecology
 @queued
 @once
@@ -125,8 +126,8 @@ $call Pause()
 {local @advisorEcol}    This farm is just letting manure slip off their fields!
 {local @advisorEcon}    Indeed. They simply have no more favorable alternatives.
 {local @advisorEcol}    Well, let's make it less favorable. How about a fine for runoff?
-{local @cafoFarmer}     A fine!? 
-{local @advisorEcon}    Well, that <i>could</i> incentivize selling...
+{local @cafoFarmer}     A fine!? I'm barely scraping by as is.
+{local @advisorEcon}    Well, that <i>could</i> incentivize selling manure...
 {local @advisorEcon}    But if it's too high, it could disrupt the supply chain.
 {local @advisorEcol}    What do you think, boss?
 $call UnlockCards(RunoffPolicy)
