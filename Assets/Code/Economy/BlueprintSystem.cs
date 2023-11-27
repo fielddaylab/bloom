@@ -1,3 +1,4 @@
+using FieldDay;
 using FieldDay.Systems;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,16 @@ namespace Zavala.Economy
         public override void ProcessWork(float deltaTime)
         {
             // --- Process UI triggers
+
+            // Blueprint mode opened
+            if (m_StateA.StartBlueprintMode)
+            {
+                m_StateA.StartBlueprintMode = false;
+
+                SimTimeUtility.Pause(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
+
+                BlueprintUtility.OnStartBlueprintMode(m_StateA);
+            }
 
             // Build clicked
             if (m_StateA.NewBuildConfirmed)
@@ -43,6 +54,8 @@ namespace Zavala.Economy
             if (m_StateA.ExitedBlueprintMode)
             {
                 m_StateA.ExitedBlueprintMode = false;
+
+                SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
 
                 BlueprintUtility.OnExitedBlueprintMode(m_StateA, m_StateB, m_StateC);
             }

@@ -96,17 +96,12 @@ namespace Zavala.UI
 
         private void HandleStartBlueprintMode()
         {
-            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(true));
-            m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
-            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
+            var blueprintState = Game.SharedState.Get<BlueprintState>();
+            blueprintState.StartBlueprintMode = true;
         }
 
         private void HandleEndBlueprintMode()
         {
-            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
-            m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(false));
-            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
-
             BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
             bpState.ExitedBlueprintMode = true;
         }
@@ -160,6 +155,20 @@ namespace Zavala.UI
         #endregion // UI Handlers
 
         #region System Handlers
+
+        public void OnStartBlueprintMode()
+        {
+            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(true));
+            m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
+            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
+        }
+
+        public void OnExitedBlueprintMode()
+        {
+            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
+            m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(false));
+            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
+        }
 
         public void OnBuildConfirmClicked()
         {

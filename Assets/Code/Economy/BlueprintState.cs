@@ -74,6 +74,7 @@ namespace Zavala.Economy
         [HideInInspector] public bool NewBuildConfirmed;
         [HideInInspector] public bool NumBuildCommitsChanged;
         [HideInInspector] public bool NumDestroyActionsChanged;
+        [HideInInspector] public bool StartBlueprintMode;
         [HideInInspector] public bool ExitedBlueprintMode;
         [HideInInspector] public bool UndoClickedBuild;
         [HideInInspector] public bool UndoClickedDestroy;
@@ -280,6 +281,11 @@ namespace Zavala.Economy
             blueprintState.UI.UpdateTotalCost(runningCost, deltaCost, playerFunds);
         }
 
+        public static void OnStartBlueprintMode(BlueprintState blueprintState)
+        {
+            blueprintState.UI.OnStartBlueprintMode();
+        }
+
         public static void OnNumBuildCommitsChanged(BlueprintState blueprintState)
         {
             blueprintState.UI.OnNumBuildCommitsChanged(blueprintState.Commits.Count);
@@ -292,6 +298,7 @@ namespace Zavala.Economy
 
         public static void OnExitedBlueprintMode(BlueprintState blueprintState, ShopState shop, SimGridState grid)
         {
+            blueprintState.UI.OnExitedBlueprintMode();
             CancelPendingBuildCommits(blueprintState, shop, grid);
         }
 
