@@ -4,6 +4,7 @@ using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
+using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -100,6 +101,11 @@ namespace Zavala.Sim {
 
         static public void RegisterPTimerAdvanced(RegionUnlockState unlockState) {
             unlockState.SimPhosphorusAdvanced = true;
+        }
+
+        [LeafMember("RegionUnlocked")]
+        public static bool RegionUnlocked(int regionIndex) {
+            return ZavalaGame.SharedState.Get<RegionUnlockState>().UnlockCount >= regionIndex;
         }
 
         [DebugMenuFactory]
