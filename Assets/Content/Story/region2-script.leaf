@@ -1,6 +1,26 @@
 # basePath   region2
 
-:: regionUnlocked
+:: ecologyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Ecology", IsInRegion(1)
+@forcePolicy    Ecology
+$if NumCardsUnlocked() >= 1
+{local @advisorEcol}    Sage at your service! Looking to set ecology policy?
+$else
+{local @advisorEcol}    You can assign ecological policy here once we have some.
+$endif
+
+:: economyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Economy", IsInRegion(1)
+@forcePolicy    Economy
+$if NumCardsUnlocked() >= 2
+{local @advisorEcon}    Shall we assign some economic policies?
+$else
+{local @advisorEcon}    Salutations. You can see me about economic policies in the future.
+$endif
+
+:: forestUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
 @queued
@@ -8,6 +28,44 @@ $call Pause()
 {@advisorEconForest}    Salutations, Director.
 $call PanToBuilding("region2_city1")
 {@advisorEconForest}    We've heard about your program over here in Pine County.
-{@advisorEconForest}    Perhaps we could coordinate to address this irksome muck together? 
+{@advisorEconForest}    Perhaps we could make use of your insights here?
 $call Unpause()
 
+
+:: forestConnection
+@trigger FarmConnection
+@conditions IsInRegion(1)
+@queued 
+@once
+{@advisorEcolForest}    Enjoying Pine County?
+{@advisorEcolForest}    The finest forests in the state, if I do say so myself.
+{@advisorEcolForest}    And it's all thanks to our <i>stellar</i> ecosystem management.
+{@advisorEcolForest}    Definitely better than those <i>hill dwellers</i> over in Knoll County.
+{@advisorEcolForest}    Frankly, I doubt we even need your services.
+
+
+:: testBloomTriggerForest
+@trigger        AlertExamined
+@conditions     alertType == "bloom", bloomDiscovered, IsInRegion(1)
+@forcePolicy    Ecology
+@once
+$call Pause()
+// TODO: trigger ACT 2 HERE.
+{@advisorEcolForest}    Ugh... I can't believe there's an algae bloom <i>here!</i>
+{@advisorEcolForest}    Those <i>hill-dwellers</i> should have done more to stop it.
+{@advisorEcolHill}      Pft! That's rich coming from <i>Stellar Forest Management</i> over here.
+$call Unpause()
+
+
+:: unlockStorage
+@trigger        AlertExamined
+@conditions     alertType == "excess-runoff", bloomDiscovered, CameraInRegion(1)
+@once
+$call Pause()
+{@advisorEcolForest}    Hmm... This manure leaches into the water table faster than we can use it.
+{@advisorEcolForest}    Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
+{@advisorEconForest}    Excellent idea. You can create <b>Storage</b> in blueprint mode now.
+{@advisorEconForest}    Once connected to a CAFO, it'll hold onto manure for later use.
+{@advisorEconForest}    But it's not cheap - try to share it between CAFOs.
+// TODO: $call UnlockShopItem(Storage)
+$call Unpause()

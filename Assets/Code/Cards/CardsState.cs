@@ -234,6 +234,11 @@ namespace Zavala.Cards
             CardsUtility.UnlockCardsByType(Game.SharedState.Get<CardsState>(), type);
         }
 
+        [LeafMember("NumCardsUnlocked")]
+        static public int NumCardsUnlocked() {
+            return Game.SharedState.Get<CardsState>().UnlockedCards.Count;
+        }
+
 
         static public void UnlockCardsByType(CardsState state, PolicyType type) {
 

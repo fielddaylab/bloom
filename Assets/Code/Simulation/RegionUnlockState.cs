@@ -1,8 +1,10 @@
+using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
+using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +19,8 @@ namespace Zavala.Sim {
         RevenueTargets,
         AccrueWealth,
         WaterHealth,
-        RegionAge
+        RegionAge,
+        NodeReached
     }
 
     [Serializable]
@@ -52,6 +55,13 @@ namespace Zavala.Sim {
         [Space(5)]
         [Header("RegionAge")]
         public TargetThreshold TargetAge;
+
+        [Space(5)]
+        [Header("NodeReached")]
+        // string for serialized input, hash for storing the actual lookup
+        public string NodeTitle;
+        [NonSerialized]
+        public StringHash32 NodeHash;
 
         /* TODO
         [Space(5)]
@@ -91,6 +101,11 @@ namespace Zavala.Sim {
 
         static public void RegisterPTimerAdvanced(RegionUnlockState unlockState) {
             unlockState.SimPhosphorusAdvanced = true;
+        }
+
+        [LeafMember("RegionUnlocked")]
+        public static bool RegionUnlocked(int regionIndex) {
+            return ZavalaGame.SharedState.Get<RegionUnlockState>().UnlockCount >= regionIndex;
         }
 
         [DebugMenuFactory]

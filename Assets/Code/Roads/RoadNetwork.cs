@@ -245,11 +245,12 @@ namespace Zavala.Roads
 
         static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint, Material holoMat) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+            bool isToll = (grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsToll) != 0;
 
             RoadUtility.MergeStagedRoadMask(ref tileInfo);
             tileInfo.Flags |= RoadFlags.IsAnchor; // roads may connect with other roads
-            if (!isEndpoint) {
-                tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road)
+            if (!isEndpoint || isToll) {
+                tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road or toll)
             }
 
             network.Roads.Info[tileIndex] = tileInfo;
@@ -258,9 +259,30 @@ namespace Zavala.Roads
 
             /*
             // Do not create road objects on endpoints
-            if (!isEndpoint) {
-                // add road, snap to tile
-                // CreateRoadObject(network, grid, pools, tileIndex, holoMat);
+            if (!isEndpoint || isToll) {
+                // TEMP add road, snap to tile
+                HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+                Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+                RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
+                network.RoadObjects.PushBack(newRoad);
+
+                newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
+                    if (c < a - 50) {
+                        o = RoadRampType.Tall;
+                        return true;
+                    } else if (c < a) {
+                        o = RoadRampType.Ramp;
+                        return true;
+                    } else {
+                        o = default;
+                        return false;
+                    }
+                });
+
+                ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
+                    TileIndex = (ushort) tileIndex,
+                    Type = VisualUpdateType.Road
+                });
             }
             */
         }

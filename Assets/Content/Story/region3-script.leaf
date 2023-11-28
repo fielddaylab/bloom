@@ -1,5 +1,25 @@
 # basePath   region3
 
+:: ecologyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Ecology", IsInRegion(2)
+@forcePolicy    Ecology
+$if NumCardsUnlocked() >= 1
+{local @advisorEcol}    Hiya! Want to set some environmental policies?
+$else
+{local @advisorEcol}    Sorry boss, no policies to assign yet.
+$endif
+
+:: economyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Economy", IsInRegion(2)
+@forcePolicy    Economy
+$if NumCardsUnlocked() >= 2
+{local @advisorEcon}    Howdy! Here to set up some economic policy?
+$else
+{local @advisorEcon}    Once we have some economic policies you can see me here.
+$endif
+
 :: regionUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Prairie"
@@ -7,7 +27,13 @@
 $call Pause()
 {@advisorEconPrairie}    Howdy there! 
 $call PanToBuilding("region3_city1")
-{@advisorEconPrairie}    We on the Prairie have lots of Grain Farms and a thriving research university.
+{@advisorEconPrairie}    Here in Heath County we have lots of Grain Farms and a thriving research university.
 {@advisorEconPrairie}    We could use your help too. Meanwhile, we'll be doing research about the lake situation.
 $call Unpause()
+
+:: unlockPhosphorusView
+// TODO: trigger ACT III here
+
+//$call UnlockButton(PhosphorusView)
+
 
