@@ -8,6 +8,7 @@ using Zavala.Sim;
 
 namespace Zavala.Economy
 {
+    [SysUpdate(GameLoopPhase.Update, 400)]
     public class BlueprintSystem : SharedStateSystemBehaviour<BlueprintState, ShopState, SimGridState, BuildToolState>
     {
         public override void ProcessWork(float deltaTime)
@@ -17,8 +18,6 @@ namespace Zavala.Economy
             // Blueprint mode opened
             if (m_StateA.StartBlueprintMode)
             {
-                m_StateA.StartBlueprintMode = false;
-
                 m_StateA.IsActive = true;
                 SimTimeUtility.Pause(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
                 BlueprintUtility.OnStartBlueprintMode(m_StateA);
@@ -27,9 +26,7 @@ namespace Zavala.Economy
             // Exited blueprint mode
             if (m_StateA.ExitedBlueprintMode)
             {
-                m_StateA.ExitedBlueprintMode = false;
-
-                m_StateA.IsActive = true;
+                m_StateA.IsActive = false;
                 SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
                 BlueprintUtility.OnExitedBlueprintMode(m_StateA, m_StateB, m_StateC);
             }
@@ -37,16 +34,12 @@ namespace Zavala.Economy
             // Build clicked
             if (m_StateA.NewBuildConfirmed)
             {
-                m_StateA.NewBuildConfirmed = false;
-
                 BlueprintUtility.ConfirmBuild(m_StateA, m_StateB, m_StateC.CurrRegionIndex);
             }
 
             // Changed number of commits to process
             if (m_StateA.NumBuildCommitsChanged)
             {
-                m_StateA.NumBuildCommitsChanged = false;
-
                 // Update Undo button
                 BlueprintUtility.OnNumBuildCommitsChanged(m_StateA);
             }
@@ -54,8 +47,6 @@ namespace Zavala.Economy
             // Changed number of commits to process
             if (m_StateA.NumDestroyActionsChanged)
             {
-                m_StateA.NumDestroyActionsChanged = false;
-
                 // Update Undo button
                 BlueprintUtility.OnNumDestroyActionsChanged(m_StateA);
             }
@@ -63,40 +54,30 @@ namespace Zavala.Economy
             // Clicked the Undo button (in Build mode)
             if (m_StateA.UndoClickedBuild)
             {
-                m_StateA.UndoClickedBuild = false;
-
                 BlueprintUtility.OnUndoClickedBuild(m_StateA, m_StateB, m_StateC);
             }
 
             // Clicked the Undo button (in Build mode)
             if (m_StateA.UndoClickedDestroy)
             {
-                m_StateA.UndoClickedDestroy = false;
-
                 BlueprintUtility.OnUndoClickedDestroy(m_StateA, m_StateB, m_StateC);
             }
 
             // Clicked the Destroy Mode button (from Build mode)
             if (m_StateA.DestroyModeClicked)
             {
-                m_StateA.DestroyModeClicked = false;
-
                 BlueprintUtility.OnDestroyModeClicked(m_StateA, m_StateB, m_StateC, m_StateD);
             }
 
-            // Build clicked
+            // Destroy clicked
             if (m_StateA.NewDestroyConfirmed)
             {
-                m_StateA.NewDestroyConfirmed = false;
-
                 BlueprintUtility.ConfirmDestroy(m_StateA, m_StateB, m_StateC, m_StateC.CurrRegionIndex);
             }
 
             // Clicked the Exit button (from Destroy mode)
             if (m_StateA.CanceledDestroyMode)
             {
-                m_StateA.CanceledDestroyMode = false;
-
                 BlueprintUtility.OnCanceledDestroyMode(m_StateA, m_StateB, m_StateC, m_StateD);
             }
         }

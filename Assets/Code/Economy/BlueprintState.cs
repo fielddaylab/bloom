@@ -2,6 +2,7 @@ using BeauUtil;
 using FieldDay;
 using FieldDay.Scenes;
 using FieldDay.SharedState;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,15 +59,17 @@ namespace Zavala.Economy
 
     public class BlueprintState : SharedStateComponent, IScenePreload
     {
-        public bool IsActive;           // Whether blueprint mode is engaged
-        public RingBuffer<CommitChain> Commits;
-        public CommitChain DestroyChain; // The chain that gets built during Destroy Mode
-        public ActionType CommandState; // Build mode or Destroy mode
+        [NonSerialized] public bool IsActive;           // Whether blueprint mode is engaged
+        [NonSerialized] public RingBuffer<CommitChain> Commits;
+        [NonSerialized] public CommitChain DestroyChain; // The chain that gets built during Destroy Mode
+        [NonSerialized] public ActionType CommandState; // Build mode or Destroy mode
 
         #region Inspector
 
         // TODO: Consolidate this with UserBuildingSystem material of the same name
         public Material m_ValidHoloMaterial; // material applied to buildings being staged
+
+        public Mesh OverlayMesh;
 
         #endregion // Inspector
 
