@@ -36,7 +36,7 @@ namespace FieldDay {
     /// <summary>
     /// Game loop manager.
     /// </summary>
-    [DefaultExecutionOrder(-10000000), DisallowMultipleComponent]
+    [DefaultExecutionOrder(-23000), DisallowMultipleComponent]
     public sealed class GameLoop : MonoBehaviour, ICameraPreCullCallback, ICameraPostRenderCallback, ICameraPreRenderCallback {
         #region Inspector
 

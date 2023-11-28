@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
-using static UnityEditor.Experimental.GraphView.Port;
 
 namespace FieldDay.Processes {
     /// <summary>

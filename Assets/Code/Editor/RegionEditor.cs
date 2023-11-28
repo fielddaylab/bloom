@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using BeauUtil.IO;
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +32,7 @@ namespace Zavala.Editor {
                     string newFile = EditorUtility.OpenFilePanel("Select Tiled File", Environment.CurrentDirectory, "json");
                     if (!string.IsNullOrEmpty(newFile)) {
                         MarkDirty("Updated tiled file", region);
-                        region.SourceFilePath = IOHelper.GetRelativePath(newFile);
+                        region.SourceFilePath = IOHelper.GetLogicalPath(newFile);
                     }
                 }
             }

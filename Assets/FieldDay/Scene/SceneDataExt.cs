@@ -9,7 +9,7 @@ namespace FieldDay.Scenes {
     /// <summary>
     /// Extended scene data.
     /// </summary>
-    [DisallowMultipleComponent, DefaultExecutionOrder(-10000000), AddComponentMenu("")]
+    [DisallowMultipleComponent, DefaultExecutionOrder(-32000), AddComponentMenu("")]
     internal sealed class SceneDataExt : MonoBehaviour {
         /// <summary>
         /// Processed flags.
