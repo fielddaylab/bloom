@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 1955328063047237028}
   - component: {fileID: 1043285027284261608}
   - component: {fileID: 2876602851293507836}
+  - component: {fileID: 3070150076525417522}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -418,6 +419,15 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
+  DestroyIcons:
+    m_Prefab: {fileID: 7225258217999727132, guid: ccc38435b02bce64ca12a03ae5ae7b14, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
   PoolRoot: {fileID: 0}
 --- !u!114 &7708306960153739472
 MonoBehaviour:
@@ -715,3 +725,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9a244540b05b649abd2cca54b9b828, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3070150076525417522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3f2753b28046c4d9c95850ab471920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PrevMousePosition: {x: 0, y: 0}
+  LeadDestroyIcon: {fileID: 0}
+  LeadDestroySnap: {fileID: 0}
+  ActiveDestroyIcons: []

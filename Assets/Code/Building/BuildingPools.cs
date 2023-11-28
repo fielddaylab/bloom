@@ -20,6 +20,8 @@ namespace Zavala.Building
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
         [Serializable] public class SkimmerPool : SerializablePool<OccupiesTile> { }
         [Serializable] public class VizAnchorPool : SerializablePool<SpriteRenderer> { }
+        [Serializable] public class DestroyIconsPool : SerializablePool<OccupiesTile> { }
+
 
 
         #endregion // Types
@@ -32,6 +34,7 @@ namespace Zavala.Building
 
         [Header("Highlights")]
         public VizAnchorPool VizAnchors;
+        public DestroyIconsPool DestroyIcons;
 
         [Header("Shared")]
         public Transform PoolRoot;
@@ -42,6 +45,7 @@ namespace Zavala.Building
             Storages.TryInitialize(PoolRoot);
             Skimmers.TryInitialize(PoolRoot);
             VizAnchors.TryInitialize(PoolRoot);
+            DestroyIcons.TryInitialize(PoolRoot);
         }
 
         void IRegistrationCallbacks.OnDeregister() {
