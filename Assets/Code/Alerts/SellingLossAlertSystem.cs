@@ -18,11 +18,14 @@ namespace Zavala.Sim
                 // only add this trigger once
                 return;
             }
-
             // Check if a supplier sold at a loss
+            
             if (supplier.SoldAtALoss) {
                 // if so, create alert on this tile
-                EventActorUtility.QueueAlert(actor, EventActorAlertType.SellingLoss, tile.TileIndex);
+                bool sellsGrain = (supplier.ShippingMask & ResourceMask.Grain) != 0;
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.SellingLoss, tile.TileIndex, tile.RegionIndex,
+                    new NamedVariant("isFromGrainFarm", sellsGrain));
+                // secondary argument for differentiating between grain farm and cafo selling at a loss
             }
         }
     }

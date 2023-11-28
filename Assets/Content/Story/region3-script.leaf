@@ -2,7 +2,7 @@
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", IsInRegion(2)
+@conditions     advisorType == "Ecology", CameraInRegion(2)
 @forcePolicy    Ecology
 $if NumCardsUnlocked() >= 1
 {local @advisorEcol}    Hiya! Want to set some environmental policies?
@@ -12,7 +12,7 @@ $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Economy", IsInRegion(2)
+@conditions     advisorType == "Economy", CameraInRegion(2)
 @forcePolicy    Economy
 $if NumCardsUnlocked() >= 2
 {local @advisorEcon}    Howdy! Here to set up some economic policy?
@@ -35,5 +35,6 @@ $call Unpause()
 // TODO: trigger ACT III here
 
 //$call UnlockButton(PhosphorusView)
+
 
 

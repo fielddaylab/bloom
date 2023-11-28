@@ -71,8 +71,13 @@ namespace Zavala.Sim
                         break;
                 }
             }
-
+            
             if (passedCheck) {
+                if (currUnlockGroup.UnlockDelay > 0) {
+                    currUnlockGroup.UnlockDelay -= 1;
+                    m_StateA.UnlockGroups[m_StateA.UnlockCount] = currUnlockGroup;
+                    return;
+                }
                 // Unlock regions
                 foreach (int region in currUnlockGroup.RegionIndexUnlocks) {
                     SimWorldState worldState = Game.SharedState.Get<SimWorldState>();

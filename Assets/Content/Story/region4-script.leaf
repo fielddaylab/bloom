@@ -2,7 +2,7 @@
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", IsInRegion(3)
+@conditions     advisorType == "Ecology", CameraInRegion(3)
 @forcePolicy    Ecology
 $if NumCardsUnlocked() >= 1
 {local @advisorEcol}    Hello, boss. We've got ecological policies to set, if you'd like.
@@ -12,7 +12,7 @@ $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Economy", IsInRegion(3)
+@conditions     advisorType == "Economy", CameraInRegion(3)
 @forcePolicy    Economy
 $if NumCardsUnlocked() >= 2
 {local @advisorEcon}    Good morrow. Here to assign economic policies?
