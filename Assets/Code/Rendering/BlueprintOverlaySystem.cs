@@ -14,9 +14,6 @@ using Zavala.Roads;
 
 namespace Zavala.Rendering
 {
-    /// <summary>
-    /// Controls an object that snaps to the tile under the mouse cursor
-    /// </summary>
     [SysUpdate(GameLoopPhase.Update, 450)]
     public class BlueprintOverlaySystem : SharedStateSystemBehaviour<BlueprintState, SimGridState, SimWorldState, RoadNetwork>
     {

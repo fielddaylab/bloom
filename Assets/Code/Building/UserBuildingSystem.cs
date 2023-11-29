@@ -190,11 +190,7 @@ namespace Zavala.Building
         private bool TryBuildOnTile(SimGridState grid, RoadNetwork network, UserBuildTool activeTool, int tileIndex) {
             // disallow: water, existing building
             bool validLocation = true;
-            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsWater) != 0) { validLocation = false; }
-            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsOccupied) != 0) { validLocation = false; }
-            if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsRoad) != 0) { validLocation = false; }
             if (m_StateC.BlockedTileBuffer[tileIndex] == 1) { validLocation = false; }
-            // TODO: check if tileIndex is adjacent to destinations or sources
             if (!validLocation) {
                 return false;
             }

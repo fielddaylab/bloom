@@ -153,8 +153,36 @@ namespace Zavala.Building {
                     {
                         continue;
                     }
+
                     // If non-buildable, add to list
                     if ((grid.Terrain.Info[index].Flags & TerrainFlags.NonBuildable) != 0)
+                    {
+                        if (btState.BlockedIdxs.Contains(index))
+                        {
+                            continue;
+                        }
+
+                        btState.BlockedIdxs.PushBack(index);
+                    }
+                    if ((grid.Terrain.Info[index].Flags & TerrainFlags.IsWater) != 0)
+                    {
+                        if (btState.BlockedIdxs.Contains(index))
+                        {
+                            continue;
+                        }
+
+                        btState.BlockedIdxs.PushBack(index);
+                    }
+                    if ((grid.Terrain.Info[index].Flags & TerrainFlags.IsOccupied) != 0)
+                    {
+                        if (btState.BlockedIdxs.Contains(index))
+                        {
+                            continue;
+                        }
+
+                        btState.BlockedIdxs.PushBack(index);
+                    }
+                    if ((network.Roads.Info[index].Flags & RoadFlags.IsRoad) != 0)
                     {
                         if (btState.BlockedIdxs.Contains(index))
                         {
