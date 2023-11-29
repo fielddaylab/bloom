@@ -18,5 +18,6 @@ namespace Zavala.UI.Info {
         public InfoPopupPriceRow SubsidyRow;
         public InfoPopupPriceRow PenaltyRow;
         public InfoPopupPriceRow TotalPriceRow;
+        public InfoPopupPriceRow TotalProfitRow;
     }
 }

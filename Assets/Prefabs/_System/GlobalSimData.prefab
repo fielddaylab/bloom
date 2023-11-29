@@ -31,6 +31,9 @@ GameObject:
   - component: {fileID: 8081782905770933987}
   - component: {fileID: 1955328063047237028}
   - component: {fileID: 1043285027284261608}
+  - component: {fileID: 2876602851293507836}
+  - component: {fileID: 3070150076525417522}
+  - component: {fileID: 2278038441633514227}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -95,6 +98,7 @@ MonoBehaviour:
   Scale: {x: 0.773, y: 0.008, z: 0.885}
   Offset: {x: 0, y: 0, z: 0}
   DefaultWaterPrefab: {fileID: 7097652779095066658, guid: 5887f51366947f240ae408caadcb0af1, type: 3}
+  DeepWaterPrefab: {fileID: 7097652779095066658, guid: 83729ce0c5bb0e84ba1654c92a805553, type: 3}
   WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
   BottomBounds: 0
   BoundsExpand: 1.5
@@ -250,6 +254,18 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
+    GrainTruck:
+      Mesh: {fileID: 2071962661118772911, guid: db87e53809c7ad349ac7054720f125ee, type: 3}
+      Material: {fileID: 2100000, guid: bfd3cabdd2d5afe4ab2f77e68219eacc, type: 2}
+    ManureTruck:
+      Mesh: {fileID: -6044738797065814176, guid: a2aadfd43b341e54d8edc457d4db6113, type: 3}
+      Material: {fileID: 2100000, guid: 771046dedfb7b154582fcd130ac5f6f6, type: 2}
+    MilkTruck:
+      Mesh: {fileID: 6249456282648864246, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+      Material: {fileID: 2100000, guid: 020af892a6e444eb28199c0d87cbe2f3, type: 2}
+    FertilizerTruck:
+      Mesh: {fileID: -4892773595180421746, guid: 66e9063200cef5546adbdde438421362, type: 3}
+      Material: {fileID: 2100000, guid: 5c45c52f29df5e1429c5ff3019a9fcd8, type: 2}
   ExternalAirships:
     m_Prefab: {fileID: 1143183839744756915, guid: 03cf56aa78fbf6242a70edeb7562a1b4, type: 3}
     m_Name: 
@@ -331,16 +347,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220e096249e7967428851ab8f6c65b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CommandState: 0
   m_ValidHoloMaterial: {fileID: 2100000, guid: 2b53b71440690c74e8dc28c399e4d8a1, type: 2}
+  m_OverlayPrefab: {fileID: 876459541648060465, guid: 1be3edb392ee4da4ca0e4351bf2d71bf, type: 3}
   NewBuildConfirmed: 0
   NumBuildCommitsChanged: 0
   NumDestroyActionsChanged: 0
+  StartBlueprintMode: 0
   ExitedBlueprintMode: 0
   UndoClickedBuild: 0
   UndoClickedDestroy: 0
   DestroyModeClicked: 0
-  ExitedDestroyMode: 0
+  NewDestroyConfirmed: 0
+  CanceledDestroyMode: 0
   UI: {fileID: 0}
 --- !u!114 &7708306960153739438
 MonoBehaviour:
@@ -405,6 +423,24 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
+  VizAnchors:
+    m_Prefab: {fileID: 1211290126235049584, guid: 35cf584d2f568f64cad0fbc518465a4e, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
+  DestroyIcons:
+    m_Prefab: {fileID: 7225258217999727132, guid: ccc38435b02bce64ca12a03ae5ae7b14, type: 3}
+    m_Name: 
+    m_InitialCapacity: 32
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 16
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
   PoolRoot: {fileID: 0}
 --- !u!114 &7708306960153739472
 MonoBehaviour:
@@ -463,7 +499,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnlockGroups:
-  - UnlockConditions:
+  - UnlockDelay: 0
+    UnlockConditions:
     - Type: 6
       ChecksRegions: 00000000
       Scope: 20
@@ -494,8 +531,10 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 30
+      NodeTitle: 
     RegionIndexUnlocks: 01000000
-  - UnlockConditions:
+  - UnlockDelay: 5
+    UnlockConditions:
     - Type: 6
       ChecksRegions: 01000000
       Scope: 10
@@ -525,9 +564,42 @@ MonoBehaviour:
         Value: 0
       TargetAge:
         Below: 0
+        Value: 25
+      NodeTitle: 
+    - Type: 7
+      ChecksRegions: 00000000
+      Scope: 10
+      TargetRunoff:
+        Below: 0
+        Value: 0.5
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
         Value: 20
+      NodeTitle: region1.firstBloomDiscovered
     RegionIndexUnlocks: 02000000
-  - UnlockConditions:
+  - UnlockDelay: 0
+    UnlockConditions:
     - Type: 0
       ChecksRegions: 00000000
       Scope: 10
@@ -558,6 +630,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
+      NodeTitle: 
     - Type: 0
       ChecksRegions: 01000000
       Scope: 10
@@ -588,6 +661,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
+      NodeTitle: 
     - Type: 6
       ChecksRegions: 02000000
       Scope: 10
@@ -618,7 +692,104 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-    RegionIndexUnlocks: 0300000004000000
+      NodeTitle: 
+    RegionIndexUnlocks: 03000000
+  - UnlockDelay: 0
+    UnlockConditions:
+    - Type: 0
+      ChecksRegions: 00000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.2
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+    - Type: 0
+      ChecksRegions: 01000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.2
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+    - Type: 6
+      ChecksRegions: 02000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.3
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+    RegionIndexUnlocks: 04000000
 --- !u!114 &7708306960153739477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -690,3 +861,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Order: 0
+--- !u!114 &2876602851293507836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9a244540b05b649abd2cca54b9b828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3070150076525417522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3f2753b28046c4d9c95850ab471920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2278038441633514227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 216e1ab6940bcd645a4ac691fe70f9e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

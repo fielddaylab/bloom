@@ -63,12 +63,14 @@ namespace Zavala.Roads
         public ushort RegionIdx;
         public RoadDestinationMask Filter;
         public UnsafeSpan<RoadPathSummary> Connections;
+        public bool IsExternal;
     }
 
     public struct RoadDestinationInfo {
         public ushort TileIdx;
         public ushort RegionIdx;
         public RoadDestinationMask Type;
+        public bool isExternal;
     }
 
     public struct RoadPathSummary {
@@ -216,12 +218,6 @@ namespace Zavala.Roads
             // TODO: Handle ramps appearing on non-road tiles
             RoadUtility.UpdateRoadVisuals(network, tileIndex);
 
-            /*
-            if ((tileInfo.Flags & RoadFlags.IsRoad) != 0)
-            {
-                RoadUtility.UpdateRoadVisuals(network, tileIndex);
-            }
-            */
         }
 
         static public void UnstageRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
@@ -251,11 +247,12 @@ namespace Zavala.Roads
 
         static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint, Material holoMat) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+            bool isToll = (grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsToll) != 0;
 
             RoadUtility.MergeStagedRoadMask(ref tileInfo);
             tileInfo.Flags |= RoadFlags.IsAnchor; // roads may connect with other roads
-            if (!isEndpoint) {
-                tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road)
+            if (!isEndpoint || isToll) {
+                tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road or toll)
             }
 
             network.Roads.Info[tileIndex] = tileInfo;
@@ -264,9 +261,30 @@ namespace Zavala.Roads
 
             /*
             // Do not create road objects on endpoints
-            if (!isEndpoint) {
-                // add road, snap to tile
-                // CreateRoadObject(network, grid, pools, tileIndex, holoMat);
+            if (!isEndpoint || isToll) {
+                // TEMP add road, snap to tile
+                HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+                Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+                RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
+                network.RoadObjects.PushBack(newRoad);
+
+                newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
+                    if (c < a - 50) {
+                        o = RoadRampType.Tall;
+                        return true;
+                    } else if (c < a) {
+                        o = RoadRampType.Ramp;
+                        return true;
+                    } else {
+                        o = default;
+                        return false;
+                    }
+                });
+
+                ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
+                    TileIndex = (ushort) tileIndex,
+                    Type = VisualUpdateType.Road
+                });
             }
             */
         }
@@ -301,12 +319,6 @@ namespace Zavala.Roads
             });
 
             RoadUtility.UpdateRoadVisuals(network, tileIndex);
-
-            ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
-            {
-                TileIndex = (ushort)tileIndex,
-                Type = VisualUpdateType.Road
-            });
         }
 
         static public void RemoveStagedRoadObj(RoadNetwork network, BuildingPools pools, int tileIndex, bool someRoadExists)
@@ -328,13 +340,6 @@ namespace Zavala.Roads
                     // TODO: Check if there is nothing after staging mask is removed
                     pools.Roads.Free(network.RoadObjects[i]);
                     network.RoadObjects.RemoveAt(i);
-
-                    ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
-                    {
-                        TileIndex = (ushort)tileIndex,
-                        Type = VisualUpdateType.Road
-                    });
-
                     break;
                 }
             }
@@ -349,9 +354,15 @@ namespace Zavala.Roads
             {
                 if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == roadTileIndex)
                 {
-                    RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask | tileInfo.StagingMask);
+                    RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
                 }
             }
+
+            ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
+            {
+                TileIndex = (ushort)roadTileIndex,
+                Type = VisualUpdateType.Road
+            });
         }
 
         static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool removeInleading, out List<TileDirection> inleadingDirsRemoved) {
@@ -436,11 +447,14 @@ namespace Zavala.Roads
             if (currentIdx >= 0) {
                 ref RoadDestinationInfo dInfo = ref network.Destinations[currentIdx];
                 dInfo.Type |= incomingMask;
-            } else {
+                dInfo.isExternal = position.IsExternal;
+            }
+            else {
                 RoadDestinationInfo dInfo;
                 dInfo.Type = incomingMask;
                 dInfo.TileIdx = (ushort) position.TileIndex;
                 dInfo.RegionIdx = position.RegionIndex;
+                dInfo.isExternal = position.IsExternal;
                 network.Destinations.PushBack(dInfo);
             }
             Debug.Log("[StagingRoad] tile " + position.TileIndex + " is now a road anchor");
@@ -520,12 +534,14 @@ namespace Zavala.Roads
             if (currentIdx >= 0) {
                 ref RoadSourceInfo sInfo = ref network.Sources[currentIdx];
                 sInfo.Filter |= outputMask;
+                sInfo.IsExternal = position.IsExternal;
             } else {
                 RoadSourceInfo sInfo;
                 sInfo.Filter = outputMask;
                 sInfo.TileIdx = (ushort) position.TileIndex;
                 sInfo.RegionIdx = position.RegionIndex;
                 sInfo.Connections = default;
+                sInfo.IsExternal = position.IsExternal;
                 network.Sources.PushBack(sInfo);
             }
         }

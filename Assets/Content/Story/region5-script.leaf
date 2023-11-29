@@ -1,10 +1,32 @@
 # basePath   region5
 
+:: ecologyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Ecology", CameraInRegion(4)
+@forcePolicy    Ecology
+$if NumCardsUnlocked() >= 1
+{local @advisorEcol}    Good to see you, Director! Here for ecological policies?
+$else
+{local @advisorEcol}    Hey there! No policies to assign yet.
+$endif
+
+:: economyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Economy", CameraInRegion(4)
+@forcePolicy    Economy
+$if NumCardsUnlocked() >= 2
+{local @advisorEcon}    Sup big boss! We makin' big moves economy-style?
+$else
+{local @advisorEcon}    Aww man, we're plumb outta economic policies.
+$endif
+
 :: regionUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Urban"
 @queued
 $call Pause()
-{@advisorEcolUrban}    Sup. Welcome to Smokestack City.
+{@advisorEconUrban}    Sup. Welcome to Smokestack City.
 $call PanToBuilding("region5_city1")
 $call Unpause()
+
+

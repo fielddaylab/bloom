@@ -83,7 +83,16 @@ namespace Zavala.World
                 switch (spawn.Data) {
                     case BuildingType.TollBooth: {
                             spanner = GameObject.Instantiate(m_StateA.TollBoothPrefab, worldPos, Quaternion.identity);
+                            spanner.SetActive(false);
                             spanner.transform.LookAt(worldPosB);
+                            TollBooth tb = spanner.GetComponent<TollBooth>();
+                            Transform tileA = tb.TileA.transform;
+                            Transform tileB = tb.TileB.transform;
+                            tileA.position = worldPosA;
+                            tileB.position = worldPosB;
+                            tileA.gameObject.SetActive(true);
+                            tileB.gameObject.SetActive(true);
+                            spanner.SetActive(true);
                             break;
                         }
                 }
@@ -91,14 +100,16 @@ namespace Zavala.World
                 EventActorUtility.RegisterActor(spanner.GetComponent<EventActor>(), spawn.Id);
             }
 
-            // Spawn External Supplier
-            Vector3 externalWorldPos = new Vector3(25, 0, 5); // top-right of screen
-            GameObject externalDepot = GameObject.Instantiate(m_StateA.ExternalExportDepotPrefab.gameObject, externalWorldPos, Quaternion.identity);
-            GameObject externalSupplier = GameObject.Instantiate(m_StateA.ExternalSupplierPrefab.gameObject, externalWorldPos, Quaternion.identity);
-
             ExternalState externalState = Game.SharedState.Get<ExternalState>();
-            externalState.ExternalDepot = externalDepot.GetComponent<ResourceSupplierProxy>();
-            externalState.ExternalSupplier = externalSupplier.GetComponent<ResourceSupplier>();
+            if (externalState.ExternalDepot == null) {
+                // Spawn External Supplier
+                Vector3 externalWorldPos = new Vector3(25, 0, 5); // top-right of screen
+                GameObject externalDepot = GameObject.Instantiate(m_StateA.ExternalExportDepotPrefab.gameObject, externalWorldPos, Quaternion.identity);
+                GameObject externalSupplier = GameObject.Instantiate(m_StateA.ExternalSupplierPrefab.gameObject, externalWorldPos, Quaternion.identity);
+
+                externalState.ExternalDepot = externalDepot.GetComponent<ResourceSupplierProxy>();
+                externalState.ExternalSupplier = externalSupplier.GetComponent<ResourceSupplier>();
+            }
 
             /*
             Assert.NotNull(externalDepot);

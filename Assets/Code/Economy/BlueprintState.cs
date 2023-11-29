@@ -2,14 +2,19 @@ using BeauUtil;
 using FieldDay;
 using FieldDay.Scenes;
 using FieldDay.SharedState;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 using Zavala.Building;
 using Zavala.Rendering;
 using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.UI;
+using Zavala.World;
 
 namespace Zavala.Economy
 {
@@ -56,16 +61,32 @@ namespace Zavala.Economy
         public RingBuffer<ActionCommit> Chain;
     }
 
-    public class BlueprintState : SharedStateComponent, IScenePreload
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct DefaultVertexFormat
     {
-        public RingBuffer<CommitChain> Commits;
-        public CommitChain DestroyChain; // The chain that gets built during Destroy Mode
-        public ActionType CommandState; // Build mode or Destroy mode
+        [VertexAttr(VertexAttribute.Position)] public Vector3 Position;
+        [VertexAttr(VertexAttribute.Color)] public Color32 Color;
+    }
+
+    public class BlueprintState : SharedStateComponent, IScenePreload, IRegistrationCallbacks
+    {
+        [NonSerialized] public bool IsActive;           // Whether blueprint mode is engaged
+        [NonSerialized] public RingBuffer<CommitChain> Commits;
+        [NonSerialized] public CommitChain DestroyChain; // The chain that gets built during Destroy Mode
+        [NonSerialized] public ActionType CommandState; // Build mode or Destroy mode
+
+        [NonSerialized] public DynamicMeshFilter OverlayFilter;
+        [NonSerialized] public MeshRenderer OverlayRenderer;
+        [NonSerialized] public MeshData16<DefaultVertexFormat> OverlayData;
+        [NonSerialized] public RingBuffer<int> OverlayIdxs; // tile indices of non-buildables
+        [NonSerialized] public RingBuffer<int> OverlayAdjIdxs; // temp list for gathering tiles adjacent to sources/destinations
 
         #region Inspector
 
         // TODO: Consolidate this with UserBuildingSystem material of the same name
         public Material m_ValidHoloMaterial; // material applied to buildings being staged
+
+        [SerializeField] private GameObject m_OverlayPrefab;
 
         #endregion // Inspector
 
@@ -74,6 +95,7 @@ namespace Zavala.Economy
         [HideInInspector] public bool NewBuildConfirmed;
         [HideInInspector] public bool NumBuildCommitsChanged;
         [HideInInspector] public bool NumDestroyActionsChanged;
+        [HideInInspector] public bool StartBlueprintMode;
         [HideInInspector] public bool ExitedBlueprintMode;
         [HideInInspector] public bool UndoClickedBuild;
         [HideInInspector] public bool UndoClickedDestroy;
@@ -93,10 +115,25 @@ namespace Zavala.Economy
 
             return null;
         }
+
+        public void OnRegister()
+        {
+            OverlayFilter = Instantiate(m_OverlayPrefab, Vector3.zero, Quaternion.identity).GetComponent<DynamicMeshFilter>();
+            OverlayRenderer = OverlayFilter.GetComponent<MeshRenderer>();
+            OverlayData = new MeshData16<DefaultVertexFormat>();
+        }
+
+        public void OnDeregister()
+        {
+
+        }
     }
 
     public static class BlueprintUtility
     {
+        private const float cosDim = 0.5f; // 1/2
+        private const float sinDim = 0.8660254038f; // sqrt(3)/2
+
         /// <summary>
         /// Adds one building to the build stack
         /// </summary>
@@ -171,7 +208,6 @@ namespace Zavala.Economy
                 }
             }
 
-
             blueprintState.NumBuildCommitsChanged = true;
         }
 
@@ -234,12 +270,19 @@ namespace Zavala.Economy
 
             ShopUtility.ResetRunningCost(shop);
 
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+
             // Process commits
             foreach (var commitChain in blueprintState.Commits)
             {
                 foreach(var commitAction in commitChain.Chain)
                 {
                     // Process any confirm-time things
+                    if (commitAction.BuildType == BuildingType.Road)
+                    {
+                        RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
+                        RoadUtility.UpdateRoadVisuals(network, commitAction.TileIndex);
+                    }
                 }
             }
 
@@ -273,6 +316,11 @@ namespace Zavala.Economy
             blueprintState.UI.UpdateTotalCost(runningCost, deltaCost, playerFunds);
         }
 
+        public static void OnStartBlueprintMode(BlueprintState blueprintState)
+        {
+            blueprintState.UI.OnStartBlueprintMode();
+        }
+
         public static void OnNumBuildCommitsChanged(BlueprintState blueprintState)
         {
             blueprintState.UI.OnNumBuildCommitsChanged(blueprintState.Commits.Count);
@@ -285,6 +333,7 @@ namespace Zavala.Economy
 
         public static void OnExitedBlueprintMode(BlueprintState blueprintState, ShopState shop, SimGridState grid)
         {
+            blueprintState.UI.OnExitedBlueprintMode();
             CancelPendingBuildCommits(blueprintState, shop, grid);
         }
 
@@ -308,7 +357,7 @@ namespace Zavala.Economy
             blueprintState.DestroyChain.Chain = new RingBuffer<ActionCommit>(8);
 
             blueprintState.CommandState = ActionType.Destroy;
-            buildState.ActiveTool = UserBuildTool.Destroy;
+            BuildToolUtility.SetTool(buildState, UserBuildTool.Destroy);
             blueprintState.UI.OnDestroyModeClicked();
         }
 
@@ -317,11 +366,96 @@ namespace Zavala.Economy
             CancelPendingDestroyCommits(blueprintState, shop, grid);
             blueprintState.DestroyChain.Chain.Clear();
             blueprintState.CommandState = ActionType.Build;
-            buildState.ActiveTool = UserBuildTool.None;
+            BuildToolUtility.SetTool(buildState, UserBuildTool.None);
             blueprintState.UI.OnCanceledDestroyMode();
         }
 
+        public static void OnBuildToolSelected(BlueprintState blueprintState)
+        {
+            blueprintState.UI.OnBuildToolSelected();
+        }
+
+        public static void OnBuildToolDeselected(BlueprintState blueprintState)
+        {
+            if (blueprintState.IsActive)
+            {
+                blueprintState.UI.OnBuildToolDeselected();
+            }
+        }
+
+        #region Mesh Overlay
+
+        public static void RegenerateOverlayMesh(BlueprintState bpState, SimGridState grid, SimWorldState world, RoadNetwork network, BuildToolState btState)
+        {
+            bpState.OverlayRenderer.enabled = true;
+            bpState.OverlayData.Clear();
+
+            ushort iteration = 0;
+            // Render the mesh for all blocked tiles in the current region
+            foreach(int index in grid.HexSize)
+            {
+                if (btState.BlockedTileBuffer[index] == 1 && grid.CurrRegionIndex == grid.Terrain.Info[index].RegionIndex)
+                {
+                    AddTileToOverlayMesh(grid, world, index, ref iteration, ref bpState.OverlayData);
+                }
+            }
+
+            bpState.OverlayFilter.Upload(bpState.OverlayData);
+        }
+
+        public static void HideOverlayMesh(BlueprintState bpState)
+        {
+            bpState.OverlayRenderer.enabled = false;
+        }
+
+        #endregion // Mesh Overlay
+
         #region Helpers
+
+        private static void AddTileToOverlayMesh(SimGridState grid, SimWorldState world, int tileIndex, ref ushort iteration, ref MeshData16<DefaultVertexFormat> overlayData)
+        {
+            // Generate the mesh overlay
+            Vector3 heightOffset = new Vector3(0, 0, 0);
+            Vector3 centerPos = HexVector.ToWorld(tileIndex, grid.Terrain.Info[tileIndex].Height, world.WorldSpace) + heightOffset;
+            //float hexWidth = world.Scale.x * 0.6f;
+            float hexHeight = world.Scale.z * 0.62f; // experimentally derived; not sure why it's not 1
+            // float hexDepth = world.Scale.y;
+
+            DefaultVertexFormat a, b, c, d, e, f, g;
+            a.Color = b.Color = c.Color = d.Color = e.Color = f.Color = g.Color = Color.white;
+
+            a.Position = centerPos;
+            b.Position = centerPos + new Vector3(hexHeight, 0, 0);
+            c.Position = centerPos + new Vector3(hexHeight * cosDim, 0, -hexHeight * sinDim);
+            d.Position = centerPos + new Vector3(-hexHeight * cosDim, 0, -hexHeight * sinDim);
+            e.Position = centerPos + new Vector3(-hexHeight, 0, 0);
+            f.Position = centerPos + new Vector3(-hexHeight * cosDim, 0, hexHeight * sinDim);
+            g.Position = centerPos + new Vector3(hexHeight * cosDim, 0, hexHeight * sinDim);
+
+            overlayData.AddVertex(a);
+            overlayData.AddVertex(b);
+            overlayData.AddVertex(c);
+            overlayData.AddVertex(d);
+            overlayData.AddVertex(e);
+            overlayData.AddVertex(f);
+            overlayData.AddVertex(g);
+
+            ushort a_index = (ushort)(0 + 7 * iteration);
+            ushort b_index = (ushort)(a_index + 1);
+            ushort c_index = (ushort)(a_index + 2);
+            ushort d_index = (ushort)(a_index + 3);
+            ushort e_index = (ushort)(a_index + 4);
+            ushort f_index = (ushort)(a_index + 5);
+            ushort g_index = (ushort)(a_index + 6);
+            overlayData.AddIndices(a_index, b_index, c_index);
+            overlayData.AddIndices(a_index, c_index, d_index);
+            overlayData.AddIndices(a_index, d_index, e_index);
+            overlayData.AddIndices(a_index, e_index, f_index);
+            overlayData.AddIndices(a_index, f_index, g_index);
+            overlayData.AddIndices(a_index, g_index, b_index);
+
+            iteration++;
+        }
 
         private static void CancelPendingBuildCommits(BlueprintState blueprintState, ShopState shop, SimGridState grid)
         {

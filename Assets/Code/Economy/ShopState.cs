@@ -22,7 +22,7 @@ namespace Zavala.Economy
 
         public IEnumerator<WorkSlicer.Result?> Preload() {
             ShopUI = Game.Gui.GetShared<UIShop>();
-            CostQueue = new RingBuffer<int>(8);
+            CostQueue = new RingBuffer<int>(8, RingBufferMode.Expand);
             return null;
         }
     }

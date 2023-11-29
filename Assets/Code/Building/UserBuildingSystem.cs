@@ -16,8 +16,7 @@ using System.Collections.Generic;
 
 namespace Zavala.Building
 {
-    // TODO: is this the right update phase?
-    [SysUpdate(GameLoopPhase.Update)]
+    [SysUpdate(GameLoopPhase.Update)] // Before BlueprintOverlaySystem
     public class UserBuildingSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BuildToolState, ShopState>
     {
         private static int CODE_INVALID = -1; // tried to use a tool on an invalid spot
@@ -41,14 +40,22 @@ namespace Zavala.Building
             SimGridState grid = ZavalaGame.SimGrid;
             SimWorldState world = ZavalaGame.SimWorld;
             BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+
+            if (m_StateC.ToolUpdated)
+            {
+                if (m_StateC.ActiveTool != UserBuildTool.Road && m_StateC.ActiveTool != UserBuildTool.None)
+                {
+                    // Regenerate BlockedTiles
+                    BuildToolUtility.RecalculateBlockedTiles(grid, world, network, m_StateC);
+                }
+            }
 
             if (toolInUse == UserBuildTool.Destroy) {
                 TryDestroyClickedBuilding(world, grid, bpState);
             } else if (toolInUse != UserBuildTool.None) {
-                TryApplyTool(grid, toolInUse, RaycastTileIndex(world, grid));
+                TryApplyTool(grid, network, toolInUse, RaycastTileIndex(world, grid));
             } else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
-                RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
-
                 // Road tool has stopped being applied, but the previous road was not finished
                 // cancel the unfinished road
                 CancelRoad(grid, network);
@@ -142,12 +149,11 @@ namespace Zavala.Building
         /// <summary>
         /// Attempt to place tile on given tile index using active tool
         /// </summary>
-        private void TryApplyTool(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
+        private void TryApplyTool(SimGridState grid, RoadNetwork network, UserBuildTool activeTool, int tileIndex) {
             if (tileIndex == CODE_INVALID) {
                 Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} out of bounds", tileIndex);
 
                 if (activeTool == UserBuildTool.Road) {
-                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
                     // cancel in-progress road 
                     CancelRoad(grid, network);
                 }
@@ -166,13 +172,12 @@ namespace Zavala.Building
 
             switch (activeTool) {
                 case UserBuildTool.Road:
-                    RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
                     TryBuildRoad(grid, network, tileIndex);
                     break;
                 case UserBuildTool.Digester:
                 case UserBuildTool.Storage:
                 case UserBuildTool.Skimmer:
-                    TryBuildOnTile(grid, activeTool, tileIndex);
+                    TryBuildOnTile(grid, network, activeTool, tileIndex);
                     break;
                 default:
                     break;
@@ -182,12 +187,10 @@ namespace Zavala.Building
         /// <summary>
         /// For single tile builds
         /// </summary>
-        private bool TryBuildOnTile(SimGridState grid, UserBuildTool activeTool, int tileIndex) {
+        private bool TryBuildOnTile(SimGridState grid, RoadNetwork network, UserBuildTool activeTool, int tileIndex) {
             // disallow: water, existing building
-            // TODO: disallow road?
             bool validLocation = true;
-            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsWater) != 0) validLocation = false;
-            if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsOccupied) != 0) validLocation = false;
+            if (m_StateC.BlockedTileBuffer[tileIndex] == 1) { validLocation = false; }
             if (!validLocation) {
                 return false;
             }
@@ -196,7 +199,6 @@ namespace Zavala.Building
                 return false;
             }
 
-            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
             TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
             TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
@@ -223,8 +225,7 @@ namespace Zavala.Building
             ShopUtility.EnqueueCost(m_StateD, price);
 
             // Deselect tools
-            m_StateC.ActiveTool = UserBuildTool.None;
-            Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+            BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
             m_StateC.VecPrevValid = false;
 
             return true;
@@ -274,7 +275,7 @@ namespace Zavala.Building
                 // Continue building road
 
                 // Verify road is continuous
-                if (!IsContinuous(grid.HexSize, m_StateC.RoadToolState.PrevTileIndex, tileIndex)) {
+                if (!IsContinuous(grid.HexSize, m_StateC.RoadToolState.PrevTileIndex, tileIndex, grid)) {
                     Debug.Log("[UserBuildingSystem] Cannot build a non-continuous road");
                     CancelRoad(grid, network);
                     return;
@@ -386,7 +387,7 @@ namespace Zavala.Building
             // RoadUtility.AddRoadImmediate(Game.SharedState.Get<RoadNetwork>(), grid, tileIndex); // temp debug
         }
 
-        private bool IsContinuous(HexGridSize hexSize, int prevIndex, int currIndex) {
+        private bool IsContinuous(HexGridSize hexSize, int prevIndex, int currIndex, SimGridState grid) {
             HexVector currPos = hexSize.FastIndexToPos(currIndex);
             for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
                 HexVector adjPos = HexVector.Offset(currPos, dir);
@@ -394,10 +395,14 @@ namespace Zavala.Building
                     continue;
                 }
                 int adjIdx = hexSize.PosToIndex(adjPos);
-                if (adjIdx == prevIndex) {
+                if (adjIdx != prevIndex) {
                     // prev tile found in adj neighbors
-                    return true;
+                    continue;
                 }
+                if (grid.Terrain.Regions[prevIndex] != grid.Terrain.Regions[currIndex]) {
+                    continue;
+                }
+                return true;
             }
 
             // prev tile not found anywhere in adj neighbors
@@ -545,8 +550,7 @@ namespace Zavala.Building
                 BlueprintUtility.CommitChain(bpState, roadChain);
 
                 // Deselect tools
-                m_StateC.ActiveTool = UserBuildTool.None;
-                Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+                BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
 
                 // Add cost to receipt queue
                 ShopUtility.EnqueueCost(m_StateD, totalPrice);

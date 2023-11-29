@@ -75,6 +75,7 @@ namespace Zavala.Economy
         public ushort ProxyIdx;
         public RoadPathSummary Path;
         public int Profit;
+        public int ShippingCost;
         public int RelativeGain;
         public GeneratedTaxRevenue TaxRevenue;
     }
@@ -155,9 +156,9 @@ namespace Zavala.Economy
         public ResourceRequester Requester;
         public ResourceSupplier Supplier;
         public ResourceId Resource;
-        public int Distance;
         public RoadPathFlags PathFlags;
         public int Profit;
+        public int ShippingCost;
         public GeneratedTaxRevenue TaxRevenue;
     }
 
@@ -433,7 +434,7 @@ namespace Zavala.Economy
                             Requester = requester,
                             Supplier = supplier,
                             Resource = ResourceUtility.FirstResource((data.Mask & resource)),
-                            Distance = data.Distance,
+                            ShippingCost = data.ShippingCost,
                             PathFlags = data.Path.Flags,
                             Profit = data.Profit,
                             TaxRevenue = data.TaxRevenue
@@ -456,7 +457,7 @@ namespace Zavala.Economy
                 bool found = false;
                 foreach(var data in result.Supplier.Priorities.PrioritizedBuyers) {
                     if (data.Target == requester) {
-                        result.Distance = data.Distance;
+                        result.ShippingCost = data.ShippingCost;
                         result.PathFlags = data.Path.Flags;
                         result.Profit = data.Profit;
                         result.TaxRevenue = data.TaxRevenue;
@@ -474,12 +475,12 @@ namespace Zavala.Economy
         static public int GatherShippingSources(ResourceSupplier supplier, RingBuffer<MarketQueryResultInfo> buffer, ResourceMask resource) {
             int count = 0;
             foreach (var data in supplier.Priorities.PrioritizedBuyers) {
-                if ((data.Mask & resource) != 0 && data.Target == supplier) {
+                if ((data.Mask & resource) != 0) {
                     buffer.PushBack(new MarketQueryResultInfo() {
                         Requester = data.Target,
                         Supplier = supplier,
-                        Resource = ResourceUtility.FirstResource(data.Mask),
-                        Distance = data.Distance,
+                        Resource = ResourceUtility.FirstResource(data.Mask & resource),
+                        ShippingCost = data.ShippingCost,
                         PathFlags = data.Path.Flags,
                         Profit = data.Profit,
                         TaxRevenue = data.TaxRevenue

@@ -66,7 +66,14 @@ namespace Zavala.World {
             }
 
             if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
-                inst.GetComponent<WaterTile>().TileIndex = index;
+                WaterTile wTile = inst.GetComponent<WaterTile>();
+                wTile.TileIndex = index;
+
+                // If deep water, modify default material
+                if ((tileInfo.Flags & TerrainFlags.NonBuildable) != 0) {
+                    WaterMaterialData materialAssets = Game.SharedState.Get<WaterMaterialData>();
+                    wTile.SurfaceRenderer.sharedMaterial = materialAssets.TopDeepMaterial.Find(0);
+                }
             }
         }
 

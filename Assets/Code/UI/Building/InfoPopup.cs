@@ -16,6 +16,7 @@ namespace Zavala.UI.Info {
         #region Inspector
 
         [SerializeField] private RectTransformPinned m_Pin;
+        [SerializeField] private LayoutGroup m_Layout;
 
         [Header("Header")]
         [SerializeField] private TMP_Text m_HeaderLabel;
@@ -96,6 +97,7 @@ namespace Zavala.UI.Info {
             }
 
             m_Pin.Pin(thing.transform);
+            PopulateHeader();
             UpdateData(true);
 
             Show();
@@ -106,11 +108,47 @@ namespace Zavala.UI.Info {
         }
 
         private void PopulateShipping() {
+            int count = Math.Min(m_QueryResults.Count, 3);
+            ConfigureRowsAndDividers(count);
 
+            MarketConfig config = Game.SharedState.Get<MarketConfig>();
+
+            for (int i = 0; i < count; i++) {
+                var results = m_QueryResults[i];
+                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContents.Locations[i], results.Supplier.Position, results.Requester.Position);
+                InfoPopupMarketUtility.LoadProfitIntoRow(m_MarketContents.Locations[i], results, config);
+            }
+
+            if (gameObject.activeSelf) {
+                m_Layout.ForceRebuild(true);
+            }
         }
 
         private void PopulatePurchasing() {
+            int count = Math.Min(m_QueryResults.Count, 3);
+            ConfigureRowsAndDividers(count);
 
+            MarketConfig config = Game.SharedState.Get<MarketConfig>();
+
+            for(int i = 0; i < count; i++) {
+                var results = m_QueryResults[i];
+                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContents.Locations[i], results.Supplier.Position, results.Requester.Position);
+                InfoPopupMarketUtility.LoadCostsIntoRow(m_MarketContents.Locations[i], results, config);
+            }
+
+            if (gameObject.activeSelf) {
+                m_Layout.ForceRebuild(true);
+            }
+        }
+
+        private void ConfigureRowsAndDividers(int count) {
+            for (int i = 0; i < m_MarketContents.Dividers.Length; i++) {
+                m_MarketContents.Dividers[i].SetActive(count > i + 1);
+            }
+
+            for (int i = 0; i < m_MarketContents.Locations.Length; i++) {
+                m_MarketContents.Locations[i].gameObject.SetActive(count > i);
+            }
         }
 
         private void UpdateData(bool forceRefresh) {
@@ -161,6 +199,12 @@ namespace Zavala.UI.Info {
             base.OnHideComplete(inbInstant);
 
             m_Pin.Unpin();
+        }
+
+        protected override void OnShowComplete(bool inbInstant) {
+            base.OnShowComplete(inbInstant);
+
+            m_Layout.ForceRebuild(true);
         }
 
         private void OnMarketTickCompleted() {

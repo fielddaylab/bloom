@@ -9,5 +9,11 @@ namespace Zavala.UI.Info {
         public TextId InfoLabel;
         public StringHash32 CharacterId;
         public Sprite Icon;
+
+        [NonSerialized] public OccupiesTile Position;
+
+        private void Awake() {
+            Position = GetComponent<OccupiesTile>();
+        }
     }
 }

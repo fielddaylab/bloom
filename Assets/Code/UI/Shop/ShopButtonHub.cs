@@ -71,11 +71,13 @@ namespace Zavala.UI
         #region Handlers
 
         private void HandleButtonSelected(int selectedIndex) {
+            BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+
             if (selectedIndex == m_selectedIndex) {
                 // selected current button; should unselect it and return
                 ClearSelected();
 
-                Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+                BuildToolUtility.SetTool(bts, UserBuildTool.None);
                 return;
             }
 
@@ -90,15 +92,12 @@ namespace Zavala.UI
 
             if (button.CanAfford) {
                 // set tool
-                BuildToolState bts = Game.SharedState.Get<BuildToolState>();
-                bts.ActiveTool = button.BuildTool;
+                BuildToolUtility.SetTool(bts, button.BuildTool);
 
                 // set selected color
                 m_shopItemBtns[selectedIndex].Button.image.color = ZavalaColors.ShopItemSelected;
 
                 m_selectedIndex = selectedIndex;
-
-                Game.Events.Dispatch(GameEvents.BuildToolSelected);
             }
             else {
                 // some disallow routine? error sound, red flash, queue Balthazar, etc.

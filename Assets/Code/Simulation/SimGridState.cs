@@ -5,6 +5,7 @@ using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using FieldDay.Systems;
+using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -455,6 +456,11 @@ namespace Zavala.Sim {
             network.Roads.Info[tileIndex].Flags = rFlags;
             grid.Terrain.Info[tileIndex].Flags = tFlags;
             network.Roads.Info[tileIndex].FlowMask = flowSnapshot;
+        }
+        
+        [LeafMember("CameraInRegion")]
+        static public bool CameraInRegion(uint regionIndex) {
+            return Game.SharedState.Get<SimGridState>().CurrRegionIndex == regionIndex;
         }
 
         #region Water Groups

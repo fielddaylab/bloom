@@ -1,7 +1,8 @@
 using System;
 using BeauUtil;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
-using UnityEngine.Events;
+using Leaf.Runtime;
 using Zavala.Cards;
 
 namespace Zavala.Advisor {
@@ -15,7 +16,14 @@ namespace Zavala.Advisor {
         }
     }
 
-    
+    public static class AdvisorUtility {
+        [LeafMember("UnlockAdvisorModule")]
+        public static void UnlockModule(AdvisorType type) {
+            ZavalaGame.SharedState.Get<ScriptRuntimeState>().DefaultDialogue.GetModule(type).Unlock();
+        } 
+    }
+
+
     public enum AdvisorType : byte {
         None,
         Ecology,

@@ -23,7 +23,8 @@ namespace Zavala.Sim
             Debug.Log("[Phosphorus] Amount generated last tick: " + generator.AmountProducedLastTick);
             if (generator.AmountProducedLastTick >= RunoffParams.ExcessRunoffThreshold) {
                 // if so, create alert on this tile
-                EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex);
+                Debug.Log("[ExcessRunoffAlertSystem] Amount generated last tick: " + generator.AmountProducedLastTick);
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex);
             }
         }
     }

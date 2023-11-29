@@ -1,5 +1,6 @@
 using System;
 using BeauUtil;
+using BeauUtil.Variants;
 using Leaf;
 using UnityEngine;
 using Zavala.Sim;
@@ -25,7 +26,8 @@ namespace Zavala {
         Skimmer,
         Obstacle,
         ExportDepot,
-        TollBooth
+        TollBooth,
+        TempObstruction
     }
 
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]
@@ -42,6 +44,10 @@ namespace Zavala {
             public ushort LocalTileIndex;
             public SerializedHash32 ScriptName;
             public BuildingType Type;
+            public SerializedHash32 LocationName;
+            public SerializedHash32 LocationInfo;
+            public SerializedHash32 CharacterId;
+            public SerializedVariant AdditionalData;
         }
 
         [Serializable]

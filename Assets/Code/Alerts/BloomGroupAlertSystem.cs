@@ -30,7 +30,7 @@ namespace Zavala.Sim
             }
 
             if (bloomPeaked) {
-                EventActorUtility.QueueAlert(actor, EventActorAlertType.Bloom, tileIndex);
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.Bloom, tileIndex, groupInfo.RegionId);
 
                 // TODO: seems like we should be able to clear this at the start of SimAlgaeSystem, since this system comes after.
                 // But for some reason some tiles aren't processed before SimAlgaeSystem starts again.

@@ -7,9 +7,9 @@ namespace Zavala.Building {
         public void PressToggle(bool toggle) {
             BuildToolState bts = Game.SharedState.Get<BuildToolState>();
             if (toggle) {
-                bts.ActiveTool = ButtonTool;
+                BuildToolUtility.SetTool(bts, ButtonTool);
             } else {
-                bts.ActiveTool = UserBuildTool.None;
+                BuildToolUtility.SetTool(bts, UserBuildTool.None);
             }
         }
     }

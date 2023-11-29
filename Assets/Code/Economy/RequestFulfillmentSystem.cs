@@ -57,6 +57,7 @@ namespace Zavala.Economy {
                     else {
                         // create a truck
                         request.Fulfiller = pools.Trucks.Alloc();
+                        pools.Trucks.SetTruckMesh(request.Fulfiller, request.Supplied.PositiveMask);
                         FulfillerUtility.InitializeFulfiller(request.Fulfiller, request, request.Path);
 
                         // divvy route between trucks and blimps through proxy, if applicable

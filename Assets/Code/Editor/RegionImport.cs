@@ -157,7 +157,7 @@ namespace Zavala.Editor {
                     int tileIndex = IndexToTile(data, i);
                     ref TerrainTileInfo tileInfo = ref buffer[tileIndex];
                     switch (type) {
-                        case 0: {
+                        case 0: { // water
                             tileInfo.Category = TerrainCategory.Water;
                             tileInfo.Flags = TerrainFlags.IsWater;
                             break;
@@ -189,6 +189,12 @@ namespace Zavala.Editor {
                             tileInfo.SubCategory = 3;
                             tileInfo.Flags = 0;
                             break;
+                        }
+                        case 5: { // deep water
+                            tileInfo.Category = TerrainCategory.Water;
+                            tileInfo.Flags = TerrainFlags.IsWater;
+                            tileInfo.Flags |= TerrainFlags.NonBuildable;
+                                break;
                         }
                     }
                 }
@@ -287,6 +293,18 @@ namespace Zavala.Editor {
                                     ScriptName = scriptName
                                 });
                                 tiles[pos].Flags |= TerrainFlags.IsToll;
+                                break;
+                            }
+                        case 9:
+                            { // temporary obstruction
+                                buildingList.Add(new RegionAsset.BuildingData()
+                                {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.TollBooth,
+                                    ScriptName = scriptName
+                                });
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
+                                tiles[pos].Flags |= TerrainFlags.NonBuildable;
                                 break;
                             }
                     }

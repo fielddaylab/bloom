@@ -37,15 +37,14 @@ namespace Zavala.UI {
         }
 
         public void Expand() {
-            SimTimeUtility.Pause(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
             m_shopRoutine.Replace(ExpandShopRoutine()); 
         }
 
         public void Collapse() {
-            SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
-
             var currTool = Game.SharedState.Get<BuildToolState>().ActiveTool;
-            if (currTool != UserBuildTool.Destroy) { Game.SharedState.Get<BuildToolState>().ActiveTool = UserBuildTool.None; }
+            if (currTool != UserBuildTool.Destroy) {
+                BuildToolUtility.SetTool(Game.SharedState.Get<BuildToolState>(), UserBuildTool.None);
+            }
 
             m_shopRoutine.Replace(CollapseRoutine());
         }
