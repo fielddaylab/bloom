@@ -72,6 +72,7 @@ namespace Zavala.Sim {
     [Serializable]
     public struct UnlockGroup
     {
+        public int UnlockDelay;
         public List<UnlockConditionGroup> UnlockConditions;
         public RegionId[] RegionIndexUnlocks;
     }
@@ -101,6 +102,10 @@ namespace Zavala.Sim {
 
         static public void RegisterPTimerAdvanced(RegionUnlockState unlockState) {
             unlockState.SimPhosphorusAdvanced = true;
+        }
+
+        static public void DecrementTimer(UnlockGroup group) {
+            group.UnlockDelay -= 1;
         }
 
         [LeafMember("RegionUnlocked")]

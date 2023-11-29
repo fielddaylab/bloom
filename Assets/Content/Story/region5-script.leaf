@@ -2,7 +2,7 @@
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", IsInRegion(4)
+@conditions     advisorType == "Ecology", CameraInRegion(4)
 @forcePolicy    Ecology
 $if NumCardsUnlocked() >= 1
 {local @advisorEcol}    Good to see you, Director! Here for ecological policies?
@@ -12,7 +12,7 @@ $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Economy", IsInRegion(4)
+@conditions     advisorType == "Economy", CameraInRegion(4)
 @forcePolicy    Economy
 $if NumCardsUnlocked() >= 2
 {local @advisorEcon}    Sup big boss! We makin' big moves economy-style?
@@ -28,4 +28,5 @@ $call Pause()
 {@advisorEconUrban}    Sup. Welcome to Smokestack City.
 $call PanToBuilding("region5_city1")
 $call Unpause()
+
 

@@ -2,7 +2,7 @@
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", IsInRegion(1)
+@conditions     advisorType == "Ecology", CameraInRegion(1)
 @forcePolicy    Ecology
 $if NumCardsUnlocked() >= 1
 {local @advisorEcol}    Sage at your service! Looking to set ecology policy?
@@ -12,7 +12,7 @@ $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Economy", IsInRegion(1)
+@conditions     advisorType == "Economy", CameraInRegion(1)
 @forcePolicy    Economy
 $if NumCardsUnlocked() >= 2
 {local @advisorEcon}    Shall we assign some economic policies?
@@ -34,7 +34,7 @@ $call Unpause()
 
 :: forestConnection
 @trigger FarmConnection
-@conditions IsInRegion(1)
+@conditions CameraInRegion(1)
 @queued 
 @once
 {@advisorEcolForest}    Enjoying Pine County?
@@ -46,7 +46,7 @@ $call Unpause()
 
 :: testBloomTriggerForest
 @trigger        AlertExamined
-@conditions     alertType == "bloom", bloomDiscovered, IsInRegion(1)
+@conditions     alertType == "bloom", alertRegion == 1
 @forcePolicy    Ecology
 @once
 $call Pause()
@@ -59,13 +59,26 @@ $call Unpause()
 
 :: unlockStorage
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", bloomDiscovered, CameraInRegion(1)
+@conditions     alertType == "excess-runoff", alertRegion == 1
 @once
 $call Pause()
-{@advisorEcolForest}    Hmm... This manure leaches into the water table faster than we can use it.
+{@advisorEcolForest}    Hmm... This sitting manure leaches into the water table faster than it's used.
 {@advisorEcolForest}    Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
 {@advisorEconForest}    Excellent idea. You can create <b>Storage</b> in blueprint mode now.
 {@advisorEconForest}    Once connected to a CAFO, it'll hold onto manure for later use.
-{@advisorEconForest}    But it's not cheap - try to share it between CAFOs.
+{@advisorEconForest}    But it won't be cheap - try to share it between CAFOs.
+// TODO: $call UnlockShopItem(Storage)
+$call Unpause()
+
+:: runoffGeneric
+@trigger        AlertExamined
+@conditions     alertType == "excess-runoff", alertRegion == 1
+@once
+$call Pause()
+{@advisorEcolForest}    Hmm... This sitting manure leaches into the water table faster than it's used.
+{@advisorEcolForest}    Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
+{@advisorEconForest}    Excellent idea. You can create <b>Storage</b> in blueprint mode now.
+{@advisorEconForest}    Once connected to a CAFO, it'll hold onto manure for later use.
+{@advisorEconForest}    But it won't be cheap - try to share it between CAFOs.
 // TODO: $call UnlockShopItem(Storage)
 $call Unpause()

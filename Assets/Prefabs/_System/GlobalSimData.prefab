@@ -33,6 +33,7 @@ GameObject:
   - component: {fileID: 1043285027284261608}
   - component: {fileID: 2876602851293507836}
   - component: {fileID: 3070150076525417522}
+  - component: {fileID: 2278038441633514227}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -485,7 +486,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnlockGroups:
-  - UnlockConditions:
+  - UnlockDelay: 0
+    UnlockConditions:
     - Type: 6
       ChecksRegions: 00000000
       Scope: 20
@@ -518,7 +520,8 @@ MonoBehaviour:
         Value: 30
       NodeTitle: 
     RegionIndexUnlocks: 01000000
-  - UnlockConditions:
+  - UnlockDelay: 5
+    UnlockConditions:
     - Type: 6
       ChecksRegions: 01000000
       Scope: 10
@@ -548,10 +551,42 @@ MonoBehaviour:
         Value: 0
       TargetAge:
         Below: 0
-        Value: 20
+        Value: 25
       NodeTitle: 
+    - Type: 7
+      ChecksRegions: 00000000
+      Scope: 10
+      TargetRunoff:
+        Below: 0
+        Value: 0.5
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: region1.firstBloomDiscovered
     RegionIndexUnlocks: 02000000
-  - UnlockConditions:
+  - UnlockDelay: 0
+    UnlockConditions:
     - Type: 0
       ChecksRegions: 00000000
       Scope: 10
@@ -646,7 +681,8 @@ MonoBehaviour:
         Value: 20
       NodeTitle: 
     RegionIndexUnlocks: 03000000
-  - UnlockConditions:
+  - UnlockDelay: 0
+    UnlockConditions:
     - Type: 0
       ChecksRegions: 00000000
       Scope: 10
@@ -834,5 +870,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd3f2753b28046c4d9c95850ab471920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2278038441633514227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 216e1ab6940bcd645a4ac691fe70f9e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

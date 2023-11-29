@@ -15,6 +15,8 @@ namespace Zavala.Scripting {
                 while (component.QueuedTriggers.TryPopBack(out EventActorTrigger trigger)) {
                     if (!trigger.Argument.Id.IsEmpty) {
                         varTable.Set(trigger.Argument.Id, trigger.Argument.Value);
+                        varTable.Set(trigger.SecondArg.Id, trigger.SecondArg.Value);
+                        varTable.Set(trigger.RegionIndex.Id, trigger.RegionIndex.Value);
                     }
 
                     ScriptNode node = ScriptDatabaseUtility.FindRandomTrigger(ScriptUtility.Database, trigger.EventId, ScriptUtility.GetContext(ScriptUtility.Runtime, component, varTable), component.Id);
@@ -29,8 +31,10 @@ namespace Zavala.Scripting {
                         if (component.QueuedEvents.Count < component.MaxQueuedEvents) {
                             EventActorQueuedEvent queuedEvent = new EventActorQueuedEvent() {
                                 Argument = trigger.Argument,
+                                SecondArg = trigger.SecondArg,
                                 TypeId = trigger.EventId,
                                 ScriptId = node.Id(),
+                                RegionIndex = trigger.RegionIndex,
                                 TileIndex = trigger.TileIndex,
                                 Alert = trigger.Alert
                             };

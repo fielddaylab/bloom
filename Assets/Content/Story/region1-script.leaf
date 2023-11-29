@@ -4,6 +4,7 @@
 @trigger GameBooted
 @once
 $call Pause()
+$call PauseAlertType("ExcessRunoff")
 {@advisorEconHill}      Greetings. You must be the Director.
 {@advisorEconHill}      I'm here to advise you on economic matters in Knoll County.
 {@advisorEconHill}      As you can see, we are a chunk of blooming real estate.
@@ -108,9 +109,9 @@ $call Unpause()
 @conditions     advisorType == "Ecology", CameraInRegion(0)
 @forcePolicy    Ecology
 $if NumCardsUnlocked() >= 1
-{local @advisorEcol}    Hey there boss! Here to check out some policies?
+    {local @advisorEcol}    Hey there boss! Here to check out some policies?
 $else
-{local @advisorEcol}    Hey there! No policies to assign yet.
+    {local @advisorEcol}    Hey there! No policies to assign yet.
 $endif
 
 :: economyAdvisorOpen
@@ -118,9 +119,9 @@ $endif
 @conditions     advisorType == "Economy", CameraInRegion(0)
 @forcePolicy    Economy
 $if NumCardsUnlocked() >= 2
-{local @advisorEcon}    Here are the economic policies.
+    {local @advisorEcon}    Here are the economic policies.
 $else
-{local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
+    {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
 $endif
 
 :: openedToForest
@@ -142,36 +143,50 @@ $endif
 {@advisorEcolHill}      Plus their straw hats are weird!
 
 
-:: preBloomRunoff
-@trigger        AlertExamined
-@conditions     alertType == "excess-runoff", CameraInRegion(0)
-@once
-{local @advisorEcol}    Hold on... This farm is just letting manure sit around!
-{local @advisorEcon}    An astute observation. What would you have them do with it?
-{local @advisorEcol}    Well, it's got phosphorus. Why not make use of it?
-{local @advisorEcon}    Who would pay to ship around truckloads of poop when there's Phos 4 Us?
-{local @advisorEcol}    Hmm...
+// :: preBloomRunoff
+// @trigger        AlertExamined
+// @conditions     alertType == "excess-runoff", CameraInRegion(0)
+// @once
+// {local @advisorEcol}    Hold on... This farm is just letting manure sit around!
+// {local @advisorEcon}    An astute observation. What would you have them do with it?
+// {local @advisorEcol}    Well, it's got phosphorus. Why not make use of it?
+// {local @advisorEcon}    Who would pay to ship around truckloads of poop when there's Phos 4 Us?
+// {local @advisorEcol}    Hmm...
 
 
 :: runoffTrigger
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", intro:citiesConnected, intro:farmsConnected, bloomDiscovered, CameraInRegion(0)
+@conditions     alertType == "excess-runoff", alertRegion == 0
 @forcePolicy    Ecology
 @queued
 @once
 $call Pause()
+$set runoffDiscovered = true
 {local @advisorEcol}    This farm is just letting manure leach into the water table!
-{local @advisorEcon}    Indeed. They simply have no more favorable alternatives.
-{local @advisorEcol}    Well, let's make it less favorable. How about a fine for runoff?
+{local @advisorEcol}    That must be behind those algae blooms.
+{local @advisorEcon}    Maybe so, but they simply have no more favorable alternatives.
+{local @advisorEcol}    Well, let's make it less favorable. How about a penalty fine for runoff?
 {local @cafoFarmer}     A fine!? I'm barely scraping by as is. You'd have me selling at a loss!
 {local @advisorEcon}    Well, a fine <i>could</i> incentivize selling manure...
-{local @advisorEcon}    But Bertram is correct. And that could disrupt the supply chain.
+{local @advisorEcon}    But Bertram is correct. Selling at a loss could disrupt the supply chain.
 {local @advisorEcol}    What do you think, boss?
 $call UnlockCards(RunoffPolicy)
 
-:: testBloomTrigger
+:: genericRunoff
 @trigger        AlertExamined
-@conditions     alertType == "bloom", CameraInRegion(0)
+@conditions     alertType == "excess-runoff", alertRegion == 0, runoffDiscovered
+@queued
+$call Pause()
+{local @advisorEcol}    More runoff... 
+{local @advisorEcol}    Maybe we ought to increase our runoff penalty?
+{local @advisorEcon}    Careful now! We don't want to bankrupt our farmers.
+{local @advisorEcon}    We just need to give them a more favorable option.
+//$if BuildingUnlocked(Storage)
+//  {local @advisorEcon}    Or build a Storage unit instead.
+
+:: discoverFirstBloom
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 0
 @forcePolicy    Ecology
 @once
 $call Pause()
@@ -181,34 +196,41 @@ $set bloomDiscovered = true
 {@advisorEcolHill}    Our policies may need some adjustment...
 {@advisorEcolHill}    A runoff penalty might help disincentivize letting manure sit.
 $call UnlockCards(RunoffPolicy)
+$call UnpauseAlertType("ExcessRunoff")
 $call Unpause()
 
 :: genericBloomTrigger
 @trigger        AlertExamined
-@conditions     alertType == "bloom", bloomDiscovered
+@conditions     alertType == "bloom", alertRegion == 0, bloomDiscovered
 @forcePolicy    Ecology
-{local @advisorEcol}    Another algae bloom... What should we do about it?
+{local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
+{local @advisorEcol}    We could address the causes by penalizing runoff.
+$if NumCardsUnlocked() >= 3
+{local @advisorEcol}    Or use skimmers to clean up.
+$endif
 
 // TODO: add event/trigger for city stress (nearby bloom and/or lacking milk)
 
-:: SellAtLoss//Grain
+:: SellAtLossGrain
 @trigger        AlertExamined
-@conditions     alertType == "selling-loss", CameraInRegion(0)
+@conditions     alertType == "selling-loss", alertRegion == 0, isFromGrainFarm == true
 @forcePolicy    Economy
 @queued
 $call Pause()
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
 {local @advisorEcon}    Hmm... This supplier is selling at a loss.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to decrease costs.
+{local @advisorEcon}    Perhaps you can build a shorter road, or decrease taxes and penalties.
 $call Unpause()
 
-// :: SellAtLossCafo
-// @trigger        AlertExamined
-// @conditions     alertType == "selling-loss-cafo", CameraInRegion(0)
-// @forcePolicy    Economy
-// @queued
-// $call Pause()
-// {local @cafoFarmer}     My best option still loses me money... How am I gonna feed my family?
-// {local @advisorEcon}    Hmm... This supplier is selling at a loss.
-// {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to decrease costs.
-// $call Unpause()
+:: SellAtLossCafo
+@trigger        AlertExamined
+@conditions     alertType == "selling-loss", alertRegion == 0, isFromGrainFarm == false
+@forcePolicy    Economy
+@queued
+$call Pause()
+{local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down operations!
+{local @advisorEcon}    Hmm... This supplier is selling at a loss.
+{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to decrease costs.
+{local @advisorEcon}    Perhaps you can build a shorter road, or decrease taxes and penalties.
+$call Unpause()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Variants;
 using FieldDay;
@@ -6,6 +7,7 @@ using FieldDay.Components;
 using FieldDay.Scripting;
 using Leaf.Runtime;
 using UnityEngine;
+using Zavala.Alerts;
 using Zavala.Sim;
 using Zavala.UI;
 
@@ -55,6 +57,8 @@ namespace Zavala.Scripting {
     public struct EventActorTrigger {
         public StringHash32 EventId;
         public NamedVariant Argument;
+        public NamedVariant SecondArg;
+        public NamedVariant RegionIndex;
         public EventActorAlertType Alert;
         public int TileIndex;
     }
@@ -63,6 +67,8 @@ namespace Zavala.Scripting {
         public StringHash32 ScriptId;
         public StringHash32 TypeId;
         public NamedVariant Argument;
+        public NamedVariant SecondArg;
+        public NamedVariant RegionIndex;
         public EventActorAlertType Alert;
         public int TileIndex;
     }
@@ -93,13 +99,39 @@ namespace Zavala.Scripting {
             actor.QueuedTriggers.PushBack(trigger);
         }
 
-        static public void QueueAlert(EventActor actor, EventActorAlertType alert, int tileIndex) {
+        static public void QueueAlert(EventActor actor, EventActorAlertType alert, int tileIndex, int regionIndex, NamedVariant secondArg = default) {
+            // skip queuing any paused events
+            if (Game.SharedState.Get<AlertState>().PausedAlertTypes.Contains(alert)) {
+                BeauUtil.Debugger.Log.Msg("[EventActorUtility] Skipping alert for {0}, event type {1} paused", actor.Id.ToDebugString(), alert);
+                return;
+            }
             actor.QueuedTriggers.PushBack(new EventActorTrigger() {
                 EventId = GameTriggers.AlertExamined,
                 Argument = GameAlerts.GetAlertTypeArgument(alert),
+                SecondArg = secondArg,
                 Alert = alert,
+                RegionIndex = new NamedVariant("alertRegion", regionIndex),
                 TileIndex = tileIndex
-            });
+            }); ;
+        }
+
+        [LeafMember("PauseAlertType")]
+        static public bool PauseAlertType(EventActorAlertType alertType) {
+            return Game.SharedState.Get<AlertState>().PausedAlertTypes.Add(alertType);
+        }
+
+        [LeafMember("UnpauseAlertType")]
+        static public bool UnpauseAlertType(EventActorAlertType alertType) {
+            return Game.SharedState.Get<AlertState>().PausedAlertTypes.Remove(alertType);
+        }
+
+        [LeafMember("ToggleAlertTypeActive")]
+        static public void ToggleAlertTypeActive(EventActorAlertType alertType) {
+            // pause if it's not paused already
+            if (!PauseAlertType(alertType)) {
+                // false - it's paused already, so unpause
+                UnpauseAlertType(alertType); 
+            }
         }
 
         static public bool CancelEvent(EventActor actor, StringHash32 eventId) {
