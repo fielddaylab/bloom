@@ -127,6 +127,10 @@ namespace Zavala.UI {
             }
         }
 
+        public DialogueModuleBase GetModule(AdvisorType type) {
+            return m_Modules.Find(mod => mod.m_AdvisorType == type);
+        }
+
         public TagStringEventHandler PrepareLine(TagString inString, TagStringEventHandler inBaseHandler) {
             DeactivateModules();
 

@@ -33,29 +33,10 @@ namespace Zavala.Advisor
 
         private void HandleButtonClicked() {
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            SimWorldState world = ZavalaGame.SimWorld;
 
-            bool activating = advisorState.ActiveAdvisor != ButtonAdvisorType;
-
-            //PoliciesButton.SetActive(activating);
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("advisorType", ButtonAdvisorType.ToString());
                 ScriptUtility.Trigger(GameTriggers.AdvisorOpened, varTable);
-            }
-
-            if (activating) {
-                AdvisorType newAdvisor = advisorState.UpdateAdvisor(ButtonAdvisorType);
-                if (newAdvisor == AdvisorType.Ecology) {
-                    world.Overlays = SimWorldOverlayMask.Phosphorus;
-                }
-                else {
-                    world.Overlays = SimWorldOverlayMask.None;
-                }
-            }
-            else {
-                advisorState.UpdateAdvisor(AdvisorType.None);
-                world.Overlays = SimWorldOverlayMask.None;
-                ScriptUtility.Trigger(GameTriggers.AdvisorClosed);
             }
 
             // regardless of on or off, advisor was clicked
@@ -73,9 +54,7 @@ namespace Zavala.Advisor
 
         private void OnDialogueClosing() {
             AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            SimWorldState world = ZavalaGame.SimWorld;
 
-            world.Overlays = SimWorldOverlayMask.None;
             advisorState.UpdateAdvisor(AdvisorType.None);
         }
 
