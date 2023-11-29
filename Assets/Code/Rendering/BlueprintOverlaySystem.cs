@@ -34,7 +34,7 @@ namespace Zavala.Rendering
                 // Regen when non-road tool is selected
                 if (m_StateE.ActiveTool != UserBuildTool.Road && m_StateE.ActiveTool != UserBuildTool.None)
                 {
-                    BlueprintUtility.RegenerateOverlayMesh(m_StateA, m_StateB, m_StateC, m_StateD);
+                    BlueprintUtility.RegenerateOverlayMesh(m_StateA, m_StateB, m_StateC, m_StateD, m_StateE);
                 }
                 else
                 {

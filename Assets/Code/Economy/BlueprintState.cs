@@ -78,8 +78,8 @@ namespace Zavala.Economy
         [NonSerialized] public DynamicMeshFilter OverlayFilter;
         [NonSerialized] public MeshRenderer OverlayRenderer;
         [NonSerialized] public MeshData16<DefaultVertexFormat> OverlayData;
-        [NonSerialized] public List<int> OverlayIdxs; // tile indices of non-buildables
-        [NonSerialized] public List<int> OverlayAdjIdxs; // temp list for gathering tiles adjacent to sources/destinations
+        [NonSerialized] public RingBuffer<int> OverlayIdxs; // tile indices of non-buildables
+        [NonSerialized] public RingBuffer<int> OverlayAdjIdxs; // temp list for gathering tiles adjacent to sources/destinations
 
         #region Inspector
 
@@ -121,8 +121,6 @@ namespace Zavala.Economy
             OverlayFilter = Instantiate(m_OverlayPrefab, Vector3.zero, Quaternion.identity).GetComponent<DynamicMeshFilter>();
             OverlayRenderer = OverlayFilter.GetComponent<MeshRenderer>();
             OverlayData = new MeshData16<DefaultVertexFormat>();
-            OverlayIdxs = new List<int>();
-            OverlayAdjIdxs = new List<int>();
         }
 
         public void OnDeregister()
@@ -387,90 +385,19 @@ namespace Zavala.Economy
 
         #region Mesh Overlay
 
-        public static void RegenerateOverlayMesh(BlueprintState bpState, SimGridState grid, SimWorldState world, RoadNetwork network)
+        public static void RegenerateOverlayMesh(BlueprintState bpState, SimGridState grid, SimWorldState world, RoadNetwork network, BuildToolState btState)
         {
             bpState.OverlayRenderer.enabled = true;
             bpState.OverlayData.Clear();
 
-            // Collect indices of non-buildable tiles
-            bpState.OverlayIdxs.Clear();
-
-            // Sources and Destinations
-            foreach (var dest in network.Destinations)
-            {
-                if (dest.isExternal || dest.RegionIdx != grid.CurrRegionIndex)
-                {
-                    continue;
-                }
-
-                bpState.OverlayIdxs.Add(dest.TileIdx);
-            }
-            foreach (var src in network.Sources)
-            {
-                if (bpState.OverlayIdxs.Contains(src.TileIdx) || src.IsExternal || src.RegionIdx != grid.CurrRegionIndex)
-                {
-                    continue;
-                }
-
-                bpState.OverlayIdxs.Add(src.TileIdx);
-            }
-
-            // Tiles Adjacent to Sources and Destinations
-            bpState.OverlayAdjIdxs.Clear();
-            foreach (int centerIdx in bpState.OverlayIdxs)
-            {
-                HexVector currPos = grid.HexSize.FastIndexToPos(centerIdx);
-                for(TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++)
-                {
-                    HexVector adjPos = HexVector.Offset(currPos, dir);
-                    if (!grid.HexSize.IsValidPos(adjPos))
-                    {
-                        continue;
-                    }
-                    int adjIdx = grid.HexSize.FastPosToIndex(adjPos);
-
-                    bpState.OverlayAdjIdxs.Add(adjIdx);
-                }
-            }
-
-            // Copy adjacent into holistic list
-            foreach(int adjIdx in bpState.OverlayAdjIdxs)
-            {
-                if (bpState.OverlayIdxs.Contains(adjIdx))
-                {
-                    continue;
-                }
-                bpState.OverlayIdxs.Add(adjIdx);
-            }
-
-
-            // Other non-buildable tiles
             ushort iteration = 0;
-            foreach (var index in grid.HexSize)
+            // Render the mesh for all blocked tiles in the current region
+            foreach(int index in grid.HexSize)
             {
-                if (grid.HexSize.IsValidIndex(index))
+                if (btState.BlockedTileBuffer[index] == 1 && grid.CurrRegionIndex == grid.Terrain.Info[index].RegionIndex)
                 {
-                    if (!world.Tiles[index])
-                    {
-                        continue;
-                    }
-                    // If non-buildable, add to list
-                    if ((grid.Terrain.Info[index].Flags & TerrainFlags.NonBuildable) != 0 && grid.CurrRegionIndex == grid.Terrain.Info[index].RegionIndex)
-                    {
-                        if (bpState.OverlayIdxs.Contains(index))
-                        {
-                            continue;
-                        }
-
-                        bpState.OverlayIdxs.Add(index);
-                    }
+                    AddTileToOverlayMesh(grid, world, index, ref iteration, ref bpState.OverlayData);
                 }
-            }
-
-            // Render the mesh
-            foreach(int index in bpState.OverlayIdxs)
-            {
-                AddTileToOverlayMesh(grid, world, index, ref iteration, ref bpState.OverlayData);
             }
 
             bpState.OverlayFilter.Upload(bpState.OverlayData);
