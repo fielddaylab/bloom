@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1108538159821650085}
   - component: {fileID: 8669542121279567155}
   m_Layer: 0
-  m_Name: MilkTruck00
+  m_Name: PolyTruck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FulfillerType: 0
+  TruckMesh: {fileID: 4559669760430253278}
+  TruckRenderer: {fileID: 1775478408979533844}
 --- !u!1 &1108538160025482512
 GameObject:
   m_ObjectHideFlags: 0
@@ -72,9 +74,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1108538160025482512}
-  m_LocalRotation: {x: 0.70948267, y: 0.0016778738, z: 0.0020355976, w: 0.704718}
-  m_LocalPosition: {x: 0.013977383, y: 0.005127233, z: -0.007958788}
-  m_LocalScale: {x: -0.05, y: 0.029999997, z: -0.050000004}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: 0.0094, z: 0.15}
+  m_LocalScale: {x: 1.3689, y: 2.1918461, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1108538159821650085}
@@ -87,7 +89,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1108538160025482512}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -121,15 +123,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8aa637ab40d244d5688f4481ba77751b, type: 3}
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.50980395}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.24, y: 10.24}
+  m_Size: {x: 0.2, y: 0.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1108538160083235051
@@ -157,14 +159,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1108538160083235051}
-  m_LocalRotation: {x: 0.0005256169, y: 0.70692146, z: 0.004239088, w: 0.7072792}
-  m_LocalPosition: {x: 0.17087364, y: 0.025247538, z: -0.007268456}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.0659, y: 0.0495, z: -0.0068}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1108538159821650085}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!198 &1108538160083235053
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4978,31 +4980,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -5010,12 +5012,22 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 020af892a6e444eb28199c0d87cbe2f3, type: 2}
     - target: {fileID: 919132149155446097, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
       propertyPath: m_Name
-      value: MilkTruck00
+      value: TruckModel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
 --- !u!4 &642019031867861883 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+  m_PrefabInstance: {fileID: 1108538159001193616}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1775478408979533844 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+  m_PrefabInstance: {fileID: 1108538159001193616}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &4559669760430253278 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: -5754084199372789682, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
   m_PrefabInstance: {fileID: 1108538159001193616}
   m_PrefabAsset: {fileID: 0}

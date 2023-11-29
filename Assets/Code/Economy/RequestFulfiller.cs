@@ -26,6 +26,11 @@ namespace Zavala.Economy {
     public sealed class RequestFulfiller : BatchedComponent {
         public FulfillerType FulfillerType;
 
+        // TODO: only expose this if FulfillerType is Truck?
+        [Header("Trucks Only")]
+        [SerializeField] public MeshFilter TruckMesh;
+        [SerializeField] public MeshRenderer TruckRenderer;
+
         [NonSerialized] public ResourceSupplier Source;
         [NonSerialized] public ResourceBlock Carrying;
         [NonSerialized] public ResourceRequester Target;

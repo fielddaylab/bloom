@@ -254,6 +254,18 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
+    GrainTruck:
+      Mesh: {fileID: 2071962661118772911, guid: db87e53809c7ad349ac7054720f125ee, type: 3}
+      Material: {fileID: 2100000, guid: bfd3cabdd2d5afe4ab2f77e68219eacc, type: 2}
+    ManureTruck:
+      Mesh: {fileID: -6044738797065814176, guid: a2aadfd43b341e54d8edc457d4db6113, type: 3}
+      Material: {fileID: 2100000, guid: 771046dedfb7b154582fcd130ac5f6f6, type: 2}
+    MilkTruck:
+      Mesh: {fileID: 6249456282648864246, guid: 4544705d5e70b4c8f99333acacddc311, type: 3}
+      Material: {fileID: 2100000, guid: 020af892a6e444eb28199c0d87cbe2f3, type: 2}
+    FertilizerTruck:
+      Mesh: {fileID: -4892773595180421746, guid: 66e9063200cef5546adbdde438421362, type: 3}
+      Material: {fileID: 2100000, guid: 5c45c52f29df5e1429c5ff3019a9fcd8, type: 2}
   ExternalAirships:
     m_Prefab: {fileID: 1143183839744756915, guid: 03cf56aa78fbf6242a70edeb7562a1b4, type: 3}
     m_Name: 
