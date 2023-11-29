@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterTop00
+  m_Name: WaterTop00_Deep
   m_Shader: {fileID: -6465566751694194690, guid: 27b042674da390c46a1ff4cc2317d5f2, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -114,9 +114,9 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_A271762B: {r: 0, g: 0.22941314, b: 0.27, a: 1}
+    - Color_A271762B: {r: 0, g: 0.12100081, b: 0.14150941, a: 1}
     - Color_AFFD055F: {r: 0.61049575, g: 0.9473069, b: 0.9734455, a: 1}
-    - Color_E0824245: {r: 0, g: 0.42160007, b: 0.496, a: 1}
+    - Color_E0824245: {r: 0, g: 0.23074007, b: 0.27049786, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

@@ -157,7 +157,7 @@ namespace Zavala.Editor {
                     int tileIndex = IndexToTile(data, i);
                     ref TerrainTileInfo tileInfo = ref buffer[tileIndex];
                     switch (type) {
-                        case 0: {
+                        case 0: { // water
                             tileInfo.Category = TerrainCategory.Water;
                             tileInfo.Flags = TerrainFlags.IsWater;
                             break;
@@ -189,6 +189,12 @@ namespace Zavala.Editor {
                             tileInfo.SubCategory = 3;
                             tileInfo.Flags = 0;
                             break;
+                        }
+                        case 5: { // deep water
+                            tileInfo.Category = TerrainCategory.Water;
+                            tileInfo.Flags = TerrainFlags.IsWater;
+                            tileInfo.Flags |= TerrainFlags.NonBuildable;
+                                break;
                         }
                     }
                 }

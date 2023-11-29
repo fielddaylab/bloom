@@ -144,7 +144,6 @@ namespace Zavala.Building {
             }
 
             // Other non-buildable tiles
-            ushort iteration = 0;
             foreach (var index in grid.HexSize)
             {
                 if (grid.HexSize.IsValidIndex(index))
