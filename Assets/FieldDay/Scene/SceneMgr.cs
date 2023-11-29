@@ -4,22 +4,16 @@
 
 using System.Collections;
 using BeauUtil;
-using ScriptableBake;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
 using BeauUtil.Debugger;
 using BeauRoutine;
-using BeauPools;
-using System.Collections.Generic;
-using System.Reflection;
 using FieldDay.Rendering;
 using FieldDay.Assets;
 
 #if UNITY_EDITOR
-using UnityEditor;
 using UnityEditor.SceneManagement;
-using System.IO;
+using System;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.Scenes {
@@ -151,6 +145,7 @@ namespace FieldDay.Scenes {
         private readonly RingBuffer<LateEnableArgs> m_LateEnableQueue = new RingBuffer<LateEnableArgs>(8, RingBufferMode.Expand);
 
         private readonly WorkSlicer.StepOperation CachedUpdateStep;
+        private float m_UpdateStepTimeSlice = 2;
 
         // operation slots
         private OperationSlot<LoadSceneArgs> m_CurrentLoadOperation;
@@ -180,20 +175,88 @@ namespace FieldDay.Scenes {
 
         #region Public API
 
+        /// <summary>
+        /// Amount of time, in millisecs, that scene loading operations are allowed
+        /// to operate per frame.
+        /// </summary>
+        public float TimeSlice {
+            get { return m_UpdateStepTimeSlice; }
+            set {
+                if (value <= 0) {
+                    throw new ArgumentOutOfRangeException("value", "Time slice cannot be set to 0 or less");
+                }
+                m_UpdateStepTimeSlice = value;
+            }
+        }
+
+        #region Checks
+
+        /// <summary>
+        /// Returns if the main scene is currently loading.
+        /// </summary>
         public bool IsMainLoading() {
             return m_MainSceneLoadProcess;
         }
+
+        /// <summary>
+        /// Returns if the main scene is currently loaded.
+        /// </summary>
+        public bool IsMainLoaded() {
+            return m_MainScene && m_MainScene.IsVisited(SceneDataExt.VisitFlags.Loaded) && !m_MainScene.IsVisited(SceneDataExt.VisitFlags.Unloaded);
+        }
+
+        /// <summary>
+        /// Returns if the given scene is loading.
+        /// </summary>
+        public bool IsLoading(SceneReference scene) {
+            return IsLoading(scene.Path);
+        }
+
+        /// <summary>
+        /// Returns if the given scene is loading.
+        /// </summary>
+        public bool IsLoading(string scenePath) {
+            SceneDataExt data = SceneDataExt.GetByPath(scenePath);
+            if (data && !data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
+                return true;
+            }
+
+            for(int i = 0; i < m_LoadProcessQueue.Count; i++) {
+                if (m_LoadProcessQueue[i].Path == scenePath) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns if the given scene is loaded.
+        /// </summary>
+        public bool IsLoaded(SceneReference scene) {
+            return IsLoaded(scene.Path);
+        }
+
+        /// <summary>
+        /// Returns if the given scene is loaded.
+        /// </summary>
+        public bool IsLoaded(string scenePath) {
+            SceneDataExt data = SceneDataExt.GetByPath(scenePath);
+            return data && data.IsVisited(SceneDataExt.VisitFlags.Loaded);
+        }
+
+        #endregion // Checks
 
         #region Main Load
 
         public void LoadMainScene(string scenePath) {
             Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
-            QueueMainLoadInternal(scenePath);
+            QueueMainLoadInternal(scenePath, true);
         }
 
         public void LoadMainScene(SceneReference scene) {
             Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
-            QueueMainLoadInternal(scene.Path);
+            QueueMainLoadInternal(scene.Path, true);
         }
 
         #endregion // Main Load
@@ -221,48 +284,6 @@ namespace FieldDay.Scenes {
         }
 
         #endregion // Persistent Load
-
-        private void QueueMainLoadInternal(string path) {
-            SceneDataExt data = SceneDataExt.GetByPath(path);
-
-            if (data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
-                return;
-            }
-
-            LoadProcessArgs args = new LoadProcessArgs() {
-                Path = path,
-                Type = SceneType.Main,
-                Flags = 0,
-                Tag = default,
-                Transform = null
-            };
-
-            ClearNonPersistentLoadProcesses();
-            m_LoadProcessQueue.PushFront(args);
-        }
-
-        private void QueueSceneLoadInternal(string path, StringHash32 tag, SceneType type, SceneImportFlags flags, Matrix4x4? transform, SceneLoadPriority priority) {
-            Assert.True(type != SceneType.Main);
-            SceneDataExt data = SceneDataExt.GetByPath(path);
-
-            if (data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
-                return;
-            }
-
-            LoadProcessArgs args = new LoadProcessArgs() {
-                Path = path,
-                Type = type,
-                Flags = flags,
-                Tag = tag,
-                Transform = transform
-            };
-
-            if (priority == SceneLoadPriority.High) {
-                m_LoadProcessQueue.PushFront(args);
-            } else {
-                m_LoadProcessQueue.PushBack(args);
-            }
-        }
 
         #region Unload
 
@@ -389,7 +410,7 @@ namespace FieldDay.Scenes {
 
         internal void Prepare() {
             if (m_MainScene == null && !m_MainSceneLoadProcess) {
-                LoadMainScene(SceneManager.GetActiveScene());
+                QueueMainLoadInternal(SceneManager.GetActiveScene().path, false);
             }
 
             // need to ensure we still have a scene reamining when unloading,
@@ -400,7 +421,7 @@ namespace FieldDay.Scenes {
         internal void Update() {
             CleanLists();
             ProcessLoadProcessQueue();
-            WorkSlicer.TimeSliced(CachedUpdateStep, 2);
+            WorkSlicer.TimeSliced(CachedUpdateStep, m_UpdateStepTimeSlice);
         }
 
         private void CleanLists() {
@@ -491,6 +512,51 @@ namespace FieldDay.Scenes {
                 return scene.isLoaded;
             }
         }
+
+        private void QueueMainLoadInternal(string path, bool killNonPersistentLoads) {
+            SceneDataExt data = SceneDataExt.GetByPath(path);
+
+            if (data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
+                return;
+            }
+
+            LoadProcessArgs args = new LoadProcessArgs() {
+                Path = path,
+                Type = SceneType.Main,
+                Flags = 0,
+                Tag = default,
+                Transform = null
+            };
+
+            if (killNonPersistentLoads) {
+                ClearNonPersistentLoadProcesses();
+            }
+            m_LoadProcessQueue.PushFront(args);
+        }
+
+        private void QueueSceneLoadInternal(string path, StringHash32 tag, SceneType type, SceneImportFlags flags, Matrix4x4? transform, SceneLoadPriority priority) {
+            Assert.True(type != SceneType.Main);
+            SceneDataExt data = SceneDataExt.GetByPath(path);
+
+            if (data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
+                return;
+            }
+
+            LoadProcessArgs args = new LoadProcessArgs() {
+                Path = path,
+                Type = type,
+                Flags = flags,
+                Tag = tag,
+                Transform = transform
+            };
+
+            if (priority == SceneLoadPriority.High) {
+                m_LoadProcessQueue.PushFront(args);
+            } else {
+                m_LoadProcessQueue.PushBack(args);
+            }
+        }
+
 
         #endregion // Internal
 
@@ -821,7 +887,7 @@ namespace FieldDay.Scenes {
             using(CounterHandle counter = CounterHandle.Alloc()) {
 
                 // validate
-                SceneDataExt existing = SceneDataExt.Get(SceneManager.GetSceneByPath(args.Path));
+                SceneDataExt existing = SceneDataExt.GetByPath(args.Path);
                 if (existing != null && existing.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
                     yield break;
                 }

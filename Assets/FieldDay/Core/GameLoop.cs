@@ -223,6 +223,11 @@ namespace FieldDay {
             foreach (var entrypoint in Reflect.FindMethods<InvokeOnBootAttribute>(ReflectionCache.UserAssemblies, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
                 entrypoint.Info.Invoke(null, null);
             }
+
+            // fallback
+            if (Game.Events == null) {
+                Game.SetEventDispatcher(new EventDispatcher<object>());
+            }
         }
 
         private void FinishCallbackRegistration() {

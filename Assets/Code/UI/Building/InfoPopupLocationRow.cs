@@ -11,7 +11,12 @@ namespace Zavala.UI.Info {
         [Header("Prices")]
         public GameObject PriceGroup;
         public LayoutGroup PriceLayout;
-        public InfoPopupPriceRow[] PriceRows;
+        public InfoPopupPriceRow BasePriceRow;
+        public InfoPopupPriceRow ShippingRow;
+        public InfoPopupPriceRow SalesTaxRow;
+        public InfoPopupPriceRow ImportTaxRow;
+        public InfoPopupPriceRow SubsidyRow;
+        public InfoPopupPriceRow PenaltyRow;
         public InfoPopupPriceRow TotalPriceRow;
     }
 }
