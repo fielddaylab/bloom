@@ -4,25 +4,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Building;
+using Zavala.Economy;
 using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.Rendering
 {
-    [SysUpdate(GameLoopPhase.ApplicationPreRender)]
+    [SysUpdate(GameLoopPhase.Update, 450)]
     public class RoadAnchorRenderSystem : SharedStateSystemBehaviour<BuildToolState, RoadNetwork, BuildingPools, RoadAnchorRenderState>
     {
+        private BlueprintState m_StateE;
+
         public override void ProcessWork(float deltaTime)
         {
-            if (m_StateD.BuildToolUpdated)
+            if (m_StateA.ToolUpdated)
             {
-                m_StateD.BuildToolUpdated = false;
-
                 // On select road tool
                 if (m_StateA.ActiveTool == UserBuildTool.Road)
                 {
-
                     if (m_StateD.AnchorRenderers.Count != 0)
                     {
                         ClearVisualizations();
@@ -65,6 +65,15 @@ namespace Zavala.Rendering
                     // Remove the anchor visualizations
                     ClearVisualizations();
                 }
+            }
+
+            if (!m_StateE) {
+                m_StateE = Game.SharedState.Get<BlueprintState>(); 
+            }
+
+            if (m_StateE.ExitedBlueprintMode)
+            {
+                ClearVisualizations();
             }
         }
 

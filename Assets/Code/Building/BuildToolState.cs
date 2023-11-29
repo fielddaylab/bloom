@@ -34,7 +34,9 @@ namespace Zavala.Building {
         [NonSerialized] public RoadToolState RoadToolState;
         [NonSerialized] public HexVector VecPrev;
         [NonSerialized] public bool VecPrevValid;
+
         [NonSerialized] public bool ToolUpdated;
+
 
         [NonSerialized] public SimBuffer<byte> BlockedTileBuffer;
 
@@ -63,4 +65,23 @@ namespace Zavala.Building {
         Digester,
         Skimmer
     }
+
+    public static class BuildToolUtility {
+        public static void SetTool(BuildToolState bts, UserBuildTool toolType)
+        {
+            bts.ActiveTool = toolType;
+            bts.ToolUpdated = true;
+
+            if (bts.ActiveTool == UserBuildTool.None)
+            {
+                Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+            }
+            else
+            {
+                Game.Events.Dispatch(GameEvents.BuildToolSelected);
+            }
+        }
+
+    }
+
 }

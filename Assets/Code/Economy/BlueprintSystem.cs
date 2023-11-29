@@ -15,6 +15,12 @@ namespace Zavala.Economy
         {
             // --- Process UI triggers
 
+            // Build clicked
+            if (m_StateA.NewBuildConfirmed)
+            {
+                BlueprintUtility.ConfirmBuild(m_StateA, m_StateB, m_StateC.CurrRegionIndex);
+            }
+
             // Blueprint mode opened
             if (m_StateA.StartBlueprintMode)
             {
@@ -29,26 +35,6 @@ namespace Zavala.Economy
                 m_StateA.IsActive = false;
                 SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
                 BlueprintUtility.OnExitedBlueprintMode(m_StateA, m_StateB, m_StateC);
-            }
-
-            // Build clicked
-            if (m_StateA.NewBuildConfirmed)
-            {
-                BlueprintUtility.ConfirmBuild(m_StateA, m_StateB, m_StateC.CurrRegionIndex);
-            }
-
-            // Changed number of commits to process
-            if (m_StateA.NumBuildCommitsChanged)
-            {
-                // Update Undo button
-                BlueprintUtility.OnNumBuildCommitsChanged(m_StateA);
-            }
-
-            // Changed number of commits to process
-            if (m_StateA.NumDestroyActionsChanged)
-            {
-                // Update Undo button
-                BlueprintUtility.OnNumDestroyActionsChanged(m_StateA);
             }
 
             // Clicked the Undo button (in Build mode)
@@ -79,6 +65,33 @@ namespace Zavala.Economy
             if (m_StateA.CanceledDestroyMode)
             {
                 BlueprintUtility.OnCanceledDestroyMode(m_StateA, m_StateB, m_StateC, m_StateD);
+            }
+
+            // Changed number of commits to process
+            if (m_StateA.NumBuildCommitsChanged)
+            {
+                // Update Undo button
+                BlueprintUtility.OnNumBuildCommitsChanged(m_StateA);
+            }
+
+            // Changed number of commits to process
+            if (m_StateA.NumDestroyActionsChanged)
+            {
+                // Update Undo button
+                BlueprintUtility.OnNumDestroyActionsChanged(m_StateA);
+            }
+
+            // Tool was deselected
+            if (m_StateD.ToolUpdated)
+            {
+                if (m_StateD.ActiveTool == UserBuildTool.None)
+                {
+                    BlueprintUtility.OnBuildToolDeselected(m_StateA);
+                }
+                else
+                {
+                    BlueprintUtility.OnBuildToolSelected(m_StateA);
+                }
             }
         }
     }

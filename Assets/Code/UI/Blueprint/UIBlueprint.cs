@@ -56,8 +56,6 @@ namespace Zavala.UI
         {
             Game.Events.Register(GameEvents.BlueprintModeStarted, HandleStartBlueprintMode);
             Game.Events.Register(GameEvents.BlueprintModeEnded, HandleEndBlueprintMode);
-            Game.Events.Register(GameEvents.BuildToolSelected, HandleBuildToolSelected);
-            Game.Events.Register(GameEvents.BuildToolDeselected, HandleBuildToolDeselected);
 
             m_ReceiptGroup.alpha = 0;
             m_BuildingModeText.alpha = 0;
@@ -104,16 +102,6 @@ namespace Zavala.UI
         {
             BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
             bpState.ExitedBlueprintMode = true;
-        }
-
-        private void HandleBuildToolSelected()
-        {
-            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
-        }
-
-        private void HandleBuildToolDeselected()
-        {
-            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
 
         private void HandleBuildConfirmButtonClicked()
@@ -216,6 +204,16 @@ namespace Zavala.UI
             m_ShopToggle.gameObject.SetActive(true);
 
             Game.Events?.Dispatch(GameEvents.DestroyModeEnded);
+        }
+
+        public void OnBuildToolSelected()
+        {
+            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
+        }
+
+        public void OnBuildToolDeselected()
+        {
+            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
 
         #endregion // System Handlers

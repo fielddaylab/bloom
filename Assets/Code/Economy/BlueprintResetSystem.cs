@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Zavala.Economy
 {
     // Process after BlueprintOverlaySystem and BlueprintSystem
-    [SysUpdate(GameLoopPhase.LateUpdate, 500)]
+    [SysUpdate(GameLoopPhase.Update, 500)]
     public class BlueprintResetSystem : SharedStateSystemBehaviour<BlueprintState>
     {
         public override void ProcessWork(float deltaTime)
@@ -15,10 +15,14 @@ namespace Zavala.Economy
             // Reset any triggers that were fired
 
             // Blueprint mode opened
-            if (m_State.StartBlueprintMode) { m_State.StartBlueprintMode = false; }
+            if (m_State.StartBlueprintMode) { 
+                m_State.StartBlueprintMode = false; 
+            }
 
             // Exited blueprint mode
-            if (m_State.ExitedBlueprintMode) { m_State.ExitedBlueprintMode = false; }
+            if (m_State.ExitedBlueprintMode) { 
+                m_State.ExitedBlueprintMode = false;
+            }
 
             // Build clicked
             if (m_State.NewBuildConfirmed) { m_State.NewBuildConfirmed = false; }

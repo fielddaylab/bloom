@@ -77,9 +77,7 @@ namespace Zavala.UI
                 // selected current button; should unselect it and return
                 ClearSelected();
 
-                bts.ActiveTool = UserBuildTool.None;
-
-                Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+                BuildToolUtility.SetTool(bts, UserBuildTool.None);
                 return;
             }
 
@@ -94,14 +92,12 @@ namespace Zavala.UI
 
             if (button.CanAfford) {
                 // set tool
-                bts.ActiveTool = button.BuildTool;
+                BuildToolUtility.SetTool(bts, button.BuildTool);
 
                 // set selected color
                 m_shopItemBtns[selectedIndex].Button.image.color = ZavalaColors.ShopItemSelected;
 
                 m_selectedIndex = selectedIndex;
-
-                Game.Events.Dispatch(GameEvents.BuildToolSelected);
             }
             else {
                 // some disallow routine? error sound, red flash, queue Balthazar, etc.

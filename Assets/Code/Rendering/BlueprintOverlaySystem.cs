@@ -8,49 +8,41 @@ using Zavala.Economy;
 using Zavala.Input;
 using Zavala.Sim;
 using Zavala.World;
+using BeauUtil;
+using UnityEngine.Rendering;
+using Zavala.Roads;
 
 namespace Zavala.Rendering
 {
     /// <summary>
     /// Controls an object that snaps to the tile under the mouse cursor
     /// </summary>
-    [SysUpdate(GameLoopPhase.Update, 400)]
-    public class BlueprintOverlaySystem : SharedStateSystemBehaviour<BlueprintState>
+    [SysUpdate(GameLoopPhase.Update, 450)]
+    public class BlueprintOverlaySystem : SharedStateSystemBehaviour<BlueprintState, SimGridState, SimWorldState, RoadNetwork>
     {
+        private BuildToolState m_StateE;
+
         public override void ProcessWork(float deltaTime)
         {
-            // Changed number of commits to process
-            if (m_State.NumBuildCommitsChanged)
+            if (!m_StateE)
             {
-                RegenerateOverlayMesh();
+                m_StateE = Game.SharedState.Get<BuildToolState>();
+            }
+
+            if (m_StateE.ToolUpdated)
+            {
+                // Regen when non-road tool is selected
+                if (m_StateE.ActiveTool != UserBuildTool.Road && m_StateE.ActiveTool != UserBuildTool.None)
+                {
+                    BlueprintUtility.RegenerateOverlayMesh(m_StateA, m_StateB, m_StateC, m_StateD);
+                }
+                else
+                {
+                    // Remove the old mesh
+                    BlueprintUtility.HideOverlayMesh(m_StateA);
+                }
                 return;
             }
-
-            // Render destroy bulldozer when in destroy mode
-            if (m_State.IsActive && m_State.CommandState == ActionType.Build)
-            {
-                if (m_State.OverlayMesh == null)
-                {
-                    // Generate new mesh
-                   RegenerateOverlayMesh();
-                   return;
-                }
-            }
-            else if (m_State.OverlayMesh != null)
-            {
-                // Remove the old mesh
-                DestroyOverlayMesh();
-            }
-        }
-
-        private void RegenerateOverlayMesh()
-        {
-            m_State.OverlayMesh = new Mesh();
-        }
-
-        private void DestroyOverlayMesh()
-        {
-            m_State.OverlayMesh = null;
         }
     }
 }

@@ -223,8 +223,7 @@ namespace Zavala.Building
             ShopUtility.EnqueueCost(m_StateD, price);
 
             // Deselect tools
-            m_StateC.ActiveTool = UserBuildTool.None;
-            Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+            BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
             m_StateC.VecPrevValid = false;
 
             return true;
@@ -549,8 +548,7 @@ namespace Zavala.Building
                 BlueprintUtility.CommitChain(bpState, roadChain);
 
                 // Deselect tools
-                m_StateC.ActiveTool = UserBuildTool.None;
-                Game.Events.Dispatch(GameEvents.BuildToolDeselected);
+                BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
 
                 // Add cost to receipt queue
                 ShopUtility.EnqueueCost(m_StateD, totalPrice);

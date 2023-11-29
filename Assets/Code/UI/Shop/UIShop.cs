@@ -41,7 +41,9 @@ namespace Zavala.UI {
 
         public void Collapse() {
             var currTool = Game.SharedState.Get<BuildToolState>().ActiveTool;
-            if (currTool != UserBuildTool.Destroy) { Game.SharedState.Get<BuildToolState>().ActiveTool = UserBuildTool.None; }
+            if (currTool != UserBuildTool.Destroy) {
+                BuildToolUtility.SetTool(Game.SharedState.Get<BuildToolState>(), UserBuildTool.None);
+            }
 
             m_shopRoutine.Replace(CollapseRoutine());
         }

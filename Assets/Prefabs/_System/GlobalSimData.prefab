@@ -333,9 +333,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220e096249e7967428851ab8f6c65b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsActive: 0
-  CommandState: 0
   m_ValidHoloMaterial: {fileID: 2100000, guid: 2b53b71440690c74e8dc28c399e4d8a1, type: 2}
+  m_OverlayPrefab: {fileID: 876459541648060465, guid: 1be3edb392ee4da4ca0e4351bf2d71bf, type: 3}
   NewBuildConfirmed: 0
   NumBuildCommitsChanged: 0
   NumDestroyActionsChanged: 0
@@ -837,7 +836,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3f2753b28046c4d9c95850ab471920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PrevMousePosition: {x: 0, y: 0}
-  LeadDestroyIcon: {fileID: 0}
-  LeadDestroySnap: {fileID: 0}
-  ActiveDestroyIcons: []
