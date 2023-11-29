@@ -2,11 +2,10 @@ using BeauUtil;
 using FieldDay;
 using FieldDay.Scenes;
 using FieldDay.Scripting;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 using Zavala.Building;
 using Zavala.Economy;
 
@@ -20,15 +19,21 @@ namespace Zavala.UI
         [SerializeField] private Color m_affordableColor;
         [SerializeField] private Color m_unaffordableColor;
         [SerializeField] private float m_ySpacing;
+        [SerializeField] private Sprite UnlockedBG;
+        [SerializeField] private Sprite LockedBG;
 
         public IEnumerator<WorkSlicer.Result?> Preload()
         {
             Game.Events.Register(GameEvents.BuildToolDeselected, HandleBuildToolDeselected);
 
+            for (int i = 0; i < m_shopItemBtns.Length; i++) {
+                SetShopItemBtnUnlocked(m_shopItemBtns[i], m_shopItemBtns[i].StartUnlocked);
+            }
+
             return null;
         }
 
-        public void Activate() {
+          public void Activate() {
             this.gameObject.SetActive(true);
 
             // Set Button images, text, and functionality according to underlying data
@@ -67,6 +72,16 @@ namespace Zavala.UI
                 m_shopItemBtns[i].CanAfford = canAfford;
             }
         }
+
+    public ShopItemButton GetShopItemBtn(UserBuildTool tool) {
+        return Array.Find(m_shopItemBtns, b => b.BuildTool == tool);
+    }
+
+    public void SetShopItemBtnUnlocked(ShopItemButton btn, bool unlocked) {
+        btn.ButtonBG.sprite = unlocked ? UnlockedBG : LockedBG;
+        btn.Button.interactable = unlocked;
+        btn.transform.GetChild(0).gameObject.SetActive(unlocked);
+    }
 
         #region Handlers
 

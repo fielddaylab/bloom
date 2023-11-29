@@ -11,7 +11,7 @@ $call PauseAlertType("ExcessRunoff")
 {@advisorEconHill}      I'll give you the tour.
 $call PanToBuilding("region1_city1")
 // TODO: add system for translating tile names ("region1_city1") to localized display names ("Oakvale")
-{@advisorEconHill}      There's the <i>City</i> of Oakvale...
+{@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
 $call PanToBuilding("region1_cafo1")
@@ -138,9 +138,10 @@ $endif
 @conditions     advisorType == "Ecology", CameraInRegion(0), RegionUnlocked(2)
 @forcePolicy    Ecology
 @once
-{@advisorEcolHill}      Ugh... Those Heath County people always irked me.
+{@advisorEcolHill}      Ugh... Those Heath County hayseeds always irked me.
 {@advisorEcolHill}      They think they're better than everyone because of their fancy college.
 {@advisorEcolHill}      Plus their straw hats are weird!
+{@advisorEcolHill}      Anyway, what can I help you with?
 
 
 // :: preBloomRunoff
@@ -161,7 +162,7 @@ $endif
 @queued
 @once
 $call Pause()
-$set runoffDiscovered = true
+$set global:runoffDiscovered = true
 {local @advisorEcol}    This farm is just letting manure leach into the water table!
 {local @advisorEcol}    That must be behind those algae blooms.
 {local @advisorEcon}    Maybe so, but they simply have no more favorable alternatives.
@@ -174,15 +175,15 @@ $call UnlockCards(RunoffPolicy)
 
 :: genericRunoff
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 0, runoffDiscovered
+@conditions     alertType == "excess-runoff", alertRegion == 0, global:runoffDiscovered
 @queued
 $call Pause()
 {local @advisorEcol}    More runoff... 
 {local @advisorEcol}    Maybe we ought to increase our runoff penalty?
 {local @advisorEcon}    Careful now! We don't want to bankrupt our farmers.
 {local @advisorEcon}    We just need to give them a more favorable option.
-//$if BuildingUnlocked(Storage)
-//  {local @advisorEcon}    Or build a Storage unit instead.
+$if Visited("region2.unlockStorage")
+{local @advisorEcon}    Or build a <b>Storage</b> unit instead.
 
 :: discoverFirstBloom
 @trigger        AlertExamined
@@ -190,7 +191,7 @@ $call Pause()
 @forcePolicy    Ecology
 @once
 $call Pause()
-$set bloomDiscovered = true
+$set global:bloomDiscovered = true
 // TODO: trigger ACT 2 HERE.
 {@advisorEcolHill}    Oh dear. It looks like algae blooms are coming to our lakes.
 {@advisorEcolHill}    Our policies may need some adjustment...
@@ -201,7 +202,7 @@ $call Unpause()
 
 :: genericBloomTrigger
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 0, bloomDiscovered
+@conditions     alertType == "bloom", alertRegion == 0, global:bloomDiscovered
 @forcePolicy    Ecology
 {local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
 {local @advisorEcol}    We could address the causes by penalizing runoff.

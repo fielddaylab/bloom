@@ -49,7 +49,6 @@ MonoBehaviour:
   TopRenderer: {fileID: 1957287682251005245}
   TopFilter: {fileID: 4381256484118424055}
   PillarRenderer: {fileID: 0}
-  Decorations: []
 --- !u!136 &3680174520802473011
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -60,7 +59,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.6
   m_Height: 2.5
   m_Direction: 1
   m_Center: {x: 0, y: -1, z: 0}

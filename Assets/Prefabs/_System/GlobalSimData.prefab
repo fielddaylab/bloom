@@ -333,8 +333,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShopUI: {fileID: 0}
+  UnlockedTools: 0201
   RunningCost: 0
-  ManulUpdateRequested: 0
+  ManualUpdateRequested: 0
 --- !u!114 &1300373136511585418
 MonoBehaviour:
   m_ObjectHideFlags: 0

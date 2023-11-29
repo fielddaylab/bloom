@@ -1,5 +1,6 @@
 using BeauRoutine;
 using FieldDay;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -73,6 +74,10 @@ namespace Zavala.UI {
         }
 
         #endregion // Handlers
+
+        public ShopButtonHub GetBtnHub() {
+            return m_shopBtnHub;
+        }
 
         #region Routines
 

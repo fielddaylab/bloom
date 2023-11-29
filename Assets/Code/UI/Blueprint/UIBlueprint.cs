@@ -225,7 +225,7 @@ namespace Zavala.UI
             if (inBMode)
             {
                 var shopState = Game.SharedState.Get<ShopState>();
-                shopState.ManulUpdateRequested = true;
+                shopState.ManualUpdateRequested = true;
 
                 yield return Routine.Combine(
                     m_TopBarBG.ColorTo(m_TBBlueprint, 0.1f),

@@ -138,5 +138,10 @@ namespace FieldDay.Scripting {
             parser.Parse(ref tagString, content, context);
             Runtime.ParserPool.Free(parser);
         }
+
+        [LeafMember("Visited")]
+        static public bool Visited(StringHash32 nodeId) {
+            return Persistence.SessionViewedNodeIds.Contains(nodeId);
+        }
     }
 }

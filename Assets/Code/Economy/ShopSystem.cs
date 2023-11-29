@@ -4,10 +4,12 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Systems;
+using Leaf.Runtime;
 using UnityEngine;
 using Zavala.Actors;
 using Zavala.Building;
 using Zavala.Sim;
+using Zavala.UI;
 
 namespace Zavala.Economy {
     [SysUpdate(GameLoopPhase.Update, 0)]
@@ -29,10 +31,10 @@ namespace Zavala.Economy {
                 BlueprintUtility.UpdateRunningCostDisplay(m_StateD, m_StateB.RunningCost, deltaCost, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
             }
 
-            if (m_StateB.ManulUpdateRequested)
+            if (m_StateB.ManualUpdateRequested)
             {
                 BlueprintUtility.UpdateRunningCostDisplay(m_StateD, m_StateB.RunningCost, 0, m_StateA.BudgetsPerRegion[m_StateC.CurrRegionIndex].Net);
-                m_StateB.ManulUpdateRequested = false;
+                m_StateB.ManualUpdateRequested = false;
             }
         }
 
@@ -82,6 +84,14 @@ namespace Zavala.Economy {
                 default:
                     return 0;
             }
+        }
+
+        [LeafMember("UnlockShopItem")]
+        public static void UnlockTool(UserBuildTool tool) {
+            ShopState shop = Game.SharedState.Get<ShopState>();
+            ShopButtonHub hub = shop.ShopUI.GetBtnHub();
+            ShopItemButton btn = hub.GetShopItemBtn(tool);
+            hub.SetShopItemBtnUnlocked(btn, true);
         }
 
         /// <summary>

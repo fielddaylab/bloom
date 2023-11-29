@@ -54,6 +54,7 @@ $call Pause()
 {@advisorEcolForest}    Ugh... I can't believe there's an algae bloom <i>here!</i>
 {@advisorEcolForest}    Those <i>hill-dwellers</i> should have done more to stop it.
 {@advisorEcolHill}      Pft! That's rich coming from <i>Stellar Forest Management</i> over here.
+{@advisorEcolForest}    It's not our fault you let your <i>filth</i> flow down here.
 $call Unpause()
 
 
@@ -64,21 +65,21 @@ $call Unpause()
 $call Pause()
 {@advisorEcolForest}    Hmm... This sitting manure leaches into the water table faster than it's used.
 {@advisorEcolForest}    Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
-{@advisorEconForest}    Excellent idea. You can create <b>Storage</b> in blueprint mode now.
-{@advisorEconForest}    Once connected to a CAFO, it'll hold onto manure for later use.
+{@advisorEconForest}    Excellent idea, Sage.
+{@advisorEconForest}    I've added <b>Storage</b> to your Blueprint Mode.
+{@advisorEcolForest}    Once connected to a CAFO, they'll hold onto manure for later use.
 {@advisorEconForest}    But it won't be cheap - try to share it between CAFOs.
-// TODO: $call UnlockShopItem(Storage)
+$call UnlockShopItem("Storage")
 $call Unpause()
 
 :: runoffGeneric
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1
+@conditions     alertType == "excess-runoff", alertRegion == 1, Visited("region2.unlockStorage")
 @once
 $call Pause()
-{@advisorEcolForest}    Hmm... This sitting manure leaches into the water table faster than it's used.
-{@advisorEcolForest}    Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
-{@advisorEconForest}    Excellent idea. You can create <b>Storage</b> in blueprint mode now.
-{@advisorEconForest}    Once connected to a CAFO, it'll hold onto manure for later use.
-{@advisorEconForest}    But it won't be cheap - try to share it between CAFOs.
-// TODO: $call UnlockShopItem(Storage)
+{@advisorEcolForest}    Eugh, more of that contemptible runoff.
+{@advisorEcolForest}    I say we build more Storage units.
+{@advisorEconForest}    Well... Just be sure to balance the budget. 
+{@advisorEconForest}    A policy adjustment may be more efficacious.
+
 $call Unpause()

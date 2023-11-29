@@ -17,7 +17,7 @@ namespace Zavala.Economy
 
         public int RunningCost = 0;
 
-        public bool ManulUpdateRequested;
+        public bool ManualUpdateRequested;
 
         public IEnumerator<WorkSlicer.Result?> Preload() {
             ShopUI = FindAnyObjectByType<UIShop>(FindObjectsInactive.Include);
