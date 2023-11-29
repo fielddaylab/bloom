@@ -23,6 +23,7 @@ using FieldDay.Scenes;
 using System.Threading;
 using System.Globalization;
 using BeauRoutine;
+using FieldDay.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -191,6 +192,9 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating scene manager...");
             Game.Scenes = new SceneMgr();
 
+            Log.Msg("[GameLoop] Creating gui manager...");
+            Game.Gui = new GuiMgr();
+
             Application.targetFrameRate = m_TargetFramerate;
 
             Log.Msg("[GameLoop] Loading config vars...");
@@ -279,6 +283,10 @@ namespace FieldDay {
             CameraHelper.RemoveOnPreCull(this);
             CameraHelper.RemoveOnPreRender(this);
             CameraHelper.RemoveOnPostRender(this);
+
+            Log.Msg("[GameLoop] Shutting down gui manager...");
+            Game.Gui.Shutdown();
+            Game.Gui = null;
 
             Log.Msg("[GameLoop] Shutting down scene manager...");
             Game.Scenes.Shutdown();

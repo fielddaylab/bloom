@@ -1,3 +1,4 @@
+using System;
 using BeauRoutine;
 using BeauUtil;
 using TMPro;
@@ -27,7 +28,7 @@ namespace Zavala.UI.Info {
             }
         }
 
-        static public void LoadPricesIntoRow(InfoPopupLocationRow row, OccupiesTile location, MarketQueryResultInfo info, MarketConfig config) {
+        static public void LoadPricesIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config) {
             row.PriceGroup.SetActive(false);
 
             int basePrice = config.PurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
@@ -62,6 +63,12 @@ namespace Zavala.UI.Info {
             }
 
             row.TotalPriceRow.Number.SetText(info.Profit.ToStringLookup());
+
+            row.PriceLayout.ForceRebuild(true);
+        }
+    
+        static public void ClearPricesAtRow(InfoPopupLocationRow row) {
+            row.PriceGroup.SetActive(false);
         }
     }
 }

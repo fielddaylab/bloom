@@ -432,7 +432,7 @@ namespace Zavala.Economy
                         buffer.PushBack(new MarketQueryResultInfo() {
                             Requester = requester,
                             Supplier = supplier,
-                            Resource = ResourceUtility.FirstResource(data.Mask),
+                            Resource = ResourceUtility.FirstResource((data.Mask & resource)),
                             Distance = data.Distance,
                             PathFlags = data.Path.Flags,
                             Profit = data.Profit,

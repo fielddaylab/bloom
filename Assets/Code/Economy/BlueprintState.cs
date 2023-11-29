@@ -87,7 +87,7 @@ namespace Zavala.Economy
 
         public IEnumerator<WorkSlicer.Result?> Preload()
         {
-            UI = FindAnyObjectByType<UIBlueprint>(FindObjectsInactive.Include);
+            UI = Game.Gui.GetShared<UIBlueprint>();
             Commits = new RingBuffer<CommitChain>(8);
             CommandState = ActionType.Build;
 

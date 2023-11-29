@@ -19,6 +19,8 @@ GameObject:
   - component: {fileID: 6532105662098585238}
   - component: {fileID: 5050965405892180161}
   - component: {fileID: 7154066641173859841}
+  - component: {fileID: 4395246305225779435}
+  - component: {fileID: 118139742912675241}
   m_Layer: 7
   m_Name: GrainFarm_Base
   m_TagString: Untagged
@@ -225,6 +227,39 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4395246305225779435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5421243799934890597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f47a41270c43b3b43ba993419088b887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &118139742912675241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5421243799934890597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8ab6ff6bf4dc145a146cff94c9cda2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TitleLabel:
+    m_Source: 
+    m_HashValue: 0
+  InfoLabel:
+    m_Source: 
+    m_HashValue: 0
+  CharacterId:
+    m_HashValue: 0
+  Icon: {fileID: 0}
 --- !u!1001 &3743880648583490365
 PrefabInstance:
   m_ObjectHideFlags: 0
