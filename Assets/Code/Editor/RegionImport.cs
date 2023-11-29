@@ -289,6 +289,18 @@ namespace Zavala.Editor {
                                 tiles[pos].Flags |= TerrainFlags.IsToll;
                                 break;
                             }
+                        case 9:
+                            { // temporary obstruction
+                                buildingList.Add(new RegionAsset.BuildingData()
+                                {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.TollBooth,
+                                    ScriptName = scriptName
+                                });
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
+                                tiles[pos].Flags |= TerrainFlags.NonBuildable;
+                                break;
+                            }
                     }
                 }
             }
