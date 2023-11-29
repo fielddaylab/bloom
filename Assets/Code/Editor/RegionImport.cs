@@ -300,7 +300,7 @@ namespace Zavala.Editor {
                                 buildingList.Add(new RegionAsset.BuildingData()
                                 {
                                     LocalTileIndex = (ushort)pos,
-                                    Type = BuildingType.TollBooth,
+                                    Type = BuildingType.TempObstruction,
                                     ScriptName = scriptName
                                 });
                                 tiles[pos].Flags |= TerrainFlags.IsOccupied;

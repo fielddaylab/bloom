@@ -393,7 +393,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 33
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -468,7 +468,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 33
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -478,7 +478,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 33
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -548,17 +548,17 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 128
+    Flags: 161
     Height: 100
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 33
     Height: 200
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 128
+    Flags: 161
     Height: 100
   - RegionIndex: 65535
     Category: 1
@@ -841,6 +841,36 @@ MonoBehaviour:
       m_Source: region5_export1
       m_HashValue: 3767713126
     Type: 9
+  - LocalTileIndex: 107
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
+  - LocalTileIndex: 106
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
+  - LocalTileIndex: 90
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
+  - LocalTileIndex: 75
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
+  - LocalTileIndex: 92
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
+  - LocalTileIndex: 108
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
   Points: []
   Roads: []
   Modifiers:

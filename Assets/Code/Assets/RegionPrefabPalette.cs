@@ -18,5 +18,6 @@ namespace Zavala.World {
         [Header("Static Modifiers")]
         public GameObject[] Rock;
         public GameObject[] Tree;
+        public GameObject[] Obstruction;
     }
 }

@@ -26,3 +26,5 @@ MonoBehaviour:
   Tree:
   - {fileID: 7038089790863349094, guid: a1b92c455077b3c41b3a52912f0f1412, type: 3}
   - {fileID: 7038089790863349094, guid: 771952602e8789e4691a0fa63ca09c71, type: 3}
+  Obstruction:
+  - {fileID: 7038089790863349094, guid: a1bb9b6c231870b4d9abca913e16e47b, type: 3}

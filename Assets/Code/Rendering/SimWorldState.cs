@@ -1,12 +1,20 @@
+using BeauRoutine;
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using FieldDay.Systems;
+using Leaf.Runtime;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zavala.Economy;
+using Zavala.Scripting;
 using Zavala.Sim;
 
 namespace Zavala.World {
@@ -72,7 +80,11 @@ namespace Zavala.World {
         [NonSerialized] public SimWorldSpawnBuffer Spawns;
         [NonSerialized] public RingBuffer<VisualUpdateRecord> QueuedVisualUpdates = new RingBuffer<VisualUpdateRecord>(32, RingBufferMode.Expand);
         [NonSerialized] public RingBuffer<SpanSpawnRecord<BuildingType>> QueuedSpanners = new RingBuffer<SpanSpawnRecord<BuildingType>>();
+        [NonSerialized] public List<GameObject> ObstructionsWorkList;
 
+        // routines
+
+        [NonSerialized] public Routine ExportRevealRoutine;
 
         void IRegistrationCallbacks.OnDeregister() {
         }
@@ -91,6 +103,9 @@ namespace Zavala.World {
 
             Tiles = new TileInstance[grid.HexSize.Size];
             Spawns.Create();
+
+            ObstructionsWorkList = new List<GameObject>();
+            ExportRevealRoutine = new Routine();
         }
 
 #if UNITY_EDITOR
@@ -195,6 +210,70 @@ namespace Zavala.World {
         }
 
         #endregion // Centroids
+
+
+        #region Leaf Members
+
+        [LeafMember("UnlockExportDepot")]
+        static public void UnlockExportDepot(StringHash32 id)
+        {
+            SimWorldState world = Game.SharedState.Get<SimWorldState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            ExportRevealState eReveal = Game.SharedState.Get<ExportRevealState>();
+
+            world.ExportRevealRoutine.Replace(RevealExportDepot(world, grid, eReveal, id));
+        }
+
+        #endregion // Leaf Members
+
+        #region Routines
+
+        static private IEnumerator RevealExportDepot(SimWorldState world, SimGridState grid, ExportRevealState eReveal, StringHash32 inId)
+        {
+            Vector3 worldPos = ScriptUtility.LookupActor(inId).transform.position;
+            TryGetTileIndexFromWorld(worldPos, out int depotIndex);
+            int regionIndex = grid.Terrain.Regions[depotIndex];
+
+            // Pan camera to spot
+            CameraUtility.PanCameraToBuilding(inId);
+            // TODO: get exact timing of camera pan
+            yield return 1;
+
+            // TODO: Disable player control
+
+            // Remove temporary obstructions
+            world.ObstructionsWorkList = eReveal.ObstructionsPerRegion[regionIndex];
+            foreach (GameObject obj in world.ObstructionsWorkList)
+            {
+                OccupiesTile ot = obj.GetComponent<OccupiesTile>();
+                TileEffectRendering.SetTopVisibility(world.Tiles[ot.TileIndex], true);
+                // Destroy object on top of tile
+                GameObject.Destroy(obj);
+                // restore flags
+                grid.Terrain.Info[ot.TileIndex].Flags = 0;
+                yield return 0.5f;
+            }
+            world.ObstructionsWorkList.Clear();
+
+            yield return 1f;
+
+            // Convert export depot placeholder to the real deal
+            GameObject tempDepot = eReveal.DepotsPerRegion[regionIndex];
+            GameObject.Destroy(tempDepot);
+
+            RegionPrefabPalette palette = world.Palettes[regionIndex];
+            var newDepot = GameObject.Instantiate(palette.ExportDepot, worldPos, Quaternion.identity);
+
+            Assert.NotNull(newDepot);
+            EventActorUtility.RegisterActor(newDepot.GetComponent<EventActor>(), inId);
+            eReveal.DepotsPerRegion[regionIndex] = newDepot;
+
+            // TODO: Restore player control
+
+            yield return null;
+        }
+
+        #endregion // Routines
     }
 
     public struct SimWorldSpawnBuffer {

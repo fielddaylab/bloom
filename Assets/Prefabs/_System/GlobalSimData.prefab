@@ -34,6 +34,7 @@ GameObject:
   - component: {fileID: 2876602851293507836}
   - component: {fileID: 3070150076525417522}
   - component: {fileID: 2278038441633514227}
+  - component: {fileID: 954327501376670322}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -98,7 +99,6 @@ MonoBehaviour:
   Scale: {x: 0.773, y: 0.008, z: 0.885}
   Offset: {x: 0, y: 0, z: 0}
   DefaultWaterPrefab: {fileID: 7097652779095066658, guid: 5887f51366947f240ae408caadcb0af1, type: 3}
-  DeepWaterPrefab: {fileID: 7097652779095066658, guid: 83729ce0c5bb0e84ba1654c92a805553, type: 3}
   WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
   BottomBounds: 0
   BoundsExpand: 1.5
@@ -895,5 +895,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 216e1ab6940bcd645a4ac691fe70f9e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &954327501376670322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2212beb05980b034893e41cf9c941f9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

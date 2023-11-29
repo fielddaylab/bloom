@@ -12,7 +12,7 @@ namespace Zavala.World
 {
 
     [SysUpdate(GameLoopPhase.LateUpdate, 0)]
-    public sealed class SimWorldObjectSpawnSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, BuildingPools>
+    public sealed class SimWorldObjectSpawnSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, BuildingPools, ExportRevealState>
     {
         public override bool HasWork() {
             if (base.HasWork()) {
@@ -44,7 +44,15 @@ namespace Zavala.World
                             break;
                         }
                     case BuildingType.ExportDepot: {
-                            building = GameObject.Instantiate(palette.ExportDepot, worldPos, Quaternion.identity);
+                            building = GameObject.Instantiate(palette.Obstruction[random.Int(palette.Obstruction.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
+                            var actor = building.AddComponent<EventActor>();
+                            m_StateD.DepotsPerRegion[spawn.RegionIndex] = building;
+                            break;
+                        }
+                    case BuildingType.TempObstruction:
+                        {
+                            building = GameObject.Instantiate(palette.Obstruction[random.Int(palette.Obstruction.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
+                            m_StateD.ObstructionsPerRegion[spawn.RegionIndex].Add(building);
                             break;
                         }
                 }
@@ -98,6 +106,7 @@ namespace Zavala.World
                 }
                 Assert.NotNull(spanner);
                 EventActorUtility.RegisterActor(spanner.GetComponent<EventActor>(), spawn.Id);
+                // m_StateA.Tiles[spawn.TileIndex].SpawnedTop = spanner;
             }
 
             // Spawn External Supplier
@@ -108,15 +117,6 @@ namespace Zavala.World
             ExternalState externalState = Game.SharedState.Get<ExternalState>();
             externalState.ExternalDepot = externalDepot.GetComponent<ResourceSupplierProxy>();
             externalState.ExternalSupplier = externalSupplier.GetComponent<ResourceSupplier>();
-
-            /*
-            Assert.NotNull(externalDepot);
-            EventActorUtility.RegisterActor(externalDepot.GetComponent<EventActor>(), "");
-            */
-            /*
-            Assert.NotNull(externalSupplier);
-            EventActorUtility.RegisterActor(externalSupplier.GetComponent<EventActor>(), "");
-            */
         }
     }
 }

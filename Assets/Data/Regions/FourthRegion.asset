@@ -323,7 +323,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 33
     Height: 150
   - RegionIndex: 65535
     Category: 2
@@ -398,7 +398,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 33
     Height: 200
   - RegionIndex: 65535
     Category: 2
@@ -1301,6 +1301,16 @@ MonoBehaviour:
       m_Source: region4_export1
       m_HashValue: 543699393
     Type: 9
+  - LocalTileIndex: 76
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
+  - LocalTileIndex: 61
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Type: 11
   Points: []
   Roads: []
   Modifiers:
