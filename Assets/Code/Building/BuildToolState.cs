@@ -52,8 +52,8 @@ namespace Zavala.Building {
         public void OnRegister() {
             ClearRoadTool();
 
-            BlockedIdxs = new RingBuffer<int>(64);
-            BlockedAdjIdxs = new RingBuffer<int>(32);
+            BlockedIdxs = new RingBuffer<int>(64, RingBufferMode.Expand);
+            BlockedAdjIdxs = new RingBuffer<int>(32, RingBufferMode.Expand);
             BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
         }
 
