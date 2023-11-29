@@ -70,6 +70,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 71655035bb0de734c99669adc790e169, type: 3}
   - {fileID: 21300000, guid: 846a4735a6935e24886914f391495f0b, type: 3}
   - {fileID: 21300000, guid: 61db9685c1b7ea243a4c109811110530, type: 3}
+  - {fileID: 21300000, guid: 3b8ea6d50277eea43926e81d7ffd6d02, type: 3}
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
   - {fileID: 21300000, guid: acc941f56bfbc8b4ca37f79604295118, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
@@ -125,6 +126,7 @@ SpriteAtlas:
   - ShopHubButton
   - alert-banner
   - base_unused-digester
+  - ecol_phosphorus
   - advisor-dialogue-white
   - alert_Manure
   - ShopToggle

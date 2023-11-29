@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Advisor;
 
 namespace Zavala.UI {
     public class EconDialogueModule : DialogueModuleBase, IDialogueModule
@@ -15,11 +16,12 @@ namespace Zavala.UI {
 
         #region Inspector
 
-        [SerializeField] private Button m_PieButton, m_MarketButton, m_BarButton;
+        [SerializeField] private Button m_MarketButton, m_BarButton;
+        //[SerializeField] private Button m_PieButton;
 
         [Space(5)]
         [Header("Visuals")]
-        [SerializeField] private UIPieChart m_PieChart;
+        //[SerializeField] private UIPieChart m_PieChart;
         [SerializeField] private UIMarketShareGraph m_MarketShare;
         [SerializeField] private UIBarChart m_BarChart;
 
@@ -39,16 +41,16 @@ namespace Zavala.UI {
 
             // Save objects for selective showing later
             if (m_GraphObjs == null) {
-                m_GraphObjs = new GameObject[3] {
-                    m_PieChart.gameObject,
+                m_GraphObjs = new GameObject[2] {
+                    //m_PieChart.gameObject,
                     m_MarketShare.gameObject,
                     m_BarChart.gameObject
                 };
             }
 
             if (m_GraphButtons == null) {
-                m_GraphButtons = new Button[3] {
-                    m_PieButton,
+                m_GraphButtons = new Button[2] {
+                    //m_PieButton,
                     m_MarketButton,
                     m_BarButton
                 };
@@ -60,7 +62,7 @@ namespace Zavala.UI {
             HideGraphs();
 
             // Register buttons
-            m_PieButton.onClick.AddListener(HandlePieButtonClicked);
+            //m_PieButton.onClick.AddListener(HandlePieButtonClicked);
             m_MarketButton.onClick.AddListener(HandleMarketButtonClicked);
             m_BarButton.onClick.AddListener(HandleBarButtonClicked);
         }
@@ -69,7 +71,7 @@ namespace Zavala.UI {
             base.Deactivate();
 
             // Deregister buttons
-            m_PieButton.onClick.RemoveAllListeners();
+            //m_PieButton.onClick.RemoveAllListeners();
             m_MarketButton.onClick.RemoveAllListeners();
             m_BarButton.onClick.RemoveAllListeners();
         }
@@ -77,30 +79,30 @@ namespace Zavala.UI {
         #endregion // IDialogueModule
 
         #region Handlers
-
+/*
         private void HandlePieButtonClicked() {
             HideGraphs();
             if (m_DisplayState == DisplayState.Pie) {
                 // Keep hidden
                 m_DisplayState = DisplayState.None;
-            }
-            else {
+            } else {
                 // Show graph
                 m_PieChart.gameObject.SetActive(true);
                 m_DisplayState = DisplayState.Pie;
+                SetColorPressed(m_PieButton, true);
             }
         }
-
+*/
         private void HandleMarketButtonClicked() {
             HideGraphs();
             if (m_DisplayState == DisplayState.Market) {
                 // Keep hidden
                 m_DisplayState = DisplayState.None;
-            }
-            else {
+            } else {
                 // Show graph
                 m_MarketShare.gameObject.SetActive(true);
                 m_DisplayState = DisplayState.Market;
+                SetColorPressed(m_MarketButton, true);
             }
         }
 
@@ -109,11 +111,12 @@ namespace Zavala.UI {
             if (m_DisplayState == DisplayState.Bar) {
                 // Keep hidden
                 m_DisplayState = DisplayState.None;
-            }
-            else {
+            } else {
                 // Show graph
                 m_BarChart.gameObject.SetActive(true);
                 m_DisplayState = DisplayState.Bar;
+                SetColorPressed(m_BarButton, true);
+
             }
         }
 
@@ -125,6 +128,7 @@ namespace Zavala.UI {
             }
             foreach(Button btn in m_GraphButtons) {
                 btn.enabled = true;
+                SetColorPressed(btn, false);
             }
         }
     }

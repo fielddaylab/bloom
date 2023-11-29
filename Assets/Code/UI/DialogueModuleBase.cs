@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Zavala.Advisor;
 using Zavala.Scripting;
 
 namespace Zavala.UI {
     public abstract class DialogueModuleBase : MonoBehaviour, IDialogueModule
     {
         [SerializeField] private ScriptCharacterRemap[] m_UsedBy; // The categories of characters who use this dialogue module
+        [SerializeField] private bool Unlocked;
+        [SerializeField] public AdvisorType m_AdvisorType;
 
         private bool m_IsActive = false;
 
@@ -24,6 +28,9 @@ namespace Zavala.UI {
 
         public virtual void Activate(bool allowReactivate) {
             if (m_IsActive && !allowReactivate) {
+                return;
+            }
+            if (!Unlocked) {
                 return;
             }
 
@@ -53,6 +60,21 @@ namespace Zavala.UI {
             }
 
             return false;
+        }
+
+        public void Unlock() {
+            if (Unlocked) {
+                BeauUtil.Debugger.Log.Msg("[DialogueModuleBase] Attempted to unlock {0} module, but it's already unlocked!", m_AdvisorType);
+            }
+            Unlocked = true;
+        }
+
+        protected void SetColorPressed(Button button, bool pressed) {
+            if (pressed) {
+                button.targetGraphic.color = button.colors.pressedColor;
+            } else {
+                button.targetGraphic.color = button.colors.normalColor;
+            }
         }
 
         #endregion // IDialogueModule
