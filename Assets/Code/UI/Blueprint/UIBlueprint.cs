@@ -32,6 +32,8 @@ namespace Zavala.UI
         [SerializeField] private Color m_TBDefault;
         [SerializeField] private Color m_TBBlueprint;
 
+        [SerializeField] private CanvasGroup m_PolicyBoxGroup;
+
         [Header("Receipt")]
         [SerializeField] private CanvasGroup m_ReceiptGroup;
         [SerializeField] private TMP_Text m_RunningCostText;
@@ -231,7 +233,8 @@ namespace Zavala.UI
                     m_TopBarBG.ColorTo(m_TBBlueprint, 0.1f),
                     m_BuildingModeText.FadeTo(1, .1f),
                     m_BuildingModeText.rectTransform.MoveTo(11, .1f, Axis.Y, Space.Self),
-                    m_RegionText.rectTransform.MoveTo(-7, .1f, Axis.Y, Space.Self)
+                    m_RegionText.rectTransform.MoveTo(-7, .1f, Axis.Y, Space.Self),
+                    m_PolicyBoxGroup.FadeTo(0, .1f)
                     );
             }
             else
@@ -240,7 +243,8 @@ namespace Zavala.UI
                     m_TopBarBG.ColorTo(m_TBDefault, 0.1f),
                     m_BuildingModeText.FadeTo(0, .1f),
                     m_BuildingModeText.rectTransform.MoveTo(0, .1f, Axis.Y, Space.Self),
-                    m_RegionText.rectTransform.MoveTo(0, .1f, Axis.Y, Space.Self)
+                    m_RegionText.rectTransform.MoveTo(0, .1f, Axis.Y, Space.Self),
+                    m_PolicyBoxGroup.FadeTo(1, .1f)
                     );
             }
         }
