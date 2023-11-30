@@ -21,7 +21,7 @@ namespace Zavala.UI {
         public void PinTo(Transform t) {
             if (Pin.Pin(t)) {
                 PinnedVisuals.SetActive(true);
-                CameraUtility.PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ZavalaGame.SharedState.Get<InteractionState>(), t);
+                CameraUtility.PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), t);
             }
         }
 

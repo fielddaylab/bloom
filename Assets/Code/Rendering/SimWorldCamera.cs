@@ -32,21 +32,17 @@ namespace Zavala.World {
 
         [LeafMember("PanToBuilding")]
         public static void PanCameraToBuilding(StringHash32 id) {
-            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ZavalaGame.SharedState.Get<InteractionState>(), ScriptUtility.LookupActor(id).transform);
+            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform);
         }
 
-        public static void PanCameraToPoint(SimWorldCamera cam, InteractionState interactions, Transform t) {
+        public static void PanCameraToPoint(SimWorldCamera cam, Transform t) {
             cam.PanTarget = t;
-            cam.m_TransitionRoutine.Replace(PanRoutine(cam, interactions));
+            cam.m_TransitionRoutine.Replace(PanRoutine(cam));
         }
 
-        private static IEnumerator PanRoutine(SimWorldCamera cam, InteractionState interactions) {
-            InteractionUtility.DisableInteraction(interactions, InteractionMask.Movement);
-
+        private static IEnumerator PanRoutine(SimWorldCamera cam) {
             yield return cam.transform.MoveToWithSpeed(cam.PanTarget.position, cam.CameraMoveSpeed).Ease(Curve.Smooth);
             cam.PanTarget = null;
-
-            InteractionUtility.EnableInteraction(interactions, InteractionMask.Movement);
 
             yield return null;
         }

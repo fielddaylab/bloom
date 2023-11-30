@@ -26,6 +26,7 @@ namespace Zavala.Input
     {
         [AutoEnum] public InteractionMask AllowedInteractions;
         [NonSerialized] public bool InteractionUpdated;
+        // TODO: Add a stash mask for temporary overrides? Pan to building, unlock export depot, etc.
 
         [NonSerialized] public RingBuffer<InteractFilter> Filters;
 
