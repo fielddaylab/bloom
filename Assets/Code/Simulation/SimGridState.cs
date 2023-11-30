@@ -276,6 +276,7 @@ namespace Zavala.Sim {
                 Debug.Log("[SimGridState] Region updated from " + grid.CurrRegionIndex + " to " + newRegionIndex);
                 grid.CurrRegionIndex = newRegionIndex;
                 ShopUtility.RefreshShop(Game.SharedState.Get<BudgetData>(), Game.SharedState.Get<ShopState>(), grid);
+                Game.Events.Dispatch(GameEvents.RegionSwitched);
                 return true;
             } 
             return false;

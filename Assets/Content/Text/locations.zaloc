@@ -12,6 +12,60 @@ Henrietta's Grain Farm
 :: externalSupplier.name
 Phos 4 Us
 
+:: region2_cafo1.name
+Natalie's Dairy Farm
+
+:: region2_cafo2.name
+Natalie's Dairy Farm
+
+:: region2_grain1.name
+Emmett's Grain Farm
+
+:: region2_city1.name
+Forest City
+
+:: region3_cafo1.name
+Winnie's Dairy Farm
+
+:: region3_grain1.name
+Zora's Grain Farm
+
+:: region3_grain2.name
+Zora's Grain Farm
+
+:: region3_city1.name
+Winstone
+
+:: region4_cafo1.name
+Neil's Dairy Farm
+
+:: region4_cafo2.name
+Neil's Dairy Farm
+
+:: region4_cafo3.name
+Neil's Dairy Farm
+
+:: region4_grain1.name
+Cindy's Grain Farm
+
+:: region4_city1.name
+Trenchfort
+
+:: region5_cafo1.name
+Tabitha's Dairy Farm
+
+:: region5_grain1.name
+Tom's Grain Farm
+
+:: region5_city1.name
+East Smokestack
+
+:: region5_city2.name
+West Smokestack
+
+:: region5_city3.name
+Central Smokestack
+
 # basePath location.shared
 
 :: cafoInfo
@@ -25,4 +79,45 @@ Where they buy fertilizer:
 
 :: letItSit
 Let It Sit
+
+:: storage
+Storage Unit
+
+:: digester
+Manure Digester
+
+# basePath region
+
+:: hill.name
+Knoll
+
+:: hill.name.long
+Knoll County
+
+:: forest.name
+Pine
+
+:: forest.name.long
+Pine County
+
+:: wetlands.name
+Wetlands
+
+:: wetlands.name.long
+Wetlands Region
+
+:: prairie.name
+Heath
+
+:: prairie.name.long
+Heath County
+
+:: urban.name
+Smokestack
+
+:: urban.name.long
+Smokestack City
+
+:: external.name
+External Supplier
 

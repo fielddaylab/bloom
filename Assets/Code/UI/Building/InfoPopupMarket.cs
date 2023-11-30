@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Economy;
+using Zavala.Sim;
 
 namespace Zavala.UI.Info {
     public class InfoPopupMarket : MonoBehaviour {
@@ -17,18 +18,20 @@ namespace Zavala.UI.Info {
         static public void LoadLocationIntoRow(InfoPopupLocationRow row, OccupiesTile location, OccupiesTile referenceLocation) {
             LocationDescription desc = location.GetComponent<LocationDescription>();
 
-            // TODO: Locate icon
-            // TODO: Locate name
-
             row.NameLabel.SetText(Loc.Find(desc.TitleLabel));
             row.Icon.sprite = desc.Icon;
 
-            if (referenceLocation != null && location.RegionIndex == referenceLocation.RegionIndex) {
+            if (location.IsExternal) {
+                row.RegionLabel.gameObject.SetActive(true);
+                row.RegionLabel.SetText(Loc.Find("region.external.name"));
+                row.NameLabel.rectTransform.SetAnchorPos(row.RegionLabel.rectTransform.sizeDelta.y / 2, Axis.Y);
+            }
+            else if (referenceLocation != null && location.RegionIndex == referenceLocation.RegionIndex) {
                 row.RegionLabel.gameObject.SetActive(false);
                 row.NameLabel.rectTransform.SetAnchorPos(0, Axis.Y);
             } else {
                 row.RegionLabel.gameObject.SetActive(true);
-                // TODO: Locate region name
+                row.RegionLabel.SetText(Loc.Find(RegionUtility.GetNameLong(location.RegionIndex)));
                 row.NameLabel.rectTransform.SetAnchorPos(row.RegionLabel.rectTransform.sizeDelta.y / 2, Axis.Y);
             }
         }
