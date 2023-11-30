@@ -385,6 +385,15 @@ namespace Zavala.Economy
             }
         }
 
+        public static void OnMarketTickAdvanced(BlueprintState blueprintState, MarketData market)
+        {
+            if (!blueprintState.IsActive)
+            {
+                // Only add popups when top bar boxes are visible
+                blueprintState.UI.OnMarketTickAdvanced(market);
+            }
+        }
+
         #region Mesh Overlay
 
         public static void RegenerateOverlayMesh(BlueprintState bpState, SimGridState grid, SimWorldState world, RoadNetwork network, BuildToolState btState)

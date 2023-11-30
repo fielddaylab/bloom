@@ -60,5 +60,9 @@ namespace Zavala {
 
         static public readonly Color ShopItemDefault = Colors.Hex("7BE3EB");
         static public readonly Color ShopItemSelected = Colors.Hex("FFE27D");
+
+        static public readonly Color TopBarPopupPlus = Colors.Hex("DFCD29");
+        static public readonly Color TopBarPopupMinus = Colors.Hex("E07156");
+
     }
 }

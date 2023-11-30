@@ -1,3 +1,4 @@
+using BeauPools;
 using BeauRoutine;
 using BeauUtil;
 using BeauUtil.UI;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Advisor;
 using Zavala.Economy;
 using Zavala.Sim;
 
@@ -17,6 +19,12 @@ namespace Zavala.UI
 {
     public class UIBlueprint : SharedPanel, IScenePreload
     {
+        #region Types
+
+        [Serializable] public class PopupPool : SerializablePool<UIPolicyBoxPopup> { } // The packages airships drop
+
+        #endregion // Types
+
         #region Inspector
 
         [SerializeField] private ShopToggleButton m_ShopToggle;
@@ -34,6 +42,7 @@ namespace Zavala.UI
         [SerializeField] private Color m_TBBlueprint;
 
         [SerializeField] private CanvasGroup m_PolicyBoxGroup;
+        [SerializeField] private UIPolicyBox[] m_PolicyBoxes;
 
         [Header("Receipt")]
         [SerializeField] private CanvasGroup m_ReceiptGroup;
@@ -48,12 +57,12 @@ namespace Zavala.UI
         [SerializeField] private Button m_DestroyUndoButton;   // Undo button when in Destroy Mode
         [SerializeField] private Button m_DestroyExitButton;   // Exit button when in Destroy Mode
 
+        #endregion // Inspector
+
         private Routine m_TopBarRoutine;
         private Routine m_ReceiptRoutine;
         private Routine m_BuildCommandLayoutRoutine;
         private Routine m_DestroyCommandLayoutRoutine;
-
-        #endregion // Inspector
 
         public IEnumerator<WorkSlicer.Result?> Preload()
         {
@@ -78,6 +87,11 @@ namespace Zavala.UI
             m_DestroyModeButton.onClick.AddListener(HandleDestroyModeButtonClicked);
             m_DestroyConfirmButton.onClick.AddListener(HandleDestroyConfirmButtonClicked);
             m_DestroyExitButton.onClick.AddListener(HandleDestroyExitButtonClicked);
+
+            foreach(var box in m_PolicyBoxes)
+            {
+                box.Popup.Group.alpha = 0;
+            }
 
             return null;
         }
@@ -217,6 +231,44 @@ namespace Zavala.UI
         public void OnBuildToolDeselected()
         {
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
+        }
+
+        public void OnMarketTickAdvanced(MarketData data)
+        {
+            // Show new popups
+            foreach(var box in m_PolicyBoxes)
+            {
+                int amt = 0;
+
+                // TODO: calculate amounts from data history
+                switch(box.PolicyType)
+                {
+                    case PolicyType.SalesTaxPolicy:
+                        // amt = 5;
+                        box.Popup.SetPopupAmt(amt);
+                        break;
+                    case PolicyType.ImportTaxPolicy:
+                        // amt = -5;
+                        box.Popup.SetPopupAmt(amt);
+                        break;
+                    case PolicyType.RunoffPolicy:
+                        // amt = 50;
+                        box.Popup.SetPopupAmt(amt);
+                        break;
+                    case PolicyType.SkimmingPolicy:
+                        // amt = 0;
+                        box.Popup.SetPopupAmt(amt);
+                        break;
+                    default:
+                        break;
+                }
+
+                // Display animation
+                if (amt != 0)
+                {
+                    box.PlayPopupRoutine();
+                }
+            }
         }
 
         #endregion // System Handlers

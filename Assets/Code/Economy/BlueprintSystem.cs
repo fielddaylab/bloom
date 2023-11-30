@@ -8,11 +8,16 @@ using Zavala.Sim;
 
 namespace Zavala.Economy
 {
+    // Update after MarketSystem
     [SysUpdate(GameLoopPhase.Update, 400)]
     public class BlueprintSystem : SharedStateSystemBehaviour<BlueprintState, ShopState, SimGridState, BuildToolState>
     {
+        private MarketData m_StateE;
+
         public override void ProcessWork(float deltaTime)
         {
+            if (!m_StateE) { m_StateE = Game.SharedState.Get<MarketData>(); }
+
             // --- Process UI triggers
 
             // Build clicked
@@ -92,6 +97,13 @@ namespace Zavala.Economy
                 {
                     BlueprintUtility.OnBuildToolSelected(m_StateA);
                 }
+            }
+
+
+            // On market ticks, update top bar box popups
+            if (m_StateE.MarketTimer.HasAdvanced())
+            {
+                BlueprintUtility.OnMarketTickAdvanced(m_StateA, m_StateE);
             }
         }
     }

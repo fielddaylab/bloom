@@ -34,6 +34,7 @@ namespace Zavala.Economy
         public DataHistory[] SalesTaxHistory;
         public DataHistory[] ImportTaxHistory;
         public DataHistory[] PenaltiesHistory;
+        // Skimmer history?
 
 
         void IRegistrationCallbacks.OnDeregister() {
