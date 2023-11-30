@@ -75,6 +75,7 @@ namespace Zavala.Economy
         public ushort ProxyIdx;
         public RoadPathSummary Path;
         public int Profit;
+        public int ShippingCost;
         public int RelativeGain;
         public GeneratedTaxRevenue TaxRevenue;
     }
@@ -149,6 +150,16 @@ namespace Zavala.Economy
             Revenue = revenue;
             Path = summary;
         }
+    }
+
+    public struct MarketQueryResultInfo {
+        public ResourceRequester Requester;
+        public ResourceSupplier Supplier;
+        public ResourceId Resource;
+        public RoadPathFlags PathFlags;
+        public int Profit;
+        public int ShippingCost;
+        public GeneratedTaxRevenue TaxRevenue;
     }
 
     /// <summary>
@@ -411,5 +422,86 @@ namespace Zavala.Economy
         }
 
         #endregion // Roads
+
+        #region Queries
+
+        /// <summary>
+        /// Gathers info on where the given requester is purchasing their supplies from.
+        /// </summary>
+        static public int GatherPurchaseSources(ResourceRequester requester, RingBuffer<MarketQueryResultInfo> buffer, ResourceMask resource) {
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+            Assert.NotNull(marketData);
+            int count = 0;
+            foreach(var supplier in marketData.Suppliers) {
+                foreach(var data in supplier.Priorities.PrioritizedBuyers) {
+                    if ((data.Mask & resource) != 0 && data.Target == requester) {
+                        buffer.PushBack(new MarketQueryResultInfo() {
+                            Requester = requester,
+                            Supplier = supplier,
+                            Resource = ResourceUtility.FirstResource((data.Mask & resource)),
+                            ShippingCost = data.ShippingCost,
+                            PathFlags = data.Path.Flags,
+                            Profit = data.Profit - data.RelativeGain,
+                            TaxRevenue = data.TaxRevenue
+                        });
+                        count++;
+                        break;
+                    }
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Updates the result from GatherPurchaseSources.
+        /// Will not find any new sources, but will update prices, distance, etc.
+        /// </summary>
+        static public int UpdatePurchaseSources(ResourceRequester requester, RingBuffer<MarketQueryResultInfo> buffer) {
+            for(int i = buffer.Count - 1; i >= 0; i--) {
+                ref MarketQueryResultInfo result = ref buffer[i];
+                bool found = false;
+                foreach(var data in result.Supplier.Priorities.PrioritizedBuyers) {
+                    if (data.Target == requester) {
+                        result.ShippingCost = data.ShippingCost;
+                        result.PathFlags = data.Path.Flags;
+                        result.Profit = data.Profit - data.RelativeGain;
+                        result.TaxRevenue = data.TaxRevenue;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    buffer.FastRemoveAt(i);
+                }
+            }
+            return buffer.Count;
+        }
+
+        static public int GatherShippingSources(ResourceSupplier supplier, RingBuffer<MarketQueryResultInfo> buffer, ResourceMask resource) {
+            int count = 0;
+            foreach (var data in supplier.Priorities.PrioritizedBuyers) {
+                if ((data.Mask & resource) != 0) {
+                    buffer.PushBack(new MarketQueryResultInfo() {
+                        Requester = data.Target,
+                        Supplier = supplier,
+                        Resource = ResourceUtility.FirstResource(data.Mask & resource),
+                        ShippingCost = data.ShippingCost,
+                        PathFlags = data.Path.Flags,
+                        Profit = data.Profit - data.RelativeGain,
+                        TaxRevenue = data.TaxRevenue
+                    });
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        static public int UpdateShippingSources(ResourceSupplier supplier, RingBuffer<MarketQueryResultInfo> buffer, ResourceMask resource) {
+            // pretty much identical to gathering, not much point in doing a fancier search
+            buffer.Clear();
+            return GatherShippingSources(supplier, buffer, resource);
+        }
+
+        #endregion // Queries
     }
 }

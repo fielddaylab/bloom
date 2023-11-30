@@ -1,5 +1,6 @@
 using System;
 using BeauUtil;
+using BeauUtil.Variants;
 using Leaf;
 using UnityEngine;
 using Zavala.Sim;
@@ -43,6 +44,9 @@ namespace Zavala {
             public ushort LocalTileIndex;
             public SerializedHash32 ScriptName;
             public BuildingType Type;
+            public SerializedHash32 LocationName;
+            public SerializedHash32 CharacterId;
+            public SerializedVariant AdditionalData;
         }
 
         [Serializable]
@@ -100,7 +104,6 @@ namespace Zavala {
         public BorderPoint[] Borders = Array.Empty<BorderPoint>();
         public SpannerData[] Spanners = Array.Empty<SpannerData>();
         public ushort[] EdgeVisualUpdateSet = Array.Empty<ushort>();
-
 
         [Header("Groups")]
         public ushort[] WaterGroupLocalIndices = Array.Empty<ushort>();

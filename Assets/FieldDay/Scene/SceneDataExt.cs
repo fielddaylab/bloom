@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using BeauUtil;
 using UnityEngine;
@@ -9,7 +8,7 @@ namespace FieldDay.Scenes {
     /// <summary>
     /// Extended scene data.
     /// </summary>
-    [DisallowMultipleComponent, DefaultExecutionOrder(-10000000), AddComponentMenu("")]
+    [DisallowMultipleComponent, DefaultExecutionOrder(-32000), AddComponentMenu("")]
     internal sealed class SceneDataExt : MonoBehaviour {
         /// <summary>
         /// Processed flags.

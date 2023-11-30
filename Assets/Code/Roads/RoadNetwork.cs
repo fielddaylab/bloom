@@ -27,6 +27,8 @@ namespace Zavala.Roads
 
         public bool UpdateNeeded; // TEMP for testing; should probably use a more robust signal. Set every time the road system is updated.
 
+        public readonly ActionEvent OnConnectionsReevaluated = new ActionEvent(4);
+
         #region Registration
 
         void IRegistrationCallbacks.OnRegister() {

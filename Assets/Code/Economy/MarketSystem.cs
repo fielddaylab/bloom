@@ -380,6 +380,7 @@ namespace Zavala.Economy
 
                 m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo() {
                     Distance = connectionSummary.Distance,
+                    ShippingCost = (int)Math.Ceiling(shippingCost),
                     Mask = overlap,
                     Target = requester,
                     ProxyIdx = connectionSummary.ProxyConnectionIdx,
@@ -387,7 +388,7 @@ namespace Zavala.Economy
                     Profit = (int)Math.Ceiling(score),
                     RelativeGain = (int)Math.Ceiling(relativeGain),
                     TaxRevenue = taxRevenue
-                });;
+                });
             }
 
             m_PriorityWorkList.Sort((a, b) => {

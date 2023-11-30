@@ -285,11 +285,11 @@ namespace Zavala.World {
     }
 
     public struct SimWorldSpawnBuffer {
-        public RingBuffer<SpawnRecord<BuildingType>> QueuedBuildings;
+        public RingBuffer<SpawnRecord<BuildingSpawnData>> QueuedBuildings;
         public RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>> QueuedModifiers;
 
         public void Create() {
-            QueuedBuildings = new RingBuffer<SpawnRecord<BuildingType>>();
+            QueuedBuildings = new RingBuffer<SpawnRecord<BuildingSpawnData>>();
             QueuedModifiers = new RingBuffer<SpawnRecord<RegionAsset.TerrainModifier>>();
         }
     }
@@ -299,6 +299,12 @@ namespace Zavala.World {
         public ushort RegionIndex;
         public StringHash32 Id;
         public T Data;
+    }
+
+    public struct BuildingSpawnData {
+        public BuildingType Type;
+        public StringHash32 TitleId;
+        public StringHash32 CharacterId;
     }
 
     public struct VisualUpdateRecord {

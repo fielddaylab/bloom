@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using BeauUtil.IO;
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +32,7 @@ namespace Zavala.Editor {
                     string newFile = EditorUtility.OpenFilePanel("Select Tiled File", Environment.CurrentDirectory, "json");
                     if (!string.IsNullOrEmpty(newFile)) {
                         MarkDirty("Updated tiled file", region);
-                        region.SourceFilePath = IOHelper.GetRelativePath(newFile);
+                        region.SourceFilePath = IOHelper.GetLogicalPath(newFile);
                     }
                 }
             }
@@ -92,7 +91,7 @@ namespace Zavala.Editor {
             HashSet<int> occupiedIndices = new HashSet<int>(region.Width);
 
             region.Tiles = RegionImport.ReadTerrain(tileData, ImportSettings.HEIGHT_SCALE);
-            RegionImport.ReadStaticConstructions(tileData, occupiedIndices, region.Tiles, out region.Buildings, out region.Modifiers, out region.Spanners);
+            RegionImport.ReadStaticConstructions(tileData, region.Id, occupiedIndices, region.Tiles, out region.Buildings, out region.Modifiers, out region.Spanners);
             region.Roads = RegionImport.ReadRoads(tileData, occupiedIndices);
             region.Points = RegionImport.ReadScriptPoints(tileData);
             RegionImport.ReadWaterGroups(tileData, region.Tiles, out region.WaterGroupLocalIndices, out region.WaterGroups);

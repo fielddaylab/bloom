@@ -23,6 +23,7 @@ using FieldDay.Scenes;
 using System.Threading;
 using System.Globalization;
 using BeauRoutine;
+using FieldDay.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -36,7 +37,7 @@ namespace FieldDay {
     /// <summary>
     /// Game loop manager.
     /// </summary>
-    [DefaultExecutionOrder(-10000000), DisallowMultipleComponent]
+    [DefaultExecutionOrder(-23000), DisallowMultipleComponent]
     public sealed class GameLoop : MonoBehaviour, ICameraPreCullCallback, ICameraPostRenderCallback, ICameraPreRenderCallback {
         #region Inspector
 
@@ -191,6 +192,9 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating scene manager...");
             Game.Scenes = new SceneMgr();
 
+            Log.Msg("[GameLoop] Creating gui manager...");
+            Game.Gui = new GuiMgr();
+
             Application.targetFrameRate = m_TargetFramerate;
 
             Log.Msg("[GameLoop] Loading config vars...");
@@ -213,6 +217,7 @@ namespace FieldDay {
         private void Start() {
             Log.Msg("[GameLoop] Boot finished");
             SetCurrentPhase(GameLoopPhase.Booted);
+            Game.Gui.FindPrimaryCamera();
 			Game.Scenes.Prepare();
             Game.Systems.ProcessInitQueue();
             FlushQueue(s_OnBootQueue);
@@ -222,6 +227,11 @@ namespace FieldDay {
             // find all boot
             foreach (var entrypoint in Reflect.FindMethods<InvokeOnBootAttribute>(ReflectionCache.UserAssemblies, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
                 entrypoint.Info.Invoke(null, null);
+            }
+
+            // fallback
+            if (Game.Events == null) {
+                Game.SetEventDispatcher(new EventDispatcher<object>());
             }
         }
 
@@ -274,6 +284,10 @@ namespace FieldDay {
             CameraHelper.RemoveOnPreCull(this);
             CameraHelper.RemoveOnPreRender(this);
             CameraHelper.RemoveOnPostRender(this);
+
+            Log.Msg("[GameLoop] Shutting down gui manager...");
+            Game.Gui.Shutdown();
+            Game.Gui = null;
 
             Log.Msg("[GameLoop] Shutting down scene manager...");
             Game.Scenes.Shutdown();

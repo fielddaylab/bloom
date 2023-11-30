@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Zavala.Sim {
     public struct RegionInfo {
-        public const int MaxRegions = 16;
+        public const int MaxRegions = 8;
 
         public HexGridSubregion GridArea;
         public ushort MaxHeight;
@@ -16,6 +16,22 @@ namespace Zavala.Sim {
     public delegate void RegionTileHandlerDelegate(ushort regionIndex, int tileIndex);
 
     static public class RegionUtility {
+        static private TextId[] s_RegionNameTable = new TextId[] {
+            "region.hill.name", "region.forest.name", "region.prairie.name", "region.wetlands.name", "region.urban.name"
+        };
+
+        static private TextId[] s_RegionLongNameTable = new TextId[] {
+            "region.hill.name.long", "region.forest.name.long", "region.prairie.name.long", "region.wetlands.name.long", "region.urban.name.long"
+        };
+
+        static public TextId GetName(ushort regionIndex) {
+            return regionIndex >= s_RegionNameTable.Length ? default : s_RegionNameTable[regionIndex];
+        }
+
+        static public TextId GetNameLong(ushort regionIndex) {
+            return regionIndex >= s_RegionLongNameTable.Length ? default : s_RegionLongNameTable[regionIndex];
+        }
+
         static public Bounds CalculateApproximateWorldBounds(in HexGridSubregion subregion, in HexGridWorldSpace worldSpace, ushort maxHeight, float bottomBuffer, float expand) {
             HexVector minHex = subregion.FastIndexToPos(0);
             HexVector maxHex = subregion.FastIndexToPos((int) (subregion.Size - 1));

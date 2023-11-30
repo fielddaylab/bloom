@@ -7,6 +7,7 @@ using Zavala.Building;
 using Zavala.Economy;
 using Zavala.Scripting;
 using Zavala.Sim;
+using Zavala.UI.Info;
 
 namespace Zavala.World
 {
@@ -30,7 +31,7 @@ namespace Zavala.World
                 Vector3 worldPos = HexVector.ToWorld(pos, m_StateB.Terrain.Info[spawn.TileIndex].Height, m_StateA.WorldSpace);
                 RegionPrefabPalette palette = m_StateA.Palettes[spawn.RegionIndex];
                 GameObject building = null;
-                switch (spawn.Data) {
+                switch (spawn.Data.Type) {
                     case BuildingType.City: {
                             building = GameObject.Instantiate(palette.City, worldPos, Quaternion.identity);
                             break;
@@ -58,6 +59,12 @@ namespace Zavala.World
                 }
                 Assert.NotNull(building);
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
+
+                LocationDescription desc = building.GetComponent<LocationDescription>();
+                if (desc != null) {
+                    desc.CharacterId = spawn.Data.CharacterId;
+                    desc.TitleLabel = spawn.Data.TitleId;
+                }
             }
 
             while (buff.QueuedModifiers.TryPopFront(out var spawn)) {
@@ -109,14 +116,25 @@ namespace Zavala.World
                 // m_StateA.Tiles[spawn.TileIndex].SpawnedTop = spanner;
             }
 
-            // Spawn External Supplier
-            Vector3 externalWorldPos = new Vector3(25, 0, 5); // top-right of screen
-            GameObject externalDepot = GameObject.Instantiate(m_StateA.ExternalExportDepotPrefab.gameObject, externalWorldPos, Quaternion.identity);
-            GameObject externalSupplier = GameObject.Instantiate(m_StateA.ExternalSupplierPrefab.gameObject, externalWorldPos, Quaternion.identity);
-
             ExternalState externalState = Game.SharedState.Get<ExternalState>();
-            externalState.ExternalDepot = externalDepot.GetComponent<ResourceSupplierProxy>();
-            externalState.ExternalSupplier = externalSupplier.GetComponent<ResourceSupplier>();
+            if (externalState.ExternalDepot == null) {
+                // Spawn External Supplier
+                Vector3 externalWorldPos = new Vector3(25, 0, 5); // top-right of screen
+                GameObject externalDepot = GameObject.Instantiate(m_StateA.ExternalExportDepotPrefab.gameObject, externalWorldPos, Quaternion.identity);
+                GameObject externalSupplier = GameObject.Instantiate(m_StateA.ExternalSupplierPrefab.gameObject, externalWorldPos, Quaternion.identity);
+
+                externalState.ExternalDepot = externalDepot.GetComponent<ResourceSupplierProxy>();
+                externalState.ExternalSupplier = externalSupplier.GetComponent<ResourceSupplier>();
+            }
+
+            /*
+            Assert.NotNull(externalDepot);
+            EventActorUtility.RegisterActor(externalDepot.GetComponent<EventActor>(), "");
+            */
+            /*
+            Assert.NotNull(externalSupplier);
+            EventActorUtility.RegisterActor(externalSupplier.GetComponent<EventActor>(), "");
+            */
         }
     }
 }

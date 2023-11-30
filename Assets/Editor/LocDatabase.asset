@@ -69,6 +69,98 @@ MonoBehaviour:
     - Path: cards
       Start: 0
     NeedsExport: 0
+  - Name: locations
+    FilePath: Assets/Content/Text/locations.zaloc
+    Asset: {fileID: -4270002856181823206, guid: ef78921209cdb0e4a9bdc18897dd435c, type: 3}
+    LastLine: 0
+    Records:
+    - Id: location.region1_city1.name
+      Content: Oakvale
+    - Id: location.region1_cafo1.name
+      Content: Bertram's Dairy Farm
+    - Id: location.region1_grain1.name
+      Content: Henrietta's Grain Farm
+    - Id: location.externalSupplier.name
+      Content: Phos 4 Us
+    - Id: location.region2_cafo1.name
+      Content: Natalie's Dairy Farm
+    - Id: location.region2_cafo2.name
+      Content: Natalie's Dairy Farm
+    - Id: location.region2_grain1.name
+      Content: Emmett's Grain Farm
+    - Id: location.region2_city1.name
+      Content: Forest City
+    - Id: location.region3_cafo1.name
+      Content: Winnie's Dairy Farm
+    - Id: location.region3_grain1.name
+      Content: Zora's Grain Farm
+    - Id: location.region3_grain2.name
+      Content: Zora's Grain Farm
+    - Id: location.region3_city1.name
+      Content: Winstone
+    - Id: location.region4_cafo1.name
+      Content: Neil's Dairy Farm
+    - Id: location.region4_cafo2.name
+      Content: Neil's Dairy Farm
+    - Id: location.region4_cafo3.name
+      Content: Neil's Dairy Farm
+    - Id: location.region4_grain1.name
+      Content: Cindy's Grain Farm
+    - Id: location.region4_city1.name
+      Content: Trenchfort
+    - Id: location.region5_cafo1.name
+      Content: Tabitha's Dairy Farm
+    - Id: location.region5_grain1.name
+      Content: Tom's Grain Farm
+    - Id: location.region5_city1.name
+      Content: East Smokestack
+    - Id: location.region5_city2.name
+      Content: West Smokestack
+    - Id: location.region5_city3.name
+      Content: Central Smokestack
+    - Id: location.shared.cafoInfo
+      Content: Where is all the poop going?
+    - Id: location.shared.cityInfo
+      Content: The citizens require milk!
+    - Id: location.shared.grainInfo
+      Content: 'Where they buy fertilizer:'
+    - Id: location.shared.letItSit
+      Content: Let It Sit
+    - Id: location.shared.storage
+      Content: Storage Unit
+    - Id: location.shared.digester
+      Content: Manure Digester
+    - Id: region.hill.name
+      Content: Knoll
+    - Id: region.hill.name.long
+      Content: Knoll County
+    - Id: region.forest.name
+      Content: Pine
+    - Id: region.forest.name.long
+      Content: Pine County
+    - Id: region.wetlands.name
+      Content: Wetlands
+    - Id: region.wetlands.name.long
+      Content: Wetlands Region
+    - Id: region.prairie.name
+      Content: Heath
+    - Id: region.prairie.name.long
+      Content: Heath County
+    - Id: region.urban.name
+      Content: Smokestack
+    - Id: region.urban.name.long
+      Content: Smokestack City
+    - Id: region.external.name
+      Content: External Supplier
+    BasePath: region
+    AllBasePaths:
+    - Path: location
+      Start: 0
+    - Path: location.shared
+      Start: 22
+    - Path: region
+      Start: 28
+    NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc
     Asset: {fileID: -4270002856181823206, guid: ea8734fcad5f46d48b270c48650c56ab, type: 3}

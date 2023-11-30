@@ -4,7 +4,7 @@ namespace FieldDay.Systems {
     /// <summary>
     /// Registers and deregisters all system behaviours in this hierarchy.
     /// </summary>
-    [DefaultExecutionOrder(-9000000), DisallowMultipleComponent]
+    [DefaultExecutionOrder(-21000), DisallowMultipleComponent]
     public sealed class SystemBoot : MonoBehaviour {
         private void Awake() {
             foreach(var system in gameObject.GetComponentsInChildren<ISystem>(true)) {

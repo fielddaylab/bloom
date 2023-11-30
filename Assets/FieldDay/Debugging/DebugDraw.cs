@@ -20,7 +20,7 @@ namespace FieldDay.Debugging {
     /// <summary>
     /// Debug rendering helper.
     /// </summary>
-    [DefaultExecutionOrder(99999)]
+    [DefaultExecutionOrder(32000)]
     public sealed class DebugDraw : MonoBehaviour {
         #if DEVELOPMENT
 

@@ -141,11 +141,15 @@ namespace Zavala.Sim {
             // spawn buildings
             foreach (var obj in asset.Buildings) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingType>() {
+                world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingSpawnData>() {
                     TileIndex = (ushort) mapIndex,
                     RegionIndex = regionIndex,
                     Id = obj.ScriptName,
-                    Data = obj.Type
+                    Data = new BuildingSpawnData() {
+                        Type = obj.Type,
+                        CharacterId = obj.CharacterId,
+                        TitleId = obj.LocationName,
+                    }
                 });
             }
 
@@ -272,6 +276,7 @@ namespace Zavala.Sim {
                 Debug.Log("[SimGridState] Region updated from " + grid.CurrRegionIndex + " to " + newRegionIndex);
                 grid.CurrRegionIndex = newRegionIndex;
                 ShopUtility.RefreshShop(Game.SharedState.Get<BudgetData>(), Game.SharedState.Get<ShopState>(), grid);
+                Game.Events.Dispatch(GameEvents.RegionSwitched);
                 return true;
             } 
             return false;

@@ -3,6 +3,7 @@ using BeauUtil;
 using BeauUtil.UI;
 using FieldDay;
 using FieldDay.Scenes;
+using FieldDay.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using Zavala.Sim;
 
 namespace Zavala.UI
 {
-    public class UIBlueprint : MonoBehaviour, IScenePreload
+    public class UIBlueprint : SharedPanel, IScenePreload
     {
         #region Inspector
 
