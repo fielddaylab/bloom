@@ -1,6 +1,7 @@
 using System;
 using BeauUtil;
 using UnityEngine;
+using Zavala.Input;
 using Zavala.World;
 
 namespace Zavala.UI {
@@ -20,7 +21,7 @@ namespace Zavala.UI {
         public void PinTo(Transform t) {
             if (Pin.Pin(t)) {
                 PinnedVisuals.SetActive(true);
-                CameraUtility.PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), t);
+                CameraUtility.PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ZavalaGame.SharedState.Get<InteractionState>(), t);
             }
         }
 

@@ -9,8 +9,13 @@ using Zavala.UI;
 
 namespace Zavala.World {
     [SysUpdate(GameLoopPhase.UnscaledUpdate, 100)]
-    public sealed class SimWorldCameraInputSystem : SharedStateSystemBehaviour<SimWorldCamera, InputState, SimWorldState> {
+    public sealed class SimWorldCameraInputSystem : SharedStateSystemBehaviour<SimWorldCamera, InputState, SimWorldState, InteractionState> {
         public override void ProcessWork(float deltaTime) {
+            if ((m_StateD.AllowedInteractions & InteractionMask.Movement) == 0) {
+                // Only move camera when Movement interaction is allowed
+                return;
+            }
+
             Vector2 moveDist = m_StateB.NormalizedKeyboardMoveVector * ((m_StateA.CameraMoveSpeed + 0.75f * m_StateC.RegionCount) * deltaTime);
             if (moveDist.sqrMagnitude > 0) {
                 Vector3 cameraRotEuler = m_StateA.LookTarget.localEulerAngles;

@@ -14,6 +14,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zavala.Economy;
+using Zavala.Input;
 using Zavala.Scripting;
 using Zavala.Sim;
 
@@ -220,19 +221,24 @@ namespace Zavala.World {
             SimWorldState world = Game.SharedState.Get<SimWorldState>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
             ExportRevealState eReveal = Game.SharedState.Get<ExportRevealState>();
+            InteractionState interactions = Game.SharedState.Get<InteractionState>();
 
-            world.ExportRevealRoutine.Replace(RevealExportDepot(world, grid, eReveal, id));
+            world.ExportRevealRoutine.Replace(RevealExportDepot(world, grid, eReveal, interactions, id));
         }
 
         #endregion // Leaf Members
 
         #region Routines
 
-        static private IEnumerator RevealExportDepot(SimWorldState world, SimGridState grid, ExportRevealState eReveal, StringHash32 inId)
+        static private IEnumerator RevealExportDepot(SimWorldState world, SimGridState grid, ExportRevealState eReveal, InteractionState interactions, StringHash32 inId)
         {
             Vector3 worldPos = ScriptUtility.LookupActor(inId).transform.position;
             TryGetTileIndexFromWorld(worldPos, out int depotIndex);
             int regionIndex = grid.Terrain.Regions[depotIndex];
+
+            // Disable player input
+            InteractionMask disableMask = InteractionMask.None;
+            InteractionUtility.SetInteractions(interactions, disableMask);
 
             // Pan camera to spot
             CameraUtility.PanCameraToBuilding(inId);
@@ -268,7 +274,9 @@ namespace Zavala.World {
             EventActorUtility.RegisterActor(newDepot.GetComponent<EventActor>(), inId);
             eReveal.DepotsPerRegion[regionIndex] = newDepot;
 
-            // TODO: Restore player control
+            // Restore player input
+            InteractionMask enableMask = InteractionMask.All | ~InteractionMask.Dialogue;
+            InteractionUtility.SetInteractions(interactions, enableMask);
 
             yield return null;
         }

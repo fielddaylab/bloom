@@ -35,6 +35,7 @@ GameObject:
   - component: {fileID: 3070150076525417522}
   - component: {fileID: 2278038441633514227}
   - component: {fileID: 954327501376670322}
+  - component: {fileID: 4789358157773246825}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -333,7 +334,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShopUI: {fileID: 0}
-  UnlockedTools: 0201
   RunningCost: 0
   ManualUpdateRequested: 0
 --- !u!114 &1300373136511585418
@@ -910,3 +910,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2212beb05980b034893e41cf9c941f9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4789358157773246825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40dbc5719162f7947b223c70dc61a182, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowedInteractions: 31
