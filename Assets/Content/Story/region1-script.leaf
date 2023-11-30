@@ -5,6 +5,7 @@
 @once
 $call Pause()
 $call PauseAlertType("ExcessRunoff")
+$call ForceDialogueInteraction()
 {@advisorEconHill}      Greetings. You must be the Director.
 {@advisorEconHill}      I'm here to advise you on economic matters in Knoll County.
 {@advisorEconHill}      As you can see, we are a chunk of blooming real estate.
@@ -20,6 +21,7 @@ $call PanToBuilding("region1_cafo1")
 {@advisorEcolHill}      I would call that a <i>concentrated animal feed operation</i>... a CAFO.
 {@advisorEconHill}      Right, yes. My colleague here will inform you on environmental concerns.
 {@advisorEconHill}      But back to <i>important</i> things. Like establishing trade routes!
+$call ReleaseDialogueInteraction()
 {@advisorEconHill}      Start by opening your <i>Funding</i> menu to connect our two farms.
 $call Unpause()
 
@@ -31,6 +33,7 @@ $call Unpause()
 {@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
 {@advisorEcolHill}      But don't try to build over any of our forests. Those are protected lands!
 {@advisorEconHill}      And each tile will spend from our regional budget! Try to be thrifty.
+{@advisorEconHill}      Click "Build" when you have the road the way you like it.
 
 
 // Step 3: Introduce cities
@@ -40,16 +43,19 @@ $call Unpause()
 $call Pause()
 $set intro:farmsConnected = true
 $if intro:citiesConnected
+    $call ForceDialogueInteraction()
     {@advisorEconHill}      Nice work! Now the CAFO can buy <i>grain</i> from the Grain Farm to produce <i>milk</i> and <i>manure</i>.
     // {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect city and dairy
+    $call ForceDialogueInteraction()
     {@advisorEconHill}      That's a well-built road, that.
     // {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
     {@advisorEconHill}      And the Dairy Farm can buy <i>grain</i> from the Grain Farm to produce <i>milk</i>.
     {@advisorEconHill}      But who buys the <i>milk</i>, you ask? That'll be the City!
     $call PanToBuilding("region1_city1")
+    $call ReleaseDialogueInteraction()
     {@advisorEconHill}      Build another <i>Road</i> connecting the Dairy Farm and the City.
 $endif
 $call Unpause()
@@ -60,14 +66,17 @@ $call Unpause()
 $call Pause()
 $set intro:citiesConnected = true
 $if intro:farmsConnected
+    $call ForceDialogueInteraction()
     {@advisorEconHill}      Excellent! Now the the City can buy <i>milk</i> and turn it into <i>money</i> using TAX MAGIC!
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
+    $call ForceDialogueInteraction()
     {@advisorEconHill}      Uh-- hmm. I suppose we can start with the City. I'm not picky about these things.
     {@advisorEconHill}      With this road, the City can purchase <i>milk</i> from the Dairy Farm to produce <i>money</i>.
     {@advisorEconHill}      But how does a Dairy Farm make the <i>milk</i>, you ask? They trade with a Grain Farm!
     $call PanToBuilding("region1_grain1")
+    $call ReleaseDialogueInteraction()
     {@advisorEconHill}      Build another road between the Dairy Farm and the Grain Farm.
 $endif
 
@@ -78,7 +87,7 @@ $call ActivateSim()
 {@advisorEconHill}      Your Grain Farm is hooked up with the Dairy Farm, and the Dairy Farm with the City.
 {@advisorEconHill}      Now you can start optimizing the routes to produce more <i>milk</i> and <i>money</i>!
 {@advisorEconHill}      Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
-{@advisorEconHill}      Now just close the Funding menu to get things going.
+$call ReleaseDialogueInteraction()
 
 // :: sittingOmens
 // @trigger        LetSat

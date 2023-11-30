@@ -1,6 +1,7 @@
 using BeauUtil;
 using FieldDay;
 using FieldDay.SharedState;
+using Leaf.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -75,5 +76,29 @@ namespace Zavala.Input
             // Save to list of filters
             interact.Filters.Remove(filter);
         }
+
+        #region Leaf
+
+        /// <summary>
+        /// Forces player to interact with dialgue by disabling other interactions (except movement)
+        /// </summary>
+        [LeafMember("ForceDialogueInteraction")]
+        public static void ForceDialogueInteraction()
+        {
+            InteractionState interactions = Game.SharedState.Get<InteractionState>();
+            SetInteractions(interactions, InteractionMask.Dialogue | InteractionMask.Movement);
+        }
+
+        /// <summary>
+        /// Allows player to interact with non-dialogue things
+        /// </summary>
+        [LeafMember("ReleaseDialogueInteraction")]
+        public static void ReleaseDialogueInteraction()
+        {
+            InteractionState interactions = Game.SharedState.Get<InteractionState>();
+            SetInteractions(interactions, InteractionMask.All);
+        }
+
+        #endregion // Leaf
     }
 }

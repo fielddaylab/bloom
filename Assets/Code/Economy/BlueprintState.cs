@@ -288,6 +288,8 @@ namespace Zavala.Economy
 
             ClearBuildCommits(blueprintState);
 
+            network.UpdateNeeded = true;
+
             // Exit build state
             blueprintState.UI.OnBuildConfirmClicked();
         }

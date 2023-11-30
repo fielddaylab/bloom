@@ -21,7 +21,7 @@ namespace Zavala.Economy
 
         public IEnumerator<WorkSlicer.Result?> Preload() {
             ShopUI = FindAnyObjectByType<UIShop>(FindObjectsInactive.Include);
-            CostQueue = new RingBuffer<int>(8);
+            CostQueue = new RingBuffer<int>(8, RingBufferMode.Expand);
             return null;
         }
     }
