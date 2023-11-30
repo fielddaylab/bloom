@@ -15,8 +15,13 @@ namespace Zavala.UI.Info {
 
     static public class InfoPopupMarketUtility {
         static public void LoadLocationIntoRow(InfoPopupLocationRow row, OccupiesTile location, OccupiesTile referenceLocation) {
+            LocationDescription desc = location.GetComponent<LocationDescription>();
+
             // TODO: Locate icon
             // TODO: Locate name
+
+            row.NameLabel.SetText(Loc.Find(desc.TitleLabel));
+            row.Icon.sprite = desc.Icon;
 
             if (referenceLocation != null && location.RegionIndex == referenceLocation.RegionIndex) {
                 row.RegionLabel.gameObject.SetActive(false);

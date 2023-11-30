@@ -206,12 +206,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TitleLabel:
-    m_Source: 
-    m_HashValue: 0
+    m_Source: location.shared.letItSit
+    m_HashValue: 4106253429
   InfoLabel:
     m_Source: 
-    m_HashValue: 0
-  CharacterId:
     m_HashValue: 0
   Icon: {fileID: 0}
 --- !u!1 &7291294420475072060
@@ -456,10 +454,8 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   InfoLabel:
-    m_Source: 
-    m_HashValue: 0
-  CharacterId:
-    m_HashValue: 0
+    m_Source: location.shared.cafoInfo
+    m_HashValue: 3990991626
   Icon: {fileID: 0}
 --- !u!1001 &1006795544907063840
 PrefabInstance:

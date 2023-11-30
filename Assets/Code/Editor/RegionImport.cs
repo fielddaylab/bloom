@@ -4,6 +4,8 @@ using BeauData;
 using UnityEngine;
 using Zavala.Sim;
 using BeauUtil.Debugger;
+using UnityEngine.TextCore.Text;
+using BeauUtil.Variants;
 
 namespace Zavala.Editor {
     static public class RegionImport {
@@ -203,7 +205,11 @@ namespace Zavala.Editor {
             return buffer;
         }
 
-        static public void ReadStaticConstructions(in TiledData data, HashSet<int> occupiedTileIndices, TerrainTileInfo[] tiles, out RegionAsset.BuildingData[] buildings, out RegionAsset.ModifierData[] modifiers, out RegionAsset.SpannerData[] spanners) {
+        static private readonly string[] CharacterRegionSuffixes = new string[] {
+            "Hill", "Forest", "Prarie", "Wetland", "Urban"
+        };
+
+        static public void ReadStaticConstructions(in TiledData data, RegionId regionId, HashSet<int> occupiedTileIndices, TerrainTileInfo[] tiles, out RegionAsset.BuildingData[] buildings, out RegionAsset.ModifierData[] modifiers, out RegionAsset.SpannerData[] spanners) {
             List<RegionAsset.BuildingData> buildingList = new List<RegionAsset.BuildingData>(8);
             List<RegionAsset.ModifierData> modifierList = new List<RegionAsset.ModifierData>(8);
             List<RegionAsset.SpannerData> spannerList = new List<RegionAsset.SpannerData>(8);
@@ -215,12 +221,15 @@ namespace Zavala.Editor {
                     int objType = gid - data.ObjectTileOffset;
                     int pos = HexToTile(data, ObjectPosToHex(data, obj));
                     string scriptName = obj["name"].AsString;
+                    JSON props = FlattenProperties(obj["properties"]);
                     switch (objType) {
                         case 0: { // grain
                             buildingList.Add(new RegionAsset.BuildingData() {
                                 LocalTileIndex = (ushort) pos,
                                 Type = BuildingType.GrainFarm,
-                                ScriptName = scriptName
+                                ScriptName = scriptName,
+                                LocationName = string.Format("location.{0}.name", scriptName),
+                                CharacterId = string.Concat("grain", CharacterRegionSuffixes[(int) regionId])
                             });
                             occupiedTileIndices.Add(pos);
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
@@ -231,7 +240,9 @@ namespace Zavala.Editor {
                             buildingList.Add(new RegionAsset.BuildingData() {
                                 LocalTileIndex = (ushort) pos,
                                 Type = BuildingType.DairyFarm,
-                                ScriptName = scriptName
+                                ScriptName = scriptName,
+                                LocationName = string.Format("location.{0}.name", scriptName),
+                                CharacterId = string.Concat("cafo", CharacterRegionSuffixes[(int) regionId])
                             });
                             occupiedTileIndices.Add(pos);
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
@@ -242,7 +253,10 @@ namespace Zavala.Editor {
                             buildingList.Add(new RegionAsset.BuildingData() {
                                 LocalTileIndex = (ushort) pos,
                                 Type = BuildingType.City,
-                                ScriptName = scriptName
+                                ScriptName = scriptName,
+                                LocationName = string.Format("location.{0}.name", scriptName),
+                                CharacterId = string.Concat("city", CharacterRegionSuffixes[(int) regionId]),
+                                AdditionalData = new SerializedVariant(props?["Population"]?.AsInt ?? 0)
                             });
                             occupiedTileIndices.Add(pos);
                             tiles[pos].Flags |= TerrainFlags.TopHidden;
@@ -279,7 +293,8 @@ namespace Zavala.Editor {
                                 buildingList.Add(new RegionAsset.BuildingData() {
                                     LocalTileIndex = (ushort)pos,
                                     Type = BuildingType.ExportDepot,
-                                    ScriptName = scriptName
+                                    ScriptName = scriptName,
+                                    LocationName = string.Format("location.{0}.name", scriptName),
                                 });
                                 occupiedTileIndices.Add(pos);
                                 // tiles[pos].Flags |= TerrainFlags.TopHidden;
@@ -500,6 +515,18 @@ namespace Zavala.Editor {
                 default:
                     return false;
             }
+        }
+
+        static private JSON FlattenProperties(JSON sourceArr) {
+            if (sourceArr == null || sourceArr.Count == 0) {
+                return null;
+            }
+
+            JSON obj = JSON.CreateObject();
+            foreach(var element in sourceArr.Children) {
+                obj.Add(element["name"].AsString, JSON.CreateValue(element["value"].AsString));
+            }
+            return obj;
         }
 
         #region Space Conversion

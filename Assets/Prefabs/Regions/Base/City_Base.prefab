@@ -243,8 +243,8 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   InfoLabel:
-    m_Source: 
-    m_HashValue: 0
+    m_Source: location.shared.cityInfo
+    m_HashValue: 499009014
   CharacterId:
     m_HashValue: 0
   Icon: {fileID: 0}

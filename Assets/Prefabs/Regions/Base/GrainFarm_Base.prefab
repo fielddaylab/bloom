@@ -255,10 +255,8 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   InfoLabel:
-    m_Source: 
-    m_HashValue: 0
-  CharacterId:
-    m_HashValue: 0
+    m_Source: location.shared.grainInfo
+    m_HashValue: 2022525932
   Icon: {fileID: 0}
 --- !u!1001 &3743880648583490365
 PrefabInstance:

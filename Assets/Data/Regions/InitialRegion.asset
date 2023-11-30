@@ -143,7 +143,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
-    Flags: 67
+    Flags: 75
     Height: 0
   - RegionIndex: 65535
     Category: 2
@@ -178,7 +178,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
-    Flags: 67
+    Flags: 75
     Height: 0
   - RegionIndex: 65535
     Category: 2
@@ -421,16 +421,55 @@ MonoBehaviour:
       m_Source: region1_cafo1
       m_HashValue: 3520211273
     Type: 2
+    LocationName:
+      m_Source: location.region1_cafo1.name
+      m_HashValue: 2855433999
+    LocationInfo:
+      m_Source: location.region1_cafo1.info
+      m_HashValue: 3708366952
+    CharacterId:
+      m_Source: cafoHill
+      m_HashValue: 3845790345
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 57
     ScriptName:
       m_Source: region1_grain1
       m_HashValue: 3365541027
     Type: 1
+    LocationName:
+      m_Source: location.region1_grain1.name
+      m_HashValue: 2024597123
+    LocationInfo:
+      m_Source: location.region1_grain1.info
+      m_HashValue: 2869662876
+    CharacterId:
+      m_Source: grainHill
+      m_HashValue: 1471224863
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 19
     ScriptName:
       m_Source: region1_city1
       m_HashValue: 51623813
     Type: 3
+    LocationName:
+      m_Source: location.region1_city1.name
+      m_HashValue: 3379781775
+    LocationInfo:
+      m_Source: location.region1_city1.info
+      m_HashValue: 4232714728
+    CharacterId:
+      m_Source: cityHill
+      m_HashValue: 3945354133
+    AdditionalData:
+      m_Type: 1
+      m_RawValue: 0
+      m_StringHashSource: 
   Points: []
   Roads: []
   Modifiers:
@@ -589,7 +628,7 @@ MonoBehaviour:
       m_Source: toll_booth_1to5
       m_HashValue: 200563685
     Type: 10
-  EdgeVisualUpdateSet: 11002800
+  EdgeVisualUpdateSet: 1100190020002800
   WaterGroupLocalIndices: 110019001a001b001c001d001e001f002000210022002300270028002a002f003700
   WaterGroups:
   - Offset: 0

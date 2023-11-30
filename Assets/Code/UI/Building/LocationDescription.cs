@@ -7,7 +7,7 @@ namespace Zavala.UI.Info {
     public class LocationDescription : MonoBehaviour {
         public TextId TitleLabel;
         public TextId InfoLabel;
-        public StringHash32 CharacterId;
+        [NonSerialized] public StringHash32 CharacterId;
         public Sprite Icon;
 
         [NonSerialized] public OccupiesTile Position;

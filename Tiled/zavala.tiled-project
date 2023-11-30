@@ -15,6 +15,11 @@
             "drawFill": true,
             "id": 4,
             "members": [
+                {
+                    "name": "Population",
+                    "type": "int",
+                    "value": 0
+                }
             ],
             "name": "Building",
             "type": "class",

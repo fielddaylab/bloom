@@ -7,6 +7,7 @@ using Zavala.Building;
 using Zavala.Economy;
 using Zavala.Scripting;
 using Zavala.Sim;
+using Zavala.UI.Info;
 
 namespace Zavala.World
 {
@@ -30,7 +31,7 @@ namespace Zavala.World
                 Vector3 worldPos = HexVector.ToWorld(pos, m_StateB.Terrain.Info[spawn.TileIndex].Height, m_StateA.WorldSpace);
                 RegionPrefabPalette palette = m_StateA.Palettes[spawn.RegionIndex];
                 GameObject building = null;
-                switch (spawn.Data) {
+                switch (spawn.Data.Type) {
                     case BuildingType.City: {
                             building = GameObject.Instantiate(palette.City, worldPos, Quaternion.identity);
                             break;
@@ -50,6 +51,10 @@ namespace Zavala.World
                 }
                 Assert.NotNull(building);
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
+
+                LocationDescription desc = building.GetComponent<LocationDescription>();
+                desc.CharacterId = spawn.Data.CharacterId;
+                desc.TitleLabel = spawn.Data.TitleId;
             }
 
             while (buff.QueuedModifiers.TryPopFront(out var spawn)) {

@@ -1,0 +1,28 @@
+# basePath location
+
+:: region1_city1.name
+Oakvale
+
+:: region1_cafo1.name
+Bertram's Dairy Farm
+
+:: region1_grain1.name
+Henrietta's Grain Farm
+
+:: externalSupplier.name
+Phos 4 Us
+
+# basePath location.shared
+
+:: cafoInfo
+Where is all the poop going?
+
+:: cityInfo
+Population: {0}
+
+:: grainInfo
+Where they buy fertilizer:
+
+:: letItSit
+Let It Sit
+

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Zavala.Actors;
 using Zavala.Economy;
 using Zavala.Roads;
+using Zavala.Scripting;
 
 namespace Zavala.UI.Info {
     public class InfoPopup : SharedRoutinePanel {
@@ -35,6 +36,7 @@ namespace Zavala.UI.Info {
         #region State
 
         [NonSerialized] private BuildingType m_Mode;
+        [NonSerialized] private LocationDescription m_SelectedLocation;
         [NonSerialized] private ResourceSupplier m_SelectedSupplier;
         [NonSerialized] private ResourceRequester m_SelectedRequester;
         [NonSerialized] private StressableActor m_SelectedCity;
@@ -67,6 +69,7 @@ namespace Zavala.UI.Info {
 
         public void LoadTarget(HasInfoPopup thing) {
             m_Mode = thing.Position.Type;
+            m_SelectedLocation = thing.GetComponent<LocationDescription>();
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
                     m_SelectedCity = null;
@@ -104,7 +107,16 @@ namespace Zavala.UI.Info {
         }
 
         private void PopulateHeader() {
+            m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+            m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
 
+            ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
+            ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, m_SelectedLocation.CharacterId);
+
+            m_PortraitGroup.SetActive(charDef != null);
+            if (charDef != null) {
+                m_CharacterPortrait.sprite = charDef.PortraitArt;
+            }
         }
 
         private void PopulateShipping() {
@@ -115,7 +127,7 @@ namespace Zavala.UI.Info {
 
             for (int i = 0; i < count; i++) {
                 var results = m_QueryResults[i];
-                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContents.Locations[i], results.Supplier.Position, results.Requester.Position);
+                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContents.Locations[i], results.Requester.Position, results.Supplier.Position);
                 InfoPopupMarketUtility.LoadProfitIntoRow(m_MarketContents.Locations[i], results, config);
             }
 
@@ -193,6 +205,7 @@ namespace Zavala.UI.Info {
             m_SelectedRequester = null;
             m_SelectedSupplier = null;
             m_ConnectionsDirty = false;
+            m_SelectedLocation = null;
         }
 
         protected override void OnHideComplete(bool inbInstant) {

@@ -141,11 +141,15 @@ namespace Zavala.Sim {
             // spawn buildings
             foreach (var obj in asset.Buildings) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);
-                world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingType>() {
+                world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingSpawnData>() {
                     TileIndex = (ushort) mapIndex,
                     RegionIndex = regionIndex,
                     Id = obj.ScriptName,
-                    Data = obj.Type
+                    Data = new BuildingSpawnData() {
+                        Type = obj.Type,
+                        CharacterId = obj.CharacterId,
+                        TitleId = obj.LocationName,
+                    }
                 });
             }
 

@@ -69,6 +69,34 @@ MonoBehaviour:
     - Path: cards
       Start: 0
     NeedsExport: 0
+  - Name: locations
+    FilePath: Assets/Content/Text/locations.zaloc
+    Asset: {fileID: -4270002856181823206, guid: ef78921209cdb0e4a9bdc18897dd435c, type: 3}
+    LastLine: 0
+    Records:
+    - Id: location.region1_city1.name
+      Content: Oakvale
+    - Id: location.region1_cafo1.name
+      Content: Bertram's Dairy Farm
+    - Id: location.region1_grain1.name
+      Content: Henrietta's Grain Farm
+    - Id: location.externalSupplier.name
+      Content: Phos 4 Us
+    - Id: location.shared.cafoInfo
+      Content: Where is all the poop going?
+    - Id: location.shared.cityInfo
+      Content: 'Population: {0}'
+    - Id: location.shared.grainInfo
+      Content: 'Where they buy fertilizer:'
+    - Id: location.shared.letItSit
+      Content: Let It Sit
+    BasePath: location.shared
+    AllBasePaths:
+    - Path: location
+      Start: 0
+    - Path: location.shared
+      Start: 4
+    NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc
     Asset: {fileID: -4270002856181823206, guid: ea8734fcad5f46d48b270c48650c56ab, type: 3}
