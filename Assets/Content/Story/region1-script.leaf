@@ -183,7 +183,8 @@ $call Pause()
 {local @advisorEcon}    Careful now! We don't want to bankrupt our farmers.
 {local @advisorEcon}    We just need to give them a more favorable option.
 $if Visited("region2.unlockStorage")
-{local @advisorEcon}    Or build a <b>Storage</b> unit instead.
+    {local @advisorEcon}    Or build a <b>Storage</b> unit instead.
+$endif
 
 :: discoverFirstBloom
 @trigger        AlertExamined
@@ -207,7 +208,7 @@ $call Unpause()
 {local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
 {local @advisorEcol}    We could address the causes by penalizing runoff.
 $if NumCardsUnlocked() >= 3
-{local @advisorEcol}    Or use skimmers to clean up.
+    {local @advisorEcol}    Or use skimmers to clean up.
 $endif
 
 // TODO: add event/trigger for city stress (nearby bloom and/or lacking milk)
