@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Zavala.UI.Info {
-    public class InfoPopupPriceRow : MonoBehaviour {
-        public Graphic Background;
+    public class InfoPopupPurchaser : MonoBehaviour {
         public TMP_Text Number;
+        public Graphic Arrow;
     }
 }

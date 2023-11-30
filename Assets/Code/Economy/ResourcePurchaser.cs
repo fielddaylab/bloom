@@ -21,6 +21,8 @@ namespace Zavala.Economy {
         [NonSerialized] public ResourceRequester Request;
         [NonSerialized] public ResourceStorage Storage;
 
+        [NonSerialized] public RingBuffer<ResourceBlock> RequestAmountHistory = new RingBuffer<ResourceBlock>(8, RingBufferMode.Overwrite);
+
         // TODO: okay to define these methods here and call them elsewhere or should they be defined in ResourcePurchaserSystem?
         public void ChangeRequestAmount(ResourceId resource, int change) {
             if (RequestAmount[resource] + change <= 0) return;
@@ -39,6 +41,8 @@ namespace Zavala.Economy {
         private void Awake() {
             this.CacheComponent(ref Storage);
             this.CacheComponent(ref Request);
+
+            RequestAmountHistory.PushBack(RequestAmount);
         }
     }
 }

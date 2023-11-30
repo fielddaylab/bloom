@@ -17,6 +17,8 @@ namespace Zavala.Economy {
                 return;
             }
 
+            purchaser.RequestAmountHistory.PushBack(purchaser.RequestAmount);
+
             ref ResourceBlock total = ref purchaser.Request.Received;
             ResourceBlock requestAmt = purchaser.RequestAmount;
 

@@ -121,7 +121,7 @@ MonoBehaviour:
     - Id: location.shared.cafoInfo
       Content: Where is all the poop going?
     - Id: location.shared.cityInfo
-      Content: 'Population: {0}'
+      Content: The citizens require milk!
     - Id: location.shared.grainInfo
       Content: 'Where they buy fertilizer:'
     - Id: location.shared.letItSit

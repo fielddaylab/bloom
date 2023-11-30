@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay.Rendering;
 using UnityEngine;
 
 using PanelIndex = BeauUtil.TypeIndex<FieldDay.UI.IGuiPanel>;
@@ -14,6 +15,52 @@ namespace FieldDay.UI {
     public sealed class GuiMgr {
         private ISharedGuiPanel[] m_SharedPanelMap = new ISharedGuiPanel[PanelIndex.Capacity];
         private readonly HashSet<IGuiPanel> m_PanelSet = new HashSet<IGuiPanel>(32);
+
+        private Camera m_PrimaryUICamera;
+
+        #region Gui Camera
+
+        /// <summary>
+        /// Primary UI camera.
+        /// </summary>
+        public Camera PrimaryCamera {
+            get { return m_PrimaryUICamera; }
+        }
+
+        /// <summary>
+        /// Sets the primary UI camera.
+        /// </summary>
+        public void SetPrimaryCamera(Camera camera) {
+            if (m_PrimaryUICamera == camera) {
+                return;
+            }
+
+            if (m_PrimaryUICamera != null) {
+                Log.Warn("[GuiMgr] Primary Gui camera already set to '{0}' - make sure to deregister it first", m_PrimaryUICamera);
+            }
+            m_PrimaryUICamera = camera;
+            Log.Msg("[GuiMgr] Assigned primary Gui camera as '{0}'", camera);
+        }
+
+        /// <summary>
+        /// Removes the given camera as the primary UI camera.
+        /// </summary>
+        public void RemovePrimaryCamera(Camera camera) {
+            if (camera == null || m_PrimaryUICamera != camera) {
+                return;
+            }
+
+            m_PrimaryUICamera = null;
+            Log.Msg("[GuiMgr] Removed primary Gui camera");
+        }
+
+        internal void FindPrimaryCamera() {
+            if (m_PrimaryUICamera == null) {
+                SetPrimaryCamera(CameraUtility.FindMostSpecificCameraForLayer(LayerMask.NameToLayer("UI")));
+            }
+        }
+
+        #endregion // Gui Camera
 
         #region Add/Remove
 

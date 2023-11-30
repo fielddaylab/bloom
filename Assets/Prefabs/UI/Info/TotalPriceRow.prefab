@@ -129,7 +129,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 30, w: 0}
+  m_margin: {x: 0, y: 0, z: 40, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -242,7 +242,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 90, y: 22}
+  m_SizeDelta: {x: 110, y: 22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &341539199658134856
 CanvasRenderer:
@@ -265,7 +265,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Background: {fileID: 6881432928198831268}
-  Label: {fileID: 8491058336758432215}
   Number: {fileID: 1219801484006143083}
 --- !u!1 &8862429497845078459
 GameObject:
@@ -303,7 +302,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -2}
-  m_SizeDelta: {x: 30, y: -4}
+  m_SizeDelta: {x: 40, y: -4}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &6387944157115630157
 CanvasRenderer:
@@ -333,7 +332,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 20
+  m_text: -1000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b8f7b9f6b1727ad44b72c4dcdaf06660, type: 2}
   m_sharedMaterial: {fileID: -7097076961263154809, guid: b8f7b9f6b1727ad44b72c4dcdaf06660, type: 2}
@@ -376,7 +375,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

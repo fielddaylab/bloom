@@ -15,6 +15,14 @@ namespace Zavala.UI.Info {
     }
 
     static public class InfoPopupMarketUtility {
+        static public readonly Color PositiveColorBG = Colors.Hex("#C8E295");
+        static public readonly Color PositiveColor = Colors.Hex("#078313");
+
+        static public readonly Color NeutralColor = Colors.Hex("#806844");
+
+        static public readonly Color NegativeColorBG = Colors.Hex("#FFBBBB");
+        static public readonly Color NegativeColor = Colors.Hex("#C23636");
+
         static public void LoadLocationIntoRow(InfoPopupLocationRow row, OccupiesTile location, OccupiesTile referenceLocation) {
             LocationDescription desc = location.GetComponent<LocationDescription>();
 
@@ -36,7 +44,7 @@ namespace Zavala.UI.Info {
             }
         }
 
-        static public void LoadCostsIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config) {
+        static public void LoadCostsIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config, bool isSecondary) {
             row.PriceGroup.SetActive(true);
 
             int basePrice = config.PurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
@@ -75,10 +83,18 @@ namespace Zavala.UI.Info {
             row.TotalPriceRow.gameObject.SetActive(true);
             row.TotalPriceRow.Number.SetText(totalCost.ToStringLookup());
 
+            if (isSecondary) {
+                row.TotalPriceRow.Background.color = NegativeColorBG;
+                row.TotalPriceRow.Number.color = NegativeColor;
+            } else {
+                row.TotalPriceRow.Background.color = PositiveColorBG;
+                row.TotalPriceRow.Number.color = PositiveColor;
+            }
+
             //row.PriceLayout.ForceRebuild(true);
         }
 
-        static public void LoadProfitIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config) {
+        static public void LoadProfitIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config, bool isSecondary) {
             row.PriceGroup.SetActive(true);
 
             int basePrice;
@@ -121,6 +137,14 @@ namespace Zavala.UI.Info {
             row.TotalProfitRow.gameObject.SetActive(true);
             row.TotalPriceRow.gameObject.SetActive(false);
             row.TotalProfitRow.Number.SetText(totalCost.ToStringLookup());
+
+            if (isSecondary) {
+                row.TotalProfitRow.Background.color = NegativeColorBG;
+                row.TotalProfitRow.Number.color = NegativeColor;
+            } else {
+                row.TotalProfitRow.Background.color = PositiveColorBG;
+                row.TotalProfitRow.Number.color = PositiveColor;
+            }
 
             //row.PriceLayout.ForceRebuild(true);
         }

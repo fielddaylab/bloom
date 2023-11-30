@@ -99,7 +99,7 @@ MonoBehaviour:
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0
-    Milk: 1
+    Milk: 3
   PurchasePrice:
     Manure: 0
     MFertilizer: 0
@@ -245,8 +245,6 @@ MonoBehaviour:
   InfoLabel:
     m_Source: location.shared.cityInfo
     m_HashValue: 499009014
-  CharacterId:
-    m_HashValue: 0
   Icon: {fileID: 0}
 --- !u!135 &3483978453912282086
 SphereCollider:

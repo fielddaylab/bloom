@@ -46,7 +46,7 @@ MonoBehaviour:
       Type: 8
     OverloadedMethods: []
     TypeReferences: []
-  ConfigVar:
+  ConfigVars:
     AttributeTypeName: FieldDay.Data.ConfigVar
     LookupFlags: 58
     LookupInherit: 0

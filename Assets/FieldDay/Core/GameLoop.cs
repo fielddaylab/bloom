@@ -217,6 +217,7 @@ namespace FieldDay {
         private void Start() {
             Log.Msg("[GameLoop] Boot finished");
             SetCurrentPhase(GameLoopPhase.Booted);
+            Game.Gui.FindPrimaryCamera();
 			Game.Scenes.Prepare();
             Game.Systems.ProcessInitQueue();
             FlushQueue(s_OnBootQueue);

@@ -436,7 +436,7 @@ namespace Zavala.Economy
                             Resource = ResourceUtility.FirstResource((data.Mask & resource)),
                             ShippingCost = data.ShippingCost,
                             PathFlags = data.Path.Flags,
-                            Profit = data.Profit,
+                            Profit = data.Profit - data.RelativeGain,
                             TaxRevenue = data.TaxRevenue
                         });
                         count++;
@@ -459,7 +459,7 @@ namespace Zavala.Economy
                     if (data.Target == requester) {
                         result.ShippingCost = data.ShippingCost;
                         result.PathFlags = data.Path.Flags;
-                        result.Profit = data.Profit;
+                        result.Profit = data.Profit - data.RelativeGain;
                         result.TaxRevenue = data.TaxRevenue;
                         found = true;
                         break;
@@ -482,7 +482,7 @@ namespace Zavala.Economy
                         Resource = ResourceUtility.FirstResource(data.Mask & resource),
                         ShippingCost = data.ShippingCost,
                         PathFlags = data.Path.Flags,
-                        Profit = data.Profit,
+                        Profit = data.Profit - data.RelativeGain,
                         TaxRevenue = data.TaxRevenue
                     });
                     count++;

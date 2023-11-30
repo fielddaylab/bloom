@@ -2,6 +2,7 @@
 #define DEVELOPMENT
 #endif // (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
 
+using System;
 using System.Collections;
 using BeauUtil;
 using UnityEngine;
@@ -13,7 +14,6 @@ using FieldDay.Assets;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
-using System;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.Scenes {
