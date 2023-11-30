@@ -60,6 +60,7 @@ namespace Zavala.Roads {
                 MarketData marketData = Game.SharedState.Get<MarketData>();
                 MarketUtility.TriggerConnectionTriggers(marketData, m_StateA, gridSize);
 
+                network.OnConnectionsReevaluated.Invoke();
                 network.UpdateNeeded = false;
             }
         }

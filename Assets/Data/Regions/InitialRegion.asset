@@ -421,31 +421,91 @@ MonoBehaviour:
       m_Source: region1_cafo1
       m_HashValue: 3520211273
     Type: 2
+    LocationName:
+      m_Source: location.region1_cafo1.name
+      m_HashValue: 2855433999
+    CharacterId:
+      m_Source: cafoHill
+      m_HashValue: 3845790345
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 57
     ScriptName:
       m_Source: region1_grain1
       m_HashValue: 3365541027
     Type: 1
+    LocationName:
+      m_Source: location.region1_grain1.name
+      m_HashValue: 2024597123
+    CharacterId:
+      m_Source: grainHill
+      m_HashValue: 1471224863
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 19
     ScriptName:
       m_Source: region1_city1
       m_HashValue: 51623813
     Type: 3
+    LocationName:
+      m_Source: location.region1_city1.name
+      m_HashValue: 3379781775
+    CharacterId:
+      m_Source: cityHill
+      m_HashValue: 3945354133
+    AdditionalData:
+      m_Type: 1
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 9
     ScriptName:
       m_Source: region1_export
       m_HashValue: 2045968951
     Type: 9
+    LocationName:
+      m_Source: location.region1_export.name
+      m_HashValue: 2518012515
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 10
     ScriptName:
       m_Source: region1_obstruct2
       m_HashValue: 229427513
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 18
     ScriptName:
       m_Source: region1_obstruct1
       m_HashValue: 179094656
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   Points: []
   Roads: []
   Modifiers:

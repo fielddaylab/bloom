@@ -10,7 +10,7 @@ namespace FieldDay.Debugging {
     /// <summary>
     /// Simple framerate counter.
     /// </summary>
-    [DefaultExecutionOrder(-50000)]
+    [DefaultExecutionOrder(-32000)]
     [RequireComponent(typeof(RectTransform))]
     public class FramerateDisplay : MonoBehaviour {
         #region Inspector

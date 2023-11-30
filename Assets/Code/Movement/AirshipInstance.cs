@@ -22,7 +22,9 @@ namespace Zavala.Movement
         [NonSerialized] public State MoveState = State.Entering;
         [NonSerialized] public Routine MovementRoutine;
 
-        private void OnEnable() {
+        protected override void OnEnable() {
+            base.OnEnable();
+
             // Initialize whenever pool allocated
             MoveState = State.Entering;
 

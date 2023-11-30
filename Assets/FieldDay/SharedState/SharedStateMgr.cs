@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using BeauUtil.Debugger;
-using FieldDay.Systems;
-using UnityEngine;
 
 using StateIndex = BeauUtil.TypeIndex<FieldDay.SharedState.ISharedState>;
 

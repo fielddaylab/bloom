@@ -403,7 +403,7 @@ namespace FieldDay.Data {
 
         static private ConfigVar[] FindAllVars() {
             List<ConfigVar> list = new List<ConfigVar>(512);
-            foreach(var kv in Reflect.FindFields<ConfigVar>(ReflectionCache.UserAssemblies, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, false)) {
+            foreach(var kv in ReflectionBootData.GetAllConfigVars()) {
                 try {
                     kv.Attribute.Bind(kv.Info);
                     list.Add(kv.Attribute);

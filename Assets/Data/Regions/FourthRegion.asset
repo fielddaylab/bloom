@@ -1281,36 +1281,106 @@ MonoBehaviour:
       m_Source: region4_cafo1
       m_HashValue: 4264114414
     Type: 2
+    LocationName:
+      m_Source: location.region4_cafo1.name
+      m_HashValue: 2790139066
+    CharacterId:
+      m_Source: cafoWetland
+      m_HashValue: 1470595627
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 173
     ScriptName:
       m_Source: region4_cafo2
       m_HashValue: 4247336795
     Type: 2
+    LocationName:
+      m_Source: location.region4_cafo2.name
+      m_HashValue: 2046247989
+    CharacterId:
+      m_Source: cafoWetland
+      m_HashValue: 1470595627
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 102
     ScriptName:
       m_Source: region4_city1
       m_HashValue: 3407946870
     Type: 3
+    LocationName:
+      m_Source: location.region4_city1.name
+      m_HashValue: 996871542
+    CharacterId:
+      m_Source: cityWetland
+      m_HashValue: 367121855
+    AdditionalData:
+      m_Type: 1
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 129
     ScriptName:
       m_Source: region4_cafo3
       m_HashValue: 4230559176
     Type: 2
+    LocationName:
+      m_Source: location.region4_cafo3.name
+      m_HashValue: 2197401336
+    CharacterId:
+      m_Source: cafoWetland
+      m_HashValue: 1470595627
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 75
     ScriptName:
       m_Source: region4_export1
       m_HashValue: 543699393
     Type: 9
+    LocationName:
+      m_Source: location.region4_export1.name
+      m_HashValue: 2624716907
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 76
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 61
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   Points: []
   Roads: []
   Modifiers:

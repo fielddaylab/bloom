@@ -1,5 +1,6 @@
 using BeauRoutine;
 using FieldDay;
+using FieldDay.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using Zavala.Building;
 using Zavala.Sim;
 
 namespace Zavala.UI {
-    public class UIShop : MonoBehaviour
+    public class UIShop : SharedPanel
     {
         public TMP_Text NetText;
 

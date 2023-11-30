@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Reflection;
 using BeauUtil;
 using System.Runtime.CompilerServices;
 using BeauUtil.Debugger;
@@ -43,6 +42,8 @@ namespace FieldDay.Assets {
                 Debug.LogWarningFormat("[AssetUtility] Manually destroying asset '{0}'!", asset.name);
 #if UNITY_EDITOR
                 UnityEngine.Object.DestroyImmediate(asset, true);
+#else
+                Resources.UnloadAsset(asset);
 #endif // UNITY_EDITOR
             }
         }

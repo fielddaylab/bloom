@@ -8,7 +8,7 @@ namespace FieldDay.SharedState {
     /// </summary>
     [DefaultExecutionOrder(SharedStateComponent.DefaultExecutionOrder)]
     public abstract class SharedStateComponent : MonoBehaviour, ISharedState {
-        public const int DefaultExecutionOrder = -9500000;
+        public const int DefaultExecutionOrder = -20000;
 
         private void OnEnable() {
             Game.SharedState.Register(this);

@@ -693,10 +693,10 @@ PlayerSettings:
   blurSplashScreenBackground: 1
   spritePackerPolicy: 
   webGLMemorySize: 16
-  webGLExceptionSupport: 1
+  webGLExceptionSupport: 3
   webGLNameFilesAsHashes: 0
   webGLDataCaching: 1
-  webGLDebugSymbols: 0
+  webGLDebugSymbols: 2
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
   webGLTemplate: APPLICATION:Default
@@ -723,7 +723,7 @@ PlayerSettings:
     PS5: 1
     Stadia: 1
     Standalone: 2
-    WebGL: 3
+    WebGL: 2
     Windows Store Apps: 1
     XboxOne: 1
     iPhone: 1

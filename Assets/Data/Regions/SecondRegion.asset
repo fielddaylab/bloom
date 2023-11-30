@@ -621,56 +621,166 @@ MonoBehaviour:
       m_Source: region2_city1
       m_HashValue: 1227755184
     Type: 3
+    LocationName:
+      m_Source: location.region2_city1.name
+      m_HashValue: 3339869316
+    CharacterId:
+      m_Source: cityForest
+      m_HashValue: 1668629707
+    AdditionalData:
+      m_Type: 1
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 62
     ScriptName:
       m_Source: region2_grain1
       m_HashValue: 3146671576
     Type: 1
+    LocationName:
+      m_Source: location.region2_grain1.name
+      m_HashValue: 655774762
+    CharacterId:
+      m_Source: grainForest
+      m_HashValue: 513755685
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 95
     ScriptName:
       m_Source: region2_cafo1
       m_HashValue: 1884251792
     Type: 2
+    LocationName:
+      m_Source: location.region2_cafo1.name
+      m_HashValue: 2564463504
+    CharacterId:
+      m_Source: cafoForest
+      m_HashValue: 3878382559
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 15
     ScriptName:
       m_Source: region2_cafo2
       m_HashValue: 1934584649
     Type: 2
+    LocationName:
+      m_Source: location.region2_cafo2.name
+      m_HashValue: 1398672439
+    CharacterId:
+      m_Source: cafoForest
+      m_HashValue: 3878382559
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 107
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 118
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 109
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 99
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 98
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 97
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Type: 11
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   - LocalTileIndex: 108
     ScriptName:
       m_Source: region2_export
       m_HashValue: 4095608236
     Type: 9
+    LocationName:
+      m_Source: location.region2_export.name
+      m_HashValue: 4099748306
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   Points: []
   Roads: []
   Modifiers:

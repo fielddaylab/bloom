@@ -18,6 +18,9 @@ GameObject:
   - component: {fileID: 947691686583835032}
   - component: {fileID: 947691686583835033}
   - component: {fileID: 546599153688107881}
+  - component: {fileID: 1535670504253479040}
+  - component: {fileID: 8507487513174570182}
+  - component: {fileID: 3483978453912282086}
   m_Layer: 7
   m_Name: City_Base
   m_TagString: Untagged
@@ -96,7 +99,7 @@ MonoBehaviour:
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0
-    Milk: 1
+    Milk: 3
   PurchasePrice:
     Manure: 0
     MFertilizer: 0
@@ -212,6 +215,50 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   EventDisplayOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &1535670504253479040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947691686583835045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f47a41270c43b3b43ba993419088b887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8507487513174570182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947691686583835045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8ab6ff6bf4dc145a146cff94c9cda2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TitleLabel:
+    m_Source: 
+    m_HashValue: 0
+  InfoLabel:
+    m_Source: location.shared.cityInfo
+    m_HashValue: 499009014
+  Icon: {fileID: 0}
+--- !u!135 &3483978453912282086
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947691686583835045}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5417570481552996235
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using BeauUtil;
+using FieldDay;
 using FieldDay.Scenes;
 using FieldDay.SharedState;
 using System.Collections;
@@ -20,7 +21,7 @@ namespace Zavala.Economy
         public bool ManualUpdateRequested;
 
         public IEnumerator<WorkSlicer.Result?> Preload() {
-            ShopUI = FindAnyObjectByType<UIShop>(FindObjectsInactive.Include);
+            ShopUI = Game.Gui.GetShared<UIShop>();
             CostQueue = new RingBuffer<int>(8, RingBufferMode.Expand);
             return null;
         }
