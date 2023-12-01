@@ -7,6 +7,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3901804555460920475, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.133
+      objectReference: {fileID: 0}
+    - target: {fileID: 3901804555460920475, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.935
+      objectReference: {fileID: 0}
     - target: {fileID: 4457923571566758510, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -59,5 +67,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: DairyFarm_Hillside
       objectReference: {fileID: 0}
+    - target: {fileID: 7291294420475072062, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: Flagstaff
+      value: 
+      objectReference: {fileID: 5461681433695912720}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+--- !u!114 &5461681433695912720 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 500071700193006844, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+  m_PrefabInstance: {fileID: 5565137269451413484}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02c1a2961fc6e8a468ea5c333333dbba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

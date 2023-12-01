@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1381749912446096825, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.083
+      objectReference: {fileID: 0}
+    - target: {fileID: 1381749912446096825, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.758
+      objectReference: {fileID: 0}
+    - target: {fileID: 1381749912446096825, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.895
+      objectReference: {fileID: 0}
     - target: {fileID: 5421243799934890597, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
       propertyPath: m_Name
       value: GrainFarm_Forest

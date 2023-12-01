@@ -19,11 +19,14 @@ namespace Zavala.Economy {
 
         public RingBuffer<MarketActiveRequestInfo> FulfilledQueue;
         // TODO: there's got to be a better system than this. Some sort of unique id to each requestVisual so there aren't all these lookups.
-        public Dictionary<ResourceRequester, RingBuffer<RequestVisual>> VisualMap; // maps a ring of request visuals to each requester
+        // public Dictionary<ResourceRequester, RingBuffer<RequestVisual>> VisualMap; // maps a ring of request visuals to each requester
+        public Dictionary<ResourceRequester, int> UrgentMap; // maps the number of urgent requests to each requester
+
 
         public void OnRegister() {
             FulfilledQueue = new RingBuffer<MarketActiveRequestInfo>(8, RingBufferMode.Expand);
-            VisualMap = new Dictionary<ResourceRequester, RingBuffer<RequestVisual>>();
+            // VisualMap = new Dictionary<ResourceRequester, RingBuffer<RequestVisual>>();
+            UrgentMap = new Dictionary<ResourceRequester, int>();
             NewUrgents = new List<MarketRequestInfo>();
         }
 

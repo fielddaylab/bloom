@@ -70,7 +70,7 @@ namespace Zavala.UI
         {
             Game.Events.Register(GameEvents.BlueprintModeStarted, HandleStartBlueprintMode);
             Game.Events.Register(GameEvents.BlueprintModeEnded, HandleEndBlueprintMode);
-
+            Game.Events.Register(GameEvents.RegionSwitched, HandleRegionSwitched);
             Game.Events.Register(GameEvents.PolicyTypeUnlocked, HandlePolicyTypeUnlocked);
 
             m_ReceiptGroup.alpha = 0;
@@ -149,6 +149,11 @@ namespace Zavala.UI
         }
 
         private void HandlePolicyCardSelected(CardData data)
+        {
+            UpdatePolicyBoxTexts();
+        }
+
+        private void HandleRegionSwitched()
         {
             UpdatePolicyBoxTexts();
         }
