@@ -40,6 +40,7 @@ namespace Zavala.Sim
             // Implement checks
             bool passedCheck = true;
 
+            Debug.Log("[RegionUnlockSystem] Checking to unlock: " + currUnlockGroup.RegionIndexUnlocks[0]);
             // ALL conditions must be passed (&&, not ||)
             foreach (UnlockConditionGroup conditionGroup in currUnlockGroup.UnlockConditions) {
                 switch (conditionGroup.Type) {
@@ -63,9 +64,11 @@ namespace Zavala.Sim
                         break;
                     case UnlockConditionType.RegionAge:
                         EvaluateRegionAgeTargetPassed(ref passedCheck, conditionGroup);
+                        //Debug.LogWarning("[RegionUnlockSystem] RegionAge: " + passedCheck);
                         break;
                     case UnlockConditionType.NodeReached:
                         EvaluateNodeReachedPassed(ref passedCheck, conditionGroup);
+                        Debug.Log("[RegionUnlockSystem] NodeReached: "+passedCheck);
                         break;
                     default:
                         break;
@@ -73,6 +76,7 @@ namespace Zavala.Sim
             }
             
             if (passedCheck) {
+                Debug.Log("[RegionUnlockSystem] Passed conditions, checking delay:"+currUnlockGroup.UnlockDelay);
                 if (currUnlockGroup.UnlockDelay > 0) {
                     currUnlockGroup.UnlockDelay -= 1;
                     m_StateA.UnlockGroups[m_StateA.UnlockCount] = currUnlockGroup;
@@ -227,7 +231,7 @@ namespace Zavala.Sim
                 }
                 conditionGroup.NodeHash = new StringHash32(title);
             }
-            if (!ScriptUtility.Persistence.RecentViewedNodeIds.Contains(conditionGroup.NodeHash)) {
+            if (!ScriptUtility.Persistence.SessionViewedNodeIds.Contains(conditionGroup.NodeHash)) {
                 passedCheck = false;
                 return;
             }

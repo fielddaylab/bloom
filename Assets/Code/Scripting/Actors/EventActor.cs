@@ -110,7 +110,7 @@ namespace Zavala.Scripting {
                 Argument = GameAlerts.GetAlertTypeArgument(alert),
                 SecondArg = secondArg,
                 Alert = alert,
-                RegionIndex = new NamedVariant("alertRegion", regionIndex),
+                RegionIndex = new NamedVariant("alertRegion", regionIndex+1), // 1-indexed
                 TileIndex = tileIndex
             }); ;
         }

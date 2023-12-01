@@ -465,7 +465,12 @@ namespace Zavala.Sim {
         
         [LeafMember("CameraInRegion")]
         static public bool CameraInRegion(uint regionIndex) {
-            return Game.SharedState.Get<SimGridState>().CurrRegionIndex == regionIndex;
+            return Game.SharedState.Get<SimGridState>().CurrRegionIndex == (regionIndex-1); // 1-indexed to 0-indexed
+        }
+
+        [LeafMember("AgeOfRegion")]
+        static public int AgeOfRegion(int regionIndex) {
+            return Game.SharedState.Get<SimGridState>().Regions[regionIndex-1].Age; // 1-indexed to 0-indexed
         }
 
         #region Water Groups

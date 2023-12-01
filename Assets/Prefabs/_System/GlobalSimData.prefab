@@ -565,7 +565,7 @@ MonoBehaviour:
         Value: 0
       TargetAge:
         Below: 0
-        Value: 25
+        Value: 20
       NodeTitle: 
     - Type: 7
       ChecksRegions: 00000000
@@ -597,7 +597,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-      NodeTitle: region1.firstBloomDiscovered
+      NodeTitle: region1.discoverFirstBloom
     RegionIndexUnlocks: 02000000
   - UnlockDelay: 0
     UnlockConditions:

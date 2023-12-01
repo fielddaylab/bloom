@@ -113,7 +113,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 2, y: 0}
-  m_SizeDelta: {x: 32, y: 15}
+  m_SizeDelta: {x: 40, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &5009163468508710126
 CanvasRenderer:
@@ -246,8 +246,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 9
-  m_fontSizeBase: 9
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -637,6 +637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac15aa9b65bf545438f942bb8f6623ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StartUnlocked: 0
   Button: {fileID: 5009163469523836061}
   Cost: -1
   CanAfford: 0

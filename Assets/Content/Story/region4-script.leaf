@@ -1,8 +1,17 @@
 # basePath   region4
 
+:: regionUnlocked
+@trigger        RegionUnlocked
+@conditions     regionId == "Wetland"
+@queued
+$call Pause()
+{@advisorEcolWetland}    Welcome to Muskeg County!
+$call PanToBuilding("region4_city1")
+$call Unpause()
+
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", CameraInRegion(3)
+@conditions     advisorType == "Ecology", CameraInRegion(4)
 @forcePolicy    Ecology
 $if NumCardsUnlocked() >= 1
 {local @advisorEcol}    Hello, boss. We've got ecological policies to set, if you'd like.
@@ -12,7 +21,7 @@ $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Economy", CameraInRegion(3)
+@conditions     advisorType == "Economy", CameraInRegion(4)
 @forcePolicy    Economy
 $if NumCardsUnlocked() >= 2
 {local @advisorEcon}    Good morrow. Here to assign economic policies?
@@ -20,11 +29,23 @@ $else
 {local @advisorEcon}    
 $endif
 
-:: regionUnlocked
-@trigger        RegionUnlocked
-@conditions     regionId == "Wetland"
-@queued
-$call Pause()
-{@advisorEcolWetland}    Welcome to the wetlands!
-$call PanToBuilding("region4_city1")
-$call Unpause()
+:: unlockSkimmers
+{@advisorEcolPrairie}   We have all these trawlers... What if we used them to skim algae off the lakes?
+$call UnlockCards(SkimmingPolicy)
+
+:: unlockDigesters
+// 
+{@advisorEconPrairie}   These old digesters were too expensive for us to run... 
+{@advisorEconPrairie}   But maybe with SAGA's help we could get them going?
+{@advisorEconPrairie}   They process manure into fertilizer... Much easier to ship, and less runoff too!
+$call UnlockShopItem("Digester")
+
+:: unlockSalesTax
+{@advisorEconPrairie}   Digesters would be great, but they're expensive...
+{@advisorEconPrairie}   We may need a new revenue stream. I've opened up Sales Tax.
+$call UnlockCards(SalesTaxPolicy)
+
+:: unlockExportDepots
+$unlockExportDepots(region3_export)
+
+

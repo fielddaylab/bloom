@@ -1,25 +1,5 @@
 # basePath   region2
 
-:: ecologyAdvisorOpen
-@trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", CameraInRegion(1)
-@forcePolicy    Ecology
-$if NumCardsUnlocked() >= 1
-{local @advisorEcol}    Sage at your service! Looking to set ecology policy?
-$else
-{local @advisorEcol}    You can assign ecological policy here once we have some.
-$endif
-
-:: economyAdvisorOpen
-@trigger        AdvisorOpened
-@conditions     advisorType == "Economy", CameraInRegion(1)
-@forcePolicy    Economy
-$if NumCardsUnlocked() >= 2
-{local @advisorEcon}    Shall we assign some economic policies?
-$else
-{local @advisorEcon}    Salutations. You can see me about economic policies in the future.
-$endif
-
 :: forestUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
@@ -27,59 +7,77 @@ $endif
 $call Pause()
 {@advisorEconForest}    Salutations, Director.
 $call PanToBuilding("region2_city1")
-{@advisorEconForest}    We've heard about your program over here in Pine County.
-{@advisorEconForest}    Perhaps we could make use of your insights here?
+{@advisorEconForest}    News of SAGA has spread to Pine County.
+{@advisorEconForest}    Perhaps we could make use of your planning here?
 $call Unpause()
+
+:: ecologyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Ecology", CameraInRegion(2)
+@forcePolicy    Ecology
+$if NumCardsUnlocked() >= 1
+{local @advisorEcol}    Sage at your service! Looking to set ecology policy?
+$else
+{local @advisorEcol}    You can assign ecological policies here once we have some.
+$endif
+
+:: economyAdvisorOpen
+@trigger        AdvisorOpened
+@conditions     advisorType == "Economy", CameraInRegion(2)
+@forcePolicy    Economy
+$if NumCardsUnlocked() >= 2
+{local @advisorEcon}    Shall we assign some economic policies?
+$else
+{local @advisorEcon}    Salutations. You can see me about economic policies in the future.
+$endif
 
 
 :: forestConnection
 @trigger FarmConnection
-@conditions CameraInRegion(1)
-@queued 
+@conditions CameraInRegion(2) 
 @once
 {@advisorEcolForest}    Enjoying Pine County?
 {@advisorEcolForest}    The finest forests in the state, if I do say so myself.
-{@advisorEcolForest}    And it's all thanks to our <i>stellar</i> ecosystem management.
-{@advisorEcolForest}    Definitely better than those <i>hill dwellers</i> over in Knoll County.
-{@advisorEcolForest}    Frankly, I doubt we even need your services.
+{@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
+{@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
 
 
 :: testBloomTriggerForest
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 1
+@conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
 @forcePolicy    Ecology
 @once
 $call Pause()
-// TODO: trigger ACT 2 HERE.
 {@advisorEcolForest}    Ugh... I can't believe there's an algae bloom <i>here!</i>
 {@advisorEcolForest}    Those <i>hill-dwellers</i> should have done more to stop it.
 {@advisorEcolHill}      Pft! That's rich coming from <i>Stellar Forest Management</i> over here.
 {@advisorEcolForest}    It's not our fault you let your <i>filth</i> flow down here.
 $call Unpause()
 
+:: runoffBranch
+@trigger        AlertExamined
+@conditions     alertType == "excess-runoff", alertRegion == 2, global:bloomDiscovered
+$call Pause()
+$if Visited("region2.unlockStorage")
+    $branch .runoffGeneric
+$else
+    $branch .unlockStorage
+$endif
+$call Unpause()
 
 :: unlockStorage
-@trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1
+@conditions     global:bloomDiscovered
 @once
-$call Pause()
-{@advisorEcolForest}    Hmm... This sitting manure leaches into the water table faster than it's used.
-{@advisorEcolForest}    Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
-{@advisorEconForest}    Excellent idea, Sage.
-{@advisorEconForest}    I've added <b>Storage</b> to your Blueprint Mode.
+{local @cafoFarmer}     Hmm... This sitting manure leaches into the water table faster than it's used.
+{local @cafoFarmer}     Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
+{@advisorEcolForest}    Not a half bad idea.
+{@advisorEcolForest}    I've added <b>Storage</b> to your Blueprint Mode.
 {@advisorEcolForest}    Once connected to a CAFO, they'll hold onto manure for later use.
-{@advisorEconForest}    But it won't be cheap - try to share it between CAFOs.
+{@advisorEcolForest}    But it won't be cheap - try to share it between CAFOs.
 $call UnlockShopItem("Storage")
-$call Unpause()
 
 :: runoffGeneric
-@trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1, Visited("region2.unlockStorage")
-@once
-$call Pause()
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
 {@advisorEcolForest}    I say we build more Storage units.
-{@advisorEconForest}    Well... Just be sure to balance the budget. 
-{@advisorEconForest}    A policy adjustment may be more efficacious.
-
-$call Unpause()
+{@advisorEconForest}    Those could help, but they won't come cheap.
+{@advisorEconForest}    A policy adjustment may be more efficient.
