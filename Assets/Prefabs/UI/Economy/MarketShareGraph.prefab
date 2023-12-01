@@ -51,8 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d5ea1c2abd96974bb7f463ed421c0fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHistoryCount: 20
-  Renderer: {fileID: 0}
+  MaxHistoryCount: 10
+  Renderer: {fileID: 7074782271129698276}
 --- !u!1 &4840448775229500981
 GameObject:
   m_ObjectHideFlags: 0
@@ -63,6 +63,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1741832371300587988}
   - component: {fileID: 7074782271129698276}
+  - component: {fileID: 1916404269219448458}
   m_Layer: 5
   m_Name: Graph
   m_TagString: Untagged
@@ -104,17 +105,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   ManureColor: {r: 0.41960788, g: 0.25882354, b: 0.19215688, a: 1}
   CFertilizerColor: {r: 1, g: 0.57254905, b: 0.57254905, a: 1}
-  DFertilizerColor: {r: 0.76470596, g: 0.8705883, b: 0.4666667, a: 1}
-  OutlineColor: {r: 1, g: 0.9843138, b: 0.89019614, a: 0}
-  OutlineThickness: 2
+  MFertilizerColor: {r: 0.76470596, g: 0.8705883, b: 0.4666667, a: 1}
+  OutlineColor: {r: 0.9450981, g: 0.9058824, b: 0.6745098, a: 1}
+  OutlineThickness: 4
+  MaxTicks: 10
+--- !u!222 &1916404269219448458
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4840448775229500981}
+  m_CullTransparentMesh: 1
 --- !u!1 &7186272507208511078
 GameObject:
   m_ObjectHideFlags: 0
