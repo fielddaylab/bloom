@@ -5,6 +5,7 @@ using BeauUtil.Tags;
 using BeauUtil.Variants;
 using FieldDay.SharedState;
 using Leaf;
+using Leaf.Defaults;
 using Leaf.Runtime;
 using UnityEngine;
 using Zavala.Scripting;
@@ -137,6 +138,15 @@ namespace FieldDay.Scripting {
             TagStringParser parser = Runtime.ParserPool.Alloc();
             parser.Parse(ref tagString, content, context);
             Runtime.ParserPool.Free(parser);
+        }
+
+        static public void MountDisplayer(ITextDisplayer displayer) {
+            Runtime.DefaultDialogue.HideAdvisorUI();
+            Runtime.Plugin.ConfigureDisplay(displayer, displayer as IChoiceDisplayer);
+        }
+
+        static public void UnmountDisplayer(ITextDisplayer displayer) {
+            Runtime.Plugin.ConfigureDisplay(Runtime.DefaultDialogue, Runtime.DefaultDialogue);
         }
 
         [LeafMember("Visited")]

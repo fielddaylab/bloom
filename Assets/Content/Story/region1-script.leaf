@@ -5,6 +5,22 @@
 @once
 $call Pause()
 $call PauseAlertType("ExcessRunoff")
+
+// cutscene test
+// $call Wait(5)
+// $call CutsceneBegin()
+// $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-1.png", "intro/frame1-1.png")
+// $call CutsceneNextImage()
+// Hey here's some test text, written in the cutscene window.
+// $call CutsceneNextImage()
+// {wait 1}
+// $call CutsceneClearText()
+// $call CutsceneNextImage()
+// {wait 1}
+// Wow more text!
+// $call CutsceneClearImages()
+// $call CutsceneEnd()
+
 $call ForceDialogueInteraction()
 {@advisorEconHill}      Greetings. You must be the Director.
 {@advisorEconHill}      I'm here to advise you on economic matters in Knoll County.
