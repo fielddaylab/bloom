@@ -9,6 +9,7 @@ using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zavala.Building;
 using Zavala.Economy;
 using Zavala.Rendering;
@@ -304,7 +305,7 @@ namespace Zavala.Sim {
             else
             {
                 // removal cost
-                costToRemove = 5;
+                costToRemove = 0;
             }
 
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
@@ -370,11 +371,21 @@ namespace Zavala.Sim {
             {
                 case BuildingType.Road:
                     // Clear from adj roads
-                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
+                    RoadUtility.RemoveRoad(network, grid, pools, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
 
                     if (buildingObj)
                     {
-                        pools.Roads.Free(buildingObj.GetComponent<RoadInstanceController>());
+                        // TODO: differentiate between staged road objs and existing road objs
+                        for (int i = network.RoadObjects.Count - 1; i >= 0; i--)
+                        {
+                            if (network.RoadObjects[i].GetComponent<OccupiesTile>().TileIndex == tileIndex)
+                            {
+                                // TODO: Check if there is nothing after staging mask is removed
+                                pools.Roads.Free(network.RoadObjects[i]);
+                                network.RoadObjects.RemoveAt(i);
+                                break;
+                            }
+                        }
 
                         ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
                         {
@@ -384,14 +395,14 @@ namespace Zavala.Sim {
                     }
                     break;
                 case BuildingType.Digester:
-                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
+                    RoadUtility.RemoveRoad(network, grid, pools, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
                     if (buildingObj)
                     {
                         pools.Digesters.Free(buildingObj.GetComponent<OccupiesTile>());
                     }
                     break;
                 case BuildingType.Storage:
-                    RoadUtility.RemoveRoad(network, grid, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
+                    RoadUtility.RemoveRoad(network, grid, pools, tileIndex, removeInleadingRoads, out inleadingDirsRemoved);
                     if (buildingObj)
                     {
                         pools.Storages.Free(buildingObj.GetComponent<OccupiesTile>());
@@ -425,9 +436,13 @@ namespace Zavala.Sim {
         public static void BuildOnTileFromUndo(SimGridState grid, BuildingType buildingType, int tileIndex, Material inMat)
         {
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             OccupiesTile occupies;
             switch (buildingType)
             {
+                case BuildingType.Road:
+                    BuildRoadOnTile(grid, network, pools.Roads, tileIndex, inMat, out RoadInstanceController controller);
+                    break;
                 case BuildingType.Digester:
                     BuildOnTile(grid, pools.Digesters, tileIndex, inMat, out occupies);
                     break;
@@ -437,6 +452,7 @@ namespace Zavala.Sim {
                 case BuildingType.Skimmer:
                     BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies);
                     break;
+
                 default:
                     occupies = null;
                     break;
@@ -454,6 +470,35 @@ namespace Zavala.Sim {
             // temporarily render the build as holo and commit to build queue
             var matSwap = occupies.GetComponent<MaterialSwap>();
             if (matSwap) { matSwap.SetMaterial(inMat); }
+        }
+
+        /// <summary>
+        /// Primarily used when Undoing single destroy actions
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="pool"></param>
+        /// <param name="tileIndex"></param>
+        /// <param name="inMat"></param>
+        /// <param name="occupies"></param>
+        private static void BuildRoadOnTile(SimGridState grid, RoadNetwork network, SerializablePool<RoadInstanceController> pool, int tileIndex, Material inMat, out RoadInstanceController controller)
+        {
+            // add build, snap to tile
+            HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
+            Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
+            TerrainTileInfo terrainInfo = grid.Terrain.Info[tileIndex];
+            RoadTileInfo roadInfo = network.Roads.Info[tileIndex];
+
+            terrainInfo.Flags |= TerrainFlags.IsOccupied; // Necessary? Do we do this with other roads?
+            roadInfo.Flags |= RoadFlags.IsAnchor;
+            roadInfo.Flags |= RoadFlags.IsRoad;
+
+            controller = pool.Alloc(worldPos);
+
+            // temporarily render the build as holo and commit to build queue
+            var matSwap = controller.GetComponent<MaterialSwap>();
+            if (matSwap) { matSwap.SetMaterial(inMat); }
+
+            RoadUtility.UpdateRoadVisuals(network, tileIndex);
         }
 
         public static void RestoreSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)

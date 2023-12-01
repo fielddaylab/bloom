@@ -377,7 +377,7 @@ namespace Zavala.Roads
             }
         }
 
-        static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool removeInleading, out List<TileDirection> inleadingDirsRemoved) {
+        static public void RemoveRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool removeInleading, out List<TileDirection> inleadingDirsRemoved) {
 
             // Erase record from adj nodes
 
@@ -389,6 +389,20 @@ namespace Zavala.Roads
             {
                 inleadingDirsRemoved = new List<TileDirection>();
             }
+
+            /*
+            // differentiate between staged road objs and existing road objs
+            for (int i = network.RoadObjects.Count - 1; i >= 0; i--)
+            {
+                if (network.RoadObjects[i].GetComponent<OccupiesTile>().TileIndex == tileIndex)
+                {
+                    // Check if there is nothing after staging mask is removed
+                    pools.Roads.Free(network.RoadObjects[i]);
+                    network.RoadObjects.RemoveAt(i);
+                    break;
+                }
+            }
+            */
 
             ref RoadTileInfo centerTileInfo = ref network.Roads.Info[tileIndex];
             centerTileInfo.FlowMask.Clear();

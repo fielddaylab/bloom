@@ -108,7 +108,7 @@ Material:
     - _BendSpeed: 1.5
     - _BendStrength: 1.5
     - _Blend: 0
-    - _BottomFogFade: 1.97
+    - _BottomFogFade: -0.68
     - _BottomFogHeight: -0.55
     - _BumpScale: 1
     - _ClearCoatMask: 0

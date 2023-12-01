@@ -64,6 +64,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: df037504ebfeed743b9e4e85e1449a30, type: 3}
   - {fileID: 21300000, guid: 57a996141414f1543822837147d4bf12, type: 3}
   - {fileID: 21300000, guid: 42f2aa24953b643469146dddc1b95237, type: 3}
+  - {fileID: 21300000, guid: 91165e24abe5a374b8248092a836dc58, type: 3}
   - {fileID: 21300000, guid: a1879e24680c1ba48a492b6cee354375, type: 3}
   - {fileID: 21300000, guid: 9b075354cb0ae484aad11631c2a0eecd, type: 3}
   - {fileID: 21300000, guid: f539e1946dd638d43a715d35ef12abc8, type: 3}
@@ -91,6 +92,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3cbb6d596834a1e4eb1a7110494be0f4, type: 3}
   - {fileID: 21300000, guid: 45758679d1b51544babfafc4917155aa, type: 3}
   - {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
+  - {fileID: 21300000, guid: 8c8ecb9ae6f073b4cbabad7ceecf1307, type: 3}
   - {fileID: 21300000, guid: 7fdf6d5b4cb42ca46bdb089e269472a9, type: 3}
   - {fileID: 21300000, guid: 2221949b943795844a143b042d89dd3e, type: 3}
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
@@ -99,6 +101,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 91e8916c2b2d91842a059489e48ca34b, type: 3}
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: 084a2d3ddfb26f842a85c7071fc49c72, type: 3}
+  - {fileID: 21300000, guid: 1555a36d4acb0b1418ec48541710fb8b, type: 3}
   - {fileID: 21300000, guid: 9f7db99d52215234fb299dca8c6346c7, type: 3}
   - {fileID: 21300000, guid: fab52f1e1c3fcc448a0241831b299c14, type: 3}
   - {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
@@ -123,6 +126,7 @@ SpriteAtlas:
   - policy-background-white
   - BlueprintModeToggle
   - DestroyIcon
+  - settings-gear
   - CloseRound
   - CostBGWhite
   - banner_excess-runoff
@@ -150,6 +154,7 @@ SpriteAtlas:
   - alert_Milk
   - PopulationIcon
   - card-slot-locked-white
+  - title-bg
   - ShopButtonBorder
   - policy-button-white
   - base_excess-runoff
@@ -158,6 +163,7 @@ SpriteAtlas:
   - flag_bg
   - BlueprintMode
   - alert_Grain
+  - title-bg-2
   - urgent-request
   - ToolImageStorage
   - ToolImageDigester

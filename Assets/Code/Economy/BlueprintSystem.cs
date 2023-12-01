@@ -63,7 +63,7 @@ namespace Zavala.Economy
             // Destroy clicked
             if (m_StateA.NewDestroyConfirmed)
             {
-                BlueprintUtility.ConfirmDestroy(m_StateA, m_StateB, m_StateC, m_StateC.CurrRegionIndex);
+                BlueprintUtility.ConfirmDestroy(m_StateA, m_StateB, m_StateC, m_StateD, m_StateC.CurrRegionIndex);
             }
 
             // Clicked the Exit button (from Destroy mode)
