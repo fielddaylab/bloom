@@ -1925,6 +1925,9 @@ MonoBehaviour:
   m_SettingsButton: {fileID: 4165472890593221989}
   m_SettingsPanel: {fileID: 895324560390142388}
   m_CreditsPanel: {fileID: 5566886449509760315}
+  m_MainScene:
+    m_ScenePath: Assets/Scenes/MainScene.unity
+    m_GUID: 9fc0d4010bbf28b4594072e72b8655ab
 --- !u!1 &7095717010849853884
 GameObject:
   m_ObjectHideFlags: 0

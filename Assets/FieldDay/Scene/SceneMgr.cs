@@ -14,6 +14,7 @@ using FieldDay.Assets;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
+using UnityEditor;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.Scenes {
@@ -618,7 +619,7 @@ namespace FieldDay.Scenes {
 
         private void EnqueueSceneProcessors(Scene scene, in LoadSceneArgs args) {
             SceneDataExt data = SceneDataExt.Get(scene);
-            Assert.NotNull(data);
+            Assert.True(data);
             Assert.NotNull(args.Queue);
 
             if (!data.TryVisit(SceneDataExt.VisitFlags.Loaded)) {

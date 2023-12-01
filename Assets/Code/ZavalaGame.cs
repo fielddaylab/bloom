@@ -44,7 +44,9 @@ namespace Zavala {
         [InvokeOnBoot]
         static private void OnBoot() {
             Scenes.OnMainSceneReady.Register(() => {
-                ScriptUtility.Trigger(GameTriggers.GameBooted);
+                if (ScriptUtility.Runtime) {
+                    ScriptUtility.Trigger(GameTriggers.GameBooted);
+                }
             });
         }
 

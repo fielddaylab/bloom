@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using BeauUtil;
+using FieldDay;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,6 +20,8 @@ namespace Zavala.UI
         [SerializeField] private UISettings m_SettingsPanel;
         [SerializeField] private UICredits m_CreditsPanel;
 
+        [SerializeField] private SceneReference m_MainScene;
+
         #endregion // Inspector
 
         #region Unity Callbacks
@@ -35,7 +39,7 @@ namespace Zavala.UI
 
         private void HandleStartClicked()
         {
-            SceneManager.LoadScene("MainScene");
+            Game.Scenes.LoadMainScene(m_MainScene);
         }
 
         private void HandleCreditsClicked()
