@@ -16,7 +16,6 @@ namespace Zavala.Roads {
         public DecorationRenderer RampStagedDecorations;
         public TileAdjacencyDataSet<RoadRampType> Ramps;
         public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
-        public float Radius;
         public MaterialSwap MatSwap;
     }
 
@@ -65,7 +64,7 @@ namespace Zavala.Roads {
                 if (mask.Has(dir) && controller.Ramps.TryGet(dir, out RoadRampType ramp))
                 {
                     int turns = (int)dir - (int)TileDirection.S;
-                    Vector3 offset = HexGrid.RotateVector(new Vector3(0, 0, -controller.Radius), turns);
+                    Vector3 offset = HexGrid.RotateVector(library.RampMeshOffset(), turns);
                     Quaternion rot = Quaternion.Euler(0, turns * -60, 0);
 
                     bool blueprintOverride = controller.BPCompareMask[dir] && mask[dir];

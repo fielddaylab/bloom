@@ -39,11 +39,14 @@ namespace Zavala {
         [SerializeField] private Mesh m_ErrorMesh = null;
         [SerializeField] private Mesh m_RampMesh = null;
         [SerializeField] private Mesh m_SteepRampMesh = null;
+        [SerializeField] private Vector3 m_RampOffset = new Vector3(0, 0, 0.43f);
         [SerializeField] private Vector3 m_RampScale = Vector3.one;
 
         [Space]
         [SerializeField] private RotationEntry[] m_RotationEntries = new RotationEntry[64];
         [SerializeField] private TileData[] m_Tiles = new TileData[16];
+
+        static public readonly ActionEvent OnUpdated = new ActionEvent(64);
 
         public bool Lookup(TileAdjacencyMask mask, out AssembledRoadData roadData) {
             int lookup = mask.Value >> 1;
@@ -82,6 +85,10 @@ namespace Zavala {
             }
         }
 
+        public Vector3 RampMeshOffset() {
+            return m_RampOffset;
+        }
+
         public Vector3 RampMeshScale() {
             return m_RampScale;
         }
@@ -97,6 +104,10 @@ namespace Zavala {
 
                 if (GUILayout.Button("Rebuild")) {
                     lib.Build();
+                }
+
+                if (GUILayout.Button("Refresh")) {
+                    OnUpdated.Invoke();
                 }
             }
         }
@@ -130,7 +141,7 @@ namespace Zavala {
             HashSet<int> untouchedMasks = new HashSet<int>(64);
             for(int i = 0; i < 64; i++) {
                 outRotations[i].TileIndex = ushort.MaxValue;
-                if (Bits.Count(i) > 1) {
+                if (i > 0) {
                     untouchedMasks.Add(i);
                 }
             }

@@ -7,6 +7,7 @@ using BeauUtil.Debugger;
 using BeauUtil;
 using System;
 using UnityEngine;
+using JetBrains.Annotations;
 
 namespace Zavala.Roads {
     [SysUpdate(GameLoopPhase.Update, 0)]
@@ -63,6 +64,22 @@ namespace Zavala.Roads {
                 network.OnConnectionsReevaluated.Invoke();
                 network.UpdateNeeded = false;
             }
+        }
+
+        public override void Initialize() {
+            base.Initialize();
+
+            RoadLibrary.OnUpdated.Register(ForceRefreshRamps);
+        }
+
+        public override void Shutdown() {
+            base.Shutdown();
+
+            RoadLibrary.OnUpdated.Deregister(ForceRefreshRamps);
+        }
+
+        private void ForceRefreshRamps() {
+            RoadUtility.UpdateAllRoadVisuals(m_StateA);
         }
 
         private struct TraversalResources {

@@ -365,6 +365,18 @@ namespace Zavala.Roads
             });
         }
 
+        static public void UpdateAllRoadVisuals(RoadNetwork network) {
+            for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
+                int roadTileIndex = network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex;
+                RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
+                RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
+                ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
+                    TileIndex = (ushort) roadTileIndex,
+                    Type = VisualUpdateType.Road
+                });
+            }
+        }
+
         static public void RemoveRoad(RoadNetwork network, SimGridState grid, int tileIndex, bool removeInleading, out List<TileDirection> inleadingDirsRemoved) {
 
             // Erase record from adj nodes
