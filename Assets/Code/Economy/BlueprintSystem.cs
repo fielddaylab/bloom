@@ -103,7 +103,7 @@ namespace Zavala.Economy
             // On market ticks, update top bar box popups
             if (m_StateE.MarketTimer.HasAdvanced())
             {
-                BlueprintUtility.OnMarketTickAdvanced(m_StateA, m_StateE);
+                BlueprintUtility.OnMarketTickAdvanced(m_StateA, m_StateC, m_StateE);
             }
         }
     }

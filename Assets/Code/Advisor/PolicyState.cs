@@ -24,6 +24,7 @@ namespace Zavala.Advisor {
         public static ResourceBlock[] ImportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] SalesTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] RunoffPenaltyVals = new ResourceBlock[4];
+        public static int[] SkimmerPolicyVals = new int[4];
 
         public CastableEvent<PolicyType> PolicySlotClicked = new CastableEvent<PolicyType>();
         public CastableEvent<CardData> PolicyCardSelected = new CastableEvent<CardData>();
@@ -37,11 +38,12 @@ namespace Zavala.Advisor {
             Policies[region].EverSet[policyType] = true; // this policy has now been set
             switch (policyType) {
                 case PolicyType.RunoffPolicy:
-                    // TODO: When runoff penalty implemented, read runoff policy
+                    // read runoff policy
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].RunoffPenalty = RunoffPenaltyVals[policyIndex];
                     return true;
                 case PolicyType.SkimmingPolicy:
-                    // TODO: When skimming implemented, read skimming policy
+                    // read skimming policy
+                    Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].SkimmerCost = SkimmerPolicyVals[policyIndex];
                     return true;
                     /*
                 case PolicyType.ExportTaxPolicy:
@@ -85,6 +87,11 @@ namespace Zavala.Advisor {
             RunoffPenaltyVals[1].Manure = 50;
             RunoffPenaltyVals[2].Manure = 100;
             RunoffPenaltyVals[3].Manure = 1000;
+
+            SkimmerPolicyVals[0] = 0; 
+            SkimmerPolicyVals[1] = 1; 
+            SkimmerPolicyVals[2] = 2; 
+            SkimmerPolicyVals[3] = 5; // dredge
         }
 
         private void InitializePolicyMap() {

@@ -98,5 +98,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Mesh: {fileID: 74385664878217107, guid: e6dee5cf39531fb4e8fef25f3ced3ba6, type: 3}
   Mask:
-    Value: 4
+    Value: 32
   Radius: 0.43

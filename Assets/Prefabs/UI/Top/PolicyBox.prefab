@@ -161,6 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1914838716842861750}
   - component: {fileID: 7745231441784809789}
+  - component: {fileID: 452859313317316039}
   m_Layer: 5
   m_Name: PolicyBox
   m_TagString: Untagged
@@ -204,9 +205,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73074f68918adc44485acffb758558dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Group: {fileID: 452859313317316039}
   LevelText: {fileID: 6057677351747910696}
   Popup: {fileID: 1753858934097462546}
   PolicyType: 0
+--- !u!225 &452859313317316039
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2554799343158801656}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5627422253775542413
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,10 +566,6 @@ PrefabInstance:
     - target: {fileID: 5016460832869530186, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5016460832869530186, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -29.5
       objectReference: {fileID: 0}
     - target: {fileID: 5016460832869530186, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_AnchoredPosition.y

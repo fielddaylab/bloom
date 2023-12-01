@@ -21,13 +21,13 @@ MonoBehaviour:
   - TileIndex: 65535
     Rotation: 0
   - TileIndex: 6
-    Rotation: 1
+    Rotation: 4
   - TileIndex: 6
-    Rotation: 0
+    Rotation: 3
   - TileIndex: 1
     Rotation: 4
   - TileIndex: 6
-    Rotation: 5
+    Rotation: 2
   - TileIndex: 2
     Rotation: 5
   - TileIndex: 1
@@ -35,7 +35,7 @@ MonoBehaviour:
   - TileIndex: 3
     Rotation: 0
   - TileIndex: 6
-    Rotation: 4
+    Rotation: 1
   - TileIndex: 9
     Rotation: 1
   - TileIndex: 2
@@ -51,7 +51,7 @@ MonoBehaviour:
   - TileIndex: 0
     Rotation: 5
   - TileIndex: 6
-    Rotation: 3
+    Rotation: 0
   - TileIndex: 2
     Rotation: 1
   - TileIndex: 9
@@ -83,7 +83,7 @@ MonoBehaviour:
   - TileIndex: 8
     Rotation: 1
   - TileIndex: 6
-    Rotation: 2
+    Rotation: 5
   - TileIndex: 1
     Rotation: 5
   - TileIndex: 2
@@ -171,9 +171,9 @@ MonoBehaviour:
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
     Scale: 1.0290698
     FlipX: 1
-  - Mesh: {fileID: 3228895108434126737, guid: e8a9c959ea2264512b042d464d12ec07, type: 3}
-    Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-    Scale: 0.5
+  - Mesh: {fileID: 74385664878217107, guid: e6dee5cf39531fb4e8fef25f3ced3ba6, type: 3}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -7111516067272048804, guid: 6f5251317db69624081ece513d808f65, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}

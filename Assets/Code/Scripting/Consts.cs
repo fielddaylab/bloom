@@ -11,7 +11,7 @@ namespace Zavala
     static public class GameEvents
     {
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
-        static public readonly StringHash32 PolicyCardSelected = "advisors:policy-card-selected";
+        static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";
         static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
         static public readonly StringHash32 MarketCycleTickCompleted = "sim:market-cycle-completed";
         static public readonly StringHash32 RegionSwitched = "sim:region-switched";

@@ -685,8 +685,8 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
+  m_Spacing: 150
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
@@ -3110,6 +3110,10 @@ PrefabInstance:
     - target: {fileID: 2554799343158801656, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_Name
       value: PolicyBox Import
+      objectReference: {fileID: 0}
+    - target: {fileID: 2554799343158801656, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3369355478612067722, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_Sprite
