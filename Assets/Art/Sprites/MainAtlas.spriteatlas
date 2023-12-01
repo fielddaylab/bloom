@@ -96,6 +96,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
   - {fileID: 21300000, guid: 76b2b02c1f99b324b82b1a82869a4100, type: 3}
   - {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
+  - {fileID: 21300000, guid: 91e8916c2b2d91842a059489e48ca34b, type: 3}
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: 084a2d3ddfb26f842a85c7071fc49c72, type: 3}
   - {fileID: 21300000, guid: 9f7db99d52215234fb299dca8c6346c7, type: 3}
@@ -154,6 +155,7 @@ SpriteAtlas:
   - base_excess-runoff
   - ShopToggleBlank
   - advisor-logobutton-econ
+  - flag_bg
   - BlueprintMode
   - alert_Grain
   - urgent-request

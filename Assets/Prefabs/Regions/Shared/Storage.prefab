@@ -135,6 +135,7 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
+  Flagstaff: {fileID: 0}
 --- !u!114 &4665823543789613532
 MonoBehaviour:
   m_ObjectHideFlags: 0

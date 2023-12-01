@@ -19,6 +19,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -0.202
       objectReference: {fileID: 0}
+    - target: {fileID: 3901804555460920475, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.1158
+      objectReference: {fileID: 0}
+    - target: {fileID: 3901804555460920475, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 3901804555460920475, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.8904
+      objectReference: {fileID: 0}
     - target: {fileID: 4457923571566758510, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
       propertyPath: m_Mesh
       value: 

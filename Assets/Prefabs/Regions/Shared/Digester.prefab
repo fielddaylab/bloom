@@ -149,7 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RequestMask: 1
   MaxRequests: 3
-  AgeOfUrgency: 20
+  AgeOfUrgency: -1
   IsLocalOption: 0
   InfiniteRequests: 0
   OverridesBuyPrice: 0
@@ -159,6 +159,7 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
+  Flagstaff: {fileID: 0}
 --- !u!114 &4665823543789613532
 MonoBehaviour:
   m_ObjectHideFlags: 0

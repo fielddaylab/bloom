@@ -26,6 +26,8 @@ namespace Zavala.Economy {
         [NonSerialized] public int RequestCount;
         [NonSerialized] public ResourceBlock Received;
 
+        public Flagstaff Flagstaff;
+
 
         // Map resource to ticks since fulfilled
 
@@ -39,6 +41,11 @@ namespace Zavala.Economy {
             MarketUtility.RegisterBuyer(this);
             if (!IsLocalOption) {
                 RoadUtility.RegisterDestination(Position, (RoadDestinationMask) RequestMask);
+            }
+
+            if (Flagstaff)
+            {
+                Flagstaff.FlagVisuals.gameObject.SetActive(false);
             }
         }
 
