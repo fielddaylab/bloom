@@ -2,6 +2,10 @@
 #define USE_SRP
 #endif // UNITY_2019_1_OR_NEWER
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif // UNITY_EDITOR
+
 using System;
 using System.Collections;
 using System.Reflection;
@@ -24,10 +28,7 @@ using System.Threading;
 using System.Globalization;
 using BeauRoutine;
 using FieldDay.UI;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif // UNITY_EDITOR
+using FieldDay.Assets;
 
 #if USE_SRP
 using UnityEngine.Rendering;
@@ -195,6 +196,9 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating gui manager...");
             Game.Gui = new GuiMgr();
 
+            Log.Msg("[GameLoop] Creating asset manager...");
+            Game.Assets = new AssetMgr();
+
             Application.targetFrameRate = m_TargetFramerate;
 
             Log.Msg("[GameLoop] Loading config vars...");
@@ -284,6 +288,10 @@ namespace FieldDay {
             CameraHelper.RemoveOnPreCull(this);
             CameraHelper.RemoveOnPreRender(this);
             CameraHelper.RemoveOnPostRender(this);
+
+            Log.Msg("[GameLoop] Shutting down asset manager...");
+            Game.Assets.Shutdown();
+            Game.Assets = null;
 
             Log.Msg("[GameLoop] Shutting down gui manager...");
             Game.Gui.Shutdown();

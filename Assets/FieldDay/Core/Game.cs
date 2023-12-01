@@ -6,6 +6,7 @@ using FieldDay.Audio;
 using System.Runtime.CompilerServices;
 using FieldDay.Scenes;
 using FieldDay.UI;
+using FieldDay.Assets;
 
 [assembly: InternalsVisibleTo("FieldDay.Core.Editor")]
 
@@ -48,6 +49,11 @@ namespace FieldDay {
         /// Gui panel manager. Maintains shared panel references.
         /// </summary>
         static public GuiMgr Gui { get; internal set; }
+
+        /// <summary>
+        /// Asset lookup manager. Maintains asset lookup tables.
+        /// </summary>
+        static public AssetMgr Assets { get; internal set; }
 
         /// <summary>
         /// Event dispatcher. Maintains event dispatch.
