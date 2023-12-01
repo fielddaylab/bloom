@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hillside_GrainFarm00
-  m_Shader: {fileID: -6465566751694194690, guid: 55b8488a904e04b2592896ac29ffaebe, type: 3}
+  m_Name: Forest_Landscape00_Sway
+  m_Shader: {fileID: -6465566751694194690, guid: ed305e2cdeee2481993ba0b3c83445f1, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadowTexture:
-        m_Texture: {fileID: 2800000, guid: cd9e0207e202b3a4f8c69bad82c936de, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9641630ef456d5e41840acf0b19df301, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -105,8 +105,8 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _BakedLightingStength: 1.23
-    - _BendSpeed: 1.5
-    - _BendStrength: 1.5
+    - _BendSpeed: 0.87
+    - _BendStrength: 3.62
     - _Blend: 0
     - _BottomFogFade: -0.25
     - _BottomFogHeight: -1
@@ -119,7 +119,6 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _FogFade: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -129,7 +128,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowStength: 1.74
+    - _ShadowStength: 2
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -140,8 +139,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BendDirection: {r: 1, g: -0.5, b: 0, a: 0}
-    - _BottomFogColor: {r: 0, g: 0, b: 0, a: 0}
+    - _BendDirection: {r: 1.05, g: 0.42, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GradientBottom: {r: 1, g: 1, b: 1, a: 0}
