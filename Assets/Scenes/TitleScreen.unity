@@ -393,5 +393,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: TitleCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 6679652020560074214, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
