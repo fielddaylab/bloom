@@ -34,7 +34,9 @@ namespace Zavala.Economy
         public DataHistory[] SalesTaxHistory;
         public DataHistory[] ImportTaxHistory;
         public DataHistory[] PenaltiesHistory;
-        // Skimmer history?
+
+        // Skimmer
+        public DataHistory[] SkimmerCostHistory;
 
 
         void IRegistrationCallbacks.OnDeregister() {
@@ -56,6 +58,9 @@ namespace Zavala.Economy
             DataHistoryUtil.InitializeDataHistory(ref SalesTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref ImportTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref PenaltiesHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
+
+            int skimmerHistoryDepth = 2;
+            DataHistoryUtil.InitializeDataHistory(ref SkimmerCostHistory, RegionInfo.MaxRegions, skimmerHistoryDepth);
         }
     }
 
@@ -307,6 +312,11 @@ namespace Zavala.Economy
             }
         }
 
+        public static void RecordSkimmerCostToHistory(MarketData marketData, int skimmerCost, int regionIndex)
+        {
+            marketData.SkimmerCostHistory[regionIndex].AddPending(skimmerCost);
+        }
+
         public static void FinalizeCycleHistory(MarketData marketData) {
             // Pie Chart
             for (int i = 0; i < marketData.CFertilizerSaleHistory.Length; i++) {
@@ -328,6 +338,12 @@ namespace Zavala.Economy
             }
             for (int i = 0; i < marketData.PenaltiesHistory.Length; i++) {
                 marketData.PenaltiesHistory[i].ConvertPending();
+            }
+
+            // Skimmer
+            for (int i = 0; i < marketData.SkimmerCostHistory.Length; i++)
+            {
+                marketData.SkimmerCostHistory[i].ConvertPending();
             }
         }
 

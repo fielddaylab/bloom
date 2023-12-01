@@ -1,11 +1,16 @@
 using BeauRoutine;
+using BeauUtil;
+using FieldDay;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using Zavala.Advisor;
+using Zavala.Cards;
+using Zavala.Sim;
 
 namespace Zavala.UI {
     public class UIPolicyBox : MonoBehaviour
@@ -14,23 +19,20 @@ namespace Zavala.UI {
 
         #region Inspector
 
-        [SerializeField] private TMP_Text LevelText;
+        public CanvasGroup Group;
+        public TMP_Text LevelText;
         public UIPolicyBoxPopup Popup;
 
         #endregion // Inspector
 
         public PolicyType PolicyType;
 
-        private Routine m_PopupRoutine;
+        public Routine PopupRoutine;
 
-        public void PlayPopupRoutine()
-        {
-            m_PopupRoutine.Replace(DisplayPopupRoutine());
-        }
 
         #region Routines
 
-        private IEnumerator DisplayPopupRoutine()
+        public IEnumerator DisplayPopupRoutine()
         {
             Popup.Group.alpha = 0;
 
@@ -46,5 +48,62 @@ namespace Zavala.UI {
         }
 
         #endregion // Routines
+    }
+
+    static public class PolicyBoxUtility
+    {
+        static public void PlayPopupRoutine(UIPolicyBox box)
+        {
+            box.PopupRoutine.Replace(box.DisplayPopupRoutine());
+        }
+
+        static public void UpdateLevelText(PolicyState policyState, SimGridState grid, UIPolicyBox box)
+        {
+            PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[box.PolicyType];
+
+            string newString;
+
+            switch (level)
+            {
+                case (PolicyLevel.Low):
+                    newString = "L1";
+                    break;
+                case (PolicyLevel.Med):
+                    newString = "L2";
+                    break;
+                case (PolicyLevel.High):
+                    newString = "L3";
+                    break;
+                case (PolicyLevel.Alt):
+                    newString = "Alt";
+                    break;
+                default:
+                    newString = "";
+                    break;
+            }
+
+            box.LevelText.text = newString;
+        }
+
+        static public void SetPopupAmt(UIPolicyBoxPopup popup, int amt)
+        {
+            if (amt == 0)
+            {
+                return;
+            }
+
+            if (amt > 0)
+            {
+                popup.AmountText.text = "+$" + amt;
+                popup.AmountBG.color = ZavalaColors.TopBarPopupPlus;
+            }
+            else
+            {
+                popup.AmountText.text = "-$" + (-amt);
+                popup.AmountBG.color = ZavalaColors.TopBarPopupMinus;
+            }
+
+            popup.Layout.ForceRebuild(true);
+        }
     }
 }

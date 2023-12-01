@@ -7,6 +7,8 @@ using Zavala.Advisor;
 using System;
 using BeauUtil;
 using Leaf.Runtime;
+using BeauUtil.Debugger;
+using FieldDay.Debugging;
 
 namespace Zavala.Cards
 {
@@ -250,17 +252,34 @@ namespace Zavala.Cards
                 }
                 state.UnlockedCards.Add(id);
             }
+
+            Game.Events.Dispatch(GameEvents.PolicyTypeUnlocked);
         }
 
-        /*
-        private void HandleChoiceUnlock(object sender, ChoiceUnlockEventArgs args) {
-            for (int i = 0; i < args.ToUnlock.Count; i++) {
-                if (m_unlockedCards.Contains(args.ToUnlock[i])) {
-                    continue;
-                }
-                m_unlockedCards.Add(args.ToUnlock[i]);
-            }
+        [DebugMenuFactory]
+        static private DMInfo PolicyUnlockDebugMenu()
+        {
+            DMInfo info = new DMInfo("Policies");
+            info.AddButton("Unlock Sales Tax", () => {
+                var c = Game.SharedState.Get<CardsState>();
+                CardsUtility.UnlockCardsByType(c, PolicyType.SalesTaxPolicy);
+            }, () => Game.SharedState.TryGet(out CardsState c));
+
+            info.AddButton("Unlock Import Tax", () => {
+                var c = Game.SharedState.Get<CardsState>();
+                CardsUtility.UnlockCardsByType(c, PolicyType.ImportTaxPolicy);
+            }, () => Game.SharedState.TryGet(out CardsState c));
+
+            info.AddButton("Unlock Runoff Penalty", () => {
+                var c = Game.SharedState.Get<CardsState>();
+                CardsUtility.UnlockCardsByType(c, PolicyType.RunoffPolicy);
+            }, () => Game.SharedState.TryGet(out CardsState c));
+
+            info.AddButton("Unlock Skimmers", () => {
+                var c = Game.SharedState.Get<CardsState>();
+                CardsUtility.UnlockCardsByType(c, PolicyType.SkimmingPolicy);
+            }, () => Game.SharedState.TryGet(out CardsState c));
+            return info;
         }
-        */
     }
 }

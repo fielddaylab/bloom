@@ -11,34 +11,13 @@ namespace Zavala.UI {
     {
         #region Inspector
 
-        [SerializeField] private TMP_Text AmountText;
-        [SerializeField] private Graphic AmountBG;
-        [SerializeField] private LayoutGroup Layout;
+        public TMP_Text AmountText;
+        public Graphic AmountBG;
+        public LayoutGroup Layout;
 
         public CanvasGroup Group;
 
         #endregion // Inspector
 
-
-        public void SetPopupAmt(int amt)
-        {
-            if (amt == 0)
-            {
-                return;
-            }
-
-            if (amt > 0)
-            {
-                AmountText.text = "+$" + amt;
-                AmountBG.color = ZavalaColors.TopBarPopupPlus;
-            }
-            else
-            {
-                AmountText.text = "-$" + (-amt);
-                AmountBG.color = ZavalaColors.TopBarPopupMinus;
-            }
-
-            Layout.ForceRebuild(true);
-        }
     }
 }

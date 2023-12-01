@@ -48,6 +48,9 @@ namespace Zavala.Economy {
 
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock RunoffPenalty;
+
+        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        public int SkimmerCost;
     }
 
     public static class MarketParams {

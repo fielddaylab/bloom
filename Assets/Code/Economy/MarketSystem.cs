@@ -7,6 +7,7 @@ using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
+using Zavala.Advisor;
 using Zavala.Roads;
 using Zavala.Sim;
 
@@ -47,6 +48,8 @@ namespace Zavala.Economy
 
             MarketData marketData = Game.SharedState.Get<MarketData>();
             TutorialState tutorial = Game.SharedState.Get<TutorialState>();
+            PolicyState policies = Game.SharedState.Get<PolicyState>();
+            BudgetData budget = Game.SharedState.Get<BudgetData>();
 
             // TODO: get Zavala's team's sophisticated algorithm for matchmaking (cost optimization and bill reduction, I think)
             // Right now, it is NOT guaranteed that if a player makes local manure market competitive, the grain farms will buy it. It's random.
@@ -162,6 +165,20 @@ namespace Zavala.Economy
 
             m_RequestWorkList.CopyTo(m_StateA.RequestQueue);
             m_RequesterWorkList.Clear();
+
+            // Record skimmer cost per region
+            for (int region = 0; region < grid.RegionCount; region++)
+            {
+                int cost = m_StateB.UserAdjustmentsPerRegion[region].SkimmerCost;
+                if (BudgetUtility.TrySpendBudget(budget, cost, (uint)region))
+                {
+                    MarketUtility.RecordSkimmerCostToHistory(marketData, -cost, region);
+                }
+                else
+                {
+                    // TODO: handle not enough money for skimming policy
+                }
+            }
 
             MarketUtility.FinalizeCycleHistory(marketData);
             // Trigger market cycle tick completed for market graphs to update

@@ -21,6 +21,7 @@ $call PanToBuilding("region1_cafo1")
 {@advisorEcolHill}      I would call that a <i>concentrated animal feed operation</i>... a CAFO.
 {@advisorEconHill}      Right, yes. My colleague here will inform you on such environmental concerns.
 {@advisorEconHill}      But back to <i>important</i> things. Like establishing trade routes!
+$call ReleaseDialogueInteraction()
 {@advisorEconHill}      Start by opening <b>Blueprint Mode</b> to plan them out.
 $call Unpause()
 

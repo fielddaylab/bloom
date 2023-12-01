@@ -12,6 +12,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Advisor;
+using Zavala.Cards;
 using Zavala.Economy;
 using Zavala.Sim;
 
@@ -61,6 +62,7 @@ namespace Zavala.UI
 
         private Routine m_TopBarRoutine;
         private Routine m_ReceiptRoutine;
+        private Routine m_PolicyBoxRoutine;
         private Routine m_BuildCommandLayoutRoutine;
         private Routine m_DestroyCommandLayoutRoutine;
 
@@ -68,6 +70,8 @@ namespace Zavala.UI
         {
             Game.Events.Register(GameEvents.BlueprintModeStarted, HandleStartBlueprintMode);
             Game.Events.Register(GameEvents.BlueprintModeEnded, HandleEndBlueprintMode);
+
+            Game.Events.Register(GameEvents.PolicyTypeUnlocked, HandlePolicyTypeUnlocked);
 
             m_ReceiptGroup.alpha = 0;
             m_BuildingModeText.alpha = 0;
@@ -90,10 +94,21 @@ namespace Zavala.UI
 
             foreach(var box in m_PolicyBoxes)
             {
+                box.gameObject.SetActive(false);
                 box.Popup.Group.alpha = 0;
             }
 
             return null;
+        }
+
+        private void OnEnable()
+        {
+            PolicyState policies = Game.SharedState.Get<PolicyState>();
+            policies.PolicyCardSelected.Register(HandlePolicyCardSelected);
+
+            UpdatePolicyBoxTexts();
+
+
         }
 
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds)
@@ -119,6 +134,23 @@ namespace Zavala.UI
         {
             BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
             bpState.ExitedBlueprintMode = true;
+        }
+
+        private void HandlePolicyTypeUnlocked()
+        {
+            BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
+
+            UpdatePolicyBoxTexts();
+
+            if (!bpState.IsActive)
+            {
+                m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(true));
+            }
+        }
+
+        private void HandlePolicyCardSelected(CardData data)
+        {
+            UpdatePolicyBoxTexts();
         }
 
         private void HandleBuildConfirmButtonClicked()
@@ -165,6 +197,7 @@ namespace Zavala.UI
         {
             m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(true));
             m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
+            m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(false));
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
 
@@ -172,6 +205,7 @@ namespace Zavala.UI
         {
             m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
             m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(false));
+            m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(true));
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
         }
 
@@ -233,7 +267,7 @@ namespace Zavala.UI
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
 
-        public void OnMarketTickAdvanced(MarketData data)
+        public void OnMarketTickAdvanced(MarketData data, SimGridState grid)
         {
             // Show new popups
             foreach(var box in m_PolicyBoxes)
@@ -244,20 +278,20 @@ namespace Zavala.UI
                 switch(box.PolicyType)
                 {
                     case PolicyType.SalesTaxPolicy:
-                        // amt = 5;
-                        box.Popup.SetPopupAmt(amt);
+                        amt = data.SalesTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
+                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         break;
                     case PolicyType.ImportTaxPolicy:
-                        // amt = -5;
-                        box.Popup.SetPopupAmt(amt);
+                        amt = data.ImportTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
+                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         break;
                     case PolicyType.RunoffPolicy:
-                        // amt = 50;
-                        box.Popup.SetPopupAmt(amt);
+                        amt = data.PenaltiesHistory[grid.CurrRegionIndex].Net.PeekFront();
+                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         break;
                     case PolicyType.SkimmingPolicy:
-                        // amt = 0;
-                        box.Popup.SetPopupAmt(amt);
+                        amt = data.SkimmerCostHistory[grid.CurrRegionIndex].Net.PeekFront();
+                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         break;
                     default:
                         break;
@@ -266,7 +300,7 @@ namespace Zavala.UI
                 // Display animation
                 if (amt != 0)
                 {
-                    box.PlayPopupRoutine();
+                    PolicyBoxUtility.PlayPopupRoutine(box);
                 }
             }
         }
@@ -299,6 +333,62 @@ namespace Zavala.UI
                     m_RegionText.rectTransform.MoveTo(0, .1f, Axis.Y, Space.Self),
                     m_PolicyBoxGroup.FadeTo(1, .1f)
                     );
+            }
+        }
+
+        private IEnumerator PolicyBoxAppearanceTransition(bool appearing)
+        {
+            CardsState state = Game.SharedState.Get<CardsState>();
+
+            if (appearing)
+            {
+                // IEnumerator[] toFade = new IEnumerator[m_PolicyBoxes.Length];
+                // toFade[0] = toFade[1] = toFade[2] = toFade[3] = null;
+
+                // int enumerateIndex = 0;
+
+                foreach (var box in m_PolicyBoxes)
+                {
+                    bool visible = CardsUtility.GetUnlockedOptions(state, box.PolicyType).Count > 0;
+
+                    box.gameObject.SetActive(visible);
+                    if (visible)
+                    {
+                        // toFade[enumerateIndex] = box.Group.FadeTo(1, 0.1f);
+                        // enumerateIndex++;
+                        yield return box.Group.FadeTo(1, 0.05f);
+                    }
+
+                    /*
+                    yield return Routine.Combine(
+                        toFade[0],
+                        toFade[1],
+                        toFade[2],
+                        toFade[3]
+                        );
+                    */
+                }
+            }
+            else
+            {
+                // IEnumerator[] toFade = new IEnumerator[m_PolicyBoxes.Length];
+                // int enumerateIndex = 0;
+
+                foreach (var box in m_PolicyBoxes)
+                {
+                    // toFade[enumerateIndex] = box.Group.FadeTo(0, 0.1f);
+                    // enumerateIndex++;
+                    yield return box.Group.FadeTo(0, 0.05f);
+                }
+
+                /*
+                yield return Routine.Combine(
+                    toFade[0],
+                    toFade[1],
+                    toFade[2],
+                    toFade[3]
+                    );
+                */
             }
         }
 
@@ -371,6 +461,17 @@ namespace Zavala.UI
         private void SetDestroyCommandLayoutInteractable(bool canInteract)
         {
             m_DestroyCommandLayout.blocksRaycasts = canInteract;
+        }
+
+        private void UpdatePolicyBoxTexts()
+        {
+            PolicyState policies = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            foreach (var box in m_PolicyBoxes)
+            {
+                PolicyBoxUtility.UpdateLevelText(policies, grid, box);
+            }
         }
 
         #endregion // Helpers

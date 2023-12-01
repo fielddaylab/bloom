@@ -97,6 +97,7 @@ namespace Zavala.Economy
         [HideInInspector] public bool NumDestroyActionsChanged;
         [HideInInspector] public bool StartBlueprintMode;
         [HideInInspector] public bool ExitedBlueprintMode;
+        [HideInInspector] public bool PolicyTypeUnlocked;
         [HideInInspector] public bool UndoClickedBuild;
         [HideInInspector] public bool UndoClickedDestroy;
         [HideInInspector] public bool DestroyModeClicked;
@@ -385,12 +386,12 @@ namespace Zavala.Economy
             }
         }
 
-        public static void OnMarketTickAdvanced(BlueprintState blueprintState, MarketData market)
+        public static void OnMarketTickAdvanced(BlueprintState blueprintState, SimGridState grid, MarketData market)
         {
             if (!blueprintState.IsActive)
             {
                 // Only add popups when top bar boxes are visible
-                blueprintState.UI.OnMarketTickAdvanced(market);
+                blueprintState.UI.OnMarketTickAdvanced(market, grid);
             }
         }
 
