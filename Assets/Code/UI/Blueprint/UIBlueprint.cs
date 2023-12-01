@@ -114,7 +114,18 @@ namespace Zavala.UI
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds)
         {
             // Change total to new total
-            m_RunningCostText.text = totalCost == 0 ? "" + totalCost : "-" + totalCost;
+            if (totalCost == 0)
+            {
+                m_RunningCostText.text = "" + totalCost;
+            }
+            else if (totalCost > 0)
+            {
+                m_RunningCostText.text = "-" + totalCost;
+            }
+            else
+            {
+                m_RunningCostText.text = "+" + Math.Abs(totalCost);
+            }
 
             // TODO: Flash delta cost animation
             

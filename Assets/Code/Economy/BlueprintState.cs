@@ -217,7 +217,7 @@ namespace Zavala.Economy
             // Re-apply the cost for pending building, or refund the cost of demolition for existing building 
             ShopUtility.EnqueueCost(shopState, -prevCommit.Cost);
 
-            // Re-add the building the building
+            // Re-add the building
             switch(prevCommit.BuildType)
             {
                 case BuildingType.Road:
@@ -299,7 +299,7 @@ namespace Zavala.Economy
         /// Finalizes all builds
         /// </summary>
         /// <param name="blueprintState"></param>
-        public static void ConfirmDestroy(BlueprintState blueprintState, ShopState shop, SimGridState grid, uint currRegion)
+        public static void ConfirmDestroy(BlueprintState blueprintState, ShopState shop, SimGridState grid, BuildToolState toolState, uint currRegion)
         {
             // Add pending destroy commits to the overall build mode chain
             CommitChain newChain = new CommitChain();
@@ -309,6 +309,9 @@ namespace Zavala.Economy
             CommitChain(blueprintState, newChain);
 
             ClearDestroyCommits(blueprintState);
+
+            blueprintState.CommandState = ActionType.Build;
+            BuildToolUtility.SetTool(toolState, UserBuildTool.None);
 
             // Exit Destroy state
             blueprintState.UI.OnDestroyConfirmClicked();
