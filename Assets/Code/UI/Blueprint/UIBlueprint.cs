@@ -83,8 +83,6 @@ namespace Zavala.UI
             m_DestroyCommandLayout.gameObject.SetActive(true);
             m_BuildUndoButton.gameObject.SetActive(false);
 
-            m_DestroyConfirmButton.interactable = false;
-
             m_BuildButton.onClick.AddListener(HandleBuildConfirmButtonClicked);
             m_BuildUndoButton.onClick.AddListener(HandleUndoBuildButtonClicked);
             m_DestroyUndoButton.onClick.AddListener(HandleUndoDestroyButtonClicked);
@@ -107,6 +105,8 @@ namespace Zavala.UI
             policies.PolicyCardSelected.Register(HandlePolicyCardSelected);
 
             UpdatePolicyBoxTexts();
+
+            m_BuildButton.gameObject.SetActive(false);
         }
 
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds)
@@ -115,18 +115,22 @@ namespace Zavala.UI
             if (totalCost == 0)
             {
                 m_RunningCostText.text = "" + totalCost;
+                // Do not change receipt state (might still be 0 cost with destroy activated)
             }
             else if (totalCost > 0)
             {
                 m_RunningCostText.text = "-" + totalCost;
+                m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
             }
             else
             {
                 m_RunningCostText.text = "+" + Math.Abs(totalCost);
+                m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
             }
 
+
             // TODO: Flash delta cost animation
-            
+
             // Update funds remaining
             m_FundsRemainingText.text = "" + (playerFunds - totalCost);
         }
@@ -210,7 +214,6 @@ namespace Zavala.UI
         public void OnStartBlueprintMode()
         {
             m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(true));
-            m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
             m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(false));
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
@@ -233,6 +236,7 @@ namespace Zavala.UI
         public void OnNumBuildCommitsChanged(int num)
         {
             m_BuildUndoButton.gameObject.SetActive(num > 0);
+            m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(num > 0));
         }
 
         // Handle when number of destroy action commits changes
@@ -406,9 +410,9 @@ namespace Zavala.UI
             }
         }
 
-        private IEnumerator ReceiptAppearanceTransition(bool inBMode)
+        private IEnumerator ReceiptAppearanceTransition(bool appearing)
         {
-            if (inBMode)
+            if (appearing)
             {
                 yield return Routine.Combine(
                     m_ReceiptGroup.FadeTo(1, .1f)
@@ -420,6 +424,7 @@ namespace Zavala.UI
                     m_ReceiptGroup.FadeTo(0, .1f)
                     );
             }
+            m_BuildButton.gameObject.SetActive(appearing);
         }
 
         private IEnumerator BuildCommandAppearanceTransition(bool appearing)

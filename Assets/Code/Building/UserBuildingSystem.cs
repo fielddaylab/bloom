@@ -510,7 +510,7 @@ namespace Zavala.Building
             bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.RunningCost, out int totalPrice);
 
 
-            int unitCost = ShopUtility.PriceLookup(UserBuildTool.Road); // price for 1 segment
+            int unitCost = 0; // price for 1 segment
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");
 
@@ -531,8 +531,16 @@ namespace Zavala.Building
                     TerrainFlags tFlagsSnapshot = grid.Terrain.Info[currIndex].Flags;
                     TileAdjacencyMask flowSnapshot = network.Roads.Info[currIndex].FlowMask;
 
-
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
+
+                    if (!isEndpoint)
+                    {
+                        unitCost = ShopUtility.PriceLookup(UserBuildTool.Road);
+                    }
+                    else
+                    {
+                        unitCost = 0;
+                    }
 
                     // Add the road commit to the overall chain
                     GameObject roadObj = isEndpoint ? null : network.RoadObjects[roadObjIdx].gameObject;
