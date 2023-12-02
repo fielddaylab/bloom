@@ -331,7 +331,7 @@ namespace Zavala.Economy
 
         public static void UpdateRunningCostDisplay(BlueprintState blueprintState, int runningCost, int deltaCost, long playerFunds)
         {
-            blueprintState.UI.UpdateTotalCost(runningCost, deltaCost, playerFunds);
+            blueprintState.UI.UpdateTotalCost(runningCost, deltaCost, playerFunds, blueprintState.Commits.Count);
         }
 
         public static void OnStartBlueprintMode(BlueprintState blueprintState)

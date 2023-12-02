@@ -62,6 +62,7 @@ namespace Zavala.UI
 
         private Routine m_TopBarRoutine;
         private Routine m_ReceiptRoutine;
+        private Routine m_BuildButtonRoutine;
         private Routine m_PolicyBoxRoutine;
         private Routine m_BuildCommandLayoutRoutine;
         private Routine m_DestroyCommandLayoutRoutine;
@@ -109,12 +110,13 @@ namespace Zavala.UI
             m_BuildButton.gameObject.SetActive(false);
         }
 
-        public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds)
+        public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds, int numCommits)
         {
             // Change total to new total
             if (totalCost == 0)
             {
                 m_RunningCostText.text = "" + totalCost;
+                m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(numCommits > 0));
                 // Do not change receipt state (might still be 0 cost with destroy activated)
             }
             else if (totalCost > 0)
@@ -222,6 +224,7 @@ namespace Zavala.UI
         {
             m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
             m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(false));
+            m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(true));
             m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(true));
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
         }
@@ -237,6 +240,7 @@ namespace Zavala.UI
         {
             m_BuildUndoButton.gameObject.SetActive(num > 0);
             m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(num > 0));
+            m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(num > 0));
         }
 
         // Handle when number of destroy action commits changes
@@ -424,7 +428,12 @@ namespace Zavala.UI
                     m_ReceiptGroup.FadeTo(0, .1f)
                     );
             }
+        }
+
+        private IEnumerator BuildConfirmAppearanceTransition(bool appearing)
+        {
             m_BuildButton.gameObject.SetActive(appearing);
+            yield return null;
         }
 
         private IEnumerator BuildCommandAppearanceTransition(bool appearing)
