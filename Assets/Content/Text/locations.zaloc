@@ -1,7 +1,7 @@
 # basePath location
 
 :: region1_city1.name
-Oakvale
+Pendleton Hills
 
 :: region1_cafo1.name
 Bertram's Dairy Farm
@@ -22,7 +22,7 @@ Natalie's Dairy Farm
 Emmett's Grain Farm
 
 :: region2_city1.name
-Forest City
+Woodgrove
 
 :: region3_cafo1.name
 Winnie's Dairy Farm
@@ -34,7 +34,7 @@ Zora's Grain Farm
 Zora's Grain Farm
 
 :: region3_city1.name
-Winstone
+Veldt City
 
 :: region4_cafo1.name
 Neil's Dairy Farm
@@ -49,7 +49,7 @@ Neil's Dairy Farm
 Cindy's Grain Farm
 
 :: region4_city1.name
-Trenchfort
+Heylemarsh
 
 :: region5_cafo1.name
 Tabitha's Dairy Farm
@@ -101,10 +101,10 @@ Pine
 Pine County
 
 :: wetlands.name
-Wetlands
+Muskeg
 
 :: wetlands.name.long
-Wetlands Region
+Muskeg County
 
 :: prairie.name
 Heath

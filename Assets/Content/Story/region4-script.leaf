@@ -5,47 +5,86 @@
 @conditions     regionId == "Wetland"
 @queued
 $call Pause()
-{@advisorEcolWetland}    Welcome to Muskeg County!
+{@advisorEcolWetland}    Welcome to Muskeg County, boss.
 $call PanToBuilding("region4_city1")
+{@advisorEcolWetland}    We've dealt with these algae blooms here before...
+{@advisorEcolWetland}    The phosphorus flows down through waterways into our marshland.
+{@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
 $call Unpause()
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(4)
 @forcePolicy    Ecology
-$if NumCardsUnlocked() >= 1
-{local @advisorEcol}    Hello, boss. We've got ecological policies to set, if you'd like.
+$if PolicyIsUnlocked(RunoffPolicy)
+    {local @advisorEcol}    Hello, boss. We've got ecological policies to set, if you'd like.
 $else
-{local @advisorEcol}    We haven't got any policies to set, but hello anyway.
+    {local @advisorEcol}    We haven't got any policies to set, but hello anyway.
 $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(4)
 @forcePolicy    Economy
-$if NumCardsUnlocked() >= 2
-{local @advisorEcon}    Good morrow. Here to assign economic policies?
+$if PolicyIsUnlocked(SalesTaxPolicy)
+    {local @advisorEcon}    Good morrow. Here to assign economic policies?
 $else
-{local @advisorEcon}    
+    {local @advisorEcon}    No policies yet? I'm afraid I can't help you.
 $endif
 
 :: unlockSkimmers
-{@advisorEcolPrairie}   We have all these trawlers... What if we used them to skim algae off the lakes?
+@trigger        AlertExamined
+@conditions     alertType == "bloom", AgeOfRegion(4) > 3
+@forcePolicy    Ecology
+@once
+{local @advisorEcon}    More algae blooms...
+{@advisorEcolWetland}   Well, we have all these trawlers... What if we used them to skim algae off the lakes?
+{@advisorEconWetland}   Well, it could be costly... And it won't remove the underlying phosphorus.
+{@advisorEconWetland}   For that we'd need expensive dredgers.
+{@advisorEconWetland}   But it could help mitigate the worst effects for now. It's up to you, Director.
 $call UnlockCards(SkimmingPolicy)
 
 :: unlockDigesters
-// 
-{@advisorEconPrairie}   These old digesters were too expensive for us to run... 
-{@advisorEconPrairie}   But maybe with SAGA's help we could get them going?
-{@advisorEconPrairie}   They process manure into fertilizer... Much easier to ship, and less runoff too!
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 4, PolicyIsUnlocked(SkimmingPolicy)
+@forcePolicy    Ecology
+@once
+// TODO: add die-off event trigger  
+// TODO: trigger ACT IV cutscene
+$call Pause()
+{@advisorEcolWetland}   It's just as we feared...
+{@advisorEcolWetland}   The blooms have spread into our protected waters.
+{@advisorEcolWetland}   We need to bring out some old tools...
 $call UnlockShopItem("Digester")
+{@advisorEcolWetland}   Those  digesters were too expensive for us to run.
+{@advisorEcolWetland}   But maybe with SAGA's help we could start some new ones?
+{@advisorEcolWetland}   They process manure into fertilizer... Much easier to ship, and less runoff too!
+$call AddRegionAgeDeltaTrigger(4, 3)
+$call Unpause()
 
 :: unlockSalesTax
-{@advisorEconPrairie}   Digesters would be great, but they're expensive...
-{@advisorEconPrairie}   We may need a new revenue stream. I've opened up Sales Tax.
+@trigger        RegionReachedAge
+@conditions     regionId == 4, Visited("region4.unlockDigesters")
+@once 
+{@advisorEconWetland}   Digesters would be great, but they're expensive...
+{@advisorEconWetland}   We may need a new revenue stream. I've opened up Sales Tax.
 $call UnlockCards(SalesTaxPolicy)
 
-:: unlockExportDepots
-$unlockExportDepots(region3_export)
+:: buildFirstDigester
+@trigger        PlayerBuiltBuilding
+@conditions     buildingType == "Digester"
+@once           
+$call AddRegionAgeDeltaTrigger(4, 10)
 
+:: unlockExportDepots
+@trigger    RegionReachedAge 
+@conditions regionId == 4, Visited("region4.buildFirstDigester")
+@once
+{@advisorEconWetland}   Now that we have a digester up and running...
+{@advisorEconWetland}   What's stopping us from shipping out our own digested fertilizer?
+{@advisorEconWetland}   We'll be like Phos4Us! Only our phosphorus is from manure, not mineral deposits.
+{@advisorEcolWetland}   Do we really want to be like them? All that extra phosphorus got us into this mess.
+{@advisorEconWetland}   Maybe so... But if we're efficient enough, we can outcompete them!
+{@advisorEcolWetland}   That could <i>close the loop</i>... and stop the import of phosphorus!
+$call UnlockExportDepot("region4_export1")
 

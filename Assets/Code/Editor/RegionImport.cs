@@ -206,7 +206,7 @@ namespace Zavala.Editor {
         }
 
         static private readonly string[] CharacterRegionSuffixes = new string[] {
-            "Hill", "Forest", "Prarie", "Wetland", "Urban"
+            "Hill", "Forest", "Prairie", "Wetland", "Urban"
         };
 
         static public void ReadStaticConstructions(in TiledData data, RegionId regionId, HashSet<int> occupiedTileIndices, TerrainTileInfo[] tiles, out RegionAsset.BuildingData[] buildings, out RegionAsset.ModifierData[] modifiers, out RegionAsset.SpannerData[] spanners) {

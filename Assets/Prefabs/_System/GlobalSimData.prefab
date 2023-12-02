@@ -355,6 +355,7 @@ MonoBehaviour:
   NumDestroyActionsChanged: 0
   StartBlueprintMode: 0
   ExitedBlueprintMode: 0
+  PolicyTypeUnlocked: 0
   UndoClickedBuild: 0
   UndoClickedDestroy: 0
   DestroyModeClicked: 0
@@ -531,7 +532,7 @@ MonoBehaviour:
         Value: 0
       TargetAge:
         Below: 0
-        Value: 30
+        Value: 25
       NodeTitle: 
     RegionIndexUnlocks: 01000000
   - UnlockDelay: 5
@@ -601,68 +602,6 @@ MonoBehaviour:
     RegionIndexUnlocks: 02000000
   - UnlockDelay: 0
     UnlockConditions:
-    - Type: 0
-      ChecksRegions: 00000000
-      Scope: 10
-      TargetRunoff:
-        Below: 1
-        Value: 0.2
-      TargetCFertilizer:
-        Below: 0
-        Value: 0
-      TargetManure:
-        Below: 0
-        Value: 0
-      TargetDFertilizer:
-        Below: 0
-        Value: 0
-      TargetSalesRevenue:
-        Below: 0
-        Value: 0
-      TargetImportRevenue:
-        Below: 0
-        Value: 0
-      TargetPenaltyRevenue:
-        Below: 0
-        Value: 0
-      TargetWealth:
-        Below: 0
-        Value: 0
-      TargetAge:
-        Below: 0
-        Value: 20
-      NodeTitle: 
-    - Type: 0
-      ChecksRegions: 01000000
-      Scope: 10
-      TargetRunoff:
-        Below: 1
-        Value: 0.2
-      TargetCFertilizer:
-        Below: 0
-        Value: 0
-      TargetManure:
-        Below: 0
-        Value: 0
-      TargetDFertilizer:
-        Below: 0
-        Value: 0
-      TargetSalesRevenue:
-        Below: 0
-        Value: 0
-      TargetImportRevenue:
-        Below: 0
-        Value: 0
-      TargetPenaltyRevenue:
-        Below: 0
-        Value: 0
-      TargetWealth:
-        Below: 0
-        Value: 0
-      TargetAge:
-        Below: 0
-        Value: 20
-      NodeTitle: 
     - Type: 6
       ChecksRegions: 02000000
       Scope: 10
@@ -694,11 +633,42 @@ MonoBehaviour:
         Below: 0
         Value: 20
       NodeTitle: 
+    - Type: 7
+      ChecksRegions: 02000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.3
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: region2.unlockImportTax
     RegionIndexUnlocks: 03000000
-  - UnlockDelay: 0
+  - UnlockDelay: 10
     UnlockConditions:
-    - Type: 0
-      ChecksRegions: 00000000
+    - Type: 7
+      ChecksRegions: 03000000
       Scope: 10
       TargetRunoff:
         Below: 1
@@ -727,69 +697,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-      NodeTitle: 
-    - Type: 0
-      ChecksRegions: 01000000
-      Scope: 10
-      TargetRunoff:
-        Below: 1
-        Value: 0.2
-      TargetCFertilizer:
-        Below: 0
-        Value: 0
-      TargetManure:
-        Below: 0
-        Value: 0
-      TargetDFertilizer:
-        Below: 0
-        Value: 0
-      TargetSalesRevenue:
-        Below: 0
-        Value: 0
-      TargetImportRevenue:
-        Below: 0
-        Value: 0
-      TargetPenaltyRevenue:
-        Below: 0
-        Value: 0
-      TargetWealth:
-        Below: 0
-        Value: 0
-      TargetAge:
-        Below: 0
-        Value: 20
-      NodeTitle: 
-    - Type: 6
-      ChecksRegions: 02000000
-      Scope: 10
-      TargetRunoff:
-        Below: 1
-        Value: 0.3
-      TargetCFertilizer:
-        Below: 0
-        Value: 0
-      TargetManure:
-        Below: 0
-        Value: 0
-      TargetDFertilizer:
-        Below: 0
-        Value: 0
-      TargetSalesRevenue:
-        Below: 0
-        Value: 0
-      TargetImportRevenue:
-        Below: 0
-        Value: 0
-      TargetPenaltyRevenue:
-        Below: 0
-        Value: 0
-      TargetWealth:
-        Below: 0
-        Value: 0
-      TargetAge:
-        Below: 0
-        Value: 20
-      NodeTitle: 
+      NodeTitle: region4.unlockExportDepots
     RegionIndexUnlocks: 04000000
 --- !u!114 &7708306960153739477
 MonoBehaviour:

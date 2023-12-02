@@ -59,7 +59,6 @@ namespace Zavala.World
                 }
                 Assert.NotNull(building);
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
-
                 LocationDescription desc = building.GetComponent<LocationDescription>();
                 if (desc != null) {
                     desc.CharacterId = spawn.Data.CharacterId;

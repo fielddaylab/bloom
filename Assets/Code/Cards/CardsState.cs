@@ -236,6 +236,23 @@ namespace Zavala.Cards
             CardsUtility.UnlockCardsByType(Game.SharedState.Get<CardsState>(), type);
         }
 
+        [LeafMember("PolicyIsUnlocked")]
+        static public bool PolicyIsUnlockedLeaf(PolicyType type) {
+            
+            return PolicyIsUnlocked(Game.SharedState.Get<CardsState>(), type);
+        }
+
+        static public bool PolicyIsUnlocked(CardsState state, PolicyType type) {
+            List<SerializedHash32> unlockIds = state.CardMap[type];
+            foreach (SerializedHash32 id in unlockIds) {
+                if (state.UnlockedCards.Contains(id)) {
+                    // if UnlockedCards contains any of the IDs of this policy, return true
+                    return true;
+                }
+            }
+            return false;
+        }
+
         [LeafMember("NumCardsUnlocked")]
         static public int NumCardsUnlocked() {
             return Game.SharedState.Get<CardsState>().UnlockedCards.Count;

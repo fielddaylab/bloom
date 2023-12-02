@@ -6,20 +6,21 @@
 $call Pause()
 $call PauseAlertType("ExcessRunoff")
 
-// cutscene test
-// $call Wait(5)
-// $call CutsceneBegin()
-// $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-1.png", "intro/frame1-1.png")
-// $call CutsceneNextImage()
-// Hey here's some test text, written in the cutscene window.
-// $call CutsceneNextImage()
-// {wait 1}
-// $call CutsceneClearText()
-// $call CutsceneNextImage()
-// {wait 1}
-// Wow more text!
-// $call CutsceneClearImages()
-// $call CutsceneEnd()
+$call CutsceneBegin()
+$call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-1.png", "intro/frame1-1.png")
+$call CutsceneNextImage()
+You have become the regional Director of the Sustainable Agricultural Growth Administration - SAGA.
+{wait 1}
+$call CutsceneClearText()
+$call CutsceneNextImage()
+{wait 1}
+$call CutsceneClearText()
+$call CutsceneNextImage()
+Your first assignment - Knoll County. Good luck.
+{wait 1}
+$call CutsceneClearText()
+$call CutsceneClearImages()
+$call CutsceneEnd()
 
 $call ForceDialogueInteraction()
 {@advisorEconHill}      Greetings. You must be the Director.
@@ -99,7 +100,6 @@ $call Unpause()
 $call ActivateSim()
 {@advisorEconHill}      Now that everything is connected, we can turn <i>grain</i> into <i>milk</i> into <i>money!</i>
 {@advisorEconHill}      Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
-{@advisorEconHill}      Now just hit <b>Build</b> and all we'll see these trade routes in action!
 $call ReleaseDialogueInteraction()
 
 // :: sittingOmens
@@ -130,7 +130,7 @@ $call Unpause()
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(1)
 @forcePolicy    Ecology
-$if NumCardsUnlocked() >= 1
+$if PolicyIsUnlocked(RunoffPolicy)
     {local @advisorEcol}    Hey there, boss! Here to check out some policies?
 $else
     {local @advisorEcol}    Hey there! No policies to assign yet.
@@ -140,7 +140,7 @@ $endif
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(1)
 @forcePolicy    Economy
-$if NumCardsUnlocked() >= 2
+$if PolicyIsUnlocked(ImportTaxPolicy)
     {local @advisorEcon}    Here are the economic policies.
 $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
@@ -211,7 +211,6 @@ $endif
 :: discoverFirstBloom
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 1
-@forcePolicy    Ecology
 @once
 $call Pause()
 $set global:bloomDiscovered = true
@@ -227,7 +226,7 @@ $call Unpause()
 @forcePolicy    Ecology
 {local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
 {local @advisorEcol}    We could address the causes by penalizing runoff.
-$if NumCardsUnlocked() >= 3
+$if PolicyIsUnlocked(SkimmingPolicy)
     {local @advisorEcol}    Or use skimmers to clean up.
 $endif
 

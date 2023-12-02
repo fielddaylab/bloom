@@ -5,7 +5,7 @@
 @conditions     regionId == "Prairie"
 @queued
 $call Pause()
-$call AddRegionAgeTrigger(3, 5)
+$call AddRegionAgeTrigger(3, 10)
 {@advisorEconPrairie}    Howdy there! 
 $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    Heath County could use SAGA's help. 
@@ -17,8 +17,8 @@ $call Unpause()
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(3)
 @forcePolicy    Ecology
-$if NumCardsUnlocked() >= 1
-{local @advisorEcol}    Hiya! Want to set some environmental policies?
+$if PolicyIsUnlocked(RunoffPolicy)
+{local @advisorEcol}    Hiya! Want to assign some environmental policies?
 $else
 {local @advisorEcol}    Sorry boss, no policies to assign yet.
 $endif
@@ -27,7 +27,7 @@ $endif
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(3)
 @forcePolicy    Economy
-$if NumCardsUnlocked() >= 2
+$if PolicyIsUnlocked(ImportTaxPolicy)
 {local @advisorEcon}    Howdy! Here to set up some economic policy?
 $else
 {local @advisorEcon}    Once we have some economic policies you can see me here.
@@ -37,20 +37,33 @@ $endif
 :: unlockPhosphorusView
 // TODO: trigger ACT III here
 @trigger        RegionReachedAge
-@conditions     regionId == 3, age == 5
-{@cityPrairie}      Hey, um... Sorry to interject, but...
+@conditions     regionId == 3
+$call Pause()
+{@cityPrairie}      Hey, um... Sorry to butt in, but...
 $call PanToBuilding("region3_city1")
-{@cityPrairie}      I've been working on a research project at Veldt that might help SAGA.
+{@cityPrairie}      I've been working on a research project at Veldt U that might help SAGA.
 {@cityPrairie}      I call it PIP: Persistent Imaging of Phosphorus.
 $call UnlockAdvisorModule("Ecology")
 {local @advisorEcol}How does it-- ooh, a shiny new button!
 {@cityPrairie}      That's PIP! It uses a network of sensors to track phosphorus concentrations.
 {@cityPrairie}      And shows it to you as moving red dots! I hope that helps.
+$call Unpause()
 
 :: unlockTradeGraphs
-{@advisorEconPrairie}   I've unlocked some market analysis diagrams for you.
+@trigger        AdvisorOpened
+@conditions     advisorType == "Economy", !CameraInRegion(3), Visited("region3.unlockPhosphorusView")
+@forcePolicy    Economy
+@once
+{local @advisorEcon}    Here to set some economic poli--
+$call Pause()
+{@advisorEconPrairie}   Howdy! Hope I'm not interrupting anything important.
+{local @advisorEcon}    Um... Go ahead.
+{@advisorEconPrairie}   Well, I was inspired by Winston's PIP system...
+{@advisorEconPrairie}   So I whipped up something of an economic equivalent!
 $call UnlockAdvisorModule("Economy")
-
-:: unlockImportTax
-{@advisorEconPrairie}   I've unlocked some market analysis diagrams for you.
-$call UnlockCards(ImportTaxPolicy)
+{local @advisorEcon}    Finally!
+{local @advisorEcon}    ...not that I was jealous or anything.
+{@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph and a <b>Funding Target</b> bar chart.
+{@advisorEconPrairie}   Those should give you some targets for a healthy economy.
+{local @advisorEcon}    Splendid....
+$call Unpause()

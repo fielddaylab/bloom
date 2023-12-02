@@ -65,6 +65,11 @@ namespace FieldDay.Scripting {
             Flags |= ScriptNodeFlags.Queued;
         }
 
+        [BlockMeta("exposed")]
+        private void SetExposed() {
+            Flags |= ScriptNodeFlags.Queued;
+        }
+
         [BlockMeta("conditions")]
         private void SetConditions(StringSlice conditions) {
             Conditions = LeafUtils.CompileExpressionGroup(this, conditions);

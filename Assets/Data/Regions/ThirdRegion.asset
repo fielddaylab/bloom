@@ -685,8 +685,8 @@ MonoBehaviour:
       m_Source: location.region3_city1.name
       m_HashValue: 2398409969
     CharacterId:
-      m_Source: cityPrarie
-      m_HashValue: 1495352037
+      m_Source: cityPrairie
+      m_HashValue: 2175440498
     AdditionalData:
       m_Type: 1
       m_RawValue: 0
@@ -700,8 +700,8 @@ MonoBehaviour:
       m_Source: location.region3_cafo1.name
       m_HashValue: 165320337
     CharacterId:
-      m_Source: cafoPrarie
-      m_HashValue: 3410150321
+      m_Source: cafoPrairie
+      m_HashValue: 344342086
     AdditionalData:
       m_Type: 0
       m_RawValue: 0
@@ -715,8 +715,8 @@ MonoBehaviour:
       m_Source: location.region3_grain2.name
       m_HashValue: 1119785950
     CharacterId:
-      m_Source: grainPrarie
-      m_HashValue: 748234759
+      m_Source: grainPrairie
+      m_HashValue: 2946469784
     AdditionalData:
       m_Type: 0
       m_RawValue: 0
@@ -730,8 +730,8 @@ MonoBehaviour:
       m_Source: location.region3_grain1.name
       m_HashValue: 3556222521
     CharacterId:
-      m_Source: grainPrarie
-      m_HashValue: 748234759
+      m_Source: grainPrairie
+      m_HashValue: 2946469784
     AdditionalData:
       m_Type: 0
       m_RawValue: 0

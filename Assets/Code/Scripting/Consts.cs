@@ -40,6 +40,7 @@ namespace Zavala
         static public readonly StringHash32 RegionReachedAge = "RegionReachedAge";
         static public readonly StringHash32 LetSat = "LetSat";
         static public readonly StringHash32 BuildButtonPressed = "BuildButtonPressed";
+        static public readonly StringHash32 PlayerBuiltBuilding = "PlayerBuiltBuilding";
         static public readonly StringHash32 FarmConnection = "FarmConnection";
         static public readonly StringHash32 CityConnection = "CityConnection";
         static public readonly StringHash32 ExternalImport = "ExternalImport";

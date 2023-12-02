@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: cityUrban
   m_EditorClassIdentifier: 
   NameId: Francis
-  TitleId: Urbanite
+  TitleId: Tattoo Artist
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2

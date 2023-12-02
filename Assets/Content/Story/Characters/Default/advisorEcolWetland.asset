@@ -32,6 +32,6 @@ MonoBehaviour:
     rgba: 4278386823
   TextColor:
     serializedVersion: 2
-    rgba: 4279633162
+    rgba: 4281008132
   PortraitArt: {fileID: 21300000, guid: 515091a6475be6c4c990770f321dea50, type: 3}
   PortraitBackground: {fileID: 0}

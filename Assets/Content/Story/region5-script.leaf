@@ -2,7 +2,7 @@
 
 :: regionUnlocked
 @trigger        RegionUnlocked
-@conditions     regionId == "Urban"
+@conditions     regionId == "City"
 @queued
 $call Pause()
 {@advisorEconUrban}    Sup. Welcome to Smokestack City.
@@ -13,7 +13,7 @@ $call Unpause()
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(5)
 @forcePolicy    Ecology
-$if NumCardsUnlocked() >= 1
+$if PolicyIsUnlocked(RunoffPolicy)
 {local @advisorEcol}    Good to see you, Director! Here for ecological policies?
 $else
 {local @advisorEcol}    Hey there! No policies to assign yet.
@@ -23,8 +23,8 @@ $endif
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(5)
 @forcePolicy    Economy
-$if NumCardsUnlocked() >= 2
-{local @advisorEcon}    Sup big boss! We makin' big moves economy-style?
+$if PolicyIsUnlocked(SalesTaxPolicy)
+{local @advisorEcon}    Sup boss! We makin' big moves economy-style?
 $else
 {local @advisorEcon}    Aww man, we're plumb outta economic policies.
 $endif

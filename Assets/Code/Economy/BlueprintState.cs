@@ -1,6 +1,7 @@
 using BeauUtil;
 using FieldDay;
 using FieldDay.Scenes;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using System;
 using System.Collections;
@@ -278,8 +279,15 @@ namespace Zavala.Economy
             {
                 foreach(var commitAction in commitChain.Chain)
                 {
+                    BuildingType builtType = commitAction.BuildType;
+                    if (builtType == BuildingType.Digester || builtType == BuildingType.Storage) {
+                        using (TempVarTable varTable = TempVarTable.Alloc()) {
+                            varTable.Set("buildingType", commitAction.BuildType.ToString());
+                            ScriptUtility.Trigger(GameTriggers.PlayerBuiltBuilding, varTable);
+                        }
+                    }
                     // Process any confirm-time things
-                    if (commitAction.BuildType == BuildingType.Road)
+                    if (builtType == BuildingType.Road)
                     {
                         RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
                         RoadUtility.UpdateRoadVisuals(network, commitAction.TileIndex);
