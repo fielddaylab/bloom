@@ -42,8 +42,9 @@ namespace Zavala.Economy
         public RoadFlags RoadFlagSnapshot;
         public TerrainFlags TerrainFlagSnapshot;
         public TileAdjacencyMask FlowMaskSnapshot;
+        public bool WasPending;
 
-        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)
+        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot, bool wasPending)
         {
             BuildType = bType;
             ActionType = aType;
@@ -54,6 +55,7 @@ namespace Zavala.Economy
             RoadFlagSnapshot = rFlags;
             TerrainFlagSnapshot = tFlags;
             FlowMaskSnapshot = flowSnapshot;
+            WasPending = wasPending;
         }
     }
 
@@ -224,7 +226,7 @@ namespace Zavala.Economy
                 case BuildingType.Road:
                 case BuildingType.Storage:
                 case BuildingType.Digester:
-                    SimDataUtility.BuildOnTileFromUndo(grid, prevCommit.BuildType, prevCommit.TileIndex, blueprintState.m_ValidHoloMaterial);
+                    SimDataUtility.BuildOnTileFromUndo(grid, prevCommit.BuildType, prevCommit.TileIndex, blueprintState.m_ValidHoloMaterial, prevCommit.WasPending);
                     break;
                 default:
                     break;
@@ -232,6 +234,8 @@ namespace Zavala.Economy
 
             // Restore flags and flow masks
             SimDataUtility.RestoreSnapshot(network, grid, prevCommit.TileIndex, prevCommit.RoadFlagSnapshot, prevCommit.TerrainFlagSnapshot, prevCommit.FlowMaskSnapshot);
+            RoadUtility.UpdateRoadVisuals(network, prevCommit.TileIndex);
+
 
             // Restore inleading flow masks
             HexVector currPos = grid.HexSize.FastIndexToPos(prevCommit.TileIndex);

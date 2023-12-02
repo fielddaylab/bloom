@@ -136,6 +136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 4
   IsExternal: 0
+  Pending: 0
 --- !u!114 &-7104959141006727276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,8 +170,8 @@ MonoBehaviour:
   RampStagedDecorations: {fileID: 1379674122801371436}
   BPCompareMask:
     Value: 0
-  Radius: 1.1
   MatSwap: {fileID: 7418557678709288407}
+  Position: {fileID: 5074091816765350726}
 --- !u!135 &1930123993508356742
 SphereCollider:
   m_ObjectHideFlags: 0

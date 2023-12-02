@@ -153,6 +153,7 @@ namespace Zavala.Economy {
         {
             shop.CostQueue.PushBack(cost);
         }
+
     }
 
 }

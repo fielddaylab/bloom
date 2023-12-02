@@ -107,8 +107,6 @@ namespace Zavala.UI
             policies.PolicyCardSelected.Register(HandlePolicyCardSelected);
 
             UpdatePolicyBoxTexts();
-
-
         }
 
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds)

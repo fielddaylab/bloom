@@ -1,5 +1,7 @@
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Debugging;
 using FieldDay.Scenes;
 using FieldDay.SharedState;
 using System.Collections;
@@ -24,6 +26,21 @@ namespace Zavala.Economy
             ShopUI = Game.Gui.GetShared<UIShop>();
             CostQueue = new RingBuffer<int>(8, RingBufferMode.Expand);
             return null;
+        }
+
+        [DebugMenuFactory]
+        static private DMInfo ShopItemUnlockDebugMenu()
+        {
+            DMInfo info = new DMInfo("Shop");
+            info.AddButton("Unlock Storage", () => {
+                ShopUtility.UnlockTool(UserBuildTool.Storage);
+            }, () => Game.SharedState.TryGet(out ShopState state));
+
+            info.AddButton("Unlock Digester", () => {
+                ShopUtility.UnlockTool(UserBuildTool.Digester);
+            }, () => Game.SharedState.TryGet(out ShopState state));
+
+            return info;
         }
     }
 }

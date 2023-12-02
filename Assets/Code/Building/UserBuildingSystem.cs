@@ -218,7 +218,8 @@ namespace Zavala.Building
                 occupies.gameObject,
                 rFlagSnapshot,
                 tFlagSnapshot,
-                flowSnapshot
+                flowSnapshot,
+                occupies.Pending
                 ));
 
             // Add cost to receipt queue
@@ -376,6 +377,9 @@ namespace Zavala.Building
                 {
                     BuildingPools pools = Game.SharedState.Get<BuildingPools>();
                     RoadUtility.CreateRoadObject(network, grid, pools, tileIndex, m_ValidHoloMaterial);
+
+                    // Add to running cost
+                    ShopUtility.EnqueueCost(m_StateD, ShopUtility.PriceLookup(UserBuildTool.Road));
                 }
             }
 
@@ -421,6 +425,12 @@ namespace Zavala.Building
             RoadUtility.UnstageRoad(network, grid, tileIndex);
 
             m_StateC.RoadToolState.TracedTileIdxs.RemoveAt(tracedIndex);
+
+            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0)
+            {
+                // remove from running cost
+                ShopUtility.EnqueueCost(m_StateD, -ShopUtility.PriceLookup(UserBuildTool.Road));
+            }
 
             // remove staging visuals
             SetStagingRenderer(tileIndex, false);
@@ -481,8 +491,8 @@ namespace Zavala.Building
                     anyRoad = true;
                 }
                 else if (isEndpoint) {
-                    // only if counting each half of a road
-                    // deductNum++;
+                    // do not count endpoints in price
+                    deductNum++;
 
                     if (i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
                     {
@@ -526,6 +536,10 @@ namespace Zavala.Building
 
                     // Add the road commit to the overall chain
                     GameObject roadObj = isEndpoint ? null : network.RoadObjects[roadObjIdx].gameObject;
+                    if (!isEndpoint)
+                    {
+                        network.RoadObjects[roadObjIdx].Position.Pending = true;
+                    }
                     roadChain.Chain.PushBack(new ActionCommit(
                         BuildingType.Road,
                         ActionType.Build,
@@ -535,7 +549,8 @@ namespace Zavala.Building
                         roadObj,
                         rFlagsSnapshot,
                         tFlagsSnapshot,
-                        flowSnapshot
+                        flowSnapshot,
+                        true
                         ));
 
                     // update road visuals
@@ -552,8 +567,8 @@ namespace Zavala.Building
                 // Deselect tools
                 BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
 
-                // Add cost to receipt queue
-                ShopUtility.EnqueueCost(m_StateD, totalPrice);
+                // Add cost to receipt queue (now done on a tile-by-tile basis
+                // ShopUtility.EnqueueCost(m_StateD, totalPrice);
 
                 ClearRoadToolState();
 

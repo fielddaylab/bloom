@@ -243,6 +243,8 @@ namespace Zavala.Roads
             Debug.Log("[StagingRoad] Unstaging forward of tile " + tileIndex + " || new dirs: " + tileInfo.StagingMask.ToString());
 
             network.Roads.Info[tileIndex] = tileInfo;
+
+            RoadUtility.UpdateRoadVisuals(network, tileIndex);
         }
 
         static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint, Material holoMat) {

@@ -293,11 +293,10 @@ namespace Zavala.Sim {
 
             OccupiesTile ot = hitObj.GetComponent<OccupiesTile>();
 
-            // TODO: check if obj is staging/pending or already built
-            bool pending = true;
+            // check if obj is staging/pending or already built
             int costToRemove = 0;
 
-            if (pending)
+            if (ot.Pending)
             {
                 // negative price of building
                 costToRemove = -ShopUtility.PriceLookup(ot.Type);
@@ -326,7 +325,8 @@ namespace Zavala.Sim {
                 hitObj.gameObject,
                 rFlagSnapshot,
                 tFlagSnapshot,
-                flowSnapshot
+                flowSnapshot,
+                ot.Pending
                 ));
 
             // Add cost to receipt queue
@@ -419,13 +419,13 @@ namespace Zavala.Sim {
             switch (activeTool)
             {
                 case UserBuildTool.Digester:
-                    SimDataUtility.BuildOnTile(grid, pools.Digesters, tileIndex, inMat, out occupies);
+                    SimDataUtility.BuildOnTile(grid, pools.Digesters, tileIndex, inMat, out occupies, false);
                     break;
                 case UserBuildTool.Storage:
-                    SimDataUtility.BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies);
+                    SimDataUtility.BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies, false);
                     break;
                 case UserBuildTool.Skimmer:
-                    SimDataUtility.BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies);
+                    SimDataUtility.BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies, false);
                     break;
                 default:
                     occupies = null;
@@ -433,7 +433,7 @@ namespace Zavala.Sim {
             }
         }
 
-        public static void BuildOnTileFromUndo(SimGridState grid, BuildingType buildingType, int tileIndex, Material inMat)
+        public static void BuildOnTileFromUndo(SimGridState grid, BuildingType buildingType, int tileIndex, Material inMat, bool wasPending)
         {
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
@@ -441,16 +441,16 @@ namespace Zavala.Sim {
             switch (buildingType)
             {
                 case BuildingType.Road:
-                    BuildRoadOnTile(grid, network, pools.Roads, tileIndex, inMat, out RoadInstanceController controller);
+                    BuildRoadOnTile(grid, network, pools.Roads, tileIndex, inMat, out RoadInstanceController controller, true, wasPending);
                     break;
                 case BuildingType.Digester:
-                    BuildOnTile(grid, pools.Digesters, tileIndex, inMat, out occupies);
+                    BuildOnTile(grid, pools.Digesters, tileIndex, inMat, out occupies, true, wasPending);
                     break;
                 case BuildingType.Storage:
-                    BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies);
+                    BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies, true, wasPending);
                     break;
                 case BuildingType.Skimmer:
-                    BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies);
+                    BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies, true, wasPending);
                     break;
 
                 default:
@@ -459,7 +459,7 @@ namespace Zavala.Sim {
             }
         }
 
-        private static void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex, Material inMat, out OccupiesTile occupies)
+        private static void BuildOnTile(SimGridState grid, SerializablePool<OccupiesTile> pool, int tileIndex, Material inMat, out OccupiesTile occupies, bool inheritPending, bool wasPending = false)
         {
             // add build, snap to tile
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
@@ -467,9 +467,13 @@ namespace Zavala.Sim {
             grid.Terrain.Info[tileIndex].Flags |= TerrainFlags.IsOccupied;
             occupies = pool.Alloc(worldPos);
 
-            // temporarily render the build as holo and commit to build queue
-            var matSwap = occupies.GetComponent<MaterialSwap>();
-            if (matSwap) { matSwap.SetMaterial(inMat); }
+            if (!inheritPending || (inheritPending && wasPending))
+            {
+                occupies.Pending = true;
+                // temporarily render the build as holo and commit to build queue
+                var matSwap = occupies.GetComponent<MaterialSwap>();
+                if (matSwap) { matSwap.SetMaterial(inMat); }
+            }
         }
 
         /// <summary>
@@ -480,7 +484,7 @@ namespace Zavala.Sim {
         /// <param name="tileIndex"></param>
         /// <param name="inMat"></param>
         /// <param name="occupies"></param>
-        private static void BuildRoadOnTile(SimGridState grid, RoadNetwork network, SerializablePool<RoadInstanceController> pool, int tileIndex, Material inMat, out RoadInstanceController controller)
+        private static void BuildRoadOnTile(SimGridState grid, RoadNetwork network, SerializablePool<RoadInstanceController> pool, int tileIndex, Material inMat, out RoadInstanceController controller, bool inheritPending, bool wasPending = false)
         {
             // add build, snap to tile
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
@@ -493,12 +497,15 @@ namespace Zavala.Sim {
             roadInfo.Flags |= RoadFlags.IsRoad;
 
             controller = pool.Alloc(worldPos);
+            network.RoadObjects.PushBack(controller);
 
-            // temporarily render the build as holo and commit to build queue
-            var matSwap = controller.GetComponent<MaterialSwap>();
-            if (matSwap) { matSwap.SetMaterial(inMat); }
-
-            RoadUtility.UpdateRoadVisuals(network, tileIndex);
+            if (!inheritPending || (inheritPending && wasPending))
+            {
+                controller.Position.Pending = true;
+                // temporarily render the build as holo and commit to build queue
+                var matSwap = controller.GetComponent<MaterialSwap>();
+                if (matSwap) { matSwap.SetMaterial(inMat); }
+            }
         }
 
         public static void RestoreSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)

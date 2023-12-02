@@ -1,5 +1,6 @@
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Debugging;
 using FieldDay.SharedState;
 using System.Linq;
 using UnityEngine;
@@ -65,5 +66,23 @@ namespace Zavala.Economy
             return false;
         }
 
+        [DebugMenuFactory]
+        static private DMInfo BudgetDebugMenu()
+        {
+            DMInfo info = new DMInfo("Budget");
+            info.AddButton("+ $50", () => {
+                BudgetData budget = Game.SharedState.Get<BudgetData>();
+                SimGridState grid = Game.SharedState.Get<SimGridState>();
+                BudgetUtility.AddToBudget(budget, 50, (int)grid.CurrRegionIndex);
+            }, () => Game.SharedState.TryGet(out BudgetData budget));
+
+            info.AddButton("+ $1000", () => {
+                BudgetData budget = Game.SharedState.Get<BudgetData>();
+                SimGridState grid = Game.SharedState.Get<SimGridState>();
+                BudgetUtility.AddToBudget(budget, 1000, (int)grid.CurrRegionIndex);
+            }, () => Game.SharedState.TryGet(out BudgetData budget));
+
+            return info;
+        }
     }
 }

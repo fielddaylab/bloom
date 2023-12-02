@@ -17,10 +17,12 @@ namespace Zavala {
         [NonSerialized] public ushort RegionIndex;
 
         public bool IsExternal = false; // true if external commercial fertilizer seller/export depot
+        public bool Pending; // true if this building was built in BP mode without being confirmed
 
         private void OnEnable() {
             RefreshData();
             Game.Events.Register(SimGridState.Event_RegionUpdated, RefreshData);
+            Game.Events.Register(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
         }
 
         private void OnDisable() {
@@ -28,6 +30,7 @@ namespace Zavala {
                 return;
             }
             Game.Events.Deregister(SimGridState.Event_RegionUpdated, RefreshData);
+            Game.Events.Deregister(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
         }
 
         private void RefreshData() {
@@ -39,6 +42,11 @@ namespace Zavala {
             TileIndex = ZavalaGame.SimGrid.HexSize.FastPosToIndex(TileVector);
             RegionIndex = ZavalaGame.SimGrid.Terrain.Regions[TileIndex];
             Assert.True(RegionIndex < RegionInfo.MaxRegions, "Region Index {0} is out of range", RegionIndex);
+        }
+
+        private void HandleBlueprintModeEnded()
+        {
+            Pending = false;
         }
     }
 }

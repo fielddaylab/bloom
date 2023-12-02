@@ -17,6 +17,7 @@ namespace Zavala.Roads {
         public TileAdjacencyDataSet<RoadRampType> Ramps;
         public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
         public MaterialSwap MatSwap;
+        public OccupiesTile Position;
     }
 
     public enum RoadRampType : byte {
