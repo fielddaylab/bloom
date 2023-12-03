@@ -58,6 +58,8 @@ namespace Zavala.UI
         [SerializeField] private Button m_DestroyUndoButton;   // Undo button when in Destroy Mode
         [SerializeField] private Button m_DestroyExitButton;   // Exit button when in Destroy Mode
 
+        private int m_NumBuildCommits = 0;
+
         #endregion // Inspector
 
         private Routine m_TopBarRoutine;
@@ -241,6 +243,8 @@ namespace Zavala.UI
             m_BuildUndoButton.gameObject.SetActive(num > 0);
             m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(num > 0));
             m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(num > 0));
+
+            m_NumBuildCommits = num;
         }
 
         // Handle when number of destroy action commits changes
@@ -255,6 +259,7 @@ namespace Zavala.UI
             m_BuildCommandLayoutRoutine.Replace(BuildCommandAppearanceTransition(false));
             m_DestroyCommandLayoutRoutine.Replace(DestroyCommandAppearanceTransition(true));
             m_ShopToggle.gameObject.SetActive(false);
+            m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(false));
 
             Game.Events.Dispatch(GameEvents.DestroyModeStarted);
         }
@@ -275,6 +280,7 @@ namespace Zavala.UI
             m_BuildCommandLayoutRoutine.Replace(BuildCommandAppearanceTransition(true));
             m_DestroyCommandLayoutRoutine.Replace(DestroyCommandAppearanceTransition(false));
             m_ShopToggle.gameObject.SetActive(true);
+            m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(m_NumBuildCommits > 0));
 
             Game.Events?.Dispatch(GameEvents.DestroyModeEnded);
         }
