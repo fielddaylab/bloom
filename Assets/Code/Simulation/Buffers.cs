@@ -88,12 +88,15 @@ namespace Zavala.Sim {
         /// </summary>
         public HashSet<int> GrowingTiles;
         public HashSet<int> BloomedTiles;
+        public HashSet<int> PeakedTiles;
 
         public void Create(in HexGridSize size) {
             // TODO: only create and track AlgaeTileState for water tiles?
             State = SimBuffer.Create<AlgaeTileState>(size);
             GrowingTiles = new HashSet<int>(200);
             BloomedTiles = new HashSet<int>(200);
+            PeakedTiles = new HashSet<int>(200);
+
             SimBuffer.Clear(State);
         }
     }
