@@ -28,21 +28,28 @@ namespace Zavala.Sim {
                         m_StateA.Algae.GrowingTiles.Add(tileIndex);
                     } else {
                         m_StateA.Algae.GrowingTiles.Remove(tileIndex);
+                        m_StateA.Algae.State[tileIndex].IsPeaked = false;
                     }
+
+
                 }
                 // Grow algae
                 foreach (int tile in m_StateA.Algae.GrowingTiles) {
                     ref float algaeGrowth = ref m_StateA.Algae.State[tile].PercentAlgae;
                     // trigger algae events
                     // TODO: don't dispatch events if algae has already peaked
-                    if (!m_StateA.Algae.State[tile].HasPeaked) {
+                    if (!m_StateA.Algae.State[tile].IsPeaked) {
                         DispatchGrowthEvent(algaeGrowth, tile, ref m_StateA.Algae);
                     }
                     // increment by step
-                    algaeGrowth += AlgaeSim.AlgaeGrowthIncrement;
+                    if (algaeGrowth < 1) {
+                        algaeGrowth += AlgaeSim.AlgaeGrowthIncrement;
+                    }
                 }
 
-                // for bloomed tiles that aren't growing (i.e. below P threshold), decrement algae. if this brings them to 0 or lower, remove from bloomed
+                // for bloomed tiles that aren't growing (i.e. below P threshold):
+                // decrement algae. if this brings them to 0 or lower, remove from bloomed
+
                 m_StateA.Algae.BloomedTiles.RemoveWhere(
                     tile => !m_StateA.Algae.GrowingTiles.Contains(tile) 
                     && (m_StateA.Algae.State[tile].PercentAlgae -= AlgaeSim.AlgaeGrowthIncrement) <= 0);
@@ -50,18 +57,19 @@ namespace Zavala.Sim {
         }
 
         private void DispatchGrowthEvent (float currentGrowth, int tileIndex, ref AlgaeBuffers algaeBuffers) {
-            ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeGrew, tileIndex);
             if (currentGrowth <= 0) {
                 ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeFormed, tileIndex);
                 algaeBuffers.BloomedTiles.Add(tileIndex);
-                InstantiateAlgae(m_StateC, tileIndex);
+                // InstantiateAlgae(m_StateC, tileIndex);
             } else if (currentGrowth >= 1) {
                 ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaePeaked, tileIndex);
-                algaeBuffers.PeakingTiles.Add(tileIndex); // flag any peaking tiles for alert system(s)
-                algaeBuffers.State[tileIndex].HasPeaked = true;
+                algaeBuffers.State[tileIndex].IsPeaked = true;
+            } else {
+                ZavalaGame.Events.Dispatch(SimAlgaeState.Event_AlgaeGrew, tileIndex);
             }
         }
 
+        /*
         /// <summary>
         /// Temporary solution for instantiating an algae game object
         /// </summary>
@@ -81,5 +89,6 @@ namespace Zavala.Sim {
                 }
             }
         }
+        */
     }
 }

@@ -65,6 +65,12 @@ namespace Zavala.Debugging {
                 HexVector point = HexVector.FromWorld(hitCenter, m_StateB.WorldSpace);
                 int tileIdx = m_StateA.HexSize.FastPosToIndex(point);
                 DebugDraw.AddWorldText(hitCenter, string.Format("Position {0} [{1}]\nHeight {2}\nRegion {3}", point, tileIdx, m_StateA.Terrain.Height[tileIdx], m_StateA.Terrain.Regions[tileIdx]), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
+
+                if ((m_StateA.Terrain.Info[tileIdx].Flags & TerrainFlags.IsWater) != 0) {
+                    SimBuffer<AlgaeTileState> algae = Game.SharedState.Get<SimAlgaeState>().Algae.State;
+                    DebugDraw.AddWorldText(hitCenter + Vector3.down, string.Format("Algae: {0}\nHasPeaked: {1}", algae[tileIdx].PercentAlgae, algae[tileIdx].IsPeaked), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);;
+                }
+
             }
             return hit;
         }

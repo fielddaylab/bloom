@@ -13,8 +13,7 @@ namespace Zavala.Sim {
         static public readonly StringHash32 Event_AlgaePeaked = "AlgaeState::AlgaePeaked";
 
         [NonSerialized] public AlgaeBuffers Algae;
-        // TODO: create better solution, 
-        public GameObject AlgaePrefab;
+        // public GameObject AlgaePrefab;
 
         void IRegistrationCallbacks.OnDeregister() {
         }

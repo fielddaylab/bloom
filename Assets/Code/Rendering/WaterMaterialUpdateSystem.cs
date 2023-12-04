@@ -12,6 +12,7 @@ namespace Zavala.World {
         }
 
         public override void ProcessWork(float deltaTime) {
+            SimAlgaeState algaeState = Game.SharedState.Get<SimAlgaeState>();
             SimPhosphorusState phosphorusState = Game.SharedState.Get<SimPhosphorusState>();
             WaterMaterialData materialAssets = Game.SharedState.Get<WaterMaterialData>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
@@ -29,9 +30,15 @@ namespace Zavala.World {
                 }
 
                 bool isDeep = (grid.Terrain.Info[tile.TileIndex].Flags & TerrainFlags.NonBuildable) != 0;
-
-                int amount = phosphorusState.Phosphorus.CurrentState()[tile.TileIndex].Count;
+                
+                // Green-ness reflects progress towards algae growth threshold
+                /* 
+                int amount = phosphorusState.Phosphorus.CurrentState()[tile.TileIndex].Count; 
                 float ratio = (float) amount / AlgaeSim.MinPForAlgaeGrowth;
+                */
+                
+                // Green-ness reflects algae percentage
+                float ratio = algaeState.Algae.State[tile.TileIndex].PercentAlgae;
                 Material topMaterial;
                 if (isDeep) {
                     topMaterial = materialAssets.TopDeepMaterial.Find(ratio);

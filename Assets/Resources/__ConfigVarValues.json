@@ -1,9 +1,9 @@
 {
-    "Zavala.Sim.AlgaeSim::MinPForAlgaeGrowth": 15,
-    "Zavala.Economy.MarketParams::TruckSpeed": 2,
-    "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 25,
+    "Zavala.Sim.AlgaeSim::AlgaeGrowthIncrement": 0.05,
+    "Zavala.Economy.MarketParams::TruckSpeed": 1.8,
+    "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 75,
     "Zavala.Sim.PhosphorusSim::SteepHeightThreshold": 25,
     "Zavala.Sim.PhosphorusSim::MinFlowThreshold": 7,
-    "Zavala.Sim.PhosphorusSim::RemainAtSourceProportion": 0.699999988079071,
-    "Zavala.Sim.PhosphorusSim::MaxFlowProportionSteep": 1
+    "Zavala.Sim.PhosphorusSim::RemainAtSourceProportion": 0.7,
+    "Zavala.Sim.PhosphorusSim::MaxFlowProportionSteep": 0.9
 }
