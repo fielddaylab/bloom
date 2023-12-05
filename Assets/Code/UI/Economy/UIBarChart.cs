@@ -4,7 +4,7 @@ using FieldDay;
 using FieldDay.Components;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using UnityEngine;
 using Zavala.Economy;
 using Zavala.Sim;
@@ -49,7 +49,7 @@ namespace Zavala.UI
         }
 
         public void SetTargetLines(TargetThreshold[] targets) {
-            for (int i = 0; i < m_Targets.Count(); i++) {
+            for (int i = 0; i < m_Targets.Length; i++) {
                 // reposition target line
                 m_Targets[i].SetTargetLine(targets[i].Value);
 
@@ -64,7 +64,7 @@ namespace Zavala.UI
         }
 
         private void UpdateRatioVisuals() {
-            for (int i = 0; i < m_Targets.Count(); i++) {
+            for (int i = 0; i < m_Targets.Length; i++) {
                 m_Targets[i].SetRatio(m_Ratios[i]);
             }
         }

@@ -41,7 +41,8 @@ namespace Zavala.Sim {
         User = 0x01,
         Cutscene = 0x02,
         Scripted = 0x04,
-        Blueprints = 0x08
+        Blueprints = 0x08,
+        FullscreenCutscene = 0x10
     }
 
     /// <summary>

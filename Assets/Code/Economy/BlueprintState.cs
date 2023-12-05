@@ -114,7 +114,7 @@ namespace Zavala.Economy
         public IEnumerator<WorkSlicer.Result?> Preload()
         {
             UI = Game.Gui.GetShared<UIBlueprint>();
-            Commits = new RingBuffer<CommitChain>(8);
+            Commits = new RingBuffer<CommitChain>(8, RingBufferMode.Expand);
             CommandState = ActionType.Build;
 
             return null;
@@ -372,7 +372,7 @@ namespace Zavala.Economy
         public static void OnDestroyModeClicked(BlueprintState blueprintState, ShopState shop, SimGridState grid, BuildToolState buildState)
         {
             blueprintState.DestroyChain = new CommitChain();
-            blueprintState.DestroyChain.Chain = new RingBuffer<ActionCommit>(8);
+            blueprintState.DestroyChain.Chain = new RingBuffer<ActionCommit>(8, RingBufferMode.Expand);
 
             blueprintState.CommandState = ActionType.Destroy;
             BuildToolUtility.SetTool(buildState, UserBuildTool.Destroy);

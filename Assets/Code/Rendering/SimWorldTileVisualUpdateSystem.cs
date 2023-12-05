@@ -23,18 +23,29 @@ namespace Zavala.World {
             while(count-- > 0 && m_StateA.QueuedVisualUpdates.TryPopFront(out record)) {
                 int region = m_StateB.Terrain.Regions[record.TileIndex];
                 TerrainTileInfo info = m_StateB.Terrain.Info[record.TileIndex];
-                if (record.Type == VisualUpdateType.Road) {
-                    if (info.Category == TerrainCategory.Land) {
-                        TileInstance t = m_StateA.Tiles[record.TileIndex];
-                        bool hasRoad = (m_StateC.Roads.Info[record.TileIndex].Flags & RoadFlags.IsRoad) != 0;
-                        if (hasRoad) {
-                            m_StateA.Palettes[region].TileTopEmptyMesh.Apply(t.TopRenderer, t.TopFilter);
-                        } else {
-                            t.TopDefaultConfig.Apply(t.TopRenderer, t.TopFilter);
+                switch (record.Type) {
+                    case VisualUpdateType.Road: {
+                        if (info.Category == TerrainCategory.Land) {
+                            TileInstance t = m_StateA.Tiles[record.TileIndex];
+                            bool hasRoad = (m_StateC.Roads.Info[record.TileIndex].Flags & RoadFlags.IsRoad) != 0;
+                            if (hasRoad) {
+                                m_StateA.Palettes[region].TileTopEmptyMesh.Apply(t.TopRenderer, t.TopFilter);
+                            } else {
+                                t.TopDefaultConfig.Apply(t.TopRenderer, t.TopFilter);
+                            }
                         }
+                        break;
                     }
-                } else {
-                    m_StateA.QueuedVisualUpdates.PushBack(record);
+                    case VisualUpdateType.Water: {
+                        WaterTile wTile = m_StateA.Tiles[record.TileIndex].GetComponent<WaterTile>();
+                        WaterTileUtility.UpdateWaterfallEdges(wTile, m_StateB, Game.SharedState.Get<WaterMaterialData>());
+                        break;
+                    }
+
+                    default: {
+                        m_StateA.QueuedVisualUpdates.PushBack(record);
+                        break;
+                    }
                 }
             }
         }

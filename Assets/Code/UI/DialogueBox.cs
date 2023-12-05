@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using BeauRoutine;
 using BeauRoutine.Extensions;
 using BeauUtil;
@@ -204,8 +204,8 @@ namespace Zavala.UI {
 
             PolicyType[] policyTypes = CardsUtility.AdvisorPolicyMap[advisorType];
 
-            for (int i = 0; i < policyTypes.Count(); i++) {
-                if (i == m_PolicySlots.Count()) {
+            for (int i = 0; i < policyTypes.Length; i++) {
+                if (i == m_PolicySlots.Length) {
                     // Defined too many policies for the number of slots!
                     break;
                 }

@@ -34,7 +34,7 @@ namespace Zavala.World {
                         if (terrainData[index].RegionIndex != regionIdx || terrainData[index].Category == TerrainCategory.Void) {
                             continue;
                         }
-                        InstantiateTile(m_StateA, index, m_StateB.HexSize.FastIndexToPos(index), palette, terrainData[index]);
+                        InstantiateTile(m_StateA, m_StateB, index, m_StateB.HexSize.FastIndexToPos(index), palette, terrainData[index]);
                     }
                 }
             } else {
@@ -42,7 +42,7 @@ namespace Zavala.World {
             }
         }
 
-        static private void InstantiateTile(SimWorldState world, int index, in HexVector position, RegionPrefabPalette palette, in TerrainTileInfo tileInfo) {
+        static private void InstantiateTile(SimWorldState world, SimGridState grid, int index, in HexVector position, RegionPrefabPalette palette, in TerrainTileInfo tileInfo) {
             Vector3 pos = HexVector.ToWorld(position, tileInfo.Height, world.WorldSpace);
             TileInstance inst;
             if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
@@ -69,11 +69,14 @@ namespace Zavala.World {
                 WaterTile wTile = inst.GetComponent<WaterTile>();
                 wTile.TileIndex = index;
 
+                WaterMaterialData materialAssets = Game.SharedState.Get<WaterMaterialData>();
+                
                 // If deep water, modify default material
                 if ((tileInfo.Flags & TerrainFlags.NonBuildable) != 0) {
-                    WaterMaterialData materialAssets = Game.SharedState.Get<WaterMaterialData>();
                     wTile.SurfaceRenderer.sharedMaterial = materialAssets.TopDeepMaterial.Find(0);
                 }
+
+                WaterTileUtility.UpdateWaterfallEdges(wTile, grid, materialAssets);
             }
         }
 

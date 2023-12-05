@@ -134,7 +134,6 @@ MonoBehaviour:
   TopRenderer: {fileID: 8067934210996532098}
   TopFilter: {fileID: 0}
   PillarRenderer: {fileID: 0}
-  Decorations: []
 --- !u!136 &3680174520802473011
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -162,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SurfaceRenderer: {fileID: 8067934210996532098}
-  EdgeRenderers: []
+  EdgeRenderer: {fileID: 124846662966668833}
 --- !u!1 &6478767455107422566
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,14 +186,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6478767455107422566}
-  m_LocalRotation: {x: -0, y: 0.9659258, z: -0, w: -0.2588191}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -0.1, z: 0}
   m_LocalScale: {x: 1.0500001, y: 1, z: 1.0500001}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7758017013606886687}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &124846662966668833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,5 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988c1229e213c884faa32d8fbb225d67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DEBUG_InitialElements: []
   Layer: 0
   Material: {fileID: 2100000, guid: 49fba77971f0d466a804afac90d31c21, type: 2}
+  DefaultMesh: {fileID: -7340005787037723973, guid: d39b6e8c515094f40a8316c18003b815, type: 3}

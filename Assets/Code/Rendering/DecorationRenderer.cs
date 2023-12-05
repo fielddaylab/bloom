@@ -15,6 +15,7 @@ namespace Zavala {
 
         [LayerIndex] public int Layer;
         public Material Material;
+        public Mesh DefaultMesh;
 
         [NonSerialized] public RingBuffer<Decoration> Decorations = new RingBuffer<Decoration>();
         [NonSerialized] public Transform CachedTransform;
@@ -41,7 +42,7 @@ namespace Zavala {
 
         static public void AddDecoration(DecorationRenderer renderer, Mesh mesh, Matrix4x4 localMatrix, uint id) {
             Decoration d;
-            d.Mesh = mesh;
+            d.Mesh = mesh ? mesh : renderer.DefaultMesh;
             d.Matrix = renderer.CacheComponent(ref renderer.CachedTransform).localToWorldMatrix * localMatrix;
             d.Tag = id;
             renderer.Decorations.PushBack(d);

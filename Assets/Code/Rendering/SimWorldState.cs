@@ -315,5 +315,6 @@ namespace Zavala.World {
     public enum VisualUpdateType : ushort {
         Road,
         Border,
+        Water,
     }
 }

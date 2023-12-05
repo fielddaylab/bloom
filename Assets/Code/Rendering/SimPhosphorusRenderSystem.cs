@@ -59,6 +59,8 @@ namespace Zavala.World {
 
         #region Handling Changes
 
+        static private readonly PhosphorusRendering.RandomTilePositionDelegate RandomPosDelegate = RandomPosOnTile;
+
         static private Vector3 RandomPosOnTile(int tileIdx, ushort height, in HexGridWorldSpace worldSpace) {
             Vector3 pos = HexVector.ToWorld(tileIdx, height, worldSpace);
             pos.x += RNG.Instance.NextFloat(-0.4f, 0.4f) * worldSpace.Scale.x;
@@ -72,7 +74,7 @@ namespace Zavala.World {
             Assert.NotNull(phosphorusState);
             Assert.NotNull(worldState);
             PhosphorusRendering.PrepareChangeBuffer(phosphorusState.Phosphorus.Changes);
-            PhosphorusRendering.ProcessChanges(worldState.Phosphorus, (int) gridState.RegionCount, phosphorusState.Phosphorus.Changes, phosphorusState.Phosphorus.CurrentState(), gridState.Terrain.Info, gridState.Terrain.Height, worldState.WorldSpace, RandomPosOnTile, gridState.Random, Frame.Index8);
+            PhosphorusRendering.ProcessChanges(worldState.Phosphorus, (int) gridState.RegionCount, phosphorusState.Phosphorus.Changes, phosphorusState.Phosphorus.CurrentState(), gridState.Terrain.Info, gridState.Terrain.Height, worldState.WorldSpace, RandomPosDelegate, gridState.Random, Frame.Index8);
         }
 
         #endregion // Handling Changes
