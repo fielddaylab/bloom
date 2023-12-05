@@ -7,7 +7,7 @@ $call Pause()
 $call PauseAlertType("ExcessRunoff")
 
 $call CutsceneBegin()
-$call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-1.png", "intro/frame1-1.png")
+$call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
 $call CutsceneNextImage()
 You have become the regional Director of the Sustainable Agricultural Growth Administration - SAGA.
 {wait 1}
@@ -124,6 +124,7 @@ $call PanToBuilding("region1_grain1")
 {@advisorEcolHill}      Hold on! All those extra nutrients could disrupt the ecological balance!
 {@advisorEconHill}      Well, I'm afraid this is the only economically feasible option.
 {@advisorEcolHill}      Hm... I'm sure we can find a better way...
+$call AddAutoAlertCondition("Bloom", 1)
 $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -215,7 +216,23 @@ $endif
 $call Pause()
 $set global:bloomDiscovered = true
 // TODO: trigger ACT 2 HERE.
-{@advisorEcolHill}    Oh dear. It looks like <b>algae</b> blooms are coming to our lakes.
+{@advisorEcolHill}    What's this...?
+$call CutsceneBegin()
+$call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/frame1-3.png")
+    $call CutsceneNextImage()
+    Something is wrong with the lakes... They are swamped with revolting green mire!
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    Manure from CAFOs must be running off into the lake with rainwater.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    The cities need the farms for their milk, and farmers are struggling as is...
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneClearImages()
+$call CutsceneEnd()
 {@advisorEcolHill}    Something must be done! I'll keep an eye out for runoff.
 $call UnpauseAlertType("ExcessRunoff")
 $call Unpause()

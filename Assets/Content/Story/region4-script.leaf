@@ -10,6 +10,7 @@ $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We've dealt with these algae blooms here before...
 {@advisorEcolWetland}    The phosphorus flows down through waterways into our marshland.
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
+$call AddAutoAlertCondition("Bloom", 4)
 $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -59,7 +60,7 @@ $call UnlockShopItem("Digester")
 {@advisorEcolWetland}   Those  digesters were too expensive for us to run.
 {@advisorEcolWetland}   But maybe with SAGA's help we could start some new ones?
 {@advisorEcolWetland}   They process manure into fertilizer... Much easier to ship, and less runoff too!
-$call AddRegionAgeDeltaTrigger(4, 3)
+$call AddRegionAgeDeltaTrigger(4, 5)
 $call Unpause()
 
 :: unlockSalesTax

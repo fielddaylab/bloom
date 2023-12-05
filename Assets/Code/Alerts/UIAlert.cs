@@ -63,40 +63,15 @@ namespace Zavala.UI {
 
     public static class UIAlertUtility {
 
-        static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
+        // static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
 
         public static void ClickAlert(UIAlert alert) {
             if (!alert.FullyOpened) {
                 alert.BannerRoutine.Replace(OpenRoutine(alert));
                 return;
             }
-            // Activate queued script node event
-            using (TempVarTable varTable = TempVarTable.Alloc()) {
-                if (!alert.Actor.QueuedEvents.TryPopBack(out EventActorQueuedEvent newEvent)) {
-                    // No event linked with this event
-                    return;
-                }
-                if (!newEvent.Argument.Id.IsEmpty) {
-                    varTable.Set(newEvent.Argument.Id, newEvent.Argument.Value);
-                }
-
-                // TODD: shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
-
-                // Use region index as a condition for alerts
-                SimGridState grid = Game.SharedState.Get<SimGridState>();
-                varTable.Set("region", RegionIndexToString[grid.CurrRegionIndex]); // i.e. region == Hillside
-                varTable.Set("class", alert.Actor.Class);
-
-                ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, newEvent.ScriptId);
-
-                Log.Msg("[UIAlertUtility] Node is '{0}' ({1})", newEvent.ScriptId, node);
-                // TODO: What if this particular node has already run between when the alert was created and when it was clicked?
-
-                ScriptUtility.Runtime.Plugin.Run(node, alert.Actor, varTable);
-                varTable.Clear();
-
-                //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
-            }
+            EventActorUtility.TriggerActorAlert(alert.Actor);
+            //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
         }
 
         public static void FreeAlert(UIAlert alert) {
