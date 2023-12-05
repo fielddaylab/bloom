@@ -35,7 +35,7 @@ $endif
 
 :: unlockSkimmers
 @trigger        AlertExamined
-@conditions     alertType == "bloom", AgeOfRegion(4) > 3
+@conditions     alertType == "bloom", !CameraInRegion(4) , AgeOfRegion(4) > 3
 @forcePolicy    Ecology
 @once
 {local @advisorEcon}    More algae blooms...
@@ -50,18 +50,32 @@ $call UnlockCards(SkimmingPolicy)
 @conditions     alertType == "bloom", alertRegion == 4, PolicyIsUnlocked(SkimmingPolicy)
 @forcePolicy    Ecology
 @once
-// TODO: add die-off event trigger  
-// TODO: trigger ACT IV cutscene
+// TODO: make this a die-off event  
 $call Pause()
 {@advisorEcolWetland}   It's just as we feared...
-{@advisorEcolWetland}   The blooms have spread into our protected waters.
-{@advisorEcolWetland}   We need to bring out some old tools...
+$call CutsceneBegin()
+    $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/frame1-3.png")
+    $call CutsceneNextImage()
+    Disaster looms once more in these lands... Blooms threaten to spread to protected waters.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    These old machines were used once, but the cost was too great.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    Will your guidance lead them to success or ruin?
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneClearImages()
+$call CutsceneEnd()
 $call UnlockShopItem("Digester")
-{@advisorEcolWetland}   Those  digesters were too expensive for us to run.
+{@advisorEcolWetland}   Those digesters were too expensive for us to run.
 {@advisorEcolWetland}   But maybe with SAGA's help we could start some new ones?
 {@advisorEcolWetland}   They process manure into fertilizer... Much easier to ship, and less runoff too!
-$call AddRegionAgeDeltaTrigger(4, 5)
+{@advisorEconWetland}   Digesters have been added to your Blueprint Mode.
 $call Unpause()
+$call AddRegionAgeDeltaTrigger(4, 10)
 
 :: unlockSalesTax
 @trigger        RegionReachedAge

@@ -15,8 +15,8 @@ MonoBehaviour:
   GroundTile: {fileID: 1682522120635054893, guid: 0e25536119ba8c34081bf5c1b896fdae, type: 3}
   InnerGroundTile: {fileID: 4070291153616356264, guid: e80ef02b869c8134e9a7dc02e878444c, type: 3}
   TileTopEmptyMesh:
-    Mesh: {fileID: -400652122881840610, guid: f4ee780c21bb31d4d8ce371c97e13c1a, type: 3}
-    Material: {fileID: 2100000, guid: e3a8c44238bcdab4e8ab3a7e42884228, type: 2}
+    Mesh: {fileID: 8443413302974812720, guid: f4ee780c21bb31d4d8ce371c97e13c1a, type: 3}
+    Material: {fileID: 2100000, guid: 443c7ea40d109834c9aa03edfd735999, type: 2}
   City: {fileID: 8618302430198849950, guid: 0c9f418dca6bd4546be9c1f0ca5d1a63, type: 3}
   DairyFarm: {fileID: 1341254393580726282, guid: 682e779945c87ce43b6db5333ab96dbd, type: 3}
   GrainFarm: {fileID: 7472050176056558017, guid: 2ac7c6c892de8fc4e80c44714a601791, type: 3}
