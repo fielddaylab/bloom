@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 10
   IsExternal: 0
+  Pending: 0
 --- !u!1 &5609521654406956475
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +93,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 10
   IsExternal: 0
+  Pending: 0
 --- !u!1 &7291294420475072060
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,7 +186,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2358b5a844ea9704c909e9ea22ef48ea, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.164
+      value: -0.005
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2358b5a844ea9704c909e9ea22ef48ea, type: 3}
       propertyPath: m_LocalPosition.z
