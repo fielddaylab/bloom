@@ -89,6 +89,7 @@ $call Pause()
 $call Unpause()
 
 // triggered by opening runoff in region 2 after region 3 has been opened
+// feedback: use a farmer instead
 :: unlockImportTax
 @forcePolicy    Economy
 @once

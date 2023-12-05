@@ -1,4 +1,5 @@
 using FieldDay;
+using FieldDay.Rendering;
 using FieldDay.Systems;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -27,6 +28,7 @@ namespace Zavala.UI.Info {
                 HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);
                 if (infoPopup != null) {
                     popupUI.LoadTarget(infoPopup);
+                    World.WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
                 } else if (!EventSystem.current.IsPointerOverGameObject()) {
                     popupUI.Hide();
                 }

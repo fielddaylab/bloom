@@ -20,6 +20,7 @@ using UnityEngine.UI;
 using UnityEngine.Windows;
 using Zavala.Advisor;
 using Zavala.Cards;
+using Zavala.Input;
 using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.World;
@@ -290,6 +291,7 @@ namespace Zavala.UI {
 
         private void HandlePolicyCloseClicked() {
             m_TransitionRoutine.Replace(HideRoutine());
+            Input.InteractionUtility.ReleaseDialogueInteraction();
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
