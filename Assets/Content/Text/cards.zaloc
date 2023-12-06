@@ -1,9 +1,9 @@
 # basePath cards
 
-:: severity.low
+:: severity.none
 None
 
-:: severity.med
+:: severity.low
 Low
 
 :: severity.high

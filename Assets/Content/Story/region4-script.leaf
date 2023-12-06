@@ -75,15 +75,15 @@ $call UnlockShopItem("Digester")
 {@advisorEcolWetland}   They process manure into fertilizer... Much easier to ship, and less runoff too!
 {@advisorEconWetland}   Digesters have been added to your Blueprint Mode.
 $call Unpause()
-$call AddRegionAgeDeltaTrigger(4, 10)
+// $call AddRegionAgeDeltaTrigger(4, 10)
 
-:: unlockSalesTax
-@trigger        RegionReachedAge
-@conditions     regionId == 4, Visited("region4.unlockDigesters")
-@once 
-{@advisorEconWetland}   Digesters would be great, but they're expensive...
-{@advisorEconWetland}   We may need a new revenue stream. I've opened up Sales Tax.
-$call UnlockCards(SalesTaxPolicy)
+// :: unlockSalesTax
+// @trigger        RegionReachedAge
+// @conditions     regionId == 4, Visited("region4.unlockDigesters")
+// @once 
+// {@advisorEconWetland}   Digesters would be great, but they're expensive...
+// {@advisorEconWetland}   We may need a new revenue stream. I've opened up Sales Tax.
+// $call UnlockCards(SalesTaxPolicy)
 
 :: buildFirstDigester
 @trigger        PlayerBuiltBuilding

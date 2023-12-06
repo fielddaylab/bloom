@@ -2,7 +2,6 @@ using System;
 using BeauUtil;
 using FieldDay.Components;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
 
 namespace Zavala.Economy {
     [DisallowMultipleComponent]

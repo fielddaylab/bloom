@@ -73,19 +73,19 @@ namespace Zavala.Advisor {
             ExportTaxVals[3].SetAll(4);
             */
 
-            ImportTaxVals[0].SetAll(-2);
-            ImportTaxVals[1].SetAll(0);
-            ImportTaxVals[2].SetAll(2);
-            ImportTaxVals[3].SetAll(4);
+            ImportTaxVals[0].SetAll(0); // NONE
+            ImportTaxVals[1].SetAll(2); // LOW
+            ImportTaxVals[2].SetAll(4); // HIGH
+            ImportTaxVals[3].SetAll(-2);// SUBSIDY
 
-            SalesTaxVals[0].SetAll(-2);
-            SalesTaxVals[1].SetAll(0);
-            SalesTaxVals[2].SetAll(2);
-            SalesTaxVals[3].SetAll(4);
+            SalesTaxVals[0].SetAll(0);
+            SalesTaxVals[1].SetAll(2);
+            SalesTaxVals[2].SetAll(4);
+            SalesTaxVals[3].SetAll(-2);
 
             RunoffPenaltyVals[0].Manure = 0;
-            RunoffPenaltyVals[1].Manure = 50;
-            RunoffPenaltyVals[2].Manure = 100;
+            RunoffPenaltyVals[1].Manure = 10;
+            RunoffPenaltyVals[2].Manure = 20;
             RunoffPenaltyVals[3].Manure = 1000;
 
             SkimmerPolicyVals[0] = 0; 
@@ -97,10 +97,10 @@ namespace Zavala.Advisor {
         private void InitializePolicyMap() {
             for (int i = 0; i < Policies.Length; i++) {
                 Policies[i].Map = new Dictionary<PolicyType, PolicyLevel>() {
-                    { PolicyType.RunoffPolicy, PolicyLevel.Low },
-                    { PolicyType.SkimmingPolicy, PolicyLevel.Low },
-                    { PolicyType.ImportTaxPolicy, PolicyLevel.Low },
-                    { PolicyType.SalesTaxPolicy, PolicyLevel.Low }
+                    { PolicyType.RunoffPolicy, PolicyLevel.None },
+                    { PolicyType.SkimmingPolicy, PolicyLevel.None },
+                    { PolicyType.ImportTaxPolicy, PolicyLevel.None },
+                    { PolicyType.SalesTaxPolicy, PolicyLevel.None }
                 };
                 Policies[i].EverSet = new Dictionary<PolicyType, bool>() {
                     { PolicyType.RunoffPolicy, false },
