@@ -7,6 +7,21 @@
 $call Pause()
 {@advisorEconUrban}    Sup. Welcome to Smokestack City.
 $call PanToBuilding("region5_city1")
+$call CutsceneBegin()
+    $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/frame1-3.png")
+    $call CutsceneNextImage()
+    These cities rely upon the water for their livelihood.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    Will these tools be enough to stop the blooms from advancing?
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneClearImages()
+$call CutsceneEnd()
 $call Unpause()
 
 :: ecologyAdvisorOpen

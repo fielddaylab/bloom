@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -75,9 +75,7 @@ namespace Zavala.Economy
                     if (found.Value.Requester.InfiniteRequests) {
                         // Set requested value equal to this suppliers stock
                         // TODO: probably a simpler way to do this
-                        var array = Enum.GetValues(typeof(ResourceId)).Cast<ResourceId>();
-                        int length = array.Count();
-                        for (int i = 0; i < length - 2; i++) {
+                        for (int i = 0; i < (int) ResourceId.COUNT - 1; i++) {
                             ResourceId resource = (ResourceId)i;
                             if ((supplier.Storage.Current[resource] != 0) && (found.Value.Requested[resource] != 0)) {
                                 int extensionCount = 0;
@@ -109,8 +107,6 @@ namespace Zavala.Economy
                         }
                     }
 
-                    Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", adjustedValueRequested, supplier.name, adjustedFound.Value.Requester.name);
-
                     int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
                     int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
                     GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
@@ -118,7 +114,7 @@ namespace Zavala.Economy
 
                     MarketActiveRequestInfo activeRequest;
                     if (supplier.Storage.InfiniteSupply) {
-                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, adjustedValueRequested, netTaxRevenue, proxyIdx, summary);
+                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.FulfillInfinite(supplier.ShippingMask, adjustedValueRequested), netTaxRevenue, proxyIdx, summary);
                     }
                     else {
                         ResourceBlock mainStorageBlock;
@@ -144,8 +140,10 @@ namespace Zavala.Economy
 
                     m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
 
+                    Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
+
                     if (!adjustedFound.Value.Requester.IsLocalOption) {
-                        MarketUtility.RecordPurchaseToHistory(marketData, adjustedValueRequested, regionPurchasedIn);
+                        MarketUtility.RecordPurchaseToHistory(marketData, activeRequest.Supplied, regionPurchasedIn);
                     }
                     else {
                         ScriptUtility.Trigger(GameTriggers.LetSat);

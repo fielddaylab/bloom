@@ -75,7 +75,7 @@ namespace Zavala.Input
             InteractionState interact = Game.SharedState.Get<InteractionState>();
 
             // Save to list of filters
-            interact.Filters.Remove(filter);
+            interact.Filters.FastRemove(filter);
         }
 
         #region Leaf

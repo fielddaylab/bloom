@@ -2,7 +2,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.SharedState;
-using System.Linq;
+//using System.Linq;
 using UnityEngine;
 using Zavala.Sim;
 
@@ -24,7 +24,7 @@ namespace Zavala.Economy
         public Budget[] BudgetsPerRegion = new Budget[RegionInfo.MaxRegions];
 
         public void OnRegister() {
-            for (int i = 0; i < BudgetsPerRegion.Count(); i++) {
+            for (int i = 0; i < BudgetsPerRegion.Length; i++) {
                 BudgetUtility.SetBudget(this, m_initialBudget, i);
             }
         }

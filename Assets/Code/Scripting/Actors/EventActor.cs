@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BeauUtil;
+using BeauUtil.Debugger;
 using BeauUtil.Variants;
 using FieldDay;
 using FieldDay.Components;
@@ -10,6 +11,7 @@ using UnityEngine;
 using Zavala.Alerts;
 using Zavala.Sim;
 using Zavala.UI;
+using Zavala.World;
 
 namespace Zavala.Scripting {
     [DisallowMultipleComponent]
@@ -102,7 +104,7 @@ namespace Zavala.Scripting {
         static public void QueueAlert(EventActor actor, EventActorAlertType alert, int tileIndex, int regionIndex, NamedVariant secondArg = default) {
             // skip queuing any paused events
             if (Game.SharedState.Get<AlertState>().PausedAlertTypes.Contains(alert)) {
-                BeauUtil.Debugger.Log.Msg("[EventActorUtility] Skipping alert for {0}, event type {1} paused", actor.Id.ToDebugString(), alert);
+                Log.Msg("[EventActorUtility] Skipping alert for {0}, event type {1} paused", actor.Id.ToDebugString(), alert);
                 return;
             }
             actor.QueuedTriggers.PushBack(new EventActorTrigger() {
@@ -110,9 +112,22 @@ namespace Zavala.Scripting {
                 Argument = GameAlerts.GetAlertTypeArgument(alert),
                 SecondArg = secondArg,
                 Alert = alert,
-                RegionIndex = new NamedVariant("alertRegion", regionIndex+1), // 1-indexed
+                RegionIndex = new NamedVariant("alertRegion", regionIndex+1), // 0-indexed to 1-indexed
                 TileIndex = tileIndex
             }); ;
+        }
+
+        static public void AddAutoAlertCondition(AutoAlertCondition cond) {
+            Log.Msg("[EventActorUtility] Adding AutoTriggerAlert condition: {0} in Region {1}", cond.Alert, cond.RegionIndex);
+            Game.SharedState.Get<AlertState>().AutoTriggerAlerts.Add(cond);
+        }
+
+        [LeafMember("AddAutoAlertCondition")]
+        static public void AddAutoAlertConditionLeaf(EventActorAlertType alertType = default, int regionIndex = -1) {
+            AddAutoAlertCondition(new AutoAlertCondition() {
+                Alert = alertType,
+                RegionIndex = regionIndex
+            });
         }
 
         [LeafMember("PauseAlertType")]
@@ -131,6 +146,38 @@ namespace Zavala.Scripting {
             if (!PauseAlertType(alertType)) {
                 // false - it's paused already, so unpause
                 UnpauseAlertType(alertType); 
+            }
+        }
+
+        public static void TriggerActorAlert(EventActor actor) {
+
+            // Activate queued script node event
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                if (!actor.QueuedEvents.TryPopBack(out EventActorQueuedEvent newEvent)) {
+                    // No event linked with this event
+                    return;
+                }
+                if (!newEvent.Argument.Id.IsEmpty) {
+                    varTable.Set(newEvent.Argument.Id, newEvent.Argument.Value);
+                }
+
+                // TODD: shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
+                WorldCameraUtility.PanCameraToTransform(actor.transform);
+
+                // Use region index as a condition for alerts
+                // SimGridState grid = Game.SharedState.Get<SimGridState>();
+                // varTable.Set("region", RegionIndexToString[grid.CurrRegionIndex]); // i.e. region == Hillside
+                varTable.Set("class", actor.Class);
+
+                ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, newEvent.ScriptId);
+
+                Log.Msg("[UIAlertUtility] Node is '{0}' ({1})", newEvent.ScriptId, node);
+                // TODO: What if this particular node has already run between when the alert was created and when it was clicked?
+
+                ScriptUtility.Runtime.Plugin.Run(node, actor, varTable);
+                varTable.Clear();
+
+                //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
             }
         }
 

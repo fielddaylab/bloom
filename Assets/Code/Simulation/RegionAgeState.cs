@@ -32,8 +32,9 @@ namespace Zavala.Sim {
 
         [LeafMember("AddRegionAgeDeltaTrigger")]
         static public void AddRegionAgeDeltaTrigger(int region, int delay) {
+            region--; // 1-indexed to 0-indexed
             int finalAge = ZavalaGame.SharedState.Get<SimGridState>().Regions[region].Age + delay;
-            ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers.Add((RegionId)region - 1, finalAge); // 1-indexed to 0-indexed
+            ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers.Add((RegionId)region, finalAge); 
         }
     }
 }

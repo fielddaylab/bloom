@@ -1,5 +1,8 @@
 using System;
 using BeauUtil;
+using BeauUtil.Debugger;
+using FieldDay;
+using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Leaf.Runtime;
@@ -20,7 +23,20 @@ namespace Zavala.Advisor {
         [LeafMember("UnlockAdvisorModule")]
         public static void UnlockModule(AdvisorType type) {
             ZavalaGame.SharedState.Get<ScriptRuntimeState>().DefaultDialogue.GetModule(type).Unlock();
-        } 
+        }
+
+        [DebugMenuFactory]
+        static private DMInfo AdvisorModuleUnlockUtility() {
+            DMInfo info = new DMInfo("Advisor Modules");
+            info.AddButton("Unlock Pips", () => {
+                UnlockModule(AdvisorType.Ecology);
+            }, () => Game.SharedState.TryGet(out AdvisorState a));
+
+            info.AddButton("Unlock Graphs", () => {
+                UnlockModule(AdvisorType.Economy);
+            }, () => Game.SharedState.TryGet(out AdvisorState a));
+            return info;
+        }
     }
 
 

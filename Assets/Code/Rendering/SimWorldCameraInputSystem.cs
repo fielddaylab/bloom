@@ -16,35 +16,35 @@ namespace Zavala.World {
                 return;
             }
 
-            Vector2 moveDist = m_StateB.NormalizedKeyboardMoveVector * ((m_StateA.CameraMoveSpeed + 0.75f * m_StateC.RegionCount) * deltaTime);
+            Vector2 moveDist = m_StateB.NormalizedKeyboardMoveVector * ((m_StateA.CameraMoveSpeed + 0.75f * (m_StateC.RegionCount - 1)) * deltaTime);
             if (moveDist.sqrMagnitude > 0) {
                 Vector3 cameraRotEuler = m_StateA.LookTarget.localEulerAngles;
                 Quaternion cameraRot = Quaternion.Euler(0, cameraRotEuler.y, 0);
                 Vector3 moveVec = cameraRot * Geom.SwizzleYZ(moveDist);
-                m_StateA.LookTarget.Translate(moveVec, Space.World);
+
+                Vector3 pos = m_StateA.LookTarget.position + moveVec;
+                WorldCameraUtility.ClampPositionToBounds(ref pos, m_StateC);
+
+                m_StateA.LookTarget.position = pos;
+
+                m_StateA.TransitionRoutine.Stop();
                 // TODO: better solution?
                 // temp: close context menu when moving
-                BuildingPopup.instance.CloseMenu();
+                //BuildingPopup.instance.CloseMenu();
             }
+
             float zoomDelta = m_StateB.ScrollWheel.y * m_StateA.ZoomFactor;
             if (zoomDelta == 0) {
                 return;
             }
             
-            Vector3 camPos = m_StateA.Camera.transform.position;
-            Log.Msg("[SimWorldCameraSystem] Scroll zoom detected, scrolling to {0}", (camPos.z + zoomDelta));
-            if (camPos.z + zoomDelta <= m_StateA.CameraMaxZoomDist && camPos.z + zoomDelta >= m_StateA.CameraMinZoomDist - 1 * m_StateC.RegionCount) {
-                m_StateA.Camera.transform.Translate(0, 0, zoomDelta);
+            Vector3 camPos = m_StateA.Camera.transform.localPosition;
+            if (zoomDelta > 0) {
+                camPos.z = Mathf.Min(m_StateA.CameraMaxZoomDist, camPos.z + zoomDelta);
+            } else {
+                camPos.z = Mathf.Max(m_StateA.CameraMinZoomDist - 1 * (m_StateC.RegionCount - 1), camPos.z + zoomDelta);
             }
-            else {
-                Log.Msg("[SimWorldCameraSystem] Scroll {0} out of bounds", (camPos.z + zoomDelta));
-                if (zoomDelta > 0) {
-                    camPos.z = m_StateA.CameraMaxZoomDist;
-                }
-                else {
-                    camPos.z = m_StateA.CameraMinZoomDist - 1 * m_StateC.RegionCount;
-                }
-            }
+            m_StateA.Camera.transform.localPosition = camPos;
         }
     }
 }

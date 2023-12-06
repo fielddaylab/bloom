@@ -56,7 +56,7 @@ namespace Zavala.Sim {
             Terrain.Create(HexSize);
             Regions = SimBuffer.Create<RegionInfo>(RegionInfo.MaxRegions);
             WaterGroups = SimBuffer.Create<WaterGroupInfo>(WaterGroupInfo.MaxGroups);
-            RegionEdgeArena = SimArena.Create<ushort>(RegionInfo.MaxRegions * 32);
+            RegionEdgeArena = SimArena.Create<ushort>(RegionInfo.MaxRegions * 64);
             RegionCount = 0;
             WaterGroupCount = 0;
 
@@ -128,6 +128,10 @@ namespace Zavala.Sim {
             for(int i = 0; i < regionInfo.Edges.Length; i++) {
                 regionInfo.Edges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.Borders[i].LocalTileIndex);
             }
+            regionInfo.WaterEdges = grid.RegionEdgeArena.Alloc((uint) asset.EdgeVisualUpdateSet.Length);
+            for(int i = 0; i < regionInfo.WaterEdges.Length; i++) {
+                regionInfo.WaterEdges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.EdgeVisualUpdateSet[i]);
+            }
 
             SimWorldState world = Game.SharedState.Get<SimWorldState>();
             world.Palettes[regionIndex] = palette;
@@ -197,6 +201,15 @@ namespace Zavala.Sim {
                 }
             }
 
+            for(int i = 0; i < regionIndex - 1; i++) {
+                var visualEdges = grid.Regions[i].WaterEdges;
+                for(int j = 0; j < visualEdges.Length; j++) {
+                    world.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
+                        TileIndex = visualEdges[j],
+                        Type = VisualUpdateType.Water
+                    });
+                }
+            }
 
             // load script
             if (asset.LeafScript != null) {
@@ -265,12 +278,11 @@ namespace Zavala.Sim {
             }
         }
 
-        static public bool TryUpdateCurrentRegion(SimGridState grid, SimWorldState world, Ray viewportCenter) {
-            if (Physics.Raycast(viewportCenter, out RaycastHit hit, 100f, LayerMask.GetMask("HexTile"))
-                && SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int index) 
+        static public bool TryUpdateCurrentRegion(SimGridState grid, SimWorldState world, Transform lookRoot) {
+            if (SimWorldUtility.TryGetTileIndexFromWorld(grid, world, lookRoot.position, out int index)  
                 && index >= 0) {
-                ushort newRegionIndex = grid.Terrain.Info[index].RegionIndex;
-                if (newRegionIndex == grid.CurrRegionIndex) {
+                ushort newRegionIndex = grid.Terrain.Regions[index];
+                if (newRegionIndex >= grid.RegionCount || newRegionIndex == grid.CurrRegionIndex) {
                     // region unchanged.
                     return false;
                 }

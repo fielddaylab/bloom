@@ -322,11 +322,32 @@ namespace Zavala.Economy {
         }
 
         /// <summary>
+        /// Consumess the given resource block from the given source.
+        /// </summary>
+        static public ResourceBlock FulfillInfinite(ResourceMask mask, ResourceBlock request) {
+            ResourceBlock consumed = default;
+            
+            int requestedPhosphorus = request.PhosphorusCount;
+            if ((mask & ResourceMask.DFertilizer) != 0) {
+                consumed.DFertilizer = requestedPhosphorus;
+            } else if ((mask & ResourceMask.MFertilizer) != 0) {
+                consumed.MFertilizer = requestedPhosphorus;
+            } else if ((mask & ResourceMask.Manure) != 0) {
+                consumed.Manure = requestedPhosphorus;
+            }
+
+            consumed.Milk = request.Milk;
+            consumed.Grain = request.Grain;
+            return consumed;
+        }
+
+        /// <summary>
         /// Gathers phosphorus from the given source, prioritizing digested fertilizer, then mineral fertilizer, and finally manure.
         /// Returns if it was able to gather all requested phosphorus.
         /// </summary>
         static public bool GatherPhosphorusPrioritized(in ResourceBlock source, int phosphorusRequest, out ResourceBlock gathered) {
             gathered = default;
+
             int digested = Math.Min(phosphorusRequest, source.DFertilizer);
             gathered.DFertilizer = digested;
             phosphorusRequest -= digested;

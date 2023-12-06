@@ -75,7 +75,7 @@ MonoBehaviour:
     LastLine: 0
     Records:
     - Id: location.region1_city1.name
-      Content: Oakvale
+      Content: Pendleton Hills
     - Id: location.region1_cafo1.name
       Content: Bertram's Dairy Farm
     - Id: location.region1_grain1.name
@@ -89,7 +89,7 @@ MonoBehaviour:
     - Id: location.region2_grain1.name
       Content: Emmett's Grain Farm
     - Id: location.region2_city1.name
-      Content: Forest City
+      Content: Woodgrove
     - Id: location.region3_cafo1.name
       Content: Winnie's Dairy Farm
     - Id: location.region3_grain1.name
@@ -97,7 +97,7 @@ MonoBehaviour:
     - Id: location.region3_grain2.name
       Content: Zora's Grain Farm
     - Id: location.region3_city1.name
-      Content: Winstone
+      Content: Veldt City
     - Id: location.region4_cafo1.name
       Content: Neil's Dairy Farm
     - Id: location.region4_cafo2.name
@@ -107,7 +107,7 @@ MonoBehaviour:
     - Id: location.region4_grain1.name
       Content: Cindy's Grain Farm
     - Id: location.region4_city1.name
-      Content: Trenchfort
+      Content: Heylemarsh
     - Id: location.region5_cafo1.name
       Content: Tabitha's Dairy Farm
     - Id: location.region5_grain1.name
@@ -139,9 +139,9 @@ MonoBehaviour:
     - Id: region.forest.name.long
       Content: Pine County
     - Id: region.wetlands.name
-      Content: Wetlands
+      Content: Muskeg
     - Id: region.wetlands.name.long
-      Content: Wetlands Region
+      Content: Muskeg County
     - Id: region.prairie.name
       Content: Heath
     - Id: region.prairie.name.long

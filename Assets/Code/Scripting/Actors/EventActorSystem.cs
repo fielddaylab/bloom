@@ -1,10 +1,13 @@
 using BeauUtil;
+using BeauUtil.Debugger;
 using BeauUtil.Variants;
 using FieldDay.Components;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using Leaf.Runtime;
+using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Alerts;
 using Zavala.Sim;
 
 namespace Zavala.Scripting {
@@ -15,7 +18,11 @@ namespace Zavala.Scripting {
                 while (component.QueuedTriggers.TryPopBack(out EventActorTrigger trigger)) {
                     if (!trigger.Argument.Id.IsEmpty) {
                         varTable.Set(trigger.Argument.Id, trigger.Argument.Value);
+                    }
+                    if (!trigger.SecondArg.Id.IsEmpty) {
                         varTable.Set(trigger.SecondArg.Id, trigger.SecondArg.Value);
+                    }
+                    if (!trigger.RegionIndex.Id.IsEmpty) {
                         varTable.Set(trigger.RegionIndex.Id, trigger.RegionIndex.Value);
                     }
 
@@ -39,6 +46,22 @@ namespace Zavala.Scripting {
                                 Alert = trigger.Alert
                             };
                             component.QueuedEvents.PushBack(queuedEvent);
+                            HashSet<AutoAlertCondition> conditions = ZavalaGame.SharedState.Get<AlertState>().AutoTriggerAlerts;
+                            foreach (AutoAlertCondition autoTrig in conditions) {
+                                Log.Msg("[EventActorUtility] Checking for AutoTriggerAlert...");
+                                if ((autoTrig.Alert == EventActorAlertType.None || autoTrig.Alert == queuedEvent.Alert) &&
+                                    (autoTrig.RegionIndex == -1 || autoTrig.RegionIndex == queuedEvent.RegionIndex.Value)) {
+                                                                       
+                                    Log.Msg("[EventActorUtility] AutoTriggerAlert ACTIVATED");
+                                    EventActorUtility.TriggerActorAlert(component);
+                                    conditions.Remove(autoTrig);
+                                    break;
+                                } else {
+                                    Log.Msg("[EventActorUtility] AutoTriggerAlert BYPASSED.");
+                                }
+
+                            }
+
                         }
                     }
                 }

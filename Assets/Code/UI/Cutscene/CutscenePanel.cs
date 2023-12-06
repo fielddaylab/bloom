@@ -12,6 +12,7 @@ using Leaf.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.UI {
@@ -170,6 +171,7 @@ namespace Zavala.UI {
 
             Canvas.enabled = true;
             ScriptUtility.MountDisplayer(this);
+            SimTimeUtility.Pause(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime);
         }
 
         protected override void OnShowComplete(bool inbInstant) {
@@ -203,6 +205,8 @@ namespace Zavala.UI {
                     obj.Clear();
                     obj.gameObject.SetActive(false);
                 }
+
+                SimTimeUtility.Resume(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime);
             }
 
             Canvas.enabled = false;

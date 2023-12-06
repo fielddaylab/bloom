@@ -103,7 +103,7 @@ namespace Zavala.Building
                 return CODE_INVALID;
             }
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMask.GetMask(TILE_LAYER))) {
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMasks.HexTile_Mask)) {
                 if (!hit.collider) return CODE_INVALID;
                 HexVector vec = HexVector.FromWorld(hit.collider.transform.position, world.WorldSpace);
                 if (m_StateC.VecPrevValid && vec.Equals(m_StateC.VecPrev)) {
@@ -140,7 +140,7 @@ namespace Zavala.Building
                 return null;
             }
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMask.GetMask(BUILDING_LAYER, ROAD_LAYER, "UI"))) {
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, RAYCAST_RANGE, LayerMasks.Building_Mask | LayerMasks.Road_Mask | LayerMasks.UI_Mask)) {
                 Log.Msg("[UserBuildingSystem] RaycastBuilding hit building {0}", hit.collider.transform.name);
                 return hit.collider;
             } else return null;

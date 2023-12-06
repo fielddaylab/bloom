@@ -39,15 +39,18 @@ namespace Zavala.World {
                 
                 // Green-ness reflects algae percentage
                 float ratio = algaeState.Algae.State[tile.TileIndex].PercentAlgae;
-                Material topMaterial;
+                Material topMaterial, sideMaterial;
                 if (isDeep) {
                     topMaterial = materialAssets.TopDeepMaterial.Find(ratio);
+                    sideMaterial = materialAssets.WaterfallMaterial.Find(ratio);
                 }
                 else {
                     topMaterial = materialAssets.TopMaterial.Find(ratio);
+                    sideMaterial = materialAssets.WaterfallMaterial.Find(ratio);
                 }
 
                 tile.SurfaceRenderer.sharedMaterial = topMaterial;
+                tile.EdgeRenderer.Material = sideMaterial;
             }
         }
     }

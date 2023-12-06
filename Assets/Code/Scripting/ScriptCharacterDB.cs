@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using BeauUtil.Blocks;
@@ -68,7 +68,7 @@ namespace Zavala.Scripting
             }
 
             StringHash32 remappedId = null;
-            for (int i = 0; i < remap.RemapTo.Count(); i++) {
+            for (int i = 0; i < remap.RemapTo.Length; i++) {
                 if (remap.RemapTo[i].Region == (RegionId)regionKey) {
                     remappedId = (remap.RemapTo[i].CharDef).name;
                 }

@@ -23,6 +23,10 @@ namespace Zavala.Debugging {
             if (!TryRaycastBuilding(ray)) {
                 TryRaycastTile(ray);
             }
+
+            for (int i = 0; i < m_StateA.RegionCount; i++) {
+                DebugDraw.AddBounds(m_StateB.RegionBounds[i], (m_StateB.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red, 1, 0, true, -1);
+            }
         }
 
         private bool TryRaycastBuilding(Ray ray) {

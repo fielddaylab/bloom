@@ -463,12 +463,12 @@ MonoBehaviour:
       m_StringHashSource: 
   - LocalTileIndex: 9
     ScriptName:
-      m_Source: region1_export
-      m_HashValue: 2045968951
+      m_Source: region1_export1
+      m_HashValue: 4287377266
     Type: 9
     LocationName:
-      m_Source: location.region1_export.name
-      m_HashValue: 2518012515
+      m_Source: location.region1_export1.name
+      m_HashValue: 2190587602
     CharacterId:
       m_Source: 
       m_HashValue: 0
@@ -654,7 +654,7 @@ MonoBehaviour:
       m_Source: toll_booth_1to5
       m_HashValue: 200563685
     Type: 10
-  EdgeVisualUpdateSet: 1100190020002800
+  EdgeVisualUpdateSet: 110019001f002000270028002f003700
   WaterGroupLocalIndices: 110019001a001b001c001d001e001f002000210022002300270028002a002f003700
   WaterGroups:
   - Offset: 0

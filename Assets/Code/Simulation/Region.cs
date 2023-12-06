@@ -10,6 +10,7 @@ namespace Zavala.Sim {
         public ushort MaxHeight;
         public RegionId Id;
         public UnsafeSpan<ushort> Edges;
+        public UnsafeSpan<ushort> WaterEdges;
         public int Age;
     }
 

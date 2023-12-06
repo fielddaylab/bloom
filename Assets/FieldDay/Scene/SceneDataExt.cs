@@ -97,8 +97,18 @@ namespace FieldDay.Scenes {
         #region Tracking
 
         static private readonly List<SceneDataExt> s_Loaded = new List<SceneDataExt>(4);
-        static private readonly Dictionary<Scene, SceneDataExt> s_LoadedMap = new Dictionary<Scene, SceneDataExt>(32);
+        static private readonly Dictionary<Scene, SceneDataExt> s_LoadedMap = new Dictionary<Scene, SceneDataExt>(32, new SceneEqualityComparer());
         static private readonly Dictionary<string, SceneDataExt> s_LoadedMapByPath = new Dictionary<string, SceneDataExt>(32, StringComparer.Ordinal);
+
+        private sealed class SceneEqualityComparer : EqualityComparer<Scene> {
+            public override bool Equals(Scene x, Scene y) {
+                return x.handle == y.handle;
+            }
+
+            public override int GetHashCode(Scene obj) {
+                return obj.handle;
+            }
+        }
 
         private void OnEnable() {
             s_Loaded.Add(this);

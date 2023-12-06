@@ -26,7 +26,7 @@ namespace Zavala.Rendering
                 if (m_StateD.LeadDestroyIcon == null)
                 {
                     Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-                    if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask(TILE_LAYER)))
+                    if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMasks.HexTile_Mask))
                     {
                         if (hit.collider)
                         {
@@ -38,7 +38,7 @@ namespace Zavala.Rendering
                 else
                 {
                     Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-                    if (!Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask(TILE_LAYER)))
+                    if (!Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMasks.HexTile_Mask))
                     {
                         ClearAllDestroyIcons();
                     }
@@ -48,7 +48,7 @@ namespace Zavala.Rendering
                 {
                     // Reposition the icon over the right tile
                     Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-                    if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask(TILE_LAYER)))
+                    if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMasks.HexTile_Mask))
                     {
                         if (hit.collider)
                         {

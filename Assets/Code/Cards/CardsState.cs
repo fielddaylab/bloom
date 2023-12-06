@@ -32,8 +32,8 @@ namespace Zavala.Cards
     /// </summary>
     public enum PolicyLevel
     {
+        None,
         Low,
-        Med,
         High,
         Alt // Subsidy, Dredge, Etc (determined with level + type)
     }
@@ -128,7 +128,7 @@ namespace Zavala.Cards
             Debug.Log("[CardUtility] converting card: " + cardDef);
             SerializedHash32 cardID = "";
             string header = "";
-            PolicyLevel level = PolicyLevel.Low;
+            PolicyLevel level = PolicyLevel.None;
             PolicyType policyType = PolicyType.RunoffPolicy;
             string imgPath = "";
 

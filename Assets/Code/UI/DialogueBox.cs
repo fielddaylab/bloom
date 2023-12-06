@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using BeauRoutine;
 using BeauRoutine.Extensions;
 using BeauUtil;
@@ -20,6 +20,7 @@ using UnityEngine.UI;
 using UnityEngine.Windows;
 using Zavala.Advisor;
 using Zavala.Cards;
+using Zavala.Input;
 using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.World;
@@ -78,7 +79,10 @@ namespace Zavala.UI {
 
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
-            m_CloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
+            m_CloseButton.onClick.AddListener(() => { 
+                policyState.PolicyCloseButtonClicked?.Invoke();
+                InputUtility.ConsumeButton(InputButton.PrimaryMouse);
+            });
 
             m_LocalHandler = new TagStringEventHandler();
             m_LocalHandler.Register(LeafUtils.Events.Character, (d, o) => {
@@ -204,8 +208,8 @@ namespace Zavala.UI {
 
             PolicyType[] policyTypes = CardsUtility.AdvisorPolicyMap[advisorType];
 
-            for (int i = 0; i < policyTypes.Count(); i++) {
-                if (i == m_PolicySlots.Count()) {
+            for (int i = 0; i < policyTypes.Length; i++) {
+                if (i == m_PolicySlots.Length) {
                     // Defined too many policies for the number of slots!
                     break;
                 }
@@ -290,6 +294,7 @@ namespace Zavala.UI {
 
         private void HandlePolicyCloseClicked() {
             m_TransitionRoutine.Replace(HideRoutine());
+            Input.InteractionUtility.ReleaseDialogueInteraction();
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {

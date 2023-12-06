@@ -450,7 +450,7 @@ namespace Zavala.Editor {
                         Borders = borderMask
                     });
 
-                    if (IsTowardsCamera(borderMask) && (tileInfo.Flags & TerrainFlags.IsWater) != 0) {
+                    if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
                         visualUpdateEdges.Add((ushort) idx);
                     }
                 }

@@ -7,6 +7,7 @@ using BeauUtil;
 using Zavala.Scripting;
 using FieldDay.Scripting;
 using Zavala.Input;
+using System;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -23,28 +24,40 @@ namespace Zavala.World {
         public float CameraMinZoomDist;
         public int ZoomFactor;
 
-        public Routine m_TransitionRoutine;
-        public Transform PanTarget;
+        [NonSerialized] public Routine TransitionRoutine;
+        // public Transform PanTarget;
+        [NonSerialized] public Vector3 PanTargetPoint;
         #endregion // Inspector
     }
 
-    public static class CameraUtility {
+    public static class WorldCameraUtility {
 
         [LeafMember("PanToBuilding")]
         public static void PanCameraToBuilding(StringHash32 id) {
-            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform);
+            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform.position);
         }
 
-        public static void PanCameraToPoint(SimWorldCamera cam, Transform t) {
-            cam.PanTarget = t;
-            cam.m_TransitionRoutine.Replace(PanRoutine(cam));
+        public static void PanCameraToTransform(Transform t) {
+            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), t.position);
+        }
+
+        public static void PanCameraToPoint(SimWorldCamera cam, Vector3 pt) {
+            cam.PanTargetPoint = pt;
+            cam.TransitionRoutine.Replace(PanRoutine(cam)).SetPhase(RoutinePhase.Update);
         }
 
         private static IEnumerator PanRoutine(SimWorldCamera cam) {
-            yield return cam.transform.MoveToWithSpeed(cam.PanTarget.position, cam.CameraMoveSpeed).Ease(Curve.Smooth);
-            cam.PanTarget = null;
+            yield return cam.LookTarget.MoveToWithSpeed(cam.PanTargetPoint, cam.CameraMoveSpeed, Axis.XZ).Ease(Curve.Smooth);
+            // cam.PanTargetPoint;
 
             yield return null;
+        }
+
+        static public void ClampPositionToBounds(ref Vector3 position, SimWorldState world) {
+            Rect r = world.CameraBounds;
+            Vector2 min = r.min, max = r.max;
+            position.x = Mathf.Clamp(position.x, min.x, max.x);
+            position.z = Mathf.Clamp(position.z, min.y, max.y);
         }
     }
 }

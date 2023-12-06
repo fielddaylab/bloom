@@ -281,6 +281,8 @@ MonoBehaviour:
   TopMaterial: {fileID: 11400000, guid: 0787aaccb5e7e464c954254134283b26, type: 2}
   WaterfallMaterial: {fileID: 11400000, guid: f89baba2d595fa34db52df1088109dff, type: 2}
   TopDeepMaterial: {fileID: 11400000, guid: 65367a65ace84be45917d8f00fe6afee, type: 2}
+  WaterfallMesh: {fileID: -7340005787037723973, guid: d39b6e8c515094f40a8316c18003b815, type: 3}
+  WaterfallOffset: {x: 0, y: 0, z: -0.3}
 --- !u!1 &4613536460739364412
 GameObject:
   m_ObjectHideFlags: 0

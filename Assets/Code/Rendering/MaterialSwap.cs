@@ -15,8 +15,10 @@ namespace Zavala.Rendering
 
         #region Unity Callbacks
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             if (m_Renderer && !m_OriginalMat) { m_OriginalMat = m_Renderer.sharedMaterial; }
 
             Game.Events.Deregister(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
