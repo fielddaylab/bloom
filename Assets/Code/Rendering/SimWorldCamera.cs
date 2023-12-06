@@ -24,7 +24,7 @@ namespace Zavala.World {
         public float CameraMinZoomDist;
         public int ZoomFactor;
 
-        [NonSerialized] public Routine m_TransitionRoutine;
+        [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
         [NonSerialized] public Vector3 PanTargetPoint;
         #endregion // Inspector
@@ -43,14 +43,21 @@ namespace Zavala.World {
 
         public static void PanCameraToPoint(SimWorldCamera cam, Vector3 pt) {
             cam.PanTargetPoint = pt;
-            cam.m_TransitionRoutine.Replace(PanRoutine(cam));
+            cam.TransitionRoutine.Replace(PanRoutine(cam)).SetPhase(RoutinePhase.Update);
         }
 
         private static IEnumerator PanRoutine(SimWorldCamera cam) {
-            yield return cam.transform.MoveToWithSpeed(cam.PanTargetPoint, cam.CameraMoveSpeed).Ease(Curve.Smooth);
+            yield return cam.LookTarget.MoveToWithSpeed(cam.PanTargetPoint, cam.CameraMoveSpeed, Axis.XZ).Ease(Curve.Smooth);
             // cam.PanTargetPoint;
 
             yield return null;
+        }
+
+        static public void ClampPositionToBounds(ref Vector3 position, SimWorldState world) {
+            Rect r = world.CameraBounds;
+            Vector2 min = r.min, max = r.max;
+            position.x = Mathf.Clamp(position.x, min.x, max.x);
+            position.z = Mathf.Clamp(position.z, min.y, max.y);
         }
     }
 }

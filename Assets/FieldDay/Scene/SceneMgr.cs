@@ -796,7 +796,7 @@ namespace FieldDay.Scenes {
                             Flags = import.Flags,
                             Type = args.Data.SceneType == SceneType.Persistent ? SceneType.Persistent : import.LoadType,
                             Parent = args.Data,
-                            Tag = import.Tag.IsEmpty ? args.Data.tag : import.Tag,
+                            Tag = import.Tag,
                             ScenePath = import.Path,
                             Queue = args.Queue
                         });

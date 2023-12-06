@@ -965,7 +965,8 @@ MonoBehaviour:
     World: {x: 0, y: 0, z: 0}
   m_LocalOffset: {x: 0, y: 0}
   m_ClampToParentRect: 1
-  m_ParentRectClampOffset: {x: 0, y: 0}
+  m_ParentRectClampOffset: {x: 10, y: 10}
+  m_ClampBehavior: 1
   m_PositionBehavior: 0
   m_UnpinWhenDisabled: 0
 --- !u!114 &747794369880707875
@@ -986,7 +987,9 @@ MonoBehaviour:
   m_InputBehavior: 1
   m_HideOnStart: 1
   m_Pin: {fileID: 5550458269331618506}
+  m_PinTransform: {fileID: 1844829488716484799}
   m_Layout: {fileID: 9011210141298862042}
+  m_LayoutTransform: {fileID: 7113816379204630385}
   m_HeaderBG: {fileID: 7074617533405878257}
   m_HeaderLabel: {fileID: 2741279390908276688}
   m_SubheaderLabel: {fileID: 3823120655293022534}
@@ -1377,8 +1380,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 5}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 8, y: 0}
-  m_SizeDelta: {x: 60, y: 70}
+  m_AnchoredPosition: {x: 20, y: 8}
+  m_SizeDelta: {x: 80, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2199348563533878059
 CanvasRenderer:

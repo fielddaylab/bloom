@@ -25,12 +25,16 @@ namespace Zavala.UI.Info {
             }
 
             if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
-                HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);
-                if (infoPopup != null) {
-                    popupUI.LoadTarget(infoPopup);
-                    World.WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
-                } else if (!EventSystem.current.IsPointerOverGameObject()) {
+                if (EventSystem.current.IsPointerOverGameObject()) {
                     popupUI.Hide();
+                } else {
+                    HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);
+                    if (infoPopup != null) {
+                        popupUI.LoadTarget(infoPopup);
+                        World.WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
+                    } else {
+                        popupUI.Hide();
+                    }
                 }
             }
         }
