@@ -19,19 +19,21 @@ namespace Zavala.Actors {
         }
 
         public override void ProcessWork(float deltaTime) {
-            SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
-
             foreach(var componentGroup in m_Components) {
                 if (componentGroup.ComponentA.HasAdvanced()) {
+                    SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
                     SimPhospohorusUtility.GenerateProportionalPhosphorus(
+                    // SimPhospohorusUtility.GenerateStaticPhosphorus(
                         phosphorus,
                         componentGroup.ComponentC.TileIndex,
                         componentGroup.Primary,
-                        componentGroup.ComponentB.Current,
+                        ref componentGroup.ComponentB.Current,
                         RunoffParams.SittingManureRunoffProportion,
                         RunoffParams.MFertilizerRunoffProportion,
-                        RunoffParams.DFertilizerRunoffProportion
+                        RunoffParams.DFertilizerRunoffProportion,
+                        true
                         );
+                    
                 }
             }
         }

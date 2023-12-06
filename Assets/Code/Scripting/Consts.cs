@@ -44,6 +44,8 @@ namespace Zavala
         static public readonly StringHash32 FarmConnection = "FarmConnection";
         static public readonly StringHash32 CityConnection = "CityConnection";
         static public readonly StringHash32 ExternalImport = "ExternalImport";
+        static public readonly StringHash32 InternalBlimpSent = "InternalBlimpSent";
+        static public readonly StringHash32 InternalBlimpReceived = "InternalBlimpReceived";
     }
 
     static public class GameAlerts

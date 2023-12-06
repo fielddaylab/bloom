@@ -22,8 +22,8 @@ $call CutsceneBegin()
     $call CutsceneClearImages()
 $call CutsceneEnd()
 
-$call ForceDialogueInteraction()
 {@advisorEconHill}      Greetings. You must be the Director.
+$call ForceDialogueInteraction()
 {@advisorEconHill}      I'm here to advise you on economic matters in Knoll County.
 {@advisorEconHill}      As you can see, we are a chunk of blooming real estate.
 {@advisorEconHill}      I'll give you the tour.
@@ -101,13 +101,13 @@ $call Unpause()
 @once
 {@advisorEconHill}      Now that everything is connected, we can turn <i>grain</i> into <i>milk</i> for the <i>city</i>...
 {@advisorEconHill}      But we still need to secure <b>funding</b> for SAGA to continue work in the area.
-$call UnlockCards(SalesTaxPolicy)
 {@advisorEconHill}      I've opened the Sales Tax policy.
+$call UnlockCards(SalesTaxPolicy)
+$call ReleaseDialogueInteraction()
+$call ActivateSim()
 {@advisorEconHill}      That will add to our budget when buyers purchase goods in Knoll County.
 {@advisorEconHill}      But set it too high, and trade may slow down!
 {@advisorEconHill}      I recommend a <b>Low</b> sales tax for now.
-$call ReleaseDialogueInteraction()
-$call ActivateSim()
 
 // :: sittingOmens
 // @trigger        LetSat
@@ -148,7 +148,7 @@ $endif
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(1)
 @forcePolicy    Economy
-$if PolicyIsUnlocked(ImportTaxPolicy)
+$if PolicyIsUnlocked(SalesTaxPolicy)
     {local @advisorEcon}    Here are the economic policies.
 $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.

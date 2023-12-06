@@ -1,12 +1,12 @@
 // Runoff Penalty
 
-::runoff-penalty-low
-@Level		low
+::runoff-penalty-none
+@Level		none
 @PolicyType	RunoffPolicy
 @Path		policy-runoff_0.png
 
-::runoff-penalty-med
-@Level		med
+::runoff-penalty-low
+@Level		low
 @PolicyType	RunoffPolicy
 @Path		policy-runoff_1.png
 

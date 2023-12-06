@@ -121,11 +121,14 @@ namespace Zavala.UI.Info {
                 row.SubsidyRow.Number.SetText((-import).ToStringLookup());
             }
 
+            // Commenting out for now - sales tax is applied to the buyer
+            /*            
             int salesTax = info.TaxRevenue.Sales;
             row.SalesTaxRow.gameObject.SetActive(salesTax > 0);
             if (salesTax > 0) {
                 row.SalesTaxRow.Number.SetText((-salesTax).ToStringLookup());
             }
+            */
 
             int penalties = info.TaxRevenue.Penalties;
             row.PenaltyRow.gameObject.SetActive(penalties > 0);

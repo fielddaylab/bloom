@@ -27,7 +27,7 @@ $endif
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(3)
 @forcePolicy    Economy
-$if PolicyIsUnlocked(ImportTaxPolicy)
+$if PolicyIsUnlocked(SalesTaxPolicy)
 {local @advisorEcon}    Howdy! Here to set up some economic policy?
 $else
 {local @advisorEcon}    Once we have some economic policies you can see me here.
