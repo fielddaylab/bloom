@@ -43,7 +43,7 @@ $if Visited("region4.unlockSkimmers") // band-aid solution for queued "once" ale
     {@advisorEcolWetland}   Well, we have all these trawlers... What if we used them to skim algae off the lakes?
     {@advisorEconWetland}   Well, it could be costly... And it won't remove the underlying phosphorus.
     {@advisorEconWetland}   For that we'd need expensive dredgers.
-    {@advisorEconWetland}   But it could help mitigate the worst effects for now. It's up to you, Director.
+    {@advisorEcolWetland}   But it could help mitigate the worst effects for now. It's up to you, Director.
     $call UnlockCards(SkimmingPolicy)
 $else
     {local @advisorEcon}    Maybe those newfangled skimmers can help?
