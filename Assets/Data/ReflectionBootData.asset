@@ -113,9 +113,21 @@ MonoBehaviour:
     LookupInherit: 0
     Assemblies:
     - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 2
+      TypeCount: 6
     Types:
     - TypeName: Zavala.Debugging.SimGridDebugger
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Economy.BudgetUtility
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Economy.ShopState
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Cards.CardsUtility
       Self: 0
       MemberCount: 1
       OverloadCount: 0
@@ -123,10 +135,22 @@ MonoBehaviour:
       Self: 0
       MemberCount: 1
       OverloadCount: 0
+    - TypeName: Zavala.Advisor.AdvisorUtility
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
     Members:
     - MemberName: Debug_CreateMenu
       Type: 8
+    - MemberName: BudgetDebugMenu
+      Type: 8
+    - MemberName: ShopItemUnlockDebugMenu
+      Type: 8
+    - MemberName: PolicyUnlockDebugMenu
+      Type: 8
     - MemberName: RegionUnlockDebugMenu
+      Type: 8
+    - MemberName: AdvisorModuleUnlockUtility
       Type: 8
     OverloadedMethods: []
     TypeReferences: []

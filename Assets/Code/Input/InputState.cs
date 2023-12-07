@@ -54,6 +54,7 @@ namespace Zavala.Input {
         Right = 0x08,
         Up = 0x10,
         Down = 0x20,
+        MiddleMouse = 0x40,
 
         Pause = 0x100,
         FastForward = 0x200,
