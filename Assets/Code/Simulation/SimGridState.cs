@@ -37,6 +37,7 @@ namespace Zavala.Sim {
         [NonSerialized] public uint RegionCount;
         [NonSerialized] public uint WaterGroupCount;
         [NonSerialized] public SimArena<ushort> RegionEdgeArena;
+        [NonSerialized] public SimArena<TileAdjacencyMask> RegionEdgeDirectionArena;
 
         [NonSerialized] public ushort CurrRegionIndex;
 
@@ -57,6 +58,7 @@ namespace Zavala.Sim {
             Regions = SimBuffer.Create<RegionInfo>(RegionInfo.MaxRegions);
             WaterGroups = SimBuffer.Create<WaterGroupInfo>(WaterGroupInfo.MaxGroups);
             RegionEdgeArena = SimArena.Create<ushort>(RegionInfo.MaxRegions * 64);
+            RegionEdgeDirectionArena = SimArena.Create<TileAdjacencyMask>(RegionInfo.MaxRegions * 64);
             RegionCount = 0;
             WaterGroupCount = 0;
 
@@ -124,10 +126,14 @@ namespace Zavala.Sim {
             }
 
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
+            
             regionInfo.Edges = grid.RegionEdgeArena.Alloc((uint) asset.Borders.Length);
+            regionInfo.EdgeDirections = grid.RegionEdgeDirectionArena.Alloc((uint) asset.Borders.Length);
             for(int i = 0; i < regionInfo.Edges.Length; i++) {
                 regionInfo.Edges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.Borders[i].LocalTileIndex);
+                regionInfo.EdgeDirections[i] = asset.Borders[i].Borders;
             }
+
             regionInfo.WaterEdges = grid.RegionEdgeArena.Alloc((uint) asset.EdgeVisualUpdateSet.Length);
             for(int i = 0; i < regionInfo.WaterEdges.Length; i++) {
                 regionInfo.WaterEdges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.EdgeVisualUpdateSet[i]);
@@ -210,6 +216,11 @@ namespace Zavala.Sim {
                     });
                 }
             }
+
+            world.OutlineMeshes[regionIndex] = new Mesh();
+            world.ThickOutlineMeshes[regionIndex] = new Mesh();
+
+            Game.SharedState.Get<BorderRenderState>().RegionQueue.PushBack(regionIndex);
 
             // load script
             if (asset.LeafScript != null) {
