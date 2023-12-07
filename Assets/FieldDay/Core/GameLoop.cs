@@ -121,6 +121,16 @@ namespace FieldDay {
         /// </summary>
         static public readonly ActionEvent OnShutdown = new ActionEvent(16);
 
+        /// <summary>
+        /// Invoked when the pause state is changed.
+        /// </summary>
+        static public readonly CastableEvent<bool> OnPauseStateChanged = new CastableEvent<bool>(4);
+
+        /// <summary>
+        /// Invoked when the focus state is changed.
+        /// </summary>
+        static public readonly CastableEvent<bool> OnFocusStateChanged = new CastableEvent<bool>(4);
+
         #endregion // Global Events
 
         static private readonly WaitForEndOfFrame s_EndOfFrame = new WaitForEndOfFrame();
@@ -148,6 +158,8 @@ namespace FieldDay {
 
         // pausing
         static private bool s_DebugPause = false;
+        static private bool s_AppFocusState = false;
+        static private bool s_AppPauseState = false;
 
         // profiling
         static private PhaseTiming s_TimeProfiling;
@@ -334,6 +346,8 @@ namespace FieldDay {
             OnUnscaledLateUpdate.Clear();
             OnUnscaledUpdate.Clear();
             OnUpdate.Clear();
+            OnPauseStateChanged.Clear();
+            OnFocusStateChanged.Clear();
 
             // clearing all callback queues
             s_AfterLateUpdateQueue.Clear();
@@ -499,6 +513,16 @@ namespace FieldDay {
                 yield return s_EndOfFrame;
                 OnEndOfFrame();
             }
+        }
+
+        private void OnApplicationFocus(bool focus) {
+            s_AppFocusState = focus;
+            OnFocusStateChanged.Invoke(focus);
+        }
+
+        private void OnApplicationPause(bool pause) {
+            s_AppPauseState = pause;
+            OnPauseStateChanged.Invoke(pause);
         }
 
         #endregion // Unity Events
@@ -736,7 +760,7 @@ namespace FieldDay {
         /// Returns if the game loop is paused.
         /// </summary>
         static public bool IsPaused() {
-            return s_DebugPause;
+            return s_DebugPause || s_AppPauseState;
         }
 
         /// <summary>
@@ -744,6 +768,13 @@ namespace FieldDay {
         /// </summary>
         static internal void SetDebugPause(bool paused) {
             s_DebugPause = paused;
+        }
+
+        /// <summary>
+        /// Returns if the application is focused.
+        /// </summary>
+        static public bool IsFocused() {
+            return s_AppFocusState;
         }
 
         #endregion // Pausing

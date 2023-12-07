@@ -26,6 +26,7 @@ namespace Zavala.Input {
 
             CheckMouse(ref buttons, InputButton.PrimaryMouse, 0);
             CheckMouse(ref buttons, InputButton.RightMouse, 1);
+            CheckMouse(ref buttons, InputButton.MiddleMouse, 2);
 
             CheckKeyboard(ref buttons, InputButton.Left, KeyCode.LeftArrow);
             CheckKeyboard(ref buttons, InputButton.Left, KeyCode.A);
