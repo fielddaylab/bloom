@@ -38,9 +38,9 @@ namespace Zavala.Sim {
         [NonSerialized] public uint WaterGroupCount;
         [NonSerialized] public SimArena<ushort> RegionEdgeArena;
 
-        [NonSerialized] public uint CurrRegionIndex;
+        [NonSerialized] public ushort CurrRegionIndex;
 
-        [NonSerialized] public HashSet<uint> UpdatedRegions = new HashSet<uint>();
+        [NonSerialized] public HashSet<ushort> UpdatedRegions = new HashSet<ushort>();
 
         [NonSerialized] public int GlobalMaxHeight; // the highest tile height across all regions
 
@@ -299,11 +299,9 @@ namespace Zavala.Sim {
         /// Destroys a building with the hit collider
         /// </summary>
         /// <param name="hit">Collider hit by a raycast</param>
-        public static void DestroyBuildingFromHit(SimGridState grid, BlueprintState bpState, GameObject hitObj)
+        public static void DestroyBuildingFromHit(SimGridState grid, BlueprintState bpState, GameObject hitObj, OccupiesTile ot)
         {
             SimWorldUtility.TryGetTileIndexFromWorld(hitObj.transform.position, out int tileIndex);
-
-            OccupiesTile ot = hitObj.GetComponent<OccupiesTile>();
 
             // check if obj is staging/pending or already built
             int costToRemove = 0;

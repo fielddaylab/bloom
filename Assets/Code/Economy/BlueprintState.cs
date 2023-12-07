@@ -64,13 +64,6 @@ namespace Zavala.Economy
         public RingBuffer<ActionCommit> Chain;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct DefaultVertexFormat
-    {
-        [VertexAttr(VertexAttribute.Position)] public Vector3 Position;
-        [VertexAttr(VertexAttribute.Color)] public Color32 Color;
-    }
-
     public class BlueprintState : SharedStateComponent, IScenePreload, IRegistrationCallbacks
     {
         [NonSerialized] public bool IsActive;           // Whether blueprint mode is engaged
@@ -80,9 +73,10 @@ namespace Zavala.Economy
 
         [NonSerialized] public DynamicMeshFilter OverlayFilter;
         [NonSerialized] public MeshRenderer OverlayRenderer;
-        [NonSerialized] public MeshData16<DefaultVertexFormat> OverlayData;
+        [NonSerialized] public MeshData16<TileVertexFormat> OverlayData;
         [NonSerialized] public RingBuffer<int> OverlayIdxs; // tile indices of non-buildables
         [NonSerialized] public RingBuffer<int> OverlayAdjIdxs; // temp list for gathering tiles adjacent to sources/destinations
+        [NonSerialized] public ushort LockedRegion;
 
         #region Inspector
 
@@ -124,7 +118,7 @@ namespace Zavala.Economy
         {
             OverlayFilter = Instantiate(m_OverlayPrefab, Vector3.zero, Quaternion.identity).GetComponent<DynamicMeshFilter>();
             OverlayRenderer = OverlayFilter.GetComponent<MeshRenderer>();
-            OverlayData = new MeshData16<DefaultVertexFormat>();
+            OverlayData = new MeshData16<TileVertexFormat>(256);
         }
 
         public void OnDeregister()
@@ -303,6 +297,9 @@ namespace Zavala.Economy
 
             network.UpdateNeeded = true;
 
+            MarketData market = Game.SharedState.Get<MarketData>();
+            market.UpdatePrioritiesNow = true;
+
             // Exit build state
             blueprintState.UI.OnBuildConfirmClicked();
         }
@@ -417,13 +414,12 @@ namespace Zavala.Economy
             bpState.OverlayRenderer.enabled = true;
             bpState.OverlayData.Clear();
 
-            ushort iteration = 0;
             // Render the mesh for all blocked tiles in the current region
-            foreach(int index in grid.HexSize)
+            foreach(int index in grid.Regions[(int) grid.CurrRegionIndex].GridArea)
             {
                 if (btState.BlockedTileBuffer[index] == 1 && grid.CurrRegionIndex == grid.Terrain.Info[index].RegionIndex)
                 {
-                    AddTileToOverlayMesh(grid, world, index, ref iteration, ref bpState.OverlayData);
+                    AddTileToOverlayMesh(grid, world, index, ref bpState.OverlayData);
                 }
             }
 
@@ -439,49 +435,13 @@ namespace Zavala.Economy
 
         #region Helpers
 
-        private static void AddTileToOverlayMesh(SimGridState grid, SimWorldState world, int tileIndex, ref ushort iteration, ref MeshData16<DefaultVertexFormat> overlayData)
+        private static void AddTileToOverlayMesh(SimGridState grid, SimWorldState world, int tileIndex, ref MeshData16<TileVertexFormat> overlayData)
         {
             // Generate the mesh overlay
             Vector3 heightOffset = new Vector3(0, 0, 0);
             Vector3 centerPos = HexVector.ToWorld(tileIndex, grid.Terrain.Info[tileIndex].Height, world.WorldSpace) + heightOffset;
-            //float hexWidth = world.Scale.x * 0.6f;
-            float hexHeight = world.Scale.z * 0.62f; // experimentally derived; not sure why it's not 1
-            // float hexDepth = world.Scale.y;
 
-            DefaultVertexFormat a, b, c, d, e, f, g;
-            a.Color = b.Color = c.Color = d.Color = e.Color = f.Color = g.Color = Color.white;
-
-            a.Position = centerPos;
-            b.Position = centerPos + new Vector3(hexHeight, 0, 0);
-            c.Position = centerPos + new Vector3(hexHeight * cosDim, 0, -hexHeight * sinDim);
-            d.Position = centerPos + new Vector3(-hexHeight * cosDim, 0, -hexHeight * sinDim);
-            e.Position = centerPos + new Vector3(-hexHeight, 0, 0);
-            f.Position = centerPos + new Vector3(-hexHeight * cosDim, 0, hexHeight * sinDim);
-            g.Position = centerPos + new Vector3(hexHeight * cosDim, 0, hexHeight * sinDim);
-
-            overlayData.AddVertex(a);
-            overlayData.AddVertex(b);
-            overlayData.AddVertex(c);
-            overlayData.AddVertex(d);
-            overlayData.AddVertex(e);
-            overlayData.AddVertex(f);
-            overlayData.AddVertex(g);
-
-            ushort a_index = (ushort)(0 + 7 * iteration);
-            ushort b_index = (ushort)(a_index + 1);
-            ushort c_index = (ushort)(a_index + 2);
-            ushort d_index = (ushort)(a_index + 3);
-            ushort e_index = (ushort)(a_index + 4);
-            ushort f_index = (ushort)(a_index + 5);
-            ushort g_index = (ushort)(a_index + 6);
-            overlayData.AddIndices(a_index, b_index, c_index);
-            overlayData.AddIndices(a_index, c_index, d_index);
-            overlayData.AddIndices(a_index, d_index, e_index);
-            overlayData.AddIndices(a_index, e_index, f_index);
-            overlayData.AddIndices(a_index, f_index, g_index);
-            overlayData.AddIndices(a_index, g_index, b_index);
-
-            iteration++;
+            TileRendering.GenerateTileMeshData(centerPos, 1, Color.white, overlayData);
         }
 
         private static void CancelPendingBuildCommits(BlueprintState blueprintState, ShopState shop, SimGridState grid)

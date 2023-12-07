@@ -73,7 +73,12 @@ namespace Zavala.World {
                 Vector3 moveVec = cameraRot * Geom.SwizzleYZ(flatMove) + worldMove;
 
                 Vector3 pos = m_StateA.LookTarget.position + moveVec;
-                WorldCameraUtility.ClampPositionToBounds(ref pos, m_StateC);
+
+                if (camInput.LockRegion != Tile.InvalidIndex16) {
+                    WorldCameraUtility.ClampPositionToBounds(ref pos, camInput.LockedBounds);
+                } else {
+                    WorldCameraUtility.ClampPositionToBounds(ref pos, m_StateC.CameraBounds);
+                }
 
                 m_StateA.LookTarget.position = pos;
                 m_StateA.TransitionRoutine.Stop();

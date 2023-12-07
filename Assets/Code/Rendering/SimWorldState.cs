@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using Zavala.Economy;
 using Zavala.Input;
+using Zavala.Rendering;
 using Zavala.Scripting;
 using Zavala.Sim;
 
@@ -24,8 +25,6 @@ namespace Zavala.World {
         {
             public ushort TileIndexA;
             public ushort TileIndexB;
-            // public ushort RegionIndexA;
-            // public ushort RegionIndexB;
             public StringHash32 Id;
             public T Data;
         }
@@ -35,6 +34,7 @@ namespace Zavala.World {
         [Header("World Scale")]
         public Vector3 Scale = Vector3.one;
         public Vector3 Offset;
+        public float TileRadius = 0.4425f;
 
         [Header("Tile Spawning")]
         public TileInstance DefaultWaterPrefab;
@@ -105,6 +105,8 @@ namespace Zavala.World {
 
             ObstructionsWorkList = new List<GameObject>();
             ExportRevealRoutine = new Routine();
+
+            TileRendering.SetTileRadius(TileRadius);
         }
 
 #if UNITY_EDITOR

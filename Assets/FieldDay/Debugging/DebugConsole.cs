@@ -284,6 +284,7 @@ namespace FieldDay.Debugging {
                     m_DebugMenus.GotoMenu(s_RootMenu);
                     m_MenuUIInitialized = true;
                 }
+                Cursor.visible = true;
                 SetPaused(true);
             } else {
                 m_DebugMenus.gameObject.SetActive(false);

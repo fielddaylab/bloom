@@ -9,8 +9,10 @@ namespace FieldDay.Assets {
     /// Asset manager.
     /// </summary>
     public sealed class AssetMgr {
-        private readonly Dictionary<StringHash32, UnityEngine.Object> m_NamedAssetLookup = new Dictionary<StringHash32, Object>(1024, CompareUtils.DefaultEquals<StringHash32>());
+        private readonly Dictionary<StringHash32, object> m_NamedAssetLookup = new Dictionary<StringHash32, object>(1024, CompareUtils.DefaultEquals<StringHash32>());
         private readonly IGlobalAsset[] m_GlobalAssetTable = new IGlobalAsset[GlobalAssetIndex.Capacity];
+        private readonly uint[] m_GlobalAssetRefCount = new uint[GlobalAssetIndex.Capacity];
+        private readonly HashSet<IGlobalAsset> m_GlobalAssetSet = new HashSet<IGlobalAsset>(64, CompareUtils.DefaultEquals<IGlobalAsset>());
 
         #region Events
 
@@ -19,5 +21,17 @@ namespace FieldDay.Assets {
         }
 
         #endregion // Events
+
+        #region Registration
+
+        public void Register(IGlobalAsset globalAsset) {
+
+        }
+
+        #endregion // Registration
+
+        #region Lookup
+
+        #endregion // Lookup
     }
 }

@@ -67,7 +67,7 @@ namespace Zavala.UI.Info {
         protected override void Awake() {
             base.Awake();
 
-            Game.Events.Register(GameEvents.MarketCycleTickCompleted, OnMarketTickCompleted);
+            Game.Events.Register(GameEvents.MarketPrioritiesRebuilt, OnMarketPrioritiesUpdated);
             Game.SharedState.Get<RoadNetwork>().OnConnectionsReevaluated.Register(OnRoadNetworkRebuilt);
         }
 
@@ -274,7 +274,7 @@ namespace Zavala.UI.Info {
             m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
         }
 
-        private void OnMarketTickCompleted() {
+        private void OnMarketPrioritiesUpdated() {
             UpdateData(false);
         }
 

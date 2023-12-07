@@ -16,6 +16,7 @@ namespace Zavala.Economy
     public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks
     {
         public SimTimer MarketTimer;
+        public bool UpdatePrioritiesNow;
 
         public RingBuffer<ResourceRequester> Buyers;
         public RingBuffer<ResourceSupplier> Suppliers;

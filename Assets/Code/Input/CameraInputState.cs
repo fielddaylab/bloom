@@ -9,6 +9,9 @@ namespace Zavala.Input {
         [NonSerialized] public Plane DragPlane;
         [NonSerialized] public Vector2 DragOriginViewport;
         [NonSerialized] public Vector3 DragOriginWorld;
+
+        [NonSerialized] public ushort LockRegion = Tile.InvalidIndex16;
+        [NonSerialized] public Rect LockedBounds;
     }
 
     public enum CameraInputMode {

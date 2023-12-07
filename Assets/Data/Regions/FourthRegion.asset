@@ -343,7 +343,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 258
+    Flags: 290
     Height: 250
   - RegionIndex: 65535
     Category: 0
@@ -1023,7 +1023,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 258
+    Flags: 290
     Height: 300
   - RegionIndex: 65535
     Category: 0
@@ -1435,18 +1435,102 @@ MonoBehaviour:
       m_HashValue: 0
     Modifier: 0
   Borders:
-  - LocalTileIndex: 8
-    Borders:
-      Value: 78
-  - LocalTileIndex: 9
-    Borders:
-      Value: 4
-  - LocalTileIndex: 10
-    Borders:
-      Value: 14
-  - LocalTileIndex: 11
+  - LocalTileIndex: 136
     Borders:
       Value: 28
+  - LocalTileIndex: 150
+    Borders:
+      Value: 56
+  - LocalTileIndex: 149
+    Borders:
+      Value: 16
+  - LocalTileIndex: 163
+    Borders:
+      Value: 56
+  - LocalTileIndex: 176
+    Borders:
+      Value: 48
+  - LocalTileIndex: 175
+    Borders:
+      Value: 48
+  - LocalTileIndex: 243
+    Borders:
+      Value: 120
+  - LocalTileIndex: 188
+    Borders:
+      Value: 48
+  - LocalTileIndex: 229
+    Borders:
+      Value: 24
+  - LocalTileIndex: 215
+    Borders:
+      Value: 24
+  - LocalTileIndex: 242
+    Borders:
+      Value: 32
+  - LocalTileIndex: 201
+    Borders:
+      Value: 24
+  - LocalTileIndex: 241
+    Borders:
+      Value: 112
+  - LocalTileIndex: 187
+    Borders:
+      Value: 16
+  - LocalTileIndex: 240
+    Borders:
+      Value: 98
+  - LocalTileIndex: 226
+    Borders:
+      Value: 64
+  - LocalTileIndex: 211
+    Borders:
+      Value: 98
+  - LocalTileIndex: 197
+    Borders:
+      Value: 64
+  - LocalTileIndex: 196
+    Borders:
+      Value: 98
+  - LocalTileIndex: 182
+    Borders:
+      Value: 66
+  - LocalTileIndex: 168
+    Borders:
+      Value: 66
+  - LocalTileIndex: 154
+    Borders:
+      Value: 66
+  - LocalTileIndex: 140
+    Borders:
+      Value: 66
+  - LocalTileIndex: 126
+    Borders:
+      Value: 66
+  - LocalTileIndex: 112
+    Borders:
+      Value: 66
+  - LocalTileIndex: 98
+    Borders:
+      Value: 66
+  - LocalTileIndex: 84
+    Borders:
+      Value: 70
+  - LocalTileIndex: 71
+    Borders:
+      Value: 2
+  - LocalTileIndex: 57
+    Borders:
+      Value: 66
+  - LocalTileIndex: 43
+    Borders:
+      Value: 70
+  - LocalTileIndex: 44
+    Borders:
+      Value: 2
+  - LocalTileIndex: 30
+    Borders:
+      Value: 70
   - LocalTileIndex: 17
     Borders:
       Value: 6
@@ -1462,132 +1546,48 @@ MonoBehaviour:
   - LocalTileIndex: 21
     Borders:
       Value: 4
+  - LocalTileIndex: 8
+    Borders:
+      Value: 78
   - LocalTileIndex: 22
     Borders:
       Value: 2
-  - LocalTileIndex: 25
+  - LocalTileIndex: 9
     Borders:
-      Value: 56
-  - LocalTileIndex: 30
-    Borders:
-      Value: 70
+      Value: 4
   - LocalTileIndex: 37
     Borders:
       Value: 16
-  - LocalTileIndex: 38
-    Borders:
-      Value: 48
-  - LocalTileIndex: 43
-    Borders:
-      Value: 70
-  - LocalTileIndex: 44
-    Borders:
-      Value: 2
   - LocalTileIndex: 51
     Borders:
       Value: 24
-  - LocalTileIndex: 57
+  - LocalTileIndex: 10
     Borders:
-      Value: 66
+      Value: 14
   - LocalTileIndex: 65
     Borders:
       Value: 24
-  - LocalTileIndex: 71
+  - LocalTileIndex: 38
     Borders:
-      Value: 2
+      Value: 48
+  - LocalTileIndex: 11
+    Borders:
+      Value: 28
+  - LocalTileIndex: 25
+    Borders:
+      Value: 56
   - LocalTileIndex: 79
     Borders:
       Value: 24
-  - LocalTileIndex: 84
-    Borders:
-      Value: 70
   - LocalTileIndex: 93
     Borders:
       Value: 24
-  - LocalTileIndex: 98
-    Borders:
-      Value: 66
   - LocalTileIndex: 107
     Borders:
       Value: 24
-  - LocalTileIndex: 112
-    Borders:
-      Value: 66
   - LocalTileIndex: 121
     Borders:
       Value: 8
-  - LocalTileIndex: 126
-    Borders:
-      Value: 66
-  - LocalTileIndex: 136
-    Borders:
-      Value: 28
-  - LocalTileIndex: 140
-    Borders:
-      Value: 66
-  - LocalTileIndex: 149
-    Borders:
-      Value: 16
-  - LocalTileIndex: 150
-    Borders:
-      Value: 56
-  - LocalTileIndex: 154
-    Borders:
-      Value: 66
-  - LocalTileIndex: 163
-    Borders:
-      Value: 56
-  - LocalTileIndex: 168
-    Borders:
-      Value: 66
-  - LocalTileIndex: 175
-    Borders:
-      Value: 48
-  - LocalTileIndex: 176
-    Borders:
-      Value: 48
-  - LocalTileIndex: 182
-    Borders:
-      Value: 66
-  - LocalTileIndex: 187
-    Borders:
-      Value: 16
-  - LocalTileIndex: 188
-    Borders:
-      Value: 48
-  - LocalTileIndex: 196
-    Borders:
-      Value: 98
-  - LocalTileIndex: 197
-    Borders:
-      Value: 64
-  - LocalTileIndex: 201
-    Borders:
-      Value: 24
-  - LocalTileIndex: 211
-    Borders:
-      Value: 98
-  - LocalTileIndex: 215
-    Borders:
-      Value: 24
-  - LocalTileIndex: 226
-    Borders:
-      Value: 64
-  - LocalTileIndex: 229
-    Borders:
-      Value: 24
-  - LocalTileIndex: 240
-    Borders:
-      Value: 98
-  - LocalTileIndex: 241
-    Borders:
-      Value: 112
-  - LocalTileIndex: 242
-    Borders:
-      Value: 32
-  - LocalTileIndex: 243
-    Borders:
-      Value: 120
   Spanners:
   - LocalTileIndex: 65
     ScriptName:

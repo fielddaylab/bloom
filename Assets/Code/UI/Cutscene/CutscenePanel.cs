@@ -206,7 +206,9 @@ namespace Zavala.UI {
                     obj.gameObject.SetActive(false);
                 }
 
-                SimTimeUtility.Resume(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime);
+                if (!Game.IsShuttingDown) {
+                    SimTimeUtility.Resume(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime);
+                }
             }
 
             Canvas.enabled = false;

@@ -41,6 +41,8 @@ namespace Zavala.Economy {
             RoadNetwork network = ZavalaGame.SharedState.Get<RoadNetwork>();
             network.Roads.Info[TileA.TileIndex].FlowMask[AToBDirection] = true;
             network.Roads.Info[TileB.TileIndex].FlowMask[AToBDirection.Reverse()] = true;
+            network.Roads.Info[TileA.TileIndex].PreserveFlow = AToBDirection;
+            network.Roads.Info[TileB.TileIndex].PreserveFlow = AToBDirection.Reverse();
         }
     }
 

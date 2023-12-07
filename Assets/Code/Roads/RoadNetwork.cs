@@ -114,6 +114,7 @@ namespace Zavala.Roads
         public TileDirection ForwardStagingDir; // The direction leading to the next road segment when staging (when rewinding, this is used to undo forward step)
         public ushort RegionIndex; // region identifier. used as a mask for sim updates (e.g. update region 1, update region 2, etc)
         public RoadFlags Flags;
+        public TileDirection PreserveFlow;
     }
 
     /// <summary>
@@ -126,6 +127,7 @@ namespace Zavala.Roads
         IsRoad = 0x02, // roads
         IsSource = 0x04, // solely for sources
         IsDestination = 0x08, // solely for destinations
+        IsTollbooth = 0x10, // solely for tollbooths
     
         IsConnectionEndpoint = IsSource | IsDestination
     }
@@ -408,6 +410,9 @@ namespace Zavala.Roads
 
             ref RoadTileInfo centerTileInfo = ref network.Roads.Info[tileIndex];
             centerTileInfo.FlowMask.Clear();
+            if (centerTileInfo.PreserveFlow != 0) {
+                centerTileInfo.FlowMask |= centerTileInfo.PreserveFlow;
+            }
             centerTileInfo.Flags &= ~(RoadFlags.IsRoad | RoadFlags.IsAnchor);
 
             network.UpdateNeeded = true;

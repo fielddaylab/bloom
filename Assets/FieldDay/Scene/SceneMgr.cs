@@ -147,6 +147,7 @@ namespace FieldDay.Scenes {
 
         private readonly WorkSlicer.StepOperation CachedUpdateStep;
         private float m_UpdateStepTimeSlice = 2;
+        private Camera m_DummyCamera = null;
 
         // operation slots
         private OperationSlot<LoadSceneArgs> m_CurrentLoadOperation;
@@ -188,6 +189,13 @@ namespace FieldDay.Scenes {
                 }
                 m_UpdateStepTimeSlice = value;
             }
+        }
+
+        /// <summary>
+        /// Fallback camera for rendering.
+        /// </summary>
+        public Camera FallbackCamera {
+            get { return m_DummyCamera; }
         }
 
         #region Checks
@@ -416,7 +424,11 @@ namespace FieldDay.Scenes {
 
             // need to ensure we still have a scene reamining when unloading,
             // even if it's just an empty dummy scene
-            SceneManager.CreateScene("__DummyScene");
+            Scene dummyScene = SceneManager.CreateScene("__DummyScene");
+
+            m_DummyCamera = new GameObject("__DummyCamera").AddComponent<Camera>();
+            SceneManager.MoveGameObjectToScene(m_DummyCamera.gameObject, dummyScene);
+            m_DummyCamera.enabled = false;
         }
 
         internal void Update() {
