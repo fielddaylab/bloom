@@ -54,6 +54,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   IsExternal: 0
+  Pending: 0
 --- !u!114 &7207750407103898590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Produces:
-    Manure: 1
+    Manure: 0
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0
@@ -381,6 +382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   IsExternal: 0
+  Pending: 0
 --- !u!114 &7291294420475072054
 MonoBehaviour:
   m_ObjectHideFlags: 0

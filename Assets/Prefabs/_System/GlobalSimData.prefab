@@ -307,7 +307,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93bf03c46f3263743be20e0f9e6d4558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AlgaePrefab: {fileID: 8417343884172520992, guid: a6ca5fd06c732a4479679e9c420c08e6, type: 3}
 --- !u!114 &7708306960153739436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,14 +500,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnlockGroups:
-  - UnlockDelay: 0
+  - UnlockDelay: 20
     UnlockConditions:
-    - Type: 6
-      ChecksRegions: 00000000
-      Scope: 20
+    - Type: 7
+      ChecksRegions: 
+      Scope: 0
       TargetRunoff:
-        Below: 1
-        Value: 1.1
+        Below: 0
+        Value: 0
       TargetCFertilizer:
         Below: 0
         Value: 0
@@ -532,10 +531,10 @@ MonoBehaviour:
         Value: 0
       TargetAge:
         Below: 0
-        Value: 25
-      NodeTitle: 
+        Value: 0
+      NodeTitle: region1.specialDelivery
     RegionIndexUnlocks: 01000000
-  - UnlockDelay: 5
+  - UnlockDelay: 15
     UnlockConditions:
     - Type: 6
       ChecksRegions: 01000000
@@ -566,7 +565,7 @@ MonoBehaviour:
         Value: 0
       TargetAge:
         Below: 0
-        Value: 20
+        Value: 25
       NodeTitle: 
     - Type: 7
       ChecksRegions: 00000000
@@ -600,7 +599,7 @@ MonoBehaviour:
         Value: 20
       NodeTitle: region1.discoverFirstBloom
     RegionIndexUnlocks: 02000000
-  - UnlockDelay: 0
+  - UnlockDelay: 10
     UnlockConditions:
     - Type: 6
       ChecksRegions: 02000000
@@ -631,7 +630,7 @@ MonoBehaviour:
         Value: 0
       TargetAge:
         Below: 0
-        Value: 20
+        Value: 15
       NodeTitle: 
     - Type: 7
       ChecksRegions: 02000000
@@ -665,7 +664,7 @@ MonoBehaviour:
         Value: 20
       NodeTitle: region2.unlockImportTax
     RegionIndexUnlocks: 03000000
-  - UnlockDelay: 10
+  - UnlockDelay: 15
     UnlockConditions:
     - Type: 7
       ChecksRegions: 03000000

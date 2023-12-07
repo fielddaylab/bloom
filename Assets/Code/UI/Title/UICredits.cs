@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using BeauRoutine;
 using BeauRoutine.Extensions;
 
 namespace Zavala.UI

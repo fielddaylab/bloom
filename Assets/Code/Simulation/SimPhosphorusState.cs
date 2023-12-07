@@ -1,9 +1,7 @@
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.SharedState;
-using FieldDay.Systems;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Actors;
 using Zavala.Data;
@@ -95,7 +93,7 @@ namespace Zavala.Sim
             state.HistoryPerRegion[regionIndex].AddPending(phosphorusDelta);
         }
 
-        static public void GenerateProportionalPhosphorus(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator generator, ResourceBlock resources, int manureMod, int mFertMod, int dFertMod) {
+        static public void GenerateProportionalPhosphorus(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator generator, ref ResourceBlock resources, int manureMod, int mFertMod, int dFertMod, bool consume) {
             int index = tileIndex;
 
             int totalToAdd = generator.Amount * (
@@ -103,9 +101,12 @@ namespace Zavala.Sim
                 resources.MFertilizer * mFertMod +
                 resources.DFertilizer * dFertMod
                 );
-
+            if (consume && resources.PhosphorusCount > RunoffParams.RunoffConsumeFertilizerThreshold) {
+                ResourceBlock.GatherPhosphorusPrioritized(resources, totalToAdd, out ResourceBlock outBlock);
+                resources -= outBlock;
+            }
             AddPhosphorus(phosphorus, index, totalToAdd);
-            generator.AmountProducedLastTick = totalToAdd;
+            generator.AmountProducedLastTick = totalToAdd;  
         }
     }
 }

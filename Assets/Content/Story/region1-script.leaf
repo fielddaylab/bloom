@@ -7,28 +7,27 @@ $call Pause()
 $call PauseAlertType("ExcessRunoff")
 
 $call CutsceneBegin()
-$call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
-$call CutsceneNextImage()
-You have become the regional Director of the Sustainable Agricultural Growth Administration - SAGA.
-{wait 1}
-$call CutsceneClearText()
-$call CutsceneNextImage()
-{wait 1}
-$call CutsceneClearText()
-$call CutsceneNextImage()
-Your first assignment - Knoll County. Good luck.
-{wait 1}
-$call CutsceneClearText()
-$call CutsceneClearImages()
+    $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
+    $call CutsceneNextImage()
+    You have become the regional Director of the Sustainable Agricultural Growth Administration - SAGA.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    Your first assignment - Knoll County. Good luck.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneClearImages()
 $call CutsceneEnd()
 
-$call ForceDialogueInteraction()
 {@advisorEconHill}      Greetings. You must be the Director.
+$call ForceDialogueInteraction()
 {@advisorEconHill}      I'm here to advise you on economic matters in Knoll County.
 {@advisorEconHill}      As you can see, we are a chunk of blooming real estate.
 {@advisorEconHill}      I'll give you the tour.
 $call PanToBuilding("region1_city1")
-// TODO: add system for translating tile names ("region1_city1") to localized display names ("Oakvale")
 {@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
@@ -71,7 +70,9 @@ $else
     {@advisorEconHill}      Now Bertram can buy Henreitta's <i>grain</i> to produce <i>milk</i>.
     {@advisorEconHill}      But who buys the <i>milk</i>, you ask? The fine people of Pendleton Hills, of course!
     $call PanToBuilding("region1_city1")
-    {@advisorEconHill}      Draw up another <i>Road</i> connecting the CAFO to the City.
+    $if !intro:citiesConnected
+        {@advisorEconHill}      Draw up another <i>Road</i> connecting the CAFO to the City.
+    $endif
 $endif
 $call Unpause()
 
@@ -82,8 +83,7 @@ $call Pause()
 $set intro:citiesConnected = true
 $if intro:farmsConnected
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Excellent! Now the the City can buy <i>milk</i> and turn it into <i>money</i> using TAX MAGIC!
-    {@advisorEconHill}      Well... really, the milk fuels taxable production. But it's magic to me!
+    {@advisorEconHill}      Excellent! Now the the City can buy <i>milk</i>... But we're not quite done yet!
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
@@ -96,11 +96,18 @@ $endif
 
 $call Unpause()
 
-:: farmsAndCitiesConnected 
-$call ActivateSim()
-{@advisorEconHill}      Now that everything is connected, we can turn <i>grain</i> into <i>milk</i> into <i>money!</i>
-{@advisorEconHill}      Aren't supply chains just WONDERFUL? Agh, I'm getting a bit teary over here.
+:: farmsAndCitiesConnected
+@forcePolicy    Economy
+@once
+{@advisorEconHill}      Now that everything is connected, we can turn <i>grain</i> into <i>milk</i> for the <i>city</i>...
+{@advisorEconHill}      But we still need to secure <b>funding</b> for SAGA to continue work in the area.
+{@advisorEconHill}      I've opened the Sales Tax policy.
+$call UnlockCards(SalesTaxPolicy)
 $call ReleaseDialogueInteraction()
+$call ActivateSim()
+{@advisorEconHill}      That will add to our budget when buyers purchase goods in Knoll County.
+{@advisorEconHill}      But set it too high, and trade may slow down!
+{@advisorEconHill}      I recommend a <b>Low</b> sales tax for now.
 
 // :: sittingOmens
 // @trigger        LetSat
@@ -141,7 +148,7 @@ $endif
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(1)
 @forcePolicy    Economy
-$if PolicyIsUnlocked(ImportTaxPolicy)
+$if PolicyIsUnlocked(SalesTaxPolicy)
     {local @advisorEcon}    Here are the economic policies.
 $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
