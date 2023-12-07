@@ -1,10 +1,7 @@
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.SharedState;
-using FieldDay.Systems;
-using Palmmedia.ReportGenerator.Core;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Actors;
 using Zavala.Data;
