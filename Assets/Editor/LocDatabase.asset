@@ -51,7 +51,7 @@ MonoBehaviour:
     - Id: cards.RunoffPolicy.category
       Content: Runoff Penalty
     - Id: cards.RunoffPolicy.alt
-      Content: Halt
+      Content: Very High
     - Id: cards.SkimmingPolicy.category
       Content: Skimming Level
     - Id: cards.SkimmingPolicy.alt

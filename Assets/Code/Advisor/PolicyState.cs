@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using BeauUtil;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using UnityEngine.Events;
 using Zavala.Cards;
@@ -33,6 +34,14 @@ namespace Zavala.Advisor {
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
         public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region) {
             if (policyIndex < 0 || policyIndex > 3) { return false; }
+
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("policyType", policyType.ToString());
+                varTable.Set("policyIndex", policyIndex);
+                varTable.Set("policyRegion", region);
+                ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
+            }
+
 
             Policies[region].Map[policyType] = (PolicyLevel)policyIndex;
             Policies[region].EverSet[policyType] = true; // this policy has now been set

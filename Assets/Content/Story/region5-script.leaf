@@ -24,6 +24,14 @@ $call CutsceneBegin()
 $call CutsceneEnd()
 $call Unpause()
 
+:: bloomGeneric
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 5, global:bloomDiscovered
+@forcePolicy    Ecology
+{@advisorEcolUrban}     Algae blooms... This doesn't bode well.
+{@advisorEcolUrban}     We'd best handle these before they reach Smokestack City.
+
+
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(5)

@@ -39,11 +39,15 @@ $endif
 @forcePolicy    Ecology
 @once
 {local @advisorEcon}    More algae blooms...
-{@advisorEcolWetland}   Well, we have all these trawlers... What if we used them to skim algae off the lakes?
-{@advisorEconWetland}   Well, it could be costly... And it won't remove the underlying phosphorus.
-{@advisorEconWetland}   For that we'd need expensive dredgers.
-{@advisorEconWetland}   But it could help mitigate the worst effects for now. It's up to you, Director.
-$call UnlockCards(SkimmingPolicy)
+$if Visited("region4.unlockSkimmers") // band-aid solution for queued "once" alert nodes
+    {@advisorEcolWetland}   Well, we have all these trawlers... What if we used them to skim algae off the lakes?
+    {@advisorEconWetland}   Well, it could be costly... And it won't remove the underlying phosphorus.
+    {@advisorEconWetland}   For that we'd need expensive dredgers.
+    {@advisorEcolWetland}   But it could help mitigate the worst effects for now. It's up to you, Director.
+    $call UnlockCards(SkimmingPolicy)
+$else
+    {local @advisorEcon}    Maybe those newfangled skimmers can help?
+$endif
 
 :: unlockDigesters
 @trigger        AlertExamined
@@ -84,6 +88,13 @@ $call Unpause()
 // {@advisorEconWetland}   Digesters would be great, but they're expensive...
 // {@advisorEconWetland}   We may need a new revenue stream. I've opened up Sales Tax.
 // $call UnlockCards(SalesTaxPolicy)
+
+:: bloomGeneric
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 4, global:bloomDiscovered
+@forcePolicy    Ecology
+{@advisorEcolWetland}     Hmph... Algae blooms. Nasty business.
+{@advisorEcolWetland}     Seems to me we should reduce phosphorus runoff.
 
 :: buildFirstDigester
 @trigger        PlayerBuiltBuilding

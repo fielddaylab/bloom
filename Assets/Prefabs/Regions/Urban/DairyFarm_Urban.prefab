@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   IsExternal: 0
+  Pending: 0
 --- !u!114 &7207750407103898590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,6 +360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   IsExternal: 0
+  Pending: 0
 --- !u!114 &7291294420475072054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,6 +550,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Milk DIsplay
       objectReference: {fileID: 0}
+    - target: {fileID: 8635430685516084373, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7252766018154510976, guid: 8f35d9ae069ea904fbc7809f7fdc0f14, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
 --- !u!114 &2224641303006806999 stripped
@@ -573,6 +579,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7291294420475072052}
     m_Modifications:
+    - target: {fileID: 143228687352064113, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7252766018154510976, guid: 8f35d9ae069ea904fbc7809f7fdc0f14, type: 3}
     - target: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
       propertyPath: m_RootOrder
       value: 2

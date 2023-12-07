@@ -165,6 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   IsExternal: 0
+  Pending: 0
 --- !u!114 &5421243799934890603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,6 +235,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5421243799934890605}
     m_Modifications:
+    - target: {fileID: 2241017969169154896, guid: 30e54472d75346a4887c40717d5c0a14, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7252766018154510976, guid: 8f35d9ae069ea904fbc7809f7fdc0f14, type: 3}
     - target: {fileID: 3479562866714169711, guid: 30e54472d75346a4887c40717d5c0a14, type: 3}
       propertyPath: m_RootOrder
       value: 1

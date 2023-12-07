@@ -19,6 +19,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.864
       objectReference: {fileID: 0}
+    - target: {fileID: 3237347495568697453, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 3074651565086177234, guid: 070606c6749596e47b9ece971a821a25, type: 3}
     - target: {fileID: 5209183904040288273, guid: 08eba21ad298ba746b285966c1975c37, type: 3}
       propertyPath: m_Name
       value: GrainFarm

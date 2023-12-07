@@ -37,6 +37,7 @@ namespace Zavala
         static public readonly StringHash32 AlertExamined = "AlertExamined";
         static public readonly StringHash32 AdvisorOpened = "AdvisorOpened";
         static public readonly StringHash32 AdvisorClosed = "AdvisorClosed";
+        static public readonly StringHash32 PolicySet = "PolicySet";
         static public readonly StringHash32 RegionUnlocked = "RegionUnlocked";
         static public readonly StringHash32 RegionReachedAge = "RegionReachedAge";
         static public readonly StringHash32 LetSat = "LetSat";

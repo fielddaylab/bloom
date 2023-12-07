@@ -70,11 +70,23 @@ $call Unpause()
 {@advisorEcolForest}    But it won't be cheap - try to share it between CAFOs.
 $call UnlockShopItem("Storage")
 
-:: runoffGeneric
+:: runoffGeneric // triggered by runoffBranch
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
 {@advisorEcolForest}    I say we build more Storage units.
 {@advisorEconForest}    Those could help, but they won't come cheap.
 {@advisorEconForest}    A policy adjustment may be more efficient.
+
+:: bloomGeneric
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
+@forcePolicy    Ecology
+{@advisorEcolForest}    More algae blooms... Gross!
+$if Visited("region2.unlockStorage")
+    {@advisorEcolForest}    We could build more storage units.
+$endif
+$if PolicyIsUnlocked(SkimmingPolicy)
+    {@advisorEcolForest}    Or use skimmers to clean up.
+$endif
 
 :: testBloomTriggerForest
 @trigger        AlertExamined
