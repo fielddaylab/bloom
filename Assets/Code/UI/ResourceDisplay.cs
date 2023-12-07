@@ -21,7 +21,7 @@ public class ResourceDisplay : MonoBehaviour {
         Renderer.transform.rotation = cam.transform.rotation;
     }
     public void SetCount(int count) {
-        CountText.text = count.ToString();
+        CountText.text = count.ToStringLookup();
         ColorGroup.Color = count == 0 ? Color.clear : Color.white;
         if (Mesh != null) Mesh.enabled = (count != 0);
     }

@@ -15,28 +15,35 @@ namespace Zavala.Input {
         // keyboard movement
         [NonSerialized] public Vector2 RawKeyboardMoveVector;
         [NonSerialized] public Vector2 NormalizedKeyboardMoveVector;
-        [NonSerialized] public Ray ViewportCenterRay;
 
         // button states
         [NonSerialized] public InputButton ButtonsDown;
         [NonSerialized] public InputButton ButtonsDownPrev;
-
+        [NonSerialized] public InputButton ConsumedButtons;
 
         #region Checks
 
         public bool ButtonDown(InputButton button) {
-            return (ButtonsDown & button) != 0;
+            return (ButtonsDown & button & ~ConsumedButtons) != 0;
         }
 
         public bool ButtonPressed(InputButton button) {
-            return (ButtonsDown & button) != 0 && (ButtonsDownPrev & button) == 0;
+            return (button & ~ConsumedButtons) != 0 && (ButtonsDown & button) != 0 && (ButtonsDownPrev & button) == 0;
         }
 
         public bool ButtonReleased(InputButton button) {
-            return (ButtonsDown & button) == 0 && (ButtonsDownPrev & button) != 0;
+            return (button & ~ConsumedButtons) != 0 && (ButtonsDown & button) == 0 && (ButtonsDownPrev & button) != 0;
         }
 
         #endregion // Checks
+    }
+
+    static public class InputUtility {
+        [SharedStateReference] static public InputState State { get; private set; }
+
+        static public void ConsumeButton(InputButton button) {
+            State.ConsumedButtons |= button;
+        }
     }
 
     [Flags]

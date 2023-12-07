@@ -377,6 +377,8 @@ namespace Zavala.Sim {
         [ConfigVar("Runoff Per Applied Manure Unit", 0, 10, 1)] static public int AppliedManureRunoffProportion = 2;
         [ConfigVar("Runoff Per Mineral Fertilizer Unit", 0, 10, 1)] static public int MFertilizerRunoffProportion = 3;
         [ConfigVar("Runoff Per Digested Fertilizer Unit", 0, 10, 1)] static public int DFertilizerRunoffProportion = 1;
+        [ConfigVar("Runoff Consume Fertilizer Threshold", 0, 10, 1)] static public int RunoffConsumeFertilizerThreshold = 2;
+
 
         // Alert Threshold
         [ConfigVar("Excess Alert Threshold", 1, 30, 2)] static public int ExcessRunoffThreshold = 12;

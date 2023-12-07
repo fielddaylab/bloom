@@ -278,12 +278,11 @@ namespace Zavala.Sim {
             }
         }
 
-        static public bool TryUpdateCurrentRegion(SimGridState grid, SimWorldState world, Ray viewportCenter) {
-            if (Physics.Raycast(viewportCenter, out RaycastHit hit, 100f, LayerMask.GetMask("HexTile"))
-                && SimWorldUtility.TryGetTileIndexFromWorld(hit.transform.position, out int index) 
+        static public bool TryUpdateCurrentRegion(SimGridState grid, SimWorldState world, Transform lookRoot) {
+            if (SimWorldUtility.TryGetTileIndexFromWorld(grid, world, lookRoot.position, out int index)  
                 && index >= 0) {
-                ushort newRegionIndex = grid.Terrain.Info[index].RegionIndex;
-                if (newRegionIndex == grid.CurrRegionIndex) {
+                ushort newRegionIndex = grid.Terrain.Regions[index];
+                if (newRegionIndex >= grid.RegionCount || newRegionIndex == grid.CurrRegionIndex) {
                     // region unchanged.
                     return false;
                 }

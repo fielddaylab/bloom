@@ -27,7 +27,7 @@ $endif
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(3)
 @forcePolicy    Economy
-$if PolicyIsUnlocked(ImportTaxPolicy)
+$if PolicyIsUnlocked(SalesTaxPolicy)
 {local @advisorEcon}    Howdy! Here to set up some economic policy?
 $else
 {local @advisorEcon}    Once we have some economic policies you can see me here.
@@ -41,7 +41,23 @@ $endif
 $call Pause()
 {@cityPrairie}      Hey, um... Sorry to butt in, but...
 $call PanToBuilding("region3_city1")
-{@cityPrairie}      I've been working on a research project at Veldt U that might help SAGA.
+{@cityPrairie}      I've been working on a research project at Veldt U that might help SAGA...
+$call CutsceneBegin()
+    $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
+    $call CutsceneNextImage()
+    This problem is more widespread than first thought...
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    If we hope to keep our ecosystem in balance, we will need new tools.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneNextImage()
+    Our fate hangs in the balance.
+    {wait 1}
+    $call CutsceneClearText()
+    $call CutsceneClearImages()
+$call CutsceneEnd()
 {@cityPrairie}      I call it PIP: Persistent Imaging of Phosphorus.
 $call UnlockAdvisorModule("Ecology")
 {local @advisorEcol}How does it-- ooh, a shiny new button!

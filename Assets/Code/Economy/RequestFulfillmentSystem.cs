@@ -78,11 +78,14 @@ namespace Zavala.Economy {
                     request.Requester.Received += request.Requested;
                     request.Requester.RequestCount--;
                     ResourceStorageUtility.RefreshStorageDisplays(request.Supplier.Storage);
-
-                    // Add generated revenue
-                    BudgetData budgetData = Game.SharedState.Get<BudgetData>();
-                    int revenueAmt = request.Revenue.Sales + request.Revenue.Import; //+ request.Revenue.Penalties;
-                    BudgetUtility.AddToBudget(budgetData, revenueAmt, request.Requester.Position.RegionIndex);
+                    
+                    // LocalOption (letting it sit) should not produce any revenue
+                    /*                    
+                        // Add generated revenue
+                        BudgetData budgetData = Game.SharedState.Get<BudgetData>();
+                        int revenueAmt = request.Revenue.Sales + request.Revenue.Import; //+ request.Revenue.Penalties;
+                        BudgetUtility.AddToBudget(budgetData, revenueAmt, request.Requester.Position.RegionIndex);
+                    */
 
                     // leave infinite requests active (cycle back to request queue)
                     if (request.Requester.InfiniteRequests) {
@@ -138,7 +141,7 @@ namespace Zavala.Economy {
                         // differentiate between external and internal blimp prefabs
                         RequestFulfiller newFulfiller = pools.InternalAirships.Alloc();
                         FulfillerUtility.InitializeFulfiller(newFulfiller, marketData.ActiveRequests[index], component.transform.position);
-
+                        ScriptUtility.Trigger(GameTriggers.InternalBlimpSent);
                         OrientAirship(ref newFulfiller);
 
                         marketData.ActiveRequests[index].Fulfiller = newFulfiller;
@@ -181,6 +184,8 @@ namespace Zavala.Economy {
                 DeliverFulfillment(marketData, component, visualState);
                 if (component.Source.Position.IsExternal) {
                     ScriptUtility.Trigger(GameTriggers.ExternalImport);
+                } else {
+                    ScriptUtility.Trigger(GameTriggers.InternalBlimpReceived);
                 }
                 pools.Parcels.Free(component);
             }

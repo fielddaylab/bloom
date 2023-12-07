@@ -14,6 +14,7 @@ namespace Zavala.Input {
     public class UserInputSystem : SharedStateSystemBehaviour<InputState> {
         public override void ProcessWork(float deltaTime) {
             m_State.ButtonsDownPrev = m_State.ButtonsDown;
+            m_State.ConsumedButtons = 0;
 
             InputButton buttons = 0;
 
@@ -40,14 +41,6 @@ namespace Zavala.Input {
             GetMousePosition(ref m_State.ScreenMousePos, ref m_State.ViewportMousePos);
             m_State.ScrollWheel = UnityEngine.Input.mouseScrollDelta;
 
-            Camera c = Camera.main;
-            if (c) {
-                m_State.ViewportMouseRay = c.ViewportPointToRay(m_State.ViewportMousePos, Camera.MonoOrStereoscopicEye.Mono);
-            } else {
-                m_State.ViewportMouseRay = default(Ray);
-                m_State.ViewportCenterRay = default(Ray);
-            }
-
             if (m_State.ButtonPressed(InputButton.PrimaryMouse)) {
                 m_State.MousePressedPosPrev = m_State.ScreenMousePos;
             }
@@ -73,11 +66,6 @@ namespace Zavala.Input {
 
             m_State.RawKeyboardMoveVector = keyboardMoveVector;
             m_State.NormalizedKeyboardMoveVector = keyboardMoveVector.normalized;
-            if (keyboardMoveVector.magnitude > 0 && c) {
-                m_State.ViewportCenterRay = c.ViewportPointToRay(new Vector2(0.5f, 0.5f)); 
-            }
-            // TODO: evaluate performance?
-            SimDataUtility.TryUpdateCurrentRegion(ZavalaGame.SimGrid, ZavalaGame.SimWorld, m_State.ViewportCenterRay);
         }
 
         static private void GetMousePosition(ref Vector2 screenPos, ref Vector2 viewportPos) {

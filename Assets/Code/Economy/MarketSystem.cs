@@ -389,7 +389,7 @@ namespace Zavala.Economy
                 float score = profit + relativeGain - shippingCost;
 
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue();
-                taxRevenue.Sales = adjustments.PurchaseTax[primary];
+                taxRevenue.Sales = requester.IsLocalOption ? 0 : adjustments.PurchaseTax[primary];
                 taxRevenue.Import = importCost;
                 taxRevenue.Penalties = requester.IsLocalOption ? adjustments.RunoffPenalty[primary] : 0;
 

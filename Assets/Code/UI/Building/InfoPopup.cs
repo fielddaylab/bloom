@@ -21,7 +21,9 @@ namespace Zavala.UI.Info {
         #region Inspector
 
         [SerializeField] private RectTransformPinned m_Pin;
+        [SerializeField] private RectTransform m_PinTransform;
         [SerializeField] private LayoutGroup m_Layout;
+        [SerializeField] private RectTransform m_LayoutTransform;
 
         [Header("Header")]
         [SerializeField] private Graphic m_HeaderBG;
@@ -147,6 +149,7 @@ namespace Zavala.UI.Info {
 
             if (gameObject.activeSelf) {
                 m_Layout.ForceRebuild(true);
+                m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
             }
         }
 
@@ -164,6 +167,7 @@ namespace Zavala.UI.Info {
 
             if (gameObject.activeSelf) {
                 m_Layout.ForceRebuild(true);
+                m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
             }
         }
 
@@ -187,6 +191,11 @@ namespace Zavala.UI.Info {
                 m_PurchaseContents.Arrow.rectTransform.SetRotation(-90, Axis.Z, Space.Self);
             } else {
                 m_PurchaseContents.Arrow.gameObject.SetActive(false);
+            }
+
+            if (gameObject.activeSelf) {
+                m_Layout.ForceRebuild(true);
+                m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
             }
         }
 
@@ -262,6 +271,7 @@ namespace Zavala.UI.Info {
             base.OnShowComplete(inbInstant);
 
             m_Layout.ForceRebuild(true);
+            m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
         }
 
         private void OnMarketTickCompleted() {

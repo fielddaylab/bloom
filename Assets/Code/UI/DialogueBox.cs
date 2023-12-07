@@ -79,7 +79,10 @@ namespace Zavala.UI {
 
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
-            m_CloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
+            m_CloseButton.onClick.AddListener(() => { 
+                policyState.PolicyCloseButtonClicked?.Invoke();
+                InputUtility.ConsumeButton(InputButton.PrimaryMouse);
+            });
 
             m_LocalHandler = new TagStringEventHandler();
             m_LocalHandler.Register(LeafUtils.Events.Character, (d, o) => {

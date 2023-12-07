@@ -35,16 +35,29 @@ namespace Zavala.World {
                     Bounds approximateBounds = RegionUtility.CalculateApproximateWorldBounds(regionInfo.GridArea, m_StateA.WorldSpace, regionInfo.MaxHeight, m_StateA.BottomBounds, m_StateA.BoundsExpand);
                     m_StateA.RegionBounds[idx] = approximateBounds;
                 }
+
+                // approximate hull
+                ApproximateHull(m_StateA.RegionBounds, (int) m_StateA.RegionCount, out m_StateA.CameraBounds);
             }
 
             m_StateA.RegionCullingMask = CullingHelper.EvaluateRegionVisibilityMask(m_StateA.RegionBounds, (int) m_StateA.RegionCount, m_CachedPlaneArray);
-
-            //for(int i = 0; i < m_StateA.RegionCount; i++) {
-            //    DebugDraw.AddBounds(m_StateA.RegionBounds[i], (m_StateA.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red, 1, 0, true, -1);
-            //}
         }
 
         #endregion // Work
+
+        static private unsafe void ApproximateHull(SimBuffer<Bounds> bounds, int count, out Rect rect) {
+            int pointCount = count * 4;
+            Vector2* points = stackalloc Vector2[pointCount];
+            for(int i = 0; i < count; i++) {
+                Bounds b = bounds[i];
+                Vector3 min = b.min, max = b.max;
+                points[i * 4 + 0] = new Vector2(min.x, min.z);
+                points[i * 4 + 1] = new Vector2(max.x, min.z);
+                points[i * 4 + 2] = new Vector2(max.x, max.z);
+                points[i * 4 + 3] = new Vector2(min.x, max.z);
+            }
+            HullGeneration.ComputeFastRect(points, pointCount, out rect);
+        }
     }
 
     /// <summary>

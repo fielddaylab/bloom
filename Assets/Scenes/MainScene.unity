@@ -171,10 +171,9 @@ MonoBehaviour:
   Camera: {fileID: 963194227}
   LookTarget: {fileID: 336053}
   CameraMoveSpeed: 4
-  CameraMaxZoomDist: -5
-  CameraMinZoomDist: -15
+  CameraMaxZoomDist: -13
+  CameraMinZoomDist: -30
   ZoomFactor: 1
-  PanTarget: {fileID: 0}
 --- !u!1 &2308482
 GameObject:
   m_ObjectHideFlags: 0
@@ -16056,11 +16055,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7297974679213213785, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7297974679213213785, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7297974679213213785, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_SizeDelta.x
@@ -16072,11 +16071,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7297974679213213785, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 387.5
+      value: 410
       objectReference: {fileID: 0}
     - target: {fileID: 7297974679213213785, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 7932881786518621679, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -43,6 +43,7 @@ namespace Zavala.Actors
                     if (lastProduced.Grain == 0) {
                         continue;
                     }
+                    Debug.Log("[Sitting] sending runoff from " + componentGroup.ComponentA.name);
 
                     int index = componentGroup.ComponentB.TileIndex;
 
@@ -50,10 +51,11 @@ namespace Zavala.Actors
                         phosphorus,
                         index,
                         componentGroup.Primary,
-                        lastRequired,
+                        ref lastRequired,
                         RunoffParams.AppliedManureRunoffProportion,
                         RunoffParams.MFertilizerRunoffProportion,
-                        RunoffParams.DFertilizerRunoffProportion
+                        RunoffParams.DFertilizerRunoffProportion,
+                        false
                         );
                 }
             }

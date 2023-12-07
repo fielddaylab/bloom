@@ -62,24 +62,11 @@ namespace Zavala.UI {
             PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[box.PolicyType];
 
             string newString;
+            if (level == PolicyLevel.Alt) {
+                newString = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());
 
-            switch (level)
-            {
-                case (PolicyLevel.Low):
-                    newString = "L1";
-                    break;
-                case (PolicyLevel.Med):
-                    newString = "L2";
-                    break;
-                case (PolicyLevel.High):
-                    newString = "L3";
-                    break;
-                case (PolicyLevel.Alt):
-                    newString = "Alt";
-                    break;
-                default:
-                    newString = "";
-                    break;
+            } else {
+                newString = Loc.Find("cards.severity." + level.ToString().ToLower());
             }
 
             box.LevelText.text = newString;

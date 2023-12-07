@@ -1,12 +1,12 @@
 // Runoff Penalty
 
-::runoff-penalty-low
-@Level		low
+::runoff-penalty-none
+@Level		none
 @PolicyType	RunoffPolicy
 @Path		policy-runoff_0.png
 
-::runoff-penalty-med
-@Level		med
+::runoff-penalty-low
+@Level		low
 @PolicyType	RunoffPolicy
 @Path		policy-runoff_1.png
 
@@ -45,13 +45,13 @@
 
 // Export Tax
 
-::export-tax-low
-@Level		low
+::export-tax-none
+@Level		none
 @PolicyType	ExportTaxPolicy
 @Path		policy-background.png
 
-::export-tax-med
-@Level		med
+::export-tax-low
+@Level		low
 @PolicyType	ExportTaxPolicy
 @Path		policy-background.png
 
@@ -67,13 +67,13 @@
 
 // Skimmers
 
-::skimmers-low
-@Level		low
+::skimmers-none
+@Level		none
 @PolicyType	SkimmingPolicy
 @Path		policy-skim_0.png
 
-::skimmers-med
-@Level		med
+::skimmers-low
+@Level		low
 @PolicyType	SkimmingPolicy
 @Path		policy-skim_1.png
 
@@ -89,13 +89,13 @@
 
 // Sales Tax
 
-::sales-low
-@Level		low
+::sales-none
+@Level		none
 @PolicyType	SalesTaxPolicy
 @Path		policy-sales_0.png
 
-::sales-med
-@Level		med
+::sales-low
+@Level		low
 @PolicyType	SalesTaxPolicy
 @Path		policy-sales_1.png
 

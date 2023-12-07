@@ -4,15 +4,12 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
-using FieldDay.Systems;
 using Leaf.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Zavala.Economy;
 using Zavala.Input;
 using Zavala.Scripting;
@@ -57,6 +54,7 @@ namespace Zavala.World {
         [NonSerialized] public SimBuffer<Bounds> RegionBounds;
         [NonSerialized] public uint RegionCount; // cached from SimDataComponent
         [NonSerialized] public uint RegionCullingMask;
+        [NonSerialized] public Rect CameraBounds;
 
         [NonSerialized] public float MaxHeight;
 
