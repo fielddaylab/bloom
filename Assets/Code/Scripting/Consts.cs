@@ -14,6 +14,7 @@ namespace Zavala
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";
         static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
         static public readonly StringHash32 MarketCycleTickCompleted = "sim:market-cycle-completed";
+        static public readonly StringHash32 MarketPrioritiesRebuilt = "sim:market-priorities-rebuilt";
         static public readonly StringHash32 RegionSwitched = "sim:region-switched";
 
         static public readonly StringHash32 SimPaused = "sim:paused";

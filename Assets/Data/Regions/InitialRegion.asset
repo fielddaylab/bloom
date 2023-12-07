@@ -83,7 +83,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 258
+    Flags: 290
     Height: 50
   - RegionIndex: 65535
     Category: 0
@@ -258,7 +258,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 258
+    Flags: 290
     Height: 0
   - RegionIndex: 65535
     Category: 1
@@ -565,6 +565,54 @@ MonoBehaviour:
       m_HashValue: 0
     Modifier: 1
   Borders:
+  - LocalTileIndex: 47
+    Borders:
+      Value: 24
+  - LocalTileIndex: 55
+    Borders:
+      Value: 56
+  - LocalTileIndex: 62
+    Borders:
+      Value: 16
+  - LocalTileIndex: 70
+    Borders:
+      Value: 56
+  - LocalTileIndex: 69
+    Borders:
+      Value: 112
+  - LocalTileIndex: 68
+    Borders:
+      Value: 32
+  - LocalTileIndex: 67
+    Borders:
+      Value: 48
+  - LocalTileIndex: 74
+    Borders:
+      Value: 112
+  - LocalTileIndex: 65
+    Borders:
+      Value: 96
+  - LocalTileIndex: 64
+    Borders:
+      Value: 98
+  - LocalTileIndex: 56
+    Borders:
+      Value: 66
+  - LocalTileIndex: 48
+    Borders:
+      Value: 66
+  - LocalTileIndex: 40
+    Borders:
+      Value: 66
+  - LocalTileIndex: 32
+    Borders:
+      Value: 70
+  - LocalTileIndex: 25
+    Borders:
+      Value: 2
+  - LocalTileIndex: 17
+    Borders:
+      Value: 66
   - LocalTileIndex: 9
     Borders:
       Value: 70
@@ -580,69 +628,21 @@ MonoBehaviour:
   - LocalTileIndex: 13
     Borders:
       Value: 12
-  - LocalTileIndex: 15
-    Borders:
-      Value: 30
-  - LocalTileIndex: 17
-    Borders:
-      Value: 66
   - LocalTileIndex: 22
     Borders:
       Value: 4
+  - LocalTileIndex: 15
+    Borders:
+      Value: 30
   - LocalTileIndex: 23
     Borders:
       Value: 24
-  - LocalTileIndex: 25
-    Borders:
-      Value: 2
   - LocalTileIndex: 31
     Borders:
       Value: 24
-  - LocalTileIndex: 32
-    Borders:
-      Value: 70
   - LocalTileIndex: 39
     Borders:
       Value: 24
-  - LocalTileIndex: 40
-    Borders:
-      Value: 66
-  - LocalTileIndex: 47
-    Borders:
-      Value: 24
-  - LocalTileIndex: 48
-    Borders:
-      Value: 66
-  - LocalTileIndex: 55
-    Borders:
-      Value: 56
-  - LocalTileIndex: 56
-    Borders:
-      Value: 66
-  - LocalTileIndex: 62
-    Borders:
-      Value: 16
-  - LocalTileIndex: 64
-    Borders:
-      Value: 98
-  - LocalTileIndex: 65
-    Borders:
-      Value: 96
-  - LocalTileIndex: 67
-    Borders:
-      Value: 48
-  - LocalTileIndex: 68
-    Borders:
-      Value: 32
-  - LocalTileIndex: 69
-    Borders:
-      Value: 112
-  - LocalTileIndex: 70
-    Borders:
-      Value: 56
-  - LocalTileIndex: 74
-    Borders:
-      Value: 112
   Spanners:
   - LocalTileIndex: 48
     ScriptName:

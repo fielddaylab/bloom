@@ -1,10 +1,13 @@
+using BeauUtil;
 using FieldDay;
 using FieldDay.Systems;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Building;
+using Zavala.Input;
 using Zavala.Sim;
+using Zavala.World;
 
 namespace Zavala.Economy
 {
@@ -77,6 +80,11 @@ namespace Zavala.Economy
             {
                 // Update Undo button
                 BlueprintUtility.OnNumBuildCommitsChanged(m_StateA);
+
+                if (m_StateA.Commits.Count == 0) {
+                    CameraInputState camState = Game.SharedState.Get<CameraInputState>();
+                    camState.LockRegion = Tile.InvalidIndex16;
+                }
             }
 
             // Changed number of commits to process
@@ -92,10 +100,28 @@ namespace Zavala.Economy
                 if (m_StateD.ActiveTool == UserBuildTool.None)
                 {
                     BlueprintUtility.OnBuildToolDeselected(m_StateA);
+
+                    if (m_StateA.Commits.Count == 0) {
+                        CameraInputState camState = Game.SharedState.Get<CameraInputState>();
+                        camState.LockRegion = Tile.InvalidIndex16;
+                    }
                 }
                 else
                 {
                     BlueprintUtility.OnBuildToolSelected(m_StateA);
+
+                    // handle commits being modified
+                    if (m_StateA.Commits.Count == 0) {
+                        CameraInputState camState = Game.SharedState.Get<CameraInputState>();
+                        camState.LockRegion = m_StateC.CurrRegionIndex;
+
+                        SimWorldState world = Game.SharedState.Get<SimWorldState>();
+                        Bounds b = world.RegionBounds[camState.LockRegion];
+                        b.Expand(0.25f);
+
+                        Vector3 bMin = b.min, bMax = b.max;
+                        camState.LockedBounds = Rect.MinMaxRect(bMin.x, bMin.z, bMax.x, bMax.z);
+                    }
                 }
             }
 

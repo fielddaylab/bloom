@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Zavala.Sim {
     public struct RegionInfo {
-        public const int MaxRegions = 8;
+        public const int MaxRegions = 5;
 
         public HexGridSubregion GridArea;
         public ushort MaxHeight;

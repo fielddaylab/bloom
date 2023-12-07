@@ -53,9 +53,8 @@ namespace Zavala.World {
             yield return null;
         }
 
-        static public void ClampPositionToBounds(ref Vector3 position, SimWorldState world) {
-            Rect r = world.CameraBounds;
-            Vector2 min = r.min, max = r.max;
+        static public void ClampPositionToBounds(ref Vector3 position, Rect rect) {
+            Vector2 min = rect.min, max = rect.max;
             position.x = Mathf.Clamp(position.x, min.x, max.x);
             position.z = Mathf.Clamp(position.z, min.y, max.y);
         }

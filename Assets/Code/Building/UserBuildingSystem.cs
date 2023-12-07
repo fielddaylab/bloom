@@ -22,10 +22,10 @@ namespace Zavala.Building
         private static int CODE_INVALID = -1; // tried to use a tool on an invalid spot
         private static int CODE_UNCHANGED = -2; // tried to use a tool on the same spot as last work process
         private static float RAYCAST_RANGE = 100; // range of build/destroy raycast
-        private static string PLAYERPLACED_TAG = "PlayerPlaced";
-        private static string TILE_LAYER = "HexTile";
-        private static string BUILDING_LAYER = "Building";
-        private static string ROAD_LAYER = "Road";
+        private const string PLAYERPLACED_TAG = "PlayerPlaced";
+        private const string TILE_LAYER = "HexTile";
+        private const string BUILDING_LAYER = "Building";
+        private const string ROAD_LAYER = "Road";
 
         #region Inspector
 
@@ -111,6 +111,12 @@ namespace Zavala.Building
                     return CODE_UNCHANGED;
                 }
                 int i = grid.HexSize.FastPosToIndex(vec);
+
+                // lock to this region
+                if (grid.Terrain.Regions[i] != grid.CurrRegionIndex) {
+                    return CODE_INVALID;
+                }
+
                 Log.Msg("[UserBuildingSystem] New raycast hit Tile {0}", i);
 
                 // TODO: check if valid neighbor (otherwise try to draw line between current and previous, or wait for return)
@@ -245,9 +251,13 @@ namespace Zavala.Building
         private bool TryDestroyClickedBuilding(SimWorldState world, SimGridState grid, BlueprintState blueprintState) {
             // TODO: streamline this?
             Collider hit = RaycastBuilding(world, grid);
-            if (hit != null && hit.gameObject.tag == PLAYERPLACED_TAG) {
-                Vector3 pos = m_StateB.Camera.WorldToScreenPoint(hit.transform.position + new Vector3(0,0.5f,0));
-                SimDataUtility.DestroyBuildingFromHit(grid, blueprintState, hit.gameObject);
+            if (hit != null && hit.gameObject.CompareTag(PLAYERPLACED_TAG)) {
+                OccupiesTile occupies = hit.gameObject.GetComponent<OccupiesTile>();
+                if (occupies.RegionIndex != grid.CurrRegionIndex) {
+                    return false;
+                }
+
+                SimDataUtility.DestroyBuildingFromHit(grid, blueprintState, hit.gameObject, occupies);
 
                 /*BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {
                     SimDataUtility.DestroyBuildingFromHit(grid, hit.gameObject);
@@ -385,9 +395,6 @@ namespace Zavala.Building
 
             m_StateC.RoadToolState.PrevTileIndex = tileIndex;
 
-            // add staging visuals
-            SetStagingRenderer(tileIndex, true);
-
             // RoadUtility.AddRoadImmediate(Game.SharedState.Get<RoadNetwork>(), grid, tileIndex); // temp debug
         }
 
@@ -431,9 +438,6 @@ namespace Zavala.Building
                 // remove from running cost
                 ShopUtility.EnqueueCost(m_StateD, -ShopUtility.PriceLookup(UserBuildTool.Road));
             }
-
-            // remove staging visuals
-            SetStagingRenderer(tileIndex, false);
         }
 
         private void UnstageForward(SimGridState grid, RoadNetwork network, int prevTileIndex) {
@@ -454,19 +458,6 @@ namespace Zavala.Building
 
         private void FinalizeRoad(SimGridState grid, RoadNetwork network, BuildingPools pools, int tileIndex, bool isEndpoint) {
             RoadUtility.FinalizeRoad(network, grid, pools, tileIndex, isEndpoint, m_ValidHoloMaterial);
-
-            // remove staging visuals
-            SetStagingRenderer(tileIndex, false);
-        }
-
-        private void SetStagingRenderer(int tileIndex, bool isStaging) {
-            SimWorldState world = ZavalaGame.SimWorld;
-            if (isStaging) {
-                TileEffectRendering.SetMaterial(world.Tiles[tileIndex], m_StagingMaterial);
-            }
-            else {
-                TileEffectRendering.RestoreDefaultMaterial(world.Tiles[tileIndex]);
-            }
         }
 
         /// <summary>

@@ -6,6 +6,8 @@ using Zavala.Sim;
 using BeauUtil.Debugger;
 using UnityEngine.TextCore.Text;
 using BeauUtil.Variants;
+using BeauUtil;
+using System;
 
 namespace Zavala.Editor {
     static public class RegionImport {
@@ -308,6 +310,7 @@ namespace Zavala.Editor {
                                     ScriptName = scriptName
                                 });
                                 tiles[pos].Flags |= TerrainFlags.IsToll;
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
                                 break;
                             }
                         case 9:
@@ -456,6 +459,23 @@ namespace Zavala.Editor {
                 }
             }
 
+            HexVectorF midPoint = HexVector.FromGrid((int) data.GridSize.Width / 2, (int) data.GridSize.Height / 2);
+            Vector2 midPointVec = new Vector2(midPoint.X, midPoint.Y);
+
+            const float refAngle = Mathf.PI * 1.25f;
+
+            // TODO: sort borders in ccw order
+            // Could be way more optimal but since this is just in the region import
+            // No big drawback to doing this in polar coordinates instead.
+            HexGridSize size = data.GridSize;
+            borders.Sort((a, b) => {
+                Vector2 dA = TileToVector(size, a.LocalTileIndex) - midPointVec;
+                Vector2 dB = TileToVector(size, b.LocalTileIndex) - midPointVec;
+                float aRad = MathUtils.SafeMod(Mathf.Atan2(dA.y, dA.x), Mathf.PI * 2);
+                float bRad = MathUtils.SafeMod(Mathf.Atan2(dB.y, dB.x), Mathf.PI * 2);
+                return aRad < bRad ? -1 : (aRad > bRad ? 1 : 0);
+            });
+
             borderPoints = borders.ToArray();
             edgeVisualUpdateSet = visualUpdateEdges.ToArray();
         }
@@ -553,6 +573,11 @@ namespace Zavala.Editor {
             data.GridSize.FastIndexToPos(index, out int x, out int y);
             y = (int) data.GridSize.Height - 1 - y;
             return data.GridSize.FastPosToIndex(x, y);
+        }
+
+        static public Vector2 TileToVector(HexGridSize gridSize, int tile) {
+            HexVectorF vec = gridSize.FastIndexToPos(tile);
+            return new Vector2(vec.X, vec.Y);
         }
 
         #endregion // Space Conversion

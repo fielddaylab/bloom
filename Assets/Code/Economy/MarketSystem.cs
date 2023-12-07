@@ -29,9 +29,15 @@ namespace Zavala.Economy
             MoveReceivedToStorage();
 
             bool marketCycle = m_StateA.MarketTimer.Advance(deltaTime, time);
-            if (marketCycle) {
-                // TODO: Only update when necessary
+
+            // TODO: Only update when necessary
+            if (m_StateA.UpdatePrioritiesNow || marketCycle) {
                 UpdateAllSupplierPriorities();
+                m_StateA.UpdatePrioritiesNow = false;
+                ZavalaGame.Events.Dispatch(GameEvents.MarketPrioritiesRebuilt);
+            }
+
+            if (marketCycle) {
                 ProcessMarketCycle();
             }
         }
@@ -278,6 +284,8 @@ namespace Zavala.Economy
 
             m_RequesterWorkList.Clear();
             m_PriorityWorkList.Clear();
+
+            Log.Msg("[MarketSystem] Updated supplier priorities");
         }
 
         private void UpdateSupplierPriority(ResourceSupplier supplier, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState) {

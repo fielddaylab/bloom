@@ -8,6 +8,7 @@ using BeauUtil;
 using System;
 using UnityEngine;
 using JetBrains.Annotations;
+using Zavala.Rendering;
 
 namespace Zavala.Roads {
     [SysUpdate(GameLoopPhase.Update, 0)]

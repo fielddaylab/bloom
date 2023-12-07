@@ -353,6 +353,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7708306960153739429, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
+      propertyPath: TileRadius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7708306960153739431, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
       propertyPath: PauseOverlay
       value: 
