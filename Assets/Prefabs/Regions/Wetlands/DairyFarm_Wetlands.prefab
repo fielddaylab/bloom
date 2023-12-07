@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DairyFarm
       objectReference: {fileID: 0}
+    - target: {fileID: 1869193641399246366, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7696103655225781487, guid: 69fa54f18b7f87f45a8a9bb6e3fceefa, type: 3}
     - target: {fileID: 1889627930934591140, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -31,6 +35,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 8663436113239743823, guid: 755cf5b8d82cf8c418163db6049ba883, type: 3}
+    - target: {fileID: 7115499690618998512, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7696103655225781487, guid: 69fa54f18b7f87f45a8a9bb6e3fceefa, type: 3}
     - target: {fileID: 7291294420475072052, guid: 7393c08227ccf834dbbb4e7aef2bb9ce, type: 3}
       propertyPath: m_RootOrder
       value: 0

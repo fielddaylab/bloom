@@ -163,6 +163,7 @@ namespace Zavala.Economy
                     m_RequestWorkList[i].Age++;
                     if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency && m_RequestWorkList[i].Requester.AgeOfUrgency > 0) {
                         m_StateD.NewUrgents.Add(m_RequestWorkList[i]);
+                        ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, m_RequestWorkList[i].Requester.Position.TileIndex);
                     }
                 }
             }

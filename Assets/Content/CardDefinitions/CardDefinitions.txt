@@ -85,7 +85,7 @@
 ::skimmers-dredge
 @Level		alt
 @PolicyType	SkimmingPolicy
-@Path		policy-skim_2.png
+@Path		policy-skim_3.png
 
 // Sales Tax
 

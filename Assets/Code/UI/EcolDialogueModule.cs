@@ -1,3 +1,4 @@
+using BeauUtil.Debugger;
 using FieldDay;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ namespace Zavala.UI {
         public override void Activate(bool allowReactivate) {
             base.Activate(allowReactivate);
             m_PipsButton.gameObject.SetActive(true);
+            ShowingPips = false;
             m_PipsButton.onClick.AddListener(HandlePipsToggleClicked);
         }
 
@@ -21,8 +23,6 @@ namespace Zavala.UI {
             base.Deactivate();
             SetPipsVisible(false);
             SetColorPressed(m_PipsButton, false);
-
-            m_PipsButton.gameObject.SetActive(false);
             m_PipsButton.onClick.RemoveAllListeners();
         }
         #endregion // IDialogueModule
