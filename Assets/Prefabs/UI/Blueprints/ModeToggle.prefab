@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 8990142241269042850}
   - component: {fileID: 1698911735125107934}
   - component: {fileID: 5428795122837775846}
+  - component: {fileID: 8498922031099620120}
   m_Layer: 5
   m_Name: ModeToggle
   m_TagString: Untagged
@@ -225,6 +226,34 @@ MonoBehaviour:
   m_BuildModeSliderColor:
     serializedVersion: 2
     rgba: 4289569827
+--- !u!114 &8498922031099620120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102391088813556078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8399f76c068e54145b570750f25bf093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Selectable: {fileID: 1698911735125107934}
+  EnterId:
+    m_Source: ui-hover
+    m_HashValue: 776011748
+  ExitId:
+    m_Source: 
+    m_HashValue: 0
+  DownId:
+    m_Source: 
+    m_HashValue: 0
+  UpId:
+    m_Source: 
+    m_HashValue: 0
+  ClickId:
+    m_Source: ui-click
+    m_HashValue: 2094747682
 --- !u!1 &1794728933754631810
 GameObject:
   m_ObjectHideFlags: 0

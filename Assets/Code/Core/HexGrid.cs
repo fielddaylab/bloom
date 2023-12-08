@@ -954,6 +954,7 @@ namespace Zavala {
     /// </summary>
     public enum TileDirection : byte {
         Self,
+
         SW,
         S,
         SE,
@@ -962,6 +963,31 @@ namespace Zavala {
         NW,
 
         COUNT
+    }
+
+    /// <summary>
+    /// Tile corners.
+    /// </summary>
+    public enum TileCorner : byte {
+        SW,
+        SE,
+        E,
+        NE,
+        NW,
+        W
+    }
+
+    /// <summary>
+    /// Tile corners mask.
+    /// </summary>
+    [Flags]
+    public enum TileCornerMask : byte {
+        SW = 1 << TileCorner.SW,
+        SE = 1 << TileCorner.SE,
+        E = 1 << TileCorner.E,
+        NE = 1 << TileCorner.NE,
+        NW = 1 << TileCorner.NW,
+        W = 1 << TileCorner.W,
     }
 
     /// <summary>

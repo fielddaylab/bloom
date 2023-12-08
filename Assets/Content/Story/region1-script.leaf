@@ -8,18 +8,17 @@ $call PauseAlertType("ExcessRunoff")
 
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
-    $call CutsceneNextImage()
-    You have become the regional Director of the Sustainable Agricultural Growth Administration - SAGA.
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneNextImage()
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneNextImage()
-    Your first assignment - Knoll County. Good luck.
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneClearImages()
+    $call CutsceneAllImages(0.5)
+    You are assigned the Director of the Sustainable Agricultural Growth Administration (SAGA).
+    $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
+	$call CutsceneAllImages(0.5)
+	This region is young. It's your job as SAGA director to help them grow...
+	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
+	$call CutsceneAllImages(0.5)
+	If you fail, they will succumb to ruin. Cities will empty; people will starve; the land and the waterways will be become desolate.
+	$call CutscenePrepareImages("intro/frame4-1.png", "intro/frame4-2.png", "intro/frame4-3.png")
+	$call CutsceneAllImages(0.5)
+	Your first assignment is <i>Knoll County</i>. You will meet two guides...
 $call CutsceneEnd()
 
 {@advisorEconHill}      Greetings. You must be the Director.

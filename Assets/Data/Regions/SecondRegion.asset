@@ -888,117 +888,193 @@ MonoBehaviour:
   - LocalTileIndex: 67
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 77
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 99
     Borders:
       Value: 28
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 98
     Borders:
       Value: 12
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 87
     Borders:
       Value: 8
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 109
     Borders:
       Value: 56
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 118
     Borders:
       Value: 112
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 107
     Borders:
       Value: 32
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 116
     Borders:
       Value: 112
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 105
     Borders:
       Value: 32
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 114
     Borders:
       Value: 48
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 113
     Borders:
       Value: 112
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 112
     Borders:
       Value: 96
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 101
     Borders:
       Value: 98
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 91
     Borders:
       Value: 64
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 90
     Borders:
       Value: 102
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 81
     Borders:
       Value: 2
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 71
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 61
     Borders:
       Value: 64
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 60
     Borders:
       Value: 98
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 50
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 40
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 30
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 20
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 10
     Borders:
       Value: 70
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 1
     Borders:
       Value: 6
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 2
     Borders:
       Value: 14
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 3
     Borders:
       Value: 12
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 14
     Borders:
       Value: 4
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 5
     Borders:
       Value: 6
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 6
     Borders:
       Value: 14
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 7
     Borders:
       Value: 12
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 18
     Borders:
       Value: 28
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 37
     Borders:
       Value: 16
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 28
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 38
     Borders:
       Value: 56
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 47
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 57
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   Spanners:
   - LocalTileIndex: 67
     ScriptName:
@@ -1028,5 +1104,6 @@ MonoBehaviour:
   - Offset: 21
     Length: 10
   LeafScript: {fileID: 0}
+  Ambience: {fileID: 8300000, guid: 574e9a605dc36df4194cf3e636f2405b, type: 3}
   Id: 1
   SourceFilePath: Tiled/Region2.json

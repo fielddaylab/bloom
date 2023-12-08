@@ -13,6 +13,7 @@ namespace FieldDay.Assets {
         private readonly IGlobalAsset[] m_GlobalAssetTable = new IGlobalAsset[GlobalAssetIndex.Capacity];
         private readonly uint[] m_GlobalAssetRefCount = new uint[GlobalAssetIndex.Capacity];
         private readonly HashSet<IGlobalAsset> m_GlobalAssetSet = new HashSet<IGlobalAsset>(64, CompareUtils.DefaultEquals<IGlobalAsset>());
+        private readonly HashSet<IAssetPackage> m_PackageAssetSet = new HashSet<IAssetPackage>(64, CompareUtils.DefaultEquals<IAssetPackage>());
 
         #region Events
 
@@ -24,7 +25,25 @@ namespace FieldDay.Assets {
 
         #region Registration
 
-        public void Register(IGlobalAsset globalAsset) {
+        public void RegisterGlobal(IGlobalAsset globalAsset) {
+            IAssetPackage pkg = globalAsset as IAssetPackage;
+            if (pkg != null) {
+                Import(pkg);
+            }
+        }
+
+        public void DeregisterGlobal(IGlobalAsset globalAsset) {
+            IAssetPackage pkg = globalAsset as IAssetPackage;
+            if (pkg != null) {
+                Remove(pkg);
+            }
+        }
+
+        public void Import(IAssetPackage packageAsset) {
+
+        }
+
+        public void Remove(IAssetPackage packageAsset) {
 
         }
 

@@ -8,14 +8,14 @@ namespace FieldDay.Editor {
     public sealed class AudioImportCategories : AssetPostprocessor {
         private void OnPreprocessAudio() {
             AudioImporter importer = (AudioImporter) assetImporter;
-            //if (importer.userData.Contains("[DefaultTextureCategories]")) {
-            //    return;
-            //}
+            if (importer.userData.Contains("[DefaultTextureCategories]")) {
+                return;
+            }
 
             Flags flags = ReadFlags(assetPath);
             //Debug.LogFormat("audioclip '{0}' has flags {1}", assetPath, flags);
 
-            //importer.userData += "[DefaultTextureCategories]";
+            importer.userData += "[DefaultTextureCategories]";
 
             AudioImporterSampleSettings settings = importer.defaultSampleSettings;
 

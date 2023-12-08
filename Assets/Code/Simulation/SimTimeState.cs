@@ -42,7 +42,8 @@ namespace Zavala.Sim {
         Cutscene = 0x02,
         Scripted = 0x04,
         Blueprints = 0x08,
-        FullscreenCutscene = 0x10
+        DialogBox = 0x10,
+        FullscreenCutscene = 0x20
     }
 
     /// <summary>

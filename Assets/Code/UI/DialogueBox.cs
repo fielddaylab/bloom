@@ -38,9 +38,6 @@ namespace Zavala.UI {
 
         [SerializeField] private RectTransform m_Rect;
 
-        [Header("Behavior")]
-        [SerializeField] private LineEndBehavior m_EndBehavior = LineEndBehavior.WaitForInput;
-
         [Space(5)]
         [Header("Policies")]
         [SerializeField] private GameObject m_PolicyExpansionContainer;
@@ -64,12 +61,7 @@ namespace Zavala.UI {
         private TagStringEventHandler m_LocalHandler;
         [NonSerialized] private ScriptCharacterDef m_CurrentDef;
         [NonSerialized] private bool m_FullyExpanded = false;
-
-        private enum LineEndBehavior
-        {
-            WaitForInput,
-            WaitFixedDuration
-        }
+        [NonSerialized] private bool m_IsActive;
 
         private void Start() {
             m_PolicyExpansionContainer.SetActive(false);
@@ -119,17 +111,7 @@ namespace Zavala.UI {
         #region Display
 
         public IEnumerator CompleteLine() {
-            switch (m_EndBehavior) {
-                case LineEndBehavior.WaitForInput: {
-                        yield return WaitForInput();
-                        break;
-                    }
-
-                case LineEndBehavior.WaitFixedDuration: {
-                        yield return 4;
-                        break;
-                    }
-            }
+            return WaitForInput();
         }
 
         public DialogueModuleBase GetModule(AdvisorType type) {
@@ -228,6 +210,8 @@ namespace Zavala.UI {
         #region Routines
 
         private IEnumerator ShowRoutine() {
+            m_IsActive = true;
+            SimTimeInput.SetPaused(true, SimPauseFlags.DialogBox);
             this.gameObject.SetActive(true);
             m_AdvisorButtons.HideAdvisorButtons();
             m_Button.gameObject.SetActive(true);
@@ -238,6 +222,8 @@ namespace Zavala.UI {
 
         private IEnumerator HideRoutine() {
             m_FullyExpanded = false;
+            m_IsActive = false;
+            SimTimeInput.SetPaused(false, SimPauseFlags.DialogBox);
             m_AdvisorButtons.ShowAdvisorButtons();
             if (m_PolicyExpansionContainer.activeSelf) {
                 // TODO: perform policy collapse routine
@@ -259,11 +245,12 @@ namespace Zavala.UI {
                 yield break;
             }
 
+            InputState input = Game.SharedState.Get<InputState>();
             m_ButtonContainer.gameObject.SetActive(true);
-            yield return Routine.Race(
-                m_Button == null ? null : m_Button.onClick.WaitForInvoke()
-            );
-            m_ButtonContainer.gameObject.SetActive(false);
+            while(!input.ButtonPressed(InputButton.PrimaryMouse)) {
+                yield return null;
+            }
+            input.ConsumedButtons |= InputButton.PrimaryMouse;
             yield break;
         }
 

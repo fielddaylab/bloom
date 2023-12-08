@@ -9,10 +9,16 @@ namespace Zavala.Sim {
         public HexGridSubregion GridArea;
         public ushort MaxHeight;
         public RegionId Id;
-        public UnsafeSpan<ushort> Edges;
-        public UnsafeSpan<TileAdjacencyMask> EdgeDirections;
+        public UnsafeSpan<RegionEdgeInfo> Edges;
         public UnsafeSpan<ushort> WaterEdges;
         public int Age;
+    }
+
+    public struct RegionEdgeInfo {
+        public ushort Index;
+        public TileAdjacencyMask Directions;
+        public TileCornerMask SharedCornersCW;
+        public TileCornerMask SharedCornersCCW;
     }
 
     public delegate void RegionTileHandlerDelegate(ushort regionIndex, int tileIndex);

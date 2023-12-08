@@ -88,6 +88,14 @@ namespace Zavala.World {
         [NonSerialized] public Routine ExportRevealRoutine;
 
         void IRegistrationCallbacks.OnDeregister() {
+
+            for(int i = 0; i < RegionCount; i++) {
+                DestroyImmediate(OutlineMeshes[i]);
+                DestroyImmediate(ThickOutlineMeshes[i]);
+            }
+
+            Array.Clear(OutlineMeshes, 0, RegionInfo.MaxRegions);
+            Array.Clear(ThickOutlineMeshes, 0, RegionInfo.MaxRegions);
         }
 
         void IRegistrationCallbacks.OnRegister() {

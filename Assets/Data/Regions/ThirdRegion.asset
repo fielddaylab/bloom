@@ -863,111 +863,183 @@ MonoBehaviour:
   - LocalTileIndex: 71
     Borders:
       Value: 56
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 82
     Borders:
       Value: 16
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 94
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 106
     Borders:
       Value: 56
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 105
     Borders:
       Value: 112
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 104
     Borders:
       Value: 96
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 91
     Borders:
       Value: 32
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 114
     Borders:
       Value: 56
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 102
     Borders:
       Value: 16
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 113
     Borders:
       Value: 48
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 124
     Borders:
       Value: 112
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 111
     Borders:
       Value: 98
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 99
     Borders:
       Value: 64
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 98
     Borders:
       Value: 96
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 85
     Borders:
       Value: 98
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 73
     Borders:
       Value: 64
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 72
     Borders:
       Value: 98
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 60
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 48
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 36
     Borders:
       Value: 66
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 24
     Borders:
       Value: 70
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 13
     Borders:
       Value: 6
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 14
     Borders:
       Value: 6
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 3
     Borders:
       Value: 6
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 16
     Borders:
       Value: 8
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 4
     Borders:
       Value: 30
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 17
     Borders:
       Value: 12
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 30
     Borders:
       Value: 12
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 31
     Borders:
       Value: 4
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 32
     Borders:
       Value: 6
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 21
     Borders:
       Value: 14
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 23
     Borders:
       Value: 30
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 34
     Borders:
       Value: 4
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 35
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 47
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   - LocalTileIndex: 59
     Borders:
       Value: 24
+    SharedCornersCCW: 0
+    SharedCornersCW: 0
   Spanners:
   - LocalTileIndex: 34
     ScriptName:
@@ -987,5 +1059,6 @@ MonoBehaviour:
   - Offset: 19
     Length: 5
   LeafScript: {fileID: 0}
+  Ambience: {fileID: 8300000, guid: 574e9a605dc36df4194cf3e636f2405b, type: 3}
   Id: 2
   SourceFilePath: Tiled/Region3.json

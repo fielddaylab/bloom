@@ -8,6 +8,7 @@ using UnityEngine.TextCore.Text;
 using BeauUtil.Variants;
 using BeauUtil;
 using System;
+using Zavala.Rendering;
 
 namespace Zavala.Editor {
     static public class RegionImport {
@@ -426,6 +427,7 @@ namespace Zavala.Editor {
 
         static public void AnalyzeBorderData(in TiledData data, TerrainTileInfo[] tiles, out RegionAsset.BorderPoint[] borderPoints, out ushort[] edgeVisualUpdateSet) {
             List<RegionAsset.BorderPoint> borders = new List<RegionAsset.BorderPoint>();
+            List<TileCornerMask> corners = new List<TileCornerMask>();
             List<ushort> visualUpdateEdges = new List<ushort>();
 
             HexGridSize.IndexEnumerator idxEnumerator = data.GridSize.GetEnumerator();
@@ -453,16 +455,42 @@ namespace Zavala.Editor {
                         Borders = borderMask
                     });
 
+                    corners.Add(GetCorners(borderMask));
+
+                    // get corners
+
                     if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
                         visualUpdateEdges.Add((ushort) idx);
                     }
                 }
             }
 
+            // TODO: analyze shared corners
+            //for (int i = 0; i < borders.Count; i++) {
+            //    var border = borders[i];
+            //    TileCornerMask selfCorners = corners[i];
+            //    for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
+            //        if (data.GridSize.IsValidIndexOffset(border.LocalTileIndex, dir, out int next) && (tiles[next].Flags & TerrainFlags.IsBorder) != 0) {
+            //            TileRendering.GetCorners(dir, out TileCorner c0, out TileCorner c1);
+
+            //            TileCornerMask otherCorners = GetCornersForTile((ushort) next, borders, corners);
+                        
+            //            TileDirection reflectedDir = dir.Reverse();
+            //            TileRendering.GetCorners(dir, out TileCorner o0, out TileCorner o1);
+
+            //            if (((int) selfCorners & (1 << (int) c0)) != 0) {
+
+            //            }
+            //        }
+            //    }
+
+            //    borders[i] = border;
+            //}
+
+            // sort ccw
+
             HexVectorF midPoint = HexVector.FromGrid((int) data.GridSize.Width / 2, (int) data.GridSize.Height / 2);
             Vector2 midPointVec = new Vector2(midPoint.X, midPoint.Y);
-
-            const float refAngle = Mathf.PI * 1.25f;
 
             // TODO: sort borders in ccw order
             // Could be way more optimal but since this is just in the region import
@@ -481,6 +509,15 @@ namespace Zavala.Editor {
         }
 
         private const TerrainFlags IgnoreCullingTerrainFlags = TerrainFlags.IsWater;
+
+        static private TileCornerMask GetCornersForTile(ushort index, List<RegionAsset.BorderPoint> borders, List<TileCornerMask> corners) {
+            int idx = borders.FindIndex((a) => a.LocalTileIndex == index);
+            if (idx < 0) {
+                return 0;
+            } else {
+                return corners[idx];
+            }
+        }
 
         static public void AnalyzeBaseCullingData(in TiledData data, TerrainTileInfo[] tiles) {
             int culled = 0;
@@ -547,6 +584,41 @@ namespace Zavala.Editor {
                 obj.Add(element["name"].AsString, JSON.CreateValue(element["value"].AsString));
             }
             return obj;
+        }
+
+        static private TileCornerMask GetCorners(TileAdjacencyMask mask) {
+            TileCornerMask corners = 0;
+            foreach(var dir in mask) {
+                TileRendering.GetCorners(dir, out TileCorner c0, out TileCorner c1);
+                corners |= (TileCornerMask) (1 << (int) c0);
+                corners |= (TileCornerMask) (1 << (int) c1);
+            }
+            return corners;
+        }
+
+        static private TileCornerMask GetCorners(TileDirection dir) {
+            TileCornerMask corners = 0;
+            TileRendering.GetCorners(dir, out TileCorner c0, out TileCorner c1);
+            corners |= (TileCornerMask) (1 << (int) c0);
+            corners |= (TileCornerMask) (1 << (int) c1);
+            return corners;
+        }
+
+        static private bool IsCCW(TileDirection a, TileDirection b) {
+            Assert.True(a != 0 && b != 0);
+            int valA = (int) a - 1;
+            int valB = (int) b - 1;
+
+            int dist = (int) MathUtils.SafeMod(3 + valB - valA, 6) - 3;
+            return dist > 0;
+        }
+
+        static private bool IsCCW(TileCorner a, TileCorner b) {
+            int valA = (int) a;
+            int valB = (int) b;
+
+            int dist = (int) MathUtils.SafeMod(3 + valB - valA, 6) - 3;
+            return dist > 0;
         }
 
         #region Space Conversion

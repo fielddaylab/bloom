@@ -1,4 +1,6 @@
 using BeauUtil;
+using BeauUtil.Debugger;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -80,7 +82,7 @@ namespace Zavala.Rendering {
         /// <summary>
         /// Generates mesh data for a tile outline at the given origin.
         /// </summary>
-        static public void GenerateTileBorderMeshData(Vector3 origin, TileAdjacencyMask mask, float radiusMultiplier, float outlineStart, float outlineThickness, Color32 colorStart, Color32 colorEnd, MeshData16<TileVertexFormat> meshBuilder) {
+        static public void GenerateTileBorderMeshData(Vector3 origin, TileAdjacencyMask mask, TileCornerMask ccw, TileCornerMask cw, float radiusMultiplier, float outlineStart, float outlineThickness, Color32 colorStart, Color32 colorEnd, MeshData16<TileVertexFormat> meshBuilder) {
             int vertBase = meshBuilder.VertexCount;
 
             int count = mask.Count;
@@ -97,7 +99,23 @@ namespace Zavala.Rendering {
             d.Color = colorEnd;
 
             foreach(var dir in mask) {
-                GetNormalizedOffsets(dir, out Vector3 v0, out Vector3 v1);
+                GetCorners(dir, out TileCorner c0, out TileCorner c1);
+
+                if ((ccw & (TileCornerMask) (1 << (int) c0)) != 0) {
+                    c0 = (TileCorner) (((int) c0 + 1) % 6);
+                } else if ((cw & (TileCornerMask) (1 << (int) c0)) != 0) {
+                    c0 = (TileCorner) (((int) c0 + 5) % 6);
+                }
+
+                if ((ccw & (TileCornerMask) (1 << (int) c1)) != 0) {
+                    c1 = (TileCorner) (((int) c1 + 1) % 6);
+                } else if ((cw & (TileCornerMask) (1 << (int) c1)) != 0) {
+                    c1 = (TileCorner) (((int) c1 + 5) % 6);
+                }
+
+                Vector3 v0 = GetNormalizedOffset(c0);
+                Vector3 v1 = GetNormalizedOffset(c1);
+
                 a.Position = origin + v0 * outlineDist;
                 b.Position = origin + v1 * outlineDist;
                 c.Position = origin + v1 * outlineDistEnd;
@@ -111,16 +129,19 @@ namespace Zavala.Rendering {
             }
         }
 
-        static unsafe private void GetNormalizedOffsets(TileDirection dir, out Vector3 v0, out Vector3 v1) {
-            if (dir == TileDirection.Self) {
-                v0 = v1 = default;
-            }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static unsafe public void GetCorners(TileDirection dir, out TileCorner c0, out TileCorner c1) {
+            Assert.True(dir != 0);
 
+            int val = (int) dir - 1;
+            c0 = (TileCorner) ((val + 5) % 6);
+            c1 = (TileCorner) (val % 6);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static unsafe private Vector3 GetNormalizedOffset(TileCorner corner) {
             fixed(Vector3* verts = &s_Normalized.R0) {
-                int idx0 = (4 + (int) dir - 1) % 6;
-                int idx1 = (idx0 + 5) % 6;
-                v0 = verts[idx0];
-                v1 = verts[idx1];
+                return verts[((int) corner + 4) % 6];
             }
         }
     }

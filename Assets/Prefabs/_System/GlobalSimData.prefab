@@ -845,3 +845,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e51ace310d8a14cb45b3040514cf97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OutlineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  OutlineThickness: 0.08
+  ThickOutlineThickness: 5
+  OutlineFilter: {fileID: 0}
+  OutlineRenderer: {fileID: 0}
+  LockedOutlineFilter: {fileID: 0}
+  LockedOutlineRenderer: {fileID: 0}
+  LockedOutlineMaterial: {fileID: 0}

@@ -17,7 +17,7 @@ namespace Zavala.Sim {
             }
         }
 
-        private static void SetPaused(bool pause, SimPauseFlags flag) {
+        public static void SetPaused(bool pause, SimPauseFlags flag) {
             SimTimeState time = FieldDay.Game.SharedState.Get<SimTimeState>();
             if (pause) {
                 SimTimeUtility.Pause(flag, time);

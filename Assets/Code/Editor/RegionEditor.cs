@@ -24,6 +24,10 @@ namespace Zavala.Editor {
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty("LeafScript"));
 
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("Ambience"));
+
+            EditorGUILayout.Space();
+
             EditorGUILayout.LabelField("Tiled File", EditorStyles.boldLabel);
 
             using (new GUILayout.HorizontalScope()) {

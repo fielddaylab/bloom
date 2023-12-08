@@ -24,16 +24,16 @@ namespace Zavala.World
             ushort regionIdx = m_StateA.RegionQueue.PopFront();
 
             var edges = m_StateB.Regions[regionIdx].Edges;
-            var edgeDirections = m_StateB.Regions[regionIdx].EdgeDirections;
 
             m_StateA.MeshGeneratorA.Clear();
             m_StateA.MeshGeneratorB.Clear();
 
             for (int i = 0; i < edges.Length; i++) {
-                Vector3 origin = SimWorldUtility.GetTileCenter(m_StateB, m_StateC, edges[i]);
+                RegionEdgeInfo edge = edges[i];
+                Vector3 origin = SimWorldUtility.GetTileCenter(m_StateB, m_StateC, edge.Index);
 
-                TileRendering.GenerateTileBorderMeshData(origin, edgeDirections[i], 1.05f, 0, 0.2f, Color.yellow, Color.yellow, m_StateA.MeshGeneratorA);
-                TileRendering.GenerateTileBorderMeshData(origin, edgeDirections[i], 1.05f, 0.2f, 2, Color.gray, Color.gray.WithAlpha(0), m_StateA.MeshGeneratorB);
+                TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornersCCW, edge.SharedCornersCW, 1.05f, 0, m_StateA.OutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorA);
+                TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornersCCW, edge.SharedCornersCW, 1.05f, m_StateA.OutlineThickness, m_StateA.ThickOutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorB);
             }
 
             m_StateA.MeshGeneratorA.Flush(m_StateC.OutlineMeshes[regionIdx]);
@@ -56,6 +56,7 @@ namespace Zavala.World
 
             ushort currentRegionIdx = m_StateB.CurrRegionIndex;
             m_StateA.OutlineFilter.sharedMesh = m_StateC.OutlineMeshes[currentRegionIdx];
+            m_StateA.LockedOutlineFilter.sharedMesh = m_StateC.ThickOutlineMeshes[currentRegionIdx];
         }
 
         public override void Shutdown() {
