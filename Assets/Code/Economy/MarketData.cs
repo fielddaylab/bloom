@@ -20,6 +20,7 @@ namespace Zavala.Economy
 
         public RingBuffer<ResourceRequester> Buyers;
         public RingBuffer<ResourceSupplier> Suppliers;
+        public RingBuffer<ResourcePriceNegotiator> Negotiators;
 
         // buffer for buyers that requested for this market cycle
         public RingBuffer<MarketRequestInfo> RequestQueue; // Queue of requests, sitting idle
@@ -46,6 +47,7 @@ namespace Zavala.Economy
         void IRegistrationCallbacks.OnRegister() {
             Buyers = new RingBuffer<ResourceRequester>(16, RingBufferMode.Expand);
             Suppliers = new RingBuffer<ResourceSupplier>(16, RingBufferMode.Expand);
+            Negotiators = new RingBuffer<ResourcePriceNegotiator>(16, RingBufferMode.Expand);
             RequestQueue = new RingBuffer<MarketRequestInfo>(16, RingBufferMode.Expand);
             FulfillQueue = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
             ActiveRequests = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
@@ -207,6 +209,27 @@ namespace Zavala.Economy
             MarketData marketData = Game.SharedState.Get<MarketData>();
             if (marketData != null) {
                 marketData.Suppliers.FastRemove(storage);
+            }
+        }
+
+        static public void RegisterNegotiator(ResourcePriceNegotiator negotiator)
+        {
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+            Assert.NotNull(marketData);
+            marketData.Negotiators.PushBack(negotiator);
+        }
+
+        static public void DeregisterNegotiator(ResourcePriceNegotiator negotiator)
+        {
+            if (Game.IsShuttingDown)
+            {
+                return;
+            }
+
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+            if (marketData != null)
+            {
+                marketData.Negotiators.FastRemove(negotiator);
             }
         }
 
@@ -518,6 +541,17 @@ namespace Zavala.Economy
             // pretty much identical to gathering, not much point in doing a fancier search
             buffer.Clear();
             return GatherShippingSources(supplier, buffer, resource);
+        }
+
+        static public ResourceBlock GetCompleteStorage(ResourceSupplier supplier)
+        {
+            ResourceBlock totalStorage = supplier.Storage.Current;
+            if (supplier.Storage.StorageExtensionStore != null)
+            {
+                totalStorage += supplier.Storage.StorageExtensionStore.Current;
+            }
+
+            return totalStorage;
         }
 
         #endregion // Queries

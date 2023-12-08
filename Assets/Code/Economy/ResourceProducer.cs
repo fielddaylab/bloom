@@ -18,11 +18,14 @@ namespace Zavala.Economy {
         [NonSerialized] public ResourceStorage Storage;
         [NonSerialized] public ResourceRequester Request;
 
+        [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
+
         [NonSerialized] public bool ProducedLastTick = false; // used by production runoff system
 
         private void Awake() {
             this.CacheComponent(ref Storage);
             this.CacheComponent(ref Request);
+            this.CacheComponent(ref PriceNegotiator);
 
             // Post inifinite requests when enabled
             if (Request && Request.InfiniteRequests) {

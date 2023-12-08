@@ -7,7 +7,7 @@ using Zavala.Roads;
 
 namespace Zavala.Economy {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(OccupiesTile))]
+    [RequireComponent(typeof(OccupiesTile), typeof(ResourcePriceNegotiator))]
     public sealed class ResourceRequester : BatchedComponent {
         [AutoEnum] public ResourceMask RequestMask;
         public int MaxRequests = 3;
@@ -26,6 +26,10 @@ namespace Zavala.Economy {
         [NonSerialized] public int RequestCount;
         [NonSerialized] public ResourceBlock Received;
 
+        [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
+
+        [NonSerialized] public ResourceBlock OfferedRecord; // 
+
         public Flagstaff Flagstaff;
 
 
@@ -37,6 +41,9 @@ namespace Zavala.Economy {
 
             this.CacheComponent(ref Position);
             this.CacheComponent(ref Storage);
+            this.CacheComponent(ref PriceNegotiator);
+
+            PriceNegotiatorUtility.InitializeRequesterNegotiator(PriceNegotiator, RequestMask, Position.RegionIndex);
 
             MarketUtility.RegisterBuyer(this);
             if (!IsLocalOption) {

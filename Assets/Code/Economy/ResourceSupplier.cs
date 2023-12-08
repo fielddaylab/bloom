@@ -7,7 +7,7 @@ using Zavala.Roads;
 
 namespace Zavala.Economy {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(ResourceStorage), typeof(OccupiesTile))]
+    [RequireComponent(typeof(ResourceStorage), typeof(OccupiesTile), typeof(ResourcePriceNegotiator))]
     public sealed class ResourceSupplier : BatchedComponent {
         [AutoEnum] public ResourceMask ShippingMask;
 
@@ -19,9 +19,16 @@ namespace Zavala.Economy {
         [NonSerialized] public MarketSupplierPriorityList Priorities;
         [NonSerialized] public bool SoldAtALoss = false;
 
+        [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
+
+        [NonSerialized] public ResourceBlock OfferedRecord; // 
+
         private void Awake() {
             this.CacheComponent(ref Storage);
             this.CacheComponent(ref Position);
+            this.CacheComponent(ref PriceNegotiator);
+
+            PriceNegotiatorUtility.InitializeSupplierNegotiator(PriceNegotiator, ShippingMask, Position.RegionIndex);
 
             Priorities.Create();
         }

@@ -6,6 +6,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
+using Mono.Cecil;
 using UnityEngine;
 using Zavala.Advisor;
 using Zavala.Roads;
@@ -30,7 +31,6 @@ namespace Zavala.Economy
 
             bool marketCycle = m_StateA.MarketTimer.Advance(deltaTime, time);
 
-            // TODO: Only update when necessary
             if (m_StateA.UpdatePrioritiesNow || marketCycle) {
                 UpdateAllSupplierPriorities();
                 m_StateA.UpdatePrioritiesNow = false;
@@ -52,7 +52,7 @@ namespace Zavala.Economy
 
             grid.Random.Shuffle(m_SupplierWorkList);
 
-            MarketData marketData = Game.SharedState.Get<MarketData>();
+            MarketData marketData = m_StateA;
             TutorialState tutorial = Game.SharedState.Get<TutorialState>();
             PolicyState policies = Game.SharedState.Get<PolicyState>();
             BudgetData budget = Game.SharedState.Get<BudgetData>();
@@ -63,24 +63,26 @@ namespace Zavala.Economy
             // So the player can improve the amount of runoff on average, just without complete control over every transaction.
 
             // For now: Set external suppliers to a lower priority. This way external suppliers will only be queried if there is no local option offering to sell.
-            m_SupplierWorkList.Sort((a, b) => {
+            /*m_SupplierWorkList.Sort((a, b) => {
                 return a.SupplierPriority - b.SupplierPriority;
-            });
+            });*/
 
             foreach (var supplier in m_SupplierWorkList) {
+                // Take a snapshot before sells. Compare with post snapshot to see if a specific resource was sold
+                ResourceBlock preSellSnapshot = MarketUtility.GetCompleteStorage(supplier);
+
+                bool foundAnyBuyers = false;
+
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
                 MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary);
 
                 if (found.HasValue) {
-                    string supplierName = supplier.gameObject.name;
-                    string foundName = found.Value.Requester.gameObject.name;
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
                     MarketRequestInfo? adjustedFound = found;
 
                     if (found.Value.Requester.InfiniteRequests) {
                         // Set requested value equal to this suppliers stock
-                        // TODO: probably a simpler way to do this
                         for (int i = 0; i < (int) ResourceId.COUNT - 1; i++) {
                             ResourceId resource = (ResourceId)i;
                             if ((supplier.Storage.Current[resource] != 0) && (found.Value.Requested[resource] != 0)) {
@@ -112,6 +114,8 @@ namespace Zavala.Economy
                             continue;
                         }
                     }
+
+                    foundAnyBuyers = true;
 
                     int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
                     int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
@@ -148,6 +152,20 @@ namespace Zavala.Economy
 
                     Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
 
+                    if (tutorial.CurrState >= TutorialState.State.ActiveSim)
+                    {
+                        // TODO: save purchase to Price Negotiator memories (buyer and seller)
+                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
+                        {
+                            ResourceId resource = (ResourceId)rIdx;
+                            if (activeRequest.Supplied[resource] != 0)
+                            {
+                                PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource]);
+                                PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource]);
+                            }
+                        }
+                    }
+
                     if (!adjustedFound.Value.Requester.IsLocalOption) {
                         MarketUtility.RecordPurchaseToHistory(marketData, activeRequest.Supplied, regionPurchasedIn);
                     }
@@ -155,7 +173,27 @@ namespace Zavala.Economy
                         ScriptUtility.Trigger(GameTriggers.LetSat);
                     }
                 }
+
+                if (tutorial.CurrState >= TutorialState.State.ActiveSim)
+                {
+                    if (foundAnyBuyers && !supplier.PriceNegotiator.FixedOffer)
+                    {
+                        ResourceBlock postSellSnapshot = MarketUtility.GetCompleteStorage(supplier);
+                        for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
+                        {
+                            // TODO: check if this was a local option (adjsut down to runoff penalty)
+                            ResourceId resource = (ResourceId)i;
+                            if (preSellSnapshot[resource] == postSellSnapshot[resource] && (preSellSnapshot[resource] != 0))
+                            {
+                                // None of this resource was sold; add stress price
+                                PriceNegotiatorUtility.AdjustPrice(supplier.PriceNegotiator, resource, -supplier.PriceNegotiator.PriceStep);
+                            }
+                        }
+                    }
+                }
             }
+
+            // TODO: Allow one supplier to sell to multiple buyers in one tick
 
             if (tutorial.CurrState >= TutorialState.State.ActiveSim) {
                 // for all remaining, increment their age
@@ -164,6 +202,21 @@ namespace Zavala.Economy
                     if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency && m_RequestWorkList[i].Requester.AgeOfUrgency > 0) {
                         m_StateD.NewUrgents.Add(m_RequestWorkList[i]);
                         ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, m_RequestWorkList[i].Requester.Position.TileIndex);
+                    }
+
+                    // TODO: for each actor with one or more requests not fulfilled, add stress
+                    // TODO: check if there were any valid sellers (OfferedRecord)
+                    if (!m_RequestWorkList[i].Requester.IsLocalOption)
+                    {
+                        ResourcePriceNegotiator negotiator = m_RequestWorkList[i].Requester.PriceNegotiator;
+                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
+                        {
+                            ResourceId resource = (ResourceId)rIdx;
+                            if (m_RequestWorkList[i].Requested[resource] != 0)
+                            {
+                                PriceNegotiatorUtility.AdjustPrice(negotiator, resource, negotiator.PriceStep);
+                            }
+                        }
                     }
                 }
             }
@@ -363,6 +416,13 @@ namespace Zavala.Economy
                 var adjustments = config.UserAdjustmentsPerRegion[requester.Position.RegionIndex];
 
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
+
+                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < supplier.PriceNegotiator.PriceBlock[primary]))
+                {
+                    // If price points don't overlap, not a valid buyer/seller pair.
+                    continue;
+                }
+
                 // Only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 int importCost = 0;
@@ -386,7 +446,8 @@ namespace Zavala.Economy
                         profit = requester.OverrideBlock[primary];
                     }
                     else {
-                        profit = config.PurchasePerRegion[supplier.Position.RegionIndex].Buy[primary];
+                        // Err towards buyer purchase cost (TODO: unless they accept anything?)
+                        profit = requester.PriceNegotiator.PriceBlock[primary];
                     }
 
                     if (supplier.Storage.StorageExtensionReq != null) {

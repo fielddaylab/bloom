@@ -47,7 +47,7 @@ namespace Zavala.UI.Info {
         static public void LoadCostsIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config, bool isSecondary) {
             row.PriceGroup.SetActive(true);
 
-            int basePrice = config.PurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+            int basePrice = config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
             row.BasePriceRow.gameObject.SetActive(true);
             row.BasePriceRow.Number.SetText(basePrice.ToStringLookup());
 
@@ -101,7 +101,7 @@ namespace Zavala.UI.Info {
             if (info.Requester.IsLocalOption) {
                 basePrice = 0;
             } else {
-                basePrice = config.PurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+                basePrice = config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
             }
             row.BasePriceRow.gameObject.SetActive(basePrice > 0);
             row.BasePriceRow.Number.SetText(basePrice.ToStringLookup());

@@ -11,7 +11,8 @@ namespace Zavala.Economy {
         public TransportCosts TransportCosts;
 
         [Header("Per-Region")]
-        public PurchaseCosts[] PurchasePerRegion = new PurchaseCosts[RegionInfo.MaxRegions];
+        // starting point for individual prices
+        public PurchaseCosts[] DefaultPurchasePerRegion = new PurchaseCosts[RegionInfo.MaxRegions];
         [NonSerialized]
         public PurchaseCostAdjustments[] UserAdjustmentsPerRegion = new PurchaseCostAdjustments[RegionInfo.MaxRegions];
     }
@@ -28,6 +29,9 @@ namespace Zavala.Economy {
     public struct PurchaseCosts {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock Buy;
+
+        // [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        // public ResourceBlock Sell;
 
         // [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         // public ResourceBlock Import;

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2944659281979075780}
   - component: {fileID: 3256486233046408344}
   - component: {fileID: 4301443871748103362}
+  - component: {fileID: 2844105690660262594}
   m_Layer: 7
   m_Name: ExternalSupplier
   m_TagString: Untagged
@@ -133,6 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   IsExternal: 1
+  Pending: 0
 --- !u!114 &2944659281979075780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,3 +187,30 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   Icon: {fileID: 0}
+--- !u!114 &2844105690660262594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1864174576578226008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PriceBlock:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
+  MemoryPriceBlock:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
+  PriceStep: 1
+  AcceptsAnyPrice: 0
+  FixedOffer: 1

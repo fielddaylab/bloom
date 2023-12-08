@@ -1,6 +1,7 @@
 using BeauUtil.Debugger;
 using FieldDay.Debugging;
 using FieldDay.Systems;
+using System;
 using UnityEngine;
 using Zavala.Actors;
 
@@ -19,11 +20,23 @@ namespace Zavala.Economy {
                 ResourceStorageUtility.RefreshStorageDisplays(producer.Storage);
                 producer.ProducedLastTick = true;
 
+                // Refresh sell price for produced resources
+                if (producer.PriceNegotiator)
+                {
+                    for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
+                    {
+                        ResourceId resource = (ResourceId)i;
+                        if (producer.PriceNegotiator.PriceBlock[resource] != 0)
+                        {
+                            PriceNegotiatorUtility.LoadLastPrice(producer.PriceNegotiator, resource);
+                        }
+                    }
+                }
+
                 ResourceRequester requester = producer.GetComponent<ResourceRequester>();
                 Log.Msg("[ResourceProducerSystem] Producer '{0}' consumed {1} to produce {2}", producer.name, consumed, produced);
                 DebugDraw.AddWorldText(producer.transform.position, "Produced!", Color.green, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
 
-                ResourceRequester requestComp = producer.GetComponent<ResourceRequester>();
                 if (requester != null && requester.IsLocalOption) {
                     // Local option need to produce and request on the same tick
                     QueueRequestForProduction(producer);

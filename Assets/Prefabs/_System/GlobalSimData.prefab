@@ -237,6 +237,67 @@ MonoBehaviour:
       DFertilizer: 15
       Grain: 20
       Milk: 20
+  DefaultPurchasePerRegion:
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
+  - Buy:
+      Manure: 10
+      MFertilizer: 15
+      DFertilizer: 15
+      Grain: 20
+      Milk: 20
 --- !u!114 &7708306960153739432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -845,3 +906,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e51ace310d8a14cb45b3040514cf97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OutlineFilter: {fileID: 0}
+  OutlineRenderer: {fileID: 0}

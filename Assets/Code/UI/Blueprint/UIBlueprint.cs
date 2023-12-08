@@ -303,26 +303,29 @@ namespace Zavala.UI
                 int amt = 0;
 
                 // TODO: calculate amounts from data history
-                switch(box.PolicyType)
+                if (data.SalesTaxHistory[grid.CurrRegionIndex].Net.Count > 0)
                 {
-                    case PolicyType.SalesTaxPolicy:
-                        amt = data.SalesTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
-                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                        break;
-                    case PolicyType.ImportTaxPolicy:
-                        amt = data.ImportTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
-                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                        break;
-                    case PolicyType.RunoffPolicy:
-                        amt = data.PenaltiesHistory[grid.CurrRegionIndex].Net.PeekFront();
-                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                        break;
-                    case PolicyType.SkimmingPolicy:
-                        amt = data.SkimmerCostHistory[grid.CurrRegionIndex].Net.PeekFront();
-                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                        break;
-                    default:
-                        break;
+                    switch (box.PolicyType)
+                    {
+                        case PolicyType.SalesTaxPolicy:
+                            amt = data.SalesTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                            break;
+                        case PolicyType.ImportTaxPolicy:
+                            amt = data.ImportTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                            break;
+                        case PolicyType.RunoffPolicy:
+                            amt = data.PenaltiesHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                            break;
+                        case PolicyType.SkimmingPolicy:
+                            amt = data.SkimmerCostHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 // Display animation
