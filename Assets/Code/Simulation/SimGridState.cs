@@ -453,9 +453,10 @@ namespace Zavala.Sim {
                 case UserBuildTool.Storage:
                     SimDataUtility.BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies, false);
                     break;
-                case UserBuildTool.Skimmer:
+/*                case UserBuildTool.Skimmer:
                     SimDataUtility.BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies, false);
                     break;
+*/
                 default:
                     occupies = null;
                     break;
@@ -478,9 +479,10 @@ namespace Zavala.Sim {
                 case BuildingType.Storage:
                     BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies, true, wasPending);
                     break;
-                case BuildingType.Skimmer:
+/*                case BuildingType.Skimmer:
                     BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies, true, wasPending);
                     break;
+*/
 
                 default:
                     occupies = null;

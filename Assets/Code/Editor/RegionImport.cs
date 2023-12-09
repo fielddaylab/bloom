@@ -1,6 +1,9 @@
-using System.IO;
-using System.Collections.Generic;
 using BeauData;
+using BeauUtil;
+using BeauUtil.Debugger;
+using BeauUtil.Variants;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Zavala.Sim;
 using BeauUtil.Debugger;
@@ -320,6 +323,18 @@ namespace Zavala.Editor {
                                 {
                                     LocalTileIndex = (ushort)pos,
                                     Type = BuildingType.TempObstruction,
+                                    ScriptName = scriptName
+                                });
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
+                                tiles[pos].Flags |= TerrainFlags.NonBuildable;
+                                break;
+                            }
+                        case 10: 
+                            { // skimmer location
+                                buildingList.Add(new RegionAsset.BuildingData() 
+                                {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.SkimmerLocation,
                                     ScriptName = scriptName
                                 });
                                 tiles[pos].Flags |= TerrainFlags.IsOccupied;

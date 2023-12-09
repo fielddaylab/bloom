@@ -1,14 +1,8 @@
 using BeauUtil.Debugger;
 using FieldDay;
-using FieldDay.Components;
-using FieldDay.Debugging;
 using FieldDay.Systems;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Actors;
-using Zavala.Economy;
-
 namespace Zavala.Sim
 {
     [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
@@ -19,15 +13,16 @@ namespace Zavala.Sim
                 return;
             }
 
-            // Remove P from tile
-            SimPhosphorusState pState = Game.SharedState.Get<SimPhosphorusState>();
-            int removedAmt = SimPhospohorusUtility.RemovePhosphorus(pState, position.TileIndex, skimmer.SkimAmt);
-            Debug.Log("[Skimmer] Removed " + removedAmt + "  units of P");
+            if (skimmer.Type == SkimmerType.Algae) {
+                SimAlgaeState aState = Game.SharedState.Get<SimAlgaeState>();
+                float removedAmt = SimAlgaeUtility.RemoveAlgae(aState, position.TileIndex, skimmer.AlgaeSkimAmt);
+                Debug.Log("[Skimmer] Skimmed " + removedAmt + "  units of Algae");
+            } else if (skimmer.Type == SkimmerType.Dredge) {
+                // Remove P from tile
+                SimPhosphorusState pState = Game.SharedState.Get<SimPhosphorusState>();
+                int removedAmt = SimPhospohorusUtility.RemovePhosphorus(pState, position.TileIndex, skimmer.PhosSkimAmt);
+                Debug.Log("[Skimmer] Dredged " + removedAmt + "  units of P");
+            }
         }
-    }
-
-    static public class PhosphorusSkimmerUtility
-    {
-
     }
 }

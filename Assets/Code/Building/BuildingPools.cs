@@ -8,6 +8,7 @@ using UnityEngine;
 using Zavala.Economy;
 using Zavala.Roads;
 using Zavala.World;
+using Zavala.Sim;
 
 namespace Zavala.Building
 {
@@ -18,7 +19,7 @@ namespace Zavala.Building
         [Serializable] public class RoadPool : SerializablePool<RoadInstanceController> { }
         [Serializable] public class DigesterPool : SerializablePool<OccupiesTile> { }
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
-        [Serializable] public class SkimmerPool : SerializablePool<OccupiesTile> { }
+        [Serializable] public class SkimmerPool : SerializablePool<PhosphorusSkimmer> { }
         [Serializable] public class VizAnchorPool : SerializablePool<SpriteRenderer> { }
         [Serializable] public class DestroyIconsPool : SerializablePool<OccupiesTile> { }
 

@@ -23,4 +23,14 @@ namespace Zavala.Sim {
             Algae.Create(gridState.HexSize);
         }
     }
+    public class SimAlgaeUtility {
+        static public float RemoveAlgae(SimAlgaeState algaeState, int tileIndex, float amount) {
+            Assert.True(amount >= 0);
+            ref float percentAlgae = ref algaeState.Algae.State[tileIndex].PercentAlgae;
+            amount = Math.Min(amount, percentAlgae);
+            percentAlgae -= amount;
+
+            return amount;
+        }
+    }
 }
