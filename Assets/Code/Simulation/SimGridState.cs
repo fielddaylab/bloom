@@ -132,8 +132,8 @@ namespace Zavala.Sim {
                 regionInfo.Edges[i] = new RegionEdgeInfo() {
                     Index = (ushort) subRegion.FastIndexToGridIndex(asset.Borders[i].LocalTileIndex),
                     Directions = asset.Borders[i].Borders,
-                    SharedCornersCCW = asset.Borders[i].SharedCornersCCW,
-                    SharedCornersCW = asset.Borders[i].SharedCornersCW,
+                    SharedCornerCCW = asset.Borders[i].SharedCornerCCW,
+                    SharedCornerCW = asset.Borders[i].SharedCornerCW,
                 };
             }
 

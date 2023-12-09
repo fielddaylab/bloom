@@ -467,7 +467,9 @@ namespace Zavala.Editor {
                     tileInfo.Flags |= TerrainFlags.IsBorder;
                     borders.Add(new RegionAsset.BorderPoint() {
                         LocalTileIndex = (ushort) idx,
-                        Borders = borderMask
+                        Borders = borderMask,
+                        SharedCornerCCW = TileCorner.COUNT,
+                        SharedCornerCW = TileCorner.COUNT
                     });
 
                     corners.Add(GetCorners(borderMask));
@@ -481,26 +483,27 @@ namespace Zavala.Editor {
             }
 
             // TODO: analyze shared corners
-            //for (int i = 0; i < borders.Count; i++) {
-            //    var border = borders[i];
-            //    TileCornerMask selfCorners = corners[i];
-            //    for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
-            //        if (data.GridSize.IsValidIndexOffset(border.LocalTileIndex, dir, out int next) && (tiles[next].Flags & TerrainFlags.IsBorder) != 0) {
-            //            TileRendering.GetCorners(dir, out TileCorner c0, out TileCorner c1);
+            for (int i = 0; i < borders.Count; i++) {
+                var border = borders[i];
+                TileCornerMask selfCorners = corners[i];
+                for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
+                    if (data.GridSize.IsValidIndexOffset(border.LocalTileIndex, dir, out int next) && (tiles[next].Flags & TerrainFlags.IsBorder) != 0) {
+                        TileCornerMask otherCorners = GetCornersForTile((ushort) next, borders, corners);
 
-            //            TileCornerMask otherCorners = GetCornersForTile((ushort) next, borders, corners);
-                        
-            //            TileDirection reflectedDir = dir.Reverse();
-            //            TileRendering.GetCorners(dir, out TileCorner o0, out TileCorner o1);
+                        int tableIdx = ((int) dir - 1) * 2;
+                        CornerCheckEntry cw = CornerCheckTable[tableIdx];
+                        CornerCheckEntry ccw = CornerCheckTable[tableIdx + 1];
 
-            //            if (((int) selfCorners & (1 << (int) c0)) != 0) {
+                        if (ShareCorners(selfCorners, otherCorners, cw)) {
+                            border.SharedCornerCW = cw.A;
+                        } else if (ShareCorners(selfCorners, otherCorners, ccw)) {
+                            border.SharedCornerCCW = ccw.A;
+                        }
+                    }
+                }
 
-            //            }
-            //        }
-            //    }
-
-            //    borders[i] = border;
-            //}
+                borders[i] = border;
+            }
 
             // sort ccw
 
@@ -522,6 +525,44 @@ namespace Zavala.Editor {
             borderPoints = borders.ToArray();
             edgeVisualUpdateSet = visualUpdateEdges.ToArray();
         }
+
+        private struct CornerCheckEntry {
+            public readonly TileCorner A;
+            public readonly TileCorner B;
+
+            public CornerCheckEntry(TileCorner a, TileCorner b) {
+                A = a;
+                B = b;
+            }
+        }
+
+        // sets of 2, ordered by direction and then by cw, ccw
+        static private readonly CornerCheckEntry[] CornerCheckTable = new CornerCheckEntry[] {
+            
+            // sw
+            new CornerCheckEntry(TileCorner.W, TileCorner.NE),
+            new CornerCheckEntry(TileCorner.SW, TileCorner.E),
+
+            // s
+            new CornerCheckEntry(TileCorner.SW, TileCorner.NW),
+            new CornerCheckEntry(TileCorner.SE, TileCorner.NE),
+
+            // se
+            new CornerCheckEntry(TileCorner.SE, TileCorner.W),
+            new CornerCheckEntry(TileCorner.E, TileCorner.NW),
+
+            // ne
+            new CornerCheckEntry(TileCorner.E, TileCorner.SW),
+            new CornerCheckEntry(TileCorner.NE, TileCorner.W),
+
+            // n
+            new CornerCheckEntry(TileCorner.NE, TileCorner.SE),
+            new CornerCheckEntry(TileCorner.NW, TileCorner.SW),
+
+            // nw
+            new CornerCheckEntry(TileCorner.NW, TileCorner.E),
+            new CornerCheckEntry(TileCorner.W, TileCorner.SE),
+        };
 
         private const TerrainFlags IgnoreCullingTerrainFlags = TerrainFlags.IsWater;
 
@@ -634,6 +675,10 @@ namespace Zavala.Editor {
 
             int dist = (int) MathUtils.SafeMod(3 + valB - valA, 6) - 3;
             return dist > 0;
+        }
+
+        static private bool ShareCorners(TileCornerMask a, TileCornerMask b, CornerCheckEntry entry) {
+            return ((int) a & (1 << (int) entry.A)) != 0 && ((int) b & (1 << (int) entry.B)) != 0;
         }
 
         #region Space Conversion

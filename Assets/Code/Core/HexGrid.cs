@@ -974,7 +974,9 @@ namespace Zavala {
         E,
         NE,
         NW,
-        W
+        W,
+
+        COUNT
     }
 
     /// <summary>

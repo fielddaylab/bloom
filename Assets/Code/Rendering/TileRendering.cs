@@ -82,14 +82,14 @@ namespace Zavala.Rendering {
         /// <summary>
         /// Generates mesh data for a tile outline at the given origin.
         /// </summary>
-        static public void GenerateTileBorderMeshData(Vector3 origin, TileAdjacencyMask mask, TileCornerMask ccw, TileCornerMask cw, float radiusMultiplier, float outlineStart, float outlineThickness, Color32 colorStart, Color32 colorEnd, MeshData16<TileVertexFormat> meshBuilder) {
+        static public void GenerateTileBorderMeshData(Vector3 origin, TileAdjacencyMask mask, TileCorner ccw, TileCorner cw, float radiusMultiplier, float outlineStart, float outlineThickness, Color32 colorStart, Color32 colorEnd, MeshData16<TileVertexFormat> meshBuilder) {
             int vertBase = meshBuilder.VertexCount;
 
             int count = mask.Count;
 
             meshBuilder.Preallocate(count * 4, count * 6);
 
-            float outlineDist = s_Radius * radiusMultiplier + outlineStart;
+            float outlineDist = outlineStart;
             float outlineDistEnd = outlineDist + outlineThickness;
 
             TileVertexFormat a, b, c, d;
@@ -101,25 +101,28 @@ namespace Zavala.Rendering {
             foreach(var dir in mask) {
                 GetCorners(dir, out TileCorner c0, out TileCorner c1);
 
-                if ((ccw & (TileCornerMask) (1 << (int) c0)) != 0) {
+                Vector3 v0 = GetScaledOffset(c0) * radiusMultiplier;
+                Vector3 v1 = GetScaledOffset(c1) * radiusMultiplier;
+
+                if (c0 == ccw) {
                     c0 = (TileCorner) (((int) c0 + 1) % 6);
-                } else if ((cw & (TileCornerMask) (1 << (int) c0)) != 0) {
+                } else if (c0 == cw) {
                     c0 = (TileCorner) (((int) c0 + 5) % 6);
                 }
 
-                if ((ccw & (TileCornerMask) (1 << (int) c1)) != 0) {
+                if (c1 == ccw) {
                     c1 = (TileCorner) (((int) c1 + 1) % 6);
-                } else if ((cw & (TileCornerMask) (1 << (int) c1)) != 0) {
+                } else if (c1 == cw) {
                     c1 = (TileCorner) (((int) c1 + 5) % 6);
                 }
 
-                Vector3 v0 = GetNormalizedOffset(c0);
-                Vector3 v1 = GetNormalizedOffset(c1);
+                Vector3 v2 = GetNormalizedOffset(c0);
+                Vector3 v3 = GetNormalizedOffset(c1);
 
-                a.Position = origin + v0 * outlineDist;
-                b.Position = origin + v1 * outlineDist;
-                c.Position = origin + v1 * outlineDistEnd;
-                d.Position = origin + v0 * outlineDistEnd;
+                a.Position = origin + v0 + v2 * outlineDist;
+                b.Position = origin + v1 + v3 * outlineDist;
+                c.Position = origin + v1 + v3 * outlineDistEnd;
+                d.Position = origin + v0 + v2 * outlineDistEnd;
 
                 meshBuilder.AddVertices(a, b, c, d);
                 meshBuilder.AddIndices((ushort) (vertBase + 0), (ushort) (vertBase + 1), (ushort) (vertBase + 2));
@@ -141,6 +144,13 @@ namespace Zavala.Rendering {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static unsafe private Vector3 GetNormalizedOffset(TileCorner corner) {
             fixed(Vector3* verts = &s_Normalized.R0) {
+                return verts[((int) corner + 4) % 6];
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static unsafe private Vector3 GetScaledOffset(TileCorner corner) {
+            fixed (Vector3* verts = &s_RadiusOffsets.R0) {
                 return verts[((int) corner + 4) % 6];
             }
         }

@@ -17,8 +17,8 @@ namespace Zavala.Sim {
     public struct RegionEdgeInfo {
         public ushort Index;
         public TileAdjacencyMask Directions;
-        public TileCornerMask SharedCornersCW;
-        public TileCornerMask SharedCornersCCW;
+        public TileCorner SharedCornerCW;
+        public TileCorner SharedCornerCCW;
     }
 
     public delegate void RegionTileHandlerDelegate(ushort regionIndex, int tileIndex);

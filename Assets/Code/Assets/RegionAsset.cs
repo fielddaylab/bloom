@@ -88,8 +88,8 @@ namespace Zavala {
         public struct BorderPoint {
             public ushort LocalTileIndex;
             public TileAdjacencyMask Borders;
-            public TileCornerMask SharedCornersCCW;
-            public TileCornerMask SharedCornersCW;
+            public TileCorner SharedCornerCCW;
+            public TileCorner SharedCornerCW;
         }
 
         #endregion // Types

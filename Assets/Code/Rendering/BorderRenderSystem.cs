@@ -11,7 +11,7 @@ using Zavala.Sim;
 
 namespace Zavala.World
 {
-    [SysUpdate(GameLoopPhase.LateUpdate)]
+    [SysUpdate(GameLoopPhaseMask.UnscaledLateUpdate | GameLoopPhaseMask.DebugUpdate)]
     public class BorderRenderSystem : SharedStateSystemBehaviour<BorderRenderState, SimGridState, SimWorldState>
     {
         #region Work
@@ -32,8 +32,8 @@ namespace Zavala.World
                 RegionEdgeInfo edge = edges[i];
                 Vector3 origin = SimWorldUtility.GetTileCenter(m_StateB, m_StateC, edge.Index);
 
-                TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornersCCW, edge.SharedCornersCW, 1.05f, 0, m_StateA.OutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorA);
-                TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornersCCW, edge.SharedCornersCW, 1.05f, m_StateA.OutlineThickness, m_StateA.ThickOutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorB);
+                TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornerCCW, edge.SharedCornerCW, m_StateA.RadiusMuliplier, 0, m_StateA.OutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorA);
+                TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornerCCW, edge.SharedCornerCW, m_StateA.RadiusMuliplier, m_StateA.OutlineThickness, m_StateA.ThickOutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorB);
             }
 
             m_StateA.MeshGeneratorA.Flush(m_StateC.OutlineMeshes[regionIdx]);

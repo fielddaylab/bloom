@@ -848,6 +848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OutlineThickness: 0.08
   ThickOutlineThickness: 5
+  RadiusMuliplier: 1.023
   OutlineFilter: {fileID: 0}
   OutlineRenderer: {fileID: 0}
   LockedOutlineFilter: {fileID: 0}
