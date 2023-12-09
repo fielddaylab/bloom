@@ -21,11 +21,12 @@ $call CutsceneBegin()
 	Your first assignment is <i>Knoll County</i>. You will meet two guides...
 $call CutsceneEnd()
 
-{@advisorEconHill}      Greetings. You must be the Director.
+{@advisorEconHill}      Greetings. Welcome to Knoll County.
 $call ForceDialogueInteraction()
-{@advisorEconHill}      I'm here to advise you on economic matters in Knoll County.
-{@advisorEconHill}      As you can see, we are a chunk of blooming real estate.
-{@advisorEconHill}      I'll give you the tour.
+{@advisorEconHill}      As the economic advisor, I will help you with money matters. 
+{@advisorEconHill}      We are growing and we need your help.
+{@advisorEconHill}      There is a lot of new farms and businesses, but none of them are connected.
+{@advisorEconHill}      I'll give you the tour of our region.
 $call PanToBuilding("region1_city1")
 {@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
 $call PanToBuilding("region1_grain1")
