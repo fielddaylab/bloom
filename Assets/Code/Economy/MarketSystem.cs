@@ -165,8 +165,11 @@ namespace Zavala.Economy
                             ResourceId resource = (ResourceId)rIdx;
                             if (activeRequest.Supplied[resource] != 0)
                             {
-                                PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource]);
-                                PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource]);
+                                if (!activeRequest.Requester.IsLocalOption)
+                                {
+                                    PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource]);
+                                    PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource]);
+                                }
                             }
                         }
                     }
@@ -190,13 +193,11 @@ namespace Zavala.Economy
                             if (preSellSnapshot[resource] == postSellSnapshot[resource] && (preSellSnapshot[resource] != 0))
                             {
                                 // None of this resource was sold; add stress price if there were any valid connections to negotiate with
-                                // TODO: check if offered was actively requesting at the time
                                 if (supplier.PriceNegotiator.OfferedRecord[resource] >= 1)
                                 {
                                     // Push negotiator and resource type for negotiation system
-                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, true);
+                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false);
                                     MarketUtility.QueueNegotiation(neg);
-                                    // PriceNegotiatorUtility.AdjustPrice(ref supplier.PriceNegotiator, resource, -supplier.PriceNegotiator.PriceStep);
                                 }
                             }
                         }
@@ -223,15 +224,17 @@ namespace Zavala.Economy
                         for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
                         {
                             ResourceId resource = (ResourceId)rIdx;
-                            if (m_RequestWorkList[i].Requested[resource] != 0)
-                            {
-                                if (negotiator.OfferedRecord[resource] >= 1)
+                            // TODO: cast request into any phosphorus mask
+
+                            // if (m_RequestWorkList[i].Requested[resource] != 0)
+                            // {
+                                if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] >= 1))
                                 {
                                     // Push negotiator and resource type for negotiation system
-                                    PriceNegotiation neg = new PriceNegotiation(negotiator, resource, false);
+                                    PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);
                                     MarketUtility.QueueNegotiation(neg);
                                 }
-                            }
+                            // }
                         }
                     }
                 }
@@ -438,16 +441,21 @@ namespace Zavala.Economy
                 var adjustments = config.UserAdjustmentsPerRegion[requester.Position.RegionIndex];
 
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
+                List<ResourceId> allResources = ResourceUtility.AllResources(overlap);
 
                 if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < supplier.PriceNegotiator.PriceBlock[primary]))
                 {
-                    // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
-                    requester.PriceNegotiator.OfferedRecord[primary] = 1;
-
-                    // Check if requester is actively requesting
-                    if (requester.Requested[primary] >= 1)
+                    // TODO: handle casting of resources
+                    foreach (var currResource in allResources)
                     {
-                        supplier.PriceNegotiator.OfferedRecord[primary] = 1;
+                        // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
+                        requester.PriceNegotiator.OfferedRecord[currResource] = 1;
+
+                        // Check if requester is actively requesting
+                        if (requester.Requested[currResource] >= 1)
+                        {
+                            supplier.PriceNegotiator.OfferedRecord[currResource] = 1;
+                        }
                     }
 
                     // If price points don't overlap, not a valid buyer/seller pair.

@@ -205,12 +205,7 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
-  MemoryPriceBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
-    Grain: 0
-    Milk: 0
   PriceStep: 1
   AcceptsAnyPrice: 0
-  FixedOffer: 1
+  FixedSellOffer: 1
+  FixedBuyOffer: 0

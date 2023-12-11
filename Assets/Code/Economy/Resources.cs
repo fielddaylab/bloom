@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauPools;
 using BeauUtil;
@@ -477,6 +478,25 @@ namespace Zavala.Economy {
             }
 
             return ResourceId.COUNT;
+        }
+
+        /// <summary>
+        /// Returns all ResourceIds for the given mask.
+        /// </summary
+        static public List<ResourceId> AllResources(ResourceMask mask)
+        {
+            List<ResourceId> resources = new List<ResourceId>();
+
+            uint maskCasted = (uint)mask;
+            for (int i = 0; i < Count; i++)
+            {
+                if ((maskCasted & (1u << i)) != 0)
+                {
+                    resources.Add((ResourceId)i);
+                }
+            }
+
+            return resources;
         }
     }
 }
