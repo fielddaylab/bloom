@@ -246,6 +246,7 @@ GameObject:
   - component: {fileID: 8905672458080014336}
   - component: {fileID: 228915530602510940}
   - component: {fileID: 4387787869209942630}
+  - component: {fileID: 3953197508028528865}
   m_Layer: 0
   m_Name: DialogButton
   m_TagString: Untagged
@@ -394,3 +395,31 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3953197508028528865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7753193689468994578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8399f76c068e54145b570750f25bf093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Selectable: {fileID: 8905672458080014336}
+  EnterId:
+    m_Source: ui-hover
+    m_HashValue: 776011748
+  ExitId:
+    m_Source: 
+    m_HashValue: 0
+  DownId:
+    m_Source: 
+    m_HashValue: 0
+  UpId:
+    m_Source: 
+    m_HashValue: 0
+  ClickId:
+    m_Source: ui-click
+    m_HashValue: 2094747682

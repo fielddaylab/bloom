@@ -7,6 +7,13 @@ namespace Zavala.Sim
 {
     public class PhosphorusSkimmer : BatchedComponent
     {
-        public int SkimAmt;
+        public float AlgaeSkimAmt;
+        public int PhosSkimAmt;
+        public SkimmerType Type;
+    }
+
+    public enum SkimmerType {
+        Algae,
+        Dredge
     }
 }

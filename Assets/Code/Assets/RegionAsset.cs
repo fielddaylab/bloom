@@ -27,7 +27,8 @@ namespace Zavala {
         Obstacle,
         ExportDepot,
         TollBooth,
-        TempObstruction
+        TempObstruction,
+        SkimmerLocation
     }
 
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]
@@ -87,6 +88,8 @@ namespace Zavala {
         public struct BorderPoint {
             public ushort LocalTileIndex;
             public TileAdjacencyMask Borders;
+            public TileCorner SharedCornerCCW;
+            public TileCorner SharedCornerCW;
         }
 
         #endregion // Types
@@ -111,6 +114,9 @@ namespace Zavala {
 
         [Header("Visuals")]
         public LeafAsset LeafScript;
+
+        [Header("Audio")]
+        public AudioClip Ambience;
 
         [Header("Id")]
         public RegionId Id;

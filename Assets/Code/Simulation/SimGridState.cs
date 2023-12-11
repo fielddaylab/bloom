@@ -36,8 +36,8 @@ namespace Zavala.Sim {
         [NonSerialized] public SimBuffer<WaterGroupInfo> WaterGroups;
         [NonSerialized] public uint RegionCount;
         [NonSerialized] public uint WaterGroupCount;
-        [NonSerialized] public SimArena<ushort> RegionEdgeArena;
-        [NonSerialized] public SimArena<TileAdjacencyMask> RegionEdgeDirectionArena;
+        [NonSerialized] public SimArena<RegionEdgeInfo> RegionEdgeArena;
+        [NonSerialized] public SimArena<ushort> TileIndexArena;
 
         [NonSerialized] public ushort CurrRegionIndex;
 
@@ -57,8 +57,8 @@ namespace Zavala.Sim {
             Terrain.Create(HexSize);
             Regions = SimBuffer.Create<RegionInfo>(RegionInfo.MaxRegions);
             WaterGroups = SimBuffer.Create<WaterGroupInfo>(WaterGroupInfo.MaxGroups);
-            RegionEdgeArena = SimArena.Create<ushort>(RegionInfo.MaxRegions * 64);
-            RegionEdgeDirectionArena = SimArena.Create<TileAdjacencyMask>(RegionInfo.MaxRegions * 64);
+            RegionEdgeArena = SimArena.Create<RegionEdgeInfo>(RegionInfo.MaxRegions * 64);
+            TileIndexArena = SimArena.Create<ushort>(RegionInfo.MaxRegions * 64);
             RegionCount = 0;
             WaterGroupCount = 0;
 
@@ -128,13 +128,16 @@ namespace Zavala.Sim {
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];
             
             regionInfo.Edges = grid.RegionEdgeArena.Alloc((uint) asset.Borders.Length);
-            regionInfo.EdgeDirections = grid.RegionEdgeDirectionArena.Alloc((uint) asset.Borders.Length);
             for(int i = 0; i < regionInfo.Edges.Length; i++) {
-                regionInfo.Edges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.Borders[i].LocalTileIndex);
-                regionInfo.EdgeDirections[i] = asset.Borders[i].Borders;
+                regionInfo.Edges[i] = new RegionEdgeInfo() {
+                    Index = (ushort) subRegion.FastIndexToGridIndex(asset.Borders[i].LocalTileIndex),
+                    Directions = asset.Borders[i].Borders,
+                    SharedCornerCCW = asset.Borders[i].SharedCornerCCW,
+                    SharedCornerCW = asset.Borders[i].SharedCornerCW,
+                };
             }
 
-            regionInfo.WaterEdges = grid.RegionEdgeArena.Alloc((uint) asset.EdgeVisualUpdateSet.Length);
+            regionInfo.WaterEdges = grid.TileIndexArena.Alloc((uint) asset.EdgeVisualUpdateSet.Length);
             for(int i = 0; i < regionInfo.WaterEdges.Length; i++) {
                 regionInfo.WaterEdges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.EdgeVisualUpdateSet[i]);
             }
@@ -219,6 +222,11 @@ namespace Zavala.Sim {
 
             world.OutlineMeshes[regionIndex] = new Mesh();
             world.ThickOutlineMeshes[regionIndex] = new Mesh();
+
+#if UNITY_EDITOR || DEVELOPMENT
+            world.OutlineMeshes[regionIndex].name = "Border" + regionIndex.ToStringLookup();
+            world.ThickOutlineMeshes[regionIndex].name = "ThickBorder" + regionIndex.ToStringLookup();
+#endif // UNITY_EDITOR || DEVELOPMENT
 
             Game.SharedState.Get<BorderRenderState>().RegionQueue.PushBack(regionIndex);
 
@@ -445,9 +453,10 @@ namespace Zavala.Sim {
                 case UserBuildTool.Storage:
                     SimDataUtility.BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies, false);
                     break;
-                case UserBuildTool.Skimmer:
+/*                case UserBuildTool.Skimmer:
                     SimDataUtility.BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies, false);
                     break;
+*/
                 default:
                     occupies = null;
                     break;
@@ -470,9 +479,10 @@ namespace Zavala.Sim {
                 case BuildingType.Storage:
                     BuildOnTile(grid, pools.Storages, tileIndex, inMat, out occupies, true, wasPending);
                     break;
-                case BuildingType.Skimmer:
+/*                case BuildingType.Skimmer:
                     BuildOnTile(grid, pools.Skimmers, tileIndex, inMat, out occupies, true, wasPending);
                     break;
+*/
 
                 default:
                     occupies = null;

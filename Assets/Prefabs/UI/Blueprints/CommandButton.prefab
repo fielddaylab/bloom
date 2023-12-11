@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 5542873064247455406}
   - component: {fileID: 4666853801625648822}
   - component: {fileID: 1472241625969571873}
+  - component: {fileID: 5319063997591176681}
   m_Layer: 5
   m_Name: CommandButton
   m_TagString: Untagged
@@ -396,6 +397,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2035655570329005036}
   m_CullTransparentMesh: 1
+--- !u!114 &5319063997591176681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035655570329005036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8399f76c068e54145b570750f25bf093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Selectable: {fileID: 5542873064247455406}
+  EnterId:
+    m_Source: ui-hover
+    m_HashValue: 776011748
+  ExitId:
+    m_Source: 
+    m_HashValue: 0
+  DownId:
+    m_Source: 
+    m_HashValue: 0
+  UpId:
+    m_Source: 
+    m_HashValue: 0
+  ClickId:
+    m_Source: ui-click
+    m_HashValue: 2094747682
 --- !u!1 &2959847944057837601
 GameObject:
   m_ObjectHideFlags: 0

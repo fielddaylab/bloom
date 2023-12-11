@@ -8,9 +8,9 @@ namespace FieldDay.Editor {
     public sealed class DefaultTextureCategories : AssetPostprocessor {
         private void OnPreprocessTexture() {
             TextureImporter importer = (TextureImporter) assetImporter;
-            //if (importer.userData.Contains("[DefaultTextureCategories]")) {
-            //    return;
-            //}
+            if (importer.userData.Contains("[DefaultTextureCategories]")) {
+                return;
+            }
 
             Flags flags = ReadFlags(assetPath);
             //Debug.LogFormat("texture '{0}' has flags {1}", assetPath, flags);
@@ -19,7 +19,7 @@ namespace FieldDay.Editor {
                 return;
             }
 
-            //importer.userData += "[DefaultTextureCategories]";
+            importer.userData += "[DefaultTextureCategories]";
 
             TextureImporterSettings settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);

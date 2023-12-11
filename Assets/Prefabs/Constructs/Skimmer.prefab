@@ -73,8 +73,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf898e7b8e31975428fa78bd14534ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 7
   IsExternal: 0
+  Pending: 0
 --- !u!114 &5412720830129975463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d25850145bfdfb4e84fae25d281edb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HeightOffset: 0.2
+  HeightOffset: -0.3
   m_initial: 0
   m_hideTop: 0
 --- !u!65 &5412720830129975464
@@ -115,7 +116,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c11e6f7b47ded446a2aec0c36d02dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SkimAmt: 2
+  AlgaeSkimAmt: 0.05
+  PhosSkimAmt: 2
+  Type: 0
 --- !u!114 &1976245010908455185
 MonoBehaviour:
   m_ObjectHideFlags: 0

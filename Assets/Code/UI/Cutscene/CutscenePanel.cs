@@ -12,6 +12,7 @@ using Leaf.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Input;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -43,10 +44,13 @@ namespace Zavala.UI {
         #region ITextDisplayer
 
         public IEnumerator CompleteLine() {
+            InputState input = Game.SharedState.Get<InputState>();
+
             NextHint.gameObject.SetActive(true);
-            while(!UnityEngine.Input.GetMouseButtonDown(0)) {
+            while(!input.ButtonPressed(InputButton.PrimaryMouse)) {
                 yield return null;
             }
+            input.ConsumedButtons |= InputButton.PrimaryMouse;
             NextHint.gameObject.SetActive(false);
         }
 
@@ -63,9 +67,21 @@ namespace Zavala.UI {
         public IEnumerator TypeLine(TagString inSourceString, TagTextData inType) {
             int chars = inType.VisibleCharacterCount;
 
+            InputState input = Game.SharedState.Get<InputState>();
             while (chars-- > 0) {
                 Text.maxVisibleCharacters += 1;
-                yield return 0.02f;
+
+                float delay = 0.02f;
+                while(delay > 0) {
+                    delay -= Routine.DeltaTime;
+                    if (input.ButtonPressed(InputButton.PrimaryMouse)) {
+                        delay = 0;
+                        Text.maxVisibleCharacters += chars;
+                        chars = 0;
+                        break;
+                    }
+                    yield return null;
+                }
             }
         }
 
@@ -137,12 +153,22 @@ namespace Zavala.UI {
             yield return Routine.Combine(hideRoutines);
 
             m_LoadedFrames = m_DisplayedFrames = 0;
+            ClearText();
         }
 
         public void AdvanceFrame() {
             if (m_DisplayedFrames < m_LoadedFrames) {
                 CutsceneFrame frame = Frames[m_DisplayedFrames++];
                 frame.Animation.Replace(this, frame.AnimateOn(0));
+            }
+        }
+
+        public void AdvanceRemainingFrames(float delayPerFrame) {
+            float delay = 0;
+            while (m_DisplayedFrames < m_LoadedFrames) {
+                CutsceneFrame frame = Frames[m_DisplayedFrames++];
+                frame.Animation.Replace(this, frame.AnimateOn(delay));
+                delay += delayPerFrame;
             }
         }
 
@@ -226,6 +252,11 @@ namespace Zavala.UI {
         [LeafMember("CutscenePrepareImages")]
         static public IEnumerator LoadImages(StringSlice frameA = default, StringSlice frameB = default, StringSlice frameC = default) {
             return Game.Gui.GetShared<CutscenePanel>().PrepareFrames(frameA, frameB, frameC);
+        }
+
+        [LeafMember("CutsceneAllImages")]
+        static public void AdvanceImage(float delayBetweenImages) {
+            Game.Gui.GetShared<CutscenePanel>().AdvanceRemainingFrames(delayBetweenImages);
         }
 
         [LeafMember("CutsceneNextImage")]

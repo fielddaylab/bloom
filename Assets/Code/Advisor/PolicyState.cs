@@ -9,6 +9,7 @@ using UnityEngine.Events;
 using Zavala.Cards;
 using Zavala.Economy;
 using Zavala.Sim;
+using Zavala.World;
 
 namespace Zavala.Advisor {
     public struct PolicyBlock {
@@ -53,6 +54,7 @@ namespace Zavala.Advisor {
                 case PolicyType.SkimmingPolicy:
                     // read skimming policy
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].SkimmerCost = SkimmerPolicyVals[policyIndex];
+                    PhosphorusSkimmerUtility.SpawnSkimmersInRegion(region, policyIndex);
                     return true;
                     /*
                 case PolicyType.ExportTaxPolicy:

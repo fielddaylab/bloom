@@ -55,6 +55,17 @@ namespace FieldDay {
             Index = (ushort) ((Index + 1) % MaxIndex);
         }
 
+        /// <summary>
+        /// Returns the age of the given index.
+        /// </summary>
+        static public ushort Age(ushort index) {
+            if (index == InvalidIndex) {
+                return InvalidIndex;
+            }
+            int age = index - Index;
+            return (ushort) ((age + MaxIndex) % MaxIndex);
+        }
+
         #endregion // Index
 
         #region Timestamp

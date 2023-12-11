@@ -1,6 +1,9 @@
-using System.IO;
-using System.Collections.Generic;
 using BeauData;
+using BeauUtil;
+using BeauUtil.Debugger;
+using BeauUtil.Variants;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Zavala.Sim;
 using BeauUtil.Debugger;
@@ -8,6 +11,7 @@ using UnityEngine.TextCore.Text;
 using BeauUtil.Variants;
 using BeauUtil;
 using System;
+using Zavala.Rendering;
 
 namespace Zavala.Editor {
     static public class RegionImport {
@@ -325,6 +329,18 @@ namespace Zavala.Editor {
                                 tiles[pos].Flags |= TerrainFlags.NonBuildable;
                                 break;
                             }
+                        case 10: 
+                            { // skimmer location
+                                buildingList.Add(new RegionAsset.BuildingData() 
+                                {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.SkimmerLocation,
+                                    ScriptName = scriptName
+                                });
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
+                                tiles[pos].Flags |= TerrainFlags.NonBuildable;
+                                break;
+                            }
                     }
                 }
             }
@@ -426,6 +442,7 @@ namespace Zavala.Editor {
 
         static public void AnalyzeBorderData(in TiledData data, TerrainTileInfo[] tiles, out RegionAsset.BorderPoint[] borderPoints, out ushort[] edgeVisualUpdateSet) {
             List<RegionAsset.BorderPoint> borders = new List<RegionAsset.BorderPoint>();
+            List<TileCornerMask> corners = new List<TileCornerMask>();
             List<ushort> visualUpdateEdges = new List<ushort>();
 
             HexGridSize.IndexEnumerator idxEnumerator = data.GridSize.GetEnumerator();
@@ -450,8 +467,14 @@ namespace Zavala.Editor {
                     tileInfo.Flags |= TerrainFlags.IsBorder;
                     borders.Add(new RegionAsset.BorderPoint() {
                         LocalTileIndex = (ushort) idx,
-                        Borders = borderMask
+                        Borders = borderMask,
+                        SharedCornerCCW = TileCorner.COUNT,
+                        SharedCornerCW = TileCorner.COUNT
                     });
+
+                    corners.Add(GetCorners(borderMask));
+
+                    // get corners
 
                     if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
                         visualUpdateEdges.Add((ushort) idx);
@@ -459,10 +482,33 @@ namespace Zavala.Editor {
                 }
             }
 
+            // TODO: analyze shared corners
+            for (int i = 0; i < borders.Count; i++) {
+                var border = borders[i];
+                TileCornerMask selfCorners = corners[i];
+                for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++) {
+                    if (data.GridSize.IsValidIndexOffset(border.LocalTileIndex, dir, out int next) && (tiles[next].Flags & TerrainFlags.IsBorder) != 0) {
+                        TileCornerMask otherCorners = GetCornersForTile((ushort) next, borders, corners);
+
+                        int tableIdx = ((int) dir - 1) * 2;
+                        CornerCheckEntry cw = CornerCheckTable[tableIdx];
+                        CornerCheckEntry ccw = CornerCheckTable[tableIdx + 1];
+
+                        if (ShareCorners(selfCorners, otherCorners, cw)) {
+                            border.SharedCornerCW = cw.A;
+                        } else if (ShareCorners(selfCorners, otherCorners, ccw)) {
+                            border.SharedCornerCCW = ccw.A;
+                        }
+                    }
+                }
+
+                borders[i] = border;
+            }
+
+            // sort ccw
+
             HexVectorF midPoint = HexVector.FromGrid((int) data.GridSize.Width / 2, (int) data.GridSize.Height / 2);
             Vector2 midPointVec = new Vector2(midPoint.X, midPoint.Y);
-
-            const float refAngle = Mathf.PI * 1.25f;
 
             // TODO: sort borders in ccw order
             // Could be way more optimal but since this is just in the region import
@@ -480,7 +526,54 @@ namespace Zavala.Editor {
             edgeVisualUpdateSet = visualUpdateEdges.ToArray();
         }
 
+        private struct CornerCheckEntry {
+            public readonly TileCorner A;
+            public readonly TileCorner B;
+
+            public CornerCheckEntry(TileCorner a, TileCorner b) {
+                A = a;
+                B = b;
+            }
+        }
+
+        // sets of 2, ordered by direction and then by cw, ccw
+        static private readonly CornerCheckEntry[] CornerCheckTable = new CornerCheckEntry[] {
+            
+            // sw
+            new CornerCheckEntry(TileCorner.W, TileCorner.NE),
+            new CornerCheckEntry(TileCorner.SW, TileCorner.E),
+
+            // s
+            new CornerCheckEntry(TileCorner.SW, TileCorner.NW),
+            new CornerCheckEntry(TileCorner.SE, TileCorner.NE),
+
+            // se
+            new CornerCheckEntry(TileCorner.SE, TileCorner.W),
+            new CornerCheckEntry(TileCorner.E, TileCorner.NW),
+
+            // ne
+            new CornerCheckEntry(TileCorner.E, TileCorner.SW),
+            new CornerCheckEntry(TileCorner.NE, TileCorner.W),
+
+            // n
+            new CornerCheckEntry(TileCorner.NE, TileCorner.SE),
+            new CornerCheckEntry(TileCorner.NW, TileCorner.SW),
+
+            // nw
+            new CornerCheckEntry(TileCorner.NW, TileCorner.E),
+            new CornerCheckEntry(TileCorner.W, TileCorner.SE),
+        };
+
         private const TerrainFlags IgnoreCullingTerrainFlags = TerrainFlags.IsWater;
+
+        static private TileCornerMask GetCornersForTile(ushort index, List<RegionAsset.BorderPoint> borders, List<TileCornerMask> corners) {
+            int idx = borders.FindIndex((a) => a.LocalTileIndex == index);
+            if (idx < 0) {
+                return 0;
+            } else {
+                return corners[idx];
+            }
+        }
 
         static public void AnalyzeBaseCullingData(in TiledData data, TerrainTileInfo[] tiles) {
             int culled = 0;
@@ -547,6 +640,45 @@ namespace Zavala.Editor {
                 obj.Add(element["name"].AsString, JSON.CreateValue(element["value"].AsString));
             }
             return obj;
+        }
+
+        static private TileCornerMask GetCorners(TileAdjacencyMask mask) {
+            TileCornerMask corners = 0;
+            foreach(var dir in mask) {
+                TileRendering.GetCorners(dir, out TileCorner c0, out TileCorner c1);
+                corners |= (TileCornerMask) (1 << (int) c0);
+                corners |= (TileCornerMask) (1 << (int) c1);
+            }
+            return corners;
+        }
+
+        static private TileCornerMask GetCorners(TileDirection dir) {
+            TileCornerMask corners = 0;
+            TileRendering.GetCorners(dir, out TileCorner c0, out TileCorner c1);
+            corners |= (TileCornerMask) (1 << (int) c0);
+            corners |= (TileCornerMask) (1 << (int) c1);
+            return corners;
+        }
+
+        static private bool IsCCW(TileDirection a, TileDirection b) {
+            Assert.True(a != 0 && b != 0);
+            int valA = (int) a - 1;
+            int valB = (int) b - 1;
+
+            int dist = (int) MathUtils.SafeMod(3 + valB - valA, 6) - 3;
+            return dist > 0;
+        }
+
+        static private bool IsCCW(TileCorner a, TileCorner b) {
+            int valA = (int) a;
+            int valB = (int) b;
+
+            int dist = (int) MathUtils.SafeMod(3 + valB - valA, 6) - 3;
+            return dist > 0;
+        }
+
+        static private bool ShareCorners(TileCornerMask a, TileCornerMask b, CornerCheckEntry entry) {
+            return ((int) a & (1 << (int) entry.A)) != 0 && ((int) b & (1 << (int) entry.B)) != 0;
         }
 
         #region Space Conversion

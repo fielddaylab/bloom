@@ -37,6 +37,8 @@ GameObject:
   - component: {fileID: 954327501376670322}
   - component: {fileID: 4789358157773246825}
   - component: {fileID: 3560866004370143141}
+  - component: {fileID: 6508540445729216726}
+  - component: {fileID: 1896609051031572452}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -176,67 +178,6 @@ MonoBehaviour:
       DFertilizer: 5
       Grain: 0
       Milk: 0
-  PurchasePerRegion:
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
   DefaultPurchasePerRegion:
   - Buy:
       Manure: 10
@@ -480,7 +421,7 @@ MonoBehaviour:
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
   Skimmers:
-    m_Prefab: {fileID: 5412720830129975462, guid: dab5c08824f46364ba60727ed1637681, type: 3}
+    m_Prefab: {fileID: 5412720830129975457, guid: dab5c08824f46364ba60727ed1637681, type: 3}
     m_Name: 
     m_InitialCapacity: 8
     m_PrewarmOnInitialize: 1
@@ -906,5 +847,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e51ace310d8a14cb45b3040514cf97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OutlineThickness: 0.08
+  ThickOutlineThickness: 5
+  RadiusMuliplier: 1.023
   OutlineFilter: {fileID: 0}
   OutlineRenderer: {fileID: 0}
+  LockedOutlineFilter: {fileID: 0}
+  LockedOutlineRenderer: {fileID: 0}
+  LockedOutlineMaterial: {fileID: 0}
+--- !u!114 &6508540445729216726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814c2c69ec3567042854e8349d20a917, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1896609051031572452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 212d5eba398cdd8438b04805712c4793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

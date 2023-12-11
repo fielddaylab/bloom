@@ -1,4 +1,6 @@
 using BeauUtil;
+using BeauUtil.Debugger;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -80,14 +82,14 @@ namespace Zavala.Rendering {
         /// <summary>
         /// Generates mesh data for a tile outline at the given origin.
         /// </summary>
-        static public void GenerateTileBorderMeshData(Vector3 origin, TileAdjacencyMask mask, float radiusMultiplier, float outlineStart, float outlineThickness, Color32 colorStart, Color32 colorEnd, MeshData16<TileVertexFormat> meshBuilder) {
+        static public void GenerateTileBorderMeshData(Vector3 origin, TileAdjacencyMask mask, TileCorner ccw, TileCorner cw, float radiusMultiplier, float outlineStart, float outlineThickness, Color32 colorStart, Color32 colorEnd, MeshData16<TileVertexFormat> meshBuilder) {
             int vertBase = meshBuilder.VertexCount;
 
             int count = mask.Count;
 
             meshBuilder.Preallocate(count * 4, count * 6);
 
-            float outlineDist = s_Radius * radiusMultiplier + outlineStart;
+            float outlineDist = outlineStart;
             float outlineDistEnd = outlineDist + outlineThickness;
 
             TileVertexFormat a, b, c, d;
@@ -97,11 +99,30 @@ namespace Zavala.Rendering {
             d.Color = colorEnd;
 
             foreach(var dir in mask) {
-                GetNormalizedOffsets(dir, out Vector3 v0, out Vector3 v1);
-                a.Position = origin + v0 * outlineDist;
-                b.Position = origin + v1 * outlineDist;
-                c.Position = origin + v1 * outlineDistEnd;
-                d.Position = origin + v0 * outlineDistEnd;
+                GetCorners(dir, out TileCorner c0, out TileCorner c1);
+
+                Vector3 v0 = GetScaledOffset(c0) * radiusMultiplier;
+                Vector3 v1 = GetScaledOffset(c1) * radiusMultiplier;
+
+                if (c0 == ccw) {
+                    c0 = (TileCorner) (((int) c0 + 1) % 6);
+                } else if (c0 == cw) {
+                    c0 = (TileCorner) (((int) c0 + 5) % 6);
+                }
+
+                if (c1 == ccw) {
+                    c1 = (TileCorner) (((int) c1 + 1) % 6);
+                } else if (c1 == cw) {
+                    c1 = (TileCorner) (((int) c1 + 5) % 6);
+                }
+
+                Vector3 v2 = GetNormalizedOffset(c0);
+                Vector3 v3 = GetNormalizedOffset(c1);
+
+                a.Position = origin + v0 + v2 * outlineDist;
+                b.Position = origin + v1 + v3 * outlineDist;
+                c.Position = origin + v1 + v3 * outlineDistEnd;
+                d.Position = origin + v0 + v2 * outlineDistEnd;
 
                 meshBuilder.AddVertices(a, b, c, d);
                 meshBuilder.AddIndices((ushort) (vertBase + 0), (ushort) (vertBase + 1), (ushort) (vertBase + 2));
@@ -111,16 +132,26 @@ namespace Zavala.Rendering {
             }
         }
 
-        static unsafe private void GetNormalizedOffsets(TileDirection dir, out Vector3 v0, out Vector3 v1) {
-            if (dir == TileDirection.Self) {
-                v0 = v1 = default;
-            }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static unsafe public void GetCorners(TileDirection dir, out TileCorner c0, out TileCorner c1) {
+            Assert.True(dir != 0);
 
+            int val = (int) dir - 1;
+            c0 = (TileCorner) ((val + 5) % 6);
+            c1 = (TileCorner) (val % 6);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static unsafe private Vector3 GetNormalizedOffset(TileCorner corner) {
             fixed(Vector3* verts = &s_Normalized.R0) {
-                int idx0 = (4 + (int) dir - 1) % 6;
-                int idx1 = (idx0 + 5) % 6;
-                v0 = verts[idx0];
-                v1 = verts[idx1];
+                return verts[((int) corner + 4) % 6];
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static unsafe private Vector3 GetScaledOffset(TileCorner corner) {
+            fixed (Vector3* verts = &s_RadiusOffsets.R0) {
+                return verts[((int) corner + 4) % 6];
             }
         }
     }

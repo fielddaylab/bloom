@@ -31,6 +31,7 @@ namespace Zavala.World
                 Vector3 worldPos = HexVector.ToWorld(pos, m_StateB.Terrain.Info[spawn.TileIndex].Height, m_StateA.WorldSpace);
                 RegionPrefabPalette palette = m_StateA.Palettes[spawn.RegionIndex];
                 GameObject building = null;
+                PhosphorusSkimmerState skimState = Game.SharedState.Get<PhosphorusSkimmerState>();
                 switch (spawn.Data.Type) {
                     case BuildingType.City: {
                             building = GameObject.Instantiate(palette.City, worldPos, Quaternion.identity);
@@ -54,6 +55,12 @@ namespace Zavala.World
                         {
                             building = GameObject.Instantiate(palette.Obstruction[random.Int(palette.Obstruction.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
                             m_StateD.ObstructionsPerRegion[spawn.RegionIndex].Add(building);
+                            break;
+                        }
+                    case BuildingType.SkimmerLocation: 
+                        {
+                            building = Game.SharedState.Get<BuildingPools>().Skimmers.Prefab.gameObject;
+                            PhosphorusSkimmerUtility.AddSkimmerLocation(skimState, spawn.RegionIndex, spawn.TileIndex);
                             break;
                         }
                 }
