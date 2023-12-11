@@ -2,6 +2,7 @@
     "Zavala.Sim.AlgaeSim::MinPForAlgaeGrowth": 10,
     "Zavala.Sim.AlgaeSim::AlgaeGrowthIncrement": 0.0500000007450581,
     "Zavala.Economy.MarketParams::TruckSpeed": 1.80000007152557,
+    "Zavala.Economy.MarketParams::TicksPerNegotiation": 2,
     "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 75,
     "Zavala.Sim.PhosphorusSim::SteepHeightThreshold": 25,
     "Zavala.Sim.PhosphorusSim::MinFlowThreshold": 4,

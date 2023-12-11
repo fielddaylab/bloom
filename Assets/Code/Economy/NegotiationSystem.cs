@@ -9,7 +9,7 @@ using Zavala.Actors;
 namespace Zavala.Economy
 {
     [SysUpdate(GameLoopPhase.Update, 20)] // After MarketSystem
-    public class StressedPriceSystem : SharedStateSystemBehaviour<MarketData>
+    public class NegotiationSystem : SharedStateSystemBehaviour<MarketData>
     {
         private readonly RingBuffer<PriceNegotiation> m_QueuedNegotiations = new RingBuffer<PriceNegotiation>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourcePriceNegotiator> m_NegotiatorWorkList = new RingBuffer<ResourcePriceNegotiator>(8, RingBufferMode.Expand);
