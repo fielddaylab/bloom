@@ -16,15 +16,15 @@ using Mono.Cecil;
 namespace Zavala.Economy {
     public struct PriceNegotiation
     {
-        ResourcePriceNegotiator Negotiator;
-        ResourceId ResourceType;
-        int Amt;
+        public ResourcePriceNegotiator Negotiator;
+        public ResourceId ResourceType;
+        public bool IsSeller; // negotiator is either buyer or seller
 
-        public PriceNegotiation(ResourcePriceNegotiator neg, ResourceId type, int amt)
+        public PriceNegotiation(ResourcePriceNegotiator neg, ResourceId type, bool isSeller)
         {
             Negotiator = neg;
             ResourceType = type;
-            Amt = amt;
+            IsSeller = isSeller;
         }
     }
 
@@ -41,6 +41,7 @@ namespace Zavala.Economy {
         public bool FixedBuyOffer;      // Does not modify price when purchasing
 
         [NonSerialized] public ResourceBlock OfferedRecord;
+        [NonSerialized] public ResourceBlock PriceChange; // Price change per market tick
 
         protected override void OnEnable()
         {
@@ -65,10 +66,22 @@ namespace Zavala.Economy {
         /// <param name="negotiator"></param>
         /// <param name="resource"></param>
         /// <param name="priceDelta"></param>
-        public static void AdjustPrice(ref ResourcePriceNegotiator negotiator, ResourceId resource, int priceDelta)
+        public static void StagePrice(ref ResourcePriceNegotiator negotiator, ResourceId resource, int priceDelta)
         {
-            negotiator.PriceBlock[resource] += priceDelta;
-            Debug.Log("[NewMarket] " + negotiator.gameObject.name + " adjusted price of " + resource + " by " + priceDelta);
+            // only apply priceDelta once per market tick (even if multiple requests went unfulfilled)
+            negotiator.PriceChange[resource] = priceDelta;
+        }
+
+        /// <summary>
+        /// Finalizes the staged price changes
+        /// </summary>
+        /// <param name="negotiator"></param>
+        /// <param name="resource"></param>
+        /// <param name="priceDelta"></param>
+        public static void FinalizePrice(ref ResourcePriceNegotiator negotiator, ResourceId resource)
+        {
+            negotiator.PriceBlock += negotiator.PriceChange;
+            negotiator.PriceChange[resource] = 0;
         }
 
         /// <summary>

@@ -21,12 +21,13 @@ namespace Zavala.Economy
         public RingBuffer<ResourceRequester> Buyers;
         public RingBuffer<ResourceSupplier> Suppliers;
         public RingBuffer<ResourcePriceNegotiator> Negotiators;
-        public RingBuffer<ResourcePriceNegotiator> MemorizeQueue;
 
         // buffer for buyers that requested for this market cycle
         public RingBuffer<MarketRequestInfo> RequestQueue; // Queue of requests, sitting idle
         public RingBuffer<MarketActiveRequestInfo> FulfillQueue; // Queue of requests which have found a match and need to route through a fulfiller
         public RingBuffer<MarketActiveRequestInfo> ActiveRequests; // List of requests actively being fulfilled (en-route)
+        public RingBuffer<PriceNegotiation> NegotiationQueue;
+
 
         // Pie Chart
         public DataHistory[] CFertilizerSaleHistory;
@@ -49,10 +50,10 @@ namespace Zavala.Economy
             Buyers = new RingBuffer<ResourceRequester>(16, RingBufferMode.Expand);
             Suppliers = new RingBuffer<ResourceSupplier>(16, RingBufferMode.Expand);
             Negotiators = new RingBuffer<ResourcePriceNegotiator>(16, RingBufferMode.Expand);
-            MemorizeQueue = new RingBuffer<ResourcePriceNegotiator>(16, RingBufferMode.Expand);
             RequestQueue = new RingBuffer<MarketRequestInfo>(16, RingBufferMode.Expand);
             FulfillQueue = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
             ActiveRequests = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
+            NegotiationQueue = new RingBuffer<PriceNegotiation>(16, RingBufferMode.Expand);
 
             int pieChartHistoryDepth = 10;
             DataHistoryUtil.InitializeDataHistory(ref CFertilizerSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
@@ -557,5 +558,18 @@ namespace Zavala.Economy
         }
 
         #endregion // Queries
+
+        #region Negotiation
+
+        /// <summary>
+        /// Queues a price negotiation
+        /// </summary>
+        static public void QueueNegotiation(PriceNegotiation negotiation)
+        {
+            MarketData marketData = Game.SharedState.Get<MarketData>();
+            marketData.NegotiationQueue.PushBack(negotiation);
+        }
+
+        #endregion // Negotiation
     }
 }

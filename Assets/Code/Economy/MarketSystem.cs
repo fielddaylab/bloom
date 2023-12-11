@@ -48,7 +48,7 @@ namespace Zavala.Economy
             m_StateA.RequestQueue.CopyTo(m_RequestWorkList);
             m_StateA.RequestQueue.Clear();
 
-            // m_NegotiationWorkList.Clear();
+            m_StateA.NegotiationQueue.Clear();
 
             m_StateA.Suppliers.CopyTo(m_SupplierWorkList);
 
@@ -193,7 +193,10 @@ namespace Zavala.Economy
                                 // TODO: check if offered was actively requesting at the time
                                 if (supplier.PriceNegotiator.OfferedRecord[resource] >= 1)
                                 {
-                                    PriceNegotiatorUtility.AdjustPrice(ref supplier.PriceNegotiator, resource, -supplier.PriceNegotiator.PriceStep);
+                                    // Push negotiator and resource type for negotiation system
+                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, true);
+                                    MarketUtility.QueueNegotiation(neg);
+                                    // PriceNegotiatorUtility.AdjustPrice(ref supplier.PriceNegotiator, resource, -supplier.PriceNegotiator.PriceStep);
                                 }
                             }
                         }
@@ -222,11 +225,11 @@ namespace Zavala.Economy
                             ResourceId resource = (ResourceId)rIdx;
                             if (m_RequestWorkList[i].Requested[resource] != 0)
                             {
-                                if (negotiator.OfferedRecord[resource] == 1)
+                                if (negotiator.OfferedRecord[resource] >= 1)
                                 {
-                                    // PriceNegotiation neg = new PriceNegotiation(negotiator, resource, negotiator.PriceStep);
-                                    // m_NegotiationWorkList.PushBack(neg);
-                                    PriceNegotiatorUtility.AdjustPrice(ref negotiator, resource, negotiator.PriceStep);
+                                    // Push negotiator and resource type for negotiation system
+                                    PriceNegotiation neg = new PriceNegotiation(negotiator, resource, false);
+                                    MarketUtility.QueueNegotiation(neg);
                                 }
                             }
                         }

@@ -67,6 +67,10 @@ namespace Zavala.Economy {
 
         [ConfigVar("ParcelSpeed", 0.2f, 5, 0.2f)] static public float ParcelSpeed = 2.2f;
 
+        [ConfigVar("TicksPerNegotiation", 1, 10, 1)] static public float TicksPerNegotiation = 3; // How many market ticks before price step is applied
+
+        [ConfigVar("NegotiationStep", 1, 10, 1)] static public int NegotiationStep = 1; // the price step applied during negotation phase
+
         #endregion
     }
 }

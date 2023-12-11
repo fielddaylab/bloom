@@ -536,6 +536,7 @@ GameObject:
   - component: {fileID: 5560664645077700513}
   - component: {fileID: 4978364484135027071}
   - component: {fileID: 347741192595456182}
+  - component: {fileID: 2446678491956819929}
   m_Layer: 0
   m_Name: Sim
   m_TagString: Untagged
@@ -808,5 +809,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fff74b9965da78b4d837761ce2d80e8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2446678491956819929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5301571127310796452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 212d5eba398cdd8438b04805712c4793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

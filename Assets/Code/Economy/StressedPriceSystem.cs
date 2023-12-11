@@ -12,6 +12,9 @@ namespace Zavala.Economy
     public class StressedPriceSystem : SharedStateSystemBehaviour<MarketData>
     {
         private readonly RingBuffer<PriceNegotiation> m_QueuedNegotiations = new RingBuffer<PriceNegotiation>(8, RingBufferMode.Expand);
+        private readonly RingBuffer<ResourcePriceNegotiator> m_NegotiatorWorkList = new RingBuffer<ResourcePriceNegotiator>(8, RingBufferMode.Expand);
+
+        private int m_tickCounter = 0;
 
         public override void ProcessWork(float deltaTime)
         {
@@ -20,24 +23,35 @@ namespace Zavala.Economy
                 return;
             }
 
-            //m_QueuedPriceMods.Clear();
-            //m_State.Negotiators.CopyTo(m_NegotiatorWorkList);
-            
-            //m_MemorizeWorkList.Clear();
-            //m_State.MemorizeQueue.CopyTo(m_MemorizeWorkList);
+            m_tickCounter++;
 
-            foreach (var neg in m_QueuedNegotiations)
+            if (m_tickCounter < MarketParams.TicksPerNegotiation)
             {
-                // For each negotiator, if they were trying to buy/sell
-                // if they succeeded, reduce stress.
-                // if they did not succeed, increase stress.
-                // PriceNegotiatorUtility.AdjustPrice(neg);
+                return;
+            }
+            m_tickCounter = 0;
+
+            m_QueuedNegotiations.Clear();
+            m_State.NegotiationQueue.CopyTo(m_QueuedNegotiations);
+
+            foreach (var negotiator in m_State.Negotiators)
+            {
+                negotiator.PriceChange.SetAll(0);
             }
 
-            //foreach (var negotiator in m_MemorizeWorkList)
-            //{
-                // For each negotiator, memorize the last price product bought/sold at
-            //}
+            for (int i = 0; i < m_QueuedNegotiations.Count; i++)
+            {
+                // For each negotiator, if they were trying to buy/sell
+                // if they succeeded, reduce price stress.
+                // if they did not succeed, increase price stress.
+                int priceStep = m_QueuedNegotiations[i].IsSeller ? -m_QueuedNegotiations[i].Negotiator.PriceStep : m_QueuedNegotiations[i].Negotiator.PriceStep;
+                PriceNegotiatorUtility.StagePrice(ref m_QueuedNegotiations[i].Negotiator, m_QueuedNegotiations[i].ResourceType, priceStep);
+            }
+
+            for (int i = 0; i < m_QueuedNegotiations.Count; i++)
+            {
+                PriceNegotiatorUtility.FinalizePrice(ref m_QueuedNegotiations[i].Negotiator, m_QueuedNegotiations[i].ResourceType);
+            }
         }
     }
 }
