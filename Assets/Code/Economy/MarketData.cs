@@ -21,6 +21,7 @@ namespace Zavala.Economy
         public RingBuffer<ResourceRequester> Buyers;
         public RingBuffer<ResourceSupplier> Suppliers;
         public RingBuffer<ResourcePriceNegotiator> Negotiators;
+        public RingBuffer<ResourcePriceNegotiator> MemorizeQueue;
 
         // buffer for buyers that requested for this market cycle
         public RingBuffer<MarketRequestInfo> RequestQueue; // Queue of requests, sitting idle
@@ -48,6 +49,7 @@ namespace Zavala.Economy
             Buyers = new RingBuffer<ResourceRequester>(16, RingBufferMode.Expand);
             Suppliers = new RingBuffer<ResourceSupplier>(16, RingBufferMode.Expand);
             Negotiators = new RingBuffer<ResourcePriceNegotiator>(16, RingBufferMode.Expand);
+            MemorizeQueue = new RingBuffer<ResourcePriceNegotiator>(16, RingBufferMode.Expand);
             RequestQueue = new RingBuffer<MarketRequestInfo>(16, RingBufferMode.Expand);
             FulfillQueue = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
             ActiveRequests = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);

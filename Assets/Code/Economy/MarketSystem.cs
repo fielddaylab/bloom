@@ -7,6 +7,7 @@ using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using Mono.Cecil;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using Zavala.Advisor;
 using Zavala.Roads;
@@ -22,6 +23,7 @@ namespace Zavala.Economy
         private readonly RingBuffer<MarketRequestInfo> m_RequestWorkList = new RingBuffer<MarketRequestInfo>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourceSupplier> m_SupplierWorkList = new RingBuffer<ResourceSupplier>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourceRequester> m_RequesterWorkList = new RingBuffer<ResourceRequester>(8, RingBufferMode.Expand);
+        private readonly RingBuffer<PriceNegotiation> m_NegotiationWorkList = new RingBuffer<PriceNegotiation>(8, RingBufferMode.Expand);
         private readonly RingBuffer<MarketSupplierPriorityInfo> m_PriorityWorkList = new RingBuffer<MarketSupplierPriorityInfo>(8, RingBufferMode.Expand);
 
         public override void ProcessWork(float deltaTime) {
@@ -45,6 +47,8 @@ namespace Zavala.Economy
         private void ProcessMarketCycle() {
             m_StateA.RequestQueue.CopyTo(m_RequestWorkList);
             m_StateA.RequestQueue.Clear();
+
+            // m_NegotiationWorkList.Clear();
 
             m_StateA.Suppliers.CopyTo(m_SupplierWorkList);
 
@@ -71,11 +75,14 @@ namespace Zavala.Economy
                 // Take a snapshot before sells. Compare with post snapshot to see if a specific resource was sold
                 ResourceBlock preSellSnapshot = MarketUtility.GetCompleteStorage(supplier);
 
-                bool foundAnyBuyers = false;
-
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
                 MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary);
+
+                // FindHighestPriorityMatch() // returns found value and bool anyOffers (anyOffers does not include localOptions)
+                // If found, proceed as usual
+                // if not found, check if anyOffers
+                    // if anyOffers, tick up stress
 
                 if (found.HasValue) {
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
@@ -115,8 +122,6 @@ namespace Zavala.Economy
                         }
                     }
 
-                    foundAnyBuyers = true;
-
                     int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
                     int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
                     GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
@@ -145,7 +150,7 @@ namespace Zavala.Economy
                     }
                     ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
                     if (baseProfit - relativeGain < 0) {
-                        supplier.SoldAtALoss = true; 
+                        supplier.SoldAtALoss = true;
                     }
 
                     m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
@@ -176,17 +181,20 @@ namespace Zavala.Economy
 
                 if (tutorial.CurrState >= TutorialState.State.ActiveSim)
                 {
-                    if (foundAnyBuyers && !supplier.PriceNegotiator.FixedOffer)
+                    if (!supplier.PriceNegotiator.FixedSellOffer)
                     {
                         ResourceBlock postSellSnapshot = MarketUtility.GetCompleteStorage(supplier);
                         for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
                         {
-                            // TODO: check if this was a local option (adjsut down to runoff penalty)
                             ResourceId resource = (ResourceId)i;
                             if (preSellSnapshot[resource] == postSellSnapshot[resource] && (preSellSnapshot[resource] != 0))
                             {
-                                // None of this resource was sold; add stress price
-                                PriceNegotiatorUtility.AdjustPrice(supplier.PriceNegotiator, resource, -supplier.PriceNegotiator.PriceStep);
+                                // None of this resource was sold; add stress price if there were any valid connections to negotiate with
+                                // TODO: check if offered was actively requesting at the time
+                                if (supplier.PriceNegotiator.OfferedRecord[resource] >= 1)
+                                {
+                                    PriceNegotiatorUtility.AdjustPrice(ref supplier.PriceNegotiator, resource, -supplier.PriceNegotiator.PriceStep);
+                                }
                             }
                         }
                     }
@@ -205,16 +213,21 @@ namespace Zavala.Economy
                     }
 
                     // TODO: for each actor with one or more requests not fulfilled, add stress
-                    // TODO: check if there were any valid sellers (OfferedRecord)
-                    if (!m_RequestWorkList[i].Requester.IsLocalOption)
+                    // adjust price if there were any valid sellers that refused
+                    if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
                     {
-                        ResourcePriceNegotiator negotiator = m_RequestWorkList[i].Requester.PriceNegotiator;
+                        ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
                         for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
                         {
                             ResourceId resource = (ResourceId)rIdx;
                             if (m_RequestWorkList[i].Requested[resource] != 0)
                             {
-                                PriceNegotiatorUtility.AdjustPrice(negotiator, resource, negotiator.PriceStep);
+                                if (negotiator.OfferedRecord[resource] == 1)
+                                {
+                                    // PriceNegotiation neg = new PriceNegotiation(negotiator, resource, negotiator.PriceStep);
+                                    // m_NegotiationWorkList.PushBack(neg);
+                                    PriceNegotiatorUtility.AdjustPrice(ref negotiator, resource, negotiator.PriceStep);
+                                }
                             }
                         }
                     }
@@ -332,7 +345,13 @@ namespace Zavala.Economy
             HexGridSize gridSize = Game.SharedState.Get<SimGridState>().HexSize;
             TutorialState tutorialState = Game.SharedState.Get<TutorialState>();
 
+            foreach (var requester in m_RequesterWorkList)
+            {
+                requester.PriceNegotiator.OfferedRecord.SetAll(0);
+            }
+
             foreach (var supplier in m_StateA.Suppliers) {
+                supplier.PriceNegotiator.OfferedRecord.SetAll(0);
                 UpdateSupplierPriority(supplier, m_StateA, m_StateB, roadState, gridSize, tutorialState);
             }
 
@@ -419,6 +438,15 @@ namespace Zavala.Economy
 
                 if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < supplier.PriceNegotiator.PriceBlock[primary]))
                 {
+                    // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
+                    requester.PriceNegotiator.OfferedRecord[primary] = 1;
+
+                    // Check if requester is actively requesting
+                    if (requester.Requested[primary] >= 1)
+                    {
+                        supplier.PriceNegotiator.OfferedRecord[primary] = 1;
+                    }
+
                     // If price points don't overlap, not a valid buyer/seller pair.
                     continue;
                 }

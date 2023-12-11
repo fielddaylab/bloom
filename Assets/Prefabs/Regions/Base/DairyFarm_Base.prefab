@@ -233,15 +233,10 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
-  MemoryPriceBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
-    Grain: 0
-    Milk: 0
   PriceStep: 1
   AcceptsAnyPrice: 0
-  FixedOffer: 1
+  FixedSellOffer: 1
+  FixedBuyOffer: 1
 --- !u!1 &7291294420475072060
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,15 +504,10 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
-  MemoryPriceBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
-    Grain: 0
-    Milk: 0
   PriceStep: 1
   AcceptsAnyPrice: 0
-  FixedOffer: 0
+  FixedSellOffer: 0
+  FixedBuyOffer: 0
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0

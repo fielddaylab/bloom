@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 5983373466290620169}
   - component: {fileID: 9040689247612195011}
   - component: {fileID: 1318548718761089297}
+  - component: {fileID: 764168936872465502}
   m_Layer: 7
   m_Name: Storage
   m_TagString: PlayerPlaced
@@ -150,6 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 6
   IsExternal: 0
+  Pending: 0
 --- !u!114 &4665823543789613535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,6 +246,28 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   Icon: {fileID: 0}
+--- !u!114 &764168936872465502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PriceBlock:
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
+    Milk: 0
+  PriceStep: 1
+  AcceptsAnyPrice: 1
+  FixedSellOffer: 0
+  FixedBuyOffer: 0
 --- !u!1001 &1418807874943389641
 PrefabInstance:
   m_ObjectHideFlags: 0

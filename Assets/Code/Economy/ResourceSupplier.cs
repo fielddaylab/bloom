@@ -21,8 +21,6 @@ namespace Zavala.Economy {
 
         [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
 
-        [NonSerialized] public ResourceBlock OfferedRecord; // 
-
         private void Awake() {
             this.CacheComponent(ref Storage);
             this.CacheComponent(ref Position);

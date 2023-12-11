@@ -14,6 +14,20 @@ using UnityEditor.SceneManagement;
 using Mono.Cecil;
 
 namespace Zavala.Economy {
+    public struct PriceNegotiation
+    {
+        ResourcePriceNegotiator Negotiator;
+        ResourceId ResourceType;
+        int Amt;
+
+        public PriceNegotiation(ResourcePriceNegotiator neg, ResourceId type, int amt)
+        {
+            Negotiator = neg;
+            ResourceType = type;
+            Amt = amt;
+        }
+    }
+
     [RequireComponent(typeof(OccupiesTile))]
     public class ResourcePriceNegotiator : BatchedComponent
     {
@@ -23,7 +37,10 @@ namespace Zavala.Economy {
         public int PriceStep = 1;
 
         public bool AcceptsAnyPrice; // Accepts any price when purchasing
-        public bool FixedOffer;      // Does not modify price when selling 
+        public bool FixedSellOffer;      // Does not modify price when selling 
+        public bool FixedBuyOffer;      // Does not modify price when purchasing
+
+        [NonSerialized] public ResourceBlock OfferedRecord;
 
         protected override void OnEnable()
         {
@@ -48,9 +65,10 @@ namespace Zavala.Economy {
         /// <param name="negotiator"></param>
         /// <param name="resource"></param>
         /// <param name="priceDelta"></param>
-        public static void AdjustPrice(ResourcePriceNegotiator negotiator, ResourceId resource, int priceDelta)
+        public static void AdjustPrice(ref ResourcePriceNegotiator negotiator, ResourceId resource, int priceDelta)
         {
             negotiator.PriceBlock[resource] += priceDelta;
+            Debug.Log("[NewMarket] " + negotiator.gameObject.name + " adjusted price of " + resource + " by " + priceDelta);
         }
 
         /// <summary>

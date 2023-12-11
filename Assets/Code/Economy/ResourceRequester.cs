@@ -28,8 +28,6 @@ namespace Zavala.Economy {
 
         [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
 
-        [NonSerialized] public ResourceBlock OfferedRecord; // 
-
         public Flagstaff Flagstaff;
 
 
