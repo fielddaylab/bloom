@@ -1,17 +1,7 @@
 using FieldDay.Components;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Zavala.Economy;
-using static UnityEngine.Rendering.CoreUtils;
-using Zavala.Roads;
-using static FieldDay.Audio.AudioMgr;
 using FieldDay;
-using BeauUtil;
-using UnityEditor.SceneManagement;
-using Mono.Cecil;
 
 namespace Zavala.Economy {
     public enum NegotiatorType
