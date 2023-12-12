@@ -19,7 +19,6 @@ namespace Zavala.Economy
         private readonly RingBuffer<MarketRequestInfo> m_RequestWorkList = new RingBuffer<MarketRequestInfo>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourceSupplier> m_SupplierWorkList = new RingBuffer<ResourceSupplier>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourceRequester> m_RequesterWorkList = new RingBuffer<ResourceRequester>(8, RingBufferMode.Expand);
-        private readonly RingBuffer<PriceNegotiation> m_NegotiationWorkList = new RingBuffer<PriceNegotiation>(8, RingBufferMode.Expand);
         private readonly RingBuffer<MarketSupplierPriorityInfo> m_PriorityWorkList = new RingBuffer<MarketSupplierPriorityInfo>(8, RingBufferMode.Expand);
 
         public override void ProcessWork(float deltaTime) {
@@ -41,31 +40,31 @@ namespace Zavala.Economy
         }
 
         private void ProcessMarketCycle() {
+            // INITIAL SETUP
             m_StateA.RequestQueue.CopyTo(m_RequestWorkList);
             m_StateA.RequestQueue.Clear();
-
             m_StateA.NegotiationQueue.Clear();
-
             m_StateA.Suppliers.CopyTo(m_SupplierWorkList);
 
             SimGridState grid = ZavalaGame.SimGrid;
-
-            grid.Random.Shuffle(m_SupplierWorkList);
-
             MarketData marketData = m_StateA;
             TutorialState tutorial = Game.SharedState.Get<TutorialState>();
-            PolicyState policies = Game.SharedState.Get<PolicyState>();
             BudgetData budget = Game.SharedState.Get<BudgetData>();
 
-            // TODO: get Zavala's team's sophisticated algorithm for matchmaking (cost optimization and bill reduction, I think)
-            // Right now, it is NOT guaranteed that if a player makes local manure market competitive, the grain farms will buy it. It's random.
-            // It only guarantees that if selling to the grain farm is cheaper for the dairy farm than letting it sit, then IF the dairy farm wins the lottery it will sell to the grain farm.
-            // So the player can improve the amount of runoff on average, just without complete control over every transaction.
+            // PRIORITIZE BUYERS
+            // TODO: PRIORITIZE SELLERS
 
-            // For now: Set external suppliers to a lower priority. This way external suppliers will only be queried if there is no local option offering to sell.
-            /*m_SupplierWorkList.Sort((a, b) => {
-                return a.SupplierPriority - b.SupplierPriority;
-            });*/
+            // TODO: CREATE A Buyer->SellerOptions MAPPING
+            // TODO: CREATE A RingBuffer<Buyers> TO PROCESS BUYERS IN PRIORITY ORDER
+
+            // TODO: FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER
+
+            // TODO: ITERATE THROUGH THE BUYERS
+                // TODO: FIND THE MOST OPTIMAL CHOICE STILL AVAILABLE FOR EACH
+                // TODO: FINALIZE SALE BETWEEN PAIRING
+
+
+            grid.Random.Shuffle(m_SupplierWorkList);
 
             foreach (var supplier in m_SupplierWorkList) {
                 // Take a snapshot before sells. Compare with post snapshot to see if a specific resource was sold
@@ -74,11 +73,6 @@ namespace Zavala.Economy
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
                 MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary);
-
-                // FindHighestPriorityMatch() // returns found value and bool anyOffers (anyOffers does not include localOptions)
-                // If found, proceed as usual
-                // if not found, check if anyOffers
-                    // if anyOffers, tick up stress
 
                 if (found.HasValue) {
                     ResourceBlock adjustedValueRequested = found.Value.Requested;
@@ -155,7 +149,7 @@ namespace Zavala.Economy
 
                     if (tutorial.CurrState >= TutorialState.State.ActiveSim)
                     {
-                        // TODO: save purchase to Price Negotiator memories (buyer and seller)
+                        // save purchase to Price Negotiator memories (buyer and seller)
                         for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
                         {
                             ResourceId resource = (ResourceId)rIdx;
@@ -201,8 +195,6 @@ namespace Zavala.Economy
                 }
             }
 
-            // TODO: Allow one supplier to sell to multiple buyers in one tick
-
             if (tutorial.CurrState >= TutorialState.State.ActiveSim) {
                 // for all remaining, increment their age
                 for (int i = 0; i < m_RequestWorkList.Count; i++) {
@@ -212,25 +204,20 @@ namespace Zavala.Economy
                         ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, m_RequestWorkList[i].Requester.Position.TileIndex);
                     }
 
-                    // TODO: for each actor with one or more requests not fulfilled, add stress
-                    // adjust price if there were any valid sellers that refused
+                    // for each actor with one or more requests not fulfilled, add price stress if there were any valid sellers that refused
                     if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
                     {
                         ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
                         for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
                         {
                             ResourceId resource = (ResourceId)rIdx;
-                            // TODO: cast request into any phosphorus mask
 
-                            // if (m_RequestWorkList[i].Requested[resource] != 0)
-                            // {
-                                if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] >= 1))
-                                {
-                                    // Push negotiator and resource type for negotiation system
-                                    PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);
-                                    MarketUtility.QueueNegotiation(neg);
-                                }
-                            // }
+                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] >= 1))
+                            {
+                                // Push negotiator and resource type for negotiation system
+                                PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);
+                                MarketUtility.QueueNegotiation(neg);
+                            }
                         }
                     }
                 }
@@ -292,6 +279,10 @@ namespace Zavala.Economy
 
                 int priorityIndex = supplier.Priorities.PrioritizedBuyers.FindIndex((i, b) => i.Target == b, requests[i].Requester);
                 if (priorityIndex < 0) {
+                    continue;
+                }
+                if (supplier.Priorities.PrioritizedBuyers[priorityIndex].Deprioritized)
+                {
                     continue;
                 }
 
@@ -439,25 +430,6 @@ namespace Zavala.Economy
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
                 List<ResourceId> allResources = ResourceUtility.AllResources(overlap);
 
-                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < supplier.PriceNegotiator.PriceBlock[primary]))
-                {
-                    // TODO: handle casting of resources
-                    foreach (var currResource in allResources)
-                    {
-                        // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
-                        requester.PriceNegotiator.OfferedRecord[currResource] = 1;
-
-                        // Check if requester is actively requesting
-                        if (requester.Requested[currResource] >= 1)
-                        {
-                            supplier.PriceNegotiator.OfferedRecord[currResource] = 1;
-                        }
-                    }
-
-                    // If price points don't overlap, not a valid buyer/seller pair.
-                    continue;
-                }
-
                 // Only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 int importCost = 0;
@@ -482,7 +454,8 @@ namespace Zavala.Economy
                     }
                     else {
                         // Err towards buyer purchase cost (TODO: unless they accept anything?)
-                        profit = requester.PriceNegotiator.PriceBlock[primary];
+                        // profit = requester.PriceNegotiator.PriceBlock[primary];
+                        profit = supplier.PriceNegotiator.PriceBlock[primary];
                     }
 
                     if (supplier.Storage.StorageExtensionReq != null) {
@@ -498,7 +471,29 @@ namespace Zavala.Economy
                 taxRevenue.Import = importCost;
                 taxRevenue.Penalties = requester.IsLocalOption ? adjustments.RunoffPenalty[primary] : 0;
 
-                m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo() {
+
+                // NEGOTIATION PASS
+                bool deprioritized = false; // appears in medium level feedback, but not considered as valid buyer to sell to
+                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < profit))
+                {
+                    foreach (var currResource in allResources)
+                    {
+                        // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
+                        requester.PriceNegotiator.OfferedRecord[currResource] = 1;
+
+                        // Check if requester is actively requesting
+                        if (requester.Requested[currResource] >= 1)
+                        {
+                            supplier.PriceNegotiator.OfferedRecord[currResource] = 1;
+                        }
+                    }
+
+                    // If price points don't overlap, not a valid buyer/seller pair.
+                    deprioritized = true;
+                }
+
+                m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo()
+                {
                     Distance = connectionSummary.Distance,
                     ShippingCost = (int)Math.Ceiling(shippingCost),
                     Mask = overlap,
@@ -507,7 +502,8 @@ namespace Zavala.Economy
                     Path = connectionSummary,
                     Profit = (int)Math.Ceiling(score),
                     RelativeGain = (int)Math.Ceiling(relativeGain),
-                    TaxRevenue = taxRevenue
+                    TaxRevenue = taxRevenue,
+                    Deprioritized = deprioritized
                 });
             }
 

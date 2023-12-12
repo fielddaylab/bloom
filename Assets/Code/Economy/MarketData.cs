@@ -90,6 +90,7 @@ namespace Zavala.Economy
         public int ShippingCost;
         public int RelativeGain;
         public GeneratedTaxRevenue TaxRevenue;
+        public bool Deprioritized;
     }
 
     public struct MarketRequestInfo

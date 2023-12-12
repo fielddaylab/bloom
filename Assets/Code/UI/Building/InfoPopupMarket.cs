@@ -101,7 +101,7 @@ namespace Zavala.UI.Info {
             if (info.Requester.IsLocalOption) {
                 basePrice = 0;
             } else {
-                basePrice = config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+                basePrice = info.Supplier.PriceNegotiator.PriceBlock[info.Resource]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
             }
             row.BasePriceRow.gameObject.SetActive(basePrice > 0);
             row.BasePriceRow.Number.SetText(basePrice.ToStringLookup());
