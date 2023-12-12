@@ -31,17 +31,17 @@
 ::import-tax-low
 @Level		low
 @PolicyType	ImportTaxPolicy
-@Path		policy-import_1.png
+@Path		policy-import_2.png
 
 ::import-tax-high
 @Level		high
 @PolicyType	ImportTaxPolicy
-@Path		policy-import_2.png
+@Path		policy-import_3.png
 
 ::import-tax-subsidy
 @Level		alt
 @PolicyType	ImportTaxPolicy
-@Path		policy-import_3.png
+@Path		policy-import_1.png
 
 // Export Tax
 

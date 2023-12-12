@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
+  IsExternal: 0
+  Pending: 0
 --- !u!114 &947691686583835036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,7 +64,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeightOffset: 0
   m_initial: 1
-  m_hideTop: 0
+  m_hideTop: 1
 --- !u!135 &3929456070218417537
 SphereCollider:
   m_ObjectHideFlags: 0

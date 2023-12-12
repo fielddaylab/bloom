@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using BeauUtil;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
-using UnityEngine.Events;
+using System;
+using System.Collections.Generic;
 using Zavala.Cards;
 using Zavala.Economy;
 using Zavala.Sim;
@@ -84,15 +82,15 @@ namespace Zavala.Advisor {
             ExportTaxVals[3].SetAll(4);
             */
 
-            ImportTaxVals[0].SetAll(0); // NONE
-            ImportTaxVals[1].SetAll(2); // LOW
-            ImportTaxVals[2].SetAll(4); // HIGH
-            ImportTaxVals[3].SetAll(-2);// SUBSIDY
+            ImportTaxVals[0].SetAll(0);  // NONE
+            ImportTaxVals[1].SetAll(-4); // LOW SUBSIDY
+            ImportTaxVals[2].SetAll(-8); // HIGH SUBSIDY
+            ImportTaxVals[3].SetAll(4);  // TAX
 
-            SalesTaxVals[0].SetAll(0);
-            SalesTaxVals[1].SetAll(2);
-            SalesTaxVals[2].SetAll(4);
-            SalesTaxVals[3].SetAll(-2);
+            SalesTaxVals[0].SetAll(0); // NONE
+            SalesTaxVals[1].SetAll(2); // LOW TAX
+            SalesTaxVals[2].SetAll(4); // HIGH TAX
+            SalesTaxVals[3].SetAll(-2);// SUBSIDY
 
             RunoffPenaltyVals[0].Manure = 0;
             RunoffPenaltyVals[1].Manure = 10;
@@ -102,7 +100,7 @@ namespace Zavala.Advisor {
             SkimmerPolicyVals[0] = 0; 
             SkimmerPolicyVals[1] = 1; 
             SkimmerPolicyVals[2] = 2; 
-            SkimmerPolicyVals[3] = 5; // dredge
+            SkimmerPolicyVals[3] = 4; // dredge
         }
 
         private void InitializePolicyMap() {
@@ -188,7 +186,7 @@ namespace Zavala.Advisor {
         None,
         Low,
         High,
-        Subsidy
+        Tax
     }
 
 

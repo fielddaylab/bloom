@@ -1120,7 +1120,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Building Mode:'
+  m_text: 'Build Mode:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b065a828061270b418d4b380866a7b5a, type: 2}
   m_sharedMaterial: {fileID: -6000663875108845399, guid: b065a828061270b418d4b380866a7b5a, type: 2}
@@ -1272,7 +1272,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hillside Region
+  m_text: Smokestack City
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b065a828061270b418d4b380866a7b5a, type: 2}
   m_sharedMaterial: {fileID: -6000663875108845399, guid: b065a828061270b418d4b380866a7b5a, type: 2}
@@ -1299,12 +1299,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 20.65
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 22
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -1335,7 +1335,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 10.844498, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2984,6 +2984,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PolicyBox Runoff
       objectReference: {fileID: 0}
+    - target: {fileID: 3369355478612067722, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: fe5afc8805aa61049864f3373d5c4f4a, type: 3}
     - target: {fileID: 9125793827396821766, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -3110,6 +3114,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PolicyBox Skimmer
       objectReference: {fileID: 0}
+    - target: {fileID: 3369355478612067722, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a4e601cac11766d40b8c12bf68b1f94f, type: 3}
     - target: {fileID: 5399932216319823800, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_text
       value: Skimming Level
@@ -3259,7 +3267,7 @@ PrefabInstance:
     - target: {fileID: 3369355478612067722, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
+      objectReference: {fileID: 21300000, guid: 36c8fb8654e7e4244acf8206fd950a0d, type: 3}
     - target: {fileID: 5399932216319823800, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_text
       value: Import Tax
@@ -3413,7 +3421,7 @@ PrefabInstance:
     - target: {fileID: 3369355478612067722, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
+      objectReference: {fileID: 21300000, guid: 89194bf60d4b2af4c8a261aa564d0611, type: 3}
     - target: {fileID: 5399932216319823800, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_text
       value: Sales Tax

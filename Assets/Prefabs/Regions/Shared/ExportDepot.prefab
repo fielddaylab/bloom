@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeightOffset: 0
   m_initial: 1
-  m_hideTop: 0
+  m_hideTop: 1
 --- !u!114 &6065373712702326176
 MonoBehaviour:
   m_ObjectHideFlags: 0

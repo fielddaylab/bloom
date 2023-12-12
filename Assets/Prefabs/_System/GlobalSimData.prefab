@@ -497,7 +497,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnlockGroups:
-  - UnlockDelay: 20
+  - UnlockDelay: 15
     UnlockConditions:
     - Type: 7
       ChecksRegions: 

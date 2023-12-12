@@ -3,12 +3,15 @@
 :: forestUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
+@cutscene
 @queued
 $call Pause()
 {@advisorEconForest}    Salutations, Director.
 $call PanToBuilding("region2_city1")
-{@advisorEconForest}    News of SAGA has spread to Pine County.
+{@advisorEconForest}    News of SAGA has spread to Cypress County.
 {@advisorEconForest}    Perhaps we could make use of your planning here?
+{@advisorEconForest}    Keep in mind, our budget and policies are separate from Knoll County.
+{@advisorEconForest}    Our needs may be differ from those of our <i>dear</i> neighbors.
 $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -36,10 +39,11 @@ $endif
 @trigger FarmConnection
 @conditions CameraInRegion(2) 
 @once
-{@advisorEcolForest}    Enjoying Pine County?
+{@advisorEcolForest}    Enjoying Cypress County?
 {@advisorEcolForest}    The finest forests in the state, if I do say so myself.
 {@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
 {@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
+$call AddAutoAlertCondition("ExcessRunoff", 2)
 
 
 :: runoffBranch
@@ -47,13 +51,7 @@ $endif
 @conditions     alertType == "excess-runoff", alertRegion == 2, global:bloomDiscovered
 $call Pause()
 $if Visited("region2.unlockStorage")
-    $if AgeOfRegion(3) > 1
-        $if !Visited("region2.unlockImportTax")
-            $branch .unlockImportTax
-        $endif
-    $else
-        $branch .runoffGeneric
-    $endif
+    $branch .runoffGeneric
 $else
     $branch .unlockStorage
 $endif
@@ -68,6 +66,8 @@ $call Unpause()
 {@advisorEcolForest}    I've added <b>Storage</b> to your Blueprint Mode.
 {@advisorEcolForest}    Once connected to a CAFO, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between CAFOs.
+$call AddAutoAlertCondition("Bloom", 2)
+$set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
 
 :: runoffGeneric // triggered by runoffBranch
@@ -76,21 +76,10 @@ $call UnlockShopItem("Storage")
 {@advisorEconForest}    Those could help, but they won't come cheap.
 {@advisorEconForest}    A policy adjustment may be more efficient.
 
-:: bloomGeneric
-@trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
-@forcePolicy    Ecology
-{@advisorEcolForest}    More algae blooms... Gross!
-$if Visited("region2.unlockStorage")
-    {@advisorEcolForest}    I say we build more storage to stop runoff.
-$endif
-$if PolicyIsUnlocked(SkimmingPolicy)
-    {@advisorEcolForest}    Or use skimmers to clean up.
-$endif
-
 :: testBloomTriggerForest
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
+@cutscene
 @forcePolicy    Ecology
 @once
 $call Pause()
@@ -100,23 +89,38 @@ $call Pause()
 {@advisorEcolForest}    It's not our fault you let your <i>filth</i> flow down here.
 $call Unpause()
 
+:: bloomGeneric
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
+@forcePolicy    Ecology
+{@advisorEcolForest}    More algae blooms... Gross!
+$if global:storageUnlocked
+    $if global:importUnlocked
+        {@advisorEcolForest}    I say we build more storage to stop runoff.
+    $else
+        $branch .unlockImportTax
+    $endif
+$endif
+$if PolicyIsUnlocked(SkimmingPolicy)
+    {@advisorEcolForest}    Or use skimmers to clean up.
+$endif
+
+
 // triggered by opening runoff in region 2 after region 3 has been opened
 // feedback: use a farmer instead
 :: unlockImportTax
-@forcePolicy    Economy
+@forcePolicy    Economy      
 @once
-{@advisorEcolForest}    Eugh, more of that run--
+$set global:importUnlocked = true
 {@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
+$call PanCameraToBuilding("region3_city1")
 $call Pause()
-{@advisorEcolPrairie}   I think I figured it out. Pine County might just have too many CAFOs.
+{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many CAFOs.
 {@advisorEcolPrairie}   But we've got plenty of grain over in Heath County! Maybe we could help each other?
-{@advisorEconPrairie}   Good point, Sandra.
-{@advisorEcolForest}    Wha-- when did <i>you</i> get here?
-{@advisorEconPrairie}   Inter-region trade could be critical to addressing this problem...
-{@advisorEconPrairie}   But we'll need some tools to regulate it.
-{@advisorEconPrairie}   I've unlocked an Economic Policy for setting import tax - or subsidy.
+{@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
+{@advisorEconPrairie}   Perhaps we need to offset shipping costs.
+{@advisorEconPrairie}   I've unlocked a policy for setting <b>Import Subsidies.</b>
 $call UnlockCards(ImportTaxPolicy)
-{@advisorEconPrairie}   A higher import tax will encourage regions to use internal resources.
-{@advisorEconPrairie}   A <b>subsidy</b> will encourage them to buy from other regions - but it'll come from your budget.
+{@advisorEconPrairie}   A subsidy will encourage buying from other regions - but it'll come from your budget.
 {@advisorEconForest}    Hmph. Well I say everyone should just buy local. But it's up to you, Director.
 $call Unpause()

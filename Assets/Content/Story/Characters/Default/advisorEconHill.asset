@@ -20,10 +20,10 @@ MonoBehaviour:
     rgba: 4289912314
   PanelColor:
     serializedVersion: 2
-    rgba: 4292865791
+    rgba: 4292868863
   HighlightColor:
     serializedVersion: 2
-    rgba: 4282344409
+    rgba: 4282015178
   NameColor:
     serializedVersion: 2
     rgba: 4291034538

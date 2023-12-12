@@ -97,6 +97,7 @@ namespace Zavala.World {
                 }
                 m_StateA.Camera.transform.localPosition = camPos;
             }
+            m_StateB.ScrollWheel.y = 0;
         }
 
         static private void CastRayToCreatePlane(Ray ray, out Plane plane, out Vector3 origin) {

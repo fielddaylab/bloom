@@ -22,10 +22,10 @@ Skimming Level
 Dredge
 
 :: ImportTaxPolicy.category
-Import Tax
+Import Subsidy
 
 :: ImportTaxPolicy.alt
-Subsidy
+Tax
 
 :: SalesTaxPolicy.category
 Sales Tax
