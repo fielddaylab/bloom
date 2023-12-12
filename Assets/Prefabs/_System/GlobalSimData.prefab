@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f5bce2403f8124e9edef615ac5ac95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_initialBudget: 150
+  m_initialBudgetsPerRegion: 32000000000000005000000000000000410000000000000046000000000000005a00000000000000
 --- !u!114 &7708306960153739439
 MonoBehaviour:
   m_ObjectHideFlags: 0

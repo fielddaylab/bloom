@@ -51,6 +51,7 @@ $endif
 :: unlockPhosphorusView
 // TODO: trigger ACT III here
 @trigger        RegionReachedAge
+@cutscene
 @conditions     regionId == 3
 $call Pause()
 {@cityPrairie}      Hey, um... Sorry to butt in, but...

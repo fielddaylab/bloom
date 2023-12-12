@@ -23,13 +23,13 @@
 
 // Import Tax
 
-::import-tax-low
-@Level		low
+::import-tax-none
+@Level		none
 @PolicyType	ImportTaxPolicy
 @Path		policy-import_0.png
 
-::import-tax-med
-@Level		med
+::import-tax-low
+@Level		low
 @PolicyType	ImportTaxPolicy
 @Path		policy-import_1.png
 

@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c11e6f7b47ded446a2aec0c36d02dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AlgaeSkimAmt: 0.05
+  AlgaeSkimAmt: 0.15
   PhosSkimAmt: 2
   Type: 0
 --- !u!114 &1976245010908455185
