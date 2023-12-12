@@ -57,7 +57,7 @@ MonoBehaviour:
     - Id: cards.SkimmingPolicy.alt
       Content: Dredge
     - Id: cards.ImportTaxPolicy.category
-      Content: Import Policy
+      Content: Import Subsidy
     - Id: cards.ImportTaxPolicy.alt
       Content: Tax
     - Id: cards.SalesTaxPolicy.category

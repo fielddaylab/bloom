@@ -34,6 +34,7 @@ namespace Zavala
     static public class GameTriggers
     {
         static public readonly StringHash32 GameBooted = "GameBooted";
+        static public readonly StringHash32 TutorialSkipped = "TutorialSkipped";
         static public readonly StringHash32 AlertExamined = "AlertExamined";
         static public readonly StringHash32 AdvisorOpened = "AdvisorOpened";
         static public readonly StringHash32 AdvisorClosed = "AdvisorClosed";

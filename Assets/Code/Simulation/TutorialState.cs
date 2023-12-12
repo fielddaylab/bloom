@@ -1,4 +1,7 @@
+using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Debugging;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Leaf.Runtime;
 using System.Collections;
@@ -23,6 +26,15 @@ namespace Zavala.Sim
         static public void ActivateSim() {
             TutorialState tutorial = Game.SharedState.Get<TutorialState>();
             tutorial.CurrState = State.ActiveSim;
+        }
+
+        [DebugMenuFactory]
+        static private DMInfo SkipTutorialMenu() {
+            DMInfo menu = new DMInfo("Tutorial");
+            menu.AddButton("Skip Tutorial", () => {
+                ScriptUtility.Trigger(GameTriggers.TutorialSkipped);
+            });
+            return menu;
         }
     }
 }

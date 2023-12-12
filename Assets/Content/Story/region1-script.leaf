@@ -11,7 +11,7 @@ $call PauseAlertType("ExcessRunoff")
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.5)
-    You are assigned the Director of the Sustainable Agricultural Growth Administration (SAGA).
+    You are assigned the Director of the region's Sustainable Agricultural Growth Administration: SAGA.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.5)
 	This region is young. It's your job as SAGA director to help them grow...
@@ -25,7 +25,7 @@ $call CutsceneEnd()
 
 {@advisorEconHill}      Greetings! Welcome to Knoll County.
 $call ForceDialogueInteraction()
-{@advisorEconHill}      As your regional <b>Economic Advisor,</b> I will help you with money matters. 
+{@advisorEconHill}      I'm here to advise you on money matters. 
 {@advisorEconHill}      Knoll County is growing...
 {@advisorEconHill}      ...but these farms and businesses aren't connected.
 {@advisorEconHill}      We could use your help here. 
@@ -38,7 +38,7 @@ $call PanToBuilding("region1_cafo1")
 {@advisorEcolHill}      Well, it's a bit more than just a "dairy farm."
 {@advisorEcolHill}      It's a major operation. 
 {@advisorEcolHill}      Its technical name is a <i>concentrated animal feed operation</i>... a CAFO.
-{@advisorEcolHill}      I'm here to inform you on environmental concerns, by the way.
+{@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
 {@advisorEconHill}      Open <b>Build Mode</b>.
@@ -187,6 +187,9 @@ $call Unpause()
 
 
 :: skipTutorial
+@trigger    TutorialSkipped
+$call CutsceneEnd()
+{@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
 $set intro:tutorialComplete = true
 $set intro:exporterFound = true
 $call UnlockCards(SalesTaxPolicy)
@@ -349,6 +352,7 @@ $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/f
 $call CutsceneEnd()
 {@advisorEcolHill}    Something must be done! I'll keep an eye out for runoff.
 $call UnpauseAlertType("ExcessRunoff")
+$call AddAutoAlertCondition("ExcessRunoff", 1)
 $call Unpause()
 
 :: genericBloomTrigger

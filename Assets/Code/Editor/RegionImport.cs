@@ -320,6 +320,7 @@ namespace Zavala.Editor {
                                     Type = BuildingType.TempObstruction,
                                     ScriptName = scriptName
                                 });
+                                tiles[pos].Flags |= TerrainFlags.TopHidden;
                                 tiles[pos].Flags |= TerrainFlags.IsOccupied;
                                 tiles[pos].Flags |= TerrainFlags.NonBuildable;
                                 break;

@@ -245,6 +245,7 @@ namespace Zavala.Economy
             return false;
         }
 
+        // this feels so gross i'm sorry
         static public bool QueueMultipleSingleRequests(ResourceRequester requester, ResourceBlock request) {
             if (request.IsZero) return true; // nothing here, do nothing and return success
             for (int i = 0; i < request.Manure; i++) {
