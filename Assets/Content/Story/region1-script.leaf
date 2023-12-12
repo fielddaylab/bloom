@@ -28,20 +28,20 @@ $call ForceDialogueInteraction()
 {@advisorEconHill}      As your regional <b>Economic Advisor,</b> I will help you with money matters. 
 {@advisorEconHill}      Knoll County is growing...
 {@advisorEconHill}      ...but these farms and businesses aren't connected.
-{@advisorEconHill}      We could use your help.
+{@advisorEconHill}      We could use your help here. 
 $call PanToBuilding("region1_city1")
 {@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
 $call PanToBuilding("region1_cafo1")
 {@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
-{@advisorEcolHill}      It's more than just a "dairy farm."
-{@advisorEcolHill}      It's a major operation. Its technical name is a <i>concentrated animal feed operation</i>... a CAFO.
+{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm."
+{@advisorEcolHill}      It's a major operation. 
+{@advisorEcolHill}      Its technical name is a <i>concentrated animal feed operation</i>... a CAFO.
 {@advisorEcolHill}      I'm here to inform you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
-{@advisorEconHill}      Start by opening <b>Build Mode</b>.
-// TODO: add popup/highlight to build mode button here
+{@advisorEconHill}      Open <b>Build Mode</b>.
 $call Unpause()
 
 
@@ -52,8 +52,9 @@ $call Unpause()
 @cutscene
 @once
 {@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
-{@advisorEcolHill}      But don't try to build over any of our forests. Those are protected lands!
-{@advisorEconHill}      And each tile will spend from our regional budget! Try to be thrifty.
+{@advisorEcolHill}      But don't try to build over any of our forests.
+{@advisorEcolHill}      Those are protected lands!
+{@advisorEconHill}      Each tile will spend from our regional budget! Try to be thrifty.
 {@advisorEconHill}      Click "Build" when you have the road the way you like it.
 
 
