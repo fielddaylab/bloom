@@ -1,5 +1,89 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1284778998175959242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4568207913857154547}
+  - component: {fileID: 6876664625967984244}
+  m_Layer: 0
+  m_Name: BG
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4568207913857154547
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284778998175959242}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.077, y: -0.1784, z: -0.5694}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2509329567576483308}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &6876664625967984244
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284778998175959242}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 71937c1f1a764c8408f241fd7a2ec622, type: 3}
+  m_Color: {r: 0.990566, g: 0.990566, b: 0.990566, a: 1}
+  m_FlipX: 1
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2.29, y: 2.06}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &1386699756966819389
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,13 +239,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2539413561134296710}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.044, y: 0, z: -0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1848264528259473135}
   - {fileID: 3848500689711318417}
+  - {fileID: 4568207913857154547}
   m_Father: {fileID: 7641806881950473509}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -183,13 +268,13 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 0
-  BG: {fileID: 896816092082450962}
-  ResourceImage: {fileID: 3079930547839823781}
-  ManureSprite: {fileID: 21300000, guid: acc941f56bfbc8b4ca37f79604295118, type: 3}
-  MFertilizerSprite: {fileID: 21300000, guid: acc941f56bfbc8b4ca37f79604295118, type: 3}
-  DFertilizerSprite: {fileID: 21300000, guid: acc941f56bfbc8b4ca37f79604295118, type: 3}
-  GrainSprite: {fileID: 21300000, guid: 084a2d3ddfb26f842a85c7071fc49c72, type: 3}
-  MilkSprite: {fileID: 21300000, guid: 3cbb6d596834a1e4eb1a7110494be0f4, type: 3}
+  BG: {fileID: 6876664625967984244}
+  ResourceImage: {fileID: 6876664625967984244}
+  ManureSprite: {fileID: 21300000, guid: 5bf1a608c07936b49a459dc3c7b733ae, type: 3}
+  MFertilizerSprite: {fileID: 21300000, guid: 5bf1a608c07936b49a459dc3c7b733ae, type: 3}
+  DFertilizerSprite: {fileID: 21300000, guid: 5bf1a608c07936b49a459dc3c7b733ae, type: 3}
+  GrainSprite: {fileID: 21300000, guid: 71937c1f1a764c8408f241fd7a2ec622, type: 3}
+  MilkSprite: {fileID: 21300000, guid: fe737560fd018d346a9003201a5cb947, type: 3}
 --- !u!1 &7454142396660366473
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +356,7 @@ SpriteRenderer:
   m_Size: {x: 0.9, y: 0.7}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &7605095714716580867
@@ -290,7 +375,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3848500689711318417
 Transform:
   m_ObjectHideFlags: 0
@@ -299,7 +384,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7605095714716580867}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0777, y: -0.252, z: -0.5629}
+  m_LocalPosition: {x: 0.103, y: -0.252, z: -0.566}
   m_LocalScale: {x: 0.15, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:

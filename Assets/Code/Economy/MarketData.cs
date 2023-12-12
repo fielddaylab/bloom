@@ -245,6 +245,26 @@ namespace Zavala.Economy
             return false;
         }
 
+        static public bool QueueMultipleSingleRequests(ResourceRequester requester, ResourceBlock request) {
+            if (request.IsZero) return true; // nothing here, do nothing and return success
+            for (int i = 0; i < request.Manure; i++) {
+                if (!QueueRequest(requester, new ResourceBlock() {Manure = 1})) return false;
+            }
+            for (int i = 0; i < request.MFertilizer; i++) {
+                if (!QueueRequest(requester, new ResourceBlock() { MFertilizer = 1 })) return false;
+            }
+            for (int i = 0; i < request.DFertilizer; i++) {
+                if (!QueueRequest(requester, new ResourceBlock() { DFertilizer = 1 })) return false;
+            }
+            for (int i = 0; i < request.Milk; i++) {
+                if (!QueueRequest(requester, new ResourceBlock() { Milk = 1 })) return false;
+            }
+            for (int i = 0; i < request.Grain; i++) {
+                if (!QueueRequest(requester, new ResourceBlock() { Grain = 1 })) return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// QUeues a request to be actively fulfilled.
         /// </summary>

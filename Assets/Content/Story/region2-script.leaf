@@ -3,12 +3,15 @@
 :: forestUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
+@cutscene
 @queued
 $call Pause()
 {@advisorEconForest}    Salutations, Director.
 $call PanToBuilding("region2_city1")
-{@advisorEconForest}    News of SAGA has spread to Pine County.
+{@advisorEconForest}    News of SAGA has spread to Cypress County.
 {@advisorEconForest}    Perhaps we could make use of your planning here?
+{@advisorEconForest}    Keep in mind, our budget and policies are separate from Knoll County.
+{@advisorEconForest}    Our needs may be differ from those of our <i>dear</i> neighbors.
 $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -36,7 +39,7 @@ $endif
 @trigger FarmConnection
 @conditions CameraInRegion(2) 
 @once
-{@advisorEcolForest}    Enjoying Pine County?
+{@advisorEcolForest}    Enjoying Cypress County?
 {@advisorEcolForest}    The finest forests in the state, if I do say so myself.
 {@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
 {@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
@@ -108,7 +111,7 @@ $call Unpause()
 {@advisorEcolForest}    Eugh, more of that run--
 {@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
 $call Pause()
-{@advisorEcolPrairie}   I think I figured it out. Pine County might just have too many CAFOs.
+{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many CAFOs.
 {@advisorEcolPrairie}   But we've got plenty of grain over in Heath County! Maybe we could help each other?
 {@advisorEconPrairie}   Good point, Sandra.
 {@advisorEcolForest}    Wha-- when did <i>you</i> get here?

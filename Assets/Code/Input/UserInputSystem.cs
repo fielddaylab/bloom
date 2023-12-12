@@ -40,7 +40,7 @@ namespace Zavala.Input {
             m_State.ButtonsDown = buttons;
 
             GetMousePosition(ref m_State.ScreenMousePos, ref m_State.ViewportMousePos);
-            m_State.ScrollWheel = UnityEngine.Input.mouseScrollDelta;
+            m_State.ScrollWheel += UnityEngine.Input.mouseScrollDelta;
 
             if (m_State.ButtonPressed(InputButton.PrimaryMouse)) {
                 m_State.MousePressedPosPrev = m_State.ScreenMousePos;
