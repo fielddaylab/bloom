@@ -60,7 +60,7 @@ namespace Zavala.Rendering {
 
             meshBuilder.Preallocate(6, 12);
 
-            TileVertexFormat a, b, c, d, e, f, g;
+            TileVertexFormat a, b, c, d, e, f;
             a.Color = b.Color = c.Color = d.Color = e.Color = f.Color = color;
 
             a.Position = origin + s_RadiusOffsets.R0 * radiusMultiplier;

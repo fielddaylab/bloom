@@ -6,10 +6,11 @@ using FieldDay;
 using Zavala.Sim;
 using BeauUtil.Debugger;
 using Zavala.Building;
+using BeauPools;
 
 namespace Zavala {
     [DisallowMultipleComponent, DefaultExecutionOrder(-5)]
-    public sealed class OccupiesTile : MonoBehaviour, IComponentData {
+    public sealed class OccupiesTile : MonoBehaviour, IComponentData, IPoolAllocHandler, IPoolConstructHandler {
         [SerializeField] public BuildingType Type;
         
         [NonSerialized] public int TileIndex;
@@ -22,7 +23,6 @@ namespace Zavala {
         private void OnEnable() {
             RefreshData();
             Game.Events.Register(SimGridState.Event_RegionUpdated, RefreshData);
-            Game.Events.Register(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
         }
 
         private void OnDisable() {
@@ -30,7 +30,6 @@ namespace Zavala {
                 return;
             }
             Game.Events.Deregister(SimGridState.Event_RegionUpdated, RefreshData);
-            Game.Events.Deregister(GameEvents.BlueprintModeEnded, HandleBlueprintModeEnded);
         }
 
         private void RefreshData() {
@@ -44,9 +43,18 @@ namespace Zavala {
             Assert.True(RegionIndex < RegionInfo.MaxRegions, "Region Index {0} is out of range", RegionIndex);
         }
 
-        private void HandleBlueprintModeEnded()
-        {
-            Pending = false;
+        void IPoolAllocHandler.OnAlloc() {
+        }
+
+        void IPoolAllocHandler.OnFree() {
+            gameObject.SetActive(false);
+        }
+
+        void IPoolConstructHandler.OnConstruct() {
+            gameObject.SetActive(false);
+        }
+
+        void IPoolConstructHandler.OnDestruct() {
         }
     }
 }

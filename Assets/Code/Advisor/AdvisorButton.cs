@@ -29,6 +29,12 @@ namespace Zavala.Advisor
             Game.Events.Register(GameEvents.DialogueClosing, OnDialogueClosing);
         }
 
+        private void OnDestroy() {
+            if (!Game.IsShuttingDown) {
+                Game.Events.Deregister(GameEvents.DialogueClosing, OnDialogueClosing);
+            }
+        }
+
         #region Handlers
 
         private void HandleButtonClicked() {

@@ -1,3 +1,4 @@
+using BeauRoutine;
 using BeauUtil;
 using FieldDay;
 using FieldDay.Components;
@@ -19,7 +20,7 @@ namespace Zavala.UI
             base.OnEnable();
 
             Game.Events?.Register(GameEvents.MarketCycleTickCompleted, OnMarketTickCompleted);
-            OnMarketTickCompleted();
+            GameLoop.QueueAfterLateUpdate(OnMarketTickCompleted);
         }
 
         protected override void OnDisable() {

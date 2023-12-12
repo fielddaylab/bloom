@@ -68,6 +68,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 42f2aa24953b643469146dddc1b95237, type: 3}
   - {fileID: 21300000, guid: 91165e24abe5a374b8248092a836dc58, type: 3}
   - {fileID: 21300000, guid: a1879e24680c1ba48a492b6cee354375, type: 3}
+  - {fileID: 21300000, guid: 08913f24993ad8c44a614a3b70ef019b, type: 3}
   - {fileID: 21300000, guid: 9b075354cb0ae484aad11631c2a0eecd, type: 3}
   - {fileID: 21300000, guid: f539e1946dd638d43a715d35ef12abc8, type: 3}
   - {fileID: 21300000, guid: 71655035bb0de734c99669adc790e169, type: 3}
@@ -136,6 +137,7 @@ SpriteAtlas:
   - DestroyIcon
   - settings-gear
   - CloseRound
+  - BarGraphClamp
   - CostBGWhite
   - banner_excess-runoff
   - ShopHubButton

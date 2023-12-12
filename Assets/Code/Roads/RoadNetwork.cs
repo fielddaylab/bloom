@@ -301,8 +301,8 @@ namespace Zavala.Roads
             network.RoadObjects.PushBack(newRoad);
 
             // temporarily render the build as holo
-            var matSwap = newRoad.GetComponent<MaterialSwap>();
-            if (matSwap) { matSwap.SetMaterial(holoMat); }
+            var matSwap = newRoad.GetComponent<BuildingPreview>();
+            if (matSwap) { matSwap.Preview(holoMat); }
 
             newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
                 if (c < a - 50)
@@ -362,11 +362,7 @@ namespace Zavala.Roads
                 }
             }
 
-            ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
-            {
-                TileIndex = (ushort)roadTileIndex,
-                Type = VisualUpdateType.Road
-            });
+            SimWorldUtility.QueueVisualUpdate((ushort) roadTileIndex, VisualUpdateType.Road);
         }
 
         static public void UpdateAllRoadVisuals(RoadNetwork network) {
@@ -374,14 +370,11 @@ namespace Zavala.Roads
                 int roadTileIndex = network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex;
                 RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
                 RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
-                ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
-                    TileIndex = (ushort) roadTileIndex,
-                    Type = VisualUpdateType.Road
-                });
+                SimWorldUtility.QueueVisualUpdate((ushort) roadTileIndex, VisualUpdateType.Road);
             }
         }
 
-        static public void RemoveRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool removeInleading, out List<TileDirection> inleadingDirsRemoved) {
+        static public void RemoveRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool removeInleading, out TileAdjacencyMask inleadingDirsRemoved) {
 
             // Erase record from adj nodes
 
@@ -391,7 +384,7 @@ namespace Zavala.Roads
             }
             else
             {
-                inleadingDirsRemoved = new List<TileDirection>();
+                inleadingDirsRemoved = default;
             }
 
             /*
@@ -418,8 +411,8 @@ namespace Zavala.Roads
             network.UpdateNeeded = true;
         }
 
-        static public void RemoveInleadingRoads(RoadNetwork network, SimGridState grid, int tileIndex, out List<TileDirection> inleadingDirsRemoved) {
-            inleadingDirsRemoved = new List<TileDirection>();
+        static public void RemoveInleadingRoads(RoadNetwork network, SimGridState grid, int tileIndex, out TileAdjacencyMask inleadingDirsRemoved) {
+            inleadingDirsRemoved = default;
 
             RoadTileInfo centerTileInfo = network.Roads.Info[tileIndex];
 
@@ -445,7 +438,7 @@ namespace Zavala.Roads
 
                 adjTileInfo.FlowMask[adjDir] = false;
 
-                inleadingDirsRemoved.Add(currDir);
+                inleadingDirsRemoved |= currDir;
 
                 // Update prev road rendering
                 RoadUtility.UpdateRoadVisuals(network, adjIdx);

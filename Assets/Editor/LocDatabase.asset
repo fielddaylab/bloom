@@ -169,13 +169,23 @@ MonoBehaviour:
     - Id: ui.shop.header
       Content: Shop UI
     - Id: ui.target.sales
-      Content: Sales Tax
+      Content: Sales Tax Revenue
     - Id: ui.target.import
-      Content: Import Tax
+      Content: Import Tax Revenue
     - Id: ui.target.penalties
-      Content: Penalties
+      Content: Penalty Revenue
     - Id: ui.title.title
       Content: Title
+    - Id: ui.lens.phosphorus.label
+      Content: Phosphorus View
+    - Id: ui.lens.market.label
+      Content: Economy View
+    - Id: ui.lens.market.graph.time
+      Content: Time
+    - Id: ui.lens.market.graph.header
+      Content: Total Fertilizer Market Share
+    - Id: ui.lens.market.targets.header
+      Content: Market Targets
     BasePath: ui
     AllBasePaths:
     - Path: ui

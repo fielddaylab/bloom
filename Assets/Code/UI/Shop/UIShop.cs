@@ -37,6 +37,10 @@ namespace Zavala.UI {
             Collapse();
         }
 
+        private void OnDisable() {
+            Game.Events?.DeregisterAllForContext(this);
+        }
+
         public void Expand() {
             m_shopRoutine.Replace(ExpandShopRoutine()); 
         }

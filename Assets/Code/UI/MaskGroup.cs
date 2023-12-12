@@ -18,6 +18,9 @@ namespace Zavala.UI {
 
             foreach(var graphic in Graphics) {
                 graphic.maskable = masking;
+                if (masking) {
+                    graphic.RecalculateClipping();
+                }
             }
         }
 

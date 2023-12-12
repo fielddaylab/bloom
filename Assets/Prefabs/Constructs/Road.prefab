@@ -200,6 +200,7 @@ MonoBehaviour:
   m_DEBUG_InitialElements: []
   Layer: 8
   Material: {fileID: 2100000, guid: c689da3acd6c04bb9b3c6b4b53be3280, type: 2}
+  DefaultMesh: {fileID: 0}
 --- !u!114 &1379674122801371436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +216,7 @@ MonoBehaviour:
   m_DEBUG_InitialElements: []
   Layer: 8
   Material: {fileID: 2100000, guid: 2b53b71440690c74e8dc28c399e4d8a1, type: 2}
+  DefaultMesh: {fileID: 0}
 --- !u!114 &7418557678709288407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,3 +230,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Renderer: {fileID: 7379225697361797928}
+  m_InitialHide: []
+  m_Occupies: {fileID: 5074091816765350726}
+  m_Snapping: {fileID: -7104959141006727276}

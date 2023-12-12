@@ -225,6 +225,12 @@ namespace Zavala.World {
 
         #endregion // Centroids
 
+        static public void QueueVisualUpdate(ushort tileIndex, VisualUpdateType type) {
+            ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
+                TileIndex = tileIndex,
+                Type = type
+            });
+        }
 
         #region Leaf Members
 
@@ -327,6 +333,8 @@ namespace Zavala.World {
 
     public enum VisualUpdateType : ushort {
         Road,
+        Preview,
+        Building,
         Border,
         Water,
     }

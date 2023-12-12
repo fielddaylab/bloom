@@ -4,13 +4,29 @@
 Shop UI
 
 :: target.sales
-Sales Tax
+Sales Tax Revenue
 
 :: target.import
-Import Tax
+Import Tax Revenue
 
 :: target.penalties
-Penalties
+Penalty Revenue
 
 :: title.title
 Title
+
+:: lens.phosphorus.label
+Phosphorus View
+
+:: lens.market.label
+Economy View
+
+:: lens.market.graph.time
+Time
+
+:: lens.market.graph.header
+Total Fertilizer Market Share
+
+:: lens.market.targets.header
+Market Targets
+

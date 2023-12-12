@@ -37,14 +37,15 @@ namespace Zavala.Economy
         public ActionType ActionType;
         public int Cost;                                 // The price to build / remove. Negative if the player receives money back
         public int TileIndex;
-        public List<TileDirection> InleadingRemoved;     // Inleading road dirs removed when this was destroyed
+        public TileAdjacencyMask InleadingRemoved;     // Inleading road dirs removed when this was destroyed
         public GameObject BuiltObj;                      // The physical object built
+        public BuildingPreview Previewer;
         public RoadFlags RoadFlagSnapshot;
         public TerrainFlags TerrainFlagSnapshot;
         public TileAdjacencyMask FlowMaskSnapshot;
         public bool WasPending;
 
-        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, List<TileDirection> inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot, bool wasPending)
+        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, TileAdjacencyMask inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot, bool wasPending)
         {
             BuildType = bType;
             ActionType = aType;
@@ -52,6 +53,7 @@ namespace Zavala.Economy
             TileIndex = tileIndex;
             InleadingRemoved = inleadingRemoved;
             BuiltObj = builtObj;
+            Previewer = builtObj != null ? builtObj.GetComponent<BuildingPreview>() : null;
             RoadFlagSnapshot = rFlags;
             TerrainFlagSnapshot = tFlags;
             FlowMaskSnapshot = flowSnapshot;
@@ -191,6 +193,10 @@ namespace Zavala.Economy
                         // Restore flags and flow masks
                         SimDataUtility.RestoreSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot, commit.FlowMaskSnapshot);
 
+                        if (commit.Previewer != null) {
+                            commit.Previewer.Cancel();
+                        }
+
                         break;
                     case ActionType.Destroy:
                         UndoDestroy(blueprintState, shopState, grid, network, commit);
@@ -289,6 +295,10 @@ namespace Zavala.Economy
                     {
                         RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
                         RoadUtility.UpdateRoadVisuals(network, commitAction.TileIndex);
+                    }
+
+                    if (commitAction.Previewer != null) {
+                        commitAction.Previewer.Apply();
                     }
                 }
             }
