@@ -17,6 +17,7 @@ namespace Zavala.Building
         [SerializeField] private GameObject[] m_InitialHide;
         [SerializeField] private OccupiesTile m_Occupies;
         [SerializeField] private SnapToTile m_Snapping;
+        [SerializeField] private ParticleSystem m_Particles;
 
         [NonSerialized] private Material m_OriginalMat;
 
@@ -65,6 +66,8 @@ namespace Zavala.Building
                 SimWorldUtility.QueueVisualUpdate((ushort) m_Occupies.TileIndex, VisualUpdateType.Preview);
             }
 
+            m_Particles.Stop();
+
             foreach(var obj in m_InitialHide) {
                 obj.SetActive(true);
             }
@@ -78,6 +81,8 @@ namespace Zavala.Building
                 SimWorldUtility.QueueVisualUpdate((ushort) m_Occupies.TileIndex, VisualUpdateType.Preview);
             }
 
+            m_Particles.Stop();
+
             foreach (var obj in m_InitialHide) {
                 obj.SetActive(true);
             }
@@ -90,6 +95,8 @@ namespace Zavala.Building
                 ZavalaGame.SimGrid.Terrain.Info[m_Occupies.TileIndex].Flags |= Sim.TerrainFlags.IsPreview;
                 SimWorldUtility.QueueVisualUpdate((ushort) m_Occupies.TileIndex, VisualUpdateType.Preview);
             }
+
+            m_Particles.Play();
         }
 
         private void ResetMaterial()

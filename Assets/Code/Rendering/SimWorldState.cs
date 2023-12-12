@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 using Zavala.Economy;
 using Zavala.Input;
 using Zavala.Rendering;
@@ -301,6 +302,28 @@ namespace Zavala.World {
         }
 
         #endregion // Routines
+
+        #region Raycasts
+
+        static public int RaycastTile(Ray ray) {
+            if (Physics.Raycast(ray, out RaycastHit hit, 100, LayerMasks.HexTile_Mask)) {
+                HexVector v = HexVector.FromWorld(hit.collider.bounds.center, ZavalaGame.SimWorld.WorldSpace);
+                return ZavalaGame.SimGrid.HexSize.FastPosToIndex(v);
+            } else {
+                return -1;
+            }
+        }
+
+        static public int RaycastTileOrBuilding(Ray ray) {
+            if (Physics.Raycast(ray, out RaycastHit hit, 100, LayerMasks.HexTile_Mask | LayerMasks.Building_Mask)) {
+                HexVector v = HexVector.FromWorld(hit.collider.bounds.center, ZavalaGame.SimWorld.WorldSpace);
+                return ZavalaGame.SimGrid.HexSize.FastPosToIndex(v);
+            } else {
+                return -1;
+            }
+        }
+
+        #endregion // Raycasts
     }
 
     public struct SimWorldSpawnBuffer {

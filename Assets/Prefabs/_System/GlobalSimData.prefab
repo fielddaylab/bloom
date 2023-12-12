@@ -428,17 +428,10 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
+  DigesterMesh: {fileID: 0}
+  StorageMesh: {fileID: 0}
   VizAnchors:
     m_Prefab: {fileID: 1211290126235049584, guid: 35cf584d2f568f64cad0fbc518465a4e, type: 3}
-    m_Name: 
-    m_InitialCapacity: 32
-    m_PrewarmOnInitialize: 1
-    m_InitialPrewarm: 16
-    m_DefaultPoolRoot: {fileID: 0}
-    m_DefaultSpawnRoot: {fileID: 0}
-    m_ResetTransformOnAlloc: 1
-  DestroyIcons:
-    m_Prefab: {fileID: 7225258217999727132, guid: ccc38435b02bce64ca12a03ae5ae7b14, type: 3}
     m_Name: 
     m_InitialCapacity: 32
     m_PrewarmOnInitialize: 1
@@ -797,6 +790,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3f2753b28046c4d9c95850ab471920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Icon: {fileID: 0}
+  BuildingMaterialValid: {fileID: 2100000, guid: 2aa36bdb6bc0da646a9da87afd995952, type: 2}
+  BuildingMaterialInvalid: {fileID: 2100000, guid: 204098dccd20e6b489327d774ed31cf5, type: 2}
+  ValidHexColor: {r: 0.42352942, g: 0.24313726, b: 0, a: 0.34117648}
+  InvalidHexColor: {r: 1, g: 0.38039216, b: 0.22352941, a: 0.14901961}
+  DeleteHexColor: {r: 1, g: 0.38039216, b: 0.22352941, a: 0.34117648}
 --- !u!114 &2278038441633514227
 MonoBehaviour:
   m_ObjectHideFlags: 0

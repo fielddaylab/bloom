@@ -5,10 +5,10 @@ using UnityEditor;
 using UnityEngine;
 
 namespace FieldDay.Editor {
-    public sealed class DefaultTextureCategories : AssetPostprocessor {
+    public sealed class TextureImportProcessor : AssetPostprocessor {
         private void OnPreprocessTexture() {
             TextureImporter importer = (TextureImporter) assetImporter;
-            if (importer.userData.Contains("[DefaultTextureCategories]")) {
+            if (importer.userData.Contains("[TextureImportProcessor]")) {
                 return;
             }
 
@@ -19,10 +19,12 @@ namespace FieldDay.Editor {
                 return;
             }
 
-            importer.userData += "[DefaultTextureCategories]";
+            importer.userData += "[TextureImportProcessor]";
 
             TextureImporterSettings settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
+
+            settings.readable = false;
 
             if ((flags & Flags.Texture) != 0) {
                 settings.npotScale = TextureImporterNPOTScale.ToLarger;
@@ -39,9 +41,11 @@ namespace FieldDay.Editor {
             }
 
             if ((flags & Flags.UI) != 0) {
+                settings.mipmapEnabled = false;
                 settings.spriteGenerateFallbackPhysicsShape = false;
                 settings.spriteMeshType = SpriteMeshType.FullRect;
                 settings.filterMode = FilterMode.Bilinear;
+                importer.maxTextureSize = 1024;
             }
 
             importer.SetTextureSettings(settings);

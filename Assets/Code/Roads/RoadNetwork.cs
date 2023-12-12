@@ -300,6 +300,8 @@ namespace Zavala.Roads
             RoadInstanceController newRoad = pools.Roads.Alloc(worldPos);
             network.RoadObjects.PushBack(newRoad);
 
+            newRoad.gameObject.SetActive(true);
+
             // temporarily render the build as holo
             var matSwap = newRoad.GetComponent<BuildingPreview>();
             if (matSwap) { matSwap.Preview(holoMat); }

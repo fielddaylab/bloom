@@ -1,20 +1,24 @@
 using FieldDay;
 using FieldDay.SharedState;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Zavala.Building;
 
-namespace Zavala.Rendering
-{
+namespace Zavala.Rendering {
     public class TilePreviewState : SharedStateComponent, IRegistrationCallbacks
     {
-        [NonSerialized] public Vector2 PrevMousePosition;
+        public TilePreviewIcon Icon;
 
-        [NonSerialized] public OccupiesTile LeadDestroyIcon;
-        [NonSerialized] public SnapToTile LeadDestroySnap;
-        [NonSerialized] public List<OccupiesTile> ActiveDestroyIcons;
+        [Header("Mesh Materials")]
+        public Material BuildingMaterialValid;
+        public Material BuildingMaterialInvalid;
+
+        [Header("Particle Colors")]
+        public Color ValidHexColor;
+        public Color InvalidHexColor;
+        public Color DeleteHexColor;
+
+        [NonSerialized] public int TileIndex;
+        [NonSerialized] public bool Previewing;
 
         public void OnRegister()
         {
@@ -27,7 +31,7 @@ namespace Zavala.Rendering
 
         private void HandleEndBlueprintMode()
         {
-            PrevMousePosition = Vector2.negativeInfinity;
+            TileIndex = -1;
         }
 
         #endregion // Handlers

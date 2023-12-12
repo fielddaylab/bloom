@@ -36,13 +36,14 @@ namespace Zavala.Building {
     public class BuildToolState : SharedStateComponent, IRegistrationCallbacks {
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public RoadToolState RoadToolState;
+
         [NonSerialized] public HexVector VecPrev;
         [NonSerialized] public bool VecPrevValid;
 
         [NonSerialized] public bool ToolUpdated;
 
         // Blocked Tiles (for non-road buildings)
-        [NonSerialized] public RingBuffer<int> BlockedIdxs; // tile indices of non-buildables
+        [NonSerialized] public HashSet<int> BlockedIdxs; // tile indices of non-buildables
         [NonSerialized] public RingBuffer<int> BlockedAdjIdxs; // temp list for gathering tiles adjacent to sources/destinations
         [NonSerialized] public SimBuffer<byte> BlockedTileBuffer;
 
@@ -52,7 +53,7 @@ namespace Zavala.Building {
         public void OnRegister() {
             ClearRoadTool();
 
-            BlockedIdxs = new RingBuffer<int>(64, RingBufferMode.Expand);
+            BlockedIdxs = new HashSet<int>(64);
             BlockedAdjIdxs = new RingBuffer<int>(32, RingBufferMode.Expand);
             BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
         }
@@ -103,16 +104,16 @@ namespace Zavala.Building {
                     continue;
                 }
 
-                btState.BlockedIdxs.PushBack(dest.TileIdx);
+                btState.BlockedIdxs.Add(dest.TileIdx);
             }
             foreach (var src in network.Sources)
             {
-                if (btState.BlockedIdxs.Contains(src.TileIdx) || src.IsExternal || src.RegionIdx != grid.CurrRegionIndex)
+                if (src.IsExternal || src.RegionIdx != grid.CurrRegionIndex)
                 {
                     continue;
                 }
 
-                btState.BlockedIdxs.PushBack(src.TileIdx);
+                btState.BlockedIdxs.Add(src.TileIdx);
             }
 
             // Tiles Adjacent to Sources and Destinations
@@ -136,11 +137,7 @@ namespace Zavala.Building {
             // Copy adjacent into holistic list
             foreach (int adjIdx in btState.BlockedAdjIdxs)
             {
-                if (btState.BlockedIdxs.Contains(adjIdx))
-                {
-                    continue;
-                }
-                btState.BlockedIdxs.PushBack(adjIdx);
+                btState.BlockedIdxs.Add(adjIdx);
             }
 
             // Other non-buildable tiles
@@ -156,39 +153,20 @@ namespace Zavala.Building {
                     // If non-buildable, add to list
                     if ((grid.Terrain.Info[index].Flags & TerrainFlags.NonBuildable) != 0)
                     {
-                        if (btState.BlockedIdxs.Contains(index))
-                        {
-                            continue;
-                        }
+                        btState.BlockedIdxs.Add(index);
 
-                        btState.BlockedIdxs.PushBack(index);
                     }
                     if ((grid.Terrain.Info[index].Flags & TerrainFlags.IsWater) != 0)
                     {
-                        if (btState.BlockedIdxs.Contains(index))
-                        {
-                            continue;
-                        }
-
-                        btState.BlockedIdxs.PushBack(index);
+                        btState.BlockedIdxs.Add(index);
                     }
                     if ((grid.Terrain.Info[index].Flags & TerrainFlags.IsOccupied) != 0)
                     {
-                        if (btState.BlockedIdxs.Contains(index))
-                        {
-                            continue;
-                        }
-
-                        btState.BlockedIdxs.PushBack(index);
+                        btState.BlockedIdxs.Add(index);
                     }
                     if ((network.Roads.Info[index].Flags & RoadFlags.IsRoad) != 0)
                     {
-                        if (btState.BlockedIdxs.Contains(index))
-                        {
-                            continue;
-                        }
-
-                        btState.BlockedIdxs.PushBack(index);
+                        btState.BlockedIdxs.Add(index);
                     }
                 }
             }
