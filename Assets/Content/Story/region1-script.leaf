@@ -107,7 +107,6 @@ $call UnlockCards(SalesTaxPolicy)
 {@advisorEconHill}      You already earn revenue from every shipment of milk consumed in the city.
 {@advisorEconHill}      Sales Tax will also generate revenue for everything bought in our region.
 {@advisorEconHill}      But set it too high, and trade may slow down!
-{@advisorEconHill}      Good luck, Director.
 $call ActivateSim()
 $call ReleaseDialogueInteraction()
 
@@ -265,6 +264,7 @@ $endif
 
 :: discoverFirstBloom
 @trigger        AlertExamined
+@cutscene
 @conditions     alertType == "bloom", alertRegion == 1
 @once
 $call Pause()

@@ -82,7 +82,7 @@ $call UnlockShopItem("Storage")
 @forcePolicy    Ecology
 {@advisorEcolForest}    More algae blooms... Gross!
 $if Visited("region2.unlockStorage")
-    {@advisorEcolForest}    We could build more storage units.
+    {@advisorEcolForest}    I say we build more storage to stop runoff.
 $endif
 $if PolicyIsUnlocked(SkimmingPolicy)
     {@advisorEcolForest}    Or use skimmers to clean up.
