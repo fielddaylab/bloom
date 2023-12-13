@@ -62,6 +62,7 @@ namespace Zavala.World {
             }
             for (int i = 0; i < numSkimmers; i++) {
                 PhosphorusSkimmer skim = PlaceSkimmer(grid, skimmerPool, locs[i]);
+                skim.gameObject.SetActive(true);
                 Debug.LogWarning("[PhosphorusSkimmerState] Set skimmer to " + skim);
                 locs[i] = new SkimmerLocation() {
                     TileIndex = locs[i].TileIndex,

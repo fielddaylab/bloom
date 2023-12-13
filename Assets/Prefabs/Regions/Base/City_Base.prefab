@@ -249,7 +249,7 @@ MonoBehaviour:
   InfoLabel:
     m_Source: location.shared.cityInfo
     m_HashValue: 499009014
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 41bdac6579c976d4b902973664401892, type: 3}
 --- !u!135 &3483978453912282086
 SphereCollider:
   m_ObjectHideFlags: 0

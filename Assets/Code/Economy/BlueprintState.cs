@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Zavala.Audio;
 using Zavala.Building;
 using Zavala.Rendering;
 using Zavala.Roads;
@@ -285,6 +286,10 @@ namespace Zavala.Economy
                 {
                     BuildingType builtType = commitAction.BuildType;
                     if (builtType == BuildingType.Digester || builtType == BuildingType.Storage) {
+                        if (commitAction.ActionType == ActionType.Build) {
+                            VfxUtility.PlayEffect(commitAction.BuiltObj.transform.position, EffectType.Poof);
+                            SfxUtility.PlaySfx("build-poof");
+                        }
                         using (TempVarTable varTable = TempVarTable.Alloc()) {
                             varTable.Set("buildingType", commitAction.BuildType.ToString());
                             ScriptUtility.Trigger(GameTriggers.PlayerBuiltBuilding, varTable);
@@ -295,6 +300,9 @@ namespace Zavala.Economy
                     {
                         RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
                         RoadUtility.UpdateRoadVisuals(network, commitAction.TileIndex);
+                        if (commitAction.ActionType == ActionType.Build) {
+                            VfxUtility.PlayEffect(SimWorldUtility.GetTileCenter(commitAction.TileIndex), EffectType.Poof_Road);
+                        }
                     }
 
                     if (commitAction.Previewer != null) {
@@ -309,6 +317,8 @@ namespace Zavala.Economy
 
             MarketData market = Game.SharedState.Get<MarketData>();
             market.UpdatePrioritiesNow = true;
+
+            SfxUtility.PlaySfx("ui-purchase");
 
             // Exit build state
             blueprintState.UI.OnBuildConfirmClicked();

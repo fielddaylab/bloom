@@ -121,6 +121,75 @@ namespace Zavala {
             return result;
         }
 
+        /// <summary>
+        /// Returns if two indices are next to each other.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsNeighbor(int index, int target, out TileDirection dir) {
+            if (index == target) {
+                dir = TileDirection.Self;
+                return true;
+            }
+
+            if (!IsValidIndex(index) || !IsValidIndex(target)) {
+                dir = default;
+                return false;
+            }
+
+            return IsNeighbor(FastIndexToPos(index), FastIndexToPos(target), out dir);
+        }
+
+        /// <summary>
+        /// Returns if two indices are next to each other.
+        /// Will skip index validation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool FastIsNeighbor(int index, int target, out TileDirection dir) {
+            return IsNeighbor(FastIndexToPos(index), FastIndexToPos(target), out dir);
+        }
+
+        /// <summary>
+        /// Gets the direction between the two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsNeighbor(HexVector vec, HexVector target, out TileDirection dir) {
+            dir = HexVector.Direction(vec, target);
+            return dir != TileDirection.COUNT;
+        }
+
+        /// <summary>
+        /// Returns the direction between two indices.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TileDirection DirectionTowards(int index, int target) {
+            if (index == target) {
+                return TileDirection.Self;
+            }
+
+            if (!IsValidIndex(index) || !IsValidIndex(target)) {
+                return TileDirection.COUNT;
+            }
+
+            return DirectionTowards(FastIndexToPos(index), FastIndexToPos(target));
+        }
+
+        /// <summary>
+        /// Returns the direction between two indices.
+        /// Will skip index validation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TileDirection FastDirectionTowards(int index, int target) {
+            return DirectionTowards(FastIndexToPos(index), FastIndexToPos(target));
+        }
+
+        /// <summary>
+        /// Gets the direction between the two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TileDirection DirectionTowards(HexVector vec, HexVector target) {
+            return HexVector.Direction(vec, target);
+        }
+
         #endregion // Offsets
 
         #region Position To Index
@@ -516,21 +585,6 @@ namespace Zavala {
             return (dq * dq) + (dr * dr) + (dq * dr);
         }
 
-        /// <summary>
-        /// Determines if the two HexVectors are adjacent by checking each adjacent to a for equality to b.
-        /// </summary>
-        /// <returns></returns>
-        static public bool Adjacent(in HexVector a, in HexVector b) {
-            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
-                if (b.Equals(Offset(a, dir))) return true;
-            }
-            return false;
-        }
-
-        static public bool Adjacent(int a, int b, HexGridSize gridSize) {
-            return Adjacent(gridSize.FastIndexToPos(a), gridSize.FastIndexToPos(b));
-        }
-
         #endregion // Math
 
         #region Offsets
@@ -568,6 +622,27 @@ namespace Zavala {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static public HexVector Offset(TileDirection direction) {
             return s_VectorOffsets[(int) direction];
+        }
+
+        /// <summary>
+        /// Returns the direction for the given HexVector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public TileDirection Direction(HexVector offset) {
+            for(int i = 0; i < 7; i++) {
+                if (s_VectorOffsets[i] == offset) {
+                    return (TileDirection) i;
+                }
+            }
+            return TileDirection.COUNT;
+        }
+
+        /// <summary>
+        /// Returns the direction for the given HexVector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public TileDirection Direction(HexVector offsetA, HexVector offsetB) {
+            return Direction(offsetB - offsetA);
         }
 
         /// <summary>

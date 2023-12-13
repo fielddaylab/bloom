@@ -56,7 +56,7 @@ namespace Zavala.Actors {
         }
 
         private void StressOnAdjacentEvent(int dispatcherTileIndex) {
-            if (HexVector.Adjacent(TileIndex, dispatcherTileIndex, ZavalaGame.SimGrid.HexSize)) {
+            if (ZavalaGame.SimGrid.HexSize.FastIsNeighbor(TileIndex, dispatcherTileIndex, out var _)) {
                 IncrementStress();
             }
         }

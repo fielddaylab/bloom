@@ -228,11 +228,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Renderer: {fileID: 8141065082287600880}
-  m_InitialHide:
-  - {fileID: 8339595429004493895}
-  m_Occupies: {fileID: 4665823543789613532}
   m_Snapping: {fileID: 4665823543789613535}
   m_Particles: {fileID: 5171480860883382126}
+  m_Occupies: {fileID: 4665823543789613532}
+  m_InitialHide:
+  - {fileID: 8339595429004493895}
+  m_PreviewMesh: {fileID: 967685232985939790, guid: 314f5ed30550afc48b0bb960f9e5c4e9, type: 3}
 --- !u!114 &1318548718761089297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +252,7 @@ MonoBehaviour:
   InfoLabel:
     m_Source: 
     m_HashValue: 0
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
 --- !u!114 &764168936872465502
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -54,7 +54,8 @@ $call Unpause()
 {@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
 {@advisorEcolHill}      But don't try to build over any of our forests.
 {@advisorEcolHill}      Those are protected lands!
-{@advisorEconHill}      Each tile will spend from our regional budget! Try to be thrifty.
+{@advisorEcolHill}      And you can't bridge over darker <b>deep water.</b>
+{@advisorEconHill}      Plus each tile will spend from our county budget! Try to be thrifty.
 {@advisorEconHill}      Click "Build" when you have the road the way you like it.
 
 
@@ -77,10 +78,11 @@ $else
     {@advisorEconHill}      Notice the <b>receipt</b> that keeps a running total of your plan's cost.
     // {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
     {@advisorEconHill}      Now Bertram can buy Henreitta's <i>grain</i> to produce <i>milk</i>.
-    {@advisorEconHill}      But who buys the <i>milk</i>, you ask? The fine people of Pendleton Hills, of course!
+    {@advisorEconHill}      But who buys the <i>milk</i>, you ask?
+    {@advisorEconHill}      The fine people of Pendleton Hills, of course!
     $if !intro:citiesConnected 
         $call PanToBuilding("region1_city1")
-        {@advisorEconHill}      Draw up another <i>Road</i> connecting the CAFO to the City.
+        {@advisorEconHill}      We need a <i>Road</i> connecting the CAFO to the City.
     $endif
 $endif
 $call Unpause()
@@ -113,8 +115,9 @@ $call Unpause()
 @once
 @cutscene
 $set intro:farmsAndCities = true
-{@advisorEconHill}      Now that everything is connected, we can turn <i>grain</i> into <i>milk</i> for Pendleton Hills.
-{@advisorEconHill}      That milk fuels taxable production, and gives us a budget!
+{@advisorEconHill}      Now that everything is connected, we can produce <i>milk</i> Pendleton Hills.
+{@advisorEconHill}      That food fuels the city. 
+{@advisorEconHill}      The city income taxes give SAGA a budget. 
 {@advisorEconHill}      But SAGA may need more funding to continue work in the area.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
@@ -140,7 +143,6 @@ $call ReleaseDialogueInteraction()
 {@advisorEconHill}      You can see me here any time to adjust Knoll County's policies - like Sales Tax!
 {@advisorEconHill}      It can provide additional revenue for infrastructure projects.
 {@advisorEconHill}      But set it too high, and trade may be hindered.
-{@advisorEconHill}      What do you think?
 
 
 :: policySet
@@ -163,9 +165,10 @@ $call ActivateSim()
 // @once
 // $call Pause()
 // $call PanToBuilding("region1_cafo1")
-// {@advisorEcolHill}      It looks like this dairy farm is letting its manure sit and run off.
+// {@advisorEcolHill}      This dairy farm is letting manure sit.
+// {@advisorEcolHill}  It is sinking into the groundwater and will get into the lakes. 
 // {@advisorEconHill}      Indeed. They simply have no more favorable alternatives.
-// {@advisorEcolHill}      This could have ramifications for lake health down the line...
+// {@advisorEcolHill}      This could be bad for the future of the lakes...
 // $call Unpause()
 
 :: specialDelivery
@@ -177,11 +180,13 @@ $call Pause()
 $set intro:exporterFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
-{@advisorEconHill}      Henrietta's grain farm imported some <i>commercial fertilizer</i> from an outside supplier.
-{local @grainFarmer}    I love <b>Phos4Us</b>! My crops need that phosphorus, and it ships right to my farm.
-{@advisorEcolHill}      Hold on! All those extra nutrients could disrupt the ecological balance!
+{@advisorEconHill}      Henrietta's grain farm imported some <i>commercial fertilizer</i>.
+{local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
+{local @grainFarmer}    ...and its cheap to ship to my farm.
+{@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
+{@advisorEcolHill}     This could disrupt the ecological balance!
 {@advisorEconHill}      Well, I'm afraid this is the only economically feasible option.
-{@advisorEcolHill}      Hm... I'm sure we can find a better way...
+{@advisorEcolHill}      Hm... We need to look for a better way...
 $call AddAutoAlertCondition("Bloom", 1)
 $call Unpause()
 

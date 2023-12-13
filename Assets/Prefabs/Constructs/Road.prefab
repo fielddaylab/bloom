@@ -601,7 +601,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 64
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -867,7 +867,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 28
+      scalar: 18
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -5052,7 +5052,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Renderer: {fileID: 7379225697361797928}
-  m_InitialHide: []
-  m_Occupies: {fileID: 5074091816765350726}
   m_Snapping: {fileID: -7104959141006727276}
   m_Particles: {fileID: 4240230064690922382}
+  m_Occupies: {fileID: 5074091816765350726}
+  m_InitialHide: []
+  m_PreviewMesh: {fileID: 0}

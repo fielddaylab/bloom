@@ -104,8 +104,13 @@ namespace Zavala.Economy {
         public static bool CanPurchaseBuild(UserBuildTool currTool, uint currentRegion, int num, int runningCost, out int price) {
             BudgetData budgetData = Game.SharedState.Get<BudgetData>();
             price = ShopUtility.PriceLookup(currTool) * num;
-
-            bool purchaseSuccessful = BudgetUtility.CanSpendBudget(budgetData, runningCost + price, currentRegion);
+            bool purchaseSuccessful;
+            if (currTool == UserBuildTool.Road) {
+                // don't add the current road price to runningCost - it's already accounted for in runningCost
+                purchaseSuccessful = BudgetUtility.CanSpendBudget(budgetData, runningCost, currentRegion);
+            } else {
+                purchaseSuccessful = BudgetUtility.CanSpendBudget(budgetData, runningCost + price, currentRegion);
+            }
             // bool purchaseSuccessful = BudgetUtility.TrySpendBudget(budgetData, price, currentRegion);
             return purchaseSuccessful;
         }
@@ -147,6 +152,10 @@ namespace Zavala.Economy {
         public static void ModifyRunningCost(ShopState shop, int deltaCost)
         {
             shop.RunningCost += deltaCost;
+            if (shop.RunningCost < 0) {
+                Log.Error("[ShopSystem] WARNING: something caused running cost to reach {0}", shop.RunningCost);
+                ResetRunningCost(shop);
+            }
         }
 
         public static void EnqueueCost(ShopState shop, int cost)

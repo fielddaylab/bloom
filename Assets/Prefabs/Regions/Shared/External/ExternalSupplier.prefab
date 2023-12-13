@@ -186,7 +186,7 @@ MonoBehaviour:
   InfoLabel:
     m_Source: 
     m_HashValue: 0
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: ceb6aeeceffccb4418a5f3d42e78bf22, type: 3}
 --- !u!114 &2844105690660262594
 MonoBehaviour:
   m_ObjectHideFlags: 0

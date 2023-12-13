@@ -13,12 +13,18 @@ namespace Zavala.Building
 {
     public class BuildingPreview : BatchedComponent
     {
+        [Header("Components")]
         [SerializeField] private MeshRenderer m_Renderer;
-        [SerializeField] private GameObject[] m_InitialHide;
-        [SerializeField] private OccupiesTile m_Occupies;
         [SerializeField] private SnapToTile m_Snapping;
         [SerializeField] private ParticleSystem m_Particles;
+        [SerializeField] private OccupiesTile m_Occupies;
 
+        [Header("Config")]
+        [SerializeField] private GameObject[] m_InitialHide;
+        [SerializeField] private Mesh m_PreviewMesh;
+
+        [NonSerialized] private MeshFilter m_MeshFilter;
+        [NonSerialized] private Mesh m_OriginalMesh;
         [NonSerialized] private Material m_OriginalMat;
 
         #region Unity Callbacks
@@ -29,6 +35,11 @@ namespace Zavala.Building
 
             foreach (var obj in m_InitialHide) {
                 obj.SetActive(false);
+            }
+
+            if (m_PreviewMesh && m_Renderer) {
+                m_MeshFilter = m_Renderer.GetComponent<MeshFilter>();
+                m_OriginalMesh = m_MeshFilter.sharedMesh;
             }
 
             if (m_Renderer && !m_OriginalMat) { m_OriginalMat = m_Renderer.sharedMaterial; }
@@ -46,6 +57,10 @@ namespace Zavala.Building
 
             if (m_Renderer && m_OriginalMat) {
                 m_Renderer.sharedMaterial = m_OriginalMat;
+            }
+
+            if (m_MeshFilter) {
+                m_MeshFilter.sharedMesh = m_OriginalMesh;
             }
 
             base.OnDisable();
@@ -96,12 +111,20 @@ namespace Zavala.Building
                 SimWorldUtility.QueueVisualUpdate((ushort) m_Occupies.TileIndex, VisualUpdateType.Preview);
             }
 
+            if (m_MeshFilter) {
+                m_MeshFilter.sharedMesh = m_PreviewMesh;
+            }
+
             m_Particles.Play();
         }
 
         private void ResetMaterial()
         {
             m_Renderer.sharedMaterial = m_OriginalMat;
+
+            if (m_MeshFilter) {
+                m_MeshFilter.sharedMesh = m_OriginalMesh;
+            }
         }
     }
 }

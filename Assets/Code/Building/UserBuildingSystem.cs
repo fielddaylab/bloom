@@ -13,6 +13,7 @@ using Zavala.UI;
 using UnityEngine.EventSystems;
 using Zavala.Rendering;
 using System.Collections.Generic;
+using Zavala.Audio;
 
 namespace Zavala.Building
 {
@@ -37,6 +38,8 @@ namespace Zavala.Building
         #endregion // Inspector
 
         public override void ProcessWork(float deltaTime) {
+            UpdateRoadDraggingInput();
+
             UserBuildTool toolInUse = ToolInUse(); // the tool that is actively being applied via button inputs
             SimGridState grid = ZavalaGame.SimGrid;
             SimWorldState world = ZavalaGame.SimWorld;
@@ -54,10 +57,6 @@ namespace Zavala.Building
                 }
             }
 
-            if (toolInUse == UserBuildTool.None && toolPreview != UserBuildTool.None) {
-                // TODO: Apply previews
-            }
-
             if (toolInUse == UserBuildTool.Destroy) {
                 TryDestroyClickedBuilding(world, grid, bpState);
             } else if (toolInUse != UserBuildTool.None) {
@@ -69,11 +68,27 @@ namespace Zavala.Building
             }
         }
 
+        private void UpdateRoadDraggingInput() {
+            if (m_StateC.ActiveTool != UserBuildTool.Road) {
+                return;
+            }
+
+            if (!m_StateC.RoadToolState.Dragging) {
+                if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
+                    m_StateC.RoadToolState.Dragging = true;
+                }
+            } else {
+                if (!m_StateA.ButtonDown(InputButton.PrimaryMouse)) {
+                    m_StateC.RoadToolState.Dragging = false;
+                }
+            }
+        }
+
         /// <summary>
         /// Check if mouse is down with road tool, or mouse is pressed with any other tool
         /// </summary>
         private UserBuildTool ToolInUse() {
-            if (m_StateC.ActiveTool == UserBuildTool.Road && m_StateA.ButtonDown(InputButton.PrimaryMouse)) {
+            if (m_StateC.ActiveTool == UserBuildTool.Road && m_StateC.RoadToolState.Dragging) {
                 return UserBuildTool.Road;
             } else if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
                 return m_StateC.ActiveTool;
@@ -289,11 +304,13 @@ namespace Zavala.Building
 
                 // Check if a valid start, (ResourceSupplier, ResourceRequester, or Road)
                 if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
-                    StageRoad(grid, network, tileIndex);
-                    Debug.Log("[UserBuildingSystem] Is road anchor. Added new tile to road path");
+                    if (TryStageRoad(grid, network, tileIndex)) {
+                        Debug.Log("[UserBuildingSystem] Is road anchor. Added new tile to road path");
+                    }
                 }
                 else {
                     Debug.Log("[UserBuildingSystem] invalid start");
+                    m_StateC.RoadToolState.Dragging = false;
                 }
             }
             else {
@@ -329,7 +346,11 @@ namespace Zavala.Building
                         // Check if reached a road anchor
                         if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
                             // stage road
-                            StageRoad(grid, network, tileIndex);
+                            if (!TryStageRoad(grid, network, tileIndex)) {
+                                Debug.Log("[UserBuildingSystem] Could not stage road. Connection already made.");
+                                CancelRoad(grid, network);
+                                return;
+                            }
                             Debug.Log("[UserBuildingSystem] Is road anchor. Added new tile to road path");
 
                             // reached road anchor
@@ -352,7 +373,7 @@ namespace Zavala.Building
                         }
                         else {
                             // stage road
-                            StageRoad(grid, network, tileIndex);
+                            TryStageRoad(grid, network, tileIndex);
                             Debug.Log("[UserBuildingSystem] added new tile to road path");
                         }
                     }
@@ -366,34 +387,30 @@ namespace Zavala.Building
             }
         }
 
-        private void StageRoad(SimGridState grid, RoadNetwork network, int tileIndex) {
-            m_StateC.RoadToolState.TracedTileIdxs.Add(tileIndex);
-
+        private bool TryStageRoad(SimGridState grid, RoadNetwork network, int tileIndex) {
             // calculate staging if not first in road sequence
-            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 1) {
+            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0) {
                 // find previous tile
-                int prevTileIndex = m_StateC.RoadToolState.TracedTileIdxs[m_StateC.RoadToolState.TracedTileIdxs.Count - 2];
+                int prevTileIndex = m_StateC.RoadToolState.TracedTileIdxs[m_StateC.RoadToolState.TracedTileIdxs.Count - 1];
                 HexVector currPos = grid.HexSize.FastIndexToPos(tileIndex);
-                for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
-                    HexVector adjPos = HexVector.Offset(currPos, dir);
-                    if (!grid.HexSize.IsValidPos(adjPos)) {
-                        continue;
-                    }
-                    int adjIdx = grid.HexSize.PosToIndex(adjPos);
-                    if (adjIdx == prevTileIndex) {
-                        // Stage direction from previous to curr, and curr to previous
-                        int prevIdx = adjIdx;
 
-                        TileDirection currDir = dir; // to stage into curr road
-                        TileDirection prevDir = currDir.Reverse(); // to stage into prev road
+                TileDirection dir = grid.HexSize.FastDirectionTowards(tileIndex, prevTileIndex);
+                // Stage direction from previous to curr, and curr to previous
 
-                        // For curr road, add a staging mask that gets merged into flow mask upon successful road build
-                        RoadUtility.StageRoad(network, grid, tileIndex, currDir);
-                        // For prev road, add a staging mask that gets merged into flow mask upon successful road build
-                        RoadUtility.StageRoad(network, grid, prevTileIndex, prevDir);
-                        break;
-                    }
+                RoadTileInfo idxRoadTile = network.Roads.Info[tileIndex];
+
+                if ((idxRoadTile.StagingMask | idxRoadTile.FlowMask)[dir]) {
+                    Log.Msg("[UserBuildingSystem] Trying to build across a connection that already exists or is staged");
+                    return false;
                 }
+
+                TileDirection currDir = dir; // to stage into curr road
+                TileDirection prevDir = currDir.Reverse(); // to stage into prev road
+
+                // For curr road, add a staging mask that gets merged into flow mask upon successful road build
+                RoadUtility.StageRoad(network, grid, tileIndex, currDir);
+                // For prev road, add a staging mask that gets merged into flow mask upon successful road build
+                RoadUtility.StageRoad(network, grid, prevTileIndex, prevDir);
 
                 RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
                 // If not the end of a road, create a road object
@@ -405,33 +422,27 @@ namespace Zavala.Building
                     // Add to running cost
                     ShopUtility.EnqueueCost(m_StateD, ShopUtility.PriceLookup(UserBuildTool.Road));
                 }
+
+                SfxUtility.PlaySfx("build-road");
             }
 
+            m_StateC.RoadToolState.TracedTileIdxs.Add(tileIndex);
             m_StateC.RoadToolState.PrevTileIndex = tileIndex;
+            return true;
 
             // RoadUtility.AddRoadImmediate(Game.SharedState.Get<RoadNetwork>(), grid, tileIndex); // temp debug
         }
 
         private bool IsContinuous(HexGridSize hexSize, int prevIndex, int currIndex, SimGridState grid) {
-            HexVector currPos = hexSize.FastIndexToPos(currIndex);
-            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
-                HexVector adjPos = HexVector.Offset(currPos, dir);
-                if (!hexSize.IsValidPos(adjPos)) {
-                    continue;
-                }
-                int adjIdx = hexSize.PosToIndex(adjPos);
-                if (adjIdx != prevIndex) {
-                    // prev tile found in adj neighbors
-                    continue;
-                }
-                if (grid.Terrain.Regions[prevIndex] != grid.Terrain.Regions[currIndex]) {
-                    continue;
-                }
-                return true;
+            if (!hexSize.IsNeighbor(prevIndex, currIndex, out var _)) {
+                return false;
             }
 
-            // prev tile not found anywhere in adj neighbors
-            return false;
+            if (grid.Terrain.Regions[prevIndex] != grid.Terrain.Regions[currIndex]) {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -447,7 +458,7 @@ namespace Zavala.Building
 
             m_StateC.RoadToolState.TracedTileIdxs.RemoveAt(tracedIndex);
 
-            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0)
+            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0 && tracedIndex != m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
             {
                 // remove from running cost
                 ShopUtility.EnqueueCost(m_StateD, -ShopUtility.PriceLookup(UserBuildTool.Road));
@@ -486,25 +497,29 @@ namespace Zavala.Building
 
             // count num of actual road segments being built
             int deductNum = 0;
-            for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
-                bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
+            int startIndex = -1;
+            for (int i = 0; i < roadCount; i++) {
                 int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
-
+                
                 RoadTileInfo tileInfo = network.Roads.Info[currIndex];
 
                 if ((tileInfo.Flags & RoadFlags.IsRoad) != 0) {
+                    // there is a road somewhere in this path
                     anyRoad = true;
                 }
-                else if (isEndpoint) {
-                    // do not count endpoints in price
+                // do not count endpoints in price
+                if (i == 0) { // first node
                     deductNum++;
+                    startIndex = currIndex;
+                } else if (i == roadCount - 1) { // last node
+                    int endIndex = currIndex;
+                    // if start == end (loop road), don't double-count the deduction
+                    if (endIndex != startIndex) deductNum++;
 
-                    if (i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
-                    {
-                        BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-                        RoadUtility.RemoveStagedRoadObj(network, pools, currIndex, !tileInfo.FlowMask.IsEmpty);
-                    }
+                    BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                    RoadUtility.RemoveStagedRoadObj(network, pools, currIndex, !tileInfo.FlowMask.IsEmpty);
                 }
+                
             }
 
             if (roadCount < 3 && !anyRoad) {
@@ -523,13 +538,13 @@ namespace Zavala.Building
                 BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
 
                 CommitChain roadChain = new CommitChain();
-                roadChain.Chain = new RingBuffer<ActionCommit>(m_StateC.RoadToolState.TracedTileIdxs.Count);
+                roadChain.Chain = new RingBuffer<ActionCommit>(roadCount);
 
                 int roadObjIdx = network.RoadObjects.Count - 1;
 
                 // Merge staged masks into flow masks
-                for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
-                    bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
+                for (int i = 0; i < roadCount; i++) {
+                    bool isEndpoint = i == 0 || i == roadCount - 1;
                     int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
 
                     RoadFlags rFlagsSnapshot = network.Roads.Info[currIndex].Flags;
@@ -578,7 +593,7 @@ namespace Zavala.Building
                 BlueprintUtility.CommitChain(bpState, roadChain);
 
                 // Deselect tools
-                BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
+                //BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
 
                 // Add cost to receipt queue (now done on a tile-by-tile basis
                 // ShopUtility.EnqueueCost(m_StateD, totalPrice);
