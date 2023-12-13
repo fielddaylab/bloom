@@ -530,6 +530,8 @@ namespace Zavala.Sim {
             controller = pool.Alloc(worldPos);
             network.RoadObjects.PushBack(controller);
 
+            controller.gameObject.SetActive(true);
+
             if (!inheritPending || (inheritPending && wasPending))
             {
                 controller.Position.Pending = true;

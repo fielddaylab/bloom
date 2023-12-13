@@ -13,6 +13,7 @@ using Zavala.UI;
 using UnityEngine.EventSystems;
 using Zavala.Rendering;
 using System.Collections.Generic;
+using Zavala.Audio;
 
 namespace Zavala.Building
 {
@@ -52,10 +53,6 @@ namespace Zavala.Building
                     // Regenerate BlockedTiles
                     BuildToolUtility.RecalculateBlockedTiles(grid, world, network, m_StateC);
                 }
-            }
-
-            if (toolInUse == UserBuildTool.None && toolPreview != UserBuildTool.None) {
-                // TODO: Apply previews
             }
 
             if (toolInUse == UserBuildTool.Destroy) {
@@ -405,6 +402,8 @@ namespace Zavala.Building
                     // Add to running cost
                     ShopUtility.EnqueueCost(m_StateD, ShopUtility.PriceLookup(UserBuildTool.Road));
                 }
+
+                SfxUtility.PlaySfx("build-road");
             }
 
             m_StateC.RoadToolState.PrevTileIndex = tileIndex;
@@ -578,7 +577,7 @@ namespace Zavala.Building
                 BlueprintUtility.CommitChain(bpState, roadChain);
 
                 // Deselect tools
-                BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
+                //BuildToolUtility.SetTool(m_StateC, UserBuildTool.None);
 
                 // Add cost to receipt queue (now done on a tile-by-tile basis
                 // ShopUtility.EnqueueCost(m_StateD, totalPrice);

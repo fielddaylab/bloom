@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 810f72fe494cd8b4a81f272ef9260ada, type: 3}
+  m_Name: build-poof
+  m_EditorClassIdentifier: 
+  Clips:
+  - {fileID: 8300000, guid: 7ee7a324cb7139846a33007897b63729, type: 3}
+  - {fileID: 8300000, guid: b9695b56190adf3469bf54b3420aee87, type: 3}
+  - {fileID: 8300000, guid: 4c61c34d952999a4cb57cc6bd92a8973, type: 3}
+  Volume:
+    Base: 1
+    ModifierMin: 0
+    ModifierMax: 0
+  Pitch:
+    Base: 1
+    ModifierMin: -0.05
+    ModifierMax: 0.05
+  Delay:
+    Base: 0
+    ModifierMin: 0
+    ModifierMax: 0
+  Tag:
+    m_Source: 
+    m_HashValue: 0

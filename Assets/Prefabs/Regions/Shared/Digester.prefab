@@ -237,12 +237,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Renderer: {fileID: 1895349179121568628}
+  m_Snapping: {fileID: 4665823543789613535}
+  m_Particles: {fileID: 1250573020439187508}
+  m_Occupies: {fileID: 4665823543789613532}
   m_InitialHide:
   - {fileID: 7783972500671602884}
   - {fileID: 7159645202965460322}
-  m_Occupies: {fileID: 4665823543789613532}
-  m_Snapping: {fileID: 4665823543789613535}
-  m_Particles: {fileID: 1250573020439187508}
+  m_PreviewMesh: {fileID: 2912852675422302327, guid: 4af7d0c5613c26c42851a7920460fd04, type: 3}
 --- !u!114 &2578567375535217520
 MonoBehaviour:
   m_ObjectHideFlags: 0

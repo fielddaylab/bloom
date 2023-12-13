@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Zavala.Audio;
 using Zavala.Building;
 using Zavala.Rendering;
 using Zavala.Roads;
@@ -309,6 +310,8 @@ namespace Zavala.Economy
 
             MarketData market = Game.SharedState.Get<MarketData>();
             market.UpdatePrioritiesNow = true;
+
+            SfxUtility.PlaySfx("ui-purchase");
 
             // Exit build state
             blueprintState.UI.OnBuildConfirmClicked();
