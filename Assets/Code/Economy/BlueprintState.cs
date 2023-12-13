@@ -179,7 +179,8 @@ namespace Zavala.Economy
         {
             CommitChain prevChain = blueprintState.Commits.PopBack();
 
-            foreach (ActionCommit commit in prevChain.Chain)
+            // undo in reverse order
+            while(prevChain.Chain.TryPopBack(out ActionCommit commit))
             {
                 // Process undo (unbuild, restore flags, modify funds, etc.)
                 switch (commit.ActionType)
@@ -191,12 +192,12 @@ namespace Zavala.Economy
                         // Remove the building
                         SimDataUtility.DestroyBuildingFromUndo(grid, network, commit.BuiltObj, commit.TileIndex, commit.BuildType);
 
-                        // Restore flags and flow masks
-                        SimDataUtility.RestoreSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot, commit.FlowMaskSnapshot);
-
                         if (commit.Previewer != null) {
                             commit.Previewer.Cancel();
                         }
+
+                        // Restore flags and flow masks
+                        SimDataUtility.RestoreSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot, commit.FlowMaskSnapshot);
 
                         break;
                     case ActionType.Destroy:
