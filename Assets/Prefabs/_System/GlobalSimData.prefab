@@ -431,7 +431,7 @@ MonoBehaviour:
   DigesterMesh: {fileID: 2912852675422302327, guid: 4af7d0c5613c26c42851a7920460fd04, type: 3}
   StorageMesh: {fileID: 967685232985939790, guid: 314f5ed30550afc48b0bb960f9e5c4e9, type: 3}
   VizAnchors:
-    m_Prefab: {fileID: 1211290126235049584, guid: 35cf584d2f568f64cad0fbc518465a4e, type: 3}
+    m_Prefab: {fileID: 3254142773910575186, guid: 35cf584d2f568f64cad0fbc518465a4e, type: 3}
     m_Name: 
     m_InitialCapacity: 32
     m_PrewarmOnInitialize: 1

@@ -13,6 +13,7 @@ namespace Zavala.Building {
         // [NonSerialized] public bool StartedRoad;
         [NonSerialized] public List<int> TracedTileIdxs;
         [NonSerialized] public int PrevTileIndex; // last known tile used for building roads
+        [NonSerialized] public bool Dragging;
 
         // [NonSerialized] public List<GameObject> StagedBuilds; // visual indicator to player of what they will build, but not finalized on map
 
@@ -21,6 +22,7 @@ namespace Zavala.Building {
 
         public void ClearState() {
             PrevTileIndex = -1;
+            Dragging = false;
             if (TracedTileIdxs == null) {
                 TracedTileIdxs = new List<int>();
                 // StagedBuilds = new List<GameObject>();

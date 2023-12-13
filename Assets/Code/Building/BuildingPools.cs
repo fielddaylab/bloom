@@ -15,7 +15,7 @@ namespace Zavala.Building {
         [Serializable] public class DigesterPool : SerializablePool<OccupiesTile> { }
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
         [Serializable] public class SkimmerPool : SerializablePool<PhosphorusSkimmer> { }
-        [Serializable] public class VizAnchorPool : SerializablePool<SpriteRenderer> { }
+        [Serializable] public class VizAnchorPool : SerializablePool<ParticleSystem> { }
 
 
         #endregion // Types

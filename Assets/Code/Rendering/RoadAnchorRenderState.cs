@@ -10,11 +10,11 @@ using Zavala;
 
 public class RoadAnchorRenderState : SharedStateComponent, IRegistrationCallbacks
 {
-    [NonSerialized] public List<SpriteRenderer> AnchorRenderers;
+    [NonSerialized] public List<ParticleSystem> AnchorRenderers;
 
     public void OnRegister()
     {
-        AnchorRenderers = new List<SpriteRenderer>();
+        AnchorRenderers = new List<ParticleSystem>();
     }
 
     public void OnDeregister()

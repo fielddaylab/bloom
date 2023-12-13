@@ -68,7 +68,7 @@ namespace Zavala.Debugging {
                 DebugDraw.AddPoint(hitCenter, 0.1f, Color.white.WithAlpha(0.5f));
                 HexVector point = HexVector.FromWorld(hitCenter, m_StateB.WorldSpace);
                 int tileIdx = m_StateA.HexSize.FastPosToIndex(point);
-                DebugDraw.AddWorldText(hitCenter, string.Format("Position {0} [{1}]\nHeight {2}\nRegion {3}", point, tileIdx, m_StateA.Terrain.Height[tileIdx], m_StateA.Terrain.Regions[tileIdx]), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
+                DebugDraw.AddWorldText(hitCenter, string.Format("Position {0} [{1}]\nHeight {2}\nRegion {3}\nFlags {4}\nRoad {5}", point, tileIdx, m_StateA.Terrain.Height[tileIdx], m_StateA.Terrain.Regions[tileIdx], m_StateA.Terrain.Info[tileIdx].Flags, m_StateD.Roads.Info[tileIdx].Flags), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
 
                 if ((m_StateA.Terrain.Info[tileIdx].Flags & TerrainFlags.IsWater) != 0) {
                     SimBuffer<AlgaeTileState> algae = Game.SharedState.Get<SimAlgaeState>().Algae.State;

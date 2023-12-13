@@ -30,14 +30,7 @@ namespace Zavala.Economy {
         }
 
         private void SetDirection() {
-            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
-                HexVector adjPos = HexVector.Offset(TileA.TileVector, dir);
-                if (adjPos != TileB.TileVector) {
-                    continue;
-                } else {
-                    this.AToBDirection = dir;
-                }
-            }
+            AToBDirection = HexVector.Direction(TileA.TileVector, TileB.TileVector);
             RoadNetwork network = ZavalaGame.SharedState.Get<RoadNetwork>();
             network.Roads.Info[TileA.TileIndex].FlowMask[AToBDirection] = true;
             network.Roads.Info[TileB.TileIndex].FlowMask[AToBDirection.Reverse()] = true;
