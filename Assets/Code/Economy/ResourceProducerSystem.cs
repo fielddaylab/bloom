@@ -1,8 +1,10 @@
 using BeauUtil.Debugger;
+using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Actors;
+using Zavala.Sim;
 
 namespace Zavala.Economy {
     [SysUpdate(FieldDay.GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]

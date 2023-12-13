@@ -261,7 +261,7 @@ namespace Zavala.World {
             InteractionUtility.SetInteractions(interactions, disableMask);
 
             // Pan camera to spot
-            WorldCameraUtility.PanCameraToBuilding(inId);
+            WorldCameraUtility.PanCameraToActor(inId);
             // TODO: get exact timing of camera pan
             yield return 1;
 

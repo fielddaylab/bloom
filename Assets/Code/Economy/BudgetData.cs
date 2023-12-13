@@ -50,6 +50,11 @@ namespace Zavala.Economy
             budgetData.BudgetsPerRegion[regionIndex].Updated = true;
         }
 
+        // "try add" in case of negative addition - translates to spending
+        static public bool TryAddToBudget(BudgetData budgetData, long toAdd, int regionIndex) {
+            return TrySpendBudget(budgetData, -toAdd, (uint)regionIndex);
+        }
+
         static public bool CanSpendBudget(BudgetData budgetData, long toSpend, uint regionIndex)
         {
             long net = budgetData.BudgetsPerRegion[regionIndex].Net;

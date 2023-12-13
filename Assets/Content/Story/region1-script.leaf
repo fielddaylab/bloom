@@ -147,10 +147,23 @@ $call ReleaseDialogueInteraction()
 
 :: policySet
 @trigger        PolicySet
+@conditions     policyForced == false
 $branch .policyDescriptions
 $if intro:tutorialComplete = false
     $branch .choseFirstPolicy
 $endif
+
+:: policyForcedToZero
+@trigger        PolicySet
+@conditions     policyIndex == 0, policyForced == true
+{local @advisorEcon}    Oh dear.
+$if local:policyType == "SalesTaxPolicy"
+    {local @advisorEcon}    The sales subsidy here has pushed our budget negative!
+$elseif local:policyType == "ImportTaxPolicy"
+    {local @advisorEcon}    The import subsidy here has pushed our budget negative!
+$endif
+{local @advisorEcon}    I must set it to none for now.
+{local @advisorEcon}    Please consider implementing a tax so we can regain revenue.
 
 :: choseFirstPolicy
 $set intro:tutorialComplete = true
