@@ -259,13 +259,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4665823543789613508}
     m_Modifications:
+    - target: {fileID: 143228687352064113, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4515201160051164707, guid: 639d54bfdc6ee7040a28538a3b1e13bb, type: 3}
     - target: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.378
+      value: -0.348
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -273,7 +277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.004
+      value: -0.044
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
       propertyPath: m_LocalRotation.w
