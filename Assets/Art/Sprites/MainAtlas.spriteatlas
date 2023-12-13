@@ -52,7 +52,6 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: fe737560fd018d346a9003201a5cb947, type: 3}
   - {fileID: 21300000, guid: 3ded4490e0801e04595585b7729c692c, type: 3}
   - {fileID: 21300000, guid: da7ee49088ec37e4ba795dc030eca192, type: 3}
   - {fileID: 21300000, guid: 71e8b7a1d6ae34847875b1f5bb100f6b, type: 3}
@@ -73,18 +72,18 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 9b075354cb0ae484aad11631c2a0eecd, type: 3}
   - {fileID: 21300000, guid: f539e1946dd638d43a715d35ef12abc8, type: 3}
   - {fileID: 21300000, guid: 71655035bb0de734c99669adc790e169, type: 3}
+  - {fileID: 21300000, guid: 846a4735a6935e24886914f391495f0b, type: 3}
   - {fileID: 21300000, guid: 61db9685c1b7ea243a4c109811110530, type: 3}
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
   - {fileID: 21300000, guid: 50b6ad0648a956c4bbf7a51cb79ef1da, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
-  - {fileID: 21300000, guid: 36c8fb8654e7e4244acf8206fd950a0d, type: 3}
+  - {fileID: 21300000, guid: 0a49d7a676c7e7a41938c7fad1f49f83, type: 3}
   - {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
   - {fileID: 21300000, guid: 94bb47f60026b934b86cc4302f2fdf39, type: 3}
   - {fileID: 21300000, guid: 89194bf60d4b2af4c8a261aa564d0611, type: 3}
   - {fileID: 21300000, guid: 654583471bf8a0e4b9d6fe8f5229fce7, type: 3}
   - {fileID: 21300000, guid: 6e980b87d98ae3442b2a5dd8ff5be0b7, type: 3}
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
-  - {fileID: 21300000, guid: 5bf1a608c07936b49a459dc3c7b733ae, type: 3}
   - {fileID: 21300000, guid: 0acbcf2895103dc46bd2d52e01e2e3b3, type: 3}
   - {fileID: 21300000, guid: d8120c88b3a67124086628f192bafcc0, type: 3}
   - {fileID: 21300000, guid: fe5afc8805aa61049864f3373d5c4f4a, type: 3}
@@ -98,6 +97,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2221949b943795844a143b042d89dd3e, type: 3}
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
   - {fileID: 21300000, guid: 76b2b02c1f99b324b82b1a82869a4100, type: 3}
+  - {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: 1555a36d4acb0b1418ec48541710fb8b, type: 3}
   - {fileID: 21300000, guid: fab52f1e1c3fcc448a0241831b299c14, type: 3}
@@ -107,11 +107,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5eba4e9e389da764f8119e6c4b47bb76, type: 3}
   - {fileID: 21300000, guid: 24ba8fce21db8d846a69f995fb37c59b, type: 3}
   - {fileID: 21300000, guid: 54cfc3fe99abf0c4086d8577ee156cf5, type: 3}
-  - {fileID: 21300000, guid: 71937c1f1a764c8408f241fd7a2ec622, type: 3}
+  - {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
   - {fileID: 21300000, guid: 1341e9af6cc32cd4c90c6902052dc310, type: 3}
   - {fileID: 21300000, guid: ed9a64ff8bf249b469c9ffa0397bc16a, type: 3}
   m_PackedSpriteNamesToIndex:
-  - urgentflag_milk
   - MarketLensIcon
   - bulldozer
   - base_selling-loss
@@ -132,6 +131,7 @@ SpriteAtlas:
   - CostBGWhite
   - banner_excess-runoff
   - ShopHubButton
+  - urgentflag_milk
   - base_unused-digester
   - advisor-dialogue-white
   - CloseX
@@ -143,7 +143,6 @@ SpriteAtlas:
   - PhosphorusLensIcon
   - base_declining-pop
   - banner_declining-pop
-  - urgentflag_manure
   - money
   - ToolImageRoad
   - policyicon_runoff
@@ -157,6 +156,7 @@ SpriteAtlas:
   - policy-button-white
   - base_excess-runoff
   - ShopToggleBlank
+  - urgentflag_manure
   - BlueprintMode
   - title-bg-2
   - ToolImageStorage

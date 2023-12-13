@@ -54,7 +54,8 @@ $call Unpause()
 {@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
 {@advisorEcolHill}      But don't try to build over any of our forests.
 {@advisorEcolHill}      Those are protected lands!
-{@advisorEconHill}      Each tile will spend from our regional budget! Try to be thrifty.
+{@advisorEcolHill}      And you can't bridge over darker <b>deep water.</b>
+{@advisorEconHill}      Plus each tile will spend from our county budget! Try to be thrifty.
 {@advisorEconHill}      Click "Build" when you have the road the way you like it.
 
 

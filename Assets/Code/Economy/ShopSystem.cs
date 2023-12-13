@@ -147,6 +147,10 @@ namespace Zavala.Economy {
         public static void ModifyRunningCost(ShopState shop, int deltaCost)
         {
             shop.RunningCost += deltaCost;
+            if (shop.RunningCost < 0) {
+                Log.Error("[ShopSystem] WARNING: something caused running cost to reach {0}", shop.RunningCost);
+                ResetRunningCost(shop);
+            }
         }
 
         public static void EnqueueCost(ShopState shop, int cost)
