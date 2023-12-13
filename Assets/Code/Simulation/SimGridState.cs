@@ -544,7 +544,8 @@ namespace Zavala.Sim {
         public static void RestoreSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)
         {
             network.Roads.Info[tileIndex].Flags = rFlags;
-            grid.Terrain.Info[tileIndex].Flags = tFlags;
+            ref TerrainFlags tFlagRef = ref grid.Terrain.Info[tileIndex].Flags;
+            tFlagRef = (tFlags & ~TerrainFlags.IsPreview) | (tFlagRef & TerrainFlags.IsPreview);
             network.Roads.Info[tileIndex].FlowMask = flowSnapshot;
         }
         

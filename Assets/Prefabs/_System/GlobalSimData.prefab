@@ -53,7 +53,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7708306960153739425}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -102,7 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Scale: {x: 0.773, y: 0.008, z: 0.885}
   Offset: {x: 0, y: 0, z: 0}
-  TileRadius: 0.4425
+  TileRadius: 0.5
   DefaultWaterPrefab: {fileID: 7097652779095066658, guid: 5887f51366947f240ae408caadcb0af1, type: 3}
   WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
   BottomBounds: 0
@@ -401,7 +401,7 @@ MonoBehaviour:
     m_InitialPrewarm: 16
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
-    m_ResetTransformOnAlloc: 1
+    m_ResetTransformOnAlloc: 0
   Digesters:
     m_Prefab: {fileID: 4665823543789613532, guid: d0061f3c86234f74b9cf5c0c6c73d1ce, type: 3}
     m_Name: 
@@ -410,7 +410,7 @@ MonoBehaviour:
     m_InitialPrewarm: 8
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
-    m_ResetTransformOnAlloc: 1
+    m_ResetTransformOnAlloc: 0
   Storages:
     m_Prefab: {fileID: 4665823543789613532, guid: 83cbad4e9bc632b45a85008072ee80e8, type: 3}
     m_Name: 
@@ -419,7 +419,7 @@ MonoBehaviour:
     m_InitialPrewarm: 8
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
-    m_ResetTransformOnAlloc: 1
+    m_ResetTransformOnAlloc: 0
   Skimmers:
     m_Prefab: {fileID: 5412720830129975457, guid: dab5c08824f46364ba60727ed1637681, type: 3}
     m_Name: 

@@ -751,30 +751,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7708306960153739429, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
-      propertyPath: TileRadius
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7708306960153739431, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
-      propertyPath: PauseOverlay
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7708306960153739432, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
-      propertyPath: PoolRoot
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7708306960153739473, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
-      propertyPath: PoolRoot
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7708306960153739475, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
-      propertyPath: PoolRoot
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7708306960153739477, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
-      propertyPath: RequestPool.m_DefaultPoolRoot
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
 --- !u!4 &2517140936885967465 stripped
