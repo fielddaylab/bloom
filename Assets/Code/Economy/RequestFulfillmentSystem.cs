@@ -6,6 +6,7 @@ using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
+using Zavala.Advisor;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -214,9 +215,16 @@ namespace Zavala.Economy {
 
             // Add generated revenue
             BudgetData budgetData = Game.SharedState.Get<BudgetData>();
-            int revenueAmt = component.Revenue.Sales + component.Revenue.Import; // + component.Revenue.Penalties;
-            BudgetUtility.AddToBudget(budgetData, revenueAmt, component.Target.Position.RegionIndex);
-
+            // int revenueAmt = component.Revenue.Sales + component.Revenue.Import; // + component.Revenue.Penalties;
+            // BudgetUtility.AddToBudget(budgetData, revenueAmt, component.Target.Position.RegionIndex);
+            if (!BudgetUtility.TryAddToBudget(budgetData, component.Revenue.Sales, component.Target.Position.RegionIndex)) {
+                // set policy to NONE
+                PolicyUtility.ForcePolicyToNone(PolicyType.SalesTaxPolicy, component.Target.transform, component.Target.Position.RegionIndex);
+            }
+            if (!BudgetUtility.TryAddToBudget(budgetData, component.Revenue.Import, component.Target.Position.RegionIndex)) {
+                // set policy to NONE
+                PolicyUtility.ForcePolicyToNone(PolicyType.ImportTaxPolicy, component.Target.transform, component.Target.Position.RegionIndex);
+            }
             int index = marketData.ActiveRequests.FindIndex(FindRequestForFulfiller, component);
             if (index >= 0) {
                 MarketActiveRequestInfo fulfilling = marketData.ActiveRequests[index];

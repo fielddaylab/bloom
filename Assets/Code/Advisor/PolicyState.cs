@@ -4,6 +4,7 @@ using FieldDay.Scripting;
 using FieldDay.SharedState;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Zavala.Cards;
 using Zavala.Economy;
 using Zavala.Sim;
@@ -31,13 +32,14 @@ namespace Zavala.Advisor {
         public ActionEvent PolicyCloseButtonClicked = new ActionEvent();
 
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
-        public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region) {
+        public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region, bool forced) {
             if (policyIndex < 0 || policyIndex > 3) { return false; }
 
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("policyType", policyType.ToString());
                 varTable.Set("policyIndex", policyIndex);
                 varTable.Set("policyRegion", region);
+                varTable.Set("policyForced", forced);
                 ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
             }
 
@@ -90,7 +92,7 @@ namespace Zavala.Advisor {
             SalesTaxVals[0].SetAll(0); // NONE
             SalesTaxVals[1].SetAll(2); // LOW TAX
             SalesTaxVals[2].SetAll(4); // HIGH TAX
-            SalesTaxVals[3].SetAll(-2);// SUBSIDY
+            SalesTaxVals[3].SetAll(-4);// SUBSIDY
 
             RunoffPenaltyVals[0].Manure = 0;
             RunoffPenaltyVals[1].Manure = 10;
@@ -142,10 +144,18 @@ namespace Zavala.Advisor {
         #region Handlers
 
         private void HandlePolicyCardSelected(CardData data) {
-            SetPolicyByIndex(data.PolicyType, (int)data.PolicyLevel, (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex);
+            SetPolicyByIndex(data.PolicyType, (int)data.PolicyLevel, (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex, false);
         }
 
         #endregion // Handlers
+    }
+
+    public static class PolicyUtility {
+
+        public static void ForcePolicyToNone(PolicyType type, Transform instigator, int regionIndex) {
+            WorldCameraUtility.PanCameraToTransform(instigator);
+            Game.SharedState.Get<PolicyState>().SetPolicyByIndex(type, 0, regionIndex, true);
+        }
     }
 
     public enum PolicyType : byte {
