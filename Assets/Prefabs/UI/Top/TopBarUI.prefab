@@ -1217,6 +1217,7 @@ GameObject:
   - component: {fileID: 4984655045788179063}
   - component: {fileID: 4311406374494137029}
   - component: {fileID: 3584244924899152532}
+  - component: {fileID: 203052917078697512}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -1299,7 +1300,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.65
+  m_fontSize: 20.5
   m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1335,7 +1336,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 10.844498, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1370,6 +1371,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 0
+--- !u!114 &203052917078697512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6894286557000169824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 170
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &7364516855980192992
 GameObject:
   m_ObjectHideFlags: 0
@@ -3267,7 +3288,7 @@ PrefabInstance:
     - target: {fileID: 3369355478612067722, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 36c8fb8654e7e4244acf8206fd950a0d, type: 3}
+      objectReference: {fileID: 21300000, guid: 89194bf60d4b2af4c8a261aa564d0611, type: 3}
     - target: {fileID: 5399932216319823800, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_text
       value: Import Tax

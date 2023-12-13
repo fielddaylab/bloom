@@ -20,7 +20,7 @@ namespace Zavala.Alerts {
 
         void IRegistrationCallbacks.OnRegister() {
             PausedAlertTypes = new HashSet<EventActorAlertType>((int) EventActorAlertType.COUNT);
-            AutoTriggerAlerts = new HashSet<AutoAlertCondition>(2); 
+            AutoTriggerAlerts = new HashSet<AutoAlertCondition>(5); 
         }
 
         void IRegistrationCallbacks.OnDeregister() {
