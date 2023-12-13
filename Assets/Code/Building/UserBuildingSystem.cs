@@ -446,7 +446,7 @@ namespace Zavala.Building
 
             m_StateC.RoadToolState.TracedTileIdxs.RemoveAt(tracedIndex);
 
-            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0)
+            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0 && tracedIndex != m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
             {
                 // remove from running cost
                 ShopUtility.EnqueueCost(m_StateD, -ShopUtility.PriceLookup(UserBuildTool.Road));
@@ -485,25 +485,29 @@ namespace Zavala.Building
 
             // count num of actual road segments being built
             int deductNum = 0;
-            for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
-                bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
+            int startIndex = -1;
+            for (int i = 0; i < roadCount; i++) {
                 int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
-
+                
                 RoadTileInfo tileInfo = network.Roads.Info[currIndex];
 
                 if ((tileInfo.Flags & RoadFlags.IsRoad) != 0) {
+                    // there is a road somewhere in this path
                     anyRoad = true;
                 }
-                else if (isEndpoint) {
-                    // do not count endpoints in price
+                // do not count endpoints in price
+                if (i == 0) { // first node
                     deductNum++;
+                    startIndex = currIndex;
+                } else if (i == roadCount - 1) { // last node
+                    int endIndex = currIndex;
+                    // if start == end (loop road), don't double-count the deduction
+                    if (endIndex != startIndex) deductNum++;
 
-                    if (i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
-                    {
-                        BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-                        RoadUtility.RemoveStagedRoadObj(network, pools, currIndex, !tileInfo.FlowMask.IsEmpty);
-                    }
+                    BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+                    RoadUtility.RemoveStagedRoadObj(network, pools, currIndex, !tileInfo.FlowMask.IsEmpty);
                 }
+                
             }
 
             if (roadCount < 3 && !anyRoad) {
@@ -522,13 +526,13 @@ namespace Zavala.Building
                 BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
 
                 CommitChain roadChain = new CommitChain();
-                roadChain.Chain = new RingBuffer<ActionCommit>(m_StateC.RoadToolState.TracedTileIdxs.Count);
+                roadChain.Chain = new RingBuffer<ActionCommit>(roadCount);
 
                 int roadObjIdx = network.RoadObjects.Count - 1;
 
                 // Merge staged masks into flow masks
-                for (int i = 0; i < m_StateC.RoadToolState.TracedTileIdxs.Count; i++) {
-                    bool isEndpoint = i == 0 || i == m_StateC.RoadToolState.TracedTileIdxs.Count - 1;
+                for (int i = 0; i < roadCount; i++) {
+                    bool isEndpoint = i == 0 || i == roadCount - 1;
                     int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
 
                     RoadFlags rFlagsSnapshot = network.Roads.Info[currIndex].Flags;
