@@ -21,6 +21,9 @@ namespace Zavala.Economy {
 
         [NonSerialized] public OccupiesTile Position;
         [NonSerialized] public ResourceStorage Storage;
+        [NonSerialized] public MarketRequesterPriorityList Priorities;
+        [NonSerialized] public int BestPriorityIndex;
+        [NonSerialized] public bool MatchedThisTick;
 
         [NonSerialized] public ResourceBlock Requested;
         [NonSerialized] public int RequestCount;
@@ -42,6 +45,8 @@ namespace Zavala.Economy {
             this.CacheComponent(ref PriceNegotiator);
 
             PriceNegotiatorUtility.InitializeRequesterNegotiator(PriceNegotiator, RequestMask, Position.RegionIndex);
+
+            Priorities.Create();
 
             MarketUtility.RegisterBuyer(this);
             if (!IsLocalOption) {

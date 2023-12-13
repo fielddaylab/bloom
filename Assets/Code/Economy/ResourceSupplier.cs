@@ -16,10 +16,14 @@ namespace Zavala.Economy {
         [NonSerialized] public OccupiesTile Position;
 
         [NonSerialized] public ResourceStorage Storage;
-        [NonSerialized] public MarketSupplierPriorityList Priorities;
         [NonSerialized] public bool SoldAtALoss = false;
 
+        [NonSerialized] public MarketSupplierPriorityList Priorities;
+        [NonSerialized] public int BestPriorityIndex;
+
         [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
+        [NonSerialized] public ResourceBlock PreSaleSnapshot;
+        [NonSerialized] public ResourceBlock PostSaleSnapshot;
 
         private void Awake() {
             this.CacheComponent(ref Storage);

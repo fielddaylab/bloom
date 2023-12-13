@@ -5,7 +5,6 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
-using Zavala.Advisor;
 using Zavala.Roads;
 using Zavala.Sim;
 
@@ -19,7 +18,10 @@ namespace Zavala.Economy
         private readonly RingBuffer<MarketRequestInfo> m_RequestWorkList = new RingBuffer<MarketRequestInfo>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourceSupplier> m_SupplierWorkList = new RingBuffer<ResourceSupplier>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourceRequester> m_RequesterWorkList = new RingBuffer<ResourceRequester>(8, RingBufferMode.Expand);
-        private readonly RingBuffer<MarketSupplierPriorityInfo> m_PriorityWorkList = new RingBuffer<MarketSupplierPriorityInfo>(8, RingBufferMode.Expand);
+        private readonly RingBuffer<MarketRequesterPriorityInfo> m_SellerPriorityWorkList = new RingBuffer<MarketRequesterPriorityInfo>(8, RingBufferMode.Expand);
+        private readonly RingBuffer<MarketSupplierPriorityInfo> m_BuyerPriorityWorkList = new RingBuffer<MarketSupplierPriorityInfo>(8, RingBufferMode.Expand);
+        private readonly Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>> m_SupplierOfferMap = new Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>>();
+        private readonly RingBuffer<MarketSupplierOffer> m_SupplierOfferWorkList = new RingBuffer<MarketSupplierOffer>(4, RingBufferMode.Expand);
 
         public override void ProcessWork(float deltaTime) {
             SimTimeState time = ZavalaGame.SimTime;
@@ -30,6 +32,7 @@ namespace Zavala.Economy
 
             if (m_StateA.UpdatePrioritiesNow || marketCycle) {
                 UpdateAllSupplierPriorities();
+                UpdateAllRequesterPriorities();
                 m_StateA.UpdatePrioritiesNow = false;
                 ZavalaGame.Events.Dispatch(GameEvents.MarketPrioritiesRebuilt);
             }
@@ -40,212 +43,150 @@ namespace Zavala.Economy
         }
 
         private void ProcessMarketCycle() {
+
+            #region MarketCycle_InitialSetup
             // INITIAL SETUP
+
+            // Prior: PRIORITIZE BUYERS
+            // Prior: PRIORITIZE SELLERS (Test)
+
             m_StateA.RequestQueue.CopyTo(m_RequestWorkList);
             m_StateA.RequestQueue.Clear();
             m_StateA.NegotiationQueue.Clear();
+            m_SupplierWorkList.Clear();
+            m_RequesterWorkList.Clear();
             m_StateA.Suppliers.CopyTo(m_SupplierWorkList);
+            m_StateA.Buyers.CopyTo(m_RequesterWorkList);
+            m_SupplierOfferMap.Clear();
+            m_SupplierOfferWorkList.Clear();
 
             SimGridState grid = ZavalaGame.SimGrid;
             MarketData marketData = m_StateA;
             TutorialState tutorial = Game.SharedState.Get<TutorialState>();
             BudgetData budget = Game.SharedState.Get<BudgetData>();
 
-            // PRIORITIZE BUYERS
-            // TODO: PRIORITIZE SELLERS
-
-            // TODO: CREATE A Buyer->SellerOptions MAPPING
-            // TODO: CREATE A RingBuffer<Buyers> TO PROCESS BUYERS IN PRIORITY ORDER
-
-            // TODO: FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER
-
-            // TODO: ITERATE THROUGH THE BUYERS
-                // TODO: FIND THE MOST OPTIMAL CHOICE STILL AVAILABLE FOR EACH
-                // TODO: FINALIZE SALE BETWEEN PAIRING
-
-
-            grid.Random.Shuffle(m_SupplierWorkList);
-
-            foreach (var supplier in m_SupplierWorkList) {
+            foreach (var supplier in m_SupplierWorkList)
+            {
                 // Take a snapshot before sells. Compare with post snapshot to see if a specific resource was sold
-                ResourceBlock preSellSnapshot = MarketUtility.GetCompleteStorage(supplier);
+                supplier.PreSaleSnapshot = MarketUtility.GetCompleteStorage(supplier);
 
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
-                MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary);
 
-                if (found.HasValue) {
-                    ResourceBlock adjustedValueRequested = found.Value.Requested;
-                    MarketRequestInfo? adjustedFound = found;
-
-                    if (found.Value.Requester.InfiniteRequests) {
-                        // Set requested value equal to this suppliers stock
-                        for (int i = 0; i < (int) ResourceId.COUNT - 1; i++) {
-                            ResourceId resource = (ResourceId)i;
-                            if ((supplier.Storage.Current[resource] != 0) && (found.Value.Requested[resource] != 0)) {
-                                int extensionCount = 0;
-                                if (supplier.Storage.StorageExtensionStore != null && !adjustedFound.Value.Requester.IsLocalOption) {
-                                    extensionCount += supplier.Storage.StorageExtensionStore.Current[resource];
-                                }
-
-                                // Debug.Log("[Sitting] Set request to max " + (supplier.Storage.Current[resource] + extensionCount) + " for resource " + resource.ToString());
-                                adjustedValueRequested[resource] = supplier.Storage.Current[resource] + extensionCount;
-                            }
-                        }
-
-                        if (adjustedFound.Value.Requester.IsLocalOption) {
-                            // Remove sales / import taxes (since essentially sold to itself)
-                            baseTaxRevenue.Sales = 0;
-                            baseTaxRevenue.Import = 0;
-                        }
-                        // TODO: Determine how storage should work with sales taxes
-
-                        adjustedFound = new MarketRequestInfo(found.Value.Requester, adjustedValueRequested);
-                    }
-
-                    if (!ResourceBlock.Fulfills(supplier.Storage.Current, adjustedValueRequested)) {
-                        if (supplier.Storage.StorageExtensionReq == adjustedFound.Value.Requester) {
-                            // local option was optimal buyer, so didn't sell to alternatives. But no change to be made to the storage or extended storage.
-                            // requeue request
-                            m_RequestWorkList.PushBack(found.Value);
-                            continue;
-                        }
-                    }
-
-                    int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
-                    int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
-                    GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(baseTaxRevenue.Sales * quantity, baseTaxRevenue.Import * quantity, baseTaxRevenue.Penalties * quantity);
-                    MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
-
-                    MarketActiveRequestInfo activeRequest;
-                    if (supplier.Storage.InfiniteSupply) {
-                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.FulfillInfinite(supplier.ShippingMask, adjustedValueRequested), netTaxRevenue, proxyIdx, summary);
-                    }
-                    else {
-                        ResourceBlock mainStorageBlock;
-                        ResourceBlock extensionBlock = new ResourceBlock();
-
-                        if (!ResourceBlock.Fulfills(supplier.Storage.Current, adjustedValueRequested)) {
-                            // subtract main storage from whole value
-                            mainStorageBlock = ResourceBlock.Consume(ref adjustedValueRequested, supplier.Storage.Current);
-
-                            // subtract remaining value from extension storage
-                            extensionBlock = ResourceBlock.Consume(ref supplier.Storage.StorageExtensionStore.Current, adjustedValueRequested);
-                        }
-                        else {
-                            mainStorageBlock = ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested);
-                        }
-
-                        activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, mainStorageBlock + extensionBlock, netTaxRevenue, proxyIdx, summary);
-                    }
-                    ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
-                    if (baseProfit - relativeGain < 0) {
-                        supplier.SoldAtALoss = true;
-                    }
-
-                    m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
-
-                    Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
-
-                    if (tutorial.CurrState >= TutorialState.State.ActiveSim)
-                    {
-                        // save purchase to Price Negotiator memories (buyer and seller)
-                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
-                        {
-                            ResourceId resource = (ResourceId)rIdx;
-                            if (activeRequest.Supplied[resource] != 0)
-                            {
-                                if (!activeRequest.Requester.IsLocalOption)
-                                {
-                                    PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource]);
-                                    PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource]);
-                                }
-                            }
-                        }
-                    }
-
-                    if (!adjustedFound.Value.Requester.IsLocalOption) {
-                        MarketUtility.RecordPurchaseToHistory(marketData, activeRequest.Supplied, regionPurchasedIn);
-                    }
-                    else {
-                        ScriptUtility.Trigger(GameTriggers.LetSat);
-                    }
-                }
-
-                if (tutorial.CurrState >= TutorialState.State.ActiveSim)
-                {
-                    if (!supplier.PriceNegotiator.FixedSellOffer)
-                    {
-                        ResourceBlock postSellSnapshot = MarketUtility.GetCompleteStorage(supplier);
-                        for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
-                        {
-                            ResourceId resource = (ResourceId)i;
-                            if (preSellSnapshot[resource] == postSellSnapshot[resource] && (preSellSnapshot[resource] != 0))
-                            {
-                                // None of this resource was sold; add stress price if there were any valid connections to negotiate with
-                                if (supplier.PriceNegotiator.OfferedRecord[resource] >= 1)
-                                {
-                                    // Push negotiator and resource type for negotiation system
-                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false);
-                                    MarketUtility.QueueNegotiation(neg);
-                                }
-                            }
-                        }
-                    }
-                }
+                // reset priority indices
+                supplier.BestPriorityIndex = 0;
             }
 
-            if (tutorial.CurrState >= TutorialState.State.ActiveSim) {
-                // for all remaining, increment their age
-                for (int i = 0; i < m_RequestWorkList.Count; i++) {
-                    m_RequestWorkList[i].Age++;
-                    if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency && m_RequestWorkList[i].Requester.AgeOfUrgency > 0) {
-                        m_StateD.NewUrgents.Add(m_RequestWorkList[i]);
-                        ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, m_RequestWorkList[i].Requester.Position.TileIndex);
-                    }
+            foreach (var requester in m_RequesterWorkList)
+            {
+                // reset matched flag
+                requester.MatchedThisTick = false;
 
-                    // for each actor with one or more requests not fulfilled, add price stress if there were any valid sellers that refused
-                    if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
-                    {
-                        ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
-                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
-                        {
-                            ResourceId resource = (ResourceId)rIdx;
-
-                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] >= 1))
-                            {
-                                // Push negotiator and resource type for negotiation system
-                                PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);
-                                MarketUtility.QueueNegotiation(neg);
-                            }
-                        }
-                    }
-                }
+                // reset priority indices
+                requester.BestPriorityIndex = 0;
             }
 
-            m_RequestWorkList.CopyTo(m_StateA.RequestQueue);
             m_RequesterWorkList.Clear();
 
-            // Record skimmer cost per region
-            for (int region = 0; region < grid.RegionCount; region++)
+            // Prior: CREATE A Buyer->SellerOptions MAPPING (m_SupplierOfferMap)
+            // Prior: CREATE A RingBuffer<Buyers> TO PROCESS BUYERS IN PRIORITY ORDER (m_RequesterWorkList)
+
+            #endregion // MarketCycle_InitialSetup
+
+            #region MarketCycle_SupplierFirstChoice
+
+            // FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER
+            foreach (var supplier in m_SupplierWorkList) {
+                ReassignSellerHighestPriorityBuyer(supplier);
+            }
+
+            #endregion // MarketCycle_SUpplierFirstChoice
+
+            #region MarketCycle_BuyerSupplierIteration
+
+            // TODO: ITERATE THROUGH THE BUYERS, ONE PRIORITY LEVEL AT A TIME.
+            // FIND THE MOST OPTIMAL CHOICE STILL AVAILABLE FOR BOTH BUYERS AND SELLERS.
+            while (m_RequesterWorkList.Count > 0)
             {
-                int cost = m_StateB.UserAdjustmentsPerRegion[region].SkimmerCost;
-                if (BudgetUtility.TrySpendBudget(budget, cost, (uint)region))
+                var requester = m_RequesterWorkList.PopFront();
+
+                // LOAD SUPPLIER OFFERS FOR PROCESSING
+                m_SupplierOfferWorkList.Clear();
+                m_SupplierOfferMap[requester].CopyTo(m_SupplierOfferWorkList);
+
+                // SORT SELLER LISTS BY FAMILIARITY
+                m_SupplierOfferWorkList.Sort((a, b) => {
+                    return b.FamiliarityScore - a.FamiliarityScore;
+                });
+
+                // IF ANY SELLER MATCHES THE BEST PRIORITY INDEX...
+                bool matchFound = false;
+                foreach (var supplierOffer in m_SupplierOfferWorkList)
                 {
-                    MarketUtility.RecordSkimmerCostToHistory(marketData, -cost, region);
+                    if (supplierOffer.Supplier == requester.Priorities.PrioritizedSuppliers[requester.BestPriorityIndex].Target)
+                    {
+                        // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
+                        matchFound = true;
+                        FinalizeSale(marketData, tutorial, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer);
+                        m_SupplierOfferWorkList.Remove(supplierOffer); // TODO: does this removal during iteration cause errors?
+                    }
                 }
+                if (matchFound)
+                {
+                    foreach (var supplierOffer in m_SupplierOfferWorkList)
+                    {
+                        // REASSIGN REMAINING SUPPLIERS TO THEIR NEXT HIGHEST PRIORITY INDEX
+                        ReassignSellerHighestPriorityBuyer(supplierOffer.Supplier);
+                    }
+                }
+                // ELSE MOVE TO BUYER'S NEXT BEST PRIORITY AND CONTINUE
                 else
                 {
-                    // TODO: handle not enough money for skimming policy
+                    requester.BestPriorityIndex++;
+                    m_RequesterWorkList.PushBack(requester);
                 }
             }
 
+            #endregion // MarketCycle_BuyerSupplierIteration
+
+            #region MarketCycle_Negotiations
+
+            // NEGOTIATION PHASE
+            ProcessNegotiations(tutorial);
+
+            #endregion // MarketCycle_Negotations
+
+            #region MarketCycle_RecurringPolicyCosts
+
+            ProcessSkimmerCosts(grid, marketData, budget);
+
+            #endregion // MarketCycle_RecurringPolicyCosts
+
+            #region MarketCycle_History
+
             MarketUtility.FinalizeCycleHistory(marketData);
+
+            #endregion // MarketCycle_History
+
+            #region MarketCycle_Cleanup
+
+            m_RequestWorkList.CopyTo(m_StateA.RequestQueue);
+            m_RequestWorkList.Clear();
+            m_RequesterWorkList.Clear();
+
+            #endregion // MarketCycle_Cleanup
+
+            #region PostMarketCycle_Dispatches
+
             // Trigger market cycle tick completed for market graphs to update
             ZavalaGame.Events.Dispatch(GameEvents.MarketCycleTickCompleted);
+
+            #endregion // PostMarketCycle_Dispatches
         }
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path) {
+        #region Market Processing
+
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path, out int costToBuyer) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current;
@@ -278,7 +219,7 @@ namespace Zavala.Economy
                 }
 
                 int priorityIndex = supplier.Priorities.PrioritizedBuyers.FindIndex((i, b) => i.Target == b, requests[i].Requester);
-                if (priorityIndex < 0) {
+                if (priorityIndex < supplier.BestPriorityIndex) {
                     continue;
                 }
                 if (supplier.Priorities.PrioritizedBuyers[priorityIndex].Deprioritized)
@@ -286,14 +227,16 @@ namespace Zavala.Economy
                     continue;
                 }
 
-                if (priorityIndex == 0) {
+                if (priorityIndex == supplier.BestPriorityIndex) {
                     MarketRequestInfo request = requests[i];
                     profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
                     relativeGain = supplier.Priorities.PrioritizedBuyers[priorityIndex].RelativeGain;
                     taxRevenue = supplier.Priorities.PrioritizedBuyers[priorityIndex].TaxRevenue;
                     proxyIdx = supplier.Priorities.PrioritizedBuyers[priorityIndex].ProxyIdx;
                     path = supplier.Priorities.PrioritizedBuyers[priorityIndex].Path;
+                    costToBuyer = supplier.Priorities.PrioritizedBuyers[priorityIndex].CostToBuyer;
                     requests.FastRemoveAt(i);
+                    supplier.BestPriorityIndex = priorityIndex + 1;
                     return request;
                 }
 
@@ -303,14 +246,16 @@ namespace Zavala.Economy
                 }
             }
 
-            if (highestPriorityRequestIndex >= 0) {
+            if (highestPriorityRequestIndex >= supplier.BestPriorityIndex) {
                 MarketRequestInfo request = requests[highestPriorityRequestIndex];
                 profit = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Profit;
                 relativeGain = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].RelativeGain;
                 taxRevenue = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].TaxRevenue;
                 proxyIdx = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].ProxyIdx;
                 path = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Path;
+                costToBuyer = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].CostToBuyer;
                 requests.FastRemoveAt(highestPriorityRequestIndex);
+                supplier.BestPriorityIndex = highestPriorityRequestIndex + 1;
                 return request;
             }
 
@@ -318,17 +263,8 @@ namespace Zavala.Economy
             relativeGain = 0;
             taxRevenue = new GeneratedTaxRevenue(0, 0, 0);
             path = default;
+            costToBuyer = 0;
             return null;
-        }
-
-        private void MoveReceivedToStorage() {
-            foreach (var requester in m_StateA.Buyers) {
-                if (requester.Storage && !requester.Received.IsZero) {
-                    requester.Storage.Current += requester.Received;
-                    ResourceStorageUtility.RefreshStorageDisplays(requester.Storage);
-                    requester.Received = default;
-                }
-            }
         }
 
         private void UpdateAllSupplierPriorities() {
@@ -349,13 +285,13 @@ namespace Zavala.Economy
             }
 
             m_RequesterWorkList.Clear();
-            m_PriorityWorkList.Clear();
+            m_BuyerPriorityWorkList.Clear();
 
             Log.Msg("[MarketSystem] Updated supplier priorities");
         }
 
         private void UpdateSupplierPriority(ResourceSupplier supplier, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState) {
-            m_PriorityWorkList.Clear();
+            m_BuyerPriorityWorkList.Clear();
             supplier.Priorities.PrioritizedBuyers.Clear();
 
             ResourceMask shippingMask = supplier.ShippingMask;
@@ -464,7 +400,8 @@ namespace Zavala.Economy
                     }
                 }
 
-                float score = profit + relativeGain - shippingCost;
+                float costToBuyer = profit + shippingCost;
+                float score = profit + relativeGain - shippingCost; // supplier wants to maximize score
 
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue();
                 taxRevenue.Sales = requester.IsLocalOption ? 0 : adjustments.PurchaseTax[primary];
@@ -474,7 +411,7 @@ namespace Zavala.Economy
 
                 // NEGOTIATION PASS
                 bool deprioritized = false; // appears in medium level feedback, but not considered as valid buyer to sell to
-                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < profit))
+                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < costToBuyer))
                 {
                     foreach (var currResource in allResources)
                     {
@@ -492,7 +429,7 @@ namespace Zavala.Economy
                     deprioritized = true;
                 }
 
-                m_PriorityWorkList.PushBack(new MarketSupplierPriorityInfo()
+                m_BuyerPriorityWorkList.PushBack(new MarketSupplierPriorityInfo()
                 {
                     Distance = connectionSummary.Distance,
                     ShippingCost = (int)Math.Ceiling(shippingCost),
@@ -501,17 +438,463 @@ namespace Zavala.Economy
                     ProxyIdx = connectionSummary.ProxyConnectionIdx,
                     Path = connectionSummary,
                     Profit = (int)Math.Ceiling(score),
+                    CostToBuyer = (int)costToBuyer,
                     RelativeGain = (int)Math.Ceiling(relativeGain),
                     TaxRevenue = taxRevenue,
                     Deprioritized = deprioritized
                 });
             }
 
-            m_PriorityWorkList.Sort((a, b) => {
+            m_BuyerPriorityWorkList.Sort((a, b) => {
                 return b.Profit - a.Profit;
             });
 
-            m_PriorityWorkList.CopyTo(supplier.Priorities.PrioritizedBuyers);
+            m_BuyerPriorityWorkList.CopyTo(supplier.Priorities.PrioritizedBuyers);
+        }
+
+        private void UpdateAllRequesterPriorities()
+        {
+            m_StateA.Suppliers.CopyTo(m_SupplierWorkList);
+
+            RoadNetwork roadState = Game.SharedState.Get<RoadNetwork>();
+            HexGridSize gridSize = Game.SharedState.Get<SimGridState>().HexSize;
+            TutorialState tutorialState = Game.SharedState.Get<TutorialState>();
+
+            foreach (var supplier in m_SupplierWorkList)
+            {
+                supplier.PriceNegotiator.OfferedRecord.SetAll(0);
+            }
+
+            foreach (var requester in m_StateA.Buyers)
+            {
+                requester.PriceNegotiator.OfferedRecord.SetAll(0);
+                UpdateRequesterPriority(requester, m_StateA, m_StateB, roadState, gridSize, tutorialState);
+            }
+
+            m_RequesterWorkList.Clear();
+            m_SellerPriorityWorkList.Clear();
+
+            Log.Msg("[MarketSystem] Updated buyer priorities");
+        }
+
+        private void UpdateRequesterPriority(ResourceRequester requester, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState)
+        {
+            m_SellerPriorityWorkList.Clear();
+            requester.Priorities.PrioritizedSuppliers.Clear();
+
+            ResourceMask requestMask = requester.RequestMask;
+
+            foreach (var supplier in m_SupplierWorkList)
+            {
+                // ignore buyers that don't overlap with shipping mask
+                ResourceMask overlap = supplier.ShippingMask & requester.RequestMask;
+                if (overlap == 0)
+                {
+                    continue;
+                }
+
+                RoadPathSummary connectionSummary;
+                if (supplier.Position.IsExternal) // NOTE: not 1:1 conversion from UpdateSellerPriority
+                {
+                    connectionSummary = new RoadPathSummary();
+                    connectionSummary.DestinationIdx = (ushort)requester.Position.TileIndex; // NOTE: not 1:1 conversion from UpdateSellerPriority
+                    connectionSummary.Connected = true;
+                }
+                else
+                {
+                    connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex); // NOTE: not 1:1 conversion from UpdateSellerPriority
+                }
+
+                if (!connectionSummary.Connected)
+                {
+                    continue;
+                }
+                if (connectionSummary.Distance != 0 && requester.IsLocalOption) // NOTE: not 1:1 conversion from UpdateSellerPriority
+                {
+                    // Exclude local options from lists of non-local tiles
+                    continue;
+                }
+                if (requester.Position.TileIndex == supplier.Position.TileIndex && !requester.IsLocalOption) // NOTE: not 1:1 conversion from UpdateSellerPriority
+                {
+                    // Exclude a tile from supplying itself -- storage, I'm looking at you :(
+                    continue;
+                }
+
+                bool proxyMatch = false;
+
+                //External case
+                if (supplier.Position.IsExternal) // NOTE: not 1:1 conversion from UpdateSellerPriority
+                {
+                    // Don't summon blimps until basic tutorial completes
+                    if (tutorialState.CurrState <= TutorialState.State.InactiveSim)
+                    {
+                        continue;
+                    }
+                }
+                // Regular case
+                else
+                {
+                    // Adjust for if is a proxy connection
+                    if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16)
+                    {
+                        // If proxy connection, ensure proxy is for the right type of resource
+                        uint region = ZavalaGame.SimGrid.Terrain.Regions[connectionSummary.ProxyConnectionIdx];
+                        if (network.ExportDepotMap.ContainsKey(region))
+                        {
+                            List<ResourceSupplierProxy> proxies = network.ExportDepotMap[region];
+                            foreach (var proxy in proxies)
+                            {
+                                // For each export depot, check if supplier is connected to it.
+                                if (connectionSummary.ProxyConnectionIdx == proxy.Position.TileIndex)
+                                {
+                                    ResourceMask proxyOverlap = overlap & proxy.ProxyMask;
+
+                                    if (proxyOverlap != 0)
+                                    {
+                                        proxyMatch = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!proxyMatch)
+                        {
+                            // no match
+                            continue;
+                        }
+                    }
+                }
+
+                var adjustments = config.UserAdjustmentsPerRegion[requester.Position.RegionIndex]; // NOTE: not 1:1 conversion from UpdateSellerPriority
+
+                ResourceId primary = ResourceUtility.FirstResource(overlap);
+                List<ResourceId> allResources = ResourceUtility.AllResources(overlap);
+
+                // Only apply import tax if shipping across regions. Then use import tax of purchaser
+                // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
+                int importCost = 0;
+                if (supplier.Position.IsExternal || (supplier.Position.RegionIndex != requester.Position.RegionIndex))
+                {
+                    importCost = adjustments.ImportTax[primary];
+                }
+                float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + importCost;
+
+                if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16)
+                {
+                    // add flat rate export depot shipping fee
+                    shippingCost += config.TransportCosts.ExportDepotFlatRate[primary];
+                }
+
+                float purchaseCost = 0;
+                // float relativeGain = 0; // How much this supplier stands to gain by NOT incurring penalties from not selling
+                if (requester.IsLocalOption)
+                {
+                    // profit -= adjustments.RunoffPenalty[primary];
+                }
+                else
+                {
+                    if (requester.OverridesBuyPrice)
+                    {
+                        purchaseCost = requester.OverrideBlock[primary];
+                    }
+                    else
+                    {
+                        // Err towards buyer purchase cost (TODO: unless they accept anything?)
+                        // profit = requester.PriceNegotiator.PriceBlock[primary];
+                        purchaseCost = supplier.PriceNegotiator.PriceBlock[primary];
+                    }
+
+                    /*
+                    if (supplier.Storage.StorageExtensionReq != null)
+                    {
+                        // since this has a local option that would penalize runoff, that means the farm would sell it to this alternative for that much less (so the score for the purchaser should be higher)
+                        // relativeGain += adjustments.RunoffPenalty[primary];
+                    }
+                    */
+                }
+
+                float totalCostForBuyer = purchaseCost + shippingCost;
+                float score = totalCostForBuyer; // buyer wants to minimize score
+
+                // NEGOTIATION PASS
+                bool deprioritized = false; // appears in medium level feedback, but not considered as valid buyer to sell to
+                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < totalCostForBuyer))
+                {
+                    foreach (var currResource in allResources)
+                    {
+                        // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
+                        requester.PriceNegotiator.OfferedRecord[currResource] = 1;
+
+                        // Check if requester is actively requesting
+                        if (requester.Requested[currResource] >= 1)
+                        {
+                            supplier.PriceNegotiator.OfferedRecord[currResource] = 1;
+                        }
+                    }
+
+                    // If price points don't overlap, not a valid buyer/seller pair.
+                    deprioritized = true;
+                }
+
+                m_SellerPriorityWorkList.PushBack(new MarketRequesterPriorityInfo()
+                {
+                    Distance = connectionSummary.Distance,
+                    ShippingCost = (int)Math.Ceiling(shippingCost),
+                    Mask = overlap,
+                    Target = supplier,
+                    ProxyIdx = connectionSummary.ProxyConnectionIdx,
+                    Path = connectionSummary,
+                    Cost = (int)Math.Ceiling(score),
+                    Deprioritized = deprioritized
+                });
+            }
+
+            m_SellerPriorityWorkList.Sort((a, b) => {
+                return a.Cost - b.Cost; // inverse of BuyerPriorityWorkList
+            });
+
+            m_SellerPriorityWorkList.CopyTo(requester.Priorities.PrioritizedSuppliers);
+        }
+
+       private void ReassignSellerHighestPriorityBuyer(ResourceSupplier supplier)
+        {
+            MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary, out int costToBuyer);
+            
+            // Only add to mapping if value is not null AND requester has not already been claimed in an optimal match
+            if (found.HasValue && !found.Value.Requester.MatchedThisTick)
+            {
+                // Save the offer for buyer processing that comes later
+                // TODO: calculate familiarity score
+                ushort familiarityScore = 0;
+                MarketSupplierOffer supplierOffer = new MarketSupplierOffer(supplier, costToBuyer, baseProfit, relativeGain, baseTaxRevenue, proxyIdx, summary, (MarketRequestInfo)found, familiarityScore);
+                AddSellerOfferEntry(found.Value.Requester, supplierOffer);
+                m_RequesterWorkList.PushBack(found.Value.Requester);
+            }
+        }
+
+        private void AddSellerOfferEntry(ResourceRequester requester, MarketSupplierOffer offer)
+        {
+            if (m_SupplierOfferMap.ContainsKey(requester))
+            {
+                var offers = m_SupplierOfferMap[requester];
+                offers.PushBack(offer);
+                m_SupplierOfferMap[requester] = offers;
+            }
+            else
+            {
+                RingBuffer<MarketSupplierOffer> sellerOffers = new RingBuffer<MarketSupplierOffer>(4, RingBufferMode.Expand);
+                sellerOffers.PushBack(offer);
+                m_SupplierOfferMap.Add(requester, sellerOffers);
+            }
+        }
+
+        /// <summary>
+        /// Once a buyer/seller match is made, handles the resource changes, queues fulfillment, etc.
+        /// </summary>
+        private void FinalizeSale(MarketData marketData, TutorialState tutorial, ResourceSupplier supplier, MarketRequestInfo? found, MarketSupplierOffer supplierOffer)
+        {
+            ResourceBlock adjustedValueRequested = found.Value.Requested;
+            MarketRequestInfo? adjustedFound = found;
+
+            if (found.Value.Requester.InfiniteRequests)
+            {
+                // Set requested value equal to this suppliers stock
+                for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
+                {
+                    ResourceId resource = (ResourceId)i;
+                    if ((supplier.Storage.Current[resource] != 0) && (found.Value.Requested[resource] != 0))
+                    {
+                        int extensionCount = 0;
+                        if (supplier.Storage.StorageExtensionStore != null && !adjustedFound.Value.Requester.IsLocalOption)
+                        {
+                            extensionCount += supplier.Storage.StorageExtensionStore.Current[resource];
+                        }
+
+                        // Debug.Log("[Sitting] Set request to max " + (supplier.Storage.Current[resource] + extensionCount) + " for resource " + resource.ToString());
+                        adjustedValueRequested[resource] = supplier.Storage.Current[resource] + extensionCount;
+                    }
+                }
+
+                if (adjustedFound.Value.Requester.IsLocalOption)
+                {
+                    // Remove sales / import taxes (since essentially sold to itself)
+                    supplierOffer.BaseTaxRevenue.Sales = 0;
+                    supplierOffer.BaseTaxRevenue.Import = 0;
+                }
+                // TODO: Determine how storage should work with sales taxes
+
+                adjustedFound = new MarketRequestInfo(found.Value.Requester, adjustedValueRequested);
+            }
+
+            if (!ResourceBlock.Fulfills(supplier.Storage.Current, adjustedValueRequested))
+            {
+                if (supplier.Storage.StorageExtensionReq == adjustedFound.Value.Requester)
+                {
+                    // local option was optimal buyer, so didn't sell to alternatives. But no change to be made to the storage or extended storage.
+                    // requeue request
+                    m_RequestWorkList.PushBack(found.Value);
+                    return;
+                }
+            }
+
+            int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
+            int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
+            GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(supplierOffer.BaseTaxRevenue.Sales * quantity, supplierOffer.BaseTaxRevenue.Import * quantity, supplierOffer.BaseTaxRevenue.Penalties * quantity);
+            MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
+
+            MarketActiveRequestInfo activeRequest;
+            if (supplier.Storage.InfiniteSupply)
+            {
+                activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, ResourceBlock.FulfillInfinite(supplier.ShippingMask, adjustedValueRequested), netTaxRevenue, supplierOffer.ProxyIdx, supplierOffer.Path);
+            }
+            else
+            {
+                ResourceBlock mainStorageBlock;
+                ResourceBlock extensionBlock = new ResourceBlock();
+
+                if (!ResourceBlock.Fulfills(supplier.Storage.Current, adjustedValueRequested))
+                {
+                    // subtract main storage from whole value
+                    mainStorageBlock = ResourceBlock.Consume(ref adjustedValueRequested, supplier.Storage.Current);
+
+                    // subtract remaining value from extension storage
+                    extensionBlock = ResourceBlock.Consume(ref supplier.Storage.StorageExtensionStore.Current, adjustedValueRequested);
+                }
+                else
+                {
+                    mainStorageBlock = ResourceBlock.Consume(ref supplier.Storage.Current, adjustedValueRequested);
+                }
+
+                activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, mainStorageBlock + extensionBlock, netTaxRevenue, supplierOffer.ProxyIdx, supplierOffer.Path);
+            }
+            ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
+            if (supplierOffer.BaseProfit - supplierOffer.RelativeGain < 0)
+            {
+                supplier.SoldAtALoss = true;
+            }
+
+            m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
+
+            Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
+
+            if (tutorial.CurrState >= TutorialState.State.ActiveSim)
+            {
+                // save purchase to Price Negotiator memories (buyer and seller)
+                for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
+                {
+                    ResourceId resource = (ResourceId)rIdx;
+                    if (activeRequest.Supplied[resource] != 0)
+                    {
+                        if (!activeRequest.Requester.IsLocalOption)
+                        {
+                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource]);
+                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource]);
+                        }
+                    }
+                }
+            }
+
+            if (!adjustedFound.Value.Requester.IsLocalOption)
+            {
+                MarketUtility.RecordPurchaseToHistory(marketData, activeRequest.Supplied, regionPurchasedIn);
+            }
+            else
+            {
+                ScriptUtility.Trigger(GameTriggers.LetSat);
+            }
+
+            adjustedFound.Value.Requester.MatchedThisTick = true;
+        }
+
+        private void ProcessNegotiations(TutorialState tutorial)
+        {
+            // NEGOTIATIONS FOR SUPPLIERS
+            foreach (var supplier in m_SupplierWorkList)
+            {
+                if (tutorial.CurrState >= TutorialState.State.ActiveSim)
+                {
+                    if (!supplier.PriceNegotiator.FixedSellOffer)
+                    {
+                        supplier.PostSaleSnapshot = MarketUtility.GetCompleteStorage(supplier);
+                        for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
+                        {
+                            ResourceId resource = (ResourceId)i;
+                            if (supplier.PreSaleSnapshot[resource] == supplier.PostSaleSnapshot[resource] && (supplier.PreSaleSnapshot[resource] != 0))
+                            {
+                                // None of this resource was sold; add stress price if there were any valid connections to negotiate with
+                                if (supplier.PriceNegotiator.OfferedRecord[resource] >= 1)
+                                {
+                                    // Push negotiator and resource type for negotiation system
+                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false);
+                                    MarketUtility.QueueNegotiation(neg);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // NEGOTIATIONS FOR REQUESTERS
+            if (tutorial.CurrState >= TutorialState.State.ActiveSim) {
+                // for all remaining, increment their age
+                for (int i = 0; i < m_RequestWorkList.Count; i++) {
+                    m_RequestWorkList[i].Age++;
+                    if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency && m_RequestWorkList[i].Requester.AgeOfUrgency > 0) {
+                        m_StateD.NewUrgents.Add(m_RequestWorkList[i]);
+                        ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, m_RequestWorkList[i].Requester.Position.TileIndex);
+                    }
+
+                    // for each actor with one or more requests not fulfilled, add price stress if there were any valid sellers that refused
+                    if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
+                    {
+                        ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
+                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
+                        {
+                            ResourceId resource = (ResourceId)rIdx;
+
+                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] >= 1))
+                            {
+                                // Push negotiator and resource type for negotiation system
+                                PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);
+                                MarketUtility.QueueNegotiation(neg);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ProcessSkimmerCosts(SimGridState grid, MarketData marketData, BudgetData budget)
+        {
+            // Record skimmer cost per region
+            for (int region = 0; region < grid.RegionCount; region++)
+            {
+                int cost = m_StateB.UserAdjustmentsPerRegion[region].SkimmerCost;
+                if (BudgetUtility.TrySpendBudget(budget, cost, (uint)region))
+                {
+                    MarketUtility.RecordSkimmerCostToHistory(marketData, -cost, region);
+                }
+                else
+                {
+                    // TODO: handle not enough money for skimming policy
+                }
+            }
+        }
+
+
+        #endregion // Market Processing
+
+        private void MoveReceivedToStorage()
+        {
+            foreach (var requester in m_StateA.Buyers)
+            {
+                if (requester.Storage && !requester.Received.IsZero)
+                {
+                    requester.Storage.Current += requester.Received;
+                    ResourceStorageUtility.RefreshStorageDisplays(requester.Storage);
+                    requester.Received = default;
+                }
+            }
         }
     }
 }

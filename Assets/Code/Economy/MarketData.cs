@@ -79,6 +79,47 @@ namespace Zavala.Economy
         }
     }
 
+    public struct MarketRequesterPriorityList
+    {
+        public RingBuffer<MarketRequesterPriorityInfo> PrioritizedSuppliers;
+
+        public void Create()
+        {
+            PrioritizedSuppliers = new RingBuffer<MarketRequesterPriorityInfo>(4, RingBufferMode.Expand);
+        }
+    }
+
+    public struct MarketSupplierOffer {
+        public ResourceSupplier Supplier;
+        public int TotalCost; // total cost to the buyer this is being offered to
+
+        public int BaseProfit;
+        public int RelativeGain;
+        public GeneratedTaxRevenue BaseTaxRevenue;
+        public ushort ProxyIdx;
+        public RoadPathSummary Path;
+
+        public MarketRequestInfo FoundRequest;
+
+        public ushort FamiliarityScore;
+
+        public MarketSupplierOffer(ResourceSupplier supplier, int totalCost, int baseProfit, int relativeGain, GeneratedTaxRevenue baseRevenue, ushort proxyIdx, RoadPathSummary path, MarketRequestInfo found, ushort familiarity)
+        {
+            Supplier = supplier;
+            TotalCost = totalCost;
+
+            BaseProfit = baseProfit;
+            RelativeGain = relativeGain;
+            BaseTaxRevenue = baseRevenue;
+            ProxyIdx = proxyIdx;
+            Path = path;
+
+            FoundRequest = found;
+
+            FamiliarityScore = familiarity;
+        }
+    }
+
     public struct MarketSupplierPriorityInfo
     {
         public ResourceRequester Target;
@@ -87,9 +128,23 @@ namespace Zavala.Economy
         public ushort ProxyIdx;
         public RoadPathSummary Path;
         public int Profit;
+        public int CostToBuyer;
         public int ShippingCost;
         public int RelativeGain;
         public GeneratedTaxRevenue TaxRevenue;
+        public bool Deprioritized;
+    }
+
+    // TODO: prune redundant fields as necessary
+    public struct MarketRequesterPriorityInfo
+    {
+        public ResourceSupplier Target;
+        public ResourceMask Mask;
+        public int Distance;
+        public ushort ProxyIdx;
+        public RoadPathSummary Path;
+        public int Cost;
+        public int ShippingCost;
         public bool Deprioritized;
     }
 
