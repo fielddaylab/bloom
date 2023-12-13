@@ -106,7 +106,7 @@ Material:
     - _AlphaClip: 0
     - _BakedLightingStength: 1.23
     - _BendSpeed: 1.03
-    - _BendStrength: 1.32
+    - _BendStrength: 3.57
     - _Blend: 0
     - _BottomFogFade: -0.25
     - _BottomFogHeight: -1
@@ -128,7 +128,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowStength: 2
+    - _ShadowStength: 0.47
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
