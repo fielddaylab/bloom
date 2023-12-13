@@ -24,6 +24,13 @@ namespace Zavala.Economy {
         }
     }
 
+    public enum NegotiableCode
+    {
+        NO_OFFER,
+        NEGOTIABLE, 
+        NON_NEGOTIABLE
+    }
+
     [RequireComponent(typeof(OccupiesTile))]
     public class ResourcePriceNegotiator : BatchedComponent
     {
@@ -106,7 +113,7 @@ namespace Zavala.Economy {
                     // if overlaps with sell mask (is selling this resource)
                     if ((negotiator.SettledRecord & negotiator.SellMask)[resource] > 0)
                     {
-                        if (!negotiator.FixedSellOffer)
+                        if (!negotiator.FixedSellOffer && negotiator.SettledRecord[resource] == (int)NegotiableCode.NEGOTIABLE)
                         {
                             priceStep = MarketParams.NegotiationStep;
                             StagePrice(ref negotiator, resource, priceStep);
@@ -116,7 +123,7 @@ namespace Zavala.Economy {
                     // else if overlaps with buy mask (is buying this resource)
                     else if ((negotiator.SettledRecord & negotiator.BuyMask)[resource] > 0)
                     {
-                        if (!negotiator.FixedBuyOffer)
+                        if (!negotiator.FixedBuyOffer && negotiator.SettledRecord[resource] == (int)NegotiableCode.NEGOTIABLE)
                         {
                             priceStep = -MarketParams.NegotiationStep;
                             StagePrice(ref negotiator, resource, priceStep);
@@ -135,9 +142,9 @@ namespace Zavala.Economy {
         /// </summary>
         /// <param name="negotiator"></param>
         /// <param name="resource"></param>
-        public static void SaveLastPrice(ResourcePriceNegotiator negotiator, ResourceId resource, int price)
+        public static void SaveLastPrice(ResourcePriceNegotiator negotiator, ResourceId resource, int price, bool negotiable)
         {
-            negotiator.SettledRecord[resource] = 1;
+            negotiator.SettledRecord[resource] = negotiable ? (int)NegotiableCode.NEGOTIABLE : (int)NegotiableCode.NON_NEGOTIABLE;
             // negotiator.MemoryPriceBlock[resource] = price;
         }
 

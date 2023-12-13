@@ -13,7 +13,6 @@ namespace Zavala.Economy
     [SysUpdate(GameLoopPhase.Update, 5)]
     public sealed class MarketSystem : SharedStateSystemBehaviour<MarketData, MarketConfig, SimGridState, RequestVisualState>
     {
-
         // NOT persistent state - work lists for various updates
         private readonly RingBuffer<MarketRequestInfo> m_RequestWorkList = new RingBuffer<MarketRequestInfo>(8, RingBufferMode.Expand);
         private readonly RingBuffer<ResourceSupplier> m_SupplierWorkList = new RingBuffer<ResourceSupplier>(8, RingBufferMode.Expand);
@@ -128,6 +127,7 @@ namespace Zavala.Economy
                         // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
                         matchFound = true;
                         FinalizeSale(marketData, tutorial, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer);
+                        m_RequestWorkList.Remove(supplierOffer.FoundRequest);
                         m_SupplierOfferWorkList.Remove(supplierOffer); // TODO: does this removal during iteration cause errors?
                     }
                 }
@@ -235,7 +235,7 @@ namespace Zavala.Economy
                     proxyIdx = supplier.Priorities.PrioritizedBuyers[priorityIndex].ProxyIdx;
                     path = supplier.Priorities.PrioritizedBuyers[priorityIndex].Path;
                     costToBuyer = supplier.Priorities.PrioritizedBuyers[priorityIndex].CostToBuyer;
-                    requests.FastRemoveAt(i);
+                    // requests.FastRemoveAt(i);
                     supplier.BestPriorityIndex = priorityIndex + 1;
                     return request;
                 }
@@ -254,7 +254,7 @@ namespace Zavala.Economy
                 proxyIdx = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].ProxyIdx;
                 path = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Path;
                 costToBuyer = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].CostToBuyer;
-                requests.FastRemoveAt(highestPriorityRequestIndex);
+                // requests.FastRemoveAt(highestPriorityRequestIndex);
                 supplier.BestPriorityIndex = highestPriorityRequestIndex + 1;
                 return request;
             }
@@ -276,11 +276,11 @@ namespace Zavala.Economy
 
             foreach (var requester in m_RequesterWorkList)
             {
-                requester.PriceNegotiator.OfferedRecord.SetAll(0);
+                requester.PriceNegotiator.OfferedRecord.SetAll((int)NegotiableCode.NO_OFFER);
             }
 
             foreach (var supplier in m_StateA.Suppliers) {
-                supplier.PriceNegotiator.OfferedRecord.SetAll(0);
+                supplier.PriceNegotiator.OfferedRecord.SetAll((int)NegotiableCode.NO_OFFER);
                 UpdateSupplierPriority(supplier, m_StateA, m_StateB, roadState, gridSize, tutorialState);
             }
 
@@ -416,14 +416,15 @@ namespace Zavala.Economy
                     foreach (var currResource in allResources)
                     {
                         // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
-                        requester.PriceNegotiator.OfferedRecord[currResource] = 1;
+                        requester.PriceNegotiator.OfferedRecord[currResource] = supplier.PriceNegotiator.FixedSellOffer ? (int)NegotiableCode.NON_NEGOTIABLE : (int)NegotiableCode.NEGOTIABLE;
 
                         // Check if requester is actively requesting
-                        if (requester.Requested[currResource] >= 1)
+                        if (requester.Requested[currResource] >= 0)
                         {
-                            supplier.PriceNegotiator.OfferedRecord[currResource] = 1;
+                            supplier.PriceNegotiator.OfferedRecord[currResource] = requester.PriceNegotiator.FixedBuyOffer ? (int)NegotiableCode.NON_NEGOTIABLE : (int)NegotiableCode.NEGOTIABLE;
                         }
                     }
+
 
                     // If price points don't overlap, not a valid buyer/seller pair.
                     deprioritized = true;
@@ -460,14 +461,8 @@ namespace Zavala.Economy
             HexGridSize gridSize = Game.SharedState.Get<SimGridState>().HexSize;
             TutorialState tutorialState = Game.SharedState.Get<TutorialState>();
 
-            foreach (var supplier in m_SupplierWorkList)
-            {
-                supplier.PriceNegotiator.OfferedRecord.SetAll(0);
-            }
-
             foreach (var requester in m_StateA.Buyers)
             {
-                requester.PriceNegotiator.OfferedRecord.SetAll(0);
                 UpdateRequesterPriority(requester, m_StateA, m_StateB, roadState, gridSize, tutorialState);
             }
 
@@ -618,7 +613,7 @@ namespace Zavala.Economy
 
                 // NEGOTIATION PASS
                 bool deprioritized = false; // appears in medium level feedback, but not considered as valid buyer to sell to
-                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < totalCostForBuyer))
+                /* if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < totalCostForBuyer))
                 {
                     foreach (var currResource in allResources)
                     {
@@ -635,6 +630,7 @@ namespace Zavala.Economy
                     // If price points don't overlap, not a valid buyer/seller pair.
                     deprioritized = true;
                 }
+                */
 
                 m_SellerPriorityWorkList.PushBack(new MarketRequesterPriorityInfo()
                 {
@@ -787,8 +783,8 @@ namespace Zavala.Economy
                     {
                         if (!activeRequest.Requester.IsLocalOption)
                         {
-                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource]);
-                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource]);
+                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource], !supplier.PriceNegotiator.FixedSellOffer);
+                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource], !activeRequest.Requester.PriceNegotiator.FixedBuyOffer);
                         }
                     }
                 }
@@ -822,7 +818,7 @@ namespace Zavala.Economy
                             if (supplier.PreSaleSnapshot[resource] == supplier.PostSaleSnapshot[resource] && (supplier.PreSaleSnapshot[resource] != 0))
                             {
                                 // None of this resource was sold; add stress price if there were any valid connections to negotiate with
-                                if (supplier.PriceNegotiator.OfferedRecord[resource] >= 1)
+                                if (supplier.PriceNegotiator.OfferedRecord[resource] > (int)NegotiableCode.NO_OFFER)
                                 {
                                     // Push negotiator and resource type for negotiation system
                                     PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false);
@@ -845,6 +841,7 @@ namespace Zavala.Economy
                     }
 
                     // for each actor with one or more requests not fulfilled, add price stress if there were any valid sellers that refused
+                    // only look for better deal if offerer is not a fixed sell offer
                     if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
                     {
                         ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
@@ -852,7 +849,7 @@ namespace Zavala.Economy
                         {
                             ResourceId resource = (ResourceId)rIdx;
 
-                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] >= 1))
+                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] > (int)NegotiableCode.NO_OFFER))
                             {
                                 // Push negotiator and resource type for negotiation system
                                 PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);
