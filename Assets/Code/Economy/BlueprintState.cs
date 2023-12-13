@@ -286,6 +286,8 @@ namespace Zavala.Economy
                 {
                     BuildingType builtType = commitAction.BuildType;
                     if (builtType == BuildingType.Digester || builtType == BuildingType.Storage) {
+                        VfxUtility.PlayEffect(commitAction.BuiltObj.transform.position, EffectType.Poof);
+                        SfxUtility.PlaySfx("build-poof");
                         using (TempVarTable varTable = TempVarTable.Alloc()) {
                             varTable.Set("buildingType", commitAction.BuildType.ToString());
                             ScriptUtility.Trigger(GameTriggers.PlayerBuiltBuilding, varTable);
@@ -296,6 +298,7 @@ namespace Zavala.Economy
                     {
                         RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
                         RoadUtility.UpdateRoadVisuals(network, commitAction.TileIndex);
+                        VfxUtility.PlayEffect(SimWorldUtility.GetTileCenter(commitAction.TileIndex), EffectType.Poof_Road);
                     }
 
                     if (commitAction.Previewer != null) {

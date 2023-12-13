@@ -16,8 +16,27 @@ namespace Zavala.Rendering {
                 emit.applyShapeToPosition = true;
                 emit.position = request.Position;
 
+                if (request.Count <= 0) {
+                    request.Count = GetDefaultParticleCountForEffect(request.Type);
+                }
+
                 system.Emit(emit, request.Count);
                 system.Play();
+            }
+        }
+
+        private int GetDefaultParticleCountForEffect(EffectType type) {
+            switch (type) {
+                case EffectType.Poof: {
+                    return m_State.DefaultPoofCount;
+                }
+                case EffectType.Poof_Road: {
+                    return m_State.DefaultPoofRoadCount;
+                }
+                default: {
+                    Log.Warn("[EffectPlaybackSystem] No effects loaded for type '{0}'", type);
+                    return 0;
+                }
             }
         }
 
