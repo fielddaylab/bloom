@@ -457,10 +457,10 @@ namespace Zavala.Building
             RoadUtility.UnstageRoad(network, grid, tileIndex);
 
             m_StateC.RoadToolState.TracedTileIdxs.RemoveAt(tracedIndex);
-
-            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0 && tracedIndex != m_StateC.RoadToolState.TracedTileIdxs.Count - 1)
-            {
-                // remove from running cost
+            // skip refunding start and end roads, because they didn't cost anything to begin with
+            if (m_StateC.RoadToolState.TracedTileIdxs.Count <= 0 || tracedIndex <= 0 || (network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
+                return;
+            } else {
                 ShopUtility.EnqueueCost(m_StateD, -ShopUtility.PriceLookup(UserBuildTool.Road));
             }
         }
@@ -530,7 +530,6 @@ namespace Zavala.Building
             bool purchaseSuccessful = ShopUtility.CanPurchaseBuild(UserBuildTool.Road, grid.CurrRegionIndex, roadCount - deductNum, m_StateD.RunningCost, out int totalPrice);
 
 
-            int unitCost = 0; // price for 1 segment
             if (purchaseSuccessful) {
                 Debug.Log("[StagingRoad] Finalizing road...");
 
@@ -543,6 +542,7 @@ namespace Zavala.Building
                 int roadObjIdx = network.RoadObjects.Count - 1;
 
                 // Merge staged masks into flow masks
+                int unitCost;
                 for (int i = 0; i < roadCount; i++) {
                     bool isEndpoint = i == 0 || i == roadCount - 1;
                     int currIndex = m_StateC.RoadToolState.TracedTileIdxs[i];
@@ -553,19 +553,15 @@ namespace Zavala.Building
 
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
-                    if (!isEndpoint)
-                    {
+                    if (!isEndpoint) {
                         unitCost = ShopUtility.PriceLookup(UserBuildTool.Road);
-                    }
-                    else
-                    {
+                    } else {
                         unitCost = 0;
                     }
 
                     // Add the road commit to the overall chain
                     GameObject roadObj = isEndpoint ? null : network.RoadObjects[roadObjIdx].gameObject;
-                    if (!isEndpoint)
-                    {
+                    if (!isEndpoint) {
                         network.RoadObjects[roadObjIdx].Position.Pending = true;
                     }
                     roadChain.Chain.PushBack(new ActionCommit(
@@ -584,8 +580,7 @@ namespace Zavala.Building
                     // update road visuals
                     RoadUtility.UpdateRoadVisuals(network, currIndex);
 
-                    if (!isEndpoint)
-                    {
+                    if (!isEndpoint) {
                         roadObjIdx--;
                     }
                 }
@@ -601,10 +596,12 @@ namespace Zavala.Building
                 ClearRoadToolState();
 
                 return true;
-            }
-            else {
+            } else {
+                Debug.Log("[StagingRoad] Insufficient funds!");
                 return false;
             }
+
+
         }
 
         /// <summary>
