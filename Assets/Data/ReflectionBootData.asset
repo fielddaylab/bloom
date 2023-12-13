@@ -68,7 +68,7 @@ MonoBehaviour:
       OverloadCount: 0
     - TypeName: Zavala.Sim.RunoffParams
       Self: 0
-      MemberCount: 5
+      MemberCount: 6
       OverloadCount: 0
     Members:
     - MemberName: TruckSpeed
@@ -103,60 +103,24 @@ MonoBehaviour:
       Type: 4
     - MemberName: DFertilizerRunoffProportion
       Type: 4
+    - MemberName: RunoffConsumeFertilizerThreshold
+      Type: 4
     - MemberName: ExcessRunoffThreshold
       Type: 4
     OverloadedMethods: []
     TypeReferences: []
   DebugMenu:
-    AttributeTypeName: FieldDay.Debugging.DebugMenuFactoryAttribute
-    LookupFlags: 58
+    AttributeTypeName: 
+    LookupFlags: 0
     LookupInherit: 0
-    Assemblies:
-    - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 6
-    Types:
-    - TypeName: Zavala.Debugging.SimGridDebugger
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
-    - TypeName: Zavala.Economy.BudgetUtility
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
-    - TypeName: Zavala.Economy.ShopState
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
-    - TypeName: Zavala.Cards.CardsUtility
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
-    - TypeName: Zavala.Sim.RegionUnlockUtility
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
-    - TypeName: Zavala.Advisor.AdvisorUtility
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
-    Members:
-    - MemberName: Debug_CreateMenu
-      Type: 8
-    - MemberName: BudgetDebugMenu
-      Type: 8
-    - MemberName: ShopItemUnlockDebugMenu
-      Type: 8
-    - MemberName: PolicyUnlockDebugMenu
-      Type: 8
-    - MemberName: RegionUnlockDebugMenu
-      Type: 8
-    - MemberName: AdvisorModuleUnlockUtility
-      Type: 8
+    Assemblies: []
+    Types: []
+    Members: []
     OverloadedMethods: []
     TypeReferences: []
   QuickMenu:
-    AttributeTypeName: FieldDay.Debugging.QuickMenuFactoryAttribute
-    LookupFlags: 58
+    AttributeTypeName: 
+    LookupFlags: 0
     LookupInherit: 0
     Assemblies: []
     Types: []

@@ -33,7 +33,7 @@ namespace FieldDay.Editor {
             } else {
                 PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly;
                 PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Off;
-                PlayerSettings.SetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup, ManagedStrippingLevel.High);
+                PlayerSettings.SetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup, ManagedStrippingLevel.Medium);
             }
 
             Debug.LogFormat("[AdjustSettingsBuildProcessor] Building branch '{0}', development mode {1}", branch, EditorUserBuildSettings.development);
