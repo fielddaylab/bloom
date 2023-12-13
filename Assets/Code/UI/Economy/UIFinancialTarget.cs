@@ -10,24 +10,32 @@ namespace Zavala.UI
     public class UIFinancialTarget : MonoBehaviour
     {
         [SerializeField] private RectTransform m_Root;
-        public Slider Slider;
-        public Image TargetLine;
-        public Image DirArrow;
+        public RectTransform Fill;
+        public RectTransform TargetFill;
+        public RectTransform TargetLine;
 
         public void SetRatio(float value) {
-            Slider.value = value;
+            Vector2 max = Fill.anchorMax;
+            max.y = value;
+            Fill.anchorMax = max;
         }
 
         public void SetTargetLine(float ratio) {
-            float maxHeight = m_Root.rect.height;
-            TargetLine.rectTransform.anchoredPosition = new Vector2(
-                TargetLine.rectTransform.anchoredPosition.x,
-                maxHeight * ratio
-                );
+            Vector2 max = TargetFill.anchorMax;
+            max.y = ratio;
+            TargetFill.anchorMax = max;
+
+            Vector2 min = TargetLine.anchorMin;
+            max = TargetLine.anchorMax;
+
+            min.y = max.y = ratio;
+
+            TargetLine.anchorMin = min;
+            TargetLine.anchorMax = max;
         }
 
         public void SetArrowDir(int yScale) {
-            DirArrow.rectTransform.SetScale(yScale, Axis.Y);
+            
         }
     }
 }

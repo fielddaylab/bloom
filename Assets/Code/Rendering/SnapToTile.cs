@@ -2,6 +2,7 @@ using FieldDay;
 using FieldDay.Components;
 using System;
 using UnityEngine;
+using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala {
@@ -23,6 +24,18 @@ namespace Zavala {
             }
         }
 
+        private void OnDisable() {
+            if (Game.IsShuttingDown) {
+                return;
+            }
+
+            if (m_hideTop) {
+                OccupiesTile tile = GetComponent<OccupiesTile>();
+                ZavalaGame.SimGrid.Terrain.Info[tile.TileIndex].Flags &= ~TerrainFlags.TopHidden;
+                SimWorldUtility.QueueVisualUpdate((ushort) tile.TileIndex, VisualUpdateType.Building);
+            }
+        }
+
         private void SnapOnEnable() {
             OccupiesTile tile = GetComponent<OccupiesTile>();
             if (tile) {
@@ -37,7 +50,8 @@ namespace Zavala {
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             worldPos.y += snap.HeightOffset;
             if (snap.m_hideTop) {
-                TileEffectRendering.SetTopVisibility(ZavalaGame.SimWorld.Tiles[tile.TileIndex], false);
+                ZavalaGame.SimGrid.Terrain.Info[tile.TileIndex].Flags |= TerrainFlags.TopHidden;
+                SimWorldUtility.QueueVisualUpdate((ushort) tile.TileIndex, VisualUpdateType.Building);
             }
             snap.transform.position = worldPos;
         }

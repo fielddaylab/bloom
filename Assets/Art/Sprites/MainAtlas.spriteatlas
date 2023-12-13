@@ -52,10 +52,13 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: fe737560fd018d346a9003201a5cb947, type: 3}
+  - {fileID: 21300000, guid: 3ded4490e0801e04595585b7729c692c, type: 3}
   - {fileID: 21300000, guid: da7ee49088ec37e4ba795dc030eca192, type: 3}
   - {fileID: 21300000, guid: 71e8b7a1d6ae34847875b1f5bb100f6b, type: 3}
   - {fileID: 21300000, guid: 485233e1e34500c419e4648865a72492, type: 3}
   - {fileID: 21300000, guid: bae214028ce35f74fb50e3c2ac6e846e, type: 3}
+  - {fileID: 21300000, guid: dea60d421ed042e44975dd415d966bbe, type: 3}
   - {fileID: 21300000, guid: 628a196241e4e004aa8706fab08d657e, type: 3}
   - {fileID: 21300000, guid: 299e4bd26e2c86d43bcc3a16f14be6b2, type: 3}
   - {fileID: 21300000, guid: 7fc3b363ec4792048a67b070f7de4aba, type: 3}
@@ -66,43 +69,37 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 42f2aa24953b643469146dddc1b95237, type: 3}
   - {fileID: 21300000, guid: 91165e24abe5a374b8248092a836dc58, type: 3}
   - {fileID: 21300000, guid: a1879e24680c1ba48a492b6cee354375, type: 3}
+  - {fileID: 21300000, guid: 08913f24993ad8c44a614a3b70ef019b, type: 3}
   - {fileID: 21300000, guid: 9b075354cb0ae484aad11631c2a0eecd, type: 3}
   - {fileID: 21300000, guid: f539e1946dd638d43a715d35ef12abc8, type: 3}
   - {fileID: 21300000, guid: 71655035bb0de734c99669adc790e169, type: 3}
-  - {fileID: 21300000, guid: 846a4735a6935e24886914f391495f0b, type: 3}
   - {fileID: 21300000, guid: 61db9685c1b7ea243a4c109811110530, type: 3}
-  - {fileID: 21300000, guid: 3b8ea6d50277eea43926e81d7ffd6d02, type: 3}
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
-  - {fileID: 21300000, guid: acc941f56bfbc8b4ca37f79604295118, type: 3}
+  - {fileID: 21300000, guid: 50b6ad0648a956c4bbf7a51cb79ef1da, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
-  - {fileID: 21300000, guid: 0a49d7a676c7e7a41938c7fad1f49f83, type: 3}
-  - {fileID: 21300000, guid: dca573b61428d5849bfe71e79ddc9e73, type: 3}
+  - {fileID: 21300000, guid: 36c8fb8654e7e4244acf8206fd950a0d, type: 3}
   - {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
   - {fileID: 21300000, guid: 94bb47f60026b934b86cc4302f2fdf39, type: 3}
-  - {fileID: 21300000, guid: 5bb9af077c70e7c41b68f0d02ee97e6d, type: 3}
-  - {fileID: 21300000, guid: 00f98d77587e0e04fb22f8604087f7d4, type: 3}
+  - {fileID: 21300000, guid: 89194bf60d4b2af4c8a261aa564d0611, type: 3}
+  - {fileID: 21300000, guid: 654583471bf8a0e4b9d6fe8f5229fce7, type: 3}
   - {fileID: 21300000, guid: 6e980b87d98ae3442b2a5dd8ff5be0b7, type: 3}
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
+  - {fileID: 21300000, guid: 5bf1a608c07936b49a459dc3c7b733ae, type: 3}
   - {fileID: 21300000, guid: 0acbcf2895103dc46bd2d52e01e2e3b3, type: 3}
-  - {fileID: 21300000, guid: 984fd538a6379ae4f8c3442531df8bbb, type: 3}
-  - {fileID: 21300000, guid: 2b866278671d94a409f43caf09274d0f, type: 3}
   - {fileID: 21300000, guid: d8120c88b3a67124086628f192bafcc0, type: 3}
+  - {fileID: 21300000, guid: fe5afc8805aa61049864f3373d5c4f4a, type: 3}
   - {fileID: 21300000, guid: cd8adbd8a257d2d4fa443c63abc684ae, type: 3}
   - {fileID: 21300000, guid: 99002e29e1c7b3b42941c13ae3f483b2, type: 3}
-  - {fileID: 21300000, guid: 3cbb6d596834a1e4eb1a7110494be0f4, type: 3}
   - {fileID: 21300000, guid: 45758679d1b51544babfafc4917155aa, type: 3}
   - {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
   - {fileID: 21300000, guid: 8c8ecb9ae6f073b4cbabad7ceecf1307, type: 3}
+  - {fileID: 21300000, guid: a4e601cac11766d40b8c12bf68b1f94f, type: 3}
   - {fileID: 21300000, guid: 7fdf6d5b4cb42ca46bdb089e269472a9, type: 3}
   - {fileID: 21300000, guid: 2221949b943795844a143b042d89dd3e, type: 3}
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
   - {fileID: 21300000, guid: 76b2b02c1f99b324b82b1a82869a4100, type: 3}
-  - {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
-  - {fileID: 21300000, guid: 91e8916c2b2d91842a059489e48ca34b, type: 3}
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
-  - {fileID: 21300000, guid: 084a2d3ddfb26f842a85c7071fc49c72, type: 3}
   - {fileID: 21300000, guid: 1555a36d4acb0b1418ec48541710fb8b, type: 3}
-  - {fileID: 21300000, guid: 9f7db99d52215234fb299dca8c6346c7, type: 3}
   - {fileID: 21300000, guid: fab52f1e1c3fcc448a0241831b299c14, type: 3}
   - {fileID: 21300000, guid: 5d813f3e537b05e40ba3cbe7825ade0b, type: 3}
   - {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
@@ -110,15 +107,17 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5eba4e9e389da764f8119e6c4b47bb76, type: 3}
   - {fileID: 21300000, guid: 24ba8fce21db8d846a69f995fb37c59b, type: 3}
   - {fileID: 21300000, guid: 54cfc3fe99abf0c4086d8577ee156cf5, type: 3}
-  - {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
-  - {fileID: 21300000, guid: 113e8a6f0a4ed994f9d32ce12b79be89, type: 3}
+  - {fileID: 21300000, guid: 71937c1f1a764c8408f241fd7a2ec622, type: 3}
   - {fileID: 21300000, guid: 1341e9af6cc32cd4c90c6902052dc310, type: 3}
-  - {fileID: 21300000, guid: 9d8d87df3927e324a93a033380caba38, type: 3}
+  - {fileID: 21300000, guid: ed9a64ff8bf249b469c9ffa0397bc16a, type: 3}
   m_PackedSpriteNamesToIndex:
+  - urgentflag_milk
+  - MarketLensIcon
   - bulldozer
   - base_selling-loss
   - UndoIcon
   - advisor-button_ecol
+  - LensFill
   - advisor-button_econ
   - ShopHubButtonLocked
   - CloseShop
@@ -129,43 +128,37 @@ SpriteAtlas:
   - DestroyIcon
   - settings-gear
   - CloseRound
+  - BarGraphClamp
   - CostBGWhite
   - banner_excess-runoff
   - ShopHubButton
-  - alert-banner
   - base_unused-digester
-  - ecol_phosphorus
   - advisor-dialogue-white
-  - alert_Manure
+  - CloseX
   - ShopToggle
-  - alert-base-old
-  - econ_barchart
+  - policyicon_import
   - card-slot-white
   - banner_bloom
-  - econ_marketshare
-  - resource_Manure
+  - policyicon_sales
+  - PhosphorusLensIcon
   - base_declining-pop
   - banner_declining-pop
+  - urgentflag_manure
   - money
-  - excl
-  - resource_Grain
   - ToolImageRoad
+  - policyicon_runoff
   - base_bloom
   - banner_unused-digester
-  - alert_Milk
   - PopulationIcon
   - card-slot-locked-white
   - title-bg
+  - policyicon_skim
   - ShopButtonBorder
   - policy-button-white
   - base_excess-runoff
   - ShopToggleBlank
-  - advisor-logobutton-econ
-  - flag_bg
   - BlueprintMode
-  - alert_Grain
   - title-bg-2
-  - urgent-request
   - ToolImageStorage
   - Cursor-Normal
   - ToolImageDigester
@@ -173,10 +166,9 @@ SpriteAtlas:
   - BigDestroyBackground
   - dialog-arrow
   - PurchaseReceipt
-  - advisor-logobutton-ecol
-  - resource_Milk
+  - urgentflag_grain
   - NormalMode
-  - flag-request
+  - LensOutline
   m_RenderDataMap: {}
   m_Tag: MainAtlas
   m_IsVariant: 0

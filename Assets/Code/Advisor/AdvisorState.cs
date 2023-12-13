@@ -7,6 +7,7 @@ using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Leaf.Runtime;
 using Zavala.Cards;
+using Zavala.UI;
 
 namespace Zavala.Advisor {
     public class AdvisorState : SharedStateComponent {
@@ -22,7 +23,7 @@ namespace Zavala.Advisor {
     public static class AdvisorUtility {
         [LeafMember("UnlockAdvisorModule")]
         public static void UnlockModule(AdvisorType type) {
-            ZavalaGame.SharedState.Get<ScriptRuntimeState>().DefaultDialogue.GetModule(type).Unlock();
+            ZavalaGame.Gui.GetShared<LensUI>().Unlock(type);
         }
 
         [DebugMenuFactory]

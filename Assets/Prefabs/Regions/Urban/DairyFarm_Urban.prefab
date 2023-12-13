@@ -477,9 +477,17 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 0bf46926e13434640b198d262a97d911, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 0bf46926e13434640b198d262a97d911, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 533c077b47b9a7a4ab7a89c849984132, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 0bf46926e13434640b198d262a97d911, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: e1b1d7f7754944246a28cb2074a81645, type: 2}
     - target: {fileID: -5754084199372789682, guid: 0bf46926e13434640b198d262a97d911, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -546,6 +554,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5779175216037052511, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 163c10bb193162540a65c464a9cfd3d8, type: 2}
     - target: {fileID: 6921100126296460174, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
       propertyPath: m_Name
       value: Milk DIsplay
@@ -583,6 +595,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 7252766018154510976, guid: 8f35d9ae069ea904fbc7809f7fdc0f14, type: 3}
+    - target: {fileID: 2744995592438750395, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 163c10bb193162540a65c464a9cfd3d8, type: 2}
     - target: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
       propertyPath: m_RootOrder
       value: 2

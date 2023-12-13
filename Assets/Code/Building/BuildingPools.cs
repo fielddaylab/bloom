@@ -2,16 +2,11 @@ using BeauPools;
 using FieldDay.SharedState;
 using FieldDay;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Zavala.Economy;
 using Zavala.Roads;
-using Zavala.World;
 using Zavala.Sim;
 
-namespace Zavala.Building
-{
+namespace Zavala.Building {
     public class BuildingPools : SharedStateComponent, IRegistrationCallbacks
     {
         #region Types
@@ -21,8 +16,6 @@ namespace Zavala.Building
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
         [Serializable] public class SkimmerPool : SerializablePool<PhosphorusSkimmer> { }
         [Serializable] public class VizAnchorPool : SerializablePool<SpriteRenderer> { }
-        [Serializable] public class DestroyIconsPool : SerializablePool<OccupiesTile> { }
-
 
 
         #endregion // Types
@@ -33,9 +26,12 @@ namespace Zavala.Building
         public StoragePool Storages;
         public SkimmerPool Skimmers;
 
+        [Header("Building Meshes")]
+        public Mesh DigesterMesh;
+        public Mesh StorageMesh;
+
         [Header("Highlights")]
         public VizAnchorPool VizAnchors;
-        public DestroyIconsPool DestroyIcons;
 
         [Header("Shared")]
         public Transform PoolRoot;
@@ -46,7 +42,6 @@ namespace Zavala.Building
             Storages.TryInitialize(PoolRoot);
             Skimmers.TryInitialize(PoolRoot);
             VizAnchors.TryInitialize(PoolRoot);
-            DestroyIcons.TryInitialize(PoolRoot);
         }
 
         void IRegistrationCallbacks.OnDeregister() {

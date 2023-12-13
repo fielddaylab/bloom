@@ -2,6 +2,8 @@
 
 :: welcome
 @trigger GameBooted
+@conditions     intro:tutorialComplete = false
+@cutscene
 @once
 $call Pause()
 $call PauseAlertType("ExcessRunoff")
@@ -9,7 +11,7 @@ $call PauseAlertType("ExcessRunoff")
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.5)
-    You are assigned the Director of the Sustainable Agricultural Growth Administration (SAGA).
+    You are assigned the Director of the region's Sustainable Agricultural Growth Administration: SAGA.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.5)
 	This region is young. It's your job as SAGA director to help them grow...
@@ -21,44 +23,51 @@ $call CutsceneBegin()
 	Your first assignment is <i>Knoll County</i>. You will meet two guides...
 $call CutsceneEnd()
 
-{@advisorEconHill}      Greetings. Welcome to Knoll County.
+{@advisorEconHill}      Greetings! Welcome to Knoll County.
 $call ForceDialogueInteraction()
-{@advisorEconHill}      As the economic advisor, I will help you with money matters. 
-{@advisorEconHill}      We are growing and we need your help.
-{@advisorEconHill}      There is a lot of new farms and businesses, but none of them are connected.
-{@advisorEconHill}      I'll give you the tour of our region.
+{@advisorEconHill}      I'm here to advise you on money matters. 
+{@advisorEconHill}      Knoll County is growing...
+{@advisorEconHill}      ...but these farms and businesses aren't connected.
+{@advisorEconHill}      We could use your help here. 
 $call PanToBuilding("region1_city1")
 {@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
 $call PanToBuilding("region1_cafo1")
 {@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
-{@advisorEcolHill}      It's more than just a "dairy farm."
-{@advisorEcolHill}      It's a major operation. Its technical name is a <i>concentrated animal feed operation</i>... a CAFO.
-{@advisorEconHill}      Right, yes. My colleague here will inform you on such environmental concerns.
-{@advisorEconHill}      But back to <i>important</i> things. Like establishing trade routes!
+{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm."
+{@advisorEcolHill}      It's a major operation. 
+{@advisorEcolHill}      Its technical name is a <i>concentrated animal feed operation</i>... a CAFO.
+{@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
+{@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
-{@advisorEconHill}      Start by opening <b>Blueprint Mode</b> to plan them out.
+{@advisorEconHill}      Open <b>Build Mode</b>.
 $call Unpause()
 
 
 // Step 2: Road drawing tutorial
 :: roadSelected
 @trigger BuildButtonPressed
+@conditions     intro:tutorialComplete = false
+@cutscene
 @once
 {@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
-{@advisorEcolHill}      But don't try to build over any of our forests. Those are protected lands!
-{@advisorEconHill}      And each tile will spend from our regional budget! Try to be thrifty.
+{@advisorEcolHill}      But don't try to build over any of our forests.
+{@advisorEcolHill}      Those are protected lands!
+{@advisorEconHill}      Each tile will spend from our regional budget! Try to be thrifty.
 {@advisorEconHill}      Click "Build" when you have the road the way you like it.
 
 
 // Step 3: Introduce cities
 :: farmsConnected
 @trigger    FarmConnection
+@conditions     intro:tutorialComplete = false
+@cutscene
 @once
 $call Pause()
 $set intro:farmsConnected = true
 $if intro:citiesConnected
+    $call ForceDialogueInteraction()
     {@advisorEconHill}      Nice work! Now the CAFO can buy <i>grain</i> from the Grain Farm to produce <i>milk</i>.
     // {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
     $branch .farmsAndCitiesConnected
@@ -78,13 +87,14 @@ $call Unpause()
 
 :: cityConnected
 @trigger    CityConnection
+@conditions     intro:tutorialComplete = false
+@cutscene
 @once
 $call Pause()
 $set intro:citiesConnected = true
 $if intro:farmsConnected
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Excellent! Now the the City can buy <i>milk</i> and turn it into <i>money</i> using TAX MAGIC!
-    {@advisorEconHill}      Well... really, the milk fuels taxable production. But it's magic to me!
+    {@advisorEconHill}      Excellent! Now the the City has a source of <i>milk</i>!
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
@@ -99,18 +109,53 @@ $call Unpause()
 
 :: farmsAndCitiesConnected 
 @forcePolicy    Economy
+@conditions     intro:tutorialComplete = false
 @once
-{@advisorEconHill}      Now that everything is connected, we can turn <i>grain</i> into <i>milk</i> for the city.
+@cutscene
+$set intro:farmsAndCities = true
+{@advisorEconHill}      Now that everything is connected, we can turn <i>grain</i> into <i>milk</i> for Pendleton Hills.
 {@advisorEconHill}      That milk fuels taxable production, and gives us a budget!
-{@advisorEconHill}      But we should secure more <b>funding</b> for SAGA to continue work in the area.
+{@advisorEconHill}      But SAGA may need more funding to continue work in the area.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
-
-{@advisorEconHill}      That will generate revenue on everything bought in our region.
-{@advisorEconHill}      But set it too high, and trade may slow down!
-$call ActivateSim()
+{@advisorEconHill}      See me again from your <b>Economic Advisor</b> button. 
+// TODO: add popup/highlight to Economic Advisor button here
 $call ReleaseDialogueInteraction()
 
+:: wrongAdvisor
+@trigger AdvisorOpened
+@conditions     advisorType == "Ecology", intro:farmsAndCities, intro:tutorialComplete = false
+@cutscene
+{@advisorEcolHill}      Hey there!
+{@advisorEcolHill}      I think Pippin wanted to talk to you.
+{@advisorEcolHill}      His <b>Economic Advisor</b> button has a gem on it. Pretty ostentatious if you ask me...
+
+:: letsGetStarted
+@trigger AdvisorOpened
+@conditions     advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete = false
+@forcePolicy    Economy
+@cutscene
+@once
+{@advisorEconHill}      Hello again.
+{@advisorEconHill}      You can see me here any time to adjust Knoll County's policies - like Sales Tax!
+{@advisorEconHill}      It can provide additional revenue for infrastructure projects.
+{@advisorEconHill}      But set it too high, and trade may be hindered.
+{@advisorEconHill}      What do you think?
+
+
+:: policySet
+@trigger        PolicySet
+$branch .policyDescriptions
+$if intro:tutorialComplete = false
+    $branch .choseFirstPolicy
+$endif
+
+:: choseFirstPolicy
+$set intro:tutorialComplete = true
+{@advisorEconHill}  A fine choice. 
+{@advisorEconHill}  Remember, you can always use the <b>spacebar</b> to pause and think.
+{@advisorEconHill}  But let's get this economy started, shall we?
+$call ActivateSim()
 
 // :: sittingOmens
 // @trigger        LetSat
@@ -125,8 +170,11 @@ $call ReleaseDialogueInteraction()
 
 :: specialDelivery
 @trigger    ExternalImport
+@conditions !intro:exporterFound
+@cutscene
 @once
 $call Pause()
+$set intro:exporterFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
 {@advisorEconHill}      Henrietta's grain farm imported some <i>commercial fertilizer</i> from an outside supplier.
@@ -137,9 +185,22 @@ $call PanToBuilding("region1_grain1")
 $call AddAutoAlertCondition("Bloom", 1)
 $call Unpause()
 
+
+:: skipTutorial
+@trigger    TutorialSkipped
+$call CutsceneEnd()
+{@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
+$set intro:tutorialComplete = true
+$set intro:exporterFound = true
+$call UnlockCards(SalesTaxPolicy)
+$call AddAutoAlertCondition("Bloom", 1)
+$call ReleaseDialogueInteraction()
+$call Unpause()
+$call ActivateSim()
+
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", CameraInRegion(1)
+@conditions     advisorType == "Ecology", CameraInRegion(1), intro:tutorialComplete
 @forcePolicy    Ecology
 $if PolicyIsUnlocked(RunoffPolicy)
     {local @advisorEcol}    Hey there, boss! Here to check out some policies?
@@ -149,7 +210,7 @@ $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
-@conditions     advisorType == "Economy", CameraInRegion(1)
+@conditions     advisorType == "Economy", CameraInRegion(1), intro:tutorialComplete
 @forcePolicy    Economy
 $if PolicyIsUnlocked(SalesTaxPolicy)
     {local @advisorEcon}    Here are the economic policies.
@@ -157,8 +218,9 @@ $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
 $endif
 
-:: policySet
-@trigger        PolicySet
+
+
+:: policyDescriptions
 $if local:policyType == "RunoffPolicy"
     $if     local:policyIndex == 0
         {local @advisorEcol}    Temporary text: Runoff penalty NONE
@@ -181,23 +243,23 @@ $elseif local:policyType == "SkimmingPolicy"
     $endif
 $elseif local:policyType == "SalesTaxPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcon}    With no sales tax, you'll still gain $5 for each milk the city consumes.
+        {local @advisorEcon}    Even without sales tax, you'll gain $5 for each milk shipment the city consumes.
     $elseif local:policyIndex == 1
-        {local @advisorEcon}    With low sales tax, you'll gain $2 with every purchase.
+        {local @advisorEcon}    With low sales tax, you'll gain $2 with every purchase on top of city revenue.
     $elseif local:policyIndex == 2
-        {local @advisorEcon}    With high sales tax, you'll gain $4 with every purchase
+        {local @advisorEcon}    With high sales tax, you'll gain $4 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    With a sales subsidy, your funds will pay $2 for every purchase.
+        {local @advisorEcon}    With a sales subsidy, your funds will pay $2 for every purchase, with only city revenue.
     $endif
 $elseif local:policyType == "ImportTaxPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcol}    Temporary text: Import tax policy NONE
+        {local @advisorEcon}    Temporary text: Import subsidy policy NONE
     $elseif local:policyIndex == 1
-        {local @advisorEcol}    Temporary text: Import tax policy  LOW
+        {local @advisorEcon}    Temporary text: Import subsidy policy  LOW
     $elseif local:policyIndex == 2
-        {local @advisorEcol}    Temporary text: Import tax policy  HIGH
+        {local @advisorEcon}    Temporary text: Import subsidy policy  HIGH
     $elseif local:policyIndex == 3
-        {local @advisorEcol}    Temporary text: Import tax policy  SUBSIDY
+        {local @advisorEcon}    Temporary text: Import tax policy  TAX
     $endif
 $endif
 
@@ -206,7 +268,7 @@ $endif
 @conditions     advisorType == "Economy", CameraInRegion(1), RegionUnlocked(2)
 @forcePolicy    Economy
 @once
-{@advisorEconHill}      Ah, you've expanded into Pine County. Lucky you.
+{@advisorEconHill}      Ah, you've expanded into Cypress County. Lucky you.
 {@advisorEconHill}      Now you can be <i>condescended to</i> while surrounded by natural splendor.
 {@advisorEconHill}      Hope you like the smell of old mushrooms.
 
@@ -265,6 +327,7 @@ $endif
 
 :: discoverFirstBloom
 @trigger        AlertExamined
+@cutscene
 @conditions     alertType == "bloom", alertRegion == 1
 @once
 $call Pause()
@@ -289,6 +352,7 @@ $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/f
 $call CutsceneEnd()
 {@advisorEcolHill}    Something must be done! I'll keep an eye out for runoff.
 $call UnpauseAlertType("ExcessRunoff")
+$call AddAutoAlertCondition("ExcessRunoff", 1)
 $call Unpause()
 
 :: genericBloomTrigger

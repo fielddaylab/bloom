@@ -213,10 +213,7 @@ namespace Zavala.Sim {
             for(int i = 0; i < regionIndex - 1; i++) {
                 var visualEdges = grid.Regions[i].WaterEdges;
                 for(int j = 0; j < visualEdges.Length; j++) {
-                    world.QueuedVisualUpdates.PushBack(new VisualUpdateRecord() {
-                        TileIndex = visualEdges[j],
-                        Type = VisualUpdateType.Water
-                    });
+                    SimWorldUtility.QueueVisualUpdate(visualEdges[j], VisualUpdateType.Water);
                 }
             }
 
@@ -342,7 +339,8 @@ namespace Zavala.Sim {
             TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
             TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
 
-            DestroyBuilding(grid, network, hitObj, tileIndex, ot.Type, true, out List<TileDirection> inleadingDirsRemoved);
+            bool wasPending = ot.Pending;
+            DestroyBuilding(grid, network, hitObj, tileIndex, ot.Type, true, out TileAdjacencyMask inleadingDirsRemoved);
 
             // Commit the destroy action
             BlueprintUtility.CommitDestroyAction(bpState, new ActionCommit(
@@ -355,7 +353,7 @@ namespace Zavala.Sim {
                 rFlagSnapshot,
                 tFlagSnapshot,
                 flowSnapshot,
-                ot.Pending
+                wasPending
                 ));
 
             // Add cost to receipt queue
@@ -370,7 +368,7 @@ namespace Zavala.Sim {
         /// <param name="hit">Collider hit by a raycast</param>
         public static void DestroyBuildingFromUndo(SimGridState grid, RoadNetwork network, GameObject hitObj, int tileIndex, BuildingType buildingType)
         {
-            DestroyBuilding(grid, network, hitObj, tileIndex, buildingType, false, out List<TileDirection> inleadingDirsRemoved);
+            DestroyBuilding(grid, network, hitObj, tileIndex, buildingType, false, out TileAdjacencyMask inleadingDirsRemoved);
         }
 
         /// <summary>
@@ -379,9 +377,9 @@ namespace Zavala.Sim {
         /// <param name="grid"></param>
         /// <param name="hitObj">May be null</param>
         /// <param name="tileIndex"></param>
-        public static void DestroyBuilding(SimGridState grid, RoadNetwork network, GameObject buildingObj, int tileIndex, BuildingType buildingType, bool removeInleadingRoads, out List<TileDirection> inleadingDirsRemoved)
+        public static void DestroyBuilding(SimGridState grid, RoadNetwork network, GameObject buildingObj, int tileIndex, BuildingType buildingType, bool removeInleadingRoads, out TileAdjacencyMask inleadingDirsRemoved)
         {
-            inleadingDirsRemoved = new List<TileDirection>();
+            inleadingDirsRemoved = default;
 
             network.Roads.Info[tileIndex].Flags &= ~RoadFlags.IsAnchor;
             grid.Terrain.Info[tileIndex].Flags &= ~TerrainFlags.IsOccupied;
@@ -416,11 +414,7 @@ namespace Zavala.Sim {
                             }
                         }
 
-                        ZavalaGame.SimWorld.QueuedVisualUpdates.PushBack(new VisualUpdateRecord()
-                        {
-                            TileIndex = (ushort)tileIndex,
-                            Type = VisualUpdateType.Road
-                        });
+                        SimWorldUtility.QueueVisualUpdate((ushort) tileIndex, VisualUpdateType.Road);
                     }
                     break;
                 case BuildingType.Digester:
@@ -498,12 +492,18 @@ namespace Zavala.Sim {
             grid.Terrain.Info[tileIndex].Flags |= TerrainFlags.IsOccupied;
             occupies = pool.Alloc(worldPos);
 
-            if (!inheritPending || (inheritPending && wasPending))
+            if (!inheritPending || wasPending)
             {
                 occupies.Pending = true;
+                occupies.gameObject.SetActive(true);
                 // temporarily render the build as holo and commit to build queue
-                var matSwap = occupies.GetComponent<MaterialSwap>();
-                if (matSwap) { matSwap.SetMaterial(inMat); }
+                var matSwap = occupies.GetComponent<BuildingPreview>();
+                if (matSwap) { matSwap.Preview(inMat); }
+            } else {
+                occupies.Pending = false;
+                occupies.gameObject.SetActive(true);
+                var matSwap = occupies.GetComponent<BuildingPreview>();
+                if (matSwap) { matSwap.Cancel(); }
             }
         }
 
@@ -534,8 +534,8 @@ namespace Zavala.Sim {
             {
                 controller.Position.Pending = true;
                 // temporarily render the build as holo and commit to build queue
-                var matSwap = controller.GetComponent<MaterialSwap>();
-                if (matSwap) { matSwap.SetMaterial(inMat); }
+                var matSwap = controller.GetComponent<BuildingPreview>();
+                if (matSwap) { matSwap.Preview(inMat); }
             }
         }
 
@@ -589,6 +589,5 @@ namespace Zavala.Sim {
         }
 
         #endregion // Generation
-
     }
 }

@@ -18,14 +18,14 @@ namespace Zavala.Economy
     [SharedStateInitOrder(10)]
     public sealed class BudgetData : SharedStateComponent, IRegistrationCallbacks
     {
-        [SerializeField] private long m_initialBudget;
+        [SerializeField] private long[] m_initialBudgetsPerRegion;
 
         [Header("Per-Region")]
         public Budget[] BudgetsPerRegion = new Budget[RegionInfo.MaxRegions];
 
         public void OnRegister() {
             for (int i = 0; i < BudgetsPerRegion.Length; i++) {
-                BudgetUtility.SetBudget(this, m_initialBudget, i);
+                BudgetUtility.SetBudget(this, m_initialBudgetsPerRegion[i], i);
             }
         }
 

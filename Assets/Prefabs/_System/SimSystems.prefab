@@ -208,6 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_StagingMaterial: {fileID: 2100000, guid: 75da084d7e3596549a92762913e9bee4, type: 2}
   m_ValidHoloMaterial: {fileID: 2100000, guid: 2b53b71440690c74e8dc28c399e4d8a1, type: 2}
+  m_ValidHoloRoadMaterial: {fileID: 2100000, guid: bbabc509d8ea1e14497320da2af947ee, type: 2}
   m_InvalidHoloMaterial: {fileID: 2100000, guid: 204098dccd20e6b489327d774ed31cf5, type: 2}
 --- !u!114 &5301571126426986837
 MonoBehaviour:

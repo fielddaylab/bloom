@@ -50,7 +50,8 @@ namespace Zavala.Sim {
         IsOccupied = 0x20,
         IsInGroup = 0x40,
         CullBase = 0x80, // if the base of this tile would be hidden by surrounding tiles,
-        IsToll = 0x100
+        IsToll = 0x100,
+        IsPreview = 0x200
     }
 
     #endregion // Static Info

@@ -5,6 +5,7 @@ using FieldDay.Scenes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Building;
 using Zavala.Rendering;
 
 namespace Zavala.Roads {
@@ -16,7 +17,7 @@ namespace Zavala.Roads {
         public DecorationRenderer RampStagedDecorations;
         public TileAdjacencyDataSet<RoadRampType> Ramps;
         public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
-        public MaterialSwap MatSwap;
+        public BuildingPreview MatSwap;
         public OccupiesTile Position;
     }
 

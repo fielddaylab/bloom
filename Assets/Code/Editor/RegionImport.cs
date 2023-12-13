@@ -6,11 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Zavala.Sim;
-using BeauUtil.Debugger;
-using UnityEngine.TextCore.Text;
-using BeauUtil.Variants;
-using BeauUtil;
-using System;
 using Zavala.Rendering;
 
 namespace Zavala.Editor {
@@ -325,6 +320,7 @@ namespace Zavala.Editor {
                                     Type = BuildingType.TempObstruction,
                                     ScriptName = scriptName
                                 });
+                                tiles[pos].Flags |= TerrainFlags.TopHidden;
                                 tiles[pos].Flags |= TerrainFlags.IsOccupied;
                                 tiles[pos].Flags |= TerrainFlags.NonBuildable;
                                 break;

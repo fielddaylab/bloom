@@ -46,8 +46,6 @@ namespace Zavala.UI {
         [SerializeField] private Button m_PolicyCloseButton;
 
         [Space(5)]
-        [Header("Modules")]
-        [SerializeField] private List<DialogueModuleBase> m_Modules;
 
         [Space(5)]
         [Header("Animation")]
@@ -91,36 +89,13 @@ namespace Zavala.UI {
             SimTimeUtility.OnPauseUpdated.Register(HandlePauseFlagsUpdated);
         }
 
-        private void RefreshModules(string charName) {
-            foreach(var module in m_Modules) {
-                if (module.UsedBy(charName)) {
-                    module.Activate(false);
-                }
-                else {
-                    module.Deactivate();
-                }
-            }
-        }
-
-        private void DeactivateModules() {
-            foreach (var module in m_Modules) {
-                module.Deactivate();
-            }
-        }
-
         #region Display
 
         public IEnumerator CompleteLine() {
             return WaitForInput();
         }
 
-        public DialogueModuleBase GetModule(AdvisorType type) {
-            return m_Modules.Find(mod => mod.m_AdvisorType == type);
-        }
-
         public TagStringEventHandler PrepareLine(TagString inString, TagStringEventHandler inBaseHandler) {
-            DeactivateModules();
-
             if (inString.RichText.Length > 0) {
                 StringHash32 character = ScriptUtility.FindCharacterId(inString);
                 ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
@@ -140,8 +115,6 @@ namespace Zavala.UI {
                     nameColor = charDef.NameColor;
                     titleColor = charDef.TitleColor;
                     textColor = charDef.TextColor;
-
-                    RefreshModules(charDef.name);
                 }
                 else {
                     header = subheader = "";
@@ -233,7 +206,6 @@ namespace Zavala.UI {
             yield return m_Rect.AnchorPosTo(m_OffscreenY, 0.3f, Axis.Y).Ease(Curve.CubeIn);
             m_CloseButton.gameObject.SetActive(true);
             this.gameObject.SetActive(false);
-            DeactivateModules();
             Pin.Unpin();
             SimTimeInput.UnpauseEvent();
             Game.Events.Dispatch(GameEvents.DialogueClosing);

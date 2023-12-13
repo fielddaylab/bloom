@@ -24,11 +24,17 @@ namespace Zavala.World {
                 int region = m_StateB.Terrain.Regions[record.TileIndex];
                 TerrainTileInfo info = m_StateB.Terrain.Info[record.TileIndex];
                 switch (record.Type) {
-                    case VisualUpdateType.Road: {
+                    case VisualUpdateType.Road:
+                    case VisualUpdateType.Preview:
+                    case VisualUpdateType.Building: {
                         if (info.Category == TerrainCategory.Land) {
                             TileInstance t = m_StateA.Tiles[record.TileIndex];
                             bool hasRoad = (m_StateC.Roads.Info[record.TileIndex].Flags & RoadFlags.IsRoad) != 0;
-                            if (hasRoad) {
+                            bool isPreview = (info.Flags & TerrainFlags.IsPreview) != 0;
+                            bool hideTop = !hasRoad && !isPreview && (info.Flags & TerrainFlags.TopHidden) != 0;
+                            TileEffectRendering.SetTopVisibility(t, !hideTop);
+                            
+                            if (hasRoad || isPreview) {
                                 m_StateA.Palettes[region].TileTopEmptyMesh.Apply(t.TopRenderer, t.TopFilter);
                             } else {
                                 t.TopDefaultConfig.Apply(t.TopRenderer, t.TopFilter);
@@ -43,7 +49,7 @@ namespace Zavala.World {
                     }
 
                     default: {
-                        m_StateA.QueuedVisualUpdates.PushBack(record);
+                        //m_StateA.QueuedVisualUpdates.PushBack(record);
                         break;
                     }
                 }

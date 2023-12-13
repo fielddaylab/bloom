@@ -21,22 +21,20 @@ namespace Zavala.Economy {
 
             ref ResourceBlock total = ref purchaser.Request.Received;
             ResourceBlock requestAmt = purchaser.RequestAmount;
-
-            // TODO: are these expensive to calculate every time the timer advances?
-            SimWorldState world = ZavalaGame.SimWorld;
-            SimGridState grid = ZavalaGame.SimGrid;
-            HexVector vec = HexVector.FromWorld(purchaser.transform.position, world.WorldSpace);
+            
 
             if (ResourceBlock.Consume(ref total, ref requestAmt)) {
                 ResourceBlock cash = requestAmt * purchaser.PurchasePrice;
                 ResourceStorageUtility.RefreshStorageDisplays(purchaser.Storage);
-
                 Log.Msg("[ResourcePurchaserSystem] Purchaser '{0}' consumed {1} for ${2}", purchaser.name, requestAmt, cash.Count);
                 // TODO: cash
                 // Dispatch purchase event
+                SimWorldState world = ZavalaGame.SimWorld;
+                SimGridState grid = ZavalaGame.SimGrid;
+                HexVector vec = HexVector.FromWorld(purchaser.transform.position, world.WorldSpace);
                 ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseMade, grid.HexSize.FastPosToIndex(vec));
             } else {
-                MarketUtility.QueueRequest(purchaser.Request, purchaser.RequestAmount);
+                MarketUtility.QueueMultipleSingleRequests(purchaser.Request, purchaser.RequestAmount);
                 DebugDraw.AddWorldText(purchaser.transform.position, "Requesting!", Color.yellow, 2);
             }
         }

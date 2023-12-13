@@ -31,6 +31,7 @@ namespace Zavala.Building
 
         [SerializeField] private Material m_StagingMaterial; // material applied to ground beneath road tiles being staged
         [SerializeField] private Material m_ValidHoloMaterial; // material applied to buildings being staged
+        [SerializeField] private Material m_ValidHoloRoadMaterial; // material applied to roads being staged
         [SerializeField] private Material m_InvalidHoloMaterial; // material applied to buildings being staged
 
         #endregion // Inspector
@@ -42,6 +43,8 @@ namespace Zavala.Building
             BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
 
+            UserBuildTool toolPreview = ToolInPreview();
+
             if (m_StateC.ToolUpdated)
             {
                 if (m_StateC.ActiveTool != UserBuildTool.Road && m_StateC.ActiveTool != UserBuildTool.None)
@@ -49,6 +52,10 @@ namespace Zavala.Building
                     // Regenerate BlockedTiles
                     BuildToolUtility.RecalculateBlockedTiles(grid, world, network, m_StateC);
                 }
+            }
+
+            if (toolInUse == UserBuildTool.None && toolPreview != UserBuildTool.None) {
+                // TODO: Apply previews
             }
 
             if (toolInUse == UserBuildTool.Destroy) {
@@ -72,6 +79,13 @@ namespace Zavala.Building
                 return m_StateC.ActiveTool;
             }
             return UserBuildTool.None;
+        }
+
+        /// <summary>
+        /// Check if mouse is down with road tool, or mouse is pressed with any other tool
+        /// </summary>
+        private UserBuildTool ToolInPreview() {
+            return m_StateC.ActiveTool;
         }
 
         /// <summary>
@@ -220,7 +234,7 @@ namespace Zavala.Building
                 ActionType.Build,
                 price,
                 tileIndex,
-                new List<TileDirection>(),
+                default,
                 occupies.gameObject,
                 rFlagSnapshot,
                 tFlagSnapshot,
@@ -386,7 +400,7 @@ namespace Zavala.Building
                 if ((tileInfo.Flags & RoadFlags.IsAnchor) == 0)
                 {
                     BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-                    RoadUtility.CreateRoadObject(network, grid, pools, tileIndex, m_ValidHoloMaterial);
+                    RoadUtility.CreateRoadObject(network, grid, pools, tileIndex, m_ValidHoloRoadMaterial);
 
                     // Add to running cost
                     ShopUtility.EnqueueCost(m_StateD, ShopUtility.PriceLookup(UserBuildTool.Road));
@@ -457,7 +471,7 @@ namespace Zavala.Building
         }
 
         private void FinalizeRoad(SimGridState grid, RoadNetwork network, BuildingPools pools, int tileIndex, bool isEndpoint) {
-            RoadUtility.FinalizeRoad(network, grid, pools, tileIndex, isEndpoint, m_ValidHoloMaterial);
+            RoadUtility.FinalizeRoad(network, grid, pools, tileIndex, isEndpoint, m_ValidHoloRoadMaterial);
         }
 
         /// <summary>
@@ -544,7 +558,7 @@ namespace Zavala.Building
                         ActionType.Build,
                         unitCost,
                         currIndex,
-                        new List<TileDirection>(),
+                        default,
                         roadObj,
                         rFlagsSnapshot,
                         tFlagsSnapshot,

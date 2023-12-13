@@ -17,19 +17,19 @@ MonoBehaviour:
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4287814143
+    rgba: 4289912314
   PanelColor:
     serializedVersion: 2
-    rgba: 4287814143
+    rgba: 4292868863
   HighlightColor:
     serializedVersion: 2
-    rgba: 4278218234
+    rgba: 4278198672
   NameColor:
     serializedVersion: 2
-    rgba: 4294916509
+    rgba: 4291034538
   TitleColor:
     serializedVersion: 2
-    rgba: 4294916509
+    rgba: 4291034538
   TextColor:
     serializedVersion: 2
     rgba: 4278651955

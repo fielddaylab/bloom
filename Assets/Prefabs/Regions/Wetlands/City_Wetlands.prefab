@@ -56,6 +56,10 @@ PrefabInstance:
       value: City_Wetlands
       objectReference: {fileID: 0}
     - target: {fileID: 1732729778337955170, guid: d475cf78d7eaba44291403bea57f3e8a, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1732729778337955170, guid: d475cf78d7eaba44291403bea57f3e8a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.108
       objectReference: {fileID: 0}

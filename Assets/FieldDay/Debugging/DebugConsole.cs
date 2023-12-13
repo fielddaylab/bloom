@@ -326,7 +326,7 @@ namespace FieldDay.Debugging {
 
         static internal DMInfo FindSubmenu(DMInfo menu, string label) {
             int index = menu.Elements.FindIndex((e, l) => {
-                return e.Type == DMElementType.Submenu && e.Label == label;
+                return e.Type == DMElementType.Submenu && e.Submenu.Submenu.Header.Label == label;
             }, label);
             if (index >= 0) {
                 return menu.Elements[index].Submenu.Submenu;
@@ -337,7 +337,7 @@ namespace FieldDay.Debugging {
 
         static internal DMInfo FindOrCreateSubmenu(DMInfo menu, string label) {
             int index = menu.Elements.FindIndex((e, l) => {
-                return e.Type == DMElementType.Submenu && e.Label == label;
+                return e.Type == DMElementType.Submenu && e.Submenu.Submenu.Header.Label == label;
             }, label);
             if (index >= 0) {
                 return menu.Elements[index].Submenu.Submenu;

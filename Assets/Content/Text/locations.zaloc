@@ -4,7 +4,7 @@
 Pendleton Hills
 
 :: region1_cafo1.name
-Bertram's Dairy Farm
+Bertram's CAFO
 
 :: region1_grain1.name
 Henrietta's Grain Farm
@@ -13,19 +13,19 @@ Henrietta's Grain Farm
 Phos 4 Us
 
 :: region2_cafo1.name
-Natalie's Dairy Farm
+Natalie's CAFO
 
 :: region2_cafo2.name
-Natalie's Dairy Farm
+Natalie's CAFO
 
 :: region2_grain1.name
 Emmett's Grain Farm
 
 :: region2_city1.name
-Woodgrove
+Yewgrove
 
 :: region3_cafo1.name
-Winnie's Dairy Farm
+Winnie's CAFO
 
 :: region3_grain1.name
 Zora's Grain Farm
@@ -37,13 +37,13 @@ Zora's Grain Farm
 Veldt City
 
 :: region4_cafo1.name
-Neil's Dairy Farm
+Neil's CAFO
 
 :: region4_cafo2.name
-Neil's Dairy Farm
+Neil's CAFO
 
 :: region4_cafo3.name
-Neil's Dairy Farm
+Neil's CAFO
 
 :: region4_grain1.name
 Cindy's Grain Farm
@@ -52,7 +52,7 @@ Cindy's Grain Farm
 Heylemarsh
 
 :: region5_cafo1.name
-Tabitha's Dairy Farm
+Tabitha's CAFO
 
 :: region5_grain1.name
 Tom's Grain Farm
@@ -95,10 +95,10 @@ Knoll
 Knoll County
 
 :: forest.name
-Pine
+Cypress
 
 :: forest.name.long
-Pine County
+Cypress County
 
 :: wetlands.name
 Muskeg
@@ -119,5 +119,4 @@ Smokestack
 Smokestack City
 
 :: external.name
-External Supplier
-
+The Northlands

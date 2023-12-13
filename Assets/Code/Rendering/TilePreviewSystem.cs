@@ -14,71 +14,88 @@ namespace Zavala.Rendering
     /// <summary>
     /// Controls an object that snaps to the tile under the mouse cursor
     /// </summary>
+    [SysUpdate(GameLoopPhase.Update, 400)]
     public class TilePreviewSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BlueprintState, TilePreviewState>
     {
-        private static string TILE_LAYER = "HexTile";
-
         public override void ProcessWork(float deltaTime)
         {
-            // Render destroy bulldozer when in destroy mode
-            if (m_StateC.CommandState == ActionType.Destroy)
-            {
-                if (m_StateD.LeadDestroyIcon == null)
-                {
-                    Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-                    if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMasks.HexTile_Mask))
-                    {
-                        if (hit.collider)
-                        {
-                            m_StateD.LeadDestroyIcon = Game.SharedState.Get<BuildingPools>().DestroyIcons.Alloc(hit.collider.transform.position);
-                            m_StateD.LeadDestroySnap = m_StateD.LeadDestroyIcon.GetComponent<SnapToTile>();
-                        }
+            BuildToolState btState = Game.SharedState.Get<BuildToolState>();
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            if (btState.ToolUpdated) {
+                switch (btState.ActiveTool) {
+                    case UserBuildTool.None:
+                    case UserBuildTool.Road: {
+                        m_StateD.Previewing = false;
+                        HideIcon();
+                        break;
+                    }
+
+                    case UserBuildTool.Destroy: {
+                        m_StateD.Previewing = true;
+                        ConfigureIconMesh(null);
+                        SetPreviewColor(m_StateD.DeleteHexColor);
+                        break;
+                    }
+
+                    case UserBuildTool.Storage: {
+                        m_StateD.Previewing = true;
+                        ConfigureIconMesh(pools.StorageMesh);
+                        break;
+                    }
+
+                    case UserBuildTool.Digester: {
+                        m_StateD.Previewing = true;
+                        ConfigureIconMesh(pools.DigesterMesh);
+                        break;
                     }
                 }
-                else
-                {
-                    Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-                    if (!Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMasks.HexTile_Mask))
-                    {
-                        ClearAllDestroyIcons();
-                    }
-                }
-
-                if (m_StateA.ScreenMousePos != m_StateD.PrevMousePosition)
-                {
-                    // Reposition the icon over the right tile
-                    Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
-                    if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, LayerMasks.HexTile_Mask))
-                    {
-                        if (hit.collider)
-                        {
-                            SimWorldState world = Game.SharedState.Get<SimWorldState>();
-                            SimGridState grid = Game.SharedState.Get<SimGridState>();
-                            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
-
-                            HexVector vec = HexVector.FromWorld(hit.collider.transform.position, world.WorldSpace);
-                            int index = grid.HexSize.FastPosToIndex(vec);
-
-                            m_StateD.LeadDestroyIcon.TileIndex = index;
-                            m_StateD.LeadDestroyIcon.TileVector = vec;
-                            SnapUtility.Snap(m_StateD.LeadDestroySnap, m_StateD.LeadDestroyIcon);
-                        }
-                    }
-                }
-
-                m_StateD.PrevMousePosition = m_StateA.ScreenMousePos;
             }
-            else if (m_StateD.LeadDestroyIcon != null)
-            {
-                ClearAllDestroyIcons();
+
+            if (m_StateD.Previewing) {
+                int idx = SimWorldUtility.RaycastTile(m_StateA.ViewportMouseRay);
+                if (idx < 0 || grid.Terrain.Regions[idx] != grid.CurrRegionIndex) {
+                    HideIcon();
+                } else {
+                    if (idx != m_StateD.TileIndex) {
+                        ShowIcon();
+                        m_StateD.Icon.transform.position = SimWorldUtility.GetTileCenter(idx);
+                        m_StateD.TileIndex = idx;
+
+                        if (btState.ActiveTool != UserBuildTool.Destroy) {
+                            if (btState.BlockedIdxs.Contains(idx)) {
+                                m_StateD.Icon.MeshRenderer.sharedMaterial = m_StateD.BuildingMaterialInvalid;
+                                SetPreviewColor(m_StateD.InvalidHexColor);
+                            } else {
+                                m_StateD.Icon.MeshRenderer.sharedMaterial = m_StateD.BuildingMaterialValid;
+                                SetPreviewColor(m_StateD.ValidHexColor);
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        private void ClearAllDestroyIcons()
-        {
-            Game.SharedState.Get<BuildingPools>().DestroyIcons.Free(m_StateD.LeadDestroyIcon);
-            m_StateD.LeadDestroyIcon = null;
-            m_StateD.LeadDestroySnap = null;
+        private void ShowIcon() {
+            m_StateD.Icon.gameObject.SetActive(true);
+        }
+
+        private void HideIcon() {
+            m_StateD.TileIndex = -1;
+            m_StateD.Icon.gameObject.SetActive(false);
+        }
+
+        private void ConfigureIconMesh(Mesh mesh) {
+            m_StateD.Icon.MeshFilter.sharedMesh = mesh;
+            m_StateD.Icon.MeshRenderer.enabled = mesh != null;
+        }
+
+        private void SetPreviewColor(Color color) {
+            var main = m_StateD.Icon.Particles.main;
+            var mainColor = main.startColor;
+            mainColor.color = color;
+            main.startColor = mainColor;
         }
     }
 }

@@ -721,6 +721,7 @@ namespace FieldDay.Scenes {
                     Log.Msg("[SceneMgr] Unload complete");
                     m_CurrentUnloadOperation.Args.Counter.Decrement();
                     m_CurrentUnloadOperation.Clear();
+                    Game.Events?.CleanupDeadReferences();
                     return true;
                 } else {
                     return false;

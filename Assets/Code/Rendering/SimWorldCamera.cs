@@ -41,6 +41,11 @@ namespace Zavala.World {
             PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), t.position);
         }
 
+        public static void PanCameraToPoint(Vector3 pt) {
+            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), pt);
+        }
+
+
         public static void PanCameraToPoint(SimWorldCamera cam, Vector3 pt) {
             cam.PanTargetPoint = pt;
             cam.TransitionRoutine.Replace(PanRoutine(cam)).SetPhase(RoutinePhase.Update);

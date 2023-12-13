@@ -17,13 +17,13 @@ MonoBehaviour:
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4293587076
+    rgba: 4292473821
   PanelColor:
     serializedVersion: 2
-    rgba: 4294965209
+    rgba: 4294377433
   HighlightColor:
     serializedVersion: 2
-    rgba: 4291401507
+    rgba: 4283603254
   NameColor:
     serializedVersion: 2
     rgba: 4290501631
