@@ -479,7 +479,17 @@ namespace Zavala.Economy
             }
 
             m_BuyerPriorityWorkList.Sort((a, b) => {
-                return b.Profit - a.Profit;
+                int dif = b.Profit - a.Profit;
+                if (dif == 0)
+                {
+                    // tie break
+                    // favor closest option
+                    return b.Distance - a.Distance;
+                }
+                else
+                {
+                    return dif;
+                }
             });
 
             m_BuyerPriorityWorkList.CopyTo(supplier.Priorities.PrioritizedBuyers);
@@ -673,12 +683,41 @@ namespace Zavala.Economy
                     ProxyIdx = connectionSummary.ProxyConnectionIdx,
                     Path = connectionSummary,
                     Cost = (int)Math.Ceiling(score),
-                    Deprioritized = deprioritized
+                    Deprioritized = deprioritized,
+                    ExternalSupplier = supplier.Position.IsExternal
                 });
             }
 
             m_SellerPriorityWorkList.Sort((a, b) => {
-                return a.Cost - b.Cost; // inverse of BuyerPriorityWorkList
+                int dif = a.Cost - b.Cost;
+                if (dif == 0)
+                {
+                    // tie break
+                    if (b.ExternalSupplier && a.ExternalSupplier)
+                    {
+                        // no additional tiebreaker (random)
+                        return 0;
+                    }
+                    else if (b.ExternalSupplier)
+                    {
+                        // favor a
+                        return -1;
+                    }
+                    else if (a.ExternalSupplier)
+                    {
+                        // favor b
+                        return 1;
+                    }
+                    else
+                    {
+                        // favor closest option
+                        return b.Distance - a.Distance;
+                    }
+                }
+                else
+                {
+                    return dif;
+                }
             });
 
             // TODO: buyer buy price is different from lowest cost

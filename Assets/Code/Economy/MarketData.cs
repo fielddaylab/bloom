@@ -148,6 +148,7 @@ namespace Zavala.Economy
         public int Cost;
         public int ShippingCost;
         public bool Deprioritized;
+        public bool ExternalSupplier;
     }
 
     public struct MarketRequestInfo
@@ -229,6 +230,7 @@ namespace Zavala.Economy
         public RoadPathFlags PathFlags;
         public int Profit;
         public int ShippingCost;
+        public int Distance;
         public int CostToBuyer;
         public GeneratedTaxRevenue TaxRevenue;
     }
@@ -566,6 +568,7 @@ namespace Zavala.Economy
                             Supplier = supplier,
                             Resource = ResourceUtility.FirstResource((data.Mask & resource)),
                             ShippingCost = data.ShippingCost,
+                            Distance = data.Distance,
                             PathFlags = data.Path.Flags,
                             Profit = data.Profit - data.RelativeGain,
                             CostToBuyer = data.CostToBuyer,
@@ -590,6 +593,7 @@ namespace Zavala.Economy
                 foreach(var data in result.Supplier.Priorities.PrioritizedBuyers) {
                     if (data.Target == requester) {
                         result.ShippingCost = data.ShippingCost;
+                        result.Distance = data.Distance;
                         result.PathFlags = data.Path.Flags;
                         result.Profit = data.Profit - data.RelativeGain;
                         result.TaxRevenue = data.TaxRevenue;
@@ -614,6 +618,7 @@ namespace Zavala.Economy
                         Supplier = supplier,
                         Resource = ResourceUtility.FirstResource(data.Mask & resource),
                         ShippingCost = data.ShippingCost,
+                        Distance = data.Distance,
                         PathFlags = data.Path.Flags,
                         Profit = data.Profit - data.RelativeGain,
                         TaxRevenue = data.TaxRevenue

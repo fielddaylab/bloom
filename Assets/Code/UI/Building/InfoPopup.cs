@@ -231,7 +231,35 @@ namespace Zavala.UI.Info {
                         MarketUtility.UpdatePurchaseSources(m_SelectedRequester, m_QueryResults);
                     }
                     m_QueryResults.Sort((a, b) => {
-                        return a.CostToBuyer - b.CostToBuyer;
+                        int dif = a.CostToBuyer - b.CostToBuyer;
+                        if (dif == 0)
+                        {
+                            // tie break
+                            if (b.Supplier.Position.IsExternal && a.Supplier.Position.IsExternal)
+                            {
+                                // no additional tiebreaker (random)
+                                return 0;
+                            }
+                            else if (b.Supplier.Position.IsExternal)
+                            {
+                                // favor a
+                                return -1;
+                            }
+                            else if (a.Supplier.Position.IsExternal)
+                            {
+                                // favor b
+                                return 1;
+                            }
+                            else
+                            {
+                                // favor closest option
+                                return b.Distance - a.Distance;
+                            }
+                        }
+                        else
+                        {
+                            return dif;
+                        }
                     });
                     PopulatePurchasing();
                     break;
