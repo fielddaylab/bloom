@@ -99,11 +99,12 @@ namespace Zavala.Economy
         public ushort ProxyIdx;
         public RoadPathSummary Path;
 
+        public ResourceMask ResourceMask;
         public MarketRequestInfo FoundRequest;
 
         public ushort FamiliarityScore;
 
-        public MarketSupplierOffer(ResourceSupplier supplier, int totalCost, int baseProfit, int relativeGain, GeneratedTaxRevenue baseRevenue, ushort proxyIdx, RoadPathSummary path, MarketRequestInfo found, ushort familiarity)
+        public MarketSupplierOffer(ResourceSupplier supplier, int totalCost, int baseProfit, int relativeGain, GeneratedTaxRevenue baseRevenue, ushort proxyIdx, RoadPathSummary path, MarketRequestInfo found, ResourceMask resourceMask, ushort familiarity)
         {
             Supplier = supplier;
             TotalCost = totalCost;
@@ -115,6 +116,7 @@ namespace Zavala.Economy
             Path = path;
 
             FoundRequest = found;
+            ResourceMask = resourceMask;
 
             FamiliarityScore = familiarity;
         }
@@ -227,6 +229,7 @@ namespace Zavala.Economy
         public RoadPathFlags PathFlags;
         public int Profit;
         public int ShippingCost;
+        public int CostToBuyer;
         public GeneratedTaxRevenue TaxRevenue;
     }
 
@@ -235,6 +238,8 @@ namespace Zavala.Economy
     /// </summary>
     static public class MarketUtility
     {
+        static public readonly int NumMarkets = 3; // Grain, Milk, and Phosphorus
+
         #region Register
 
         static public void RegisterBuyer(ResourceRequester requester) {
@@ -563,6 +568,7 @@ namespace Zavala.Economy
                             ShippingCost = data.ShippingCost,
                             PathFlags = data.Path.Flags,
                             Profit = data.Profit - data.RelativeGain,
+                            CostToBuyer = data.CostToBuyer,
                             TaxRevenue = data.TaxRevenue
                         });
                         count++;
@@ -587,6 +593,7 @@ namespace Zavala.Economy
                         result.PathFlags = data.Path.Flags;
                         result.Profit = data.Profit - data.RelativeGain;
                         result.TaxRevenue = data.TaxRevenue;
+                        result.CostToBuyer = data.CostToBuyer;
                         found = true;
                         break;
                     }
@@ -648,5 +655,72 @@ namespace Zavala.Economy
         }
 
         #endregion // Negotiation
+
+        #region Market Index
+
+        private const int PHOSPH_INDEX = 0;
+        private const int GRAIN_INDEX = 1;
+        private const int MILK_INDEX = 2;
+
+        /// <summary>
+        /// Converts a resource mask into a market index
+        /// </summary>
+        /// <returns></returns>
+        static public int ResourceMaskToMarketIndex(ResourceMask mask)
+        {
+            switch(mask)
+            {
+                case ResourceMask.Phosphorus:
+                    return PHOSPH_INDEX;
+                case ResourceMask.Grain:
+                    return GRAIN_INDEX;
+                case ResourceMask.Milk:
+                    return MILK_INDEX;
+                default:
+                    return -1;
+            }
+        }
+
+        /// <summary>
+        /// Converts a resource mask into a market index
+        /// </summary>
+        /// <returns></returns>
+        static public ResourceMask MarketIndexToResourceMask(int index)
+        {
+            switch (index)
+            {
+                case PHOSPH_INDEX:
+                    return ResourceMask.Phosphorus;
+                case GRAIN_INDEX:
+                    return ResourceMask.Grain;
+                case MILK_INDEX:
+                    return ResourceMask.Milk;
+                default:
+                    return ResourceMask.Milk;
+            }
+        }
+
+        /// <summary>
+        /// Converts a resource mask into a market index
+        /// </summary>
+        /// <returns></returns>
+        static public int ResourceIdToMarketIndex(ResourceId resource)
+        {
+            switch (resource)
+            {
+                case ResourceId.Manure:
+                case ResourceId.MFertilizer:
+                case ResourceId.DFertilizer:
+                    return PHOSPH_INDEX;
+                case ResourceId.Grain:
+                    return GRAIN_INDEX;
+                case ResourceId.Milk:
+                    return MILK_INDEX;
+                default:
+                    return -1;
+            }
+        }
+
+        #endregion // Market Index
     }
 }

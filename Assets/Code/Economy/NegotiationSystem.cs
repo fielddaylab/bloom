@@ -39,6 +39,7 @@ namespace Zavala.Economy
                 negotiator.PriceChange.SetAll(0);
             }
 
+            int marketIndex;
             // For each negotation forcing a price change, stage it
             for (int i = 0; i < m_QueuedNegotiations.Count; i++)
             {

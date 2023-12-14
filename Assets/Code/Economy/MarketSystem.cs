@@ -73,7 +73,10 @@ namespace Zavala.Economy
                 supplier.SoldAtALoss = false;
 
                 // reset priority indices
-                supplier.BestPriorityIndex = 0;
+                for (int i = 0; i < supplier.BestPriorityIndex.Length; i++)
+                {
+                    supplier.BestPriorityIndex[i] = 0;
+                }
             }
 
             foreach (var requester in m_RequesterWorkList)
@@ -81,8 +84,11 @@ namespace Zavala.Economy
                 // reset matched flag
                 requester.MatchedThisTick = false;
 
-                // reset priority indices
-                requester.BestPriorityIndex = 0;
+                // reset priority indices for all resources
+                for (int i = 0; i < requester.BestPriorityIndex.Length; i++)
+                {
+                    requester.BestPriorityIndex[i] = 0;
+                }
             }
 
             m_RequesterWorkList.Clear();
@@ -95,8 +101,19 @@ namespace Zavala.Economy
             #region MarketCycle_SupplierFirstChoice
 
             // FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER
+            // TODO: FOR EACH MARKET
             foreach (var supplier in m_SupplierWorkList) {
-                ReassignSellerHighestPriorityBuyer(supplier);
+                /*for (int i = 0; i < (int)ResourceId.COUNT; i++)
+                {
+                    ReassignSellerHighestPriorityBuyer(supplier, (ResourceId)i);
+                }
+                */
+
+                for (int i = 0; i < MarketUtility.NumMarkets; i++)
+                {
+                    ResourceMask marketMask = MarketUtility.MarketIndexToResourceMask(i);
+                    ReassignSellerHighestPriorityBuyer(supplier, marketMask);
+                }
             }
 
             #endregion // MarketCycle_SUpplierFirstChoice
@@ -120,30 +137,37 @@ namespace Zavala.Economy
 
                 // IF ANY SELLER MATCHES THE BEST PRIORITY INDEX...
                 bool matchFound = false;
-                foreach (var supplierOffer in m_SupplierOfferWorkList)
+                // TODO: only iterate through resources that match buyer's buy mask
+                for (int i = 0; i < MarketUtility.NumMarkets; i++)
                 {
-                    if (supplierOffer.Supplier == requester.Priorities.PrioritizedSuppliers[requester.BestPriorityIndex].Target)
-                    {
-                        // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
-                        matchFound = true;
-                        FinalizeSale(marketData, tutorial, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer);
-                        m_RequestWorkList.Remove(supplierOffer.FoundRequest);
-                        m_SupplierOfferWorkList.Remove(supplierOffer); // TODO: does this removal during iteration cause errors?
-                    }
-                }
-                if (matchFound)
-                {
+                    int marketIndex = i;
                     foreach (var supplierOffer in m_SupplierOfferWorkList)
                     {
-                        // REASSIGN REMAINING SUPPLIERS TO THEIR NEXT HIGHEST PRIORITY INDEX
-                        ReassignSellerHighestPriorityBuyer(supplierOffer.Supplier);
+                        if (supplierOffer.Supplier == requester.Priorities.PrioritizedSuppliers[requester.BestPriorityIndex[marketIndex]].Target)
+                        {
+                            // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
+                            matchFound = true;
+                            FinalizeSale(marketData, tutorial, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer);
+                            m_RequestWorkList.Remove(supplierOffer.FoundRequest);
+                            m_SupplierOfferWorkList.Remove(supplierOffer); // TODO: does this removal during iteration cause errors?
+                            break;
+                        }
                     }
-                }
-                // ELSE MOVE TO BUYER'S NEXT BEST PRIORITY AND CONTINUE
-                else
-                {
-                    requester.BestPriorityIndex++;
-                    m_RequesterWorkList.PushBack(requester);
+                    if (matchFound)
+                    {
+                        foreach (var supplierOffer in m_SupplierOfferWorkList)
+                        {
+                            // REASSIGN REMAINING SUPPLIERS TO THEIR NEXT HIGHEST PRIORITY INDEX
+                            ResourceMask marketMask = MarketUtility.MarketIndexToResourceMask(i);
+                            ReassignSellerHighestPriorityBuyer(supplierOffer.Supplier, marketMask);
+                        }
+                    }
+                    // ELSE MOVE TO BUYER'S NEXT BEST PRIORITY AND CONTINUE
+                    else
+                    {
+                        requester.BestPriorityIndex[marketIndex]++;
+                        m_RequesterWorkList.PushBack(requester);
+                    }
                 }
             }
 
@@ -186,14 +210,20 @@ namespace Zavala.Economy
 
         #region Market Processing
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path, out int costToBuyer) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, ResourceMask resourceMask, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path, out int costToBuyer) {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current;
 
             proxyIdx = Tile.InvalidIndex16;
 
+            int marketIndex = MarketUtility.ResourceMaskToMarketIndex(resourceMask);
             for (int i = 0; i < requests.Count; i++) {
+                // only consider requests of the specified type
+                if ((requests[i].Requested & resourceMask).IsZero)
+                {
+                    continue;
+                }
                 if (!supplier.Storage.InfiniteSupply) {
 
                     if (supplier.Storage.StorageExtensionStore == null) {
@@ -219,7 +249,7 @@ namespace Zavala.Economy
                 }
 
                 int priorityIndex = supplier.Priorities.PrioritizedBuyers.FindIndex((i, b) => i.Target == b, requests[i].Requester);
-                if (priorityIndex < supplier.BestPriorityIndex) {
+                if (priorityIndex < supplier.BestPriorityIndex[marketIndex]) {
                     continue;
                 }
                 if (supplier.Priorities.PrioritizedBuyers[priorityIndex].Deprioritized)
@@ -227,7 +257,7 @@ namespace Zavala.Economy
                     continue;
                 }
 
-                if (priorityIndex == supplier.BestPriorityIndex) {
+                if (priorityIndex == supplier.BestPriorityIndex[marketIndex]) {
                     MarketRequestInfo request = requests[i];
                     profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
                     relativeGain = supplier.Priorities.PrioritizedBuyers[priorityIndex].RelativeGain;
@@ -236,7 +266,7 @@ namespace Zavala.Economy
                     path = supplier.Priorities.PrioritizedBuyers[priorityIndex].Path;
                     costToBuyer = supplier.Priorities.PrioritizedBuyers[priorityIndex].CostToBuyer;
                     // requests.FastRemoveAt(i);
-                    supplier.BestPriorityIndex = priorityIndex + 1;
+                    supplier.BestPriorityIndex[marketIndex] = priorityIndex + 1;
                     return request;
                 }
 
@@ -246,7 +276,7 @@ namespace Zavala.Economy
                 }
             }
 
-            if (highestPriorityRequestIndex >= supplier.BestPriorityIndex) {
+            if (highestPriorityRequestIndex >= supplier.BestPriorityIndex[marketIndex]) {
                 MarketRequestInfo request = requests[highestPriorityRequestIndex];
                 profit = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Profit;
                 relativeGain = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].RelativeGain;
@@ -255,7 +285,7 @@ namespace Zavala.Economy
                 path = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Path;
                 costToBuyer = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].CostToBuyer;
                 // requests.FastRemoveAt(highestPriorityRequestIndex);
-                supplier.BestPriorityIndex = highestPriorityRequestIndex + 1;
+                supplier.BestPriorityIndex[marketIndex] = highestPriorityRequestIndex + 1;
                 return request;
             }
 
@@ -391,7 +421,8 @@ namespace Zavala.Economy
                     else {
                         // Err towards buyer purchase cost (TODO: unless they accept anything?)
                         // profit = requester.PriceNegotiator.PriceBlock[primary];
-                        profit = supplier.PriceNegotiator.PriceBlock[primary];
+
+                        profit = supplier.PriceNegotiator.PriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
                     }
 
                     if (supplier.Storage.StorageExtensionReq != null) {
@@ -411,17 +442,18 @@ namespace Zavala.Economy
 
                 // NEGOTIATION PASS
                 bool deprioritized = false; // appears in medium level feedback, but not considered as valid buyer to sell to
-                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[primary] < costToBuyer))
+                // TODO: price block should reflect market prices, not individual resource prices
+                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)] < costToBuyer))
                 {
                     foreach (var currResource in allResources)
                     {
                         // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
-                        requester.PriceNegotiator.OfferedRecord[currResource] = supplier.PriceNegotiator.FixedSellOffer ? (int)NegotiableCode.NON_NEGOTIABLE : (int)NegotiableCode.NEGOTIABLE;
+                        requester.PriceNegotiator.OfferedRecord[MarketUtility.ResourceIdToMarketIndex(currResource)] = supplier.PriceNegotiator.FixedSellOffer ? (int)NegotiableCode.NON_NEGOTIABLE : (int)NegotiableCode.NEGOTIABLE;
 
                         // Check if requester is actively requesting
                         if (requester.Requested[currResource] >= 0)
                         {
-                            supplier.PriceNegotiator.OfferedRecord[currResource] = requester.PriceNegotiator.FixedBuyOffer ? (int)NegotiableCode.NON_NEGOTIABLE : (int)NegotiableCode.NEGOTIABLE;
+                            supplier.PriceNegotiator.OfferedRecord[MarketUtility.ResourceIdToMarketIndex(currResource)] = requester.PriceNegotiator.FixedBuyOffer ? (int)NegotiableCode.NON_NEGOTIABLE : (int)NegotiableCode.NEGOTIABLE;
                         }
                     }
 
@@ -596,7 +628,7 @@ namespace Zavala.Economy
                     {
                         // Err towards buyer purchase cost (TODO: unless they accept anything?)
                         // profit = requester.PriceNegotiator.PriceBlock[primary];
-                        purchaseCost = supplier.PriceNegotiator.PriceBlock[primary];
+                        purchaseCost = supplier.PriceNegotiator.PriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
                     }
 
                     /*
@@ -649,22 +681,29 @@ namespace Zavala.Economy
                 return a.Cost - b.Cost; // inverse of BuyerPriorityWorkList
             });
 
+            // TODO: buyer buy price is different from lowest cost
+
             m_SellerPriorityWorkList.CopyTo(requester.Priorities.PrioritizedSuppliers);
         }
 
-       private void ReassignSellerHighestPriorityBuyer(ResourceSupplier supplier)
+       private void ReassignSellerHighestPriorityBuyer(ResourceSupplier supplier, ResourceMask resourceMask)
         {
-            MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary, out int costToBuyer);
+            // TODO: return if resource is not in seller's shipping mask
+            // TODO: trim RequestWorkList to only include this resource
+            MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, resourceMask, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary, out int costToBuyer);
             
             // Only add to mapping if value is not null AND requester has not already been claimed in an optimal match
+            // TODO: matched per resource
             if (found.HasValue && !found.Value.Requester.MatchedThisTick)
             {
                 // Save the offer for buyer processing that comes later
-                // TODO: calculate familiarity score
                 ushort familiarityScore = 0;
-                MarketSupplierOffer supplierOffer = new MarketSupplierOffer(supplier, costToBuyer, baseProfit, relativeGain, baseTaxRevenue, proxyIdx, summary, (MarketRequestInfo)found, familiarityScore);
+                MarketSupplierOffer supplierOffer = new MarketSupplierOffer(supplier, costToBuyer, baseProfit, relativeGain, baseTaxRevenue, proxyIdx, summary, (MarketRequestInfo)found, resourceMask, familiarityScore);
                 AddSellerOfferEntry(found.Value.Requester, supplierOffer);
-                m_RequesterWorkList.PushBack(found.Value.Requester);
+                if (!m_RequesterWorkList.Contains(found.Value.Requester))
+                {
+                    m_RequesterWorkList.PushBack(found.Value.Requester);
+                }
             }
         }
 
@@ -695,7 +734,7 @@ namespace Zavala.Economy
             if (found.Value.Requester.InfiniteRequests)
             {
                 // Set requested value equal to this suppliers stock
-                for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
+                for (int i = 0; i < (int)ResourceId.COUNT; i++)
                 {
                     ResourceId resource = (ResourceId)i;
                     if ((supplier.Storage.Current[resource] != 0) && (found.Value.Requested[resource] != 0))
@@ -776,15 +815,16 @@ namespace Zavala.Economy
             if (tutorial.CurrState >= TutorialState.State.ActiveSim)
             {
                 // save purchase to Price Negotiator memories (buyer and seller)
-                for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
+                for (int rIdx = 0; rIdx < (int)ResourceId.COUNT; rIdx++)
                 {
                     ResourceId resource = (ResourceId)rIdx;
+                    int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
                     if (activeRequest.Supplied[resource] != 0)
                     {
                         if (!activeRequest.Requester.IsLocalOption)
                         {
-                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, resource, activeRequest.Requester.PriceNegotiator.PriceBlock[resource], !supplier.PriceNegotiator.FixedSellOffer);
-                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, resource, supplier.PriceNegotiator.PriceBlock[resource], !activeRequest.Requester.PriceNegotiator.FixedBuyOffer);
+                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, marketIndex, activeRequest.Requester.PriceNegotiator.PriceBlock[marketIndex], !supplier.PriceNegotiator.FixedSellOffer);
+                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, marketIndex, supplier.PriceNegotiator.PriceBlock[marketIndex], !activeRequest.Requester.PriceNegotiator.FixedBuyOffer);
                         }
                     }
                 }
@@ -812,13 +852,14 @@ namespace Zavala.Economy
                     if (!supplier.PriceNegotiator.FixedSellOffer)
                     {
                         supplier.PostSaleSnapshot = MarketUtility.GetCompleteStorage(supplier);
-                        for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
+                        for (int i = 0; i < (int)ResourceId.COUNT; i++)
                         {
                             ResourceId resource = (ResourceId)i;
+                            int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
                             if (supplier.PreSaleSnapshot[resource] == supplier.PostSaleSnapshot[resource] && (supplier.PreSaleSnapshot[resource] != 0))
                             {
                                 // None of this resource was sold; add stress price if there were any valid connections to negotiate with
-                                if (supplier.PriceNegotiator.OfferedRecord[resource] > (int)NegotiableCode.NO_OFFER)
+                                if (supplier.PriceNegotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER)
                                 {
                                     // Push negotiator and resource type for negotiation system
                                     PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false);
@@ -845,11 +886,11 @@ namespace Zavala.Economy
                     if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
                     {
                         ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
-                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT - 1; rIdx++)
+                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT; rIdx++)
                         {
                             ResourceId resource = (ResourceId)rIdx;
-
-                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[resource] != 0) && (negotiator.OfferedRecord[resource] > (int)NegotiableCode.NO_OFFER))
+                            int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
+                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[marketIndex] != 0) && (negotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER))
                             {
                                 // Push negotiator and resource type for negotiation system
                                 PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);

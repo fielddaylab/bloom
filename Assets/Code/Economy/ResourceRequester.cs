@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using FieldDay.Components;
@@ -22,7 +23,7 @@ namespace Zavala.Economy {
         [NonSerialized] public OccupiesTile Position;
         [NonSerialized] public ResourceStorage Storage;
         [NonSerialized] public MarketRequesterPriorityList Priorities;
-        [NonSerialized] public int BestPriorityIndex;
+        [NonSerialized] public int[] BestPriorityIndex;
         [NonSerialized] public bool MatchedThisTick;
 
         [NonSerialized] public ResourceBlock Requested;
@@ -47,6 +48,9 @@ namespace Zavala.Economy {
             PriceNegotiatorUtility.InitializeRequesterNegotiator(PriceNegotiator, RequestMask, Position.RegionIndex);
 
             Priorities.Create();
+
+            // One index for each market (Grain, Milk, and Phosphorus)
+            BestPriorityIndex = new int[3];
 
             MarketUtility.RegisterBuyer(this);
             if (!IsLocalOption) {

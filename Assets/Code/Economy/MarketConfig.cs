@@ -11,10 +11,36 @@ namespace Zavala.Economy {
         public TransportCosts TransportCosts;
 
         [Header("Per-Region")]
+        public PurchaseCosts TemplateCosts = new PurchaseCosts(); // Used for setting multiple defaults at once
+        public MarketPurchaseCosts TemplateMarketCosts = new MarketPurchaseCosts(); // Used for setting multiple defaults at once
         // starting point for individual prices
         public PurchaseCosts[] DefaultPurchasePerRegion = new PurchaseCosts[RegionInfo.MaxRegions];
+        // starting point for individual prices
+        public MarketPurchaseCosts[] DefaultMarketPurchasePerRegion = new MarketPurchaseCosts[RegionInfo.MaxRegions];
         [NonSerialized]
         public PurchaseCostAdjustments[] UserAdjustmentsPerRegion = new PurchaseCostAdjustments[RegionInfo.MaxRegions];
+
+#if UNITY_EDITOR
+
+        [ContextMenu("Apply To All Region Buy Fields")]
+        private void ApplyAllBuys()
+        {
+            for (int i = 0; i < DefaultPurchasePerRegion.Length; i++)
+            {
+                DefaultMarketPurchasePerRegion[i].Buy = TemplateMarketCosts.Buy;
+            }
+        }
+
+        [ContextMenu("Apply To All Region Sell Fields")]
+        private void ApplyAllSells()
+        {
+            for (int i = 0; i < DefaultPurchasePerRegion.Length; i++)
+            {
+                DefaultMarketPurchasePerRegion[i].Sell = TemplateMarketCosts.Sell;
+            }
+        }
+
+#endif // UNITY_EDITOR
     }
 
     [Serializable]
@@ -30,11 +56,21 @@ namespace Zavala.Economy {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock Buy;
 
-        // [Inline(InlineAttribute.DisplayType.HeaderLabel)]
-        // public ResourceBlock Sell;
+        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        public ResourceBlock Sell;
 
         // [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         // public ResourceBlock Import;
+    }
+
+    [Serializable]
+    public struct MarketPurchaseCosts
+    {
+        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        public MarketPriceBlock Buy;
+
+        [Inline(InlineAttribute.DisplayType.HeaderLabel)]
+        public MarketPriceBlock Sell;
     }
 
     [Serializable]
@@ -73,4 +109,6 @@ namespace Zavala.Economy {
 
         #endregion
     }
+
+
 }

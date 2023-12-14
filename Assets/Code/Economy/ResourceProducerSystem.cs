@@ -23,12 +23,11 @@ namespace Zavala.Economy {
                 // Refresh sell price for produced resources
                 if (producer.PriceNegotiator)
                 {
-                    for (int i = 0; i < (int)ResourceId.COUNT - 1; i++)
+                    for (int i = 0; i < MarketUtility.NumMarkets; i++)
                     {
-                        ResourceId resource = (ResourceId)i;
-                        if (producer.PriceNegotiator.PriceBlock[resource] != 0)
+                        if (producer.PriceNegotiator.PriceBlock[i] != 0)
                         {
-                            PriceNegotiatorUtility.LoadLastPrice(producer.PriceNegotiator, resource);
+                            PriceNegotiatorUtility.LoadLastPrice(producer.PriceNegotiator, i);
                         }
                     }
                 }

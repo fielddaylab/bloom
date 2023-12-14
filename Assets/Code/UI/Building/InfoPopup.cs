@@ -230,7 +230,9 @@ namespace Zavala.UI.Info {
                     } else {
                         MarketUtility.UpdatePurchaseSources(m_SelectedRequester, m_QueryResults);
                     }
-                    m_QueryResults.Sort(SortResultsAscending);
+                    m_QueryResults.Sort((a, b) => {
+                        return a.CostToBuyer - b.CostToBuyer;
+                    });
                     PopulatePurchasing();
                     break;
                 }

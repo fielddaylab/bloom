@@ -35,10 +35,107 @@ namespace Zavala.Economy {
         [Hidden] Phosphorus = Manure | MFertilizer | DFertilizer
     }
 
-    /// <summary>
-    /// Block of 32-bit resource values.
-    /// </summary>
     [Serializable]
+    public struct MarketPriceBlock
+    {
+        public int Phosphorus;
+        public int Grain;
+        public int Milk;
+
+        /// <summary>
+        /// Sets the value of all resources.
+        /// </summary>
+        public void SetAll(int value)
+        {
+            Phosphorus = Grain = Milk = value;
+        }
+
+        public int this[int marketIndex]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                Assert.True(marketIndex >= 0 && marketIndex < MarketUtility.NumMarkets, "Market index out of range");
+                unsafe
+                {
+                    fixed (int* start = &Phosphorus)
+                    {
+                        return *(start + (int)marketIndex);
+                    }
+                }
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                Assert.True(marketIndex >= 0 && marketIndex < MarketUtility.NumMarkets, "Market index out of range");
+                unsafe
+                {
+                    fixed (int* start = &Phosphorus)
+                    {
+                        *(start + (int)marketIndex) = value;
+                    }
+                }
+            }
+        }
+
+        static public MarketPriceBlock operator &(in MarketPriceBlock a, ResourceMask mask)
+        {
+            unsafe
+            {
+                MarketPriceBlock block = a;
+                int* ptr = &block.Phosphorus;
+                int idx = 0;
+                uint idxMask = 1;
+                bool anyPhosph = false;
+                bool match = false;
+                while (idx < ResourceUtility.Count)
+                {
+                    match = (idxMask & (uint)mask) != 0;
+                    if (idx < (int)ResourceId.Grain)
+                    {
+                        if (match)
+                        {
+                            anyPhosph = true;
+                        }
+                        if (idx == (int)ResourceId.DFertilizer)
+                        {
+                            if (!anyPhosph)
+                            {
+                                *ptr = 0;
+                            }
+                            ptr++;
+                        }
+                    }
+                    else
+                    {
+                        if (!match)
+                        {
+                            *ptr = 0;
+                        }
+                        ptr++;
+                    }
+                    idx++;
+                    idxMask <<= 1;
+                }
+                return block;
+            }
+        }
+
+        static public MarketPriceBlock operator +(in MarketPriceBlock a, in MarketPriceBlock b)
+        {
+            return new MarketPriceBlock()
+            {
+                Phosphorus = a.Phosphorus + b.Phosphorus,
+                Grain = a.Grain + b.Grain,
+                Milk = a.Milk + b.Milk
+            };
+        }
+    }
+
+        /// <summary>
+        /// Block of 32-bit resource values.
+        /// </summary>
+        [Serializable]
     public struct ResourceBlock {
         public int Manure;
         public int MFertilizer;
