@@ -11,6 +11,7 @@ $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    Heath County could use SAGA's help. 
 {@advisorEconPrairie}    We've got a whole <i>bushel<i> of grain farms... and of course Veldt University!
 {@advisorEconPrairie}    They'll be conducting research about this algae unpleasantness.
+$call AddAutoAlertCondition("Bloom", 2)
 $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -78,6 +79,7 @@ $call UnlockAdvisorModule("Ecology")
 {local @advisorEcol}How does it-- ooh, a shiny new button!
 {@cityPrairie}      That's PIP! It uses a network of sensors to track phosphorus concentrations.
 {@cityPrairie}      And shows it to you as moving red dots! I hope that helps.
+$call OffsetAlgaeGrowthThreshold(-1)
 $call Unpause()
 
 :: unlockTradeGraphs

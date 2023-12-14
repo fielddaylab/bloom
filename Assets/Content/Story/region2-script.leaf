@@ -9,8 +9,8 @@ $call Pause()
 {@advisorEconForest}    Salutations, Director.
 $call PanToBuilding("region2_city1")
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
-{@advisorEconForest}    Perhaps we could make use of growth program here?
-{@advisorEconForest}    Or budget and policies are separate from Knoll County.
+{@advisorEconForest}    Perhaps we could make use of a growth program here?
+{@advisorEconForest}    Our budget and policies are separate from Knoll County.
 {@advisorEconForest}    Our needs differ from those of our <i>dear</i> neighbors.
 $call Unpause()
 
@@ -48,7 +48,7 @@ $call AddAutoAlertCondition("ExcessRunoff", 2)
 
 :: runoffBranch
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 2, global:bloomDiscovered
+@conditions     alertType == "excess-runoff", alertRegion == 2, global:runoffDiscovered
 $call Pause()
 $if Visited("region2.unlockStorage")
     $branch .runoffGeneric
@@ -58,29 +58,53 @@ $endif
 $call Unpause()
 
 :: unlockStorage
-@conditions     global:bloomDiscovered
+@conditions     global:runoffDiscovered
 @once
 {local @cafoFarmer}     Hmm... This sitting manure leaches into the water table faster than it's used.
 {local @cafoFarmer}     Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
 {@advisorEcolForest}    Not a half bad idea.
-{@advisorEcolForest}    I've added <b>Storage</b> to your Blueprint Mode.
+{@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.
 {@advisorEcolForest}    Once connected to a CAFO, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between CAFOs.
-$call AddAutoAlertCondition("Bloom", 2)
+$call OffsetAlgaeGrowthThreshold(-1)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
 
 :: runoffGeneric // triggered by runoffBranch
+@forcePolicy    Ecology
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
-{@advisorEcolForest}    I say we build more Storage units.
+{@advisorEcolForest}    I say we build more <b>Storage</b> units.
 {@advisorEconForest}    Those could help, but they won't come cheap.
-{@advisorEconForest}    A policy adjustment may be more efficient.
+{@advisorEcolForest}    A policy adjustment, then?
+
+
+// triggered by opening runoff in region 2 after region 3 has been opened
+// feedback: use a farmer instead
+:: unlockImportTax
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
+@cutscene      
+@once
+$set global:importUnlocked = true
+{@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
+$call PanToBuilding("region3_city1")
+$call Pause()
+{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many CAFOs.
+{@advisorEcolPrairie}   But we've got plenty of <<b>grain</b> over in Heath County! Maybe we could help each other?
+{@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
+{@advisorEconPrairie}   Perhaps we need to offset shipping costs.
+{@advisorEconPrairie}   I've unlocked a policy for setting <b>Import Subsidies.</b>
+$call UnlockCards(ImportTaxPolicy)
+{@advisorEconPrairie}   Import <b>Subsidies</b> will encourage buying from other regions - but it'll come from your budget.
+{@advisorEconPrairie}   While an Import <b>Tax</b> will <i>discourage<i> buying from other regions.
+{@advisorEconForest}    Hmph. Well I say everyone should just buy local. But it's up to you, Director.
+$call Unpause()
 
 :: testBloomTriggerForest
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
-@cutscene
 @forcePolicy    Ecology
+@priority       Low
 @once
 $call Pause()
 {@advisorEcolForest}    Ugh... I can't believe there's an algae bloom <i>here!</i>
@@ -92,35 +116,13 @@ $call Unpause()
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
+@priority       Low
 @forcePolicy    Ecology
 {@advisorEcolForest}    More algae blooms... Gross!
 $if global:storageUnlocked
-    $if global:importUnlocked
-        {@advisorEcolForest}    I say we build more storage to stop runoff.
-    $else
-        $branch .unlockImportTax
-    $endif
+    {@advisorEcolForest}    I say we build more storage to stop runoff.
 $endif
 $if PolicyIsUnlocked(SkimmingPolicy)
     {@advisorEcolForest}    Or use skimmers to clean up.
 $endif
-
-
-// triggered by opening runoff in region 2 after region 3 has been opened
-// feedback: use a farmer instead
-:: unlockImportTax
-@forcePolicy    Economy      
-@once
-$set global:importUnlocked = true
-{@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
-$call PanCameraToBuilding("region3_city1")
-$call Pause()
-{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many CAFOs.
-{@advisorEcolPrairie}   But we've got plenty of grain over in Heath County! Maybe we could help each other?
-{@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
-{@advisorEconPrairie}   Perhaps we need to offset shipping costs.
-{@advisorEconPrairie}   I've unlocked a policy for setting <b>Import Subsidies.</b>
-$call UnlockCards(ImportTaxPolicy)
-{@advisorEconPrairie}   A subsidy will encourage buying from other regions - but it'll come from your budget.
-{@advisorEconForest}    Hmph. Well I say everyone should just buy local. But it's up to you, Director.
-$call Unpause()
+{@advisorEcolForest}    But you're the boss.

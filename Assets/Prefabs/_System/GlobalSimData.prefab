@@ -531,7 +531,7 @@ MonoBehaviour:
         Value: 0
       NodeTitle: region1.specialDelivery
     RegionIndexUnlocks: 01000000
-  - UnlockDelay: 15
+  - UnlockDelay: 5
     UnlockConditions:
     - Type: 6
       ChecksRegions: 01000000
@@ -594,7 +594,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-      NodeTitle: region1.discoverFirstBloom
+      NodeTitle: region1.runoffTrigger
     RegionIndexUnlocks: 02000000
   - UnlockDelay: 10
     UnlockConditions:

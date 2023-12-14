@@ -315,8 +315,8 @@ namespace Zavala.UI
                         break;
                     case PolicyType.RunoffPolicy:
                         amt = data.PenaltiesHistory[grid.CurrRegionIndex].Net.PeekFront();
-                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                        break;
+                        // PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                        continue; // skip past playing animation, go to next policy
                     case PolicyType.SkimmingPolicy:
                         amt = data.SkimmerCostHistory[grid.CurrRegionIndex].Net.PeekFront();
                         PolicyBoxUtility.SetPopupAmt(box.Popup, amt);

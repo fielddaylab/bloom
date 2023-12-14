@@ -24,7 +24,7 @@ namespace Zavala.Sim {
                     // get phosphorus count from tile
                     int phosphorusCount = m_StateB.Phosphorus.CurrentState()[tileIndex].Count;
                     // update GrowingTiles
-                    if (phosphorusCount >= AlgaeSim.MinPForAlgaeGrowth) {
+                    if (phosphorusCount >= m_StateA.CurrentMinPForAlgaeGrowth) {
                         m_StateA.Algae.GrowingTiles.Add(tileIndex);
                     } else {
                         m_StateA.Algae.GrowingTiles.Remove(tileIndex);
