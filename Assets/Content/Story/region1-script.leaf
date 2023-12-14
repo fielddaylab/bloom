@@ -147,16 +147,30 @@ $call ReleaseDialogueInteraction()
 
 :: policySet
 @trigger        PolicySet
+@conditions     policyForced == false
 $branch .policyDescriptions
 $if intro:tutorialComplete = false
     $branch .choseFirstPolicy
 $endif
+
+:: policyForcedToZero
+@trigger        PolicySet
+@conditions     policyIndex == 0, policyForced == true
+{local @advisorEcon}    Oh dear.
+$if local:policyType == "SalesTaxPolicy"
+    {local @advisorEcon}    The sales subsidy here has pushed our budget negative!
+$elseif local:policyType == "ImportTaxPolicy"
+    {local @advisorEcon}    The import subsidy here has pushed our budget negative!
+$endif
+{local @advisorEcon}    I must set it to none for now.
+{local @advisorEcon}    Please consider implementing a tax so we can regain revenue.
 
 :: choseFirstPolicy
 $set intro:tutorialComplete = true
 {@advisorEconHill}  A fine choice. 
 {@advisorEconHill}  Remember, you can always use the <b>spacebar</b> to pause and think.
 {@advisorEconHill}  But let's get this economy started, shall we?
+$call OffsetAlgaeGrowthThreshold(-2)
 $call ActivateSim()
 
 // :: sittingOmens
@@ -199,6 +213,7 @@ $set intro:tutorialComplete = true
 $set intro:exporterFound = true
 $call UnlockCards(SalesTaxPolicy)
 $call AddAutoAlertCondition("Bloom", 1)
+$call OffsetAlgaeGrowthThreshold(-2)
 $call ReleaseDialogueInteraction()
 $call Unpause()
 $call ActivateSim()
@@ -271,6 +286,7 @@ $endif
 :: openedToForest
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(1), RegionUnlocked(2)
+@priority   High
 @forcePolicy    Economy
 @once
 {@advisorEconHill}      Ah, you've expanded into Cypress County. Lucky you.
@@ -307,14 +323,14 @@ $endif
 @once
 $call Pause()
 $set global:runoffDiscovered = true
-{local @advisorEcol}    This farm is just letting manure leach into the water table!
-{local @advisorEcol}    That must be behind those algae blooms.
-{local @advisorEcon}    Maybe so, but they simply have no more favorable alternatives.
-{local @advisorEcol}    Well, let's make it less favorable. How about a penalty fine for runoff?
+{@advisorEcolHill}      This farm is just letting manure leach into the water table!
+{@advisorEcolHill}      That must be behind those algae blooms.
+{@advisorEconHill}      Maybe so, but they simply have no more favorable alternatives.
+{@advisorEcolHill}      Well, let's make it less favorable. How about a penalty fine for runoff?
 {local @cafoFarmer}     A fine!? I'm barely scraping by as is. You'd have me selling at a loss!
-{local @advisorEcon}    Well, a fine <i>could</i> incentivize selling manure...
-{local @advisorEcon}    But Bertram is correct. Selling at a loss could disrupt the supply chain.
-{local @advisorEcol}    What do you think, boss?
+{@advisorEconHill}      Hrm... A fine <i>could</i> incentivize selling manure...
+{@advisorEconHill}      But Bertram is correct. Selling at a loss could disrupt the supply chain.
+{@advisorEcolHill}      What do you think, boss?
 $call UnlockCards(RunoffPolicy)
 
 :: genericRunoff
@@ -356,13 +372,14 @@ $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/f
     $call CutsceneClearImages()
 $call CutsceneEnd()
 {@advisorEcolHill}    Something must be done! I'll keep an eye out for runoff.
+$call OffsetAlgaeGrowthThreshold(0)
 $call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)
 $call Unpause()
 
 :: genericBloomTrigger
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 1, global:bloomDiscovered
+@conditions     alertType == "bloom", alertRegion == 1, global:runoffDiscovered
 @forcePolicy    Ecology
 {local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
 {local @advisorEcol}    We could address the causes by penalizing runoff.

@@ -1,5 +1,5 @@
 {
-    "Zavala.Sim.AlgaeSim::MinPForAlgaeGrowth": 7,
+    "Zavala.Sim.AlgaeSim::MinPForAlgaeGrowthDefault": 7,
     "Zavala.Sim.AlgaeSim::AlgaeGrowthIncrement": 0.0500000007450581,
     "Zavala.Economy.MarketParams::TruckSpeed": 1.80000007152557,
     "Zavala.Economy.MarketParams::TicksPerNegotiation": 2,
@@ -8,7 +8,6 @@
     "Zavala.Sim.PhosphorusSim::MinFlowThreshold": 4,
     "Zavala.Sim.PhosphorusSim::MinFlowProportion": 0.699999988079071,
     "Zavala.Sim.PhosphorusSim::MaxFlowProportionSteep": 0.800000011920929,
-    "Zavala.Sim.RunoffParams::SittingManureRunoffProportion": 3,
     "Zavala.Sim.RunoffParams::AppliedManureRunoffProportion": 3,
     "Zavala.Sim.RunoffParams::MFertilizerRunoffProportion": 4,
     "Zavala.Sim.RunoffParams::ExcessRunoffThreshold": 8

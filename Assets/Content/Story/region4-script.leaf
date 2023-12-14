@@ -10,6 +10,7 @@ $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We've dealt with these algae blooms here before...
 {@advisorEcolWetland}    The phosphorus flows down through waterways into our marshland.
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
+$call OffsetAlgaeGrowthThreshold(-2)
 $call AddAutoAlertCondition("Bloom", 4)
 $call Unpause()
 
@@ -36,7 +37,7 @@ $endif
 :: unlockSkimmers
 @trigger        AlertExamined
 @cutscene
-@conditions     alertType == "bloom", !CameraInRegion(4) , AgeOfRegion(4) > 3
+@conditions     alertType == "bloom", alertRegion != 4, AgeOfRegion(4) > 3
 @forcePolicy    Ecology
 @once
 {local @advisorEcon}    More algae blooms...
@@ -78,7 +79,8 @@ $call UnlockShopItem("Digester")
 {@advisorEcolWetland}   Those digesters were too expensive for us to run.
 {@advisorEcolWetland}   But maybe with SAGA's help we could start some new ones?
 {@advisorEcolWetland}   They process manure into fertilizer... Much easier to ship, and less runoff too!
-{@advisorEconWetland}   Digesters have been added to your Building menu.
+{@advisorEconWetland}   Digesters have been added to your Build Mode menu.
+$call OffsetAlgaeGrowthThreshold(0)
 $call Unpause()
 // $call AddRegionAgeDeltaTrigger(4, 10)
 
@@ -93,6 +95,7 @@ $call Unpause()
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 4, global:bloomDiscovered
+@priority       Low
 @forcePolicy    Ecology
 {@advisorEcolWetland}     Hmph... Algae blooms. Nasty business.
 {@advisorEcolWetland}     Seems to me we should reduce phosphorus runoff.

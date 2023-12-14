@@ -287,12 +287,12 @@ namespace Zavala.UI
 
         public void OnBuildToolSelected()
         {
-            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
+            //m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
         }
 
         public void OnBuildToolDeselected()
         {
-            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
+            //m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
 
         public void OnMarketTickAdvanced(MarketData data, SimGridState grid)
@@ -305,7 +305,8 @@ namespace Zavala.UI
                 // TODO: calculate amounts from data history
                 if (data.SalesTaxHistory[grid.CurrRegionIndex].Net.Count > 0)
                 {
-                    switch (box.PolicyType)
+                    // TODO: calculate amounts from data history
+                    switch(box.PolicyType)
                     {
                         case PolicyType.SalesTaxPolicy:
                             amt = data.SalesTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
@@ -317,8 +318,8 @@ namespace Zavala.UI
                             break;
                         case PolicyType.RunoffPolicy:
                             amt = data.PenaltiesHistory[grid.CurrRegionIndex].Net.PeekFront();
-                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                            break;
+                            // PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                            continue; // skip past playing animation, go to next policy
                         case PolicyType.SkimmingPolicy:
                             amt = data.SkimmerCostHistory[grid.CurrRegionIndex].Net.PeekFront();
                             PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
