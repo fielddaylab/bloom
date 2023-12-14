@@ -95,8 +95,8 @@ namespace Zavala.Advisor {
             SalesTaxVals[3].SetAll(-4);// SUBSIDY
 
             RunoffPenaltyVals[0].Manure = 0;
-            RunoffPenaltyVals[1].Manure = 10;
-            RunoffPenaltyVals[2].Manure = 20;
+            RunoffPenaltyVals[1].Manure = 4;
+            RunoffPenaltyVals[2].Manure = 8;
             RunoffPenaltyVals[3].Manure = 1000;
 
             SkimmerPolicyVals[0] = 0; 

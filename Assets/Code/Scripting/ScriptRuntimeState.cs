@@ -8,6 +8,7 @@ using Leaf;
 using Leaf.Defaults;
 using Leaf.Runtime;
 using UnityEngine;
+using Zavala.Advisor;
 using Zavala.Scripting;
 using Zavala.UI;
 using Random = System.Random;
@@ -149,9 +150,21 @@ namespace FieldDay.Scripting {
             Runtime.Plugin.ConfigureDisplay(Runtime.DefaultDialogue, Runtime.DefaultDialogue);
         }
 
+        static public void AutoOpenPolicy(PolicyType type) {
+            DialogueBox box = Game.SharedState.Get<ScriptRuntimeState>().DefaultDialogue;
+            box.CardsToShow = type;
+            box.ShowHand = true;
+        }
+
         [LeafMember("Visited")]
         static public bool Visited(StringHash32 nodeId) {
             return Persistence.SessionViewedNodeIds.Contains(nodeId);
+        }
+
+        [LeafMember("ForcePolicyInstant")]
+        static public void ForcePolicyInstant(AdvisorType type) {
+            Game.SharedState.Get<ScriptRuntimeState>().DefaultDialogue.ForceExpandPolicyUI(type);
+            
         }
     }
 }

@@ -96,6 +96,13 @@ namespace FieldDay.Scripting {
             PersistenceType = target;
         }
 
+        [BlockMeta("forcePolicyEarly")]
+        private void SetForcePolicyEarly(AdvisorType advisorType, ScriptNodeMemoryTarget target = ScriptNodeMemoryTarget.Persistent) {
+            Flags |= ScriptNodeFlags.ForcePolicyEarly;
+            AdvisorType = advisorType;
+            PersistenceType = target;
+        }
+
         #endregion // Internal
     }
 
@@ -112,7 +119,8 @@ namespace FieldDay.Scripting {
         IgnoreDuringCutscene = 0x20,
         InterruptSamePriority = 0x40,
         AnyTarget = 0x80,
-        ForcePolicy = 0x100
+        ForcePolicy = 0x100,
+        ForcePolicyEarly = 0x200
     }
 
     /// <summary>

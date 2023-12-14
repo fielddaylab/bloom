@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Advisor;
+using Zavala.Input;
 using Zavala.Sim;
 
 namespace Zavala.Cards
@@ -107,6 +108,29 @@ namespace Zavala.Cards
             m_SlotColor = slotColor;
             m_LockedColor = lockedColor;
             m_UnlockedColor = unlockedColor;
+        }
+
+        public void InstantHideHand() {
+            if (m_HandState == HandState.Hidden) {
+                return;
+            }
+
+            m_HandState = HandState.Hiding;
+
+            for (int i = 0; i < m_DisplayCards.Count; i++) {
+                m_DisplayCards[i].transform.position = this.transform.position;
+                m_DisplayCards[i].transform.SetRotation(0, Axis.Z);
+            }
+            m_HandState = HandState.Hidden;
+
+            CardPools pools = Game.SharedState.Get<CardPools>();
+
+            for (int i = 0; i < m_DisplayCards.Count; i++) {
+                // free the card back to the pool
+                pools.Cards.Free(m_DisplayCards[i]);
+            }
+            m_DisplayCards.Clear();
+ 
         }
 
         #region Handlers
