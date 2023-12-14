@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9073481714665469431}
   - component: {fileID: 5479345239282725511}
   m_Layer: 5
-  m_Name: LocationListContent
+  m_Name: LocationListContent (Rows)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,10 +97,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Layout: {fileID: 2741793636299732854}
-  Locations:
+  LocationRows:
   - {fileID: 6591950811981436184}
   - {fileID: 5877944879939799367}
   - {fileID: 1928153361551117598}
+  LocationCols: []
   Dividers:
   - {fileID: 799335222302550940}
   - {fileID: 3937179870344942536}

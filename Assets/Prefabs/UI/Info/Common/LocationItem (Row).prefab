@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 6757999344153113608}
   - component: {fileID: 2804484030203688040}
   m_Layer: 5
-  m_Name: LocationItem
+  m_Name: LocationItem (Row)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

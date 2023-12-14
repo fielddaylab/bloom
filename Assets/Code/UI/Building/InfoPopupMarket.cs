@@ -10,7 +10,8 @@ using Zavala.Sim;
 namespace Zavala.UI.Info {
     public class InfoPopupMarket : MonoBehaviour {
         public LayoutGroup Layout;
-        public InfoPopupLocationRow[] Locations;
+        public InfoPopupLocationRow[] LocationRows;
+        public InfoPopupLocationColumn[] LocationCols;
         public GameObject[] Dividers;
     }
 
