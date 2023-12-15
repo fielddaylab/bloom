@@ -65,6 +65,7 @@ namespace Zavala.UI {
         [NonSerialized] public AdvisorType ForceAdvisorPolicies = AdvisorType.None;
         [NonSerialized] public bool ShowHand = false;
         [NonSerialized] public PolicyType CardsToShow;
+        [NonSerialized] private bool m_PoliciesActive;
 
         private void Start() {
             m_PolicyExpansionContainer.gameObject.SetActive(false);
@@ -175,6 +176,7 @@ namespace Zavala.UI {
             if (advisorType == AdvisorType.None) return;
             PopulateSlotsForAdvisor(advisorType);
             HideCardsInstant();
+            m_PoliciesActive = true;
             m_TransitionRoutine.Replace(ExpandPolicyUIRoutine());
         }
 
@@ -193,6 +195,7 @@ namespace Zavala.UI {
         public void HideAdvisorUI() {
             if (ForceAdvisorPolicies != AdvisorType.None) return; // don't close until AdvisorPoliciesToShow has been set to none
             HideCardsInstant();
+            m_PoliciesActive = false;
             m_TransitionRoutine.Replace(HideRoutine());
         }
 
@@ -224,6 +227,7 @@ namespace Zavala.UI {
             SimTimeInput.SetPaused(false, SimPauseFlags.DialogBox);
             m_AdvisorButtons.ShowAdvisorButtons();
             if (m_PolicyExpansionContainer.gameObject.activeSelf) {
+                m_PoliciesActive = false;
                 m_PolicyCloseButton.gameObject.SetActive(false);
                 yield return m_PolicyExpansionContainer.AnchorPosTo(m_OffscreenPanelY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
                 m_PolicyExpansionContainer.gameObject.SetActive(false);
@@ -246,7 +250,7 @@ namespace Zavala.UI {
             InputState input = Game.SharedState.Get<InputState>();
             m_ButtonContainer.gameObject.SetActive(true);
 
-            if (m_FullyExpanded) {
+            if (m_PoliciesActive || ForceAdvisorPolicies != AdvisorType.None) {
                 while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Gui.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
                     yield return null;
                 }

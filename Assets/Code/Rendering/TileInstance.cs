@@ -15,11 +15,11 @@ namespace Zavala.World {
         [Header("Pillar")]
         public MeshRenderer PillarRenderer;
 
-        [NonSerialized] public SimpleMeshConfig TopDefaultConfig;
+        [NonSerialized] public MultiMaterialMeshConfig TopDefaultConfig;
         [NonSerialized] public Material PillarDefaultMat;
 
         private void Awake() {
-            TopDefaultConfig = new SimpleMeshConfig(TopRenderer, TopFilter);
+            TopDefaultConfig = new MultiMaterialMeshConfig(TopRenderer, TopFilter);
             PillarDefaultMat = PillarRenderer ? PillarRenderer.sharedMaterial : null;
         }
     }
