@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 8571083980977752943}
   - component: {fileID: 2719164954211423765}
   - component: {fileID: 4116670010615769232}
-  - component: {fileID: 5262403372021802370}
   m_Layer: 7
   m_Name: Let It Sit Option
   m_TagString: Untagged
@@ -215,28 +214,6 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   Icon: {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
---- !u!114 &5262403372021802370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5845473704882985891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PriceBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
-    Grain: 0
-    Milk: 0
-  PriceStep: 1
-  AcceptsAnyPrice: 0
-  FixedSellOffer: 1
-  FixedBuyOffer: 1
 --- !u!1 &7291294420475072060
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,7 +234,7 @@ GameObject:
   - component: {fileID: 5890811373593064956}
   - component: {fileID: 7238644497238643382}
   - component: {fileID: 1730942203609106761}
-  - component: {fileID: 4321501763131140057}
+  - component: {fileID: 2524356306151244216}
   m_Layer: 7
   m_Name: DairyFarm_Base
   m_TagString: Untagged
@@ -486,7 +463,7 @@ MonoBehaviour:
     m_Source: location.shared.cafoInfo
     m_HashValue: 3990991626
   Icon: {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
---- !u!114 &4321501763131140057
+--- !u!114 &2524356306151244216
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -495,19 +472,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7291294420475072060}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PriceBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
-    Grain: 0
-    Milk: 0
-  PriceStep: 1
-  AcceptsAnyPrice: 0
-  FixedSellOffer: 0
-  FixedBuyOffer: 0
+  Id: 0
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0

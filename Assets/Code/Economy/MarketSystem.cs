@@ -249,10 +249,12 @@ namespace Zavala.Economy
                 if (priorityIndex < supplier.BestPriorityIndex[marketIndex]) {
                     continue;
                 }
+                /*
                 if (supplier.Priorities.PrioritizedBuyers[priorityIndex].Deprioritized)
                 {
                     continue;
                 }
+                */
 
                 if (priorityIndex == supplier.BestPriorityIndex[marketIndex]) {
                     MarketRequestInfo request = requests[i];

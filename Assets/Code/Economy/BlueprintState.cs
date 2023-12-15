@@ -279,6 +279,7 @@ namespace Zavala.Economy
             ShopUtility.ResetRunningCost(shop);
 
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            BuildToolState toolState = Game.SharedState.Get<BuildToolState>();
 
             // Process commits
             foreach (var commitChain in blueprintState.Commits)
@@ -290,7 +291,24 @@ namespace Zavala.Economy
                         if (commitAction.ActionType == ActionType.Build) {
                             VfxUtility.PlayEffect(commitAction.BuiltObj.transform.position, EffectType.Poof);
                             SfxUtility.PlaySfx("build-poof");
+
+                            int buildingId = BuildToolState.UserBuildingIdStart + toolState.TotalBuildingsBuilt++;
+
+                            UserBuilding ub = commitAction.BuiltObj.GetComponent<UserBuilding>();
+                            if (ub != null) {
+                                switch (builtType) {
+                                    case BuildingType.Storage: {
+                                        ub.IndexWithinType = toolState.NumStoragesBuilt++;
+                                        break;
+                                    }
+                                    case BuildingType.Digester: {
+                                        ub.IndexWithinType = toolState.NumDigestersBuilt++;
+                                        break;
+                                    }
+                                }
+                            }
                         }
+
                         using (TempVarTable varTable = TempVarTable.Alloc()) {
                             varTable.Set("buildingType", commitAction.BuildType.ToString());
                             ScriptUtility.Trigger(GameTriggers.PlayerBuiltBuilding, varTable);
@@ -460,6 +478,9 @@ namespace Zavala.Economy
         {
             // Generate the mesh overlay
             Vector3 heightOffset = new Vector3(0, 0, 0);
+            //if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsWater) != 0) {
+            //    heightOffset.y = -0.2f;
+            //}
             Vector3 centerPos = HexVector.ToWorld(tileIndex, grid.Terrain.Info[tileIndex].Height, world.WorldSpace) + heightOffset;
 
             TileRendering.GenerateTileMeshData(centerPos, 1, Color.white, overlayData);

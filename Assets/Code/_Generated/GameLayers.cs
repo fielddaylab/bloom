@@ -30,6 +30,9 @@ static public class LayerMasks {
     // Layer 9: Phosphorus
     public const int Phosphorus_Index = 9;
     public const int Phosphorus_Mask = 512;
+    // Layer 31: WorldUI
+    public const int WorldUI_Index = 31;
+    public const int WorldUI_Mask = -2147483648;
 }
 static public class SortingLayers {
     
@@ -54,4 +57,6 @@ static public class UnityTags {
     public const string GameController = "GameController";
     // Tag PlayerPlaced
     public const string PlayerPlaced = "PlayerPlaced";
+    // Tag UICamera
+    public const string UICamera = "UICamera";
 }

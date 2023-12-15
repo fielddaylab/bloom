@@ -48,12 +48,13 @@ namespace Zavala.Building
 
             UserBuildTool toolPreview = ToolInPreview();
 
-            if (m_StateC.ToolUpdated)
+            if (m_StateC.ToolUpdated && m_StateC.ActiveTool != UserBuildTool.None)
             {
-                if (m_StateC.ActiveTool != UserBuildTool.Road && m_StateC.ActiveTool != UserBuildTool.None)
-                {
+                if (m_StateC.ActiveTool != UserBuildTool.Road) {
                     // Regenerate BlockedTiles
                     BuildToolUtility.RecalculateBlockedTiles(grid, world, network, m_StateC);
+                } else {
+                    BuildToolUtility.RecalculateBlockedTilesForRoads(grid, world, network, m_StateC);
                 }
             }
 
@@ -125,7 +126,7 @@ namespace Zavala.Building
         private int RaycastTileIndex(SimWorldState world, SimGridState grid) {
             // do a raycast
             // TODO: only raycast if the mouse has moved significantly since last placed tile?
-            if (EventSystem.current.IsPointerOverGameObject()) {
+            if (Game.Input.IsPointerOverCanvas()) {
                 // return  if over UI
                 // TODO: more permanent solution
                 Log.Msg("[UserBuildingSystem] Raycast over UI, discarding.");
@@ -168,7 +169,7 @@ namespace Zavala.Building
         /// <param name="grid"></param>
         /// <returns></returns>
         private Collider RaycastBuilding(SimWorldState world, SimGridState grid) {
-            if (EventSystem.current.IsPointerOverGameObject()) {
+            if (Game.Input.IsPointerOverCanvas()) {
                 // return  if over UI
                 // TODO: more permanent solution
                 Log.Msg("[UserBuildingSystem] Raycast over UI, discarding.");
@@ -326,6 +327,14 @@ namespace Zavala.Building
                     Debug.Log("[UserBuildingSystem] Cannot build a non-continuous road");
                     CancelRoad(grid, network);
                     return;
+                }
+
+                // check for toll
+                if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsToll) != 0) {
+                    if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsConnectionEndpoint) == 0) {
+                        Debug.Log("[UserBuildingSystem] Cannot build onto a pending toll");
+                        return;
+                    }
                 }
 
                 if (m_StateC.RoadToolState.TracedTileIdxs.Contains(tileIndex)) {

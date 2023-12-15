@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 7154066641173859841}
   - component: {fileID: 4395246305225779435}
   - component: {fileID: 118139742912675241}
+  - component: {fileID: 4977377211245142536}
   m_Layer: 7
   m_Name: GrainFarm_Base
   m_TagString: Untagged
@@ -261,6 +262,19 @@ MonoBehaviour:
     m_Source: location.shared.grainInfo
     m_HashValue: 2022525932
   Icon: {fileID: 21300000, guid: f1c1991d55fde1b44975cee1f7f527e0, type: 3}
+--- !u!114 &4977377211245142536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5421243799934890597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Id: 0
 --- !u!1001 &3743880648583490365
 PrefabInstance:
   m_ObjectHideFlags: 0

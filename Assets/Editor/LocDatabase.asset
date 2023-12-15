@@ -50,18 +50,42 @@ MonoBehaviour:
       Content: High
     - Id: cards.RunoffPolicy.category
       Content: Runoff Penalty
+    - Id: cards.RunoffPolicy.none
+      Content: None
+    - Id: cards.RunoffPolicy.low
+      Content: Low
+    - Id: cards.RunoffPolicy.high
+      Content: High
     - Id: cards.RunoffPolicy.alt
       Content: Very High
     - Id: cards.SkimmingPolicy.category
       Content: Skimming Level
+    - Id: cards.SkimmingPolicy.none
+      Content: None
+    - Id: cards.SkimmingPolicy.low
+      Content: Low
+    - Id: cards.SkimmingPolicy.high
+      Content: High
     - Id: cards.SkimmingPolicy.alt
       Content: Dredge
     - Id: cards.ImportTaxPolicy.category
-      Content: Import Subsidy
+      Content: Import Policy
+    - Id: cards.ImportTaxPolicy.none
+      Content: None
+    - Id: cards.ImportTaxPolicy.low
+      Content: Low Subsidy
+    - Id: cards.ImportTaxPolicy.high
+      Content: High Subsidy
     - Id: cards.ImportTaxPolicy.alt
       Content: Tax
     - Id: cards.SalesTaxPolicy.category
-      Content: Sales Tax
+      Content: Sales Policy
+    - Id: cards.SalesTaxPolicy.none
+      Content: None
+    - Id: cards.SalesTaxPolicy.low
+      Content: Low Tax
+    - Id: cards.SalesTaxPolicy.high
+      Content: High Tax
     - Id: cards.SalesTaxPolicy.alt
       Content: Subsidy
     BasePath: cards

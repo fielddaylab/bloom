@@ -48,7 +48,7 @@ namespace Zavala.Roads {
         {
             for (int r = network.RoadObjects.Count - 1; r >= 0; r--)
             {
-                if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == tileIndex)
+                if (network.RoadObjects[r].Position.TileIndex == tileIndex)
                 {
                     network.RoadObjects[r].BPCompareMask.Clear();
                 }

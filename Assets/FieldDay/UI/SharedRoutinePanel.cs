@@ -23,6 +23,10 @@ namespace FieldDay.UI {
 
         #region ISharedGuiPanel
 
+        Transform IGuiPanel.Root {
+            get { return m_RootTransform; }
+        }
+
         public void Hide() {
             Hide(0);
         }

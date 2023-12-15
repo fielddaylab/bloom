@@ -541,6 +541,7 @@ GameObject:
   - component: {fileID: 190549082}
   - component: {fileID: 190549083}
   - component: {fileID: 190549084}
+  - component: {fileID: 190549085}
   m_Layer: 5
   m_Name: AdvisorLayout
   m_TagString: Untagged
@@ -622,6 +623,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Rect: {fileID: 190549080}
+--- !u!114 &190549085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190549079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86b943a7c8da07428c17dd96a7e18c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Id:
+    m_Source: AdvisorButtons
+    m_HashValue: 3477625448
 --- !u!1001 &541581160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1034,6 +1050,26 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7310159028650111914, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
   m_PrefabInstance: {fileID: 980986418}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &980986420 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7310159028650111915, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+  m_PrefabInstance: {fileID: 980986418}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &980986421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980986420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86b943a7c8da07428c17dd96a7e18c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Id:
+    m_Source: EconomyAdvisor
+    m_HashValue: 3121618905
 --- !u!224 &1273721356 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1226874243164622508, guid: 0eb5f955532ab8d4380de0206797a3f8, type: 3}
@@ -1927,7 +1963,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7310159028650111915, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
       propertyPath: m_Name
-      value: EcologicalAdvisor
+      value: EcologyAdvisor
       objectReference: {fileID: 0}
     - target: {fileID: 7310159029076472490, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
       propertyPath: m_text
@@ -1939,6 +1975,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+--- !u!1 &7310159027331395012 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7310159028650111915, guid: b589e5b69bb33534c9cd3d6eec971345, type: 3}
+  m_PrefabInstance: {fileID: 7310159027331395011}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7310159027331395013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310159027331395012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86b943a7c8da07428c17dd96a7e18c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Id:
+    m_Source: EcologyAdvisor
+    m_HashValue: 1079980293
 --- !u!1001 &7798490868253549984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2826,6 +2882,10 @@ PrefabInstance:
     - target: {fileID: 3238055435175859578, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238055435175859578, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -14.6
       objectReference: {fileID: 0}
     - target: {fileID: 3590369112023353945, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
       propertyPath: m_AnchorMax.y

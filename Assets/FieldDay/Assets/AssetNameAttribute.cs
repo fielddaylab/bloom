@@ -10,7 +10,8 @@ namespace FieldDay.Assets {
     /// This will store the name of the asset.
     /// </summary>
     public class AssetNameAttribute : PropertyAttribute {
-        public Type AssetType;
+        public readonly Type AssetType;
+        internal readonly bool UseDropdown;
 
         protected internal virtual bool Predicate(UnityEngine.Object obj) { return true; }
         protected internal virtual string Name(UnityEngine.Object obj) { return obj.name; }
@@ -44,12 +45,18 @@ namespace FieldDay.Assets {
 
         private uint m_CachedCacheKey;
 
-        public AssetNameAttribute(Type assetType) {
+        public AssetNameAttribute(Type assetType, bool useDropdown = false) {
             if (assetType == null) {
                 throw new ArgumentNullException("assetType");
             }
             AssetType = assetType;
             order = -10;
+
+            UseDropdown = useDropdown;
+            if (!UseDropdown) {
+                UseDropdown = GetType().GetMethod("Predicate", BindingFlags.NonPublic | BindingFlags.Instance).DeclaringType != typeof(AssetNameAttribute);
+                UseDropdown |= GetType().GetMethod("Name", BindingFlags.NonPublic | BindingFlags.Instance).DeclaringType != typeof(AssetNameAttribute);
+            }
         }
     }
 }

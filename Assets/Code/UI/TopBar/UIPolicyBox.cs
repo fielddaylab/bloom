@@ -97,16 +97,7 @@ namespace Zavala.UI {
         static public void UpdateLevelText(PolicyState policyState, SimGridState grid, UIPolicyBox box)
         {
             PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[box.PolicyType];
-
-            string newString;
-            if (level == PolicyLevel.Alt) {
-                newString = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());
-
-            } else {
-                newString = Loc.Find("cards.severity." + level.ToString().ToLower());
-            }
-
-            box.LevelText.text = newString;
+            box.LevelText.text = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());;
         }
 
         static public void SetPopupAmt(UIPolicyBoxPopup popup, int amt)

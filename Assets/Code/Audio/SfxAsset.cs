@@ -15,4 +15,13 @@ namespace Zavala.Audio {
 
         [NonSerialized] public RandomDeck<AudioClip> Randomizer;
     }
+
+    public class SfxRef : AssetNameAttribute {
+        public SfxRef() : base(typeof(SfxAsset), true) {
+        }
+
+        protected override string Name(UnityEngine.Object obj) {
+            return obj.name.Replace("-", "/");
+        }
+    }
 }

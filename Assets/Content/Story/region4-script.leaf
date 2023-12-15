@@ -81,7 +81,9 @@ $call UnlockShopItem("Digester")
 {@advisorEcolWetland}   Those digesters were too expensive for us to run.
 {@advisorEcolWetland}   But maybe with SAGA's help we could start some new ones?
 {@advisorEcolWetland}   They process manure into fertilizer... Much easier to ship, and less runoff too!
+$call FocusHighlightOn("BuildModeButton")
 {@advisorEconWetland}   Digesters have been added to your Build Mode menu.
+$call FocusClear()
 $call OffsetAlgaeGrowthThreshold(0)
 $call Unpause()
 // $call AddRegionAgeDeltaTrigger(4, 10)

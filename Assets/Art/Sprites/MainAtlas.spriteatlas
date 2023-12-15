@@ -53,7 +53,6 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 3ded4490e0801e04595585b7729c692c, type: 3}
-  - {fileID: 21300000, guid: da7ee49088ec37e4ba795dc030eca192, type: 3}
   - {fileID: 21300000, guid: 71e8b7a1d6ae34847875b1f5bb100f6b, type: 3}
   - {fileID: 21300000, guid: 485233e1e34500c419e4648865a72492, type: 3}
   - {fileID: 21300000, guid: bae214028ce35f74fb50e3c2ac6e846e, type: 3}
@@ -113,7 +112,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ed9a64ff8bf249b469c9ffa0397bc16a, type: 3}
   m_PackedSpriteNamesToIndex:
   - MarketLensIcon
-  - bulldozer
   - base_selling-loss
   - UndoIcon
   - advisor-button_ecol

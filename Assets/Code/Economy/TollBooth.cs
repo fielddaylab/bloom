@@ -8,6 +8,8 @@ namespace Zavala.Economy {
         public OccupiesTile TileA;
         public OccupiesTile TileB;
         public TileDirection AToBDirection;
+        public RoadInstanceController RoadA;
+        public RoadInstanceController RoadB;
 
         protected override void OnEnable() {
             base.OnEnable();

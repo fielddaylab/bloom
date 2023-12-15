@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 1535670504253479040}
   - component: {fileID: 8507487513174570182}
   - component: {fileID: 3483978453912282086}
-  - component: {fileID: 1520431834500395496}
+  - component: {fileID: 5591835973225760669}
   m_Layer: 7
   m_Name: City_Base
   m_TagString: Untagged
@@ -263,7 +263,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1520431834500395496
+--- !u!114 &5591835973225760669
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -272,10 +272,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 947691686583835045}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AcceptsAnyPrice: 1
+  Id: 0
 --- !u!1 &5417570481552996235
 GameObject:
   m_ObjectHideFlags: 0

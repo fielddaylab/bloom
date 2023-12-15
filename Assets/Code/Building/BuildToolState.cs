@@ -36,11 +36,17 @@ namespace Zavala.Building {
 
     [SharedStateInitOrder(10)]
     public class BuildToolState : SharedStateComponent, IRegistrationCallbacks {
+        public const int UserBuildingIdStart = 1024;
+
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public RoadToolState RoadToolState;
 
         [NonSerialized] public HexVector VecPrev;
         [NonSerialized] public bool VecPrevValid;
+
+        [NonSerialized] public int TotalBuildingsBuilt;
+        [NonSerialized] public int NumStoragesBuilt;
+        [NonSerialized] public int NumDigestersBuilt;
 
         [NonSerialized] public bool ToolUpdated;
 
@@ -143,7 +149,7 @@ namespace Zavala.Building {
             }
 
             // Other non-buildable tiles
-            foreach (var index in grid.HexSize)
+            foreach (var index in grid.Regions[grid.CurrRegionIndex].GridArea)
             {
                 if (grid.HexSize.IsValidIndex(index))
                 {
@@ -177,6 +183,37 @@ namespace Zavala.Building {
             SimBuffer.Clear<byte>(btState.BlockedTileBuffer);
             foreach (int index in btState.BlockedIdxs)
             {
+                btState.BlockedTileBuffer[index] = 1;
+            }
+        }
+
+        public static void RecalculateBlockedTilesForRoads(SimGridState grid, SimWorldState world, RoadNetwork network, BuildToolState btState) {
+            // Collect indices of non-buildable tiles
+            btState.BlockedIdxs.Clear();
+
+            //// Copy adjacent into holistic list
+            //foreach (int adjIdx in btState.BlockedAdjIdxs) {
+            //    btState.BlockedIdxs.Add(adjIdx);
+            //}
+
+            // Other non-buildable tiles
+            foreach (var index in grid.Regions[grid.CurrRegionIndex].GridArea) {
+                if (grid.HexSize.IsValidIndex(index)) {
+                    if (!world.Tiles[index]) {
+                        continue;
+                    }
+
+                    // If non-buildable, add to list
+                    if ((grid.Terrain.Info[index].Flags & TerrainFlags.NonBuildable) != 0
+                        || ((grid.Terrain.Info[index].Flags & TerrainFlags.IsToll) != 0 && (network.Roads.Info[index].Flags & RoadFlags.IsConnectionEndpoint) == 0)) {
+                        btState.BlockedIdxs.Add(index);
+                    }
+                }
+            }
+
+            // Save in the sim buffer
+            SimBuffer.Clear<byte>(btState.BlockedTileBuffer);
+            foreach (int index in btState.BlockedIdxs) {
                 btState.BlockedTileBuffer[index] = 1;
             }
         }

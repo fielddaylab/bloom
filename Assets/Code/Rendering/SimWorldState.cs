@@ -338,6 +338,10 @@ namespace Zavala.World {
 
         #region Raycasts
 
+        static public bool IsPointerOverUI() {
+            return Game.Input.IsPointerOverCanvas() || Game.Input.IsPointerOverLayer(LayerMasks.WorldUI_Mask);
+        }
+
         static public int RaycastTile(Ray ray) {
             if (Physics.Raycast(ray, out RaycastHit hit, 100, LayerMasks.HexTile_Mask)) {
                 HexVector v = HexVector.FromWorld(hit.collider.bounds.center, ZavalaGame.SimWorld.WorldSpace);

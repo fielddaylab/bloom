@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 //using System.Linq;
 using BeauRoutine;
-using BeauRoutine.Extensions;
 using BeauUtil;
 using BeauUtil.Tags;
 using FieldDay;
@@ -17,7 +16,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.UI;
-using UnityEngine.Windows;
 using Zavala.Advisor;
 using Zavala.Cards;
 using Zavala.Input;
@@ -33,6 +31,7 @@ namespace Zavala.UI {
         public DialogueBoxPin Pin;
         [SerializeField] RectTransform m_ButtonContainer = null;
         [SerializeField] private Button m_Button = null;
+        [SerializeField] private TMP_Text m_ButtonText;
         [SerializeField] private Button m_CloseButton = null;
         [SerializeField] private AdvisorButtonContainer m_AdvisorButtons = null;
 
@@ -89,6 +88,9 @@ namespace Zavala.UI {
                     Pin.PinTo(((EventActor) evalContext.Thread.Actor).transform);
                 }
             });
+            m_LocalHandler.Register("ViewPolicies", () => {
+               m_ButtonText.TryPopulate("View Policies");
+            });
 
             m_Rect.SetAnchorPos(m_OffscreenY, Axis.Y);
 
@@ -106,42 +108,59 @@ namespace Zavala.UI {
                 StringHash32 character = ScriptUtility.FindCharacterId(inString);
                 ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
-                m_CurrentDef = charDef;
                 string header, subheader;
-                Sprite portraitBG, portraitImg;
+                Sprite portraitImg;
+                // Sprite portraitBG;
                 Color boxColor, panelColor, highlightColor, nameColor, titleColor, textColor;
+                bool isAdvisor;              
                 if (charDef != null) {
                     header = charDef.NameId;
                     subheader = charDef.TitleId;
-                    portraitBG = charDef.PortraitBackground;
-                    portraitImg = charDef.PortraitArt;
-                    boxColor = charDef.BackgroundColor;
-                    panelColor = charDef.PanelColor;
-                    highlightColor = charDef.HighlightColor;
-                    nameColor = charDef.NameColor;
-                    titleColor = charDef.TitleColor;
-                    textColor = charDef.TextColor;
-                }
-                else {
-                    header = subheader = "";
-                    portraitBG = portraitImg = null;
-                    boxColor = Color.clear;
-                    panelColor = Color.white;
-                    highlightColor = Color.gray;
-                    nameColor = Color.white;
-                    titleColor = Color.black;
-                    textColor = Color.black;
-                }
-                DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitBG, portraitImg, boxColor, highlightColor, nameColor, titleColor, textColor);
-                if (charDef.IsAdvisor) {
-                    foreach (PolicySlot slot in m_PolicySlots) {
-                        slot.SetColors(highlightColor, panelColor, boxColor);
+                    if (charDef == m_CurrentDef) { // same character as previous - just refresh text
+                        DialogueUIUtility.PopulateBoxText(Contents, header, subheader, inString.RichText);
+                    } else { // different character - refresh everything 
+                        isAdvisor = charDef.IsAdvisor;
+                        portraitImg = charDef.PortraitArt;
+                        boxColor = charDef.BackgroundColor;
+                        panelColor = charDef.PanelColor;
+                        highlightColor = charDef.HighlightColor;
+                        nameColor = charDef.NameColor;
+                        titleColor = charDef.TitleColor;
+                        textColor = charDef.TextColor;
+                        if (isAdvisor) {
+                            foreach (PolicySlot slot in m_PolicySlots) {
+                                slot.SetColors(highlightColor, panelColor, boxColor);
+                                m_PolicyBackground.color = panelColor;
+                            }
+                        }
+                        if (m_PoliciesActive) CollapsePolicyUI(); // a new character with no policies will collapse policies
+                        DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitImg, !isAdvisor, boxColor, highlightColor, nameColor, titleColor, textColor);
+                        m_CurrentDef = charDef;
+                    }
+                } else { // charDef is null
+                    header = "Error";
+                    subheader = "Null Character";
+                    if (charDef == m_CurrentDef) {
+                        DialogueUIUtility.PopulateBoxText(Contents, header, subheader, inString.RichText);
+                    } else { // charDef is different
+                        // portraitBG = null;
+                        portraitImg = null;
+                        boxColor = Color.red;
+                        // panelColor = Color.white;
+                        highlightColor = Color.blue;
+                        nameColor = Color.green;
+                        titleColor = Color.green;
+                        textColor = Color.green;
+                        isAdvisor = true;
+                        DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitImg, !isAdvisor, boxColor, highlightColor, nameColor, titleColor, textColor);
+                        m_CurrentDef = charDef;
                     }
                 }
-                m_PolicyBackground.color = panelColor;
                 Contents.Contents.maxVisibleCharacters = 0;
             }
-
+            if (m_PoliciesActive) {
+                m_ButtonText.TryPopulate("Next");
+            }
             m_TransitionRoutine.Replace(ShowRoutine());
             return m_LocalHandler;
         }
@@ -168,16 +187,28 @@ namespace Zavala.UI {
 
         public void ForceExpandPolicyUI(AdvisorType aType) {
             ForceAdvisorPolicies = aType;
+            CollapsePolicyUI();
         }
 
         public void ExpandPolicyUI(AdvisorType advisorType) {
             // Load relevant policy slot types according to advisor type
             // TODO: room for more flexibility here, such as an adaptive number of slots
             if (advisorType == AdvisorType.None) return;
+            if (m_PoliciesActive) {
+                
+            } else {
+
+            }
             PopulateSlotsForAdvisor(advisorType);
             HideCardsInstant();
             m_PoliciesActive = true;
             m_TransitionRoutine.Replace(ExpandPolicyUIRoutine());
+        }
+
+        public void CollapsePolicyUI() {
+            HideCardsInstant();
+            m_TransitionRoutine.Replace(CollapsePolicyUIRoutine());
+
         }
 
         private void PopulateSlotsForAdvisor(AdvisorType type) {
@@ -251,7 +282,7 @@ namespace Zavala.UI {
             m_ButtonContainer.gameObject.SetActive(true);
 
             if (m_PoliciesActive || ForceAdvisorPolicies != AdvisorType.None) {
-                while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Gui.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
+                while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
                     yield return null;
                 }
             } else {
@@ -259,8 +290,6 @@ namespace Zavala.UI {
                     yield return null;
                 }
             }
-            /*
-            */
             input.ConsumedButtons |= InputButton.PrimaryMouse;
             yield break;
         }
@@ -287,6 +316,17 @@ namespace Zavala.UI {
             yield return null;
         }
 
+        private IEnumerator CollapsePolicyUIRoutine() {
+            // if (!m_PoliciesActive) yield break;
+            m_PolicyCloseButton.gameObject.SetActive(false);
+            yield return m_PolicyExpansionContainer.AnchorPosTo(m_OffscreenPanelY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
+            m_PolicyExpansionContainer.gameObject.SetActive(false);
+            m_PoliciesActive = false;
+            if (ForceAdvisorPolicies != AdvisorType.None) {
+                ExpandPolicyUI(ForceAdvisorPolicies);
+            }
+            yield return null;
+        }
         #endregion // Routines
 
         #region Handlers

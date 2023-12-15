@@ -65,19 +65,29 @@ $call Unpause()
 {local @cafoFarmer}     Hmm... This sitting manure leaches into the water table faster than it's used.
 {local @cafoFarmer}     Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
 {@advisorEcolForest}    Not a half bad idea.
+$call FocusHighlightOn("BuildModeButton")
 {@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.
+$call FocusClear()
 {@advisorEcolForest}    Once connected to a CAFO, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between CAFOs.
 $call OffsetAlgaeGrowthThreshold(-1)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
 
+:: storageCaution
+@trigger BuildButtonPressed
+@conditions     toolType == "Storage", global:storageUnlocked
+@cutscene
+@once
+{local @advisorEcon}    Be careful placing that <b>Storage!</b>
+{local @advisorEcon}    Its location will be <b>permanent.</b>
+
 :: runoffGeneric // triggered by runoffBranch
-@forcePolicy    Ecology
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
 {@advisorEcolForest}    I say we build more <b>Storage</b> units.
 {@advisorEconForest}    Those could help, but they won't come cheap.
 {@advisorEcolForest}    A policy adjustment, then?
+$call ForcePolicyInstant("Ecology")
 
 
 // triggered by opening runoff in region 2 after region 3 has been opened
