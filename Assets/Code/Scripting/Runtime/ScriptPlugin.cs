@@ -99,6 +99,9 @@ namespace FieldDay.Scripting {
                 m_RuntimeState.NestedCutscenePauseCount++;
                 SimTimeUtility.Pause(SimPauseFlags.Cutscene, ZavalaGame.SimTime);
             }
+            if ((inNode.Flags & ScriptNodeFlags.ForcePolicyEarly) != 0) {
+                m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
+            }
         }
 
         public override void OnNodeExit(ScriptNode inNode, LeafThreadState<ScriptNode> inThreadState) {

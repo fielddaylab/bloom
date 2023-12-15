@@ -17,21 +17,23 @@ $call Unpause()
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(3)
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 $if PolicyIsUnlocked(RunoffPolicy)
-{local @advisorEcol}    Hiya! Want to assign some environmental policies?
+    $call ForcePolicyInstant("Ecology")
+    {local @advisorEcol}    Hiya! Want to assign some environmental policies?
 $else
-{local @advisorEcol}    Sorry boss, no policies to assign yet.
+    {local @advisorEcol}    Sorry boss, no policies to assign yet.
 $endif
 
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(3)
-@forcePolicy    Economy
+// @forcePolicy    Economy
 $if PolicyIsUnlocked(SalesTaxPolicy)
-{local @advisorEcon}    Howdy! Here to set up some economic policy?
+    $call ForcePolicyInstant("Economy")
+    {local @advisorEcon}    Howdy! Here to set up some economic policy?
 $else
-{local @advisorEcon}    Once we have some economic policies you can see me here.
+    {local @advisorEcon}    Once we have some economic policies you can see me here.
 $endif
 
 :: bloomGeneric
