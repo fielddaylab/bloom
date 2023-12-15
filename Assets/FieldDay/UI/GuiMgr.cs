@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay.HID;
 using FieldDay.Rendering;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 using PanelIndex = BeauUtil.TypeIndex<FieldDay.UI.IGuiPanel>;
 
 namespace FieldDay.UI {
@@ -19,6 +20,8 @@ namespace FieldDay.UI {
         private readonly Dictionary<StringHash32, RectTransform> m_NamedElementMap = new Dictionary<StringHash32, RectTransform>(16, CompareUtils.DefaultEquals<StringHash32>());
 
         private Camera m_PrimaryUICamera;
+        private EventSystem m_EventSystem;
+        private ExposedPointerInputModule m_ExposedInputModule;
 
         #region Gui Camera
 
@@ -54,12 +57,6 @@ namespace FieldDay.UI {
 
             m_PrimaryUICamera = null;
             Log.Msg("[GuiMgr] Removed primary Gui camera");
-        }
-
-        internal void FindPrimaryCamera() {
-            if (m_PrimaryUICamera == null) {
-                SetPrimaryCamera(CameraUtility.FindMostSpecificCameraForLayer(LayerMask.NameToLayer("UI")));
-            }
         }
 
         #endregion // Gui Camera
@@ -281,7 +278,47 @@ namespace FieldDay.UI {
 
         #endregion // Lookup
 
+        #region Raycast Checks
+
+        /// <summary>
+        /// Returns if the pointer is over a canvas.
+        /// </summary>
+        public bool IsPointerOverCanvas() {
+            if (m_ExposedInputModule != null) {
+                return m_ExposedInputModule.IsPointerOverCanvas();
+            } else {
+                return m_EventSystem.IsPointerOverGameObject();
+            }
+        }
+
+        /// <summary>
+        /// Returns if the pointer is over a given hierarchy.
+        /// </summary>
+        public bool IsPointerOverHierarchy(RectTransform root) {
+            if (m_ExposedInputModule != null) {
+                GameObject over = m_ExposedInputModule.CurrentPointerOver();
+                return over != null && over.transform.IsChildOf(root);
+            } else {
+                return false;
+            }
+        }
+
+        #endregion // Raycast Checks
+
         #region Events
+
+        internal void Initialize() {
+            m_EventSystem = EventSystem.current;
+            m_ExposedInputModule = m_EventSystem.currentInputModule as ExposedPointerInputModule;
+
+            if (!m_ExposedInputModule) {
+                Log.Warn("[GuiMgr] Could not find ExposedInputInputModule");
+            }
+
+            if (m_PrimaryUICamera == null) {
+                SetPrimaryCamera(CameraUtility.FindMostSpecificCameraForLayer(LayerMask.NameToLayer("UI")));
+            }
+        }
 
         internal void Shutdown() {
             Array.Clear(m_SharedPanelMap, 0, m_SharedPanelMap.Length);

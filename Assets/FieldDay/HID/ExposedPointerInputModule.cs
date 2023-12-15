@@ -89,6 +89,19 @@ namespace FieldDay.HID {
             return false;
         }
 
+        /// <summary>
+        /// Returns the object the pointer is currently over.
+        /// </summary>
+        public GameObject CurrentPointerOver() {
+            PointerEventData evtData = GetPointerEventData();
+
+            if (evtData != null) {
+                return evtData.pointerCurrentRaycast.gameObject;
+            }
+
+            return null;
+        }
+
         #endregion // Checks
 
         #region Overrides

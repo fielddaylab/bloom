@@ -245,11 +245,17 @@ namespace Zavala.UI {
 
             InputState input = Game.SharedState.Get<InputState>();
             m_ButtonContainer.gameObject.SetActive(true);
-            yield return m_Button.onClick.WaitForInvoke();
-            /*
-            while(!input.ButtonPressed(InputButton.PrimaryMouse)) {
-                yield return null;
+
+            if (m_FullyExpanded) {
+                while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Gui.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
+                    yield return null;
+                }
+            } else {
+                while (!input.ButtonPressed(InputButton.PrimaryMouse)) {
+                    yield return null;
+                }
             }
+            /*
             */
             input.ConsumedButtons |= InputButton.PrimaryMouse;
             yield break;
