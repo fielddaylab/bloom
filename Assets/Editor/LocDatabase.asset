@@ -130,6 +130,8 @@ MonoBehaviour:
       Content: Storage Unit
     - Id: location.shared.digester
       Content: Manure Digester
+    - Id: location.shared.digesterInfo
+      Content: <i>buys <u>manure</u> / sells <u>digested fertilizer</u></i>
     - Id: region.hill.name
       Content: Knoll
     - Id: region.hill.name.long
@@ -159,7 +161,7 @@ MonoBehaviour:
     - Path: location.shared
       Start: 22
     - Path: region
-      Start: 28
+      Start: 29
     NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc

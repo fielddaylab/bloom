@@ -86,6 +86,9 @@ Storage Unit
 :: digester
 Manure Digester
 
+:: digesterInfo
+<i>buys <u>manure</u> / sells <u>digested fertilizer</u></i>
+
 # basePath region
 
 :: hill.name
@@ -120,3 +123,4 @@ Smokestack City
 
 :: external.name
 The Northlands
+

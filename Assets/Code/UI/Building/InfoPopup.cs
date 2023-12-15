@@ -17,6 +17,7 @@ namespace Zavala.UI.Info {
         static private readonly Color GrainFarmColor = Colors.Hex("#C8E295");
         static private readonly Color DairyFarmColor = Colors.Hex("#E2CD95");
         static private readonly Color CityColor = Colors.Hex("#CDF6ED");
+        static private readonly Color DigesterColor = Colors.Hex("#E2CD95");
 
         static private readonly int NarrowWidth = 300; 
         static private readonly int WideWidth = 460;
@@ -120,6 +121,17 @@ namespace Zavala.UI.Info {
                     m_MarketContentsColsGroup.gameObject.SetActive(false);
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
+                    break;
+                }
+
+                case BuildingType.Digester: {
+                    m_SelectedPurchaser = null;
+                    m_SelectedRequester = null;
+                    m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
+                    m_PurchaseContents.gameObject.SetActive(false);
+                    m_MarketContentsRows.gameObject.SetActive(false);
+                    m_MarketContentsColsGroup.gameObject.SetActive(true);
+                    m_HeaderBG.color = DigesterColor;
                     break;
                 }
             }
@@ -345,6 +357,22 @@ namespace Zavala.UI.Info {
                     PopulateCity();
                     break;
                 }
+
+                case BuildingType.Digester:
+                    {
+                        if (m_ConnectionsDirty || forceRefresh)
+                        {
+                            m_QueryResults.Clear();
+                            MarketUtility.GatherShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
+                        }
+                        else
+                        {
+                            MarketUtility.UpdateShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
+                        }
+                        m_QueryResults.Sort(SortResultsDescending);
+                        PopulateShippingWide();
+                        break;
+                    }
             }
 
             m_ConnectionsDirty = false;

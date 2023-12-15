@@ -139,11 +139,13 @@ namespace Zavala.Economy
                     {
                         if (supplierOffer.Supplier == requester.Priorities.PrioritizedSuppliers[requester.BestPriorityIndex[marketIndex]].Target)
                         {
-                            // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
                             matchFound = true;
+
+                            // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
                             FinalizeSale(marketData, tutorial, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer);
                             m_RequestWorkList.Remove(supplierOffer.FoundRequest);
                             m_SupplierOfferWorkList.Remove(supplierOffer); // TODO: does this removal during iteration cause errors?
+
                             break;
                         }
                     }
@@ -806,10 +808,14 @@ namespace Zavala.Economy
                 }
             }
 
+            // TODO: Check if supplied is non-zero
             int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
             int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
-            GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(supplierOffer.BaseTaxRevenue.Sales * quantity, supplierOffer.BaseTaxRevenue.Import * quantity, supplierOffer.BaseTaxRevenue.Penalties * quantity);
-            MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
+            GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(
+                supplierOffer.BaseTaxRevenue.Sales * quantity,
+                supplierOffer.BaseTaxRevenue.Import * quantity,
+                supplierOffer.BaseTaxRevenue.Penalties * quantity
+                );
 
             MarketActiveRequestInfo activeRequest;
             if (supplier.Storage.InfiniteSupply)
@@ -836,13 +842,22 @@ namespace Zavala.Economy
 
                 activeRequest = new MarketActiveRequestInfo(supplier, adjustedFound.Value, mainStorageBlock + extensionBlock, netTaxRevenue, supplierOffer.ProxyIdx, supplierOffer.Path);
             }
+
+            if (activeRequest.Supplied.IsZero)
+            {
+                // a previous match handled this transaction
+                return;
+            }
+
             ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
             if (supplierOffer.BaseProfit - supplierOffer.RelativeGain < 0)
             {
                 supplier.SoldAtALoss = true;
             }
 
-            m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
+            MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
+
+             m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
 
             Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
 

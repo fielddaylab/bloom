@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 6020055109898298434}
   - component: {fileID: 3836324915457015385}
   - component: {fileID: 253638037535468105}
+  - component: {fileID: 939296902942511014}
   - component: {fileID: 2578567375535217520}
   - component: {fileID: 764168936872465502}
   m_Layer: 7
@@ -243,6 +244,18 @@ MonoBehaviour:
   - {fileID: 7783972500671602884}
   - {fileID: 7159645202965460322}
   m_PreviewMesh: {fileID: 2912852675422302327, guid: 4af7d0c5613c26c42851a7920460fd04, type: 3}
+--- !u!114 &939296902942511014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f47a41270c43b3b43ba993419088b887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2578567375535217520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,8 +272,8 @@ MonoBehaviour:
     m_Source: location.shared.digester
     m_HashValue: 3205151346
   InfoLabel:
-    m_Source: 
-    m_HashValue: 0
+    m_Source: location.shared.digesterInfo
+    m_HashValue: 3249712714
   Icon: {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
 --- !u!114 &764168936872465502
 MonoBehaviour:
