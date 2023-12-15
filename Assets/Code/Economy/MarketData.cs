@@ -561,8 +561,27 @@ namespace Zavala.Economy
             Assert.NotNull(marketData);
             int count = 0;
             foreach(var supplier in marketData.Suppliers) {
+                // if local option is best option for given resource, product is not up for sale
+                bool localIsBest = false;
+                foreach (var data in supplier.Priorities.PrioritizedBuyers) { 
+                    if ((data.Target.RequestMask & resource) != 0) {
+                        if (data.Target.IsLocalOption) {
+                            localIsBest = true;
+                            break;
+                        }
+                        else {
+                            localIsBest = false;
+                            break;
+                        }
+                    }
+                }
+                if (localIsBest) {
+                    continue;
+                }
+
+                // else product is up for sale
                 foreach(var data in supplier.Priorities.PrioritizedBuyers) {
-                    if ((data.Mask & resource) != 0 && data.Target == requester) {
+                    if ((data.Mask & resource) != 0) {
                         buffer.PushBack(new MarketQueryResultInfo() {
                             Requester = requester,
                             Supplier = supplier,
