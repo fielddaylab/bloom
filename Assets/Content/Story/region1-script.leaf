@@ -124,16 +124,18 @@ $set intro:farmsAndCities = true
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
 {@advisorEconHill}      See me again from your <b>Economic Advisor</b> button. 
-// TODO: add popup/highlight to Economic Advisor button here
+$call FocusHighlightOn("EconomyAdvisor")
 $call ReleaseDialogueInteraction()
 
 :: wrongAdvisor
 @trigger AdvisorOpened
 @conditions     advisorType == "Ecology", intro:farmsAndCities, intro:tutorialComplete = false
 @cutscene
+$call FocusClear()
 {@advisorEcolHill}      Hey there!
 {@advisorEcolHill}      I think Pippin wanted to talk to you.
 {@advisorEcolHill}      His <b>Economic Advisor</b> button has a gem on it. Pretty ostentatious if you ask me...
+$call FocusHighlightOn("EconomyAdvisor")
 
 :: letsGetStarted
 @trigger AdvisorOpened
@@ -141,15 +143,24 @@ $call ReleaseDialogueInteraction()
 @forcePolicy    Economy
 @cutscene
 @once
+$call FocusClear()
 {@advisorEconHill}      Hello again.
-{@advisorEconHill}      You can see me here any time to adjust Knoll County's policies - like Sales Tax!
-{@advisorEconHill}      It can provide additional revenue for infrastructure projects.
+{@advisorEconHill}      You can see me here any time to adjust Knoll County's policies!
+{@advisorEconHill}      Sales Policy can provide additional revenue for infrastructure projects.
+{viewpoliciesnext}
 {@advisorEconHill}      But set it too high, and trade may be hindered.
 
+:: setPolicyReminder
+@trigger AdvisorOpened
+@conditions advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete = false, Visited("region1.letsGetStarted")
+@forcePolicy    Economy
+$call FocusClear()
+{@advisorEconHill}      Choose a Sales Policy and we can continue.
 
 :: policySet
 @trigger        PolicySet
 @conditions     policyForced == false
+@cutscene
 $branch .policyDescriptions
 $if intro:tutorialComplete = false
     $branch .choseFirstPolicy
@@ -158,6 +169,7 @@ $endif
 :: policyForcedToZero
 @trigger        PolicySet
 @conditions     policyIndex == 0, policyForced == true
+@cutscene
 {local @advisorEcon}    Oh dear.
 $if local:policyType == "SalesTaxPolicy"
     {local @advisorEcon}    The sales subsidy here has pushed our budget negative!
@@ -168,6 +180,7 @@ $endif
 {local @advisorEcon}    Please consider implementing a tax so we can regain revenue.
 
 :: choseFirstPolicy
+// @cutscene
 $set intro:tutorialComplete = true
 {@advisorEconHill}  A fine choice. 
 {@advisorEconHill}  Remember, you can always use the <b>spacebar</b> to pause and think.

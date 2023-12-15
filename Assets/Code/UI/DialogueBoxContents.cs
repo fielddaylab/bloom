@@ -11,6 +11,7 @@ namespace Zavala.UI {
         public TMP_Text Subheader;
         public TMP_Text Contents;
         public Graphic BoxColorLayer;
+        public TMP_Text NextButtonText;
 
         [Header("Portrait")]
         public DialoguePortrait PortraitBox;
@@ -60,6 +61,19 @@ namespace Zavala.UI {
             box.Header.color = nameColor;
             box.Subheader.color = titleColor;
             box.Contents.color = textColor;
+        }
+
+        static public void PopulateBoxText(DialogueBoxContents box, string header, string subheader, string content) {
+            // text
+            box.Header.TryPopulate(header);
+            box.Subheader.TryPopulate(subheader);
+            box.Contents.TryPopulate(content);
+        }
+
+        static public void SetNextButtonText(DialogueBoxContents box, string buttonText, Color buttonColor) {
+            if (!box.NextButtonText.TryPopulate(buttonText)) {
+                // box.NextButtonText.SetText("Next");
+            };
         }
     }
 }

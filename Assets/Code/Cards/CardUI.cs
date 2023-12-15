@@ -44,16 +44,7 @@ namespace Zavala.Cards {
 
         static public void ExtractLocText(CardData data, out string locText) {
             string typeText = Loc.Find("cards." + data.PolicyType.ToString() + ".category");
-            string severityText;
-            if (data.PolicyLevel == PolicyLevel.Alt) {
-                // Varies across policy types
-                severityText = Loc.Find("cards." + data.PolicyType.ToString() + "." + data.PolicyLevel.ToString().ToLower());
-            }
-            else {
-                // Same across policy types
-                severityText = Loc.Find("cards.severity." + data.PolicyLevel.ToString().ToLower());
-            }
-
+            string severityText = Loc.Find("cards." + data.PolicyType.ToString() + "." + data.PolicyLevel.ToString().ToLower());
             locText = typeText + ":\n" + severityText.ToUpper();
         }
 

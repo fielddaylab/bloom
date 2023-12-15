@@ -29,6 +29,7 @@ namespace FieldDay.Scripting {
 
             LeafUtils.ConfigureDefaultParsers(m_TagParseConfig, this, null);
             m_TagParseConfig.AddReplace("local", ReplaceLocalIdOf);
+            m_TagParseConfig.AddEvent("viewpoliciesnext", "ViewPolicies");
 
             LeafUtils.ConfigureDefaultHandlers(m_TagHandler, this);
 
@@ -44,7 +45,7 @@ namespace FieldDay.Scripting {
 
             ScriptThread thread = m_RuntimeState.ThreadPool.Alloc();
 
-            if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {
+            if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
                 m_RuntimeState.Cutscene.Kill();
                 // TODO: Kill lower priority threads
             }
@@ -61,7 +62,7 @@ namespace FieldDay.Scripting {
             thread.AttachRoutine(Routine.Start(m_RoutineHost, LeafRuntime.Execute(thread, inNode)));
 
             m_RuntimeState.ActiveThreads.PushBack(handle);
-            if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {
+            if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
                 m_RuntimeState.Cutscene = handle;
             }
 
