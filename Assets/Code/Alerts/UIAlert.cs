@@ -1,6 +1,8 @@
+using BeauPools;
 using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
+using BeauUtil.UI;
 using FieldDay;
 using FieldDay.Components;
 using FieldDay.Scripting;
@@ -10,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zavala.Scripting;
 using Zavala.Sim;
@@ -17,11 +20,12 @@ using Zavala.Sim;
 namespace Zavala.UI {
     public class UIAlert : BatchedComponent
     {
-        [SerializeField] private CanvasGroup m_Group;
-        [SerializeField] private MultiImageButton m_Button;
+        public SpriteMaskGroup Masking;
         public TMP_Text EventText;
-        public Image AlertBase;
-        public Image AlertBanner;
+        public SpriteRenderer AlertBase;
+        public SpriteRenderer AlertBanner;
+        public RectTransform AlertBannerRect;
+        public PointerListener Pointer;
 
         [NonSerialized] public EventActor Actor; // The event actor this alert is anchored to
         [NonSerialized] public Routine BannerRoutine;
@@ -31,14 +35,20 @@ namespace Zavala.UI {
         protected override void OnEnable() {
             base.OnEnable();
 
-            m_Button.onClick.AddListener(HandleButtonClicked);
+            Pointer.onClick.AddListener(HandleButtonClicked);
             SimTimeUtility.OnPauseUpdated.Register(OnPauseUpdated);
+
+            AlertBanner.enabled = false;
+            EventText.enabled = false;
+            EventText.alpha = 0;
+            AlertBase.SetAlpha(1);
+            Masking.SetState(false);
 
             OnPauseUpdated(ZavalaGame.SimTime.Paused);
         }
 
         protected override void OnDisable() {
-            m_Button.onClick.RemoveListener(HandleButtonClicked);
+            Pointer.onClick.RemoveListener(HandleButtonClicked);
             SimTimeUtility.OnPauseUpdated.Deregister(OnPauseUpdated);
 
             base.OnDisable();
@@ -48,11 +58,11 @@ namespace Zavala.UI {
 
         private void OnPauseUpdated(SimPauseFlags flags) {
             bool blueprints = (flags & SimPauseFlags.Blueprints) != 0;
-            m_Group.alpha = blueprints ? 0.1f : 1f;
-            m_Group.blocksRaycasts = !blueprints;
+            AlertBase.SetAlpha(blueprints ? 0.1f : 1f);
+            Pointer.enabled = !blueprints;
         }
 
-        private void HandleButtonClicked() {
+        private void HandleButtonClicked(PointerEventData evt) {
             Assert.NotNull(Actor);
 
             UIAlertUtility.ClickAlert(this);
@@ -67,6 +77,7 @@ namespace Zavala.UI {
 
         public static void ClickAlert(UIAlert alert) {
             if (!alert.FullyOpened) {
+                alert.Pointer.enabled = false;
                 alert.BannerRoutine.Replace(OpenRoutine(alert));
                 return;
             }
@@ -84,8 +95,14 @@ namespace Zavala.UI {
         }
 
         public static IEnumerator OpenRoutine(UIAlert alert) {
-            yield return alert.AlertBanner.rectTransform.AnchorPosTo(new Vector2(0, 0), 0.3f).Ease(Curve.CubeIn);
+            alert.Masking.SetState(true);
+            alert.AlertBanner.enabled = alert.EventText.enabled = true;
+            yield return Routine.Combine(
+                alert.AlertBannerRect.AnchorPosTo(0, 0.3f, Axis.X).Ease(Curve.CubeIn),
+                alert.EventText.FadeTo(1, 0.2f).DelayBy(0.25f)
+            );
             alert.FullyOpened = true;
+            alert.Masking.SetState(false);
             alert.BannerRoutine.Replace(HoldRoutine(alert, 5.0f));
             ClickAlert(alert);
             yield return null;
@@ -98,7 +115,12 @@ namespace Zavala.UI {
         }
         public static IEnumerator CloseRoutine(UIAlert alert, bool freeOnClose) {
             alert.FullyOpened = false;
-            yield return alert.AlertBanner.rectTransform.AnchorPosTo(new Vector2(-120, 0), 0.3f).Ease(Curve.CubeIn);
+            alert.Masking.SetState(true);
+            yield return Routine.Combine(
+                alert.AlertBannerRect.AnchorPosTo(-2.5f, 0.3f, Axis.X).Ease(Curve.CubeIn).DelayBy(0.15f),
+                alert.EventText.FadeTo(0, 0.2f),
+                alert.AlertBase.FadeTo(0, 0.2f).DelayBy(0.45f)
+            );
             if (freeOnClose) FreeAlert(alert);
             yield return null;
         }

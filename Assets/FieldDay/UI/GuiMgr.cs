@@ -16,6 +16,8 @@ namespace FieldDay.UI {
         private ISharedGuiPanel[] m_SharedPanelMap = new ISharedGuiPanel[PanelIndex.Capacity];
         private readonly HashSet<IGuiPanel> m_PanelSet = new HashSet<IGuiPanel>(32);
 
+        private readonly Dictionary<StringHash32, RectTransform> m_NamedElementMap = new Dictionary<StringHash32, RectTransform>(16, CompareUtils.DefaultEquals<StringHash32>());
+
         private Camera m_PrimaryUICamera;
 
         #region Gui Camera
@@ -67,7 +69,7 @@ namespace FieldDay.UI {
         /// <summary>
         /// Registers the given IGuiPanel instance.
         /// </summary>
-        public void Register(IGuiPanel panel) {
+        public void RegisterPanel(IGuiPanel panel) {
             Assert.NotNull(panel);
             Type panelType = panel.GetType();
             int index = PanelIndex.Get(panelType);
@@ -87,7 +89,7 @@ namespace FieldDay.UI {
         /// <summary>
         /// Deregisters the given IGuiPanel instance.
         /// </summary>
-        public void Deregister(IGuiPanel panel) {
+        public void DeregisterPanel(IGuiPanel panel) {
             Assert.NotNull(panel);
 
             if (m_PanelSet.Remove(panel)) {
@@ -104,6 +106,35 @@ namespace FieldDay.UI {
         }
 
         /// <summary>
+        /// Registers a transform with the given name.
+        /// </summary>
+        public void RegisterNamed(StringHash32 name, RectTransform transform) {
+            Assert.NotNull(transform);
+            Assert.False(name.IsEmpty);
+
+            if (m_NamedElementMap.ContainsKey(name)) {
+                Log.Warn("[GuiMgr] Element with name '{0}' already registered", name);
+                return;
+            }
+
+            m_NamedElementMap.Add(name, transform);
+            Log.Msg("[GuiMgr] RectTransform with name '{0}' registered", name);
+        }
+
+        /// <summary>
+        /// Registers a transform with the given name.
+        /// </summary>
+        public void DeregisterNamed(StringHash32 name, RectTransform transform) {
+            Assert.NotNull(transform);
+            Assert.False(name.IsEmpty);
+
+            if (m_NamedElementMap.TryGetValue(name, out RectTransform existing) && existing == transform) {
+                m_NamedElementMap.Remove(name);
+                Log.Msg("[GuiMgr] RectTransform with name '{0}' deregistered", name);
+            }
+        }
+
+        /// <summary>
         /// Clears all IGuiPanel instances.
         /// </summary>
         public void Clear() {
@@ -111,11 +142,14 @@ namespace FieldDay.UI {
                 RegistrationCallbacks.InvokeDeregister(panel);
             }
             Array.Clear(m_SharedPanelMap, 0, m_SharedPanelMap.Length);
+            m_NamedElementMap.Clear();
         }
 
         #endregion // Add/Remove
 
         #region Lookup
+
+        #region Shared
 
         /// <summary>
         /// Returns the shared panel object of the given type.
@@ -128,7 +162,7 @@ namespace FieldDay.UI {
             if (panel == null) {
                 panel = (ISharedGuiPanel) GameObject.FindAnyObjectByType(type, FindObjectsInactive.Include);
                 if (panel != null) {
-                    Register(panel);
+                    RegisterPanel(panel);
                 }
             }
 #if DEVELOPMENT
@@ -150,7 +184,7 @@ namespace FieldDay.UI {
             if (panel == null) {
                 panel = (ISharedGuiPanel) GameObject.FindAnyObjectByType(typeof(T), FindObjectsInactive.Include);
                 if (panel != null) {
-                    Register(panel);
+                    RegisterPanel(panel);
                 }
             }
 #if DEVELOPMENT
@@ -191,7 +225,7 @@ namespace FieldDay.UI {
         /// <summary>
         /// Looks up all panels that pass the given predicate.
         /// </summary>
-        public int LookupAll(Predicate<IGuiPanel> predicate, List<IGuiPanel> sharedPanels) {
+        public int LookupSharedAll(Predicate<IGuiPanel> predicate, List<IGuiPanel> sharedPanels) {
             int found = 0;
             foreach (var panel in m_PanelSet) {
                 if (predicate(panel)) {
@@ -205,7 +239,7 @@ namespace FieldDay.UI {
         /// <summary>
         /// Looks up all panels that implement the given interface or class.
         /// </summary>
-        public int LookupAll<T>(List<T> sharedPanels) where T : class {
+        public int LookupSharedAll<T>(List<T> sharedPanels) where T : class {
             int found = 0;
             foreach (var panel in m_PanelSet) {
                 T casted = panel as T;
@@ -220,7 +254,7 @@ namespace FieldDay.UI {
         /// <summary>
         /// Looks up all panels that pass the given predicate.
         /// </summary>
-        public int LookupAll<U>(Predicate<IGuiPanel, U> predicate, U predicateArg, List<IGuiPanel> sharedPanels) {
+        public int LookupSharedAll<U>(Predicate<IGuiPanel, U> predicate, U predicateArg, List<IGuiPanel> sharedPanels) {
             int found = 0;
             foreach (var panel in m_PanelSet) {
                 if (predicate(panel, predicateArg)) {
@@ -230,6 +264,20 @@ namespace FieldDay.UI {
             }
             return found;
         }
+
+        #endregion // Shared
+
+        #region Named
+
+        /// <summary>
+        /// Looks up a registered RectTransform by name.
+        /// </summary>
+        public RectTransform LookupNamed(StringHash32 name) {
+            m_NamedElementMap.TryGetValue(name, out RectTransform rect);
+            return rect;
+        }
+
+        #endregion // Named
 
         #endregion // Lookup
 

@@ -41,7 +41,9 @@ $call PanToBuilding("region1_cafo1")
 {@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
+$call FocusHighlightOn("BuildModeButton")
 {@advisorEconHill}      Open <b>Build Mode</b>.
+$call FocusClear()
 $call Unpause()
 
 

@@ -77,7 +77,7 @@ MonoBehaviour:
       Type: 4
     - MemberName: ParcelSpeed
       Type: 4
-    - MemberName: MinPForAlgaeGrowth
+    - MemberName: MinPForAlgaeGrowthDefault
       Type: 4
     - MemberName: AlgaeGrowthIncrement
       Type: 4
@@ -110,17 +110,67 @@ MonoBehaviour:
     OverloadedMethods: []
     TypeReferences: []
   DebugMenu:
-    AttributeTypeName: 
-    LookupFlags: 0
+    AttributeTypeName: FieldDay.Debugging.DebugMenuFactoryAttribute
+    LookupFlags: 58
     LookupInherit: 0
-    Assemblies: []
-    Types: []
-    Members: []
+    Assemblies:
+    - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      TypeCount: 8
+    Types:
+    - TypeName: Zavala.Debugging.SimGridDebugger
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Economy.BudgetUtility
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Economy.ShopState
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Cards.CardsUtility
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.World.BorderRenderState
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Sim.RegionUnlockUtility
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Sim.TutorialState
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Advisor.AdvisorUtility
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    Members:
+    - MemberName: Debug_CreateMenu
+      Type: 8
+    - MemberName: BudgetDebugMenu
+      Type: 8
+    - MemberName: ShopItemUnlockDebugMenu
+      Type: 8
+    - MemberName: PolicyUnlockDebugMenu
+      Type: 8
+    - MemberName: DebugMenu
+      Type: 8
+    - MemberName: RegionUnlockDebugMenu
+      Type: 8
+    - MemberName: SkipTutorialMenu
+      Type: 8
+    - MemberName: AdvisorModuleUnlockUtility
+      Type: 8
     OverloadedMethods: []
     TypeReferences: []
   QuickMenu:
-    AttributeTypeName: 
-    LookupFlags: 0
+    AttributeTypeName: FieldDay.Debugging.QuickMenuFactoryAttribute
+    LookupFlags: 58
     LookupInherit: 0
     Assemblies: []
     Types: []

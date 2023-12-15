@@ -1,5 +1,6 @@
 using BeauUtil;
 using FieldDay;
+using FieldDay.HID;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using UnityEngine;
@@ -43,6 +44,8 @@ namespace Zavala {
 
         [InvokeOnBoot]
         static private void OnBoot() {
+            CursorUtility.HideCursor();
+
             Scenes.OnMainSceneReady.Register(() => {
                 if (ScriptUtility.Runtime) {
                     ScriptUtility.Trigger(GameTriggers.GameBooted);

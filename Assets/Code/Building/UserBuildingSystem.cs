@@ -286,6 +286,11 @@ namespace Zavala.Building
                     return false;
                 }
 
+                // don't destroy buildings
+                if (occupies.Type != BuildingType.Road && !occupies.Pending) {
+                    return false;
+                }
+
                 SimDataUtility.DestroyBuildingFromHit(grid, blueprintState, hit.gameObject, occupies);
 
                 /*BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {

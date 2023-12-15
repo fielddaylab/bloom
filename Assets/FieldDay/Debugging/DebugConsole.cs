@@ -15,6 +15,8 @@ using System.Reflection;
 using FieldDay.Data;
 using BeauUtil.UI;
 using UnityEngine.EventSystems;
+using FieldDay.HID;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -67,6 +69,7 @@ namespace FieldDay.Debugging {
         [NonSerialized] private bool m_Paused;
         [NonSerialized] private bool m_MinimalVisible;
         [NonSerialized] private bool m_VisibilityWhenDebugMenuOpened;
+        [NonSerialized] private bool m_CursorWhenDebugMenuOpened;
         [NonSerialized] private bool m_MenuOpen;
         [NonSerialized] private bool m_MenuUIInitialized;
 
@@ -276,6 +279,7 @@ namespace FieldDay.Debugging {
             m_MenuOpen = visible;
             if (visible) {
                 m_VisibilityWhenDebugMenuOpened = m_MinimalVisible;
+                m_CursorWhenDebugMenuOpened = CursorUtility.CursorIsShowing();
                 SetMinimalVisible(true);
                 m_DebugMenus.gameObject.SetActive(true);
                 m_DebugMenuInput.interactable = true;
@@ -284,9 +288,12 @@ namespace FieldDay.Debugging {
                     m_DebugMenus.GotoMenu(s_RootMenu);
                     m_MenuUIInitialized = true;
                 }
-                Cursor.visible = true;
+                CursorUtility.ShowCursor();
                 SetPaused(true);
             } else {
+                if (!m_CursorWhenDebugMenuOpened) {
+                    CursorUtility.HideCursor();
+                }
                 m_DebugMenus.gameObject.SetActive(false);
                 m_DebugMenuInput.interactable = false;
                 m_MinimalGroup.interactable = false;

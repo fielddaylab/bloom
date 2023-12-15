@@ -65,6 +65,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a2bd58e308068aa4aaf94eda9584f4e5, type: 3}
   - {fileID: 21300000, guid: df037504ebfeed743b9e4e85e1449a30, type: 3}
   - {fileID: 21300000, guid: 57a996141414f1543822837147d4bf12, type: 3}
+  - {fileID: 21300000, guid: 4e403914c71570a4297712e0dbaa3886, type: 3}
   - {fileID: 21300000, guid: 42f2aa24953b643469146dddc1b95237, type: 3}
   - {fileID: 21300000, guid: a1879e24680c1ba48a492b6cee354375, type: 3}
   - {fileID: 21300000, guid: 08913f24993ad8c44a614a3b70ef019b, type: 3}
@@ -124,6 +125,7 @@ SpriteAtlas:
   - advisor-nameCard_white
   - policy-background-white
   - BlueprintModeToggle
+  - CircleGradient75-Invert
   - DestroyIcon
   - CloseRound
   - BarGraphClamp
