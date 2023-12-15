@@ -9,26 +9,66 @@ Low
 :: severity.high
 High
 
+// RUNOFF
 :: RunoffPolicy.category
 Runoff Penalty
+
+:: RunoffPolicy.none
+None
+
+:: RunoffPolicy.low
+Low
+
+:: RunoffPolicy.high
+High
 
 :: RunoffPolicy.alt
 Very High
 
+// SKIMMING
 :: SkimmingPolicy.category
 Skimming Level
+
+:: SkimmingPolicy.none
+None
+
+:: SkimmingPolicy.low
+Low
+
+:: SkimmingPolicy.high
+High
 
 :: SkimmingPolicy.alt
 Dredge
 
+// IMPORT
 :: ImportTaxPolicy.category
-Import Subsidy
+Import Policy
+
+:: ImportTaxPolicy.none
+None
+
+:: ImportTaxPolicy.low
+Low Subsidy
+
+:: ImportTaxPolicy.high
+High Subsidy
 
 :: ImportTaxPolicy.alt
 Tax
 
+// SALES
 :: SalesTaxPolicy.category
-Sales Tax
+Sales Policy
+
+:: SalesTaxPolicy.none
+None
+
+:: SalesTaxPolicy.low
+Low Tax
+
+:: SalesTaxPolicy.high
+High Tax
 
 :: SalesTaxPolicy.alt
 Subsidy

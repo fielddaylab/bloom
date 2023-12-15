@@ -40,7 +40,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -105, y: -17}
-  m_SizeDelta: {x: 160, y: 190}
+  m_SizeDelta: {x: 160, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7440766561898511892
 CanvasRenderer:
@@ -253,6 +253,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1233910315729488366, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1233910315729488366, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -299,6 +303,14 @@ PrefabInstance:
     - target: {fileID: 1233910315729488366, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_text
+      value: "Import Policy: \nHIGH SUBSIDY"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_fontSize
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_fontSizeBase
