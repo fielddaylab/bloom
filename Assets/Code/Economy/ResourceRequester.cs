@@ -18,7 +18,7 @@ namespace Zavala.Economy {
         public bool InfiniteRequests = false;  // used by Let It Sit option on Dairy Farms
 
         public bool OverridesBuyPrice = false;
-        public ResourceBlock OverrideBlock;
+        public MarketPriceBlock OverrideBlock;
 
         [NonSerialized] public OccupiesTile Position;
         [NonSerialized] public ResourceStorage Storage;

@@ -114,10 +114,15 @@ namespace Zavala.UI.Info {
             {
                 basePrice = 0;
             }
+            else if (info.Requester.OverridesBuyPrice)
+            {
+                int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
+                basePrice = info.Requester.OverrideBlock[marketIndex];
+            }
             else
             {
                 int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-                basePrice = info.Supplier.PriceNegotiator.PriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+                basePrice = info.Supplier.PriceNegotiator.PriceBlock[marketIndex];
             }
             col.BasePriceCol.gameObject.SetActive(true);
             headers.BasePriceColHeader.gameObject.SetActive(true);

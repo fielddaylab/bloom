@@ -416,7 +416,7 @@ namespace Zavala.Economy
                 }
                 else {
                     if (requester.OverridesBuyPrice) {
-                        profit = requester.OverrideBlock[primary];
+                        profit = requester.OverrideBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
                     }
                     else {
                         // Err towards buyer purchase cost (TODO: unless they accept anything?)
@@ -632,7 +632,7 @@ namespace Zavala.Economy
                 {
                     if (requester.OverridesBuyPrice)
                     {
-                        purchaseCost = requester.OverrideBlock[primary];
+                        purchaseCost = requester.OverrideBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
                     }
                     else
                     {
