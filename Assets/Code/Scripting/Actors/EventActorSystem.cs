@@ -11,7 +11,7 @@ using Zavala.Alerts;
 using Zavala.Sim;
 
 namespace Zavala.Scripting {
-    [SysUpdate(FieldDay.GameLoopPhase.Update, 100000)]
+    [SysUpdate(FieldDay.GameLoopPhase.Update, 100000, ZavalaGame.SimulationUpdateMask)]
     public sealed class EventActorSystem : ComponentSystemBehaviour<EventActor> {
         public override void ProcessWorkForComponent(EventActor component, float deltaTime) {
             using (TempVarTable varTable = TempVarTable.Alloc()) {

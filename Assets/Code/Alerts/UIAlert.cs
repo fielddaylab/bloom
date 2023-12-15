@@ -32,9 +32,15 @@ namespace Zavala.UI {
         [NonSerialized] public bool FullyOpened = false;
         [NonSerialized] public Routine FadeRoutine;
 
+        private void Awake() {
+            AlertBannerRect.SetAnchorPos(-3f, Axis.X);
+            //Masking.MaskComponent.sharedMaterial = 
+        }
+
         protected override void OnEnable() {
             base.OnEnable();
 
+            Pointer.GetComponent<Collider>().enabled = true;
             Pointer.onClick.AddListener(HandleButtonClicked);
             SimTimeUtility.OnPauseUpdated.Register(OnPauseUpdated);
 
@@ -78,6 +84,7 @@ namespace Zavala.UI {
         public static void ClickAlert(UIAlert alert) {
             if (!alert.FullyOpened) {
                 alert.Pointer.enabled = false;
+                alert.Pointer.GetComponent<Collider>().enabled = false;
                 alert.BannerRoutine.Replace(OpenRoutine(alert));
                 return;
             }
@@ -98,7 +105,7 @@ namespace Zavala.UI {
             alert.Masking.SetState(true);
             alert.AlertBanner.enabled = alert.EventText.enabled = true;
             yield return Routine.Combine(
-                alert.AlertBannerRect.AnchorPosTo(0, 0.3f, Axis.X).Ease(Curve.CubeIn),
+                alert.AlertBannerRect.AnchorPosTo(0, 0.3f, Axis.X).Ease(Curve.CubeOut),
                 alert.EventText.FadeTo(1, 0.2f).DelayBy(0.25f)
             );
             alert.FullyOpened = true;
@@ -117,7 +124,7 @@ namespace Zavala.UI {
             alert.FullyOpened = false;
             alert.Masking.SetState(true);
             yield return Routine.Combine(
-                alert.AlertBannerRect.AnchorPosTo(-2.5f, 0.3f, Axis.X).Ease(Curve.CubeIn).DelayBy(0.15f),
+                alert.AlertBannerRect.AnchorPosTo(-3f, 0.3f, Axis.X).Ease(Curve.QuadIn).DelayBy(0.15f),
                 alert.EventText.FadeTo(0, 0.2f),
                 alert.AlertBase.FadeTo(0, 0.2f).DelayBy(0.45f)
             );

@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 8333518552272532807}
   - component: {fileID: 9067780724019345708}
   - component: {fileID: 165324713274293701}
+  - component: {fileID: 6230603776856646060}
   m_Layer: 31
   m_Name: Base
   m_TagString: Untagged
@@ -270,6 +271,33 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.41, y: 1.28, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6230603776856646060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4255404078750586316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63a18b24c3d6f2b4eae4fa906f0ff980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OnPointerEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnPointerUp:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5705263584653325711
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +350,7 @@ SpriteMask:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10758, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 4e26436ddfc4b6745a7b550671164f25, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -344,13 +372,13 @@ SpriteMask:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 767dd87e72022f14a9a64358bca57712, type: 3}
-  m_MaskAlphaCutoff: 0.2
+  m_MaskAlphaCutoff: 0
   m_FrontSortingLayerID: 0
   m_BackSortingLayerID: 0
   m_FrontSortingLayer: 0
   m_BackSortingLayer: 0
-  m_FrontSortingOrder: 0
-  m_BackSortingOrder: 0
+  m_FrontSortingOrder: 8
+  m_BackSortingOrder: -8
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
 --- !u!1 &5880324271969544398
@@ -365,7 +393,6 @@ GameObject:
   - component: {fileID: 8739821105233799652}
   - component: {fileID: 3347075156141743825}
   - component: {fileID: 2644307899784243691}
-  - component: {fileID: 5798681483592168176}
   m_Layer: 31
   m_Name: Alert-Sprite
   m_TagString: Untagged
@@ -434,34 +461,7 @@ MonoBehaviour:
   AlertBase: {fileID: 9067780724019345708}
   AlertBanner: {fileID: 7386496271913806457}
   AlertBannerRect: {fileID: 4487624861595818924}
-  Pointer: {fileID: 5798681483592168176}
---- !u!114 &5798681483592168176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5880324271969544398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63a18b24c3d6f2b4eae4fa906f0ff980, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OnPointerEnter:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnPointerExit:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnPointerDown:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnPointerUp:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
+  Pointer: {fileID: 6230603776856646060}
 --- !u!1 &5961900970064368868
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,8 +497,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.5, y: 0.072}
-  m_SizeDelta: {x: 2.5, y: 0.92}
+  m_AnchoredPosition: {x: 0, y: 0.07}
+  m_SizeDelta: {x: 3, y: 0.92}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!212 &7386496271913806457
 SpriteRenderer:
@@ -520,7 +520,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b7e7d4f316ac3af45862e61ccfa063d6, type: 2}
+  - {fileID: 2100000, guid: 4249f53c71c334e45b91da896dd073c6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -546,7 +546,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 2.5, y: 0.92}
+  m_Size: {x: 3, y: 0.92}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

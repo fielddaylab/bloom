@@ -13,7 +13,7 @@ using Zavala.Sim;
 
 namespace Zavala.Economy
 {
-    [SysUpdate(GameLoopPhase.Update, 5)]
+    [SysUpdate(GameLoopPhase.Update, 5, ZavalaGame.SimulationUpdateMask)]
     public sealed class MarketSystem : SharedStateSystemBehaviour<MarketData, MarketConfig, SimGridState, RequestVisualState>
     {
 

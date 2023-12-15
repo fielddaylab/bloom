@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: SpriteOverlayMasked
-  m_Shader: {fileID: 4800000, guid: e1f8fd045b0c5bd4499c1104b5f15057, type: 3}
+  m_Shader: {fileID: 4800000, guid: 3624f47bd249e7a4698f12db4f28655f, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
