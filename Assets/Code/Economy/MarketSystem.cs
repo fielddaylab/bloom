@@ -229,6 +229,7 @@ namespace Zavala.Economy
                     else {
                         current = supplier.Storage.Current + supplier.Storage.StorageExtensionStore.Current;
                     }
+                    current = current & supplier.ShippingMask;
 
                     // current resources must fulfill the request unless the request is infinite AND a local option
                     if (!ResourceBlock.Fulfills(current, requests[i].Requested)) {
@@ -243,7 +244,7 @@ namespace Zavala.Economy
                 }
 
                 int priorityIndex = supplier.Priorities.PrioritizedBuyers.FindIndex((i, b) => i.Target == b, requests[i].Requester);
-                if (priorityIndex == -1) {
+                if (priorityIndex < supplier.BestPriorityIndex[marketIndex]) {
                     continue;
                 }
                 if (supplier.Priorities.PrioritizedBuyers[priorityIndex].Deprioritized)
