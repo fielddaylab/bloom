@@ -19,7 +19,7 @@ namespace Zavala.UI.Info {
         static private readonly Color CityColor = Colors.Hex("#CDF6ED");
 
         static private readonly int NarrowWidth = 300; 
-        static private readonly int WideWidth = 450;
+        static private readonly int WideWidth = 460;
 
         #region Inspector
 
@@ -41,6 +41,7 @@ namespace Zavala.UI.Info {
         [SerializeField] private InfoPopupPurchaser m_PurchaseContents;
         [SerializeField] private InfoPopupMarket m_MarketContentsRows;
         [SerializeField] private InfoPopupMarket m_MarketContentsCols;
+        [SerializeField] private GameObject m_MarketContentsGroup;
 
         #endregion // Inspector
 
@@ -93,7 +94,8 @@ namespace Zavala.UI.Info {
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = null;
                     m_PurchaseContents.gameObject.SetActive(false);
-                    m_MarketContentsRows.gameObject.SetActive(true);
+                    m_MarketContentsRows.gameObject.SetActive(false);
+                    m_MarketContentsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = GrainFarmColor;
                     break;
                 }
@@ -104,6 +106,7 @@ namespace Zavala.UI.Info {
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_PurchaseContents.gameObject.SetActive(false);
                     m_MarketContentsRows.gameObject.SetActive(true);
+                    m_MarketContentsGroup.gameObject.SetActive(false);
                     m_HeaderBG.color = DairyFarmColor;
                     break;
                 }
@@ -112,7 +115,8 @@ namespace Zavala.UI.Info {
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
                     m_SelectedRequester = null;
                     m_SelectedSupplier = null;
-                    m_MarketContentsRows.gameObject.SetActive(false);
+                    m_MarketContentsRows.gameObject.SetActive(true);
+                    m_MarketContentsGroup.gameObject.SetActive(false);
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
                     break;

@@ -119,11 +119,11 @@ MonoBehaviour:
     - Id: location.region5_city3.name
       Content: Central Smokestack
     - Id: location.shared.cafoInfo
-      Content: Where is all the poop going?
+      Content: <i>buys <u>corn</u> / sells <u>milk</u></i>
     - Id: location.shared.cityInfo
-      Content: The citizens require milk!
+      Content: <i>buys <u>milk</u></i>
     - Id: location.shared.grainInfo
-      Content: 'Where they buy fertilizer:'
+      Content: <i>buys <u>fertilizer</u> / sells <u>corn</u></i>
     - Id: location.shared.letItSit
       Content: Let It Sit
     - Id: location.shared.storage

@@ -69,13 +69,13 @@ Central Smokestack
 # basePath location.shared
 
 :: cafoInfo
-Where is all the poop going?
+<i>buys <u>corn</u> / sells <u>milk</u></i>
 
 :: cityInfo
-The citizens require milk!
+<i>buys <u>milk</u></i>
 
 :: grainInfo
-Where they buy fertilizer:
+<i>buys <u>fertilizer</u> / sells <u>corn</u></i>
 
 :: letItSit
 Let It Sit
