@@ -422,7 +422,7 @@ namespace Zavala.Economy
                         // Err towards buyer purchase cost (TODO: unless they accept anything?)
                         // profit = requester.PriceNegotiator.PriceBlock[primary];
 
-                        profit = supplier.PriceNegotiator.PriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
+                        profit = supplier.PriceNegotiator.SellPriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
                     }
 
                     if (supplier.Storage.StorageExtensionReq != null) {
@@ -443,7 +443,7 @@ namespace Zavala.Economy
                 // NEGOTIATION PASS
                 bool deprioritized = false; // appears in medium level feedback, but not considered as valid buyer to sell to
                 // TODO: price block should reflect market prices, not individual resource prices
-                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.PriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)] < costToBuyer))
+                if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.BuyPriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)] < costToBuyer))
                 {
                     foreach (var currResource in allResources)
                     {
@@ -638,7 +638,7 @@ namespace Zavala.Economy
                     {
                         // Err towards buyer purchase cost (TODO: unless they accept anything?)
                         // profit = requester.PriceNegotiator.PriceBlock[primary];
-                        purchaseCost = supplier.PriceNegotiator.PriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
+                        purchaseCost = supplier.PriceNegotiator.SellPriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
                     }
 
                     /*
@@ -862,8 +862,8 @@ namespace Zavala.Economy
                     {
                         if (!activeRequest.Requester.IsLocalOption)
                         {
-                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, marketIndex, activeRequest.Requester.PriceNegotiator.PriceBlock[marketIndex], !supplier.PriceNegotiator.FixedSellOffer);
-                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, marketIndex, supplier.PriceNegotiator.PriceBlock[marketIndex], !activeRequest.Requester.PriceNegotiator.FixedBuyOffer);
+                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, marketIndex, activeRequest.Requester.PriceNegotiator.BuyPriceBlock[marketIndex], !supplier.PriceNegotiator.FixedSellOffer);
+                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, marketIndex, supplier.PriceNegotiator.SellPriceBlock[marketIndex], !activeRequest.Requester.PriceNegotiator.FixedBuyOffer);
                         }
                     }
                 }
@@ -901,7 +901,7 @@ namespace Zavala.Economy
                                 if (supplier.PriceNegotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER)
                                 {
                                     // Push negotiator and resource type for negotiation system
-                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false);
+                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false, true);
                                     MarketUtility.QueueNegotiation(neg);
                                 }
                             }
@@ -932,7 +932,7 @@ namespace Zavala.Economy
                             if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[marketIndex] != 0) && (negotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER))
                             {
                                 // Push negotiator and resource type for negotiation system
-                                PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true);
+                                PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true, false);
                                 MarketUtility.QueueNegotiation(neg);
                             }
                         }

@@ -15,12 +15,14 @@ namespace Zavala.Economy {
         public ResourcePriceNegotiator Negotiator;
         public ResourceId ResourceType;
         public bool IsIncrease; // price threshold increases if seller is stressed or buyer is not stressed
+        public bool IsSeller;
 
-        public PriceNegotiation(ResourcePriceNegotiator neg, ResourceId type, bool isIncrease)
+        public PriceNegotiation(ResourcePriceNegotiator neg, ResourceId type, bool isIncrease, bool isSeller)
         {
             Negotiator = neg;
             ResourceType = type;
             IsIncrease = isIncrease;
+            IsSeller = isSeller;
         }
     }
 
@@ -34,7 +36,8 @@ namespace Zavala.Economy {
     [RequireComponent(typeof(OccupiesTile))]
     public class ResourcePriceNegotiator : BatchedComponent
     {
-        public MarketPriceBlock PriceBlock = new MarketPriceBlock(); // price at which this purchaser/seller purchases/sells a given resource
+        public MarketPriceBlock BuyPriceBlock = new MarketPriceBlock(); // price at which this purchaser/seller purchases/sells a given resource
+        public MarketPriceBlock SellPriceBlock = new MarketPriceBlock(); // price at which this purchaser/seller purchases/sells a given resource
         // public ResourceBlock MemoryPriceBlock = new ResourceBlock(); // price at which purchaser/seller last purchased/sold a given resource
 
         public int PriceStep = 1;
@@ -51,7 +54,8 @@ namespace Zavala.Economy {
 
         [NonSerialized] public MarketPriceBlock OfferedRecord; // Record of whether there was some other entity to negotiate price with, for each resource
         [NonSerialized] public MarketPriceBlock SettledRecord; // Record of whether a deal was settled (price overlap) since last negotiation phase
-        [NonSerialized] public MarketPriceBlock PriceChange; // Price change per market tick, for each resource
+        [NonSerialized] public MarketPriceBlock SellPriceChange; // Price change per market tick, for each resource
+        [NonSerialized] public MarketPriceBlock BuyPriceChange; // Price change per market tick, for each resource
 
         [NonSerialized] public bool PriceNegotiated;
 
@@ -81,11 +85,19 @@ namespace Zavala.Economy {
         /// <param name="negotiator"></param>
         /// <param name="resource"></param>
         /// <param name="priceDelta"></param>
-        public static void StagePrice(ref ResourcePriceNegotiator negotiator, ResourceId resource, int priceDelta)
+        public static void StagePrice(ref ResourcePriceNegotiator negotiator, ResourceId resource, int priceDelta, bool isSeller)
         {
             int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
             // only apply priceDelta once per market tick (even if multiple requests went unfulfilled)
-            negotiator.PriceChange[marketIndex] = priceDelta;
+            if (isSeller)
+            {
+                negotiator.SellPriceChange[marketIndex] = priceDelta;
+            }
+            else
+            {
+                negotiator.BuyPriceChange[marketIndex] = priceDelta;
+            }
+
         }
 
         /// <summary>
@@ -94,11 +106,19 @@ namespace Zavala.Economy {
         /// <param name="negotiator"></param>
         /// <param name="resource"></param>
         /// <param name="priceDelta"></param>
-        public static void FinalizePrice(ref ResourcePriceNegotiator negotiator, ResourceId resource)
+        public static void FinalizePrice(ref ResourcePriceNegotiator negotiator, ResourceId resource, bool isSeller)
         {
             int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
-            negotiator.PriceBlock += negotiator.PriceChange;
-            negotiator.PriceChange[marketIndex] = 0;
+            if (isSeller)
+            {
+                negotiator.SellPriceBlock += negotiator.SellPriceChange;
+                negotiator.SellPriceChange[marketIndex] = 0;
+            }
+            else
+            {
+                negotiator.BuyPriceBlock += negotiator.BuyPriceChange;
+                negotiator.BuyPriceChange[marketIndex] = 0;
+            }
         }
 
         /// <summary>
@@ -125,8 +145,8 @@ namespace Zavala.Economy {
                         if (!negotiator.FixedSellOffer && negotiator.SettledRecord[marketIndex] == (int)NegotiableCode.NEGOTIABLE)
                         {
                             priceStep = MarketParams.NegotiationStep;
-                            StagePrice(ref negotiator, resource, priceStep);
-                            FinalizePrice(ref negotiator, resource);
+                            StagePrice(ref negotiator, resource, priceStep, true);
+                            FinalizePrice(ref negotiator, resource, true);
                         }
                     }
                     // else if overlaps with buy mask (is buying this resource)
@@ -135,8 +155,8 @@ namespace Zavala.Economy {
                         if (!negotiator.FixedBuyOffer && negotiator.SettledRecord[marketIndex] == (int)NegotiableCode.NEGOTIABLE)
                         {
                             priceStep = -MarketParams.NegotiationStep;
-                            StagePrice(ref negotiator, resource, priceStep);
-                            FinalizePrice(ref negotiator, resource);
+                            StagePrice(ref negotiator, resource, priceStep, false);
+                            FinalizePrice(ref negotiator, resource, false);
                         }
                     }
                 }
@@ -170,20 +190,22 @@ namespace Zavala.Economy {
         public static void InitializeSupplierNegotiator(ResourcePriceNegotiator negotiator, ResourceMask sells, int regionIndex)
         {
             MarketConfig config = Game.SharedState.Get<MarketConfig>();
-            // negotiator.MemoryPriceBlock += config.DefaultPurchasePerRegion[regionIndex].Sell & sells;
-            // negotiator.PriceBlock += config.DefaultMarketPurchasePerRegion[regionIndex].Sell & sells;
-            negotiator.PriceBlock += config.DefaultMarketPurchasePerRegion[regionIndex].Sell & sells;
+            negotiator.SellPriceBlock += config.DefaultMarketPurchasePerRegion[regionIndex].Sell & sells;
             negotiator.SellMask = sells;
-            // negotiator.MemoryPriceBlock = negotiator.PriceBlock;
         }
 
-        public static void InitializeRequesterNegotiator(ResourcePriceNegotiator negotiator, ResourceMask buys, int regionIndex)
+        public static void InitializeRequesterNegotiator(ResourceRequester requester, ResourcePriceNegotiator negotiator, ResourceMask buys, int regionIndex)
         {
-            MarketConfig config = Game.SharedState.Get<MarketConfig>();
-            // negotiator.PriceBlock += config.DefaultPurchasePerRegion[regionIndex].Buy & buys;
-            negotiator.PriceBlock += config.DefaultMarketPurchasePerRegion[regionIndex].Buy & buys;
+            if (requester.OverridesBuyPrice)
+            {
+                negotiator.BuyPriceBlock = requester.OverrideBlock;
+            }
+            else
+            {
+                MarketConfig config = Game.SharedState.Get<MarketConfig>();
+                negotiator.BuyPriceBlock += config.DefaultMarketPurchasePerRegion[regionIndex].Buy & buys;
+            }
             negotiator.BuyMask = buys;
-            // negotiator.MemoryPriceBlock = negotiator.PriceBlock;
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Zavala.UI.Info {
             col.PriceGroup.SetActive(true);
 
             int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-            int basePrice = info.Supplier.PriceNegotiator.PriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+            int basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
 
             col.BasePriceCol.gameObject.SetActive(true);
             headers.BasePriceColHeader.gameObject.SetActive(true);
@@ -122,7 +122,7 @@ namespace Zavala.UI.Info {
             else
             {
                 int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-                basePrice = info.Supplier.PriceNegotiator.PriceBlock[marketIndex];
+                basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex];
             }
             col.BasePriceCol.gameObject.SetActive(true);
             headers.BasePriceColHeader.gameObject.SetActive(true);
@@ -209,7 +209,7 @@ namespace Zavala.UI.Info {
             row.PriceGroup.SetActive(true);
 
             int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-            int basePrice = info.Supplier.PriceNegotiator.PriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+            int basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
 
             row.BasePriceRow.gameObject.SetActive(true);
             row.BasePriceRow.Number.SetText(basePrice.ToStringLookup());
@@ -278,7 +278,7 @@ namespace Zavala.UI.Info {
             else
             {
                 int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-                basePrice = info.Supplier.PriceNegotiator.PriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+                basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
             }
             row.BasePriceRow.gameObject.SetActive(basePrice > 0);
             row.BasePriceRow.Number.SetText(basePrice.ToStringLookup());

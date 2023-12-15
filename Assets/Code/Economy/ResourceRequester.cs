@@ -45,7 +45,7 @@ namespace Zavala.Economy {
             this.CacheComponent(ref Storage);
             this.CacheComponent(ref PriceNegotiator);
 
-            PriceNegotiatorUtility.InitializeRequesterNegotiator(PriceNegotiator, RequestMask, Position.RegionIndex);
+            PriceNegotiatorUtility.InitializeRequesterNegotiator(this, PriceNegotiator, RequestMask, Position.RegionIndex);
 
             Priorities.Create();
 

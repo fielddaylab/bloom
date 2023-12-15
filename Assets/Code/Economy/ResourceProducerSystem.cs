@@ -27,7 +27,7 @@ namespace Zavala.Economy {
                 {
                     for (int i = 0; i < MarketUtility.NumMarkets; i++)
                     {
-                        if (producer.PriceNegotiator.PriceBlock[i] != 0)
+                        if (producer.PriceNegotiator.SellPriceBlock[i] != 0)
                         {
                             PriceNegotiatorUtility.LoadLastPrice(producer.PriceNegotiator, i);
                         }

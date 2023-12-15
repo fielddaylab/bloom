@@ -36,7 +36,8 @@ namespace Zavala.Economy
 
             foreach (var negotiator in m_State.Negotiators)
             {
-                negotiator.PriceChange.SetAll(0);
+                negotiator.SellPriceChange.SetAll(0);
+                negotiator.BuyPriceChange.SetAll(0);
             }
 
             int marketIndex;
@@ -46,13 +47,13 @@ namespace Zavala.Economy
                 // if they succeeded in buying/selling, reduce price stress.
                 // if they did not succeed, increase price stress.
                 int priceStep = m_QueuedNegotiations[i].IsIncrease ? m_QueuedNegotiations[i].Negotiator.PriceStep : -m_QueuedNegotiations[i].Negotiator.PriceStep;
-                PriceNegotiatorUtility.StagePrice(ref m_QueuedNegotiations[i].Negotiator, m_QueuedNegotiations[i].ResourceType, priceStep);
+                PriceNegotiatorUtility.StagePrice(ref m_QueuedNegotiations[i].Negotiator, m_QueuedNegotiations[i].ResourceType, priceStep, m_QueuedNegotiations[i].IsSeller);
             }
 
             // finalize the negotiated price changes
             for (int i = 0; i < m_QueuedNegotiations.Count; i++)
             {
-                PriceNegotiatorUtility.FinalizePrice(ref m_QueuedNegotiations[i].Negotiator, m_QueuedNegotiations[i].ResourceType);
+                PriceNegotiatorUtility.FinalizePrice(ref m_QueuedNegotiations[i].Negotiator, m_QueuedNegotiations[i].ResourceType, m_QueuedNegotiations[i].IsSeller);
             }
 
             // For each negotiator, if they sucessfully traded, try for a better deal next time 
