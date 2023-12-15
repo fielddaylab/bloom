@@ -108,12 +108,14 @@ namespace Zavala.UI {
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
                 m_CurrentDef = charDef;
                 string header, subheader;
-                Sprite portraitBG, portraitImg;
+                Sprite portraitImg;
+                // Sprite portraitBG;
                 Color boxColor, panelColor, highlightColor, nameColor, titleColor, textColor;
+                bool isAdvisor;
                 if (charDef != null) {
                     header = charDef.NameId;
                     subheader = charDef.TitleId;
-                    portraitBG = charDef.PortraitBackground;
+                    // portraitBG = charDef.PortraitBackground;
                     portraitImg = charDef.PortraitArt;
                     boxColor = charDef.BackgroundColor;
                     panelColor = charDef.PanelColor;
@@ -121,19 +123,22 @@ namespace Zavala.UI {
                     nameColor = charDef.NameColor;
                     titleColor = charDef.TitleColor;
                     textColor = charDef.TextColor;
+                    isAdvisor = charDef.IsAdvisor;
                 }
                 else {
                     header = subheader = "";
-                    portraitBG = portraitImg = null;
+                    // portraitBG = null;
+                    portraitImg = null;
                     boxColor = Color.clear;
                     panelColor = Color.white;
                     highlightColor = Color.gray;
                     nameColor = Color.white;
                     titleColor = Color.black;
                     textColor = Color.black;
+                    isAdvisor = false;
                 }
-                DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitBG, portraitImg, boxColor, highlightColor, nameColor, titleColor, textColor);
-                if (charDef.IsAdvisor) {
+                DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitImg, !isAdvisor, boxColor, highlightColor, nameColor, titleColor, textColor);
+                if (isAdvisor) {
                     foreach (PolicySlot slot in m_PolicySlots) {
                         slot.SetColors(highlightColor, panelColor, boxColor);
                     }

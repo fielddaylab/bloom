@@ -67,6 +67,7 @@ namespace Zavala.Cards
                 m_OverlayImage.color = m_UnlockedColor;
                 m_SlotBackground.color = m_SlotColor;
                 m_Button.enabled = true;
+                m_Text.SetText(Loc.Find("cards." + m_Type.ToString() + ".category"));
             }
             else {
                 m_OverlayImage.enabled = true; // set to locked slot image
@@ -74,8 +75,9 @@ namespace Zavala.Cards
                 m_OverlayImage.color = m_LockedColor;
                 m_SlotBackground.color = m_UnlockedColor; // same color is used for locked background as locked foreground
                 m_Button.enabled = false;
+                m_Text.SetText("");
             }
-            m_Text.SetText("");
+
 
             // TODO: if we add possibility for no policy to be selected, implement check here
 

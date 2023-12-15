@@ -33,7 +33,7 @@ namespace Zavala.Cards {
 
     static public class CardUIUtility { 
         static public void PopulateCard(CardUI card, CardData data, SpriteLibrary library, Color32 bgColor) {
-            ExtractLocText(data, out string locText);
+            ExtractLocSeverityText(data, out string locText);
             // TODO: extract font effects
             card.Text.SetText(locText);
             ExtractSprite(data, library, out Sprite sprite);
@@ -54,7 +54,12 @@ namespace Zavala.Cards {
                 severityText = Loc.Find("cards.severity." + data.PolicyLevel.ToString().ToLower());
             }
 
-            locText = typeText + ": " + severityText.ToUpper();
+            locText = typeText + ":\n" + severityText.ToUpper();
+        }
+
+        static public void ExtractLocSeverityText(CardData data, out string locText) {
+            string severityText = Loc.Find("cards." + data.PolicyType.ToString() + "." + data.PolicyLevel.ToString().ToLower());
+            locText = severityText.ToUpper();
         }
 
         static public void ExtractSprite(CardData data, SpriteLibrary sprites, out Sprite sprite) {
