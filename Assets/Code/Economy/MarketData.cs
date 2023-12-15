@@ -579,10 +579,10 @@ namespace Zavala.Economy
                 if (localIsBest) {
                     continue;
                 }
-
+                // Grain farm in another region is being populated with data from a grain farm within local region
                 // else product is up for sale
                 foreach(var data in supplier.Priorities.PrioritizedBuyers) {
-                    if ((data.Mask & resource) != 0) {
+                    if (data.Target == requester && (data.Mask & resource) != 0) {
                         buffer.PushBack(new MarketQueryResultInfo() {
                             Requester = requester,
                             Supplier = supplier,
