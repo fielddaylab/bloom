@@ -91,11 +91,11 @@ namespace Zavala.Economy {
             // only apply priceDelta once per market tick (even if multiple requests went unfulfilled)
             if (isSeller)
             {
-                negotiator.SellPriceChange[marketIndex] = priceDelta;
+                // negotiator.SellPriceChange[marketIndex] = priceDelta;
             }
             else
             {
-                negotiator.BuyPriceChange[marketIndex] = priceDelta;
+                // negotiator.BuyPriceChange[marketIndex] = priceDelta;
             }
 
         }

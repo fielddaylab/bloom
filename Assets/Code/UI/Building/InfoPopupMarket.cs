@@ -55,7 +55,7 @@ namespace Zavala.UI.Info {
 
         static public void LoadCostsIntoCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool isSecondary)
         {
-            col.PriceGroup.SetActive(true);
+             col.PriceGroup.SetActive(true);
 
             int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
             int basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
@@ -69,15 +69,22 @@ namespace Zavala.UI.Info {
             headers.ShippingColHeader.gameObject.SetActive(true);
             col.ShippingCol.Number.SetText(shippingPrice.ToStringLookup());
 
-            int import = info.TaxRevenue.Import;
+            int import;
+            if (info.Supplier.Position.RegionIndex == info.Requester.Position.RegionIndex)
+            {
+                import = 0;
+            }
+            else {
+                import = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].ImportTax[info.Resource]; // info.TaxRevenue.Import;
+            }
             col.ImportTaxCol.gameObject.SetActive(true);
             headers.ImportTaxColHeader.gameObject.SetActive(true);
-            col.ImportTaxCol.Number.SetText((-import).ToStringLookup());
+            col.ImportTaxCol.Number.SetText((import).ToStringLookup());
 
-            int salesTax = info.TaxRevenue.Sales;
+            int salesTax = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].PurchaseTax[info.Resource]; // info.TaxRevenue.Sales;
             col.SalesTaxCol.gameObject.SetActive(true);
             headers.SalesTaxColHeader.gameObject.SetActive(true);
-            col.SalesTaxCol.Number.SetText((-salesTax).ToStringLookup());
+            col.SalesTaxCol.Number.SetText((salesTax).ToStringLookup());
 
             int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(false);
@@ -148,7 +155,7 @@ namespace Zavala.UI.Info {
             headers.PenaltyColHeader.gameObject.SetActive(true);
             col.PenaltyCol.Number.SetText((-penalties).ToStringLookup());
 
-            int totalCost = info.Profit;
+            int totalCost = info.Profit + (salesTax + import);
             col.TotalProfitCol.gameObject.SetActive(true);
             headers.TotalProfitColHeader.gameObject.SetActive(true);
             col.TotalPriceCol.gameObject.SetActive(false);

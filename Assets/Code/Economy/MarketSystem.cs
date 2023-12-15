@@ -399,7 +399,8 @@ namespace Zavala.Economy
                 if (supplier.Position.IsExternal || (supplier.Position.RegionIndex != requester.Position.RegionIndex)) {
                     importCost = adjustments.ImportTax[primary];
                 }
-                float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + importCost;
+                float salesTax = adjustments.PurchaseTax[primary];
+                float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary];
 
                 if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
                     // add flat rate export depot shipping fee
@@ -428,8 +429,8 @@ namespace Zavala.Economy
                     }
                 }
 
-                float costToBuyer = profit + shippingCost;
-                float score = profit + relativeGain - shippingCost; // supplier wants to maximize score
+                float costToBuyer = profit + (shippingCost + salesTax + importCost);
+                float score = profit + relativeGain - (shippingCost + salesTax + importCost); // supplier wants to maximize score
 
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue();
                 taxRevenue.Sales = requester.IsLocalOption ? 0 : adjustments.PurchaseTax[primary];
@@ -832,8 +833,10 @@ namespace Zavala.Economy
                     // subtract main storage from whole value
                     mainStorageBlock = ResourceBlock.Consume(ref adjustedValueRequested, supplier.Storage.Current);
 
-                    // subtract remaining value from extension storage
-                    extensionBlock = ResourceBlock.Consume(ref supplier.Storage.StorageExtensionStore.Current, adjustedValueRequested);
+                    if (supplier.Storage.StorageExtensionStore != null) {
+                        // subtract remaining value from extension storage
+                        extensionBlock = ResourceBlock.Consume(ref supplier.Storage.StorageExtensionStore.Current, adjustedValueRequested);
+                    }
                 }
                 else
                 {

@@ -232,6 +232,7 @@ namespace Zavala.Economy
         public int ShippingCost;
         public int Distance;
         public int CostToBuyer;
+        public ushort ProxyIdx;
         public GeneratedTaxRevenue TaxRevenue;
     }
 
@@ -591,7 +592,8 @@ namespace Zavala.Economy
                             PathFlags = data.Path.Flags,
                             Profit = data.Profit - data.RelativeGain,
                             CostToBuyer = data.CostToBuyer,
-                            TaxRevenue = data.TaxRevenue
+                            ProxyIdx = data.ProxyIdx,
+                            TaxRevenue = data.TaxRevenue // NOTE: does not return correct value when supplier ships through export depot proxy
                         });
                         count++;
                         break;
