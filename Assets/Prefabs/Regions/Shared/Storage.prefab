@@ -20,6 +20,8 @@ GameObject:
   - component: {fileID: 5983373466290620169}
   - component: {fileID: 9040689247612195011}
   - component: {fileID: 1318548718761089297}
+  - component: {fileID: 8416123257062139303}
+  - component: {fileID: 1547257219449197939}
   m_Layer: 7
   m_Name: Storage
   m_TagString: PlayerPlaced
@@ -252,6 +254,32 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   Icon: {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
+--- !u!114 &8416123257062139303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d05501f7282e044187e98d29b963029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IndexWithinType: 0
+--- !u!114 &1547257219449197939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Id: 0
 --- !u!1001 &1418807874943389641
 PrefabInstance:
   m_ObjectHideFlags: 0

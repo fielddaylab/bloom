@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 895930853785753500}
   - component: {fileID: 1250215754335486309}
   - component: {fileID: 3617516488117136249}
-  - component: {fileID: -7301133933604959300}
   m_Layer: 0
   m_Name: Parcel00
   m_TagString: Untagged
@@ -49,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FulfillerType: 2
+  TruckMesh: {fileID: 0}
+  TruckRenderer: {fileID: 0}
 --- !u!33 &895930853785753500
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -112,24 +113,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!95 &-7301133933604959300
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5505800873959288297}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0f2c1e8353335714e9a1b17803a84892, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0

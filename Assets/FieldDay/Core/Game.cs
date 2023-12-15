@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using FieldDay.Scenes;
 using FieldDay.UI;
 using FieldDay.Assets;
+using FieldDay.HID;
 
 [assembly: InternalsVisibleTo("FieldDay.Core.Editor")]
 
@@ -44,6 +45,11 @@ namespace FieldDay {
         /// Scene manager. Maintains scene loading.
         /// </summary>
         static public SceneMgr Scenes { get; internal set; }
+
+        /// <summary>
+        /// Input manager. Maintains input state.
+        /// </summary>
+        static public InputMgr Input { get; internal set; }
 
         /// <summary>
         /// Gui panel manager. Maintains shared panel references.

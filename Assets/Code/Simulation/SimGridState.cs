@@ -405,11 +405,11 @@ namespace Zavala.Sim {
                         // TODO: differentiate between staged road objs and existing road objs
                         for (int i = network.RoadObjects.Count - 1; i >= 0; i--)
                         {
-                            if (network.RoadObjects[i].GetComponent<OccupiesTile>().TileIndex == tileIndex)
+                            if (network.RoadObjects[i].Position.TileIndex == tileIndex)
                             {
                                 // TODO: Check if there is nothing after staging mask is removed
                                 pools.Roads.Free(network.RoadObjects[i]);
-                                network.RoadObjects.RemoveAt(i);
+                                network.RoadObjects.FastRemoveAt(i);
                                 break;
                             }
                         }

@@ -206,8 +206,11 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating scene manager...");
             Game.Scenes = new SceneMgr();
 
+            Log.Msg("[GameLoop] Creating input manager...");
+            Game.Input = new InputMgr();
+
             Log.Msg("[GameLoop] Creating gui manager...");
-            Game.Gui = new GuiMgr();
+            Game.Gui = new GuiMgr(Game.Input);
 
             Log.Msg("[GameLoop] Creating asset manager...");
             Game.Assets = new AssetMgr();
@@ -236,6 +239,7 @@ namespace FieldDay {
         private void Start() {
             Log.Msg("[GameLoop] Boot finished");
             SetCurrentPhase(GameLoopPhase.Booted);
+            Game.Input.Initialize();
             Game.Gui.Initialize();
 			Game.Scenes.Prepare();
             Game.Systems.ProcessInitQueue();
@@ -311,6 +315,10 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Shutting down gui manager...");
             Game.Gui.Shutdown();
             Game.Gui = null;
+
+            Log.Msg("[GameLoop] Shutting down input manager...");
+            Game.Input.Shutdown();
+            Game.Input = null;
 
             Log.Msg("[GameLoop] Shutting down scene manager...");
             Game.Scenes.Shutdown();
@@ -544,6 +552,8 @@ namespace FieldDay {
                 FlushQueue(s_FrameStartQueue);
 
                 FlushQueue(s_OnBootQueue);
+
+                Game.Input.UpdateDoubleClickBuffer();
 
                 // DEBUG UPDATE
                 Game.Components.Lock();

@@ -21,6 +21,8 @@ GameObject:
   - component: {fileID: 3836324915457015385}
   - component: {fileID: 253638037535468105}
   - component: {fileID: 2578567375535217520}
+  - component: {fileID: 7613557166810901527}
+  - component: {fileID: 3912968975191914243}
   m_Layer: 7
   m_Name: Digester
   m_TagString: PlayerPlaced
@@ -263,6 +265,32 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   Icon: {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
+--- !u!114 &7613557166810901527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d05501f7282e044187e98d29b963029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IndexWithinType: 0
+--- !u!114 &3912968975191914243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Id: 0
 --- !u!1001 &867671194487188298
 PrefabInstance:
   m_ObjectHideFlags: 0

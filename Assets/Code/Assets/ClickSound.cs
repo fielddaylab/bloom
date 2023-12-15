@@ -4,6 +4,8 @@ using System;
 using UnityEngine.UI;
 using BeauUtil;
 using UnityEngine.UIElements;
+using FieldDay;
+using FieldDay.Assets;
 
 namespace Zavala.Audio {
     [RequireComponent(typeof(Selectable))]
@@ -11,13 +13,13 @@ namespace Zavala.Audio {
         [SerializeField] private Selectable m_Selectable;
 
         [Header("Hover State")]
-        public SerializedHash32 EnterId = "ui-hover";
-        public SerializedHash32 ExitId;
+        [SfxRef] public SerializedHash32 EnterId = "ui-hover";
+        [SfxRef] public SerializedHash32 ExitId;
 
         [Header("Click")]
-        public SerializedHash32 DownId;
-        public SerializedHash32 UpId;
-        public SerializedHash32 ClickId = "ui-click";
+        [SfxRef] public SerializedHash32 DownId;
+        [SfxRef] public SerializedHash32 UpId;
+        [SfxRef] public SerializedHash32 ClickId = "ui-click";
 
         [NonSerialized] private bool m_WasInteractable;
 
@@ -26,13 +28,15 @@ namespace Zavala.Audio {
                 return;
             }
 
-            if (checkPrevState) {
-                if (!m_WasInteractable) {
-                    return;
-                }
-            } else {
-                if (!m_Selectable.IsInteractable()) {
-                    return;
+            if (!Game.Input.IsForcingInput()) {
+                if (checkPrevState) {
+                    if (!m_WasInteractable) {
+                        return;
+                    }
+                } else {
+                    if (!m_Selectable.IsInteractable()) {
+                        return;
+                    }
                 }
             }
 

@@ -662,8 +662,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Selectable: {fileID: 5009163469523836061}
   EnterId:
-    m_Source: ui-hover
-    m_HashValue: 776011748
+    m_Source: 
+    m_HashValue: 0
   ExitId:
     m_Source: 
     m_HashValue: 0
