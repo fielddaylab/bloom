@@ -103,12 +103,6 @@ namespace Zavala.Economy
             // FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER
             // TODO: FOR EACH MARKET
             foreach (var supplier in m_SupplierWorkList) {
-                /*for (int i = 0; i < (int)ResourceId.COUNT; i++)
-                {
-                    ReassignSellerHighestPriorityBuyer(supplier, (ResourceId)i);
-                }
-                */
-
                 for (int i = 0; i < MarketUtility.NumMarkets; i++)
                 {
                     ResourceMask marketMask = MarketUtility.MarketIndexToResourceMask(i);
@@ -249,7 +243,7 @@ namespace Zavala.Economy
                 }
 
                 int priorityIndex = supplier.Priorities.PrioritizedBuyers.FindIndex((i, b) => i.Target == b, requests[i].Requester);
-                if (priorityIndex < supplier.BestPriorityIndex[marketIndex]) {
+                if (priorityIndex == -1) {
                     continue;
                 }
                 if (supplier.Priorities.PrioritizedBuyers[priorityIndex].Deprioritized)
@@ -427,7 +421,7 @@ namespace Zavala.Economy
 
                     if (supplier.Storage.StorageExtensionReq != null) {
                         // since this has a local option that would penalize runoff, that means the farm would sell it to this alternative for that much less (so the score for the purchaser should be higher)
-                        relativeGain += adjustments.RunoffPenalty[primary];
+                        // relativeGain += adjustments.RunoffPenalty[primary];
                     }
                 }
 
