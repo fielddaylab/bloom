@@ -17,7 +17,6 @@ namespace Zavala.UI.Info
         public InfoPopupPriceRow ShippingCol;
         public InfoPopupPriceRow SalesTaxCol;
         public InfoPopupPriceRow ImportTaxCol;
-        public InfoPopupPriceRow SubsidyCol;
         public InfoPopupPriceRow PenaltyCol;
         public InfoPopupPriceRow TotalPriceCol;
         public InfoPopupPriceRow TotalProfitCol;

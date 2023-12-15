@@ -41,7 +41,8 @@ namespace Zavala.UI.Info {
         [SerializeField] private InfoPopupPurchaser m_PurchaseContents;
         [SerializeField] private InfoPopupMarket m_MarketContentsRows;
         [SerializeField] private InfoPopupMarket m_MarketContentsCols;
-        [SerializeField] private GameObject m_MarketContentsGroup;
+        [SerializeField] private GameObject m_MarketContentsColsGroup;
+        [SerializeField] private InfoPopupColumnHeaders m_MarketContentsColHeaders;
 
         #endregion // Inspector
 
@@ -95,7 +96,7 @@ namespace Zavala.UI.Info {
                     m_SelectedSupplier = null;
                     m_PurchaseContents.gameObject.SetActive(false);
                     m_MarketContentsRows.gameObject.SetActive(false);
-                    m_MarketContentsGroup.gameObject.SetActive(true);
+                    m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = GrainFarmColor;
                     break;
                 }
@@ -105,8 +106,8 @@ namespace Zavala.UI.Info {
                     m_SelectedRequester = null;
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_PurchaseContents.gameObject.SetActive(false);
-                    m_MarketContentsRows.gameObject.SetActive(true);
-                    m_MarketContentsGroup.gameObject.SetActive(false);
+                    m_MarketContentsRows.gameObject.SetActive(false);
+                    m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = DairyFarmColor;
                     break;
                 }
@@ -115,8 +116,8 @@ namespace Zavala.UI.Info {
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
                     m_SelectedRequester = null;
                     m_SelectedSupplier = null;
-                    m_MarketContentsRows.gameObject.SetActive(true);
-                    m_MarketContentsGroup.gameObject.SetActive(false);
+                    m_MarketContentsRows.gameObject.SetActive(false);
+                    m_MarketContentsColsGroup.gameObject.SetActive(false);
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
                     break;
@@ -148,15 +149,15 @@ namespace Zavala.UI.Info {
             Root.sizeDelta = new Vector2(WideWidth, 400);
 
             int count = Math.Min(m_QueryResults.Count, 3);
-            ConfigureRowsAndDividers(count);
+            ConfigureCols(count);
 
             MarketConfig config = Game.SharedState.Get<MarketConfig>();
 
             for (int i = 0; i < count; i++)
             {
                 var results = m_QueryResults[i];
-                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContentsRows.LocationRows[i], results.Requester.Position, results.Supplier.Position);
-                InfoPopupMarketUtility.LoadProfitIntoRow(m_MarketContentsRows.LocationRows[i], results, config, i > 0);
+                InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position);
+                InfoPopupMarketUtility.LoadProfitIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
             }
 
             if (gameObject.activeSelf)
@@ -171,15 +172,15 @@ namespace Zavala.UI.Info {
             Root.sizeDelta = new Vector2(WideWidth, 400);
 
             int count = Math.Min(m_QueryResults.Count, 3);
-            ConfigureRowsAndDividers(count);
+            ConfigureCols(count);
 
             MarketConfig config = Game.SharedState.Get<MarketConfig>();
 
             for (int i = 0; i < count; i++)
             {
                 var results = m_QueryResults[i];
-                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContentsRows.LocationRows[i], results.Supplier.Position, results.Requester.Position);
-                InfoPopupMarketUtility.LoadCostsIntoRow(m_MarketContentsRows.LocationRows[i], results, config, i > 0);
+                InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position);
+                InfoPopupMarketUtility.LoadCostsIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
             }
 
             if (gameObject.activeSelf)
@@ -268,6 +269,19 @@ namespace Zavala.UI.Info {
 
             for (int i = 0; i < m_MarketContentsRows.LocationRows.Length; i++) {
                 m_MarketContentsRows.LocationRows[i].gameObject.SetActive(count > i);
+            }
+        }
+
+        private void ConfigureCols(int count)
+        {
+            for (int i = 0; i < m_MarketContentsCols.Dividers.Length; i++)
+            {
+                m_MarketContentsCols.Dividers[i].SetActive(count > i + 1);
+            }
+
+            for (int i = 0; i < m_MarketContentsCols.LocationCols.Length; i++)
+            {
+                m_MarketContentsCols.LocationCols[i].gameObject.SetActive(count > i);
             }
         }
 
