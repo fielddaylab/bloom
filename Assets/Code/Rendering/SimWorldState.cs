@@ -2,6 +2,7 @@ using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Leaf.Runtime;
@@ -246,12 +247,44 @@ namespace Zavala.World {
             world.ExportRevealRoutine.Replace(RevealExportDepot(world, grid, eReveal, interactions, id));
         }
 
+        [DebugMenuFactory]
+        static private DMInfo BudgetDebugMenu()
+        {
+            DMInfo info = new DMInfo("Export Depots");
+            info.AddButton("Unlock Region 1 Depot", () => {
+                UnlockExportDepot("region1_export1");
+            }, () => Game.SharedState.TryGet(out SimWorldState world));
+
+            info.AddButton("Unlock Region 2 Depot", () => {
+                UnlockExportDepot("region2_export1");
+            }, () => Game.SharedState.TryGet(out SimWorldState world));
+
+            info.AddButton("Unlock Region 3 Depot", () => {
+                UnlockExportDepot("region3_export1");
+            }, () => Game.SharedState.TryGet(out SimWorldState world));
+
+            info.AddButton("Unlock Region 4 Depot", () => {
+                UnlockExportDepot("region4_export1");
+            }, () => Game.SharedState.TryGet(out SimWorldState world));
+
+            info.AddButton("Unlock Region 5 Depot", () => {
+                UnlockExportDepot("region5_export1");
+            }, () => Game.SharedState.TryGet(out SimWorldState world));
+
+            return info;
+        }
+
         #endregion // Leaf Members
 
         #region Routines
 
         static private IEnumerator RevealExportDepot(SimWorldState world, SimGridState grid, ExportRevealState eReveal, InteractionState interactions, StringHash32 inId)
         {
+            if (!ScriptUtility.ActorExists(inId))
+            {
+                yield break;
+            }
+
             Vector3 worldPos = ScriptUtility.LookupActor(inId).transform.position;
             TryGetTileIndexFromWorld(worldPos, out int depotIndex);
             int regionIndex = grid.Terrain.Regions[depotIndex];

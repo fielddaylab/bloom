@@ -34,6 +34,10 @@ namespace Zavala.World {
 
         [LeafMember("PanToBuilding")]
         public static void PanCameraToActor(StringHash32 id) {
+            if (!ScriptUtility.ActorExists(id))
+            {
+                return;
+            }
             PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform.position);
         }
 

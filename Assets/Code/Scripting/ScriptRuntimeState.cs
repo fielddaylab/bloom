@@ -130,6 +130,11 @@ namespace FieldDay.Scripting {
             return evtData.Argument0.AsStringHash();
         }
 
+        static public bool ActorExists(StringHash32 actorId)
+        {
+            return Runtime.NamedActors.TryGetValue(actorId, out EventActor actor);
+        }
+
         static public EventActor LookupActor(StringHash32 actorId) {
             Runtime.NamedActors.TryGetValue(actorId, out EventActor actor);
             return actor;
