@@ -341,7 +341,7 @@ namespace Zavala.Roads
             // TODO: differentiate between staged road objs and existing road objs
             for (int i = network.RoadObjects.Count - 1; i >= 0; i--)
             {
-                if (network.RoadObjects[i].GetComponent<OccupiesTile>().TileIndex == tileIndex)
+                if (network.RoadObjects[i].Position.TileIndex == tileIndex)
                 {
                     // TODO: Check if there is nothing after staging mask is removed
                     pools.Roads.Free(network.RoadObjects[i]);
@@ -358,7 +358,7 @@ namespace Zavala.Roads
             RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
             for (int r = network.RoadObjects.Count - 1; r >= 0; r--)
             {
-                if (network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex == roadTileIndex)
+                if (network.RoadObjects[r].Position.TileIndex == roadTileIndex)
                 {
                     RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
                 }
@@ -369,7 +369,7 @@ namespace Zavala.Roads
 
         static public void UpdateAllRoadVisuals(RoadNetwork network) {
             for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
-                int roadTileIndex = network.RoadObjects[r].GetComponent<OccupiesTile>().TileIndex;
+                int roadTileIndex = network.RoadObjects[r].Position.TileIndex;
                 RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
                 RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
                 SimWorldUtility.QueueVisualUpdate((ushort) roadTileIndex, VisualUpdateType.Road);

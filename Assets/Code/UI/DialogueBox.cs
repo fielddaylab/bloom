@@ -251,7 +251,7 @@ namespace Zavala.UI {
             m_ButtonContainer.gameObject.SetActive(true);
 
             if (m_PoliciesActive || ForceAdvisorPolicies != AdvisorType.None) {
-                while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Gui.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
+                while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
                     yield return null;
                 }
             } else {

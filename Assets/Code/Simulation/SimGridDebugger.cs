@@ -36,7 +36,7 @@ namespace Zavala.Debugging {
                 Vector3 hitCenter = hitBounds.center;
                 DebugDraw.AddPoint(hitCenter, 0.1f, Color.white.WithAlpha(0.5f));
                 OccupiesTile occupies = hitInfo.collider.GetComponent<OccupiesTile>();
-                DebugDraw.AddWorldText(hitCenter, string.Format("{0}\nPosition {1} [{2}]\nRegion {3}", occupies.gameObject.name, occupies.TileVector, occupies.TileIndex, occupies.RegionIndex), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
+                DebugDraw.AddWorldText(hitCenter, string.Format("{0}\nPosition {1} [{2}]\nRegion {3}\nFlags {4}\nRoad {5}\nConnections {6}", occupies.gameObject.name, occupies.TileVector, occupies.TileIndex, occupies.RegionIndex, m_StateA.Terrain.Info[occupies.TileIndex].Flags, m_StateD.Roads.Info[occupies.TileIndex].Flags, m_StateD.Roads.Info[occupies.TileIndex].FlowMask), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
 
                 if (!m_StateD.UpdateNeeded) {
                     RoadSourceInfo sourceData = m_StateD.Sources.Find(RoadUtility.FindSourceByTileIndex, (ushort) occupies.TileIndex);
@@ -68,7 +68,7 @@ namespace Zavala.Debugging {
                 DebugDraw.AddPoint(hitCenter, 0.1f, Color.white.WithAlpha(0.5f));
                 HexVector point = HexVector.FromWorld(hitCenter, m_StateB.WorldSpace);
                 int tileIdx = m_StateA.HexSize.FastPosToIndex(point);
-                DebugDraw.AddWorldText(hitCenter, string.Format("Position {0} [{1}]\nHeight {2}\nRegion {3}\nFlags {4}\nRoad {5}", point, tileIdx, m_StateA.Terrain.Height[tileIdx], m_StateA.Terrain.Regions[tileIdx], m_StateA.Terrain.Info[tileIdx].Flags, m_StateD.Roads.Info[tileIdx].Flags), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
+                DebugDraw.AddWorldText(hitCenter, string.Format("Position {0} [{1}]\nHeight {2}\nRegion {3}\nFlags {4}\nRoad {5}\nConnections {6}", point, tileIdx, m_StateA.Terrain.Height[tileIdx], m_StateA.Terrain.Regions[tileIdx], m_StateA.Terrain.Info[tileIdx].Flags, m_StateD.Roads.Info[tileIdx].Flags, m_StateD.Roads.Info[tileIdx].FlowMask), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
 
                 if ((m_StateA.Terrain.Info[tileIdx].Flags & TerrainFlags.IsWater) != 0) {
                     SimBuffer<AlgaeTileState> algae = Game.SharedState.Get<SimAlgaeState>().Algae.State;

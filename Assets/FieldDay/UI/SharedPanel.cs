@@ -21,6 +21,10 @@ namespace FieldDay.UI {
 
         #region ISharedGuiPanel
 
+        public virtual Transform Root {
+            get { return transform; }
+        }
+
         public virtual void Hide() {
             gameObject.SetActive(false);
         }

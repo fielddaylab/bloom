@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zavala.Input;
 using Zavala.Sim;
+using Zavala.World;
 
 namespace Zavala.UI.Info {
     [SysUpdate(GameLoopPhase.Update, 100)]
@@ -25,7 +26,7 @@ namespace Zavala.UI.Info {
             }
 
             if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
-                if (EventSystem.current.IsPointerOverGameObject()) {
+                if (SimWorldUtility.IsPointerOverUI()) {
                     popupUI.Hide();
                 } else {
                     HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);

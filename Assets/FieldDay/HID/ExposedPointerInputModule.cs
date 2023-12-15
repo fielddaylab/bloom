@@ -25,6 +25,11 @@ namespace FieldDay.HID {
         public event Action<PointerInputMode> OnModeChanged;
 
         /// <summary>
+        /// Invoked when the current pointer raycast changes;
+        /// </summary>
+        public event Action<GameObject> OnPointerOverChanged;
+
+        /// <summary>
         /// Invoked when a text input field focus is changed.
         /// </summary>
         public event Action<TMP_InputField> OnTextEditFocusChanged;
@@ -107,6 +112,8 @@ namespace FieldDay.HID {
         #region Overrides
 
         public override void Process() {
+            GameObject prevOver = CurrentPointerOver();
+
             base.Process();
 
             if (m_Mode == PointerInputMode.Mouse) {
@@ -131,6 +138,11 @@ namespace FieldDay.HID {
                 if (focus.TryGetComponent(out TMP_InputField selectedInputField) && selectedInputField.isFocused) {
                     inputField = selectedInputField;
                 }
+            }
+
+            GameObject over = CurrentPointerOver();
+            if (over != prevOver) {
+                OnPointerOverChanged?.Invoke(over);
             }
 
             if (m_EditingText != inputField) {

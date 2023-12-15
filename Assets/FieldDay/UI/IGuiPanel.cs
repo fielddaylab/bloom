@@ -1,4 +1,5 @@
 using BeauUtil;
+using UnityEngine;
 
 namespace FieldDay.UI {
     /// <summary>
@@ -6,6 +7,8 @@ namespace FieldDay.UI {
     /// </summary>
     [TypeIndexCapacity(512)]
     public interface IGuiPanel {
+        Transform Root { get; }
+
         void Show();
         void Hide();
 
