@@ -5,7 +5,7 @@ using FieldDay;
 using FieldDay.Systems;
 
 namespace Zavala.Sim {
-    [SysUpdate(GameLoopPhase.Update, -50)]
+    [SysUpdate(GameLoopPhase.Update, -50, ZavalaGame.SimulationUpdateMask)]
     public sealed class SimPhosphorusSystem : SharedStateSystemBehaviour<SimPhosphorusState, SimGridState> {
         private Action m_ResetCallback;
         

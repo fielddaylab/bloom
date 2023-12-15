@@ -9,7 +9,7 @@ using System;
 
 namespace Zavala.Sim
 {
-    [SysUpdate(GameLoopPhase.Update, -50)]
+    [SysUpdate(GameLoopPhase.Update, -50, ZavalaGame.SimulationUpdateMask)]
     public class RegionAgeSystem : SharedStateSystemBehaviour<RegionAgeState, SimGridState>
     {
         public override bool HasWork() {

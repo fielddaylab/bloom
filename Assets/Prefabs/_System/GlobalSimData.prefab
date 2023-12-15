@@ -617,7 +617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Alerts:
-    m_Prefab: {fileID: 5880324271969544395, guid: e2bf128a1f2becb44a988ba928791bbc, type: 3}
+    m_Prefab: {fileID: 2644307899784243691, guid: a26be77cae04fc249b714359765c1901, type: 3}
     m_Name: Alert
     m_InitialCapacity: 16
     m_PrewarmOnInitialize: 1

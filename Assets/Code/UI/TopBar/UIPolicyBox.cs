@@ -1,6 +1,8 @@
 using BeauRoutine;
 using BeauUtil;
 using FieldDay;
+using FieldDay.Scenes;
+using FieldDay.Scripting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,11 +15,12 @@ using Zavala.Cards;
 using Zavala.Sim;
 
 namespace Zavala.UI {
-    public class UIPolicyBox : MonoBehaviour
-    {
+    public class UIPolicyBox : MonoBehaviour {
         private const float DISPLAY_TIME = 1.4f;
 
         #region Inspector
+
+        [SerializeField] private Button m_Button;
 
         public CanvasGroup Group;
         public TMP_Text LevelText;
@@ -29,6 +32,40 @@ namespace Zavala.UI {
 
         public Routine PopupRoutine;
 
+        private void Start() {
+            AdvisorType advisorType = AdvisorType.None;
+            switch (PolicyType){ 
+                case PolicyType.SalesTaxPolicy:
+            case PolicyType.ImportTaxPolicy:
+                advisorType = AdvisorType.Economy;
+                break;
+            case PolicyType.SkimmingPolicy:
+            case PolicyType.RunoffPolicy:
+                advisorType = AdvisorType.Ecology;
+                break;
+            default:
+                break;
+            }
+            m_Button.onClick.AddListener(() => HandlePolicyBoxClicked(advisorType));
+            
+        }
+
+        #region Handlers
+
+        private void HandlePolicyBoxClicked(AdvisorType type) {
+            ScriptUtility.AutoOpenPolicy(PolicyType);
+
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("advisorType", type.ToString());
+                ScriptUtility.Trigger(GameTriggers.AdvisorOpened, varTable);
+            }
+
+            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            advisorState.AdvisorButtonClicked?.Invoke(type);
+
+        }
+
+        #endregion
 
         #region Routines
 

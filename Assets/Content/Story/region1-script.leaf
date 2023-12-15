@@ -41,7 +41,9 @@ $call PanToBuilding("region1_cafo1")
 {@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
+$call FocusHighlightOn("BuildModeButton")
 {@advisorEconHill}      Open <b>Build Mode</b>.
+$call FocusClear()
 $call Unpause()
 
 
@@ -221,8 +223,9 @@ $call ActivateSim()
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(1), intro:tutorialComplete
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 $if PolicyIsUnlocked(RunoffPolicy)
+    $call ForcePolicyInstant("Ecology")
     {local @advisorEcol}    Hey there, boss! Here to check out some policies?
 $else
     {local @advisorEcol}    Hey there! No policies to assign yet.
@@ -231,8 +234,9 @@ $endif
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(1), intro:tutorialComplete
-@forcePolicy    Economy
+// @forcePolicyEarly    Economy
 $if PolicyIsUnlocked(SalesTaxPolicy)
+    $call ForcePolicyInstant("Economy")
     {local @advisorEcon}    Here are the economic policies.
 $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
@@ -241,25 +245,29 @@ $endif
 
 
 :: policyDescriptions
+// TODO: lookup policy costs
 $if local:policyType == "RunoffPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcol}    Temporary text: Runoff penalty NONE
+        {local @advisorEcol}    With no runoff penalty, CAFOs will only sell manure if it earns a profit.
     $elseif local:policyIndex == 1
-        {local @advisorEcol}    Temporary text: Runoff penalty LOW
+        {local @advisorEcol}    With a low runoff penalty, CAFOs will sell manure if the loss is less than $4 per unit.
     $elseif local:policyIndex == 2
-        {local @advisorEcol}    Temporary text: Runoff penalty HIGH
+        {local @advisorEcol}    With a low runoff penalty, CAFOs will sell manure if the loss is less than $8 per unit.
     $elseif local:policyIndex == 3
-        {local @advisorEcol}    Temporary text: Runoff penalty VERY HIGH
+        {local @advisorEcol}    With a very high runoff penalty, CAFOs will try to sell manure, even if it loses money.
     $endif
 $elseif local:policyType == "SkimmingPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcol}    Temporary text: Skimming policy NONE
+        {local @advisorEcol}    With no skimming, algae will stick around until phosphorus decreases.
     $elseif local:policyIndex == 1
-        {local @advisorEcol}    Temporary text: Skimming policy LOW
+        {local @advisorEcol}    Low skimming will clear algae from 1 water area for $1 each tick.
+        {local @advisorEcol}    But the phosphorus remains!
     $elseif local:policyIndex == 2
-        {local @advisorEcol}    Temporary text: Skimming policy HIGH
+        {local @advisorEcol}    High skimming will clear algae from 2 water areas for $2 each tick.
+        {local @advisorEcol}    But the phosphorus remains!
     $elseif local:policyIndex == 3
-        {local @advisorEcol}    Temporary text: Skimming policy DREDGE
+        {local @advisorEcol}    Dredging will clear algae from 3 water areas <b>and</b> remove some phosphorus.
+        {local @advisorEcol}    But it will cost $4 each tick!
     $endif
 $elseif local:policyType == "SalesTaxPolicy"
     $if     local:policyIndex == 0
@@ -269,26 +277,30 @@ $elseif local:policyType == "SalesTaxPolicy"
     $elseif local:policyIndex == 2
         {local @advisorEcon}    With high sales tax, you'll gain $4 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    With a sales subsidy, your funds will pay $2 for every purchase, with only city revenue.
+        {local @advisorEcon}    With a sales subsidy, your funds will incentivize buying with $4 for every purchase.
     $endif
 $elseif local:policyType == "ImportTaxPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcon}    Temporary text: Import subsidy policy NONE
+        {local @advisorEcon}    With no import policy, goods will generally go to the nearest buyer.
     $elseif local:policyIndex == 1
-        {local @advisorEcon}    Temporary text: Import subsidy policy  LOW
+        {local @advisorEcon}    A low <b>import subsidy</b> will gently encourage buying resources from outside regions.
+        {local @advisorEcon}    But its funding will come from your budget!
     $elseif local:policyIndex == 2
-        {local @advisorEcon}    Temporary text: Import subsidy policy  HIGH
+        {local @advisorEcon}    A high <b>import subsidy</b> will strongly encourage buying resources from outside regions.
+        {local @advisorEcon}    But its funding will come from your budget!
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    Temporary text: Import tax policy  TAX
+        {local @advisorEcon}    An <b>import tax</b> will discourage buying resources from other counties.
+        {local @advisorEcon}    But you'll gain some funding if they do!
     $endif
 $endif
 
 :: openedToForest
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(1), RegionUnlocked(2)
-@priority   High
-@forcePolicy    Economy
+@priority       High
+// @forcePolicy    Economy
 @once
+$call ForcePolicyInstant("Economy")
 {@advisorEconHill}      Ah, you've expanded into Cypress County. Lucky you.
 {@advisorEconHill}      Now you can be <i>condescended to</i> while surrounded by natural splendor.
 {@advisorEconHill}      Hope you like the smell of old mushrooms.
@@ -296,8 +308,10 @@ $endif
 :: openedToPrairie
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(1), RegionUnlocked(3)
-@forcePolicy    Ecology
+@priority       High
+// @forcePolicy    Ecology
 @once
+$call ForcePolicyInstant("Ecology")
 {@advisorEcolHill}      Ugh... Those Heath County hayseeds always irked me.
 {@advisorEcolHill}      They think they're better than everyone because of their fancy college.
 {@advisorEcolHill}      Plus their straw hats are weird!

@@ -6,7 +6,7 @@ using UnityEditor;
 using FieldDay.HID;
 
 namespace Zavala.Input {
-    [SysUpdate(GameLoopPhase.UnscaledLateUpdate, 10000)]
+    [SysUpdate(GameLoopPhase.ApplicationPreRender, 10000)]
     public class CursorUpdateSystem : SharedStateSystemBehaviour<CursorState, InputState> {
         #region Inspector
 

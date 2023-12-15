@@ -32,6 +32,7 @@ using FieldDay.Assets;
 
 #if USE_SRP
 using UnityEngine.Rendering;
+using FieldDay.HID;
 #endif // USE_SRP
 
 namespace FieldDay {
@@ -210,6 +211,8 @@ namespace FieldDay {
 
             Log.Msg("[GameLoop] Creating asset manager...");
             Game.Assets = new AssetMgr();
+
+            CursorUtility.PlatformInit();
 
             Application.targetFrameRate = m_TargetFramerate;
 

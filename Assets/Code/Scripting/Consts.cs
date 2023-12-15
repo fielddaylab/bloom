@@ -1,3 +1,4 @@
+using UnityEngine;
 using BeauUtil;
 using BeauUtil.Variants;
 using Zavala.Scripting;
@@ -5,7 +6,11 @@ using Zavala.Scripting;
 namespace Zavala
 {
     static public class ImportSettings {
-        static public int HEIGHT_SCALE = 50;
+        static public readonly int HEIGHT_SCALE = 50;
+    }
+
+    static public class RenderSettings {
+        static public readonly Quaternion CameraPerspective = Quaternion.Euler(50, 45, 0);
     }
 
     static public class GameEvents

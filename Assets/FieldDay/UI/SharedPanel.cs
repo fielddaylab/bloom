@@ -10,12 +10,12 @@ namespace FieldDay.UI {
         public const int DefaultExecutionOrder = -100;
 
         protected virtual void Awake() {
-            Game.Gui.Register(this);
+            Game.Gui.RegisterPanel(this);
         }
 
         protected virtual void OnDestroy() {
             if (!Game.IsShuttingDown) {
-                Game.Gui.Deregister(this);
+                Game.Gui.DeregisterPanel(this);
             }
         }
 

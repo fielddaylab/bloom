@@ -12,12 +12,12 @@ namespace FieldDay.UI {
         protected override void Awake() {
             base.Awake();
 
-            Game.Gui.Register(this);
+            Game.Gui.RegisterPanel(this);
         }
 
         protected virtual void OnDestroy() {
             if (!Game.IsShuttingDown) {
-                Game.Gui.Deregister(this);
+                Game.Gui.DeregisterPanel(this);
             }
         }
 
