@@ -144,9 +144,11 @@ namespace Zavala.Economy {
                     {
                         if (!negotiator.FixedSellOffer && negotiator.SettledRecord[marketIndex] == (int)NegotiableCode.NEGOTIABLE)
                         {
+                            /*
                             priceStep = MarketParams.NegotiationStep;
                             StagePrice(ref negotiator, resource, priceStep, true);
                             FinalizePrice(ref negotiator, resource, true);
+                            */
                         }
                     }
                     // else if overlaps with buy mask (is buying this resource)
@@ -154,9 +156,11 @@ namespace Zavala.Economy {
                     {
                         if (!negotiator.FixedBuyOffer && negotiator.SettledRecord[marketIndex] == (int)NegotiableCode.NEGOTIABLE)
                         {
+                            /*
                             priceStep = -MarketParams.NegotiationStep;
                             StagePrice(ref negotiator, resource, priceStep, false);
                             FinalizePrice(ref negotiator, resource, false);
+                            */
                         }
                     }
                 }
