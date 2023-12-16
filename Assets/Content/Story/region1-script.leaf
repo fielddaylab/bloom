@@ -261,13 +261,13 @@ $endif
 // TODO: lookup policy costs
 $if local:policyType == "RunoffPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcol}    With no runoff penalty, CAFOs will only sell manure if it earns a profit.
+        {local @advisorEcol}    With no runoff fine, CAFOs will only sell manure if it earns a profit.
     $elseif local:policyIndex == 1
-        {local @advisorEcol}    With a low runoff penalty, CAFOs will sell manure if the loss is less than $4 per unit.
+        {local @advisorEcol}    With a low runoff fine, CAFOs will sell manure if the loss is less than $4 per unit.
     $elseif local:policyIndex == 2
-        {local @advisorEcol}    With a low runoff penalty, CAFOs will sell manure if the loss is less than $8 per unit.
+        {local @advisorEcol}    With a low runoff fine, CAFOs will sell manure if the loss is less than $8 per unit.
     $elseif local:policyIndex == 3
-        {local @advisorEcol}    With a very high runoff penalty, CAFOs will try to sell manure, even if it loses money.
+        {local @advisorEcol}    With a very high runoff fine, CAFOs will try to sell manure, even if it loses money.
     $endif
 $elseif local:policyType == "SkimmingPolicy"
     $if     local:policyIndex == 0
@@ -353,7 +353,7 @@ $set global:runoffDiscovered = true
 {@advisorEcolHill}      This farm is just letting manure leach into the water table!
 {@advisorEcolHill}      That must be behind those algae blooms.
 {@advisorEconHill}      Maybe so, but they simply have no more favorable alternatives.
-{@advisorEcolHill}      Well, let's make it less favorable. How about a penalty fine for runoff?
+{@advisorEcolHill}      Well, let's make it less favorable. How about a <b>fine</b> for runoff?
 {local @cafoFarmer}     A fine!? I'm barely scraping by as is. You'd have me selling at a loss!
 {@advisorEconHill}      Hrm... A fine <i>could</i> incentivize selling manure...
 {@advisorEconHill}      But Bertram is correct. Selling at a loss could disrupt the supply chain.
@@ -366,7 +366,7 @@ $call UnlockCards(RunoffPolicy)
 @queued
 $call Pause()
 {local @advisorEcol}    More runoff... 
-{local @advisorEcol}    Maybe we ought to increase our runoff penalty?
+{local @advisorEcol}    Maybe we ought to increase our runoff fine?
 {local @advisorEcon}    Careful now! We don't want to bankrupt our farmers.
 {local @advisorEcon}    We just need to give them a more favorable option.
 $if Visited("region2.unlockStorage")

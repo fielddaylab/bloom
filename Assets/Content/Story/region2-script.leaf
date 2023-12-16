@@ -102,13 +102,13 @@ $set global:importUnlocked = true
 $call PanToBuilding("region3_city1")
 $call Pause()
 {@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many CAFOs.
-{@advisorEcolPrairie}   But we've got plenty of <<b>grain</b> over in Heath County! Maybe we could help each other?
+{@advisorEcolPrairie}   But we've got plenty of <b>grain</b> over in Heath County! Maybe we could help each other?
 {@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
 {@advisorEconPrairie}   Perhaps we need to offset shipping costs.
 {@advisorEconPrairie}   I've unlocked a policy for setting <b>Import Subsidies.</b>
 $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   Import <b>Subsidies</b> will encourage buying from other regions - but it'll come from your budget.
-{@advisorEconPrairie}   While an Import <b>Tax</b> will <i>discourage<i> buying from other regions.
+{@advisorEconPrairie}   While an Import <b>Tax</b> will <i>discourage</i> buying from other regions.
 {@advisorEconForest}    Hmph. Well I say everyone should just buy local. But it's up to you, Director.
 $call Unpause()
 

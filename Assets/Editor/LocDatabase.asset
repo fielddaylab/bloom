@@ -49,7 +49,7 @@ MonoBehaviour:
     - Id: cards.severity.high
       Content: High
     - Id: cards.RunoffPolicy.category
-      Content: Runoff Penalty
+      Content: Runoff Fine
     - Id: cards.RunoffPolicy.none
       Content: None
     - Id: cards.RunoffPolicy.low
