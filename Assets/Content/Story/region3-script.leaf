@@ -9,7 +9,7 @@ $call AddRegionAgeTrigger(3, 10)
 {@advisorEconPrairie}    Howdy there! 
 $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    Heath County could use SAGA's help. 
-{@advisorEconPrairie}    We've got a whole <i>bushel<i> of grain farms... and of course Veldt University!
+{@advisorEconPrairie}    We've got a whole <i>bushel</i> of grain farms... and of course Veldt University!
 {@advisorEconPrairie}    They'll be conducting research about this algae unpleasantness.
 $call AddAutoAlertCondition("Bloom", 2)
 $call Unpause()

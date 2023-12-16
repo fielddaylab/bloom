@@ -11,7 +11,7 @@ High
 
 // RUNOFF
 :: RunoffPolicy.category
-Runoff Penalty
+Runoff Fine
 
 :: RunoffPolicy.none
 None
