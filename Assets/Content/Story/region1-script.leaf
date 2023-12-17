@@ -52,7 +52,7 @@ $call Unpause()
 @cutscene
 @once
 {@advisorEconHill}      Select your <i>Road</i> tool. 
- {@advisorEconHill}     Now click and drag from the <i>grain farm</i> to the <i>CAFO</i>.
+ {@advisorEconHill}     Now CLICK and DRAG from the <i>grain farm</i> to the <i>CAFO</i>.
 {@advisorEconHill}      Each road segment costs $5. 
 {@advisorEcolHill}      You can't build over any of our protected forests or deep water.
 
@@ -83,7 +83,7 @@ $else
     {@advisorEconHill}      and the fine people of Pendleton Hills buy the <i>milk</i>.
     $if !intro:citiesConnected 
         $call PanToBuilding("region1_city1")
-        {@advisorEconHill}      We need a <i>Road</i> to onnect the CAFO to the City.
+        {@advisorEconHill}      We need a <i>Road</i> to connect the CAFO to the City.
     $endif
 $endif
 $call Unpause()
@@ -392,7 +392,7 @@ $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/f
     $call CutsceneClearText()
     $call CutsceneClearImages()
 $call CutsceneEnd()
-{@advisorEcolHill}    Something must be done! I'll keep an eye out for runoff.
+{@advisorEcolHill}    Something must be done! I need to find out what's causing it.
 $call OffsetAlgaeGrowthThreshold(0)
 $call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)
@@ -403,7 +403,7 @@ $call Unpause()
 @conditions     alertType == "bloom", alertRegion == 1, global:runoffDiscovered
 @forcePolicy    Ecology
 {local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
-{local @advisorEcol}    We could address the causes by penalizing runoff.
+{local @advisorEcol}    We could address the causes by penalizing farmes for letting manure sit in the fields.
 $if PolicyIsUnlocked(SkimmingPolicy)
     {local @advisorEcol}    Or use skimmers to clean up.
 $endif
@@ -417,9 +417,9 @@ $endif
 @queued
 $call Pause()
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
-{local @advisorEcon}    Hmm... This supplier is selling at a loss.
-{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to decrease costs.
-{local @advisorEcon}    Perhaps you can build a shorter road, or decrease taxes and penalties.
+{local @advisorEcon}    Hmm... This farmer is losing money when they sell.
+{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
+{local @advisorEcon}    You can build a shorter road, or decrease taxes and penalties.
 $call Unpause()
 
 :: SellAtLossCafo
@@ -428,8 +428,8 @@ $call Unpause()
 @forcePolicy    Economy
 @queued
 $call Pause()
-{local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down operations!
+{local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {local @advisorEcon}    Hmm... This supplier is selling at a loss.
-{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to decrease costs.
-{local @advisorEcon}    Perhaps you can build a shorter road, or decrease taxes and penalties.
+{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
+{local @advisorEcon}    Perhaps you can build a shorter road, or lower taxes and penalties.
 $call Unpause()
