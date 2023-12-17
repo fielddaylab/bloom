@@ -28,16 +28,14 @@ $call ForceDialogueInteraction()
 {@advisorEconHill}      I'm here to advise you on money matters. 
 {@advisorEconHill}      Knoll County is growing...
 {@advisorEconHill}      ...but these farms and businesses aren't connected.
-{@advisorEconHill}      We could use your help here. 
 $call PanToBuilding("region1_city1")
 {@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
 $call PanToBuilding("region1_cafo1")
 {@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
-{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm."
-{@advisorEcolHill}      It's a major operation. 
-{@advisorEcolHill}      Its technical name is a <i>concentrated animal feed operation</i>... a CAFO.
+{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm," its a CAFO.
+{@advisorEcolHill}      Its a huge farm. A CAFO is a <i>concentrated animal feed operation</i>.
 {@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
@@ -53,12 +51,11 @@ $call Unpause()
 @conditions     intro:tutorialComplete = false
 @cutscene
 @once
-{@advisorEconHill}      With your <i>Road</i> tool selected, click and drag from the source to the destination. 
-{@advisorEcolHill}      But don't try to build over any of our forests.
-{@advisorEcolHill}      Those are protected lands!
-{@advisorEcolHill}      And you can't bridge over darker <b>deep water.</b>
-{@advisorEconHill}      Plus each tile will spend from our county budget! Try to be thrifty.
-{@advisorEconHill}      Click "Build" when you have the road the way you like it.
+{@advisorEconHill}      Select your <i>Road</i> tool. 
+ {@advisorEconHill}     Now click and drag from the <i>grain farm</i> to the <i>CAFO</i>.
+{@advisorEconHill}      Each road segment costs $5. 
+{@advisorEcolHill}      You can't build over any of our protected forests or deep water.
+
 
 
 // Step 3: Introduce cities
@@ -71,20 +68,22 @@ $call Pause()
 $set intro:farmsConnected = true
 $if intro:citiesConnected
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Nice work! Now the CAFO can buy <i>grain</i> from the Grain Farm to produce <i>milk</i>.
-    // {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
+    {@advisorEconHill}      Nice work! Now the CAFO can buy <i>grain</i> from the Grain Farm.
+    {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> for fertilizer.
+    {@advisorEconHill}      Its the beginning of our Poop-Economy
+    {local @grainFarmer}    Pippin, its called fertilizer.
+    {local @cafoFarmer}     Yes, its my <i>fertilizer</i> business. <i>NOT </i> my poop business. That's gross.
+
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect city and dairy
-    {@advisorEconHill}      Splendidly planned.
-    {@advisorEconHill}      Notice the <b>receipt</b> that keeps a running total of your plan's cost.
-    // {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm to produce <i>grain</i>.
-    {@advisorEconHill}      Now Bertram can buy Henreitta's <i>grain</i> to produce <i>milk</i>.
-    {@advisorEconHill}      But who buys the <i>milk</i>, you ask?
-    {@advisorEconHill}      The fine people of Pendleton Hills, of course!
+    {@advisorEconHill}      The <b>receipt</b> keeps a running total of your costs.
+    // {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm.
+    {@advisorEconHill}      Now Bertram can buy Henreitta's <i>grain</i> for his cows...
+    {@advisorEconHill}      and the fine people of Pendleton Hills buy the <i>milk</i>.
     $if !intro:citiesConnected 
         $call PanToBuilding("region1_city1")
-        {@advisorEconHill}      We need a <i>Road</i> connecting the CAFO to the City.
+        {@advisorEconHill}      We need a <i>Road</i> to onnect the CAFO to the City.
     $endif
 $endif
 $call Unpause()
