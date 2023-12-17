@@ -9,9 +9,9 @@ $call Pause()
 {@advisorEconForest}    Salutations, Director.
 $call PanToBuilding("region2_city1")
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
-{@advisorEconForest}    Perhaps we could make use of a growth program here?
+{@advisorEconForest}    Can you help us connect our farms and city to help us grow?
 {@advisorEconForest}    Our budget and policies are separate from Knoll County.
-{@advisorEconForest}    Our needs differ from those of our <i>dear</i> neighbors.
+{@advisorEconForest}    We have more CAFOs than our <i>dear</i> neighbors.
 $call Unpause()
 
 :: ecologyAdvisorOpen

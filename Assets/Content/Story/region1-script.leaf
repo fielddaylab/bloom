@@ -68,7 +68,7 @@ $call Pause()
 $set intro:farmsConnected = true
 $if intro:citiesConnected
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Nice work! Now the CAFO can buy <i>grain</i> from the Grain Farm.
+    {@advisorEconHill}      Now the CAFO can buy <i>grain</i> from the Grain Farm.
     {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> for fertilizer.
     {@advisorEconHill}      Its the beginning of our Poop-Economy
     {local @grainFarmer}    Pippin, its called fertilizer.
@@ -101,11 +101,10 @@ $if intro:farmsConnected
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
-    {@advisorEconHill}      Uh-- hmm. I suppose we can start with the City. I'm not picky..
     {@advisorEconHill}      With this road, the City can purchase Bertram's <i>milk</i>.
-    {@advisorEconHill}      But cows need <i>grain</i> to make milk... And Henrietta just happens to sell it!
+    {@advisorEconHill}      But cows need <i>grain</i> to make milk...
     $call PanToBuilding("region1_grain1")
-    {@advisorEconHill}      Plan another road between the CAFO and the Grain Farm.
+    {@advisorEconHill}      Build another road between the CAFO and the Grain Farm.
 $endif
 
 $call Unpause()
@@ -116,10 +115,9 @@ $call Unpause()
 @once
 @cutscene
 $set intro:farmsAndCities = true
-{@advisorEconHill}      Now that everything is connected, we can produce <i>milk</i> Pendleton Hills.
-{@advisorEconHill}      That food fuels the city. 
+{@advisorEconHill}      Now everything is connected.
 {@advisorEconHill}      The city income taxes give SAGA a budget. 
-{@advisorEconHill}      But SAGA may need more funding to continue work in the area.
+{@advisorEconHill}      But SAGA may need more funding.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
 {@advisorEconHill}      See me again from your <b>Economic Advisor</b> button. 
@@ -143,9 +141,8 @@ $call FocusHighlightOn("EconomyAdvisor")
 @cutscene
 @once
 $call FocusClear()
-{@advisorEconHill}      Hello again.
-{@advisorEconHill}      You can see me here any time to adjust Knoll County's policies!
-{@advisorEconHill}      Sales Policy can provide additional revenue for infrastructure projects.
+{@advisorEconHill}     You can adjust Knoll County's policies here.
+{@advisorEconHill}     Sales Policy can provide additional revenue.
 {viewpoliciesnext}
 {@advisorEconHill}      But set it too high, and trade may be hindered.
 
@@ -171,19 +168,18 @@ $endif
 @cutscene
 {local @advisorEcon}    Oh dear.
 $if local:policyType == "SalesTaxPolicy"
-    {local @advisorEcon}    The sales subsidy here has pushed our budget negative!
+    {local @advisorEcon}    The sales subsidy here is costing too much. The county is out of money. 
 $elseif local:policyType == "ImportTaxPolicy"
-    {local @advisorEcon}    The import subsidy here has pushed our budget negative!
+    {local @advisorEcon}    The import subsidy here is costing too much. The county is broke. 
 $endif
 {local @advisorEcon}    I must set it to none for now.
-{local @advisorEcon}    Please consider implementing a tax so we can regain revenue.
+{local @advisorEcon}    If you implement a tax so we can get some money.
 
 :: choseFirstPolicy
 // @cutscene
 $set intro:tutorialComplete = true
 {@advisorEconHill}  A fine choice. 
-{@advisorEconHill}  Remember, you can always use the <b>spacebar</b> to pause and think.
-{@advisorEconHill}  But let's get this economy started, shall we?
+{@advisorEconHill}  Let's get this economy started, shall we?
 $call OffsetAlgaeGrowthThreshold(-2)
 $call ActivateSim()
 
@@ -194,7 +190,7 @@ $call ActivateSim()
 // $call Pause()
 // $call PanToBuilding("region1_cafo1")
 // {@advisorEcolHill}      This dairy farm is letting manure sit.
-// {@advisorEcolHill}  It is sinking into the groundwater and will get into the lakes. 
+// {@advisorEcolHill}  It is sinking into the groundwater and will run off into the lakes. 
 // {@advisorEconHill}      Indeed. They simply have no more favorable alternatives.
 // {@advisorEcolHill}      This could be bad for the future of the lakes...
 // $call Unpause()
@@ -208,13 +204,12 @@ $call Pause()
 $set intro:exporterFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
-{@advisorEconHill}      Henrietta's grain farm imported some <i>commercial fertilizer</i>.
+{@advisorEconHill}      Henrietta's grain farm imported some <i>fertilizer</i>.
 {local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
 {local @grainFarmer}    ...and its cheap to ship to my farm.
 {@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
 {@advisorEcolHill}     This could disrupt the ecological balance!
-{@advisorEconHill}      Well, I'm afraid this is the only economically feasible option.
-{@advisorEcolHill}      Hm... We need to look for a better way...
+{@advisorEconHill}      I'm afraid this is the only economically feasible option.
 $call AddAutoAlertCondition("Bloom", 1)
 $call Unpause()
 
@@ -289,19 +284,19 @@ $elseif local:policyType == "SalesTaxPolicy"
     $elseif local:policyIndex == 2
         {local @advisorEcon}    With high sales tax, you'll gain $4 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    With a sales subsidy, your funds will incentivize buying with $4 for every purchase.
+        {local @advisorEcon}    Sales subsidy encourages buyers with $4 discount for every purchase. This money comes from the SAGA county budget.
     $endif
 $elseif local:policyType == "ImportTaxPolicy"
     $if     local:policyIndex == 0
         {local @advisorEcon}    With no import policy, goods will generally go to the nearest buyer.
     $elseif local:policyIndex == 1
-        {local @advisorEcon}    A low <b>import subsidy</b> will gently encourage buying resources from outside regions.
+        {local @advisorEcon}    A low <b>import subsidy</b> will gently encourage locals to buy resources from outside regions.
         {local @advisorEcon}    But its funding will come from your budget!
     $elseif local:policyIndex == 2
-        {local @advisorEcon}    A high <b>import subsidy</b> will strongly encourage buying resources from outside regions.
+        {local @advisorEcon}    A high <b>import subsidy</b> will strongly encourage locals to buy resources from outside regions.
         {local @advisorEcon}    But its funding will come from your budget!
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    An <b>import tax</b> will discourage buying resources from other counties.
+        {local @advisorEcon}    An <b>import tax</b> will discourage locals to buy resources from other counties.
         {local @advisorEcon}    But you'll gain some funding if they do!
     $endif
 $endif
