@@ -12,7 +12,7 @@ namespace Zavala.Scripting
     [SysUpdate(FieldDay.GameLoopPhase.Update, 100100, ZavalaGame.SimulationUpdateMask)] // after EventActorSystem
     public sealed class AlertCreationSystem : ComponentSystemBehaviour<EventActor>
     {
-        static private readonly Vector3 EventDisplayOffset = new Vector3(0, 0.5f, 0);
+        static private readonly Vector3 EventDisplayOffset = new Vector3(0, 1.0f, 0);
 
         [SerializeField] private SpriteLibrary m_AlertAssets;
 
