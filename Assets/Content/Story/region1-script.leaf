@@ -229,6 +229,7 @@ $call Unpause()
 :: skipTutorial
 @trigger    TutorialSkipped
 $call CutsceneEnd()
+$call FocusClear()
 {@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
 $set intro:tutorialComplete = true
 $set intro:pendingPolicy = true
@@ -279,14 +280,14 @@ $elseif local:policyType == "SkimmingPolicy"
     $if     local:policyIndex == 0
         {local @advisorEcol}    With no skimming, algae will stick around until phosphorus decreases.
     $elseif local:policyIndex == 1
-        {local @advisorEcol}    Low skimming will clear algae from 1 water area for $1 each tick.
+        {local @advisorEcol}    Low skimming will clear algae from 1 water area for a recurring $1 cost.
         {local @advisorEcol}    But the phosphorus remains!
     $elseif local:policyIndex == 2
-        {local @advisorEcol}    High skimming will clear algae from 2 water areas for $2 each tick.
+        {local @advisorEcol}    High skimming will clear algae from 2 water areas for a recurring $2 cost.
         {local @advisorEcol}    But the phosphorus remains!
     $elseif local:policyIndex == 3
         {local @advisorEcol}    Dredging will clear algae from 3 water areas <b>and</b> remove some phosphorus.
-        {local @advisorEcol}    But it will cost $4 each tick!
+        {local @advisorEcol}    But it will cost a recurring $4!
     $endif
 $elseif local:policyType == "SalesTaxPolicy"
     $if     local:policyIndex == 0

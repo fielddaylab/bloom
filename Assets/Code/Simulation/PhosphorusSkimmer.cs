@@ -10,6 +10,9 @@ namespace Zavala.Sim
         public float AlgaeSkimAmt;
         public int PhosSkimAmt;
         public SkimmerType Type;
+
+        public MeshFilter Mesh;
+        public MeshRenderer Renderer;
     }
 
     public enum SkimmerType {

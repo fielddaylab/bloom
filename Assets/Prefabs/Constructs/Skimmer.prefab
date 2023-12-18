@@ -119,6 +119,8 @@ MonoBehaviour:
   AlgaeSkimAmt: 0.15
   PhosSkimAmt: 2
   Type: 0
+  Mesh: {fileID: 3715709998471520561}
+  Renderer: {fileID: 1473853312814274043}
 --- !u!114 &1976245010908455185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,5 +249,15 @@ PrefabInstance:
 --- !u!4 &305964518738767508 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 29127c188e8083344bcac38a6f315a24, type: 3}
+  m_PrefabInstance: {fileID: 267322504009304447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1473853312814274043 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 29127c188e8083344bcac38a6f315a24, type: 3}
+  m_PrefabInstance: {fileID: 267322504009304447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &3715709998471520561 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: -5754084199372789682, guid: 29127c188e8083344bcac38a6f315a24, type: 3}
   m_PrefabInstance: {fileID: 267322504009304447}
   m_PrefabAsset: {fileID: 0}
