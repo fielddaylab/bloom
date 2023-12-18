@@ -48,6 +48,7 @@ $endif
 $if PolicyIsUnlocked(SkimmingPolicy)
     {@advisorEcolPrairie}    Or use skimmers to clean up.
 $endif
+{viewpoliciesnext}
 {@advisorEcolPrairie}    What do you think?
 
 
@@ -100,5 +101,6 @@ $call UnlockAdvisorModule("Economy")
 {local @advisorEcon}    ...not that I was jealous or anything.
 {@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph and a <b>Funding Target</b> bar chart.
 {@advisorEconPrairie}   Those should give you some targets for a healthy economy.
+{viewpoliciesnext}
 {local @advisorEcon}    Splendid....
 $call Unpause()

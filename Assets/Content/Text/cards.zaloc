@@ -1,5 +1,8 @@
 # basePath cards
 
+:: severity.notset
+Not Set
+
 :: severity.none
 None
 

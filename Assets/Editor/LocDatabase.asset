@@ -42,6 +42,8 @@ MonoBehaviour:
     Asset: {fileID: -4270002856181823206, guid: 41cbe5b48a722554ead67c28a831c4b5, type: 3}
     LastLine: 0
     Records:
+    - Id: cards.severity.notset
+      Content: Not Set
     - Id: cards.severity.none
       Content: None
     - Id: cards.severity.low
@@ -199,7 +201,7 @@ MonoBehaviour:
     - Id: ui.target.import
       Content: Import Tax Revenue
     - Id: ui.target.penalties
-      Content: Penalty Revenue
+      Content: Fine Revenue
     - Id: ui.title.title
       Content: Title
     - Id: ui.lens.phosphorus.label

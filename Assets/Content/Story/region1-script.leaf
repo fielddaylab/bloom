@@ -110,7 +110,6 @@ $endif
 $call Unpause()
 
 :: farmsAndCitiesConnected 
-@forcePolicy    Economy
 @conditions     intro:tutorialComplete = false
 @once
 @cutscene
@@ -136,21 +135,33 @@ $call FocusHighlightOn("EconomyAdvisor")
 
 :: letsGetStarted
 @trigger AdvisorOpened
-@conditions     advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete = false
+@conditions     advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete == false
 @forcePolicy    Economy
 @cutscene
 @once
 $call FocusClear()
+$set intro:pendingPolicy = true
 {@advisorEconHill}     You can adjust Knoll County's policies here.
 {@advisorEconHill}     Sales Policy can provide additional revenue.
 {viewpoliciesnext}
-{@advisorEconHill}      But set it too high, and trade may be hindered.
+{@advisorEconHill}     But set it too high, and trade may be hindered.
+
+:: closedWithoutSettingPolicy
+@trigger    AdvisorClosed
+@conditions intro:pendingPolicy == true, intro:tutorialComplete == false
+@forcePolicy    Economy
+@cutscene
+{@advisorEconHill}      Hold on there!
+{@advisorEconHill}      Make sure to set a Sales Policy before you leave.
+{viewpoliciesnext}
+{@advisorEconHill}      You can set it to None if you like, but we ought to decide.
 
 :: setPolicyReminder
 @trigger AdvisorOpened
-@conditions advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete = false, Visited("region1.letsGetStarted")
+@conditions advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete == false, Visited("region1.letsGetStarted")
 @forcePolicy    Economy
 $call FocusClear()
+{viewpoliciesnext}
 {@advisorEconHill}      Choose a Sales Policy and we can continue.
 
 :: policySet
@@ -178,6 +189,7 @@ $endif
 :: choseFirstPolicy
 // @cutscene
 $set intro:tutorialComplete = true
+$set intro:pendingPolicy = false
 {@advisorEconHill}  A fine choice. 
 {@advisorEconHill}  Let's get this economy started, shall we?
 $call OffsetAlgaeGrowthThreshold(-2)
@@ -197,11 +209,11 @@ $call ActivateSim()
 
 :: specialDelivery
 @trigger    ExternalImport
-@conditions !intro:exporterFound
+// @conditions !intro:exporterFound
 @cutscene
 @once
 $call Pause()
-$set intro:exporterFound = true
+// $set intro:exporterFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
 {@advisorEconHill}      Henrietta's grain farm imported some <i>fertilizer</i>.
@@ -219,7 +231,7 @@ $call Unpause()
 $call CutsceneEnd()
 {@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
 $set intro:tutorialComplete = true
-$set intro:exporterFound = true
+$set intro:pendingPolicy = true
 $call UnlockCards(SalesTaxPolicy)
 $call AddAutoAlertCondition("Bloom", 1)
 $call OffsetAlgaeGrowthThreshold(-2)
@@ -257,9 +269,9 @@ $if local:policyType == "RunoffPolicy"
     $if     local:policyIndex == 0
         {local @advisorEcol}    With no runoff fine, CAFOs will only sell manure if it earns a profit.
     $elseif local:policyIndex == 1
-        {local @advisorEcol}    With a low runoff fine, CAFOs will sell manure if the loss is less than $4 per unit.
-    $elseif local:policyIndex == 2
         {local @advisorEcol}    With a low runoff fine, CAFOs will sell manure if the loss is less than $8 per unit.
+    $elseif local:policyIndex == 2
+        {local @advisorEcol}    With a high runoff fine, CAFOs will sell manure if the loss is less than $16 per unit.
     $elseif local:policyIndex == 3
         {local @advisorEcol}    With a very high runoff fine, CAFOs will try to sell manure, even if it loses money.
     $endif
@@ -284,16 +296,17 @@ $elseif local:policyType == "SalesTaxPolicy"
     $elseif local:policyIndex == 2
         {local @advisorEcon}    With high sales tax, you'll gain $4 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    Sales subsidy encourages buyers with $4 discount for every purchase. This money comes from the SAGA county budget.
+        {local @advisorEcon}    Sales subsidy encourages buyers with $4 discount for every purchase. 
+        {local @advisorEcon}    But that money comes from the SAGA county budget!
     $endif
 $elseif local:policyType == "ImportTaxPolicy"
     $if     local:policyIndex == 0
         {local @advisorEcon}    With no import policy, goods will generally go to the nearest buyer.
     $elseif local:policyIndex == 1
-        {local @advisorEcon}    A low <b>import subsidy</b> will gently encourage locals to buy resources from outside regions.
+        {local @advisorEcon}    A low <b>import subsidy</b> will gently encourage locals to buy resources from other counties.
         {local @advisorEcon}    But its funding will come from your budget!
     $elseif local:policyIndex == 2
-        {local @advisorEcon}    A high <b>import subsidy</b> will strongly encourage locals to buy resources from outside regions.
+        {local @advisorEcon}    A high <b>import subsidy</b> will strongly encourage locals to buy resources from other counties.
         {local @advisorEcon}    But its funding will come from your budget!
     $elseif local:policyIndex == 3
         {local @advisorEcon}    An <b>import tax</b> will discourage locals to buy resources from other counties.
@@ -316,12 +329,12 @@ $call ForcePolicyInstant("Economy")
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(1), RegionUnlocked(3)
 @priority       High
-// @forcePolicy    Ecology
+@forcePolicy    Ecology
 @once
-$call ForcePolicyInstant("Ecology")
 {@advisorEcolHill}      Ugh... Those Heath County hayseeds always irked me.
 {@advisorEcolHill}      They think they're better than everyone because of their fancy college.
 {@advisorEcolHill}      Plus their straw hats are weird!
+{viewpoliciesnext}
 {@advisorEcolHill}      Anyway, what can I help you with?
 
 
@@ -351,6 +364,7 @@ $set global:runoffDiscovered = true
 {local @cafoFarmer}     A fine!? I'm barely scraping by as is. You'd have me selling at a loss!
 {@advisorEconHill}      Hrm... A fine <i>could</i> incentivize selling manure...
 {@advisorEconHill}      But Bertram is correct. Selling at a loss could disrupt the supply chain.
+{viewpoliciesnext}
 {@advisorEcolHill}      What do you think, boss?
 $call UnlockCards(RunoffPolicy)
 
@@ -403,10 +417,12 @@ $call Unpause()
 @conditions     alertType == "bloom", alertRegion == 1, global:runoffDiscovered
 @forcePolicy    Ecology
 {local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
-{local @advisorEcol}    We could address the causes by penalizing farmes for letting manure sit in the fields.
+{local @advisorEcol}    We could address the causes by penalizing farms for letting manure sit in the fields.
 $if PolicyIsUnlocked(SkimmingPolicy)
     {local @advisorEcol}    Or use skimmers to clean up.
 $endif
+{viewpoliciesnext}
+{local @advisorEcol}    Your choice, boss.
 
 // TODO: add event/trigger for city stress (nearby bloom and/or lacking milk)
 
@@ -419,6 +435,7 @@ $call Pause()
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
 {local @advisorEcon}    Hmm... This farmer is losing money when they sell.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
+{viewpoliciesnext}
 {local @advisorEcon}    You can build a shorter road, or decrease taxes and penalties.
 $call Unpause()
 
@@ -431,5 +448,6 @@ $call Pause()
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {local @advisorEcon}    Hmm... This supplier is selling at a loss.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
+{viewpoliciesnext}
 {local @advisorEcon}    Perhaps you can build a shorter road, or lower taxes and penalties.
 $call Unpause()

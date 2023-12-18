@@ -179,6 +179,7 @@ namespace Zavala.UI {
 
         private void SetCutsceneMode(bool cutscene) {
             m_CloseButton.gameObject.SetActive(!cutscene);
+            // m_PolicyCloseButton.gameObject.SetActive(!cutscene);
         }
 
         #endregion // Display
@@ -270,6 +271,9 @@ namespace Zavala.UI {
             Pin.Unpin();
             SimTimeInput.UnpauseEvent();
             Game.Events.Dispatch(GameEvents.DialogueClosing);
+            if (m_CurrentDef != null && m_CurrentDef.IsAdvisor) {
+                ScriptUtility.Trigger(GameTriggers.AdvisorClosed);
+            }
             yield return null;
         }
 
