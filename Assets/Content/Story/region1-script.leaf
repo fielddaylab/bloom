@@ -355,6 +355,7 @@ $call ForcePolicyInstant("Economy")
 @conditions     alertType == "excess-runoff", alertRegion == 1
 @forcePolicy    Ecology
 @queued
+@cutscene
 @once
 $call Pause()
 $set global:runoffDiscovered = true
@@ -362,12 +363,12 @@ $set global:runoffDiscovered = true
 {@advisorEcolHill}      That must be behind those algae blooms.
 {@advisorEconHill}      Maybe so, but they simply have no more favorable alternatives.
 {@advisorEcolHill}      Well, let's make it less favorable. How about a <b>fine</b> for runoff?
+$call UnlockCards(RunoffPolicy)
 {local @cafoFarmer}     A fine!? I'm barely scraping by as is. You'd have me selling at a loss!
 {@advisorEconHill}      Hrm... A fine <i>could</i> incentivize selling manure...
 {@advisorEconHill}      But Bertram is correct. Selling at a loss could disrupt the supply chain.
 {viewpoliciesnext}
 {@advisorEcolHill}      What do you think, boss?
-$call UnlockCards(RunoffPolicy)
 
 :: genericRunoff
 @trigger        AlertExamined

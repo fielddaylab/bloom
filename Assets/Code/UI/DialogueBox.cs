@@ -158,9 +158,6 @@ namespace Zavala.UI {
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
             }
-            if (m_PoliciesActive) {
-                m_ButtonText.TryPopulate("Next");
-            }
             m_TransitionRoutine.Replace(ShowRoutine());
             return m_LocalHandler;
         }
@@ -317,6 +314,7 @@ namespace Zavala.UI {
             }
             m_FullyExpanded = true;
             ForceAdvisorPolicies = AdvisorType.None;
+            m_ButtonText.TryPopulate("Next");
             yield return null;
         }
 
