@@ -111,7 +111,9 @@ $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   Import <b>Subsidies</b> will encourage buying from other regions - but it'll come from your budget.
 {@advisorEconPrairie}   While an Import <b>Tax</b> will <i>discourage</i> buying from other regions.
 {viewpoliciesnext}
-{@advisorEconForest}    Hmph. Well I say everyone should just buy local. But it's up to you, Director.
+{@advisorEconForest}    Hmph. Well I say everyone should just buy local. 
+$call ForcePolicyInstant("Economy")
+{@advisorEconForest}    But it's up to you, Director.
 $call Unpause()
 
 :: testBloomTriggerForest
