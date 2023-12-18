@@ -52,9 +52,9 @@ $call Unpause()
 @cutscene
 @once
 {@advisorEconHill}      Select your <i>Road</i> tool. 
- {@advisorEconHill}     Now CLICK and DRAG from the <i>grain farm</i> to the <i>CAFO</i>.
-{@advisorEconHill}      Each road segment costs $5. 
 {@advisorEcolHill}      You can't build over any of our protected forests or deep water.
+{@advisorEconHill}      Each road segment costs $5. 
+{@advisorEconHill}      Now CLICK and DRAG from the <i>grain farm</i> to the <i>CAFO</i>.
 
 
 
