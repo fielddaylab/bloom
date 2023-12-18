@@ -274,8 +274,11 @@ MonoBehaviour:
     m_Source: location.shared.digester
     m_HashValue: 3205151346
   InfoLabel:
-    m_Source: 
-    m_HashValue: 0
+    m_Source: location.shared.digesterInfo
+    m_HashValue: 3249712714
+  DescriptionLabel:
+    m_Source: location.shared.digesterDesc
+    m_HashValue: 3947837843
   Icon: {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
 --- !u!114 &7613557166810901527
 MonoBehaviour:

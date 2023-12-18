@@ -17,10 +17,18 @@ namespace Zavala.UI.Info {
         static private readonly Color GrainFarmColor = Colors.Hex("#C8E295");
         static private readonly Color DairyFarmColor = Colors.Hex("#E2CD95");
         static private readonly Color CityColor = Colors.Hex("#CDF6ED");
-        static private readonly Color DigesterColor = Colors.Hex("#E2CD95");
+        static private readonly Color DigesterColor = Colors.Hex("#F2D779");
+        static private readonly Color TollColor = Colors.Hex("#E8F279");
+        static private readonly Color StorageColor = Colors.Hex("#F2D779");
+        static private readonly Color DepotColor = Colors.Hex("#FFC34E");
 
         static private readonly int NarrowWidth = 300; 
         static private readonly int WideWidth = 460;
+        static private readonly int WideHeight = 259;
+        static private readonly int SmallWidth = 220;
+        static private readonly int SmallHeight =  150;
+
+        static private readonly int WideNumRows = 3;
 
         #region Inspector
 
@@ -44,6 +52,12 @@ namespace Zavala.UI.Info {
         [SerializeField] private InfoPopupMarket m_MarketContentsCols;
         [SerializeField] private GameObject m_MarketContentsColsGroup;
         [SerializeField] private InfoPopupColumnHeaders m_MarketContentsColHeaders;
+
+        [SerializeField] private GameObject m_DescriptionGroup;
+        [SerializeField] private TMP_Text m_DescriptionText;
+
+        public GameObject m_BestOptionBanner;
+        public TMP_Text m_BestOptionText;
 
         #endregion // Inspector
 
@@ -88,50 +102,87 @@ namespace Zavala.UI.Info {
             }
 
             m_SelectedThing = thing;
-            m_Mode = thing.Position.Type;
+            if (thing.Position)
+            {
+                m_Mode = thing.Position.Type;
+            }
+            else
+            {
+                m_Mode = thing.OverrideType;
+            }
             m_SelectedLocation = thing.GetComponent<LocationDescription>();
+
+            m_SelectedPurchaser = null;
+            m_SelectedRequester = null;
+            m_SelectedSupplier = null;
+            m_PurchaseContents.gameObject.SetActive(false);
+            m_MarketContentsRows.gameObject.SetActive(false);
+            m_MarketContentsColsGroup.gameObject.SetActive(false);
+            m_DescriptionGroup.gameObject.SetActive(false);
+            m_DescriptionText.gameObject.SetActive(false);
+
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
-                    m_SelectedPurchaser = null;
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.OverrideTitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel) + " : " + Loc.Find(m_SelectedLocation.RegionId));
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
-                    m_SelectedSupplier = null;
-                    m_PurchaseContents.gameObject.SetActive(false);
-                    m_MarketContentsRows.gameObject.SetActive(false);
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = GrainFarmColor;
                     break;
                 }
 
                 case BuildingType.DairyFarm: {
-                    m_SelectedPurchaser = null;
-                    m_SelectedRequester = null;
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.OverrideTitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel) + " : " + Loc.Find(m_SelectedLocation.RegionId));
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
-                    m_PurchaseContents.gameObject.SetActive(false);
-                    m_MarketContentsRows.gameObject.SetActive(false);
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = DairyFarmColor;
                     break;
-                }
+                    }
 
                 case BuildingType.City: {
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
-                    m_SelectedRequester = null;
-                    m_SelectedSupplier = null;
-                    m_MarketContentsRows.gameObject.SetActive(false);
-                    m_MarketContentsColsGroup.gameObject.SetActive(false);
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
                     break;
-                }
+                    }
 
                 case BuildingType.Digester: {
-                    m_SelectedPurchaser = null;
-                    m_SelectedRequester = null;
-                    m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
-                    m_PurchaseContents.gameObject.SetActive(false);
-                    m_MarketContentsRows.gameObject.SetActive(false);
-                    m_MarketContentsColsGroup.gameObject.SetActive(true);
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_HeaderBG.color = DigesterColor;
+                    m_DescriptionGroup.gameObject.SetActive(true);
+                    m_DescriptionText.gameObject.SetActive(true);
+                    break;
+                }
+
+                case BuildingType.Storage:
+                {
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
+                    m_HeaderBG.color = StorageColor;
+                    m_DescriptionGroup.gameObject.SetActive(true);
+                    m_DescriptionText.gameObject.SetActive(true);
+                    break;
+                }
+
+                case BuildingType.TollBooth:
+                {
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_HeaderBG.color = TollColor;
+                    m_DescriptionGroup.gameObject.SetActive(true);
+                    m_DescriptionText.gameObject.SetActive(true);
+                    break;
+                }
+
+                case BuildingType.ExportDepot:
+                {
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
+                    m_HeaderBG.color = DepotColor;
+                    m_DescriptionGroup.gameObject.SetActive(true);
+                    m_DescriptionText.gameObject.SetActive(true);
                     break;
                 }
             }
@@ -144,9 +195,6 @@ namespace Zavala.UI.Info {
         }
 
         private void PopulateHeader() {
-            m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
-            m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
-
             ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
             ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, m_SelectedLocation.CharacterId);
 
@@ -158,18 +206,31 @@ namespace Zavala.UI.Info {
 
         private void PopulateShippingWide()
         {
-            Root.sizeDelta = new Vector2(WideWidth, 400);
+            Root.sizeDelta = new Vector2(WideWidth - 80, WideHeight);
 
-            int count = Math.Min(m_QueryResults.Count, 3);
-            ConfigureCols(count);
+            int queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
+            ConfigureCols(WideNumRows);
 
             MarketConfig config = Game.SharedState.Get<MarketConfig>();
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < WideNumRows; i++)
             {
-                var results = m_QueryResults[i];
-                InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position);
-                InfoPopupMarketUtility.LoadProfitIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
+                if (i < queryCount)
+                {
+                    var results = m_QueryResults[i];
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, !results.Requester.IsLocalOption, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadProfitIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
+                }
+                else
+                {
+                    // load empty col group
+                    InfoPopupMarketUtility.LoadEmptyProfitCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOptionBanner, i);
+                }
+            }
+            InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
+            if (m_BestOptionBanner.activeSelf)
+            {
+                m_BestOptionText.SetText(Loc.Find("ui.popup.info.selling"));
             }
 
             if (gameObject.activeSelf)
@@ -181,19 +242,45 @@ namespace Zavala.UI.Info {
 
         private void PopulatePurchasingWide()
         {
-            Root.sizeDelta = new Vector2(WideWidth, 400);
+            Root.sizeDelta = new Vector2(WideWidth, WideHeight);
 
-            int count = Math.Min(m_QueryResults.Count, 3);
-            ConfigureCols(count);
+            int queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
+            ConfigureCols(queryCount);
 
             MarketConfig config = Game.SharedState.Get<MarketConfig>();
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < WideNumRows; i++)
             {
-                var results = m_QueryResults[i];
-                InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position);
-                InfoPopupMarketUtility.LoadCostsIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
+                if (i < queryCount)
+                {
+                    var results = m_QueryResults[i];
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, true, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadCostsIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
+                }
+                else
+                {
+                    // load empty col group
+                    InfoPopupMarketUtility.LoadEmptyCostsCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOptionBanner, i);
+                }
             }
+            InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
+            if (m_BestOptionBanner.activeSelf)
+            {
+                m_BestOptionText.SetText(Loc.Find("ui.popup.info.buying"));
+            }
+
+            if (gameObject.activeSelf)
+            {
+                m_Layout.ForceRebuild(true);
+                m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
+            }
+        }
+
+        private void PopulateDescriptionSmall()
+        {
+            Root.sizeDelta = new Vector2(SmallWidth, SmallHeight);
+
+            m_DescriptionText.SetText(Loc.Find(m_SelectedLocation.DescriptionLabel));
 
             if (gameObject.activeSelf)
             {
@@ -286,15 +373,19 @@ namespace Zavala.UI.Info {
 
         private void ConfigureCols(int count)
         {
+            /*
             for (int i = 0; i < m_MarketContentsCols.Dividers.Length; i++)
             {
                 m_MarketContentsCols.Dividers[i].SetActive(count > i + 1);
             }
+            */
 
+            /*
             for (int i = 0; i < m_MarketContentsCols.LocationCols.Length; i++)
             {
                 m_MarketContentsCols.LocationCols[i].gameObject.SetActive(count > i);
             }
+            */
         }
 
         private void UpdateData(bool forceRefresh) {
@@ -358,21 +449,38 @@ namespace Zavala.UI.Info {
                     break;
                 }
 
-                case BuildingType.Digester:
+                case BuildingType.Digester: {
+                    /*
+                    if (m_ConnectionsDirty || forceRefresh)
                     {
-                        if (m_ConnectionsDirty || forceRefresh)
-                        {
-                            m_QueryResults.Clear();
-                            MarketUtility.GatherShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
-                        }
-                        else
-                        {
-                            MarketUtility.UpdateShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
-                        }
-                        m_QueryResults.Sort(SortResultsDescending);
-                        PopulateShippingWide();
-                        break;
+                        m_QueryResults.Clear();
+                        MarketUtility.GatherShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
                     }
+                    else
+                    {
+                        MarketUtility.UpdateShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
+                    }
+                    m_QueryResults.Sort(SortResultsDescending);
+                    PopulateShippingWide();
+                    */
+                    PopulateDescriptionSmall();
+                    break;
+                }
+
+                case BuildingType.Storage: { 
+                    PopulateDescriptionSmall();
+                    break;
+                }
+
+                case BuildingType.TollBooth: {
+                    PopulateDescriptionSmall();
+                    break;
+                }
+
+                case BuildingType.ExportDepot: {
+                    PopulateDescriptionSmall();
+                    break;
+                }
             }
 
             m_ConnectionsDirty = false;

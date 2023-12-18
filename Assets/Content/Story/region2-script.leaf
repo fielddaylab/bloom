@@ -86,6 +86,7 @@ $call UnlockShopItem("Storage")
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
 {@advisorEcolForest}    I say we build more <b>Storage</b> units.
 {@advisorEconForest}    Those could help, but they won't come cheap.
+{viewpoliciesnext}
 {@advisorEcolForest}    A policy adjustment, then?
 $call ForcePolicyInstant("Ecology")
 
@@ -109,7 +110,10 @@ $call Pause()
 $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   Import <b>Subsidies</b> will encourage buying from other regions - but it'll come from your budget.
 {@advisorEconPrairie}   While an Import <b>Tax</b> will <i>discourage</i> buying from other regions.
-{@advisorEconForest}    Hmph. Well I say everyone should just buy local. But it's up to you, Director.
+{viewpoliciesnext}
+{@advisorEconForest}    Hmph. Well I say everyone should just buy local. 
+$call ForcePolicyInstant("Economy")
+{@advisorEconForest}    But it's up to you, Director.
 $call Unpause()
 
 :: testBloomTriggerForest
@@ -122,6 +126,7 @@ $call Pause()
 {@advisorEcolForest}    Ugh... I can't believe there's an algae bloom <i>here!</i>
 {@advisorEcolForest}    Those <i>hill-dwellers</i> should have done more to stop it.
 {@advisorEcolHill}      Pft! That's rich coming from <i>Stellar Forest Management</i> over here.
+{viewpoliciesnext}
 {@advisorEcolForest}    It's not our fault you let your <i>filth</i> flow down here.
 $call Unpause()
 
@@ -137,4 +142,5 @@ $endif
 $if PolicyIsUnlocked(SkimmingPolicy)
     {@advisorEcolForest}    Or use skimmers to clean up.
 $endif
+{viewpoliciesnext}
 {@advisorEcolForest}    But you're the boss.

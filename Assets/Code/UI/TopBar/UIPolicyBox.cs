@@ -21,6 +21,7 @@ namespace Zavala.UI {
         #region Inspector
 
         [SerializeField] private Button m_Button;
+        public Graphic NotSetHighlight;
 
         public CanvasGroup Group;
         public TMP_Text LevelText;
@@ -96,8 +97,14 @@ namespace Zavala.UI {
 
         static public void UpdateLevelText(PolicyState policyState, SimGridState grid, UIPolicyBox box)
         {
-            PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[box.PolicyType];
-            box.LevelText.text = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());;
+            if (policyState.Policies[grid.CurrRegionIndex].EverSet[box.PolicyType]) {
+                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[box.PolicyType];
+                box.LevelText.text = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());
+                box.NotSetHighlight.gameObject.SetActive(false);
+            } else {
+                box.LevelText.text = Loc.Find("cards.severity.notset");
+                box.NotSetHighlight.gameObject.SetActive(true);
+            }
         }
 
         static public void SetPopupAmt(UIPolicyBoxPopup popup, int amt)

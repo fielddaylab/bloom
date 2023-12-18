@@ -16,6 +16,9 @@ namespace Zavala.Economy {
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
+            if (Game.SharedState.Get<TutorialState>().CurrState < TutorialState.State.ActiveSim) {
+                return;
+            }
 
             purchaser.RequestAmountHistory.PushBack(purchaser.RequestAmount);
 
@@ -34,7 +37,7 @@ namespace Zavala.Economy {
                 HexVector vec = HexVector.FromWorld(purchaser.transform.position, world.WorldSpace);
                 ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseMade, grid.HexSize.FastPosToIndex(vec));
             } else {
-                MarketUtility.QueueMultipleSingleRequests(purchaser.Request, purchaser.RequestAmount);
+                MarketUtility.QueueRequest(purchaser.Request, purchaser.RequestAmount);
                 DebugDraw.AddWorldText(purchaser.transform.position, "Requesting!", Color.yellow, 2);
             }
         }

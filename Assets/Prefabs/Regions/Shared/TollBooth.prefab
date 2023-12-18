@@ -105,6 +105,9 @@ GameObject:
   - component: {fileID: 7291294420475072052}
   - component: {fileID: 6065373712702326176}
   - component: {fileID: 2805383202032171185}
+  - component: {fileID: 5155444624327729695}
+  - component: {fileID: 2498485658802417394}
+  - component: {fileID: 8600948680688574107}
   m_Layer: 7
   m_Name: TollBooth
   m_TagString: Untagged
@@ -169,6 +172,54 @@ MonoBehaviour:
   AToBDirection: 0
   RoadA: {fileID: 0}
   RoadB: {fileID: 0}
+--- !u!114 &5155444624327729695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8ab6ff6bf4dc145a146cff94c9cda2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TitleLabel:
+    m_Source: location.shared.toll
+    m_HashValue: 2240721576
+  InfoLabel:
+    m_Source: 
+    m_HashValue: 0
+  DescriptionLabel:
+    m_Source: location.shared.tollDesc
+    m_HashValue: 671162777
+  Icon: {fileID: 0}
+--- !u!114 &2498485658802417394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f47a41270c43b3b43ba993419088b887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OverrideType: 10
+--- !u!65 &8600948680688574107
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.7, y: 1, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &3348613116169845252
 PrefabInstance:
   m_ObjectHideFlags: 0

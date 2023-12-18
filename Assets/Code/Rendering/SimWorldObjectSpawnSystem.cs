@@ -70,6 +70,7 @@ namespace Zavala.World
                 if (desc != null) {
                     desc.CharacterId = spawn.Data.CharacterId;
                     desc.TitleLabel = spawn.Data.TitleId;
+                    desc.RegionId = RegionUtility.GetNameLong(spawn.Data.RegionIndex);
                 }
             }
 

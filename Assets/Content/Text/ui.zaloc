@@ -10,7 +10,7 @@ Sales Tax Revenue
 Import Tax Revenue
 
 :: target.penalties
-Penalty Revenue
+Fine Revenue
 
 :: title.title
 Title
@@ -30,3 +30,8 @@ Total Fertilizer Market Share
 :: lens.market.targets.header
 Market Targets
 
+:: popup.info.buying
+Buying:
+
+:: popup.info.selling
+Selling to:

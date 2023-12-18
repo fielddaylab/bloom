@@ -78,6 +78,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 50b6ad0648a956c4bbf7a51cb79ef1da, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
   - {fileID: 21300000, guid: 0a49d7a676c7e7a41938c7fad1f49f83, type: 3}
+  - {fileID: 21300000, guid: 4e924ea66dfed87478eda11d6f63cd7e, type: 3}
   - {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
   - {fileID: 21300000, guid: 94bb47f60026b934b86cc4302f2fdf39, type: 3}
   - {fileID: 21300000, guid: 89194bf60d4b2af4c8a261aa564d0611, type: 3}
@@ -137,6 +138,7 @@ SpriteAtlas:
   - CloseX
   - ShopToggle
   - policyicon_import
+  - cutscene_next
   - card-slot-white
   - banner_bloom
   - policyicon_sales

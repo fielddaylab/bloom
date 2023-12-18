@@ -14,6 +14,9 @@ namespace Zavala.Economy {
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
+            if (Game.SharedState.Get<TutorialState>().CurrState < TutorialState.State.ActiveSim) {
+                return;
+            }
 
             if (MarketUtility.CanProduceNow(producer, out ResourceBlock produced)) {
                 ResourceBlock consumed = producer.Requires;

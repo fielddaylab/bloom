@@ -66,6 +66,9 @@ West Smokestack
 :: region5_city3.name
 Central Smokestack
 
+:: desc.digester
+Digesters buy raw manure and turn it into fertilizer that can be shipped for cheap.
+
 # basePath location.shared
 
 :: cafoInfo
@@ -87,7 +90,37 @@ Storage Unit
 Manure Digester
 
 :: digesterInfo
-<i>buys <u>manure</u> / sells <u>digested fertilizer</u></i>
+<i><u>buys</u> raw manure, <u>sells</u> fertilizer</i>
+
+:: digesterDesc
+Digesters buy raw manure and turn it into fertilizer that can be shipped for cheap.
+
+:: toll
+Toll Road
+
+:: tollDesc
+Tolls connect roads from neighboring counties, allowing sales between them.
+
+:: storageInfo
+<i><u>buys</u> and <u>sells</u> raw manure</i>
+
+:: storageDesc
+Storage Units buy fertilizer from CAFOs and sell it for a very minor profit.
+
+:: depot
+Export Depot
+
+:: depotInfo
+<i><u>buys</u> and <u>sells</u> digested fertilizer</i>
+
+:: depotDesc
+Export Depot can sell fertilizer to neighboring counties quickly and cheaply
+
+:: grain
+Fertilizer Suppliers
+
+:: dairy
+Manure Sales
 
 # basePath region
 

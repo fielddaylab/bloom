@@ -30,8 +30,8 @@ $call Unpause()
 @conditions     alertType == "bloom", alertRegion == 5, global:bloomDiscovered
 @forcePolicy    Ecology
 {@advisorEcolUrban}     Algae blooms... This doesn't bode well.
-{@advisorEcolUrban}     We'd best handle these before they reach Smokestack City.
-
+{viewpoliciesnext}
+{@advisorEcolUrban}     We'd best handle these before they reach the city.
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened

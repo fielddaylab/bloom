@@ -14,6 +14,8 @@ namespace Zavala.World {
 
     public class PhosphorusSkimmerState : SharedStateComponent, IRegistrationCallbacks {
         [NonSerialized] public List<SkimmerLocation>[] SkimmerLocsPerRegion;
+        public SimpleMeshConfig SkimmerMesh;
+        public SimpleMeshConfig DredgerMesh;
 
         public void OnRegister() {
             SkimmerLocsPerRegion = new List<SkimmerLocation>[RegionInfo.MaxRegions];
@@ -47,9 +49,9 @@ namespace Zavala.World {
         }
 
         public static void SpawnSkimmersInRegion(int regionIndex, int numSkimmers) {
-            SkimmerPool skimmerPool = ZavalaGame.SharedState.Get<BuildingPools>().Skimmers;
-            SimGridState grid = ZavalaGame.SharedState.Get<SimGridState>();
-            List<SkimmerLocation> locs = ZavalaGame.SharedState.Get<PhosphorusSkimmerState>().SkimmerLocsPerRegion[regionIndex];
+            SkimmerPool skimmerPool = Game.SharedState.Get<BuildingPools>().Skimmers;
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            List<SkimmerLocation> locs = Game.SharedState.Get<PhosphorusSkimmerState>().SkimmerLocsPerRegion[regionIndex];
             for (int i = 0; i < locs.Count; i++) {
                 if (locs[i].PlacedSkimmer != null) {
                     Debug.Log("[PhosphorusSkimmerUtility] Freeing " + locs[i].PlacedSkimmer);
@@ -61,26 +63,35 @@ namespace Zavala.World {
                 }
             }
             for (int i = 0; i < numSkimmers; i++) {
-                PhosphorusSkimmer skim = PlaceSkimmer(grid, skimmerPool, locs[i]);
+                PhosphorusSkimmer skim = PlaceSkimmer(grid, skimmerPool, locs[i], i == 2); // if i == 2: third skimmer, make it a dredger
                 skim.gameObject.SetActive(true);
                 Debug.LogWarning("[PhosphorusSkimmerState] Set skimmer to " + skim);
                 locs[i] = new SkimmerLocation() {
                     TileIndex = locs[i].TileIndex,
                     PlacedSkimmer = skim
                 };
-                if (i == 3) { // dredging policy
-                    // PlacedSkimmer.Type = Dredge
-                }
             }
         }
 
-        public static PhosphorusSkimmer PlaceSkimmer(SimGridState grid, SkimmerPool skimmerPool, SkimmerLocation skimmerLocation) {
+        public static PhosphorusSkimmer PlaceSkimmer(SimGridState grid, SkimmerPool skimmerPool, SkimmerLocation skimmerLocation, bool isDredger) {
             int tileIndex = skimmerLocation.TileIndex;
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             PhosphorusSkimmer skim = skimmerPool.Alloc(worldPos);
+            SetSkimType(skim, isDredger ? SkimmerType.Dredge : SkimmerType.Algae);
             skim.transform.Rotate(0, grid.Random.Next(0, 360), 0);
             return skim;
+        }
+
+        public static void SetSkimType(PhosphorusSkimmer skim, SkimmerType type) {
+            PhosphorusSkimmerState skimState =  Game.SharedState.Get<PhosphorusSkimmerState>();
+            if (type == SkimmerType.Dredge) {
+                skimState.DredgerMesh.Apply(skim.Renderer, skim.Mesh);
+                Debug.LogWarning("[SkimmerState] Attempting to apply dredger mesh...");
+            } else {
+                skimState.SkimmerMesh.Apply(skim.Renderer, skim.Mesh);
+            }
+            skim.Type = type;
         }
     }
 }

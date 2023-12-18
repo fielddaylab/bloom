@@ -110,6 +110,7 @@ namespace Zavala.UI {
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
                 string header, subheader;
                 Sprite portraitImg;
+                Texture2D panelBG = null;
                 // Sprite portraitBG;
                 Color boxColor, panelColor, highlightColor, nameColor, titleColor, textColor;
                 bool isAdvisor;              
@@ -128,13 +129,14 @@ namespace Zavala.UI {
                         titleColor = charDef.TitleColor;
                         textColor = charDef.TextColor;
                         if (isAdvisor) {
+                            panelBG = charDef.PanelBackground;
                             foreach (PolicySlot slot in m_PolicySlots) {
                                 slot.SetColors(highlightColor, panelColor, boxColor);
                                 m_PolicyBackground.color = panelColor;
                             }
                         }
                         if (m_PoliciesActive) CollapsePolicyUI(); // a new character with no policies will collapse policies
-                        DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitImg, !isAdvisor, boxColor, highlightColor, nameColor, titleColor, textColor);
+                        DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, panelBG, portraitImg, !isAdvisor, boxColor, highlightColor, nameColor, titleColor, textColor);
                         m_CurrentDef = charDef;
                     }
                 } else { // charDef is null
@@ -158,9 +160,6 @@ namespace Zavala.UI {
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
             }
-            if (m_PoliciesActive) {
-                m_ButtonText.TryPopulate("Next");
-            }
             m_TransitionRoutine.Replace(ShowRoutine());
             return m_LocalHandler;
         }
@@ -179,6 +178,7 @@ namespace Zavala.UI {
 
         private void SetCutsceneMode(bool cutscene) {
             m_CloseButton.gameObject.SetActive(!cutscene);
+            // m_PolicyCloseButton.gameObject.SetActive(!cutscene);
         }
 
         #endregion // Display
@@ -270,6 +270,9 @@ namespace Zavala.UI {
             Pin.Unpin();
             SimTimeInput.UnpauseEvent();
             Game.Events.Dispatch(GameEvents.DialogueClosing);
+            if (m_CurrentDef != null && m_CurrentDef.IsAdvisor) {
+                ScriptUtility.Trigger(GameTriggers.AdvisorClosed);
+            }
             yield return null;
         }
 
@@ -313,6 +316,7 @@ namespace Zavala.UI {
             }
             m_FullyExpanded = true;
             ForceAdvisorPolicies = AdvisorType.None;
+            m_ButtonText.TryPopulate("Next");
             yield return null;
         }
 
