@@ -144,6 +144,9 @@ MonoBehaviour:
       Content: West Smokestack
     - Id: location.region5_city3.name
       Content: Central Smokestack
+    - Id: location.desc.digester
+      Content: Digesters buy raw manure and turn it into fertilizer that can be shipped
+        for cheap.
     - Id: location.shared.cafoInfo
       Content: <i>buys <u>corn</u> / sells <u>milk</u></i>
     - Id: location.shared.cityInfo
@@ -157,7 +160,27 @@ MonoBehaviour:
     - Id: location.shared.digester
       Content: Manure Digester
     - Id: location.shared.digesterInfo
-      Content: <i>buys <u>manure</u> / sells <u>digested fertilizer</u></i>
+      Content: <i><u>buys</u> raw manure, <u>sells</u> fertilizer</i>
+    - Id: location.shared.digesterDesc
+      Content: Digesters buy raw manure and turn it into fertilizer that can be shipped
+        for cheap.
+    - Id: location.shared.toll
+      Content: Toll Road
+    - Id: location.shared.tollDesc
+      Content: Tolls connect roads from neighboring counties, allowing sales between
+        them.
+    - Id: location.shared.storageInfo
+      Content: <i><u>buys</u> and <u>sells</u> raw manure</i>
+    - Id: location.shared.storageDesc
+      Content: Storage Units buy fertilizer from CAFOs and sell it for a very minor
+        profit.
+    - Id: location.shared.depot
+      Content: Export Depot
+    - Id: location.shared.depotInfo
+      Content: <i><u>buys</u> and <u>sells</u> digested fertilizer</i>
+    - Id: location.shared.depotDesc
+      Content: Export Depot can sell fertilizer to neighboring counties quickly and
+        cheaply
     - Id: region.hill.name
       Content: Knoll
     - Id: region.hill.name.long
@@ -185,9 +208,9 @@ MonoBehaviour:
     - Path: location
       Start: 0
     - Path: location.shared
-      Start: 22
+      Start: 23
     - Path: region
-      Start: 29
+      Start: 38
     NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc

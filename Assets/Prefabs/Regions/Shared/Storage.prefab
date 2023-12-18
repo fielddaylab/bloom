@@ -20,8 +20,10 @@ GameObject:
   - component: {fileID: 5983373466290620169}
   - component: {fileID: 9040689247612195011}
   - component: {fileID: 1318548718761089297}
+  - component: {fileID: 1111742454965213201}
   - component: {fileID: 8416123257062139303}
   - component: {fileID: 1547257219449197939}
+  - component: {fileID: 764168936872465502}
   m_Layer: 7
   m_Name: Storage
   m_TagString: PlayerPlaced
@@ -133,9 +135,7 @@ MonoBehaviour:
   InfiniteRequests: 1
   OverridesBuyPrice: 1
   OverrideBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
+    Phosphorus: 0
     Grain: 0
     Milk: 0
   Flagstaff: {fileID: 0}
@@ -251,9 +251,25 @@ MonoBehaviour:
     m_Source: location.shared.storage
     m_HashValue: 4039985466
   InfoLabel:
-    m_Source: 
-    m_HashValue: 0
+    m_Source: location.shared.storageInfo
+    m_HashValue: 1014546338
+  DescriptionLabel:
+    m_Source: location.shared.storageDesc
+    m_HashValue: 3347304411
   Icon: {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
+--- !u!114 &1111742454965213201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f47a41270c43b3b43ba993419088b887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OverrideType: 0
 --- !u!114 &8416123257062139303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,6 +296,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 0
+--- !u!114 &764168936872465502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuyPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  SellPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  PriceStep: 1
+  AcceptsAnyPrice: 0
+  FixedSellOffer: 0
+  FixedBuyOffer: 0
 --- !u!1001 &1418807874943389641
 PrefabInstance:
   m_ObjectHideFlags: 0
