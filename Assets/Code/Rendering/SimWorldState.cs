@@ -384,6 +384,7 @@ namespace Zavala.World {
         public BuildingType Type;
         public StringHash32 TitleId;
         public StringHash32 CharacterId;
+        public ushort RegionIndex;
     }
 
     public struct VisualUpdateRecord {

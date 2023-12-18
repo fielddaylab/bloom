@@ -16,5 +16,7 @@ namespace Zavala.UI.Info
         public InfoPopupPriceRow PenaltyColHeader;
         public InfoPopupPriceRow TotalPriceColHeader;
         public InfoPopupPriceRow TotalProfitColHeader;
+
+        public InfoPopupPriceRow[] PriceHeaders;
     }
 }

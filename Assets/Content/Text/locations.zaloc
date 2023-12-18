@@ -116,6 +116,12 @@ Export Depot
 :: depotDesc
 Export Depot can sell fertilizer to neighboring counties quickly and cheaply
 
+:: grain
+Fertilizer Suppliers
+
+:: dairy
+Manure Sales
+
 # basePath region
 
 :: hill.name

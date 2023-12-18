@@ -181,6 +181,10 @@ MonoBehaviour:
     - Id: location.shared.depotDesc
       Content: Export Depot can sell fertilizer to neighboring counties quickly and
         cheaply
+    - Id: location.shared.grain
+      Content: Fertilizer Suppliers
+    - Id: location.shared.dairy
+      Content: Manure Sales
     - Id: region.hill.name
       Content: Knoll
     - Id: region.hill.name.long
@@ -210,7 +214,7 @@ MonoBehaviour:
     - Path: location.shared
       Start: 23
     - Path: region
-      Start: 38
+      Start: 40
     NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc
@@ -237,6 +241,10 @@ MonoBehaviour:
       Content: Total Fertilizer Market Share
     - Id: ui.lens.market.targets.header
       Content: Market Targets
+    - Id: ui.popup.info.buying
+      Content: 'Buying:'
+    - Id: ui.popup.info.selling
+      Content: 'Selling to:'
     BasePath: ui
     AllBasePaths:
     - Path: ui
