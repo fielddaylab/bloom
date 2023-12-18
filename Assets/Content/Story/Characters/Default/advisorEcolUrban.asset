@@ -34,4 +34,4 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4281533978
   PortraitArt: {fileID: 21300000, guid: 22383a87d579ab84aaac524370c41317, type: 3}
-  PortraitBackground: {fileID: 0}
+  PanelBackground: {fileID: 2800000, guid: f8bc3f1c21668d440abb1d2d5319606e, type: 3}

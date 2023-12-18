@@ -16,24 +16,25 @@ namespace Zavala.UI {
         [Header("Portrait")]
         public DialoguePortrait PortraitBox;
         public Graphic PortraitColorLayer;
-        public Image PortraitBackground;
+        public RawImage PanelBackground;
         public Image PortraitImage;
 
         #endregion // Inspector
     }
 
     static public class DialogueUIUtility {
-        static public void PopulateBoxText(DialogueBoxContents box, Graphic buttonGraphic, string header, string subheader, string content, Sprite portraitBG, Sprite portraitImg, Color boxColor, Color highlightColor, Color nameColor, Color titleColor, Color textColor) {
+        static public void PopulateBoxText(DialogueBoxContents box, Graphic buttonGraphic, string header, string subheader, string content, Texture2D panelBG, Sprite portraitImg, bool showPortraitDetail, Color boxColor, Color highlightColor, Color nameColor, Color titleColor, Color textColor) {
             // text
             box.Header.TryPopulate(header);
             box.Subheader.TryPopulate(subheader);
             box.Contents.TryPopulate(content);
 
             // portrait
-            box.PortraitBackground.gameObject.SetActive(portraitBG != null);
-            box.PortraitBackground.sprite = portraitBG;
+            box.PanelBackground.gameObject.SetActive(panelBG != null);
+            box.PanelBackground.texture = panelBG;
             box.PortraitImage.gameObject.SetActive(portraitImg != null);
             box.PortraitImage.sprite = portraitImg;
+            box.PortraitBox.ShowDetails(boxColor, showPortraitDetail);
 
             // Colors
             box.BoxColorLayer.color = boxColor;

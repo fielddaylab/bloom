@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Audio;
 using Zavala.Economy;
 using Zavala.Input;
 using Zavala.Rendering;
@@ -308,6 +309,8 @@ namespace Zavala.World {
                 TileEffectRendering.SetTopVisibility(world.Tiles[ot.TileIndex], true);
                 // Destroy object on top of tile
                 GameObject.Destroy(obj);
+                VfxUtility.PlayEffect(worldPos, EffectType.Poof);
+                SfxUtility.PlaySfx("build-poof");
                 // restore flags
                 grid.Terrain.Info[ot.TileIndex].Flags = 0;
                 yield return 0.5f;
@@ -318,7 +321,12 @@ namespace Zavala.World {
 
             // Convert export depot placeholder to the real deal
             GameObject tempDepot = eReveal.DepotsPerRegion[regionIndex];
+            // TODO: replace with "tada", cymbal crash, etc
+            VfxUtility.PlayEffect(worldPos, EffectType.Poof);
+            SfxUtility.PlaySfx("build-poof");
+
             GameObject.Destroy(tempDepot);
+
 
             RegionPrefabPalette palette = world.Palettes[regionIndex];
             var newDepot = GameObject.Instantiate(palette.ExportDepot, worldPos, Quaternion.identity);

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Color: {r: 0.52156866, g: 0.5294118, b: 0.52156866, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -175,14 +175,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: f8bc3f1c21668d440abb1d2d5319606e, type: 3}
+  m_Texture: {fileID: 2800000, guid: 0c59bbde34460954ab6a02324817b907, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 6.5625
-    height: 11.138461
-  m_UnitsPerTile: {x: 64, y: 32.5}
+    height: 5.65625
+  m_UnitsPerTile: {x: 64, y: 64}
   m_Offset: {x: 0, y: 0}
 --- !u!114 &8631553513456614193
 MonoBehaviour:

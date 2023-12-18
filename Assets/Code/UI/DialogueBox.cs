@@ -110,6 +110,7 @@ namespace Zavala.UI {
                 ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, character);
                 string header, subheader;
                 Sprite portraitImg;
+                Texture2D panelBG = null;
                 // Sprite portraitBG;
                 Color boxColor, panelColor, highlightColor, nameColor, titleColor, textColor;
                 bool isAdvisor;              
@@ -128,13 +129,14 @@ namespace Zavala.UI {
                         titleColor = charDef.TitleColor;
                         textColor = charDef.TextColor;
                         if (isAdvisor) {
+                            panelBG = charDef.PanelBackground;
                             foreach (PolicySlot slot in m_PolicySlots) {
                                 slot.SetColors(highlightColor, panelColor, boxColor);
                                 m_PolicyBackground.color = panelColor;
                             }
                         }
                         if (m_PoliciesActive) CollapsePolicyUI(); // a new character with no policies will collapse policies
-                        DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, portraitImg, !isAdvisor, boxColor, highlightColor, nameColor, titleColor, textColor);
+                        DialogueUIUtility.PopulateBoxText(Contents, m_Button.targetGraphic, header, subheader, inString.RichText, panelBG, portraitImg, !isAdvisor, boxColor, highlightColor, nameColor, titleColor, textColor);
                         m_CurrentDef = charDef;
                     }
                 } else { // charDef is null

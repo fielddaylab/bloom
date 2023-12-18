@@ -21,7 +21,7 @@ namespace Zavala.Scripting {
 
         [Header("Portrait")]
         public Sprite PortraitArt;
-        public Sprite PortraitBackground;
+        public Texture2D PanelBackground;
 
         #endregion // Inspector
     }
