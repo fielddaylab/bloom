@@ -123,7 +123,7 @@ namespace Zavala {
                 return Mode.Blueprints;
             } else if ((flags & SimPauseFlags.User) != 0) {
                 return Mode.UserPause;
-            } else if ((flags & (SimPauseFlags.Cutscene | SimPauseFlags.Scripted | SimPauseFlags.DialogBox)) != 0) {
+            } else if ((flags & (SimPauseFlags.Cutscene | SimPauseFlags.Scripted | SimPauseFlags.DialogBox | SimPauseFlags.PendingGlobalAlert)) != 0) {
                 return Mode.Cutscene;
             } else {
                 return Mode.None;

@@ -27,6 +27,11 @@ namespace Zavala.Scripting
             if (!component.DisplayingEvent && component.QueuedEvents.Count > 0) {
                 component.QueuedEvents.TryPeekBack<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
 
+                if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
+                    // do not create UI banners for the fake global alerts
+                    return;
+                }
+
                 // allocate new alert from pool
                 UIPools pools = Game.SharedState.Get<UIPools>();
                 UIAlert alert = pools.Alerts.Alloc(SimWorldUtility.GetTileCenter(peekEvent.TileIndex) + component.EventDisplayOffset + EventDisplayOffset);

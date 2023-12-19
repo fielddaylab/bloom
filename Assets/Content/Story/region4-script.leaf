@@ -1,10 +1,14 @@
 # basePath   region4
 
-:: regionUnlocked
+:: queueWetlandUnlock
 @trigger        RegionUnlocked
 @conditions     regionId == "Wetland"
+$yield // wait 1 frame for region to unlock
+$call SendGlobalAlertForNode("region4_city1", region4.regionUnlocked)
+
+:: regionUnlocked
 @queued
-$call Pause()
+// // $call Pause()
 {@advisorEcolWetland}    Welcome to Muskeg County, boss.
 $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We've dealt with these algae blooms here before...
@@ -12,7 +16,7 @@ $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
 $call OffsetAlgaeGrowthThreshold(-2)
 $call AddAutoAlertCondition("Bloom", 4)
-$call Unpause()
+// $call Unpause()
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -62,7 +66,7 @@ $endif
 @cutscene
 @once
 // TODO: make this a die-off event  
-$call Pause()
+// // $call Pause()
 {@advisorEcolWetland}   It's just as we feared...
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/frame1-3.png")
@@ -88,7 +92,7 @@ $call FocusHighlightOn("BuildModeButton")
 {@advisorEconWetland}   Digesters have been added to your Build Mode menu.
 $call FocusClear()
 $call OffsetAlgaeGrowthThreshold(0)
-$call Unpause()
+// $call Unpause()
 // $call AddRegionAgeDeltaTrigger(4, 10)
 
 // :: unlockSalesTax
