@@ -28,6 +28,8 @@ namespace Zavala.UI.Info {
         static private readonly int WideHeight = 273;
         static private readonly int SmallWidth = 220;
         static private readonly int SmallHeight =  150;
+        static private readonly int DefaultHeaderRightPadding = 8;
+        static private readonly int ResourceHeaderRightPadding = 75;
 
         static private readonly int WideNumRows = 3;
 
@@ -46,6 +48,8 @@ namespace Zavala.UI.Info {
         [SerializeField] private Graphic m_HeaderBG;
         [SerializeField] private TMP_Text m_HeaderLabel;
         [SerializeField] private TMP_Text m_SubheaderLabel;
+        [SerializeField] private VerticalLayoutGroup m_HeaderLayout;
+        [SerializeField] private Image m_ResourceIcon;
 
         [Header("Portrait")]
         [SerializeField] private Image m_CharacterPortrait;
@@ -129,6 +133,8 @@ namespace Zavala.UI.Info {
             m_DescriptionGroup.gameObject.SetActive(false);
             m_DescriptionText.gameObject.SetActive(false);
             m_StorageGroup.gameObject.SetActive(false);
+            m_ResourceIcon.gameObject.SetActive(false);
+            m_HeaderLayout.padding.right = DefaultHeaderRightPadding;
 
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
@@ -137,6 +143,8 @@ namespace Zavala.UI.Info {
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = GrainFarmColor;
+                    m_ResourceIcon.gameObject.SetActive(true);
+                    m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     break;
                 }
 
@@ -146,6 +154,8 @@ namespace Zavala.UI.Info {
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = DairyFarmColor;
+                    m_ResourceIcon.gameObject.SetActive(true);
+                    m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     break;
                     }
 
@@ -156,7 +166,7 @@ namespace Zavala.UI.Info {
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
                     break;
-                    }
+                }
 
                 case BuildingType.Digester: {
                     m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
@@ -229,8 +239,9 @@ namespace Zavala.UI.Info {
                 if (i < queryCount)
                 {
                     var results = m_QueryResults[i];
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, !results.Requester.IsLocalOption, m_BestOptionBanner, i);
-                    InfoPopupMarketUtility.LoadProfitIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
+                    bool forSale = !results.Requester.IsLocalOption;
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadProfitIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
                 }
                 else
                 {
@@ -265,8 +276,9 @@ namespace Zavala.UI.Info {
                 if (i < queryCount)
                 {
                     var results = m_QueryResults[i];
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, true, m_BestOptionBanner, i);
-                    InfoPopupMarketUtility.LoadCostsIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, i > 0);
+                    bool forSale = true;
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadCostsIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
                 }
                 else
                 {

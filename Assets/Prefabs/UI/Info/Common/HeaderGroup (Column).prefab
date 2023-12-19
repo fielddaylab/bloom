@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6324587549616320758}
   - component: {fileID: 1566048781661783621}
-  - component: {fileID: 8727685428200409958}
-  - component: {fileID: 3927210271148737634}
+  - component: {fileID: 1880718767682132364}
+  - component: {fileID: 6339436009023972211}
   m_Layer: 5
   m_Name: HeaderGroup (Column)
   m_TagString: Untagged
@@ -49,7 +49,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5012630022698281191}
   m_CullTransparentMesh: 1
---- !u!114 &8727685428200409958
+--- !u!114 &1880718767682132364
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,7 +58,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5012630022698281191}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a3ee03a5fada3942b82c53c377b7113, type: 3}
+  m_Script: {fileID: 11500000, guid: dd3ce9ace82b5a046b1ade31c7972b6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 5519796460947703004}
+  Background: {fileID: 6339436009023972211}
+  Text: {fileID: 461683097272489478}
+--- !u!114 &6339436009023972211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5012630022698281191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3cce1025f282c247b38ed00ee6ddc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -69,22 +84,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_CornerRadius: 3
+  m_Resolution: 0
   m_Outline: 0
   m_Thickness: 1
---- !u!114 &3927210271148737634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5012630022698281191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b25dda6827c21647bb021df0ce7167f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Background: {fileID: 8727685428200409958}
-  Number: {fileID: 461683097272489478}
 --- !u!1 &5327157212500411995
 GameObject:
   m_ObjectHideFlags: 0

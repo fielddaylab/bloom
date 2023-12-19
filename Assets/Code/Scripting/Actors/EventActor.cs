@@ -84,6 +84,7 @@ namespace Zavala.Scripting {
         UnusedDigester,
         DecliningPop,
         SellingLoss,
+        Global,
         [Hidden]
         COUNT,
     }

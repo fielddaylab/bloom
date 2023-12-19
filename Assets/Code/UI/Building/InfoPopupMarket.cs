@@ -2,12 +2,14 @@ using System;
 using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Advisor;
+using Zavala.Cards;
 using Zavala.Economy;
 using Zavala.Sim;
-using static FieldDay.Scenes.PreloadManifest;
 
 namespace Zavala.UI.Info {
     public class InfoPopupMarket : MonoBehaviour {
@@ -26,7 +28,12 @@ namespace Zavala.UI.Info {
         static public readonly Color NegativeColorBG = Colors.Hex("#FFBBBB");
         static public readonly Color NegativeColor = Colors.Hex("#C23636");
 
+        static public readonly float InactiveAlpha = 0.65f;
+        static public readonly int ActiveAlpha = 1;
+
         static public readonly string EmptyEntry = "-";
+        static public readonly string MoneyPrefix = "$";
+
 
         static private readonly Color[] ColumnColors = new Color[5]
 {
@@ -110,6 +117,11 @@ namespace Zavala.UI.Info {
             }
         }
 
+        static private void SetMoneyText(TMP_Text toSet, string newText)
+        {
+            toSet.SetText(MoneyPrefix + newText);
+        }
+
         static public void LoadEmptyCostsCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, GameObject bestOptionBanner, int colGroupIndex)
         {
             ActivateCostsHeaders(headers);
@@ -147,21 +159,21 @@ namespace Zavala.UI.Info {
         }
 
 
-        static public void LoadCostsIntoCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool isSecondary)
+        static public void LoadCostsIntoCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary)
         {
              col.PriceGroup.SetActive(true);
 
             ActivateCostsHeaders(headers);
 
             int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-            int basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
+            int basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex];
 
             col.BasePriceCol.gameObject.SetActive(true);
-            col.BasePriceCol.Number.SetText(basePrice.ToStringLookup());
+            SetMoneyText(col.BasePriceCol.Number, basePrice.ToStringLookup());
 
             int shippingPrice = info.ShippingCost;
             col.ShippingCol.gameObject.SetActive(true);
-            col.ShippingCol.Number.SetText(shippingPrice.ToStringLookup());
+            SetMoneyText(col.ShippingCol.Number, shippingPrice.ToStringLookup());
 
             int import;
             if (info.Supplier.Position.RegionIndex == info.Requester.Position.RegionIndex)
@@ -169,42 +181,57 @@ namespace Zavala.UI.Info {
                 import = 0;
             }
             else {
-                import = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].ImportTax[info.Resource]; // info.TaxRevenue.Import;
+                import = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].ImportTax[info.Resource];
             }
-            col.ImportTaxCol.gameObject.SetActive(true);
-            if (import == 0) { col.ImportTaxCol.Number.SetText(EmptyEntry); }
-            else { col.ImportTaxCol.Number.SetText((import).ToStringLookup()); }
 
-            int salesTax = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].PurchaseTax[info.Resource]; // info.TaxRevenue.Sales;
+            col.ImportTaxCol.gameObject.SetActive(true);
+            if (import == 0) {
+                col.ImportTaxCol.Number.SetText(EmptyEntry);
+            }
+            else {
+                SetMoneyText(col.ImportTaxCol.Number, import.ToStringLookup());
+            }
+
+
+            int salesTax = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].PurchaseTax[info.Resource];
             col.SalesTaxCol.gameObject.SetActive(true);
-            if (salesTax == 0) { col.SalesTaxCol.Number.SetText(EmptyEntry); }
-            else { col.SalesTaxCol.Number.SetText((salesTax).ToStringLookup()); }
+            if (salesTax == 0) {
+                col.SalesTaxCol.Number.SetText(EmptyEntry);
+            }
+            else { 
+                SetMoneyText(col.SalesTaxCol.Number, salesTax.ToStringLookup());
+            }
+
 
             int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(false);
             if (penalties == 0) { col.PenaltyCol.Number.SetText(EmptyEntry); }
-            else { col.PenaltyCol.Number.SetText((penalties).ToStringLookup()); }
+            else { SetMoneyText(col.PenaltyCol.Number, penalties.ToStringLookup()); }
 
             int totalCost = basePrice + shippingPrice + import + salesTax + penalties;
             col.TotalProfitCol.gameObject.SetActive(false);
             col.TotalPriceCol.gameObject.SetActive(true);
-            col.TotalPriceCol.Number.SetText(totalCost.ToStringLookup());
+            SetMoneyText(col.TotalPriceCol.Number, totalCost.ToStringLookup());
 
             if (isSecondary)
             {
-                // col.TotalPriceCol.Background.color = NegativeColorBG;
                 col.TotalPriceCol.Number.color = NegativeColor;
             }
             else
             {
-                // col.TotalPriceCol.Background.color = PositiveColorBG;
                 col.TotalPriceCol.Number.color = PositiveColor;
+                if (forSale)
+                {
+                    col.TotalPriceCol.Number.fontStyle = FontStyles.Underline;
+                }
+                else
+                {
+                    col.TotalPriceCol.Number.fontStyle = FontStyles.Normal;
+                }
             }
-
-            //col.PriceLayout.ForceRebuild(true);
         }
 
-        static public void LoadProfitIntoCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool isSecondary)
+        static public void LoadProfitIntoCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary)
         {
             col.PriceGroup.SetActive(true);
             ActivateProfitHeaders(headers);
@@ -225,44 +252,56 @@ namespace Zavala.UI.Info {
                 basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex];
             }
             col.BasePriceCol.gameObject.SetActive(true);
-            col.BasePriceCol.Number.SetText(basePrice.ToStringLookup());
+            SetMoneyText(col.BasePriceCol.Number, basePrice.ToStringLookup());
 
             int shippingPrice = info.ShippingCost;
             col.ShippingCol.gameObject.SetActive(true);
-            col.ShippingCol.Number.SetText((-shippingPrice).ToStringLookup());
+            SetMoneyText(col.ShippingCol.Number, (-shippingPrice).ToStringLookup());
 
-            int import = info.TaxRevenue.Import;
+            int import;
+            if (info.Supplier.Position.RegionIndex == info.Requester.Position.RegionIndex)
+            {
+                import = 0;
+            }
+            else
+            {
+                import = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].ImportTax[info.Resource];
+            }
             col.ImportTaxCol.gameObject.SetActive(false);
             if (import == 0) { col.ImportTaxCol.Number.SetText(EmptyEntry); }
-            else { col.ImportTaxCol.Number.SetText((-import).ToStringLookup()); }
+            else { SetMoneyText(col.ImportTaxCol.Number, (-import).ToStringLookup()); }
 
-            int salesTax = info.TaxRevenue.Sales;
+            int salesTax = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].PurchaseTax[info.Resource];
             col.SalesTaxCol.gameObject.SetActive(false);
             if (salesTax == 0) { col.SalesTaxCol.Number.SetText(EmptyEntry); }
-            else { col.SalesTaxCol.Number.SetText((-salesTax).ToStringLookup()); }
+            else { SetMoneyText(col.SalesTaxCol.Number, (-salesTax).ToStringLookup()); }
 
             int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(true);
             if (penalties == 0) { col.PenaltyCol.Number.SetText(EmptyEntry); }
-            else { col.PenaltyCol.Number.SetText((-penalties).ToStringLookup()); }
+            else { SetMoneyText(col.PenaltyCol.Number, (-penalties).ToStringLookup() + " " + Loc.Find("ui.popup.info.penaltyFine")); }
 
             int totalCost = info.Profit + (salesTax + import);
             col.TotalProfitCol.gameObject.SetActive(true);
             col.TotalPriceCol.gameObject.SetActive(false);
-            col.TotalProfitCol.Number.SetText(totalCost.ToStringLookup());
+            SetMoneyText(col.TotalProfitCol.Number, totalCost.ToStringLookup());
 
             if (isSecondary)
             {
-                // col.TotalProfitCol.Background.color = NegativeColorBG;
                 col.TotalProfitCol.Number.color = NegativeColor;
             }
             else
             {
-                // col.TotalProfitCol.Background.color = PositiveColorBG;
                 col.TotalProfitCol.Number.color = PositiveColor;
+                if (forSale)
+                {
+                    col.TotalProfitCol.Number.fontStyle = FontStyles.Underline;
+                }
+                else
+                {
+                    col.TotalProfitCol.Number.fontStyle = FontStyles.Normal;
+                }
             }
-
-            //col.PriceLayout.ForceRebuild(true);
         }
 
         static private void ActivateProfitHeaders(InfoPopupColumnHeaders headers)
@@ -274,6 +313,19 @@ namespace Zavala.UI.Info {
             headers.PenaltyColHeader.gameObject.SetActive(true);
             headers.TotalProfitColHeader.gameObject.SetActive(true);
             headers.TotalPriceColHeader.gameObject.SetActive(false);
+
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            bool penaltyActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.RunoffPolicy] != PolicyLevel.None;
+            if (penaltyActive) {
+                headers.PenaltyColHeader.Icon.SetAlpha(ActiveAlpha);
+                headers.PenaltyColHeader.Text.SetAlpha(ActiveAlpha);
+            }
+            else { 
+                headers.PenaltyColHeader.Icon.SetAlpha(InactiveAlpha);
+                headers.PenaltyColHeader.Text.SetAlpha(InactiveAlpha);
+            }
         }
 
         static private void ActivateCostsHeaders(InfoPopupColumnHeaders headers)
@@ -285,6 +337,29 @@ namespace Zavala.UI.Info {
             headers.PenaltyColHeader.gameObject.SetActive(false);
             headers.TotalProfitColHeader.gameObject.SetActive(false);
             headers.TotalPriceColHeader.gameObject.SetActive(true);
+
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
+            if (importActive) {
+                headers.ImportTaxColHeader.Icon.SetAlpha(ActiveAlpha); 
+                headers.ImportTaxColHeader.Text.SetAlpha(ActiveAlpha);
+            }
+            else { 
+                headers.ImportTaxColHeader.Icon.SetAlpha(InactiveAlpha);
+                headers.ImportTaxColHeader.Text.SetAlpha(InactiveAlpha);
+            }
+
+            bool salesActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.SalesTaxPolicy] != PolicyLevel.None;
+            if (salesActive) { 
+                headers.SalesTaxColHeader.Icon.SetAlpha(ActiveAlpha); 
+                headers.SalesTaxColHeader.Text.SetAlpha(ActiveAlpha); 
+            }
+            else { 
+                headers.SalesTaxColHeader.Icon.SetAlpha(InactiveAlpha);
+                headers.SalesTaxColHeader.Text.SetAlpha(InactiveAlpha);
+            }
         }
 
         static public void AssignColColors(InfoPopupColumnHeaders headers)
@@ -309,164 +384,7 @@ namespace Zavala.UI.Info {
 
         #region Load Rows
 
-        static public void LoadLocationIntoRow(InfoPopupLocationRow row, OccupiesTile location, OccupiesTile referenceLocation)
-        {
-            LocationDescription desc = location.GetComponent<LocationDescription>();
-
-            row.NameLabel.SetText(Loc.Find(desc.TitleLabel));
-            row.Icon.sprite = desc.Icon;
-
-            if (location.IsExternal)
-            {
-                row.RegionLabel.gameObject.SetActive(true);
-                row.RegionLabel.SetText(Loc.Find("region.external.name"));
-                row.NameLabel.rectTransform.SetAnchorPos(row.RegionLabel.rectTransform.sizeDelta.y / 2, Axis.Y);
-            }
-            else if (referenceLocation != null && location.RegionIndex == referenceLocation.RegionIndex)
-            {
-                row.RegionLabel.gameObject.SetActive(false);
-                row.NameLabel.rectTransform.SetAnchorPos(0, Axis.Y);
-            }
-            else
-            {
-                row.RegionLabel.gameObject.SetActive(true);
-                row.RegionLabel.SetText(Loc.Find(RegionUtility.GetNameLong(location.RegionIndex)));
-                row.NameLabel.rectTransform.SetAnchorPos(row.RegionLabel.rectTransform.sizeDelta.y / 2, Axis.Y);
-            }
-        }
-
-        static public void LoadCostsIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config, bool isSecondary)
-        {
-            row.PriceGroup.SetActive(true);
-
-            int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-            int basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
-
-            row.BasePriceRow.gameObject.SetActive(true);
-            row.BasePriceRow.Number.SetText(basePrice.ToStringLookup());
-
-            int shippingPrice = info.ShippingCost;
-            row.ShippingRow.gameObject.SetActive(shippingPrice > 0);
-            if (shippingPrice > 0)
-            {
-                row.ShippingRow.Number.SetText(shippingPrice.ToStringLookup());
-            }
-
-            int import = info.TaxRevenue.Import;
-            row.ImportTaxRow.gameObject.SetActive(import > 0);
-            row.SubsidyRow.gameObject.SetActive(import < 0);
-            if (import > 0)
-            {
-                row.ImportTaxRow.Number.SetText((-import).ToStringLookup());
-            }
-            else if (import < 0)
-            {
-                row.SubsidyRow.Number.SetText((-import).ToStringLookup());
-            }
-
-            int salesTax = info.TaxRevenue.Sales;
-            row.SalesTaxRow.gameObject.SetActive(salesTax > 0);
-            if (salesTax > 0)
-            {
-                row.SalesTaxRow.Number.SetText((-salesTax).ToStringLookup());
-            }
-
-            int penalties = info.TaxRevenue.Penalties;
-            row.PenaltyRow.gameObject.SetActive(penalties > 0);
-            if (penalties > 0)
-            {
-                row.PenaltyRow.Number.SetText((-penalties).ToStringLookup());
-            }
-
-            int totalCost = basePrice + shippingPrice + import + salesTax + penalties;
-            row.TotalProfitRow.gameObject.SetActive(false);
-            row.TotalPriceRow.gameObject.SetActive(true);
-            row.TotalPriceRow.Number.SetText(totalCost.ToStringLookup());
-
-            if (isSecondary)
-            {
-                row.TotalPriceRow.Background.color = NegativeColorBG;
-                row.TotalPriceRow.Number.color = NegativeColor;
-            }
-            else
-            {
-                row.TotalPriceRow.Background.color = PositiveColorBG;
-                row.TotalPriceRow.Number.color = PositiveColor;
-            }
-
-            //row.PriceLayout.ForceRebuild(true);
-        }
-
-        static public void LoadProfitIntoRow(InfoPopupLocationRow row, MarketQueryResultInfo info, MarketConfig config, bool isSecondary)
-        {
-            row.PriceGroup.SetActive(true);
-
-            int basePrice;
-            if (info.Requester.IsLocalOption)
-            {
-                basePrice = 0;
-            }
-            else
-            {
-                int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
-                basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex]; // config.DefaultPurchasePerRegion[info.Supplier.Position.RegionIndex].Buy[info.Resource];
-            }
-            row.BasePriceRow.gameObject.SetActive(basePrice > 0);
-            row.BasePriceRow.Number.SetText(basePrice.ToStringLookup());
-
-            int shippingPrice = info.ShippingCost;
-            row.ShippingRow.gameObject.SetActive(shippingPrice > 0);
-            if (shippingPrice > 0)
-            {
-                row.ShippingRow.Number.SetText((-shippingPrice).ToStringLookup());
-            }
-
-            int import = info.TaxRevenue.Import;
-            row.ImportTaxRow.gameObject.SetActive(import > 0);
-            row.SubsidyRow.gameObject.SetActive(import < 0);
-            if (import > 0)
-            {
-                row.ImportTaxRow.Number.SetText((-import).ToStringLookup());
-            }
-            else if (import < 0)
-            {
-                row.SubsidyRow.Number.SetText((-import).ToStringLookup());
-            }
-
-            // Commenting out for now - sales tax is applied to the buyer
-            /*            
-            int salesTax = info.TaxRevenue.Sales;
-            row.SalesTaxRow.gameObject.SetActive(salesTax > 0);
-            if (salesTax > 0) {
-                row.SalesTaxRow.Number.SetText((-salesTax).ToStringLookup());
-            }
-            */
-
-            int penalties = info.TaxRevenue.Penalties;
-            row.PenaltyRow.gameObject.SetActive(penalties > 0);
-            if (penalties > 0)
-            {
-                row.PenaltyRow.Number.SetText((-penalties).ToStringLookup());
-            }
-
-            int totalCost = info.Profit;
-            row.TotalProfitRow.gameObject.SetActive(true);
-            row.TotalPriceRow.gameObject.SetActive(false);
-            row.TotalProfitRow.Number.SetText(totalCost.ToStringLookup());
-
-            if (isSecondary)
-            {
-                row.TotalProfitRow.Background.color = NegativeColorBG;
-                row.TotalProfitRow.Number.color = NegativeColor;
-            }
-            else
-            {
-                row.TotalProfitRow.Background.color = PositiveColorBG;
-                row.TotalProfitRow.Number.color = PositiveColor;
-            }
-
-            //row.PriceLayout.ForceRebuild(true);
-        }
+        
 
         static public void ClearPricesAtRow(InfoPopupLocationRow row)
         {

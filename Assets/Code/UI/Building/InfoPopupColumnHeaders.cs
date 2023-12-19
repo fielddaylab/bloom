@@ -9,14 +9,14 @@ namespace Zavala.UI.Info
 {
     public class InfoPopupColumnHeaders : MonoBehaviour
     {
-        public InfoPopupPriceRow BasePriceColHeader;
-        public InfoPopupPriceRow ShippingColHeader;
-        public InfoPopupPriceRow SalesTaxColHeader;
-        public InfoPopupPriceRow ImportTaxColHeader;
-        public InfoPopupPriceRow PenaltyColHeader;
-        public InfoPopupPriceRow TotalPriceColHeader;
-        public InfoPopupPriceRow TotalProfitColHeader;
+        public InfoPopupColumnHeader BasePriceColHeader;
+        public InfoPopupColumnHeader ShippingColHeader;
+        public InfoPopupColumnHeader SalesTaxColHeader;
+        public InfoPopupColumnHeader ImportTaxColHeader;
+        public InfoPopupColumnHeader PenaltyColHeader;
+        public InfoPopupColumnHeader TotalPriceColHeader;
+        public InfoPopupColumnHeader TotalProfitColHeader;
 
-        public InfoPopupPriceRow[] PriceHeaders;
+        public InfoPopupColumnHeader[] PriceHeaders;
     }
 }

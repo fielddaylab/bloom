@@ -92,6 +92,14 @@ namespace Zavala.UI {
             //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
         }
 
+        public static void ClearAlert(UIAlert alert) {
+            if (alert == null) {
+                Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
+;                return; 
+            }
+            alert.BannerRoutine.Replace(CloseRoutine(alert, true));
+        }
+
         public static void FreeAlert(UIAlert alert) {
             // free this alert
             UIPools pools = Game.SharedState.Get<UIPools>();
@@ -111,7 +119,7 @@ namespace Zavala.UI {
             alert.FullyOpened = true;
             alert.Masking.SetState(false);
             alert.BannerRoutine.Replace(HoldRoutine(alert, 5.0f));
-            ClickAlert(alert);
+            // ClickAlert(alert);
             yield return null;
         }
 
