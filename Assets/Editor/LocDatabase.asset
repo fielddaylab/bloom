@@ -273,6 +273,34 @@ MonoBehaviour:
       Content: SPACE - Pause/Resume
     - Id: ui.tutorial.clickDrag
       Content: Click and Drag
+    - Id: ui.popup.info.header.basePrice
+      Content: 'Base
+
+        Price'
+    - Id: ui.popup.info.header.shippingCost
+      Content: 'Shipping
+
+        Cost'
+    - Id: ui.popup.info.header.salesPolicy
+      Content: 'Sales
+
+        Policy'
+    - Id: ui.popup.info.header.importPolicy
+      Content: 'Import
+
+        Policy'
+    - Id: ui.popup.info.header.runoffPolicy
+      Content: 'Runoff
+
+        Fine'
+    - Id: ui.popup.info.header.totalCost
+      Content: 'Total
+
+        Cost'
+    - Id: ui.popup.info.header.totalProfit
+      Content: 'Total
+
+        Profit'
     BasePath: ui
     AllBasePaths:
     - Path: ui

@@ -608,6 +608,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_Source
+      value: ui.popup.info.header.shippingCost
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_HashValue
+      value: 3817116415
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
 --- !u!114 &1955946563267330889 stripped
@@ -722,6 +730,14 @@ PrefabInstance:
     - target: {fileID: 6324587549616320758, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_Source
+      value: ui.popup.info.header.basePrice
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_HashValue
+      value: 1178333070
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
@@ -848,6 +864,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_Source
+      value: ui.popup.info.header.importPolicy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_HashValue
+      value: 3386165611
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
 --- !u!114 &2381355915123924976 stripped
@@ -971,6 +995,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_Source
+      value: ui.popup.info.header.runoffPolicy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_HashValue
+      value: 3977446368
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
 --- !u!224 &1416122834694487077 stripped
@@ -1087,6 +1119,14 @@ PrefabInstance:
     - target: {fileID: 6324587549616320758, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_Source
+      value: ui.popup.info.header.totalProfit
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_HashValue
+      value: 1360726268
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
@@ -1212,6 +1252,14 @@ PrefabInstance:
     - target: {fileID: 8626244676671481579, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_Source
+      value: ui.popup.info.header.salesPolicy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_HashValue
+      value: 844119334
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
@@ -3187,6 +3235,14 @@ PrefabInstance:
     - target: {fileID: 6324587549616320758, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_Source
+      value: ui.popup.info.header.totalCost
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649748397172626607, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}
+      propertyPath: m_DefaultText.m_HashValue
+      value: 104596303
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6871e1cc79282c4a80447b2fb4ae522, type: 3}

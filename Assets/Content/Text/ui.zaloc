@@ -72,3 +72,30 @@ SPACE - Pause/Resume
 :: tutorial.clickDrag
 Click and Drag
 
+:: popup.info.header.basePrice
+Base
+Price
+
+:: popup.info.header.shippingCost
+Shipping
+Cost
+
+:: popup.info.header.salesPolicy
+Sales
+Policy
+
+:: popup.info.header.importPolicy
+Import
+Policy
+
+:: popup.info.header.runoffPolicy
+Runoff
+Fine
+
+:: popup.info.header.totalCost
+Total
+Cost
+
+:: popup.info.header.totalProfit
+Total
+Profit
