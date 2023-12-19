@@ -76,6 +76,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 846a4735a6935e24886914f391495f0b, type: 3}
   - {fileID: 21300000, guid: 41bdac6579c976d4b902973664401892, type: 3}
   - {fileID: 21300000, guid: 61db9685c1b7ea243a4c109811110530, type: 3}
+  - {fileID: 21300000, guid: 7d969a85e13f8244e94998181ad9e743, type: 3}
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
   - {fileID: 21300000, guid: 50b6ad0648a956c4bbf7a51cb79ef1da, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
@@ -113,6 +114,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 54cfc3fe99abf0c4086d8577ee156cf5, type: 3}
   - {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
   - {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
+  - {fileID: 21300000, guid: 9bf9fa9f64255fa49a7107abaaa3bddb, type: 3}
   - {fileID: 21300000, guid: 1341e9af6cc32cd4c90c6902052dc310, type: 3}
   - {fileID: 21300000, guid: ed9a64ff8bf249b469c9ffa0397bc16a, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -140,6 +142,7 @@ SpriteAtlas:
   - urgentflag_milk
   - resource_milk
   - base_unused-digester
+  - storage-empty
   - advisor-dialogue-white
   - CloseX
   - ShopToggle
@@ -177,6 +180,7 @@ SpriteAtlas:
   - PurchaseReceipt
   - urgentflag_grain
   - resource_manure
+  - storage-full
   - NormalMode
   - LensOutline
   m_RenderDataMap: {}

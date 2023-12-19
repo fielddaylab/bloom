@@ -1,6 +1,7 @@
 using System;
 using BeauRoutine;
 using BeauUtil;
+using BeauUtil.Debugger;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -89,6 +90,23 @@ namespace Zavala.UI.Info {
             else
             {
                 col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+            }
+        }
+
+        static public void LoadStorageCapacity(InfoPopupStorageCapacity storageGroup, int full, int total)
+        {
+            Assert.Equals(storageGroup.Slots.Length, total);
+
+            for (int i = 0; i < storageGroup.Slots.Length; i++)
+            {
+                if (i < full)
+                {
+                    storageGroup.Slots[i].sprite = storageGroup.FullSprite;
+                }
+                else
+                {
+                    storageGroup.Slots[i].sprite = storageGroup.EmptySprite;
+                }
             }
         }
 

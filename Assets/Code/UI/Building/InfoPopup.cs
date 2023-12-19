@@ -61,6 +61,9 @@ namespace Zavala.UI.Info {
         [SerializeField] private GameObject m_DescriptionGroup;
         [SerializeField] private TMP_Text m_DescriptionText;
 
+        [SerializeField] private InfoPopupStorageCapacity m_StorageGroup;
+
+
         public GameObject m_BestOptionBanner;
         public TMP_Text m_BestOptionText;
 
@@ -125,6 +128,7 @@ namespace Zavala.UI.Info {
             m_MarketContentsColsGroup.gameObject.SetActive(false);
             m_DescriptionGroup.gameObject.SetActive(false);
             m_DescriptionText.gameObject.SetActive(false);
+            m_StorageGroup.gameObject.SetActive(false);
 
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
@@ -170,6 +174,7 @@ namespace Zavala.UI.Info {
                     m_HeaderBG.color = StorageColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
+                    m_StorageGroup.gameObject.SetActive(true);
                     break;
                 }
 
@@ -285,6 +290,24 @@ namespace Zavala.UI.Info {
         private void PopulateDescriptionSmall()
         {
             Root.sizeDelta = new Vector2(SmallWidth, SmallHeight);
+
+            m_DescriptionText.SetText(Loc.Find(m_SelectedLocation.DescriptionLabel));
+
+            if (gameObject.activeSelf)
+            {
+                m_Layout.ForceRebuild(true);
+                m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
+            }
+        }
+
+        private void PopulateStorageCapacity()
+        {
+            Root.sizeDelta = new Vector2(SmallWidth, SmallHeight + 15);
+
+            var storage = m_SelectedLocation.GetComponent<ResourceStorage>();
+            if (!storage) { return; }
+
+            InfoPopupMarketUtility.LoadStorageCapacity(m_StorageGroup, storage.Current.Manure, storage.Capacity.Manure);
 
             m_DescriptionText.SetText(Loc.Find(m_SelectedLocation.DescriptionLabel));
 
@@ -438,25 +461,12 @@ namespace Zavala.UI.Info {
                 }
 
                 case BuildingType.Digester: {
-                    /*
-                    if (m_ConnectionsDirty || forceRefresh)
-                    {
-                        m_QueryResults.Clear();
-                        MarketUtility.GatherShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
-                    }
-                    else
-                    {
-                        MarketUtility.UpdateShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.DFertilizer);
-                    }
-                    m_QueryResults.Sort(SortResultsDescending);
-                    PopulateShippingWide();
-                    */
                     PopulateDescriptionSmall();
                     break;
                 }
 
-                case BuildingType.Storage: { 
-                    PopulateDescriptionSmall();
+                case BuildingType.Storage: {
+                    PopulateStorageCapacity();
                     break;
                 }
 
