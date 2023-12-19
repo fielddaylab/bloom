@@ -69,13 +69,6 @@ namespace Zavala.Cards
 
             // Populate Card data
             CardsUtility.PopulateCards(this);
-
-            // TEMP Unlock initial cards
-            // CardsUtility.UnlockCardsByType(this, PolicyType.RunoffPolicy);
-            // CardsUtility.UnlockCardsByType(this, PolicyType.SkimmingPolicy);
-            // CardsUtility.UnlockCardsByType(this, PolicyType.SalesTaxPolicy);
-            // CardsUtility.UnlockCardsByType(this, PolicyType.ImportTaxPolicy);
-
         }
     }
 
@@ -224,12 +217,6 @@ namespace Zavala.Cards
 
             return allOptions;
         }
-
-        /*
-        public CardData GetCardData(SerializedHash32 cardID) {
-            return m_allCards[cardID];
-        }
-        */
 
         [LeafMember("UnlockCards")]
         static public void UnlockCardsLeaf(PolicyType type) {

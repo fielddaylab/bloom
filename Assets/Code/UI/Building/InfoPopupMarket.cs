@@ -2,12 +2,14 @@ using System;
 using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Advisor;
+using Zavala.Cards;
 using Zavala.Economy;
 using Zavala.Sim;
-using static FieldDay.Scenes.PreloadManifest;
 
 namespace Zavala.UI.Info {
     public class InfoPopupMarket : MonoBehaviour {
@@ -25,6 +27,9 @@ namespace Zavala.UI.Info {
 
         static public readonly Color NegativeColorBG = Colors.Hex("#FFBBBB");
         static public readonly Color NegativeColor = Colors.Hex("#C23636");
+
+        static public readonly float InactiveAlpha = 0.65f;
+        static public readonly int ActiveAlpha = 1;
 
         static public readonly string EmptyEntry = "-";
         static public readonly string MoneyPrefix = "$";
@@ -178,14 +183,25 @@ namespace Zavala.UI.Info {
             else {
                 import = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].ImportTax[info.Resource];
             }
+
             col.ImportTaxCol.gameObject.SetActive(true);
-            if (import == 0) { col.ImportTaxCol.Number.SetText(EmptyEntry); }
-            else { SetMoneyText(col.ImportTaxCol.Number, import.ToStringLookup()); }
+            if (import == 0) {
+                col.ImportTaxCol.Number.SetText(EmptyEntry);
+            }
+            else {
+                SetMoneyText(col.ImportTaxCol.Number, import.ToStringLookup());
+            }
+
 
             int salesTax = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].PurchaseTax[info.Resource];
             col.SalesTaxCol.gameObject.SetActive(true);
-            if (salesTax == 0) { col.SalesTaxCol.Number.SetText(EmptyEntry); }
-            else { SetMoneyText(col.SalesTaxCol.Number, salesTax.ToStringLookup()); }
+            if (salesTax == 0) {
+                col.SalesTaxCol.Number.SetText(EmptyEntry);
+            }
+            else { 
+                SetMoneyText(col.SalesTaxCol.Number, salesTax.ToStringLookup());
+            }
+
 
             int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(false);
@@ -289,6 +305,19 @@ namespace Zavala.UI.Info {
             headers.PenaltyColHeader.gameObject.SetActive(true);
             headers.TotalProfitColHeader.gameObject.SetActive(true);
             headers.TotalPriceColHeader.gameObject.SetActive(false);
+
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            bool penaltyActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.RunoffPolicy] != PolicyLevel.None;
+            if (penaltyActive) {
+                headers.PenaltyColHeader.Icon.SetAlpha(ActiveAlpha);
+                headers.PenaltyColHeader.Text.SetAlpha(ActiveAlpha);
+            }
+            else { 
+                headers.PenaltyColHeader.Icon.SetAlpha(InactiveAlpha);
+                headers.PenaltyColHeader.Text.SetAlpha(InactiveAlpha);
+            }
         }
 
         static private void ActivateCostsHeaders(InfoPopupColumnHeaders headers)
@@ -300,6 +329,29 @@ namespace Zavala.UI.Info {
             headers.PenaltyColHeader.gameObject.SetActive(false);
             headers.TotalProfitColHeader.gameObject.SetActive(false);
             headers.TotalPriceColHeader.gameObject.SetActive(true);
+
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
+            if (importActive) {
+                headers.ImportTaxColHeader.Icon.SetAlpha(ActiveAlpha); 
+                headers.ImportTaxColHeader.Text.SetAlpha(ActiveAlpha);
+            }
+            else { 
+                headers.ImportTaxColHeader.Icon.SetAlpha(InactiveAlpha);
+                headers.ImportTaxColHeader.Text.SetAlpha(InactiveAlpha);
+            }
+
+            bool salesActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.SalesTaxPolicy] != PolicyLevel.None;
+            if (salesActive) { 
+                headers.SalesTaxColHeader.Icon.SetAlpha(ActiveAlpha); 
+                headers.SalesTaxColHeader.Text.SetAlpha(ActiveAlpha); 
+            }
+            else { 
+                headers.SalesTaxColHeader.Icon.SetAlpha(InactiveAlpha);
+                headers.SalesTaxColHeader.Text.SetAlpha(InactiveAlpha);
+            }
         }
 
         static public void AssignColColors(InfoPopupColumnHeaders headers)
