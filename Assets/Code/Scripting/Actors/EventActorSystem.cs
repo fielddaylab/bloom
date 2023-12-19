@@ -1,6 +1,7 @@
 using BeauUtil;
 using BeauUtil.Debugger;
 using BeauUtil.Variants;
+using FieldDay;
 using FieldDay.Components;
 using FieldDay.Scripting;
 using FieldDay.Systems;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Alerts;
 using Zavala.Sim;
+using Zavala.UI;
 
 namespace Zavala.Scripting {
     [SysUpdate(FieldDay.GameLoopPhase.Update, 100000, ZavalaGame.SimulationUpdateMask)]
@@ -53,7 +55,8 @@ namespace Zavala.Scripting {
                                     (autoTrig.RegionIndex == -1 || autoTrig.RegionIndex == queuedEvent.RegionIndex.Value)) {
                                                                        
                                     Log.Msg("[EventActorUtility] AutoTriggerAlert ACTIVATED");
-                                    EventActorUtility.TriggerActorAlert(component);
+                                    //EventActorUtility.TriggerActorAlert(component);
+                                    GlobalAlertUtility.PushEventToGlobal(Game.Gui.GetShared<GlobalAlertButton>(), component);
                                     conditions.Remove(autoTrig);
                                     break;
                                 } else {
