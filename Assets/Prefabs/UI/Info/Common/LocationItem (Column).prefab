@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Icon: {fileID: 6441123958713841685}
-  Background: {fileID: 886830744996434364}
+  Background: {fileID: 767681112672134774}
   NameLabel: {fileID: 255466456258285580}
   RegionLabel: {fileID: 7169908300617803081}
   PriceGroup: {fileID: 502169146404820167}
@@ -516,7 +516,7 @@ GameObject:
   m_Component:
   - component: {fileID: 237226276557215907}
   - component: {fileID: 1088742975820695081}
-  - component: {fileID: 886830744996434364}
+  - component: {fileID: 767681112672134774}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -552,7 +552,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7143059286860750089}
   m_CullTransparentMesh: 1
---- !u!114 &886830744996434364
+--- !u!114 &767681112672134774
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -561,7 +561,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7143059286860750089}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a3ee03a5fada3942b82c53c377b7113, type: 3}
+  m_Script: {fileID: 11500000, guid: a3cce1025f282c247b38ed00ee6ddc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -572,6 +572,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_CornerRadius: 3
+  m_Resolution: 0
   m_Outline: 0
   m_Thickness: 1
 --- !u!1001 &1577217926754944370
