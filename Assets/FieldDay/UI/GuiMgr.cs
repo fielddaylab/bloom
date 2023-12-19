@@ -19,6 +19,8 @@ namespace FieldDay.UI {
 
         private readonly Dictionary<StringHash32, RectTransform> m_NamedElementMap = new Dictionary<StringHash32, RectTransform>(16, CompareUtils.DefaultEquals<StringHash32>());
 
+        private readonly RingBuffer<IOnGuiUpdate> m_UpdateCallbacks = new RingBuffer<IOnGuiUpdate>(32, RingBufferMode.Expand);
+
         private InputMgr m_InputMgr;
         private Camera m_PrimaryUICamera;
 
@@ -67,6 +69,8 @@ namespace FieldDay.UI {
 
         #region Add/Remove
 
+        #region Panels
+
         /// <summary>
         /// Registers the given IGuiPanel instance.
         /// </summary>
@@ -106,6 +110,10 @@ namespace FieldDay.UI {
             }
         }
 
+        #endregion // Panels
+
+        #region Named
+
         /// <summary>
         /// Registers a transform with the given name.
         /// </summary>
@@ -123,7 +131,7 @@ namespace FieldDay.UI {
         }
 
         /// <summary>
-        /// Registers a transform with the given name.
+        /// Deregisters a transform with the given name.
         /// </summary>
         public void DeregisterNamed(StringHash32 name, RectTransform transform) {
             Assert.NotNull(transform);
@@ -135,16 +143,29 @@ namespace FieldDay.UI {
             }
         }
 
+        #endregion // Named
+
+        #region Updates
+
         /// <summary>
-        /// Clears all IGuiPanel instances.
+        /// Registers an element for update callbacks.
         /// </summary>
-        public void Clear() {
-            foreach (var panel in m_PanelSet) {
-                RegistrationCallbacks.InvokeDeregister(panel);
-            }
-            Array.Clear(m_SharedPanelMap, 0, m_SharedPanelMap.Length);
-            m_NamedElementMap.Clear();
+        public void RegisterUpdate(IOnGuiUpdate updater) {
+            Assert.NotNull(updater);
+
+            m_UpdateCallbacks.PushBack(updater);
         }
+
+        /// <summary>
+        /// Deregisters an element for update callbacks.
+        /// </summary>
+        public void DeregisterUpdate(IOnGuiUpdate updater) {
+            Assert.NotNull(updater);
+
+            m_UpdateCallbacks.FastRemove(updater);
+        }
+
+        #endregion // Updates
 
         #endregion // Add/Remove
 
@@ -290,10 +311,17 @@ namespace FieldDay.UI {
             }
         }
 
+        internal void ProcessUpdate() {
+            for(int i = 0; i < m_UpdateCallbacks.Count; i++) {
+                m_UpdateCallbacks[i].OnGuiUpdate();
+            }
+        }
+
         internal void Shutdown() {
             Array.Clear(m_SharedPanelMap, 0, m_SharedPanelMap.Length);
             m_PanelSet.Clear();
             m_NamedElementMap.Clear();
+            m_UpdateCallbacks.Clear();
             m_InputMgr = null;
         }
 

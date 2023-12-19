@@ -26,7 +26,7 @@ namespace Zavala.Roads {
                 HexGridSize gridSize = m_StateB.HexSize;
                 RoadNetwork network = m_StateA;
 
-                using (Profiling.Sample("Road Network Rebuild")) {
+                using (Profiling.Time("Road Network Rebuild", ProfileTimeUnits.Microseconds)) {
 
                     // Clear old connections data
                     network.Roads.PathIndexAllocator.Reset();
@@ -145,7 +145,7 @@ namespace Zavala.Roads {
                 ushort idx = resources.NodeQueue.Dequeue();
 
                 RoadTileInfo tileInfo = infoBuffer[idx];
-                bool skipOutgoing = false;
+                //bool skipOutgoing = false;
 
                 // check destination
                 if (idx != startIdx && (tileInfo.Flags & RoadFlags.IsDestination) != 0) {
@@ -170,12 +170,12 @@ namespace Zavala.Roads {
 
                     // if tollbooth, we can continue traversing
                     // otherwise, terminate here. no paths leading through buildings
-                    skipOutgoing = (destInfo.Type & RoadDestinationMask.Tollbooth) == 0;
+                    //skipOutgoing = (destInfo.Type & RoadDestinationMask.Tollbooth) == 0;
                 }
                 
-                if (skipOutgoing) {
-                    continue;
-                }
+                //if (skipOutgoing) {
+                //    continue;
+                //}
 
                 TileAdjacencyMask flow = tileInfo.FlowMask;
                 if (!flow.IsEmpty) {

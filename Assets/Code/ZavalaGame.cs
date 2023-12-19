@@ -4,6 +4,7 @@ using FieldDay.HID;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.Scripting;
 using Zavala.Sim;
 using Zavala.World;
@@ -45,6 +46,7 @@ namespace Zavala {
         [InvokeOnBoot]
         static private void OnBoot() {
             CursorUtility.HideCursor();
+            Profiler.enabled = false;
 
             Scenes.OnMainSceneReady.Register(() => {
                 if (ScriptUtility.Runtime) {

@@ -18,7 +18,7 @@ namespace FieldDay.Scripting {
     [SharedStateInitOrder(-10)]
     public sealed class ScriptRuntimeState : SharedStateComponent, IRegistrationCallbacks {
         public readonly ScriptThreadMap ThreadMap = new ScriptThreadMap();
-        public readonly RingBuffer<LeafThreadHandle> ActiveThreads = new RingBuffer<LeafThreadHandle>(64, RingBufferMode.Expand);
+        public readonly RingBuffer<LeafThreadHandle> ActiveThreads = new RingBuffer<LeafThreadHandle>(8, RingBufferMode.Expand);
         public LeafThreadHandle Cutscene;
         public int NestedCutscenePauseCount;
 
@@ -43,7 +43,7 @@ namespace FieldDay.Scripting {
             Plugin = new ScriptPlugin(this, Resolver);
             Plugin.ConfigureDisplay(DefaultDialogue, DefaultDialogue);
 
-            ThreadPool = new DynamicPool<ScriptThread>(16, (p) => {
+            ThreadPool = new DynamicPool<ScriptThread>(4, (p) => {
                 return new ScriptThread(p, Plugin);
             });
             ThreadPool.Prewarm();

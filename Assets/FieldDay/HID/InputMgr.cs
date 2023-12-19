@@ -25,6 +25,8 @@ namespace FieldDay.HID {
         private uint m_ForceClickRecursion;
         private RingBuffer<InputTimestamp> m_ClickTimestampBuffer = new RingBuffer<InputTimestamp>(2, RingBufferMode.Overwrite);
 
+        internal InputMgr() { }
+
         #region Clicks
 
         /// <summary>

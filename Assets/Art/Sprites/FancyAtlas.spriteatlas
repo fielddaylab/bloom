@@ -64,10 +64,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 72672cd65ee38ca458430482179011bb, type: 3}
   - {fileID: 21300000, guid: b55285f6fa5d00e4eb593d7c062b15fc, type: 3}
   - {fileID: 21300000, guid: 22383a87d579ab84aaac524370c41317, type: 3}
-  - {fileID: 21300000, guid: 312c4ba7e2be4334bb0a3c5acd350d15, type: 3}
   - {fileID: 21300000, guid: b53b1538761d4cc4a9aa46586c322d8a, type: 3}
   - {fileID: 21300000, guid: 371b64b8ab90383469292c663e1dc866, type: 3}
   - {fileID: 21300000, guid: af582ab87b4a1f146a99d9adaa0a8097, type: 3}
+  - {fileID: 21300000, guid: f912bbd9546748b4082eb8ea2f05719f, type: 3}
   - {fileID: 21300000, guid: b00c5cd9ed77c8a458795d11e453410a, type: 3}
   - {fileID: 21300000, guid: 6b7ffe1aa44a7194ab4cc3392086cc05, type: 3}
   - {fileID: 21300000, guid: f92ecf4a3611dda42ac3bfa333f8499b, type: 3}
@@ -108,17 +108,17 @@ SpriteAtlas:
   - policy-sales_0
   - policy-runoff_1
   - advisor-ecol_urban
-  - policy-skim_1
   - advisor-econ_hills
   - advisor-econ_prairie
   - policy-import_0
+  - policy-skim_4
   - policy-skim_3
   - advisor-econ_forest
   - city_forest
   - advisor-ecol_prairie
   - policy-runoff_3
   - grain_hills
-  - policy-skim_4
+  - policy-skim_2
   - policy-import_3
   - city_hills
   - city_urban
@@ -136,7 +136,7 @@ SpriteAtlas:
   - policy-sales_3
   - grain_prairie
   - cafo_hills
-  - policy-skim_2
+  - policy-skim_1
   - city_wetland
   m_RenderDataMap: {}
   m_Tag: FancyAtlas

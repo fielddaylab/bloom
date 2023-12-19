@@ -66,6 +66,8 @@ namespace FieldDay.Systems {
 
         #endregion // Types
 
+        internal SystemsMgr() { }
+
         #region System Lists
 
         private readonly RingBuffer<ISystem> m_AllSystems = new RingBuffer<ISystem>(32, RingBufferMode.Expand);
