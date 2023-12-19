@@ -17,12 +17,14 @@ namespace Zavala.World {
         [Header("Camera Positioning")]
         public Camera Camera;
         public Transform LookTarget;
+        public Vector3 PanTargetOffset;
 
         [Header("Camera Movement")]
         public float CameraMoveSpeed;
         public float CameraMaxZoomDist;
         public float CameraMinZoomDist;
         public int ZoomFactor;
+
 
         [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
@@ -51,7 +53,7 @@ namespace Zavala.World {
 
 
         public static void PanCameraToPoint(SimWorldCamera cam, Vector3 pt) {
-            cam.PanTargetPoint = pt;
+            cam.PanTargetPoint = pt + cam.PanTargetOffset;
             cam.TransitionRoutine.Replace(PanRoutine(cam)).SetPhase(RoutinePhase.Update);
         }
 

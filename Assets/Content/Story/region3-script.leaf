@@ -44,7 +44,7 @@ $endif
 @conditions     alertType == "bloom", alertRegion == 3, global:bloomDiscovered
 @forcePolicy    Ecology
 {@advisorEcolPrairie}    Eep! An algae bloom!
-{@advisorEcolPrairie}    I say we should just shut those CAFOs down.
+{@advisorEcolPrairie}    I say we should just shut those dairy farms down.
 $if Visited("region2.unlockStorage")
     {@advisorEcolPrairie}    Otherwise, we could build more storage units.
 $endif

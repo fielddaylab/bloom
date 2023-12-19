@@ -25,11 +25,11 @@ namespace Zavala.UI {
         //public RectTransform AlertBannerRect;
         //public PointerListener Pointer;
         public RectTransform m_Rect; 
-        public int MaxQueuedEvents = 3; // there should really only ever be 1 but let's keep it to 3 for emergencies
+        public int MaxQueuedEvents = 5; // there should really only ever be 1 but let's keep it to 5 for emergencies
 
         public Button m_Button;
 
-        public RingBuffer<EventActor> QueuedActors = new RingBuffer<EventActor>();
+        public RingBuffer<EventActor> QueuedActors = new RingBuffer<EventActor>(5);
         [NonSerialized] public Routine m_Routine;
 
         protected override void Awake() {
@@ -46,9 +46,13 @@ namespace Zavala.UI {
         #region Handlers
 
         private void HandleButtonClicked() {
-            QueuedActors.TryPopFront(out EventActor actor);
+            if (!QueuedActors.TryPopFront(out EventActor actor)) {
+                Log.Warn("[GlobalAlertButton] Couldn't pop front of QueuedActors :(");
+            }
+            
             Assert.NotNull(actor);
 
+            Log.Msg("[GlobalAlertButton] Popped actor {0}", actor.gameObject.name);
             EventActorUtility.TriggerActorAlert(actor);
             UIAlertUtility.ClearAlert(actor.DisplayingEvent);
             UpdateButtonRoutine();

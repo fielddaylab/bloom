@@ -23,7 +23,7 @@ MonoBehaviour:
     - Id: alerts.excess-runoff
       Content: Excessive Runoff
     - Id: alerts.die-off
-      Content: Die-OFF
+      Content: Die-Off
     - Id: alerts.crit-imbalance
       Content: Critical Imbalance
     - Id: alerts.unused-digester
@@ -103,21 +103,21 @@ MonoBehaviour:
     - Id: location.region1_city1.name
       Content: Pendleton City
     - Id: location.region1_cafo1.name
-      Content: Bertram's CAFO
+      Content: Bertram's Dairy Farm
     - Id: location.region1_grain1.name
       Content: Henrietta's Grain Farm
     - Id: location.externalSupplier.name
       Content: Phos 4 Us
     - Id: location.region2_cafo1.name
-      Content: Natalie's CAFO
+      Content: Natalie's Dairy Farm
     - Id: location.region2_cafo2.name
-      Content: Natalie's CAFO
+      Content: Natalie's Dairy Farm
     - Id: location.region2_grain1.name
       Content: Emmett's Grain Farm
     - Id: location.region2_city1.name
       Content: Yewgrove
     - Id: location.region3_cafo1.name
-      Content: Winnie's CAFO
+      Content: Winnie's Dairy Farm
     - Id: location.region3_grain1.name
       Content: Zora's Grain Farm
     - Id: location.region3_grain2.name
@@ -125,17 +125,17 @@ MonoBehaviour:
     - Id: location.region3_city1.name
       Content: Veldt City
     - Id: location.region4_cafo1.name
-      Content: Neil's CAFO
+      Content: Neil's Dairy Farm
     - Id: location.region4_cafo2.name
-      Content: Neil's CAFO
+      Content: Neil's Dairy Farm
     - Id: location.region4_cafo3.name
-      Content: Neil's CAFO
+      Content: Neil's Dairy Farm
     - Id: location.region4_grain1.name
       Content: Cindy's Grain Farm
     - Id: location.region4_city1.name
       Content: Heylemarsh
     - Id: location.region5_cafo1.name
-      Content: Tabitha's CAFO
+      Content: Tabitha's Dairy Farm
     - Id: location.region5_grain1.name
       Content: Tom's Grain Farm
     - Id: location.region5_city1.name
@@ -174,8 +174,8 @@ MonoBehaviour:
     - Id: location.shared.storageInfo
       Content: <i><u>buys</u> and <u>sells</u> raw manure</i>
     - Id: location.shared.storageDesc
-      Content: Storage Units buy fertilizer from CAFOs and sell it for a very minor
-        profit.
+      Content: Storage Units buy fertilizer from dairy farms and sell it for a very
+        minor profit.
     - Id: location.shared.depot
       Content: Export Depot
     - Id: location.shared.depotInfo

@@ -234,6 +234,7 @@ $call CutsceneEnd()
 $call FocusClear()
 {@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
 $call SendGlobalAlertForNode("region1_city1", region1.testGlobalAlert)
+$call HideAnimatedTutorial()
 $set intro:tutorialComplete = true
 $set intro:pendingPolicy = true
 $call UnlockCards(SalesTaxPolicy)

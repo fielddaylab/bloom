@@ -14,7 +14,7 @@ $call SendGlobalAlertForNode("region2_city1", region2.forestUnlocked)
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
 {@advisorEconForest}    Can you help us connect our farms and city to help us grow?
 {@advisorEconForest}    Our budget and policies are separate from Knoll County.
-{@advisorEconForest}    We have more CAFOs than our <i>dear</i> neighbors.
+{@advisorEconForest}    We have more dairy farms than our <i>dear</i> neighbors.
 // // $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -71,8 +71,8 @@ $endif
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.
 $call FocusClear()
-{@advisorEcolForest}    Once connected to a CAFO, they'll hold onto manure for later use.
-{@advisorEcolForest}    But it won't be cheap - try to share it between CAFOs.
+{@advisorEcolForest}    Once connected to a dairy farm, they'll hold onto manure for later use.
+{@advisorEcolForest}    But it won't be cheap - try to share it between s.
 $call OffsetAlgaeGrowthThreshold(-1)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
@@ -105,7 +105,7 @@ $set global:importUnlocked = true
 {@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
 $call PanToBuilding("region3_city1")
 // $call Pause()
-{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many CAFOs.
+{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many dairy farms.
 {@advisorEcolPrairie}   But we've got plenty of <b>grain</b> over in Heath County! Maybe we could help each other?
 {@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
 {@advisorEconPrairie}   Perhaps we need to offset shipping costs.
