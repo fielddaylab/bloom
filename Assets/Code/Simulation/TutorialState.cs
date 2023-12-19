@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Advisor;
 using Zavala.Cards;
+using Zavala.UI.Tutorial;
 
 namespace Zavala.Sim
 {
@@ -26,6 +27,16 @@ namespace Zavala.Sim
         static public void ActivateSim() {
             TutorialState tutorial = Game.SharedState.Get<TutorialState>();
             tutorial.CurrState = State.ActiveSim;
+        }
+
+        [LeafMember("ShowAnimatedTutorial")]
+        static public void ShowPanel(string tutorialName) {
+            Game.Gui.GetShared<TutorialPanel>().Open(tutorialName);
+        }
+
+        [LeafMember("HideAnimatedTutorial")]
+        static public void HidePanel() {
+            Game.Gui.GetShared<TutorialPanel>().Close();
         }
 
         [DebugMenuFactory]

@@ -55,7 +55,7 @@ $call Unpause()
 {@advisorEcolHill}      You can't build over any of our protected forests or deep water.
 {@advisorEconHill}      Each road segment costs $5. 
 {@advisorEconHill}      Now CLICK and DRAG from the <i>grain farm</i> to the <i>CAFO</i>.
-
+$call ShowAnimatedTutorial("ClickDragTutorial")
 
 
 // Step 3: Introduce cities
@@ -67,6 +67,7 @@ $call Unpause()
 $call Pause()
 $set intro:farmsConnected = true
 $if intro:citiesConnected
+    $call HideAnimatedTutorial()
     $call ForceDialogueInteraction()
     {@advisorEconHill}      Now the CAFO can buy <i>grain</i> from the Grain Farm.
     {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> for fertilizer.
@@ -96,6 +97,7 @@ $call Unpause()
 $call Pause()
 $set intro:citiesConnected = true
 $if intro:farmsConnected
+    $call HideAnimatedTutorial()
     $call ForceDialogueInteraction()
     {@advisorEconHill}      Excellent! Now the the City has a source of <i>milk</i>!
     $branch .farmsAndCitiesConnected
@@ -114,6 +116,7 @@ $call Unpause()
 @once
 @cutscene
 $set intro:farmsAndCities = true
+$call HideAnimatedTutorial()
 {@advisorEconHill}      Now everything is connected.
 {@advisorEconHill}      The city income taxes give SAGA a budget. 
 {@advisorEconHill}      But SAGA may need more funding.
