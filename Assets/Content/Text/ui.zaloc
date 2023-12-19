@@ -35,3 +35,30 @@ Buying:
 
 :: popup.info.selling
 Selling to:
+
+:: popup.info.city.falling
+The City’s population is <u><color="red">falling</color></u> due to:
+
+:: popup.info.city.stable
+The City’s population is <u>stable</u> due to:
+
+:: popup.info.city.rising
+The City’s population is <u><color=#005500>rising</color></u> due to:
+
+:: popup.info.city.water.falling
+Frequent Algae Blooms
+
+:: popup.info.city.water.stable
+OK Water Quality
+
+:: popup.info.city.water.rising
+Good water quality
+
+:: popup.info.city.milk.falling
+Not Enough Milk
+
+:: popup.info.city.milk.stable
+Enough Milk
+
+:: popup.info.city.milk.rising
+Plenty of Milk
