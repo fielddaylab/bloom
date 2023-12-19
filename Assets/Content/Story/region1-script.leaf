@@ -34,8 +34,7 @@ $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
 $call PanToBuilding("region1_cafo1")
 {@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
-{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm," its a CAFO.
-{@advisorEcolHill}      Its a huge farm. A CAFO is a <i>concentrated animal feed operation</i>.
+{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm," its a huge operation.
 {@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
@@ -54,7 +53,7 @@ $call Unpause()
 {@advisorEconHill}      Select your <i>Road</i> tool. 
 {@advisorEcolHill}      You can't build over any of our protected forests or deep water.
 {@advisorEconHill}      Each road segment costs $5. 
-{@advisorEconHill}      Now CLICK and DRAG from the <i>grain farm</i> to the <i>CAFO</i>.
+{@advisorEconHill}      Now CLICK and DRAG from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
 $call ShowAnimatedTutorial("ClickDragTutorial")
 
 
@@ -69,11 +68,11 @@ $set intro:farmsConnected = true
 $if intro:citiesConnected
     $call HideAnimatedTutorial()
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Now the CAFO can buy <i>grain</i> from the Grain Farm.
+    {@advisorEconHill}      Now the Dairy Farm can buy <i>grain</i> from the Grain Farm.
     {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> for fertilizer.
-    {@advisorEconHill}      Its the beginning of our Poop-Economy
-    {local @grainFarmer}    Pippin, its called fertilizer.
-    {local @cafoFarmer}     Yes, its my <i>fertilizer</i> business. <i>NOT </i> my poop business. That's gross.
+    {@advisorEconHill}      Its the beginning of our local <i>Fertilizer Economy</i>.
+    {local @grainFarmer}    Pippin, will this help us save some money? 
+    {local @cafoFarmer}     Yeah, I'm going broke here. It would be great to turn manure into money. 
 
     $branch .farmsAndCitiesConnected
 $else
@@ -84,7 +83,7 @@ $else
     {@advisorEconHill}      and the fine people of Pendleton Hills buy the <i>milk</i>.
     $if !intro:citiesConnected 
         $call PanToBuilding("region1_city1")
-        {@advisorEconHill}      We need a <i>Road</i> to connect the CAFO to the City.
+        {@advisorEconHill}      We need a <i>Road</i> to connect the Dairy Farm to the City.
     $endif
 $endif
 $call Unpause()
@@ -106,7 +105,7 @@ $else
     {@advisorEconHill}      With this road, the City can purchase Bertram's <i>milk</i>.
     {@advisorEconHill}      But cows need <i>grain</i> to make milk...
     $call PanToBuilding("region1_grain1")
-    {@advisorEconHill}      Build another road between the CAFO and the Grain Farm.
+    {@advisorEconHill}      Build another road between the Dairy Farm and the Grain Farm.
 $endif
 
 $call Unpause()
@@ -219,7 +218,7 @@ $call Pause()
 // $set intro:exporterFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
-{@advisorEconHill}      Henrietta's grain farm imported some <i>fertilizer</i>.
+{@advisorEconHill}      Henrietta's Grain Farm imported some <i>fertilizer</i>.
 {local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
 {local @grainFarmer}    ...and its cheap to ship to my farm.
 {@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
@@ -271,13 +270,13 @@ $endif
 // TODO: lookup policy costs
 $if local:policyType == "RunoffPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcol}    With no runoff fine, CAFOs will only sell manure if it earns a profit.
+        {local @advisorEcol}    With no runoff fine, Dairy Farms will only sell manure if it earns a profit.
     $elseif local:policyIndex == 1
-        {local @advisorEcol}    With a low runoff fine, CAFOs will sell manure if the loss is less than $8 per unit.
+        {local @advisorEcol}    With a low runoff fine, Dairy Farms will sell manure if the loss is less than $8 per unit.
     $elseif local:policyIndex == 2
-        {local @advisorEcol}    With a high runoff fine, CAFOs will sell manure if the loss is less than $16 per unit.
+        {local @advisorEcol}    With a high runoff fine, Dairy Farms will sell manure if the loss is less than $16 per unit.
     $elseif local:policyIndex == 3
-        {local @advisorEcol}    With a very high runoff fine, CAFOs will try to sell manure, even if it loses money.
+        {local @advisorEcol}    With a very high runoff fine, Dairy Farms will try to sell manure, even if it loses money.
     $endif
 $elseif local:policyType == "SkimmingPolicy"
     $if     local:policyIndex == 0
@@ -402,7 +401,7 @@ $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/f
     {wait 1}
     $call CutsceneClearText()
     $call CutsceneNextImage()
-    Manure from CAFOs must be running off into the lake with rainwater.
+    Manure from Dairy Farms must be running off into the lake with rainwater.
     {wait 1}
     $call CutsceneClearText()
     $call CutsceneNextImage()
