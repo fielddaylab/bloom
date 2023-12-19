@@ -17,7 +17,7 @@ namespace FieldDay.Processes {
         private readonly RingBuffer<Process> m_PendingProcessQueue = new RingBuffer<Process>(32, RingBufferMode.Expand);
         private readonly DynamicPool<Process> m_ProcessPool;
 
-        public ProcessMgr() {
+        internal ProcessMgr() {
             m_ProcessPool = new DynamicPool<Process>(32, (p) => new Process(this));
             m_ProcessPool.Prewarm(16);
         }

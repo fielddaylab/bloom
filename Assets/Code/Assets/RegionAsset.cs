@@ -3,6 +3,7 @@ using BeauUtil;
 using BeauUtil.Variants;
 using Leaf;
 using UnityEngine;
+using Zavala.Audio;
 using Zavala.Sim;
 
 namespace Zavala {
@@ -116,7 +117,7 @@ namespace Zavala {
         public LeafAsset LeafScript;
 
         [Header("Audio")]
-        public AudioClip Ambience;
+        public AmbientSfxConfig Ambience;
 
         [Header("Id")]
         public RegionId Id;

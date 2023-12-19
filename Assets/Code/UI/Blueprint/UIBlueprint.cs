@@ -53,7 +53,6 @@ namespace Zavala.UI
 
         [Header("Destroy Mode")]
         [SerializeField] private CanvasGroup m_DestroyCommandLayout;
-        [SerializeField] private CanvasGroup m_DestroyOverlay;
         [SerializeField] private Button m_DestroyConfirmButton;   // Confirms queued destructions
         [SerializeField] private Button m_DestroyUndoButton;   // Undo button when in Destroy Mode
         [SerializeField] private Button m_DestroyExitButton;   // Exit button when in Destroy Mode
@@ -470,18 +469,12 @@ namespace Zavala.UI
             if (appearing)
             {
                 SetDestroyCommandLayoutInteractable(true);
-                yield return Routine.Combine(
-                    m_DestroyCommandLayout.FadeTo(1, 0.1f),
-                    m_DestroyOverlay.FadeTo(1, 0.1f)
-                );
+                yield return m_DestroyCommandLayout.FadeTo(1, 0.1f);
             }
             else
             {
                 SetDestroyCommandLayoutInteractable(false);
-                yield return Routine.Combine(
-                    m_DestroyCommandLayout.FadeTo(0, 0.1f),
-                    m_DestroyOverlay.FadeTo(0, 0.1f)
-                );
+                yield return m_DestroyCommandLayout.FadeTo(0, 0.1f);
             }
         }
 

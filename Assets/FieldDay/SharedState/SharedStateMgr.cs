@@ -21,6 +21,8 @@ namespace FieldDay.SharedState {
         private ISharedState[] m_StateMap = new ISharedState[StateIndex.Capacity];
         private readonly HashSet<ISharedState> m_StateSet = new HashSet<ISharedState>(32);
 
+        internal SharedStateMgr() { }
+
         #region Add/Remove
 
         /// <summary>

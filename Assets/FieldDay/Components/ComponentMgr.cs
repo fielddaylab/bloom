@@ -18,7 +18,7 @@ namespace FieldDay.Components {
         private RingBuffer<IComponentData> m_RemovalQueue = new RingBuffer<IComponentData>(64, RingBufferMode.Expand);
         private int m_ModificationLock;
 
-        public ComponentMgr(SystemsMgr systemsMgr) {
+        internal ComponentMgr(SystemsMgr systemsMgr) {
             Assert.NotNull(systemsMgr);
             m_SystemsMgr = systemsMgr;
             m_ComponentLists = new List<IComponentData>[ComponentIndex.Capacity];

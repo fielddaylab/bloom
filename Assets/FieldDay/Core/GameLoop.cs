@@ -446,6 +446,7 @@ namespace FieldDay {
                 OnUnscaledLateUpdate.Invoke(Frame.UnscaledDeltaTime);
             }
 
+            Game.Gui.ProcessUpdate();
             Game.Audio.Update(Frame.UnscaledDeltaTime);
 
             // flush event queue

@@ -12,6 +12,7 @@ namespace Zavala {
 
         private void Awake()
         {
+            m_HasPersisted = true;
             Services.AutoSetup(gameObject);
         }
 

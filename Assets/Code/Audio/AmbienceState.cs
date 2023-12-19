@@ -7,7 +7,7 @@ namespace Zavala.Audio {
     public sealed class AmbienceState : SharedStateComponent, IRegistrationCallbacks {
         public AudioSource AmbiencePlayerA;
         public AudioSource AmbiencePlayerB;
-        [Range(0, 1)] public float Volume;
+        [Range(0, 1)] public float Volume = 1;
 
         void IRegistrationCallbacks.OnDeregister() {
         }
