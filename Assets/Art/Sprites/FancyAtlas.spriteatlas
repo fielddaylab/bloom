@@ -82,6 +82,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3899347b9b69eff41ae0e4ca9a5260ad, type: 3}
   - {fileID: 21300000, guid: 96437d7bec135c4479fcbb447c680ab3, type: 3}
   - {fileID: 21300000, guid: 7aa04a8b3557e8048a329c267d750156, type: 3}
+  - {fileID: 21300000, guid: e6e88fac5d71c834b9835165c424bf0e, type: 3}
   - {fileID: 21300000, guid: bc63a7fc653ba5a4c83efe06deca11d5, type: 3}
   - {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
   - {fileID: 21300000, guid: 2fec7a1da840dee489f3d26206010190, type: 3}
@@ -126,6 +127,7 @@ SpriteAtlas:
   - policy-import_1
   - grain_forest
   - policy-runoff_0
+  - policy-skim_4
   - city_prairie
   - char-balthazar
   - grain_wetland

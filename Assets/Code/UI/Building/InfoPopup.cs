@@ -16,15 +16,16 @@ namespace Zavala.UI.Info {
     public class InfoPopup : SharedRoutinePanel {
         static private readonly Color GrainFarmColor = Colors.Hex("#C8E295");
         static private readonly Color DairyFarmColor = Colors.Hex("#E2CD95");
-        static private readonly Color CityColor = Colors.Hex("#CDF6ED");
+        static private readonly Color CityColor = Colors.Hex("#99FFCE");
         static private readonly Color DigesterColor = Colors.Hex("#F2D779");
         static private readonly Color TollColor = Colors.Hex("#E8F279");
         static private readonly Color StorageColor = Colors.Hex("#F2D779");
         static private readonly Color DepotColor = Colors.Hex("#FFC34E");
 
-        static private readonly int NarrowWidth = 300; 
+        static private readonly int NarrowWidth = 270;
+        static private readonly int NarrowHeight = 300;
         static private readonly int WideWidth = 460;
-        static private readonly int WideHeight = 259;
+        static private readonly int WideHeight = 273;
         static private readonly int SmallWidth = 220;
         static private readonly int SmallHeight =  150;
 
@@ -36,6 +37,10 @@ namespace Zavala.UI.Info {
         [SerializeField] private RectTransform m_PinTransform;
         [SerializeField] private LayoutGroup m_Layout;
         [SerializeField] private RectTransform m_LayoutTransform;
+
+        [SerializeField] private Sprite m_PoorWaterSprite;
+        [SerializeField] private Sprite m_FairWaterSprite;
+        [SerializeField] private Sprite m_GreatWaterSprite;
 
         [Header("Header")]
         [SerializeField] private Graphic m_HeaderBG;
@@ -142,6 +147,7 @@ namespace Zavala.UI.Info {
 
                 case BuildingType.City: {
                     m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
@@ -289,50 +295,8 @@ namespace Zavala.UI.Info {
             }
         }
 
-        /*
-        private void PopulateShippingNarrow() {
-            Root.sizeDelta = new Vector2(NarrowWidth, 400);
-
-            int count = Math.Min(m_QueryResults.Count, 3);
-            ConfigureRowsAndDividers(count);
-
-            MarketConfig config = Game.SharedState.Get<MarketConfig>();
-
-            for (int i = 0; i < count; i++) {
-                var results = m_QueryResults[i];
-                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContentsRows.Locations[i], results.Requester.Position, results.Supplier.Position);
-                InfoPopupMarketUtility.LoadProfitIntoRow(m_MarketContentsRows.Locations[i], results, config, i > 0);
-            }
-
-            if (gameObject.activeSelf) {
-                m_Layout.ForceRebuild(true);
-                m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
-            }
-        }
-
-        private void PopulatePurchasingNarrow() {
-            Root.sizeDelta = new Vector2(NarrowWidth, 400);
-
-            int count = Math.Min(m_QueryResults.Count, 3);
-            ConfigureRowsAndDividers(count);
-
-            MarketConfig config = Game.SharedState.Get<MarketConfig>();
-
-            for(int i = 0; i < count; i++) {
-                var results = m_QueryResults[i];
-                InfoPopupMarketUtility.LoadLocationIntoRow(m_MarketContentsRows.Locations[i], results.Supplier.Position, results.Requester.Position);
-                InfoPopupMarketUtility.LoadCostsIntoRow(m_MarketContentsRows.Locations[i], results, config, i > 0);
-            }
-
-            if (gameObject.activeSelf) {
-                m_Layout.ForceRebuild(true);
-                m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
-            }
-        }
-        */
-
         private void PopulateCity() {
-            Root.sizeDelta = new Vector2(NarrowWidth, 400);
+            Root.sizeDelta = new Vector2(NarrowWidth, NarrowHeight);
 
             int purchaseAmount = m_SelectedPurchaser.RequestAmount.Milk;
             m_PurchaseContents.Number.SetText(purchaseAmount.ToStringLookup());
@@ -343,15 +307,39 @@ namespace Zavala.UI.Info {
             }
             average /= m_SelectedPurchaser.RequestAmountHistory.Count;
 
-            if (purchaseAmount > average) {
+            // TODO: determine sources of stress (blooms, not enough milk, etc)
+            m_PurchaseContents.WaterStatus.gameObject.SetActive(true);
+            m_PurchaseContents.MilkStatus.gameObject.SetActive(true);
+
+            if (purchaseAmount > average)
+            {
+                m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.rising"));
+                m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.rising"));
+                m_PurchaseContents.WaterStatus.Icon.sprite = m_GreatWaterSprite;
+                m_PurchaseContents.MilkStatus.Description.SetText(Loc.Find("ui.popup.info.city.milk.rising"));
+
                 m_PurchaseContents.Arrow.gameObject.SetActive(true);
                 m_PurchaseContents.Arrow.color = InfoPopupMarketUtility.PositiveColor;
                 m_PurchaseContents.Arrow.rectTransform.SetRotation(90, Axis.Z, Space.Self);
-            } else if (purchaseAmount < average) {
+            }
+            else if (purchaseAmount < average)
+            {
+                m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.falling"));
+                m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.falling"));
+                m_PurchaseContents.WaterStatus.Icon.sprite = m_PoorWaterSprite;
+                m_PurchaseContents.MilkStatus.Description.SetText(Loc.Find("ui.popup.info.city.milk.falling"));
+
                 m_PurchaseContents.Arrow.gameObject.SetActive(true);
                 m_PurchaseContents.Arrow.color = InfoPopupMarketUtility.NegativeColor;
                 m_PurchaseContents.Arrow.rectTransform.SetRotation(-90, Axis.Z, Space.Self);
-            } else {
+            }
+            else
+            {
+                m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.stable"));
+                m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.stable"));
+                m_PurchaseContents.WaterStatus.Icon.sprite = m_FairWaterSprite;
+                m_PurchaseContents.MilkStatus.Description.SetText(Loc.Find("ui.popup.info.city.milk.stable"));
+
                 m_PurchaseContents.Arrow.gameObject.SetActive(false);
             }
 

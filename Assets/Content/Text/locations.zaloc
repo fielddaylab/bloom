@@ -1,7 +1,7 @@
 # basePath location
 
 :: region1_city1.name
-Pendleton Hills
+Pendleton City
 
 :: region1_cafo1.name
 Bertram's CAFO
@@ -75,7 +75,7 @@ Digesters buy raw manure and turn it into fertilizer that can be shipped for che
 <i>buys <u>corn</u> / sells <u>milk</u></i>
 
 :: cityInfo
-<i>buys <u>milk</u></i>
+<i><u>buys</u> milk, <u>generates</u> revenue</i>
 
 :: grainInfo
 <i>buys <u>fertilizer</u> / sells <u>corn</u></i>
