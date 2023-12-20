@@ -54,7 +54,7 @@ namespace Zavala.UI {
         #region Handlers
 
         private void HandlePolicyBoxClicked(AdvisorType type) {
-            ScriptUtility.AutoOpenPolicy(PolicyType);
+            ScriptUtility.AutoOpenPolicyCards(PolicyType);
 
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("advisorType", type.ToString());

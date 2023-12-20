@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 6532105662098585238}
   - component: {fileID: 5050965405892180161}
   - component: {fileID: 7154066641173859841}
+  - component: {fileID: 4087634888098551245}
   m_Layer: 7
   m_Name: GrainFarm_Urban
   m_TagString: Untagged
@@ -131,9 +132,7 @@ MonoBehaviour:
   InfiniteRequests: 0
   OverridesBuyPrice: 0
   OverrideBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
+    Phosphorus: 0
     Grain: 0
     Milk: 0
   Flagstaff: {fileID: 3105086945358147064}
@@ -215,6 +214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Amount: 1
   AmountProducedLastTick: 0
+  RunoffParticleOrigin: {fileID: 1964279654832433096}
 --- !u!135 &7154066641173859841
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -228,6 +228,30 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4087634888098551245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5421243799934890597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuyPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  SellPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  PriceStep: 1
+  AcceptsAnyPrice: 0
+  FixedSellOffer: 0
+  FixedBuyOffer: 0
 --- !u!1001 &3743880648583490365
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -292,6 +316,11 @@ PrefabInstance:
 --- !u!4 &269385162530519634 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3479562866714169711, guid: 30e54472d75346a4887c40717d5c0a14, type: 3}
+  m_PrefabInstance: {fileID: 3743880648583490365}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1964279654832433096 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2933649225635286261, guid: 30e54472d75346a4887c40717d5c0a14, type: 3}
   m_PrefabInstance: {fileID: 3743880648583490365}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &4054101505793053327 stripped

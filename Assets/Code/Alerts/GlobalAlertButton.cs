@@ -47,7 +47,7 @@ namespace Zavala.UI {
 
         private void HandleButtonClicked() {
             if (!QueuedActors.TryPopFront(out EventActor actor)) {
-                Log.Warn("[GlobalAlertButton] Couldn't pop front of QueuedActors :(");
+                Log.Warn("[GlobalAlertButton] Couldn't pop front of QueuedActors :( Button showing without actors queued?");
             }
             
             Assert.NotNull(actor);

@@ -15,7 +15,7 @@ $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    The phosphorus flows down through waterways into our marshland.
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
 $call OffsetAlgaeGrowthThreshold(-2)
-$call AddAutoAlertCondition("Bloom", 4)
+$call AddAutoAlertCondition("Bloom", 2)
 // $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -42,9 +42,9 @@ $endif
 
 :: unlockSkimmers
 @trigger        AlertExamined
-@cutscene
-@conditions     alertType == "bloom", alertRegion != 4, AgeOfRegion(4) > 3
+@conditions     alertType == "bloom", AgeOfRegion(4) > 3
 @forcePolicy    Ecology
+@cutscene
 @once
 {local @advisorEcol}    More algae blooms...
 $if Visited("region4.unlockSkimmers") // band-aid solution for queued "once" alert nodes
@@ -55,6 +55,7 @@ $if Visited("region4.unlockSkimmers") // band-aid solution for queued "once" ale
     {viewpoliciesnext}
     {local @advisorEcol}    It's up to you, Director.
     $call UnlockCards(SkimmingPolicy)
+    $call AddAutoAlertCondition("Bloom", 4)
 $else
     {viewpoliciesnext}
     {local @advisorEcon}    Maybe those newfangled skimmers can help?
@@ -105,7 +106,7 @@ $call OffsetAlgaeGrowthThreshold(0)
 
 :: bloomGeneric
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 4, global:bloomDiscovered
+@conditions     alertType == "bloom", alertRegion == 4, PolicyIsUnlocked(SkimmingPolicy)
 @priority       Low
 @forcePolicy    Ecology
 {@advisorEcolWetland}     Hmph... Algae blooms. Nasty business.

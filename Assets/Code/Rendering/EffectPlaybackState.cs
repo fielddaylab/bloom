@@ -7,9 +7,11 @@ namespace Zavala.Rendering {
     public class EffectPlaybackState : SharedStateComponent {
         public ParticleSystem PoofEffect;
         public ParticleSystem PoofEffectRoads;
+        public ParticleSystem PoopRunoff;
 
         public int DefaultPoofCount;
         public int DefaultPoofRoadCount;
+        public int DefaultPoopRunoffCount;
 
         public RingBuffer<EffectRequest> Requests = new RingBuffer<EffectRequest>(8, RingBufferMode.Expand);
     }
@@ -22,7 +24,8 @@ namespace Zavala.Rendering {
 
     public enum EffectType {
         Poof,
-        Poof_Road
+        Poof_Road,
+        Poop_Runoff
     }
 
     static public class VfxUtility {

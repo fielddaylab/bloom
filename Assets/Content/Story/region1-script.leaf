@@ -172,6 +172,7 @@ $call FocusClear()
 @cutscene
 $branch .policyDescriptions
 $if intro:tutorialComplete = false
+    $set intro:pendingPolicy = false
     $branch .choseFirstPolicy
 $endif
 
@@ -191,7 +192,6 @@ $endif
 :: choseFirstPolicy
 // @cutscene
 $set intro:tutorialComplete = true
-$set intro:pendingPolicy = false
 {@advisorEconHill}  A fine choice. 
 {@advisorEconHill}  Let's get this economy started, shall we?
 $call OffsetAlgaeGrowthThreshold(-2)
