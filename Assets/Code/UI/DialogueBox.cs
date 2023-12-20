@@ -159,8 +159,8 @@ namespace Zavala.UI {
                     }
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
+                m_TransitionRoutine.Replace(ShowRoutine());
             }
-            m_TransitionRoutine.Replace(ShowRoutine());
             return m_LocalHandler;
         }
 
@@ -223,7 +223,7 @@ namespace Zavala.UI {
             }
         }
 
-        public void HideAdvisorUI() {
+        public void HideDialogueUI() {
             if (ForceAdvisorPolicies != AdvisorType.None) return; // don't close until AdvisorPoliciesToShow has been set to none
             HideCardsInstant();
             m_PoliciesActive = false;

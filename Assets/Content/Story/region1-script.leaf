@@ -222,9 +222,9 @@ $call PanToBuilding("region1_grain1")
 {local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
 {local @grainFarmer}    ...and its cheap to ship to my farm.
 {@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
-{@advisorEcolHill}     This could disrupt the ecological balance!
-{@advisorEconHill}      I'm afraid this is the only economically feasible option.
+{@advisorEcolHill}      This could disrupt the ecological balance!
 $call AddAutoAlertCondition("Bloom", 1)
+{@advisorEconHill}      I'm afraid this is the only economically feasible option.
 // $call Unpause()
 
 

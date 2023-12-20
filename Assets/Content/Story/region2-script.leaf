@@ -3,19 +3,29 @@
 :: queueForestUnlock
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
+@queued
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region2_city1", region2.forestUnlocked)
+{wait 5}  // TODO: don't open dialogue box when the line is just {wait}
+$if intro:openedForestAlert == false
+    $call FocusHighlightOn("GlobalAlert")
+    {@advisorEconHill}      It would appear something needs your attention!
+    {@advisorEconHill}      We can't continue until it is addressed. 
+    {@advisorEconHill}      Click on it to see what's up.
+$endif
 
 :: forestUnlocked
 @cutscene
 @queued
-// // $call Pause()
+// $call Pause()
+$set intro:openedForestAlert = true
+$call FocusClear()
 {@advisorEconForest}    Salutations, Director.
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
 {@advisorEconForest}    Can you help us connect our farms and city to help us grow?
 {@advisorEconForest}    Our budget and policies are separate from Knoll County.
 {@advisorEconForest}    We have more dairy farms than our <i>dear</i> neighbors.
-// // $call Unpause()
+// $call Unpause()
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened

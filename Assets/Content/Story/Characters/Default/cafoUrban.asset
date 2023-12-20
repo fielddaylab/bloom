@@ -13,25 +13,25 @@ MonoBehaviour:
   m_Name: cafoUrban
   m_EditorClassIdentifier: 
   NameId: Tabitha
-  TitleId: CAFO Farmer
+  TitleId: Dairy Farmer
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4287025902
+    rgba: 4293131263
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4291821963
+    rgba: 4294955003
   NameColor:
     serializedVersion: 2
-    rgba: 4278207211
+    rgba: 4279058063
   TitleColor:
     serializedVersion: 2
-    rgba: 4279279603
+    rgba: 4280506016
   TextColor:
     serializedVersion: 2
-    rgba: 4281271331
+    rgba: 4279310152
   PortraitArt: {fileID: 21300000, guid: ff2dd5229d6166b4a88bf4da5c58f5ea, type: 3}
-  PortraitBackground: {fileID: 0}
+  PanelBackground: {fileID: 0}

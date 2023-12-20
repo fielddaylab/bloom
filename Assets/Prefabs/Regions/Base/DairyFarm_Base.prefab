@@ -73,6 +73,7 @@ MonoBehaviour:
   AgeOfUrgency: -1
   IsLocalOption: 1
   InfiniteRequests: 1
+  RefusesSameBuildingType: 0
   OverridesBuyPrice: 0
   OverrideBlock:
     Phosphorus: 0
@@ -122,6 +123,7 @@ MonoBehaviour:
   Amount: 1
   AmountProducedLastTick: 0
   RunoffParticleOrigin: {fileID: 3341510548927435195}
+  consume: 1
 --- !u!114 &5602663514362957504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,6 +380,7 @@ MonoBehaviour:
   AgeOfUrgency: 20
   IsLocalOption: 0
   InfiniteRequests: 0
+  RefusesSameBuildingType: 0
   OverridesBuyPrice: 0
   OverrideBlock:
     Phosphorus: 0

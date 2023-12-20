@@ -31,8 +31,8 @@ namespace Zavala.Actors {
                         RunoffParams.SittingManureRunoffProportion,
                         RunoffParams.MFertilizerRunoffProportion,
                         RunoffParams.DFertilizerRunoffProportion,
-                        true
-                        );
+                        componentGroup.Primary.ConsumeFertilizerForRunoff
+                        ) ;
                     
                 }
             }
