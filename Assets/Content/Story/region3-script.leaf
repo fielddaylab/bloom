@@ -9,7 +9,7 @@ $call AddRegionAgeTrigger(3, 10)
 {@advisorEconPrairie}    Howdy there! 
 $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    Heath County could use SAGA's help. 
-{@advisorEconPrairie}    We've got a whole <i>bushel</i> of grain farms... and of course Veldt University!
+{@advisorEconPrairie}    We've got a whole <i>bushel</i> of Grain Farms... and of course Veldt University!
 {@advisorEconPrairie}    They'll be conducting research about this algae unpleasantness.
 $call AddAutoAlertCondition("Bloom", 2)
 $call Unpause()
@@ -41,7 +41,7 @@ $endif
 @conditions     alertType == "bloom", alertRegion == 3, global:bloomDiscovered
 @forcePolicy    Ecology
 {@advisorEcolPrairie}    Eep! An algae bloom!
-{@advisorEcolPrairie}    I say we should just shut those CAFOs down.
+{@advisorEcolPrairie}    I say we should just shut those large Dairy Farms down.
 $if Visited("region2.unlockStorage")
     {@advisorEcolPrairie}    Otherwise, we could build more storage units.
 $endif
