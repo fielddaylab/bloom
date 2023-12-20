@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEconForest
   m_EditorClassIdentifier: 
   NameId: Agatha
-  TitleId: Economic Advisor
+  TitleId: Cypress County Economic Advisor
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
