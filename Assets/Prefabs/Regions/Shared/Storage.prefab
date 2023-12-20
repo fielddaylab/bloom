@@ -133,6 +133,7 @@ MonoBehaviour:
   AgeOfUrgency: -1
   IsLocalOption: 0
   InfiniteRequests: 1
+  RefusesSameBuildingType: 1
   OverridesBuyPrice: 1
   OverrideBlock:
     Phosphorus: 0
@@ -250,6 +251,9 @@ MonoBehaviour:
   TitleLabel:
     m_Source: location.shared.storage
     m_HashValue: 4039985466
+  OverrideTitleLabel:
+    m_Source: 
+    m_HashValue: 0
   InfoLabel:
     m_Source: location.shared.storageInfo
     m_HashValue: 1014546338

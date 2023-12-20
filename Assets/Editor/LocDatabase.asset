@@ -269,6 +269,10 @@ MonoBehaviour:
       Content: Plenty of Milk
     - Id: ui.popup.info.penaltyFine
       Content: fine
+    - Id: ui.popup.info.taxBlurb
+      Content: tax
+    - Id: ui.popup.info.subsidyBlurb
+      Content: aid
     - Id: ui.tutorial.spacebar
       Content: SPACE - Pause/Resume
     - Id: ui.tutorial.clickDrag

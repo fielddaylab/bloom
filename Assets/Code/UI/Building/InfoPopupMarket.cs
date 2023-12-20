@@ -28,6 +28,9 @@ namespace Zavala.UI.Info {
         static public readonly Color NegativeColorBG = Colors.Hex("#FFBBBB");
         static public readonly Color NegativeColor = Colors.Hex("#C23636");
 
+        static public readonly Color InactiveNumberColor = Colors.Hex("#B58B4C");
+        static public readonly Color ActiveNumberColor = Colors.Hex("#763813");
+
         static public readonly float InactiveAlpha = 0.65f;
         static public readonly int ActiveAlpha = 1;
 
@@ -45,6 +48,7 @@ namespace Zavala.UI.Info {
         }
 ;
         static private readonly Color RowHighlightColor = Colors.Hex("#9CE978");
+        static private readonly Color RowPenaltyColor = Colors.Hex("#E62E2E");
         static private readonly Color[] RowDefaultColor = new Color[2]
         {
             Colors.Hex("#C4AC90"),
@@ -53,13 +57,13 @@ namespace Zavala.UI.Info {
 
         #region Load Columns
 
-        static public void LoadLocationIntoCol(InfoPopupLocationColumn col, OccupiesTile location, OccupiesTile referenceLocation, bool forSale, GameObject bestOptionBanner, int colGroupIndex)
+        static public void LoadLocationIntoCol(InfoPopupLocationColumn col, OccupiesTile location, OccupiesTile referenceLocation, bool forSale, bool runoffAffected, GameObject bestOptionBanner, int colGroupIndex)
         {
             bool evenCol = colGroupIndex % 2 == 0;
             LocationDescription desc = location.GetComponent<LocationDescription>();
 
             col.NameLabel.gameObject.SetActive(true);
-            col.Icon.gameObject.SetActive(true);
+            // col.Icon.gameObject.SetActive(true);
 
             col.NameLabel.SetText(Loc.Find(desc.TitleLabel));
             col.Icon.sprite = desc.Icon;
@@ -91,12 +95,28 @@ namespace Zavala.UI.Info {
                 }
                 else
                 {
-                    col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+                    // check if runoff penalty
+                    if (runoffAffected)
+                    {
+                        col.Background.SetColor(RowPenaltyColor);
+                    }
+                    else
+                    {
+                        col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+                    }
                 }
             }
             else
             {
-                col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+                // check if runoff penalty
+                if (runoffAffected)
+                {
+                    col.Background.SetColor(RowPenaltyColor);
+                }
+                else
+                {
+                    col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+                }
             }
         }
 
@@ -122,17 +142,17 @@ namespace Zavala.UI.Info {
             toSet.SetText(MoneyPrefix + newText);
         }
 
-        static public void LoadEmptyCostsCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, GameObject bestOptionBanner, int colGroupIndex)
+        static public void LoadEmptyCostsCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, GameObject bestOptionBanner, int colGroupIndex)
         {
-            ActivateCostsHeaders(headers);
+            ActivateCostsHeaders(headers, policyState, grid);
 
             col.SalesTaxCol.gameObject.SetActive(true);
             LoadEmptyCol(col, bestOptionBanner, colGroupIndex);
         }
 
-        static public void LoadEmptyProfitCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, GameObject bestOptionBanner, int colGroupIndex)
+        static public void LoadEmptyProfitCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, GameObject bestOptionBanner, int colGroupIndex)
         {
-            ActivateProfitHeaders(headers);
+            ActivateProfitHeaders(headers, policyState, grid);
 
             col.SalesTaxCol.gameObject.SetActive(false);
             LoadEmptyCol(col, bestOptionBanner, colGroupIndex);
@@ -141,6 +161,8 @@ namespace Zavala.UI.Info {
         static private void LoadEmptyCol(InfoPopupLocationColumn col, GameObject bestOptionBanner, int colGroupIndex)
         {
             bool evenCol = colGroupIndex % 2 == 0;
+
+            col.PolicyIcon.gameObject.SetActive(false);
 
             col.RegionLabel.gameObject.SetActive(false);
             col.NameLabel.gameObject.SetActive(false);
@@ -159,11 +181,13 @@ namespace Zavala.UI.Info {
         }
 
 
-        static public void LoadCostsIntoCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary)
+        static public void LoadCostsIntoCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary)
         {
              col.PriceGroup.SetActive(true);
 
-            ActivateCostsHeaders(headers);
+            ActivateCostsHeaders(headers, policyState, grid);
+
+            col.PolicyIcon.gameObject.SetActive(false);
 
             int marketIndex = MarketUtility.ResourceIdToMarketIndex(info.Resource);
             int basePrice = info.Supplier.PriceNegotiator.SellPriceBlock[marketIndex];
@@ -176,7 +200,7 @@ namespace Zavala.UI.Info {
             SetMoneyText(col.ShippingCol.Number, shippingPrice.ToStringLookup());
 
             int import;
-            if (info.Supplier.Position.RegionIndex == info.Requester.Position.RegionIndex)
+            if (info.Supplier.Position.RegionIndex == info.Requester.Position.RegionIndex && !info.Supplier.Position.IsExternal)
             {
                 import = 0;
             }
@@ -184,29 +208,61 @@ namespace Zavala.UI.Info {
                 import = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].ImportTax[info.Resource];
             }
 
+            col.ImportTaxCol.Number.color = ActiveNumberColor;
             col.ImportTaxCol.gameObject.SetActive(true);
-            if (import == 0) {
-                col.ImportTaxCol.Number.SetText(EmptyEntry);
+            if (import == 0)
+            {
+                bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
+                if (importActive)
+                {
+                    SetMoneyText(col.ImportTaxCol.Number, import.ToStringLookup());
+                    col.ImportTaxCol.Number.color = InactiveNumberColor;
+                }
+                else
+                {
+                    col.ImportTaxCol.Number.SetText(EmptyEntry);
+                }
             }
-            else {
-                SetMoneyText(col.ImportTaxCol.Number, import.ToStringLookup());
+            else if (import < 0) {
+                SetMoneyText(col.ImportTaxCol.Number, import.ToStringLookup() + " " + Loc.Find("ui.popup.info.subsidyBlurb"));
+            }
+            else
+            {
+                SetMoneyText(col.ImportTaxCol.Number, import.ToStringLookup() + " " + Loc.Find("ui.popup.info.taxBlurb"));
             }
 
-
+            col.SalesTaxCol.Number.color = ActiveNumberColor;
             int salesTax = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].PurchaseTax[info.Resource];
             col.SalesTaxCol.gameObject.SetActive(true);
             if (salesTax == 0) {
-                col.SalesTaxCol.Number.SetText(EmptyEntry);
+                bool salesActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.SalesTaxPolicy] != PolicyLevel.None;
+                if (salesActive)
+                {
+                    SetMoneyText(col.SalesTaxCol.Number, salesTax.ToStringLookup());
+                    col.SalesTaxCol.Number.color = InactiveNumberColor;
+                }
+                else
+                {
+                    col.SalesTaxCol.Number.SetText(EmptyEntry);
+                }
             }
-            else { 
-                SetMoneyText(col.SalesTaxCol.Number, salesTax.ToStringLookup());
+            else if (salesTax < 0)
+            {
+                SetMoneyText(col.SalesTaxCol.Number, salesTax.ToStringLookup() + " " + Loc.Find("ui.popup.info.subsidyBlurb"));
             }
-
+            else
+            {
+                SetMoneyText(col.SalesTaxCol.Number, salesTax.ToStringLookup() + " " + Loc.Find("ui.popup.info.taxBlurb"));
+            }
 
             int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(false);
-            if (penalties == 0) { col.PenaltyCol.Number.SetText(EmptyEntry); }
-            else { SetMoneyText(col.PenaltyCol.Number, penalties.ToStringLookup()); }
+            if (penalties == 0) { 
+                col.PenaltyCol.Number.SetText(EmptyEntry);
+            }
+            else { 
+                SetMoneyText(col.PenaltyCol.Number, penalties.ToStringLookup());
+            }
 
             int totalCost = basePrice + shippingPrice + import + salesTax + penalties;
             col.TotalProfitCol.gameObject.SetActive(false);
@@ -231,10 +287,13 @@ namespace Zavala.UI.Info {
             }
         }
 
-        static public void LoadProfitIntoCol(InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary)
+        static public void LoadProfitIntoCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary)
         {
             col.PriceGroup.SetActive(true);
-            ActivateProfitHeaders(headers);
+            ActivateProfitHeaders(headers, policyState, grid);
+
+            col.SalesTaxCol.Number.color = ActiveNumberColor;
+            col.PolicyIcon.gameObject.SetActive(false);
 
             int basePrice;
             if (info.Requester.IsLocalOption)
@@ -276,10 +335,17 @@ namespace Zavala.UI.Info {
             if (salesTax == 0) { col.SalesTaxCol.Number.SetText(EmptyEntry); }
             else { SetMoneyText(col.SalesTaxCol.Number, (-salesTax).ToStringLookup()); }
 
+            col.PenaltyCol.Number.color = ActiveNumberColor;
             int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(true);
-            if (penalties == 0) { col.PenaltyCol.Number.SetText(EmptyEntry); }
-            else { SetMoneyText(col.PenaltyCol.Number, (-penalties).ToStringLookup() + " " + Loc.Find("ui.popup.info.penaltyFine")); }
+            if (penalties == 0) { 
+                col.PenaltyCol.Number.SetText(EmptyEntry);
+                col.PenaltyCol.Number.color = InactiveNumberColor;
+            }
+            else {
+                SetMoneyText(col.PenaltyCol.Number, (-penalties).ToStringLookup() + " " + Loc.Find("ui.popup.info.penaltyFine"));
+                col.PolicyIcon.gameObject.SetActive(true);
+            }
 
             int totalCost = info.Profit + (salesTax + import);
             col.TotalProfitCol.gameObject.SetActive(true);
@@ -304,7 +370,7 @@ namespace Zavala.UI.Info {
             }
         }
 
-        static private void ActivateProfitHeaders(InfoPopupColumnHeaders headers)
+        static private void ActivateProfitHeaders(InfoPopupColumnHeaders headers, PolicyState policyState, SimGridState grid)
         {
             headers.BasePriceColHeader.gameObject.SetActive(true);
             headers.ShippingColHeader.gameObject.SetActive(true);
@@ -313,9 +379,6 @@ namespace Zavala.UI.Info {
             headers.PenaltyColHeader.gameObject.SetActive(true);
             headers.TotalProfitColHeader.gameObject.SetActive(true);
             headers.TotalPriceColHeader.gameObject.SetActive(false);
-
-            PolicyState policyState = Game.SharedState.Get<PolicyState>();
-            SimGridState grid = Game.SharedState.Get<SimGridState>();
 
             bool penaltyActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.RunoffPolicy] != PolicyLevel.None;
             if (penaltyActive) {
@@ -328,7 +391,7 @@ namespace Zavala.UI.Info {
             }
         }
 
-        static private void ActivateCostsHeaders(InfoPopupColumnHeaders headers)
+        static private void ActivateCostsHeaders(InfoPopupColumnHeaders headers, PolicyState policyState, SimGridState grid)
         {
             headers.BasePriceColHeader.gameObject.SetActive(true);
             headers.ShippingColHeader.gameObject.SetActive(true);
@@ -337,9 +400,6 @@ namespace Zavala.UI.Info {
             headers.PenaltyColHeader.gameObject.SetActive(false);
             headers.TotalProfitColHeader.gameObject.SetActive(false);
             headers.TotalPriceColHeader.gameObject.SetActive(true);
-
-            PolicyState policyState = Game.SharedState.Get<PolicyState>();
-            SimGridState grid = Game.SharedState.Get<SimGridState>();
 
             bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
             if (importActive) {

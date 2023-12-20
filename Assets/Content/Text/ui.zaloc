@@ -66,6 +66,12 @@ Plenty of Milk
 :: popup.info.penaltyFine
 fine
 
+:: popup.info.taxBlurb
+tax
+
+:: popup.info.subsidyBlurb
+aid
+
 :: tutorial.spacebar
 SPACE - Pause/Resume
 

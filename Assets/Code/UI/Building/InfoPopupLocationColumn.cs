@@ -7,6 +7,7 @@ namespace Zavala.UI.Info
     public class InfoPopupLocationColumn : MonoBehaviour
     {
         public Image Icon;
+        public Image PolicyIcon;
         public Graphic Background;
         public TMP_Text NameLabel;
         public TMP_Text RegionLabel;

@@ -331,6 +331,10 @@ namespace Zavala.Economy
                 if (overlap == 0) {
                     continue;
                 }
+                if (requester.RefusesSameBuildingType && requester.Position.Type == supplier.Position.Type)
+                {
+                    continue;
+                }
 
                 RoadPathSummary connectionSummary;
                 if (supplier.Position.IsExternal) {
