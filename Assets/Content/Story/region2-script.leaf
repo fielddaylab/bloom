@@ -24,8 +24,9 @@ $call FocusClear()
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
 {@advisorEconForest}    Can you help us connect our farms and city to help us grow?
 {@advisorEconForest}    Our budget and policies are separate from Knoll County.
-{@advisorEconForest}    We have more dairy farms than our <i>dear</i> neighbors.
-// $call Unpause()
+{@advisorEconForest}    We have more Dairy Farms than our <i>dear</i> neighbors.
+$call Unpause()
+
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -81,8 +82,9 @@ $endif
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.
 $call FocusClear()
-{@advisorEcolForest}    Once connected to a dairy farm, they'll hold onto manure for later use.
-{@advisorEcolForest}    But it won't be cheap - try to share it between farms.
+{@advisorEcolForest}    Once connected to a Dairy Farm, they'll hold onto manure for later use.
+{@advisorEcolForest}    But it won't be cheap - try to share it between Dairy Farms.
+
 $call OffsetAlgaeGrowthThreshold(-1)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
@@ -114,7 +116,7 @@ $call ForcePolicyInstant("Ecology")
 $set global:importUnlocked = true
 {@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
 // $call Pause()
-{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many dairy farms.
+{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many Dairy Farms.
 {@advisorEcolPrairie}   But we've got plenty of <b>grain</b> over in Heath County! Maybe we could help each other?
 {@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
 {@advisorEconPrairie}   Perhaps we need to offset shipping costs.

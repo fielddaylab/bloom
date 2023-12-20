@@ -121,7 +121,9 @@ $call HideAnimatedTutorial()
 {@advisorEconHill}      But SAGA may need more funding.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
-{@advisorEconHill}      See me again from your <b>Economic Advisor</b> button. 
+{@advisorEconHill}      See me again from your <b>Economic Advisor</b> button.
+$call ForceCloseDialogue()
+$call Wait(0.4)
 $call FocusHighlightOn("EconomyAdvisor")
 $call ReleaseDialogueInteraction()
 

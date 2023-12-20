@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEconUrban
   m_EditorClassIdentifier: 
   NameId: Xavier
-  TitleId: Economic Advisor
+  TitleId: Smokestack City Economic Advisor
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEcolWetland
   m_EditorClassIdentifier: 
   NameId: Ethan
-  TitleId: Ecological Advisor
+  TitleId: Muskeg County Ecological Advisor
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2
