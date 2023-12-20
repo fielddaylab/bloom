@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7143898004593370455}
   - component: {fileID: 704513991833160493}
   - component: {fileID: 3324246927386804199}
+  - component: {fileID: 1068307736973679315}
   m_Layer: 0
   m_Name: Airship00
   m_TagString: Untagged
@@ -48,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FulfillerType: 1
+  TruckMesh: {fileID: 0}
+  TruckRenderer: {fileID: 0}
 --- !u!114 &7143898004593370455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,3 +115,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1068307736973679315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3828873905754168882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0052cb90e7de7f44bac0cc3f0a49e0d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Sound: {fileID: 8300000, guid: d6ab2deee22f8724a99773b2e8850fed, type: 3}
+  MaxDistance: 1
+  Volume: 1

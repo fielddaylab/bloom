@@ -13,6 +13,10 @@ namespace Zavala.Audio {
         public FloatRange Delay = new FloatRange(0);
         public SerializedHash32 Tag;
 
+        [Header("Positional")]
+        [Range(0, 360)] public float Spread;
+        [Range(0.3f, 4)] public float Range = 1;
+
         [NonSerialized] public RandomDeck<AudioClip> Randomizer;
     }
 

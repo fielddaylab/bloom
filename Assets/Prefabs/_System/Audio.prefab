@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MusicStream: {fileID: 1810415200460400658}
-  Volume: 1
+  Volume: 0.5
   AllSongs:
   - music/Bird feeder cloud.mp3
   - music/farmland dance.mp3
