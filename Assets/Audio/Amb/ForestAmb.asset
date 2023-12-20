@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c7d3cf04b073e46be460674cfc2fac, type: 3}
   m_Name: ForestAmb
   m_EditorClassIdentifier: 
-  Loop: {fileID: 0}
+  Loop: {fileID: 8300000, guid: 1f6e043769d33c8408d79a93dfafea1a, type: 3}
   LoopVolume: 1
   LoopPitch: 1
-  BirdSounds: []
+  BirdSounds:
+  - {fileID: 11400000, guid: a808b07ed74df0c4898e1d054f5905c7, type: 2}
+  - {fileID: 11400000, guid: c78aa272f92eb7147b387e31f948d778, type: 2}
   Delay:
-    Base: 15
-    ModifierMin: 0
-    ModifierMax: 0
+    Base: 16
+    ModifierMin: -3
+    ModifierMax: 3
   DelayShortChance: 0.1
   DelayShort:
     Base: 5
-    ModifierMin: 0
-    ModifierMax: 0
+    ModifierMin: -2
+    ModifierMax: 2

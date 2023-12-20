@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 810f72fe494cd8b4a81f272ef9260ada, type: 3}
+  m_Name: Robin
+  m_EditorClassIdentifier: 
+  Clips:
+  - {fileID: 8300000, guid: 07888e53739b4f34989582e3e48a54c6, type: 3}
+  - {fileID: 8300000, guid: 93b99db80c32cae44acc8ebc8404568d, type: 3}
+  - {fileID: 8300000, guid: 1d782d1f05a9da14b85d3a62bc322300, type: 3}
+  Volume:
+    Base: 1
+    ModifierMin: 0
+    ModifierMax: 0
+  Pitch:
+    Base: 1
+    ModifierMin: 0
+    ModifierMax: 0
+  Delay:
+    Base: 0
+    ModifierMin: 0
+    ModifierMax: 0
+  Tag:
+    m_Source: 
+    m_HashValue: 0

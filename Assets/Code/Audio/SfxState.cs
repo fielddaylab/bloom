@@ -6,6 +6,7 @@ using BeauPools;
 using BeauUtil;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 
 namespace Zavala.Audio {
     public sealed class SfxState : SharedStateComponent, IRegistrationCallbacks {
@@ -15,6 +16,8 @@ namespace Zavala.Audio {
 
         [NonSerialized] public Dictionary<StringHash32, AudioClip> LoadedClips = MapUtils.Create<StringHash32, AudioClip>(64);
         [NonSerialized] public Dictionary<StringHash32, SfxAsset> LoadedSfxAssets = MapUtils.Create<StringHash32, SfxAsset>(64);
+
+        [NonSerialized] public UniqueIdAllocator16 LoopHandleAllocator = new UniqueIdAllocator16(64);
 
         void IRegistrationCallbacks.OnDeregister() {
             PlaybackPool.Clear();
@@ -46,17 +49,25 @@ namespace Zavala.Audio {
 
     public enum SfxCommandType : ushort {
         PlayClip,
+        PlayFromAssetRef,
         StopWithClip,
         StopWithTag,
         StopAll
     }
 
+    [StructLayout(LayoutKind.Explicit)]
+    public struct SfxAssetRef {
+        [FieldOffset(0)] public StringHash32 AssetId;
+        [FieldOffset(0)] public int InstanceId;
+    }
+
     public struct SfxPlayData {
-        public StringHash32 AssetId;
+        public SfxAssetRef Asset;
         public float Volume;
         public float Pitch;
         public float Delay;
         public StringHash32 Tag;
+        public UniqueId16 Handle;
     }
 
     public struct SfxIdData {
@@ -67,6 +78,7 @@ namespace Zavala.Audio {
         public AudioSource Src;
         public StringHash32 ClipId;
         public StringHash32 Tag;
+        public UniqueId16 Handle;
         public ushort FrameStarted;
     }
 
@@ -75,13 +87,56 @@ namespace Zavala.Audio {
             Game.SharedState.Get<SfxState>().CommandQueue.PushBack(new SfxCommand() {
                 Type = SfxCommandType.PlayClip,
                 PlayData = new SfxPlayData() {
-                    AssetId = assetId,
+                    Asset = new SfxAssetRef() { AssetId = assetId },
                     Volume = volume,
                     Pitch = pitch,
                     Delay = 0,
                     Tag = tag
                 }
             });
+        }
+
+        static public void PlaySfx(SfxAsset asset, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
+            Game.SharedState.Get<SfxState>().CommandQueue.PushBack(new SfxCommand() {
+                Type = SfxCommandType.PlayFromAssetRef,
+                PlayData = new SfxPlayData() {
+                    Asset = new SfxAssetRef() { InstanceId = asset.GetInstanceID() },
+                    Volume = volume,
+                    Pitch = pitch,
+                    Delay = 0,
+                    Tag = tag
+                }
+            });
+        }
+
+        static public void PlaySfx(AudioClip clip, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
+            Game.SharedState.Get<SfxState>().CommandQueue.PushBack(new SfxCommand() {
+                Type = SfxCommandType.PlayFromAssetRef,
+                PlayData = new SfxPlayData() {
+                    Asset = new SfxAssetRef() { InstanceId = clip.GetInstanceID() },
+                    Volume = volume,
+                    Pitch = pitch,
+                    Delay = 0,
+                    Tag = tag
+                }
+            });
+        }
+
+        static public UniqueId16 LoopSfx(AudioClip clip, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
+            SfxState state = Game.SharedState.Get<SfxState>();
+            UniqueId16 handle = state.LoopHandleAllocator.Alloc();
+            state.CommandQueue.PushBack(new SfxCommand() {
+                Type = SfxCommandType.PlayFromAssetRef,
+                PlayData = new SfxPlayData() {
+                    Asset = new SfxAssetRef() { InstanceId = clip.GetInstanceID() },
+                    Volume = volume,
+                    Pitch = pitch,
+                    Delay = 0,
+                    Tag = tag,
+                    Handle = handle
+                }
+            });
+            return handle;
         }
 
         static public void StopWithClip(StringHash32 assetId) {

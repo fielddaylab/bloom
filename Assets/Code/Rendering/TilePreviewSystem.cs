@@ -14,7 +14,7 @@ namespace Zavala.Rendering
     /// <summary>
     /// Controls an object that snaps to the tile under the mouse cursor
     /// </summary>
-    [SysUpdate(GameLoopPhase.Update, 400)]
+    [SysUpdate(GameLoopPhase.Update, 410)]
     public class TilePreviewSystem : SharedStateSystemBehaviour<InputState, SimWorldCamera, BlueprintState, TilePreviewState>
     {
         public override void ProcessWork(float deltaTime)

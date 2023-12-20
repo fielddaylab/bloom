@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zavala.Audio;
 using Zavala.Building;
 using Zavala.Economy;
 using Zavala.Rendering;
@@ -226,6 +227,11 @@ namespace Zavala.Sim {
 #endif // UNITY_EDITOR || DEVELOPMENT
 
             Game.SharedState.Get<BorderRenderState>().RegionQueue.PushBack(regionIndex);
+
+            AmbienceState amb = Game.SharedState.Get<AmbienceState>();
+            amb.RegionConfigs[regionIndex] = asset.Ambience;
+            asset.Ambience.Loop.LoadAudioData();
+            amb.QueuedUpdate = true;
 
             // load script
             if (asset.LeafScript != null) {

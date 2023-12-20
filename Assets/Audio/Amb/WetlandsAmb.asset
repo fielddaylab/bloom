@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c7d3cf04b073e46be460674cfc2fac, type: 3}
   m_Name: WetlandsAmb
   m_EditorClassIdentifier: 
-  Loop: {fileID: 0}
+  Loop: {fileID: 8300000, guid: e860e71a95469cd4b903c4c5cb3bdf0d, type: 3}
   LoopVolume: 1
   LoopPitch: 1
-  BirdSounds: []
+  BirdSounds:
+  - {fileID: 11400000, guid: f574879476395b841ae770eb7e901183, type: 2}
+  - {fileID: 11400000, guid: d7f95c6f144c5bb42bdbffdd660bcdfb, type: 2}
   Delay:
-    Base: 15
-    ModifierMin: 0
-    ModifierMax: 0
+    Base: 16
+    ModifierMin: -3
+    ModifierMax: 3
   DelayShortChance: 0.1
   DelayShort:
     Base: 5
-    ModifierMin: 0
-    ModifierMax: 0
+    ModifierMin: -2
+    ModifierMax: 2

@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c7d3cf04b073e46be460674cfc2fac, type: 3}
   m_Name: UrbanAmb
   m_EditorClassIdentifier: 
-  Loop: {fileID: 0}
+  Loop: {fileID: 8300000, guid: 3d96d23460eeb6742b7b81c396f12938, type: 3}
   LoopVolume: 1
   LoopPitch: 1
-  BirdSounds: []
+  BirdSounds:
+  - {fileID: 11400000, guid: 6967ff12d87dd45489bd6fc374f4ae5d, type: 2}
   Delay:
-    Base: 15
-    ModifierMin: 0
-    ModifierMax: 0
+    Base: 16
+    ModifierMin: -3
+    ModifierMax: 3
   DelayShortChance: 0.1
   DelayShort:
     Base: 5
-    ModifierMin: 0
-    ModifierMax: 0
+    ModifierMin: -2
+    ModifierMax: 2

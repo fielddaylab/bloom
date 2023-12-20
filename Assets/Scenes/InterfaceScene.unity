@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -948,27 +948,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1619466322602364013, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3113904525177809722, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -305
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 3339715964262169777, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -487
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 3838414073072612560, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_UVRect.width
       value: 31.999998
-      objectReference: {fileID: 0}
-    - target: {fileID: 3838414073072612560, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
-      propertyPath: m_UVRect.height
-      value: 1.5625
-      objectReference: {fileID: 0}
-    - target: {fileID: 6447682896062987362, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
-      propertyPath: m_UVRect.width
-      value: 1.5624981
       objectReference: {fileID: 0}
     - target: {fileID: 6447682896062987362, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_UVRect.height
@@ -977,10 +965,6 @@ PrefabInstance:
     - target: {fileID: 7258098616549029930, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_UVRect.width
       value: 31.999998
-      objectReference: {fileID: 0}
-    - target: {fileID: 7258098616549029930, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
-      propertyPath: m_UVRect.height
-      value: 1.5625
       objectReference: {fileID: 0}
     - target: {fileID: 8179148152212664116, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_Camera
@@ -1081,10 +1065,6 @@ PrefabInstance:
     - target: {fileID: 8179148152212664118, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8529439241112024066, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
-      propertyPath: m_UVRect.width
-      value: 1.5624981
       objectReference: {fileID: 0}
     - target: {fileID: 8529439241112024066, guid: f1590c1c60b94c840a1638e0284a888d, type: 3}
       propertyPath: m_UVRect.height

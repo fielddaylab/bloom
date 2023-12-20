@@ -29,7 +29,8 @@ namespace Zavala.World {
                     case VisualUpdateType.Building: {
                         if (info.Category == TerrainCategory.Land) {
                             TileInstance t = m_StateA.Tiles[record.TileIndex];
-                            bool hasRoad = (m_StateC.Roads.Info[record.TileIndex].Flags & RoadFlags.IsRoad) != 0;
+                            RoadFlags roadFlags = m_StateC.Roads.Info[record.TileIndex].Flags;
+                            bool hasRoad = (roadFlags & (RoadFlags.IsRoad | RoadFlags.IsTollbooth)) != 0;
                             bool isPreview = (info.Flags & TerrainFlags.IsPreview) != 0;
                             bool hideTop = !hasRoad && !isPreview && (info.Flags & TerrainFlags.TopHidden) != 0;
                             TileEffectRendering.SetTopVisibility(t, !hideTop);
