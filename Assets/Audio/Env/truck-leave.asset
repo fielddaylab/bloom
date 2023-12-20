@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 810f72fe494cd8b4a81f272ef9260ada, type: 3}
-  m_Name: ui-click
+  m_Name: truck-leave
   m_EditorClassIdentifier: 
   Clips:
-  - {fileID: 8300000, guid: 3dd2dd9f863497044a3af4ff34e502b6, type: 3}
+  - {fileID: 8300000, guid: 3d4b3fd70c49fce42996ab94d566d1c9, type: 3}
   Volume:
-    Base: 1
+    Base: 0.2
     ModifierMin: 0
     ModifierMax: 0
   Pitch:
@@ -25,10 +25,10 @@ MonoBehaviour:
   Delay:
     Base: 0
     ModifierMin: 0
-    ModifierMax: 0
+    ModifierMax: 0.05
   Tag:
     m_Source: 
     m_HashValue: 0
-  Spread: 0
-  Range: 1
-  ZoomRange: 64
+  Spread: 30
+  Range: 0.5
+  ZoomRange: 16

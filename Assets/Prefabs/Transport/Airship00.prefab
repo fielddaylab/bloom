@@ -128,5 +128,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sound: {fileID: 8300000, guid: d6ab2deee22f8724a99773b2e8850fed, type: 3}
-  MaxDistance: 1
+  MaxDistance: 5
   Volume: 1

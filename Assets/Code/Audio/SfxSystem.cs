@@ -9,6 +9,8 @@ using Zavala.World;
 namespace Zavala.Audio {
     [SysUpdate(GameLoopPhaseMask.LateFixedUpdate | GameLoopPhaseMask.UnscaledUpdate | GameLoopPhaseMask.UnscaledLateUpdate, 10000)]
     public sealed class SfxSystem : SharedStateSystemBehaviour<SfxState> {
+        public const int DistanceScale = 10;
+
         public override void ProcessWork(float deltaTime) {
             // handle checking for current playback
             for(int i = m_State.ActiveSfx.Count - 1; i >= 0; i--) {
@@ -90,7 +92,7 @@ namespace Zavala.Audio {
                 }
                 Vector3 camPos = worldToCamera.MultiplyPoint3x4(pos);
                 float fHeight = CameraHelper.HeightForDistanceAndFOV(Mathf.Abs(camPos.z), cameraFov);
-                Vector3 viewportOffset = new Vector3(camPos.x / fHeight, camPos.y / fHeight, Mathf.Abs(camPos.z) / 80);
+                Vector3 viewportOffset = new Vector3(DistanceScale * camPos.x / fHeight, DistanceScale * camPos.y / fHeight, DistanceScale * camPos.z / entry.ZoomScale);
                 entry.Position.position = listenerPos + (listenerRot * viewportOffset);
             }
         }
@@ -197,6 +199,7 @@ namespace Zavala.Audio {
 
         private void PlayClip(SfxPlayData play, SfxAsset asset, AudioClip clip, StringHash32 clipId) {
             float spread = 45;
+            float zoomScale = 64;
             if (asset != null) {
                 if (asset.Randomizer == null) {
                     asset.Randomizer = new RandomDeck<AudioClip>(asset.Clips);
@@ -213,6 +216,7 @@ namespace Zavala.Audio {
 
                 spread = asset.Spread;
                 play.Distance *= asset.Range;
+                zoomScale = asset.Range;
             }
 
             AudioSource src = m_State.PlaybackPool.Alloc();
@@ -241,7 +245,9 @@ namespace Zavala.Audio {
                 posUpdate.Position = src.transform;
                 posUpdate.Reference = UnityHelper.Find<Transform>(play.TransformId);
                 posUpdate.RefOffset = play.TransformOffset;
+                posUpdate.ZoomScale = zoomScale;
                 active.PositionUpdateIndex = m_State.PositionalUpdateTable.PushBack(ref m_State.PositionalUpdateList, posUpdate);
+
                 src.spatialBlend = 1;
                 src.spread = spread;
                 src.rolloffMode = AudioRolloffMode.Linear;

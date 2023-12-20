@@ -114,6 +114,7 @@ namespace Zavala.Audio {
         public Transform Position;
         public Transform Reference;
         public Vector3 RefOffset;
+        public float ZoomScale;
     }
 
     static public class SfxUtility {

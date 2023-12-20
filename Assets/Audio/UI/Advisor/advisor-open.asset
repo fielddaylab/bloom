@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 810f72fe494cd8b4a81f272ef9260ada, type: 3}
-  m_Name: ui-click
+  m_Name: advisor-open
   m_EditorClassIdentifier: 
   Clips:
-  - {fileID: 8300000, guid: 3dd2dd9f863497044a3af4ff34e502b6, type: 3}
+  - {fileID: 8300000, guid: d3d4539bc872a894081d8e0873ac6d99, type: 3}
   Volume:
     Base: 1
     ModifierMin: 0
     ModifierMax: 0
   Pitch:
     Base: 1
-    ModifierMin: -0.05
-    ModifierMax: 0.05
+    ModifierMin: -0.02
+    ModifierMax: 0.02
   Delay:
     Base: 0
     ModifierMin: 0

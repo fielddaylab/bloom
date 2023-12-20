@@ -16,6 +16,7 @@ namespace Zavala.Audio {
         [Header("Positional")]
         [Range(0, 360)] public float Spread;
         [Range(0.3f, 4)] public float Range = 1;
+        public float ZoomRange = 64;
 
         [NonSerialized] public RandomDeck<AudioClip> Randomizer;
     }

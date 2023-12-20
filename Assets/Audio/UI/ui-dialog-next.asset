@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 810f72fe494cd8b4a81f272ef9260ada, type: 3}
-  m_Name: ui-click
+  m_Name: ui-dialog-next
   m_EditorClassIdentifier: 
   Clips:
-  - {fileID: 8300000, guid: 3dd2dd9f863497044a3af4ff34e502b6, type: 3}
+  - {fileID: 8300000, guid: 37db165dd822f7443b12b3b4623d0016, type: 3}
   Volume:
-    Base: 1
+    Base: 0.6
     ModifierMin: 0
     ModifierMax: 0
   Pitch:

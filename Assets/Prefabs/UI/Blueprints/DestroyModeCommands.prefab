@@ -718,6 +718,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_Source
+      value: blueprints-undo
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_Source
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_HashValue
+      value: 1977216954
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_HashValue
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5542873064247455406, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
       propertyPath: m_Interactable
       value: 0
@@ -922,6 +938,14 @@ PrefabInstance:
     - target: {fileID: 4964790507195731688, guid: 77a790696cc6ed341a3899c8cb030645, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5809633089658270126, guid: 77a790696cc6ed341a3899c8cb030645, type: 3}
+      propertyPath: ClickId.m_Source
+      value: blueprints-destroy-cancel
+      objectReference: {fileID: 0}
+    - target: {fileID: 5809633089658270126, guid: 77a790696cc6ed341a3899c8cb030645, type: 3}
+      propertyPath: ClickId.m_HashValue
+      value: 4210779447
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77a790696cc6ed341a3899c8cb030645, type: 3}
@@ -1155,6 +1179,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4964790507195731688, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_Source
+      value: blueprints-destroy-confirm
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_Source
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_HashValue
+      value: 3663931579
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_HashValue
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5975879767363708603, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
