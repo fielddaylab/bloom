@@ -3,6 +3,7 @@ using BeauPools;
 using FieldDay;
 using FieldDay.SharedState;
 using UnityEngine;
+using Zavala.Scripting;
 
 namespace Zavala.UI
 {
