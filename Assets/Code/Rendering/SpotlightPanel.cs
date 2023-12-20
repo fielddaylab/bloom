@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using BeauRoutine;
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.UI;
 using Leaf.Runtime;
@@ -20,11 +21,12 @@ namespace Zavala.Rendering {
         [NonSerialized] public Vector2 DefaultSize;
         [NonSerialized] public CanvasSpaceTransformation SpaceHelper;
         [NonSerialized] public Routine Anim;
+        [NonSerialized] public ulong LastCameraStateHash;
 
         protected override void Awake() {
             base.Awake();
 
-            SpaceHelper.CanvasCamera = Canvas.worldCamera;
+            SpaceHelper.CanvasCamera = Game.Gui.PrimaryCamera;
             SpaceHelper.CanvasSpace = (RectTransform) Renderer.Self.parent;
             Canvas.enabled = false;
 
@@ -46,7 +48,7 @@ namespace Zavala.Rendering {
             if (snap) {
                 Renderer.Self.sizeDelta = size;
                 Renderer.Self.localPosition = localPos;
-                Renderer.RecalculateBorders();
+                //Renderer.RecalculateBorders();
                 Group.alpha = 0;
             }
 
@@ -79,17 +81,17 @@ namespace Zavala.Rendering {
             }
         }
 
-        private Vector2 GetLocation(Transform transform) {
+        private Vector2 GetLocation(Transform target) {
             Vector3 pos;
-            transform.TryGetCamera(out SpaceHelper.WorldCamera);
-            SpaceHelper.TryConvertToLocalSpace(transform, out pos);
+            target.TryGetCamera(out SpaceHelper.WorldCamera);
+            SpaceHelper.TryConvertToLocalSpace(target, out pos);
             return (Vector2) pos;
         }
 
         private IEnumerator Activate(Vector2 pos, Vector2 size, float alpha) {
             return Routine.Combine(
                 Renderer.Self.SizeDeltaTo(size, ActivateAnim),
-                Renderer.Self.MoveTo(pos, ActivateAnim, Axis.XY, Space.Self).OnUpdate((f) => Renderer.RecalculateBorders()),
+                Renderer.Self.MoveTo(pos, ActivateAnim, Axis.XY, Space.Self),
                 Group.FadeTo(alpha, ActivateAnim.Time)
             );
         }
@@ -108,6 +110,8 @@ namespace Zavala.Rendering {
                 RectTransform transform = Game.Gui.LookupNamed(objId);
                 if (transform != null) {
                     panel.FocusOn(transform, new Vector2(width, height), alpha);
+                } else {
+                    Log.Warn("[SpotlightPanel] No target found with id '{0}'", objId);
                 }
             }
         }

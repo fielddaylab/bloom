@@ -8,9 +8,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Actors;
+using Zavala.Advisor;
 using Zavala.Economy;
 using Zavala.Roads;
 using Zavala.Scripting;
+using Zavala.Sim;
 
 namespace Zavala.UI.Info {
     public class InfoPopup : SharedRoutinePanel {
@@ -102,6 +104,7 @@ namespace Zavala.UI.Info {
 
             Game.Events.Register(GameEvents.MarketPrioritiesRebuilt, OnMarketPrioritiesUpdated);
             Game.SharedState.Get<RoadNetwork>().OnConnectionsReevaluated.Register(OnRoadNetworkRebuilt);
+            Game.SharedState.Get<PolicyState>().OnPolicyUpdated.Register(OnPolicyUpdated);
         }
 
         #endregion // Unity Events
@@ -233,6 +236,8 @@ namespace Zavala.UI.Info {
             ConfigureCols(WideNumRows);
 
             MarketConfig config = Game.SharedState.Get<MarketConfig>();
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
 
             for (int i = 0; i < WideNumRows; i++)
             {
@@ -240,13 +245,14 @@ namespace Zavala.UI.Info {
                 {
                     var results = m_QueryResults[i];
                     bool forSale = !results.Requester.IsLocalOption;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, m_BestOptionBanner, i);
-                    InfoPopupMarketUtility.LoadProfitIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
+                    bool runoffAffected = results.TaxRevenue.Penalties > 0;
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
                 }
                 else
                 {
                     // load empty col group
-                    InfoPopupMarketUtility.LoadEmptyProfitCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadEmptyProfitCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOptionBanner, i);
                 }
             }
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
@@ -270,6 +276,8 @@ namespace Zavala.UI.Info {
             ConfigureCols(queryCount);
 
             MarketConfig config = Game.SharedState.Get<MarketConfig>();
+            PolicyState policyState = Game.SharedState.Get<PolicyState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
 
             for (int i = 0; i < WideNumRows; i++)
             {
@@ -277,13 +285,14 @@ namespace Zavala.UI.Info {
                 {
                     var results = m_QueryResults[i];
                     bool forSale = true;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, m_BestOptionBanner, i);
-                    InfoPopupMarketUtility.LoadCostsIntoCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
+                    bool runoffAffected = false;
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
                 }
                 else
                 {
                     // load empty col group
-                    InfoPopupMarketUtility.LoadEmptyCostsCol(m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOptionBanner, i);
+                    InfoPopupMarketUtility.LoadEmptyCostsCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOptionBanner, i);
                 }
             }
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
@@ -531,6 +540,11 @@ namespace Zavala.UI.Info {
         }
 
         private void OnRoadNetworkRebuilt() {
+            m_ConnectionsDirty = true;
+        }
+
+        private void OnPolicyUpdated()
+        {
             m_ConnectionsDirty = true;
         }
 

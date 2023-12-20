@@ -114,8 +114,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Selectable: {fileID: 3390929152225095434}
   EnterId:
-    m_Source: ui-hover
-    m_HashValue: 776011748
+    m_Source: 
+    m_HashValue: 0
   ExitId:
     m_Source: 
     m_HashValue: 0
@@ -126,8 +126,8 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   ClickId:
-    m_Source: ui-click
-    m_HashValue: 2094747682
+    m_Source: advisor-open
+    m_HashValue: 1794687474
 --- !u!1 &7310159028860247824
 GameObject:
   m_ObjectHideFlags: 0

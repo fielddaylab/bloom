@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zavala.Audio;
 
 namespace Zavala.Cards {
     public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -25,6 +26,7 @@ namespace Zavala.Cards {
         public void OnPointerEnter(PointerEventData eventData) {
             transform.SetAsLastSibling();
             transform.SetScale(1.1f);
+            SfxUtility.PlaySfx("advisor-policy-hover");
         }
         public void OnPointerExit(PointerEventData eventData) {
             transform.SetScale(1);

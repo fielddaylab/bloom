@@ -43,7 +43,8 @@ namespace Zavala.Sim {
         Scripted = 0x04,
         Blueprints = 0x08,
         DialogBox = 0x10,
-        FullscreenCutscene = 0x20
+        FullscreenCutscene = 0x20,
+        PendingGlobalAlert = 0x40
     }
 
     /// <summary>

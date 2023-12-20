@@ -73,6 +73,7 @@ MonoBehaviour:
   AgeOfUrgency: -1
   IsLocalOption: 1
   InfiniteRequests: 1
+  RefusesSameBuildingType: 0
   OverridesBuyPrice: 0
   OverrideBlock:
     Phosphorus: 0
@@ -121,6 +122,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Amount: 1
   AmountProducedLastTick: 0
+  RunoffParticleOrigin: {fileID: 3341510548927435195}
+  ConsumeFertilizerForRunoff: 1
 --- !u!114 &5602663514362957504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,6 +380,7 @@ MonoBehaviour:
   AgeOfUrgency: 20
   IsLocalOption: 0
   InfiniteRequests: 0
+  RefusesSameBuildingType: 0
   OverridesBuyPrice: 0
   OverrideBlock:
     Phosphorus: 0
@@ -765,6 +769,11 @@ MonoBehaviour:
 --- !u!4 &2901883796794500864 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
+  m_PrefabInstance: {fileID: 1732878763265799791}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3341510548927435195 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3914474898533967828, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
   m_PrefabInstance: {fileID: 1732878763265799791}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6640795476049582526

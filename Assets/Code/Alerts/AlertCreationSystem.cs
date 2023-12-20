@@ -27,6 +27,11 @@ namespace Zavala.Scripting
             if (!component.DisplayingEvent && component.QueuedEvents.Count > 0) {
                 component.QueuedEvents.TryPeekBack<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
 
+                if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
+                    // do not create UI banners for the fake global alerts
+                    return;
+                }
+
                 // allocate new alert from pool
                 UIPools pools = Game.SharedState.Get<UIPools>();
                 UIAlert alert = pools.Alerts.Alloc(SimWorldUtility.GetTileCenter(peekEvent.TileIndex) + component.EventDisplayOffset + EventDisplayOffset);
@@ -39,7 +44,14 @@ namespace Zavala.Scripting
 
                 alert.AlertBase.sprite = GetAlertBaseSprite(peekEvent.Alert, m_AlertAssets);
                 alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
-
+                
+                if (Game.Gui.GetShared<GlobalAlertButton>().QueuedActors.Count > 0) {
+                    // kinda hacky but - if there's a queued global alert, that means the game will pause soon,
+                    // so the only event queued should be the one being sent to global
+                    UIAlertUtility.SetAlertFaded(alert, true);
+                } else {
+                    UIAlertUtility.SetAlertFaded(alert, false);
+                }
                 Debug.Log("[Alerts] Created new alert!");
                 component.DisplayingEvent = alert;
             }

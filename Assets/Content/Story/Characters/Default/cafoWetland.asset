@@ -13,25 +13,25 @@ MonoBehaviour:
   m_Name: cafoWetland
   m_EditorClassIdentifier: 
   NameId: Neil
-  TitleId: CAFO Farmer
+  TitleId: Dairy Farmer
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4290243311
+    rgba: 4293131263
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4289710866
+    rgba: 4293522607
   NameColor:
     serializedVersion: 2
-    rgba: 4278827509
+    rgba: 4279058063
   TitleColor:
     serializedVersion: 2
-    rgba: 4286154769
+    rgba: 4280506016
   TextColor:
     serializedVersion: 2
-    rgba: 4286155026
+    rgba: 4279310152
   PortraitArt: {fileID: 21300000, guid: 5f7487069363ed343a878e4a4a2023a2, type: 3}
-  PortraitBackground: {fileID: 0}
+  PanelBackground: {fileID: 0}

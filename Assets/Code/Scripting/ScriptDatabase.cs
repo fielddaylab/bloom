@@ -177,7 +177,7 @@ namespace FieldDay.Scripting {
             if (db.LoadedRandomAccessNodes.TryGetValue(nodeId, out node)) {
                 return node;
             }
-
+            Debug.LogWarningFormat("[ScriptDatabase] Specific node {0} not found!", nodeId);
             return null;
         }
 

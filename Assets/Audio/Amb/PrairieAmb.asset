@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c7d3cf04b073e46be460674cfc2fac, type: 3}
   m_Name: PrairieAmb
   m_EditorClassIdentifier: 
-  Loop: {fileID: 0}
+  Loop: {fileID: 8300000, guid: a2766d7c98d43504da82e78c34040542, type: 3}
   LoopVolume: 1
   LoopPitch: 1
-  BirdSounds: []
+  BirdSounds:
+  - {fileID: 11400000, guid: c7a85a662df744c419c142171c1462bb, type: 2}
+  - {fileID: 11400000, guid: 17244e966066aa742977e4230885f511, type: 2}
   Delay:
-    Base: 15
-    ModifierMin: 0
-    ModifierMax: 0
+    Base: 16
+    ModifierMin: -3
+    ModifierMax: 3
   DelayShortChance: 0.1
   DelayShort:
     Base: 5
-    ModifierMin: 0
-    ModifierMax: 0
+    ModifierMin: -2
+    ModifierMax: 2

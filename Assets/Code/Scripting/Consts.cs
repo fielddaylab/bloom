@@ -66,6 +66,7 @@ namespace Zavala
         private const string UnusedDigester = "unused-digester";
         private const string DecliningPop = "declining-pop";
         private const string SellingLoss = "selling-loss";
+        private const string Disconnected = "disconnected";
 
         // Localization Ids
         private const string BaseLocPath = "alerts.";
@@ -76,13 +77,14 @@ namespace Zavala
         private const string UnusedDigesterLocId = BaseLocPath + UnusedDigester;
         private const string DecliningPopLocId = BaseLocPath + DecliningPop;
         private const string SellingLossLocId = BaseLocPath + SellingLoss;
+        private const string DisconnectedLocId = BaseLocPath + Disconnected;
 
         static private readonly string[] AlertTypeToString = new string[] {
-            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss
+            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss, Disconnected
         };
 
         static private readonly StringHash32[] AlertTypeToHash = new StringHash32[] {
-            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss
+            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss, Disconnected
         };
 
         static public string GetAlertName(EventActorAlertType alert) {
@@ -120,6 +122,9 @@ namespace Zavala
                 }
                 case EventActorAlertType.SellingLoss: {
                     lookup = SellingLossLocId; break;
+                }
+                case EventActorAlertType.Disconnected: {
+                    lookup = DisconnectedLocId; break;
                 }
             }
             return Loc.Find(lookup);

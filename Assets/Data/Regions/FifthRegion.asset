@@ -1337,6 +1337,6 @@ MonoBehaviour:
   - Offset: 0
     Length: 54
   LeafScript: {fileID: 0}
-  Ambience: {fileID: 8300000, guid: 574e9a605dc36df4194cf3e636f2405b, type: 3}
+  Ambience: {fileID: 11400000, guid: 4f4b64f195ca21747a143f74651acb2f, type: 2}
   Id: 4
   SourceFilePath: Tiled/Region5.json

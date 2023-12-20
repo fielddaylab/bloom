@@ -32,10 +32,13 @@ namespace Zavala.Debugging {
         private bool TryRaycastBuilding(Ray ray) {
             bool hit = Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, LayerMasks.Building_Mask, QueryTriggerInteraction.Collide);
             if (hit) {
+                OccupiesTile occupies = hitInfo.collider.GetComponent<OccupiesTile>();
+                if (!occupies) {
+                    return false;
+                }
                 Bounds hitBounds = hitInfo.collider.bounds;
                 Vector3 hitCenter = hitBounds.center;
                 DebugDraw.AddPoint(hitCenter, 0.1f, Color.white.WithAlpha(0.5f));
-                OccupiesTile occupies = hitInfo.collider.GetComponent<OccupiesTile>();
                 DebugDraw.AddWorldText(hitCenter, string.Format("{0}\nPosition {1} [{2}]\nRegion {3}\nFlags {4}\nRoad {5}\nConnections {6}", occupies.gameObject.name, occupies.TileVector, occupies.TileIndex, occupies.RegionIndex, m_StateA.Terrain.Info[occupies.TileIndex].Flags, m_StateD.Roads.Info[occupies.TileIndex].Flags, m_StateD.Roads.Info[occupies.TileIndex].FlowMask), Color.white, 0, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
 
                 if (!m_StateD.UpdateNeeded) {

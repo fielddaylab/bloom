@@ -17,21 +17,21 @@ MonoBehaviour:
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4289256943
+    rgba: 4293131263
   PanelColor:
     serializedVersion: 2
     rgba: 0
   HighlightColor:
     serializedVersion: 2
-    rgba: 4278302447
+    rgba: 4284930302
   NameColor:
     serializedVersion: 2
-    rgba: 4285504000
+    rgba: 4279058063
   TitleColor:
     serializedVersion: 2
-    rgba: 4281750225
+    rgba: 4280506016
   TextColor:
     serializedVersion: 2
-    rgba: 4279528163
+    rgba: 4279310152
   PortraitArt: {fileID: 21300000, guid: 909308ed35b381b4a8123baee3f75a4c, type: 3}
-  PortraitBackground: {fileID: 0}
+  PanelBackground: {fileID: 0}

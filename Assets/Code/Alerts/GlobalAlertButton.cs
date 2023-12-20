@@ -7,6 +7,7 @@ using FieldDay;
 using FieldDay.Components;
 using FieldDay.Scripting;
 using FieldDay.UI;
+using Leaf.Runtime;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -24,11 +25,11 @@ namespace Zavala.UI {
         //public RectTransform AlertBannerRect;
         //public PointerListener Pointer;
         public RectTransform m_Rect; 
-        public int MaxQueuedEvents = 3; // there should really only ever be 1 but let's keep it to 3 for emergencies
+        public int MaxQueuedEvents = 5; // there should really only ever be 1 but let's keep it to 5 for emergencies
 
         public Button m_Button;
 
-        public RingBuffer<EventActor> QueuedActors = new RingBuffer<EventActor>();
+        public RingBuffer<EventActor> QueuedActors = new RingBuffer<EventActor>(5);
         [NonSerialized] public Routine m_Routine;
 
         protected override void Awake() {
@@ -45,9 +46,13 @@ namespace Zavala.UI {
         #region Handlers
 
         private void HandleButtonClicked() {
-            QueuedActors.TryPopFront(out EventActor actor);
+            if (!QueuedActors.TryPopFront(out EventActor actor)) {
+                Log.Warn("[GlobalAlertButton] Couldn't pop front of QueuedActors :( Button showing without actors queued?");
+            }
+            
             Assert.NotNull(actor);
 
+            Log.Msg("[GlobalAlertButton] Popped actor {0}", actor.gameObject.name);
             EventActorUtility.TriggerActorAlert(actor);
             UIAlertUtility.ClearAlert(actor.DisplayingEvent);
             UpdateButtonRoutine();
@@ -57,10 +62,10 @@ namespace Zavala.UI {
         public void UpdateButtonRoutine() {
             if (QueuedActors.Count > 0) {
                 m_Routine.Replace(GlobalAlertUtility.AppearRoutine(this));
-                SimTimeInput.SetPaused(true, SimPauseFlags.Scripted);
+                SimTimeInput.SetPaused(true, SimPauseFlags.PendingGlobalAlert);
             } else {
                 m_Routine.Replace(GlobalAlertUtility.DisappearRoutine(this));
-                SimTimeInput.SetPaused(false, SimPauseFlags.Scripted);
+                SimTimeInput.SetPaused(false, SimPauseFlags.PendingGlobalAlert);
             }
         }
 
@@ -70,24 +75,25 @@ namespace Zavala.UI {
     public static class GlobalAlertUtility {
 
         // static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
-        public static void PushEventToGlobal(GlobalAlertButton button, EventActor actor) {
+        public static void PushEventOfActorToGlobal(GlobalAlertButton button, EventActor actor) {
             button.QueuedActors.PushBack(actor);
             button.UpdateButtonRoutine();
         }
 
         // TODO: add a special case for region unlock "alerts"
-        public static void CreateEventForGlobal(GlobalAlertButton button, EventActor actor) {
-            EventActorQueuedEvent fakeEvent = new EventActorQueuedEvent() {
-                
+        public static void CreateEventForGlobal(GlobalAlertButton button, EventActor actor, StringHash32 nodeId) {
+            EventActorQueuedEvent fakeEvent = new() {
+                ScriptId = nodeId,
+                Alert = EventActorAlertType.GlobalDummy
             };
             actor.QueuedEvents.PushBack(fakeEvent);
-            
+            PushEventOfActorToGlobal(button, actor);
         }
 
+        [LeafMember("SendGlobalAlertForNode")]
         public static void GlobalAlertLeaf(StringHash32 actorId, StringHash32 scriptId) {
             EventActor actor = ScriptUtility.LookupActor(actorId);
-            
-
+            CreateEventForGlobal(Game.Gui.GetShared<GlobalAlertButton>(), actor, scriptId);
         }
 
         public static IEnumerator AppearRoutine(GlobalAlertButton button) {

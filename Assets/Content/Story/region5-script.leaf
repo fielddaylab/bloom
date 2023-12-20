@@ -1,10 +1,14 @@
 # basePath   region5
 
-:: regionUnlocked
+:: queueCityUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "City"
+$yield // wait 1 frame for region to unlock
+$call SendGlobalAlertForNode("region5_city1", region5.regionUnlocked)
+
+:: regionUnlocked
 @queued
-$call Pause()
+// $call Pause()
 {@advisorEconUrban}    Sup. Welcome to Smokestack City.
 $call PanToBuilding("region5_city1")
 $call CutsceneBegin()
@@ -23,7 +27,7 @@ $call CutsceneBegin()
     $call CutsceneClearImages()
 $call CutsceneEnd()
 $call OffsetAlgaeGrowthThreshold(-1)
-$call Unpause()
+// $call Unpause()
 
 :: bloomGeneric
 @trigger        AlertExamined

@@ -4,7 +4,7 @@
 Pendleton City
 
 :: region1_cafo1.name
-Bertram's CAFO
+Bertram's Dairy Farm
 
 :: region1_grain1.name
 Henrietta's Grain Farm
@@ -13,10 +13,10 @@ Henrietta's Grain Farm
 Phos 4 Us
 
 :: region2_cafo1.name
-Natalie's CAFO
+Natalie's Dairy Farm
 
 :: region2_cafo2.name
-Natalie's CAFO
+Natalie's Dairy Farm
 
 :: region2_grain1.name
 Emmett's Grain Farm
@@ -25,7 +25,7 @@ Emmett's Grain Farm
 Yewgrove
 
 :: region3_cafo1.name
-Winnie's CAFO
+Winnie's Dairy Farm
 
 :: region3_grain1.name
 Zora's Grain Farm
@@ -37,13 +37,13 @@ Zora's Grain Farm
 Veldt City
 
 :: region4_cafo1.name
-Neil's CAFO
+Neil's Dairy Farm
 
 :: region4_cafo2.name
-Neil's CAFO
+Neil's Dairy Farm
 
 :: region4_cafo3.name
-Neil's CAFO
+Neil's Dairy Farm
 
 :: region4_grain1.name
 Cindy's Grain Farm
@@ -52,7 +52,7 @@ Cindy's Grain Farm
 Heylemarsh
 
 :: region5_cafo1.name
-Tabitha's CAFO
+Tabitha's Dairy Farm
 
 :: region5_grain1.name
 Tom's Grain Farm
@@ -106,7 +106,7 @@ Tolls connect roads from neighboring counties, allowing sales between them.
 <i><u>buys</u> and <u>sells</u> raw manure</i>
 
 :: storageDesc
-Storage Units buy fertilizer from CAFOs and sell it for a very minor profit.
+Storage Units buy fertilizer from dairy farms and sell it for a very minor profit.
 
 :: depot
 Export Depot

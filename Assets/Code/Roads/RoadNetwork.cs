@@ -11,6 +11,7 @@ using Zavala.Building;
 using FieldDay.Scripting;
 using Zavala.Economy;
 using Zavala.Rendering;
+using UnityEditor;
 
 namespace Zavala.Roads
 {
@@ -547,6 +548,49 @@ namespace Zavala.Roads
         }
 
         #endregion // Export Depots
+
+        #region Fixed Road Tiles
+
+        static public void RegisterFixedRoad(RoadInstanceController road) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            SimGridState grid = ZavalaGame.SimGrid;
+            Assert.NotNull(network);
+
+            network.RoadObjects.PushBack(road);
+            int roadTileIndex = road.Position.TileIndex;
+            RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
+
+            road.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(roadTileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
+                if (c < a - 50) {
+                    o = RoadRampType.Tall;
+                    return true;
+                } else if (c < a) {
+                    o = RoadRampType.Ramp;
+                    return true;
+                } else {
+                    o = default;
+                    return false;
+                }
+            });
+
+
+            RoadVisualUtility.UpdateRoadMesh(road, network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
+            SimWorldUtility.QueueVisualUpdate((ushort) roadTileIndex, VisualUpdateType.Road);
+        }
+
+        static public void DeregisterFixedRoad(RoadInstanceController road) {
+            if (Game.IsShuttingDown) {
+                return;
+            }
+
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            Assert.NotNull(network);
+
+            network.RoadObjects.FastRemove(road);
+            SimWorldUtility.QueueVisualUpdate((ushort) road.Position.TileIndex, VisualUpdateType.Road);
+        }
+
+        #endregion // Fixed Road Tiles
 
         #region Sources
 

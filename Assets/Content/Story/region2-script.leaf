@@ -1,18 +1,32 @@
 # basePath   region2
 
-:: forestUnlocked
+:: queueForestUnlock
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
+@queued
+$yield // wait 1 frame for region to unlock
+$call SendGlobalAlertForNode("region2_city1", region2.forestUnlocked)
+{wait 5}  // TODO: don't open dialogue box when the line is just {wait}
+$if intro:openedForestAlert == false
+    $call FocusHighlightOn("GlobalAlert")
+    {@advisorEconHill}      It would appear something needs your attention!
+    {@advisorEconHill}      We can't continue until it is addressed. 
+    {@advisorEconHill}      Click on it to see what's up.
+$endif
+
+:: forestUnlocked
 @cutscene
 @queued
-$call Pause()
+// $call Pause()
+$set intro:openedForestAlert = true
+$call FocusClear()
 {@advisorEconForest}    Salutations, Director.
-$call PanToBuilding("region2_city1")
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
 {@advisorEconForest}    Can you help us connect our farms and city to help us grow?
 {@advisorEconForest}    Our budget and policies are separate from Knoll County.
 {@advisorEconForest}    We have more Dairy Farms than our <i>dear</i> neighbors.
 $call Unpause()
+
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -51,13 +65,13 @@ $call AddAutoAlertCondition("ExcessRunoff", 2)
 :: runoffBranch
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff", alertRegion == 2, global:runoffDiscovered
-$call Pause()
+// $call Pause()
 $if Visited("region2.unlockStorage")
     $branch .runoffGeneric
 $else
     $branch .unlockStorage
 $endif
-$call Unpause()
+// $call Unpause()
 
 :: unlockStorage
 @conditions     global:runoffDiscovered
@@ -70,6 +84,7 @@ $call FocusHighlightOn("BuildModeButton")
 $call FocusClear()
 {@advisorEcolForest}    Once connected to a Dairy Farm, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between Dairy Farms.
+
 $call OffsetAlgaeGrowthThreshold(-1)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
@@ -100,8 +115,7 @@ $call ForcePolicyInstant("Ecology")
 @once
 $set global:importUnlocked = true
 {@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
-$call PanToBuilding("region3_city1")
-$call Pause()
+// $call Pause()
 {@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many Dairy Farms.
 {@advisorEcolPrairie}   But we've got plenty of <b>grain</b> over in Heath County! Maybe we could help each other?
 {@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
@@ -114,7 +128,7 @@ $call UnlockCards(ImportTaxPolicy)
 {@advisorEconForest}    Hmph. Well I say everyone should just buy local. 
 $call ForcePolicyInstant("Economy")
 {@advisorEconForest}    But it's up to you, Director.
-$call Unpause()
+// $call Unpause()
 
 :: testBloomTriggerForest
 @trigger        AlertExamined
@@ -122,13 +136,13 @@ $call Unpause()
 @forcePolicy    Ecology
 @priority       Low
 @once
-$call Pause()
+// $call Pause()
 {@advisorEcolForest}    Ugh... I can't believe there's an algae bloom <i>here!</i>
 {@advisorEcolForest}    Those <i>hill-dwellers</i> should have done more to stop it.
 {@advisorEcolHill}      Pft! That's rich coming from <i>Stellar Forest Management</i> over here.
 {viewpoliciesnext}
 {@advisorEcolForest}    It's not our fault you let your <i>filth</i> flow down here.
-$call Unpause()
+// $call Unpause()
 
 :: bloomGeneric
 @trigger        AlertExamined

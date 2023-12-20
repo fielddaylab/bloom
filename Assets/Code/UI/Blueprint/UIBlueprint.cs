@@ -250,7 +250,7 @@ namespace Zavala.UI
         public void OnNumDestroyActionsChanged(int num)
         {
             m_DestroyUndoButton.interactable = num > 0;
-            m_DestroyConfirmButton.interactable = num > 0;
+            m_DestroyConfirmButton.gameObject.SetActive(num > 0);
         }
 
         public void OnDestroyModeClicked()
@@ -259,6 +259,7 @@ namespace Zavala.UI
             m_DestroyCommandLayoutRoutine.Replace(DestroyCommandAppearanceTransition(true));
             m_ShopToggle.gameObject.SetActive(false);
             m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(false));
+
 
             Game.Events.Dispatch(GameEvents.DestroyModeStarted);
         }
@@ -466,6 +467,7 @@ namespace Zavala.UI
 
         private IEnumerator DestroyCommandAppearanceTransition(bool appearing)
         {
+            m_DestroyConfirmButton.gameObject.SetActive(false);
             if (appearing)
             {
                 SetDestroyCommandLayoutInteractable(true);

@@ -16,6 +16,7 @@ namespace Zavala.Economy {
 
         public bool IsLocalOption = false; // used by Let It Sit option on Dairy Farms
         public bool InfiniteRequests = false;  // used by Let It Sit option on Dairy Farms
+        public bool RefusesSameBuildingType = false;  // storage refuses to purchase from other storage
 
         public bool OverridesBuyPrice = false;
         public MarketPriceBlock OverrideBlock;

@@ -5,7 +5,7 @@
 @conditions     intro:tutorialComplete = false
 @cutscene
 @once
-$call Pause()
+// $call Pause()
 $call PauseAlertType("ExcessRunoff")
 
 $call CutsceneBegin()
@@ -63,7 +63,7 @@ $call ShowAnimatedTutorial("ClickDragTutorial")
 @conditions     intro:tutorialComplete = false
 @cutscene
 @once
-$call Pause()
+// $call Pause()
 $set intro:farmsConnected = true
 $if intro:citiesConnected
     $call HideAnimatedTutorial()
@@ -86,14 +86,14 @@ $else
         {@advisorEconHill}      We need a <i>Road</i> to connect the Dairy Farm to the City.
     $endif
 $endif
-$call Unpause()
+// $call Unpause()
 
 :: cityConnected
 @trigger    CityConnection
 @conditions     intro:tutorialComplete = false
 @cutscene
 @once
-$call Pause()
+// $call Pause()
 $set intro:citiesConnected = true
 $if intro:farmsConnected
     $call HideAnimatedTutorial()
@@ -108,7 +108,7 @@ $else
     {@advisorEconHill}      Build another road between the Dairy Farm and the Grain Farm.
 $endif
 
-$call Unpause()
+// $call Unpause()
 
 :: farmsAndCitiesConnected 
 @conditions     intro:tutorialComplete = false
@@ -121,7 +121,9 @@ $call HideAnimatedTutorial()
 {@advisorEconHill}      But SAGA may need more funding.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
-{@advisorEconHill}      See me again from your <b>Economic Advisor</b> button. 
+{@advisorEconHill}      See me again from your <b>Economic Advisor</b> button.
+$call ForceCloseDialogue()
+$call Wait(0.4)
 $call FocusHighlightOn("EconomyAdvisor")
 $call ReleaseDialogueInteraction()
 
@@ -172,6 +174,7 @@ $call FocusClear()
 @cutscene
 $branch .policyDescriptions
 $if intro:tutorialComplete = false
+    $set intro:pendingPolicy = false
     $branch .choseFirstPolicy
 $endif
 
@@ -191,7 +194,6 @@ $endif
 :: choseFirstPolicy
 // @cutscene
 $set intro:tutorialComplete = true
-$set intro:pendingPolicy = false
 {@advisorEconHill}  A fine choice. 
 {@advisorEconHill}  Let's get this economy started, shall we?
 $call OffsetAlgaeGrowthThreshold(-2)
@@ -214,7 +216,7 @@ $call ActivateSim()
 // @conditions !intro:exporterFound
 @cutscene
 @once
-$call Pause()
+// $call Pause()
 // $set intro:exporterFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
@@ -222,10 +224,10 @@ $call PanToBuilding("region1_grain1")
 {local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
 {local @grainFarmer}    ...and its cheap to ship to my farm.
 {@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
-{@advisorEcolHill}     This could disrupt the ecological balance!
-{@advisorEconHill}      I'm afraid this is the only economically feasible option.
+{@advisorEcolHill}      This could disrupt the ecological balance!
 $call AddAutoAlertCondition("Bloom", 1)
-$call Unpause()
+{@advisorEconHill}      I'm afraid this is the only economically feasible option.
+// $call Unpause()
 
 
 :: skipTutorial
@@ -233,14 +235,20 @@ $call Unpause()
 $call CutsceneEnd()
 $call FocusClear()
 {@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
+$call SendGlobalAlertForNode("region1_city1", region1.testGlobalAlert)
+$call HideAnimatedTutorial()
 $set intro:tutorialComplete = true
 $set intro:pendingPolicy = true
 $call UnlockCards(SalesTaxPolicy)
 $call AddAutoAlertCondition("Bloom", 1)
 $call OffsetAlgaeGrowthThreshold(-2)
 $call ReleaseDialogueInteraction()
-$call Unpause()
+// $call Unpause()
 $call ActivateSim()
+
+:: testGlobalAlert
+@queued
+{local  @urbanite}  I hear you've skipped the tutorial... pretty cool.
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -263,8 +271,6 @@ $if PolicyIsUnlocked(SalesTaxPolicy)
 $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
 $endif
-
-
 
 :: policyDescriptions
 // TODO: lookup policy costs
@@ -359,7 +365,7 @@ $call ForcePolicyInstant("Economy")
 @queued
 @cutscene
 @once
-$call Pause()
+// $call Pause()
 $set global:runoffDiscovered = true
 {@advisorEcolHill}      This farm is just letting manure leach into the water table!
 {@advisorEcolHill}      That must be behind those algae blooms.
@@ -376,7 +382,7 @@ $call UnlockCards(RunoffPolicy)
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered
 @queued
-$call Pause()
+// $call Pause()
 {local @advisorEcol}    More runoff... 
 {local @advisorEcol}    Maybe we ought to increase our runoff fine?
 {local @advisorEcon}    Careful now! We don't want to bankrupt our farmers.
@@ -390,7 +396,7 @@ $endif
 @cutscene
 @conditions     alertType == "bloom", alertRegion == 1
 @once
-$call Pause()
+// $call Pause()
 $set global:bloomDiscovered = true
 // TODO: trigger ACT 2 HERE.
 {@advisorEcolHill}    What's this...?
@@ -414,7 +420,7 @@ $call CutsceneEnd()
 $call OffsetAlgaeGrowthThreshold(0)
 $call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)
-$call Unpause()
+// $call Unpause()
 
 :: genericBloomTrigger
 @trigger        AlertExamined
@@ -435,23 +441,23 @@ $endif
 @conditions     alertType == "selling-loss", alertRegion == 1, isFromGrainFarm == true
 @forcePolicy    Economy
 @queued
-$call Pause()
+// $call Pause()
 {local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
 {local @advisorEcon}    Hmm... This farmer is losing money when they sell.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
 {viewpoliciesnext}
 {local @advisorEcon}    You can build a shorter road, or decrease taxes and penalties.
-$call Unpause()
+// $call Unpause()
 
 :: SellAtLossCafo
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss", alertRegion == 1, isFromGrainFarm == false
 @forcePolicy    Economy
 @queued
-$call Pause()
+// $call Pause()
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {local @advisorEcon}    Hmm... This supplier is selling at a loss.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
 {viewpoliciesnext}
 {local @advisorEcon}    Perhaps you can build a shorter road, or lower taxes and penalties.
-$call Unpause()
+// $call Unpause()

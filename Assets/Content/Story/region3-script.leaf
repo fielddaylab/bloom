@@ -1,10 +1,13 @@
 # basePath   region3
-
-:: regionUnlocked
+:: queuePrairieUnlock
 @trigger        RegionUnlocked
 @conditions     regionId == "Prairie"
+$yield // wait 1 frame for region to unlock
+$call SendGlobalAlertForNode("region3_city1", region3.regionUnlocked)
+
+:: regionUnlocked
 @queued
-$call Pause()
+// $call Pause()
 $call AddRegionAgeTrigger(3, 10)
 {@advisorEconPrairie}    Howdy there! 
 $call PanToBuilding("region3_city1")
@@ -12,7 +15,7 @@ $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    We've got a whole <i>bushel</i> of Grain Farms... and of course Veldt University!
 {@advisorEconPrairie}    They'll be conducting research about this algae unpleasantness.
 $call AddAutoAlertCondition("Bloom", 2)
-$call Unpause()
+// $call Unpause()
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -42,6 +45,7 @@ $endif
 @forcePolicy    Ecology
 {@advisorEcolPrairie}    Eep! An algae bloom!
 {@advisorEcolPrairie}    I say we should just shut those large Dairy Farms down.
+
 $if Visited("region2.unlockStorage")
     {@advisorEcolPrairie}    Otherwise, we could build more storage units.
 $endif
@@ -51,13 +55,15 @@ $endif
 {viewpoliciesnext}
 {@advisorEcolPrairie}    What do you think?
 
+:: queueUnlockPhosphorusView
+@trigger        RegionReachedAge
+@conditions     regionId == 3
+$call SendGlobalAlertForNode("region3_city1", region3.unlockPhosphorusView)
 
 :: unlockPhosphorusView
-// TODO: trigger ACT III here
-@trigger        RegionReachedAge
 @cutscene
-@conditions     regionId == 3
-$call Pause()
+@queued
+// $call Pause()
 {@cityPrairie}      Hey, um... Sorry to butt in, but...
 $call PanToBuilding("region3_city1")
 {@cityPrairie}      I've been working on a research project at Veldt U that might help SAGA...
@@ -83,7 +89,7 @@ $call UnlockAdvisorModule("Ecology")
 {@cityPrairie}      That's PIP! It uses a network of sensors to track phosphorus concentrations.
 {@cityPrairie}      And shows it to you as moving red dots! I hope that helps.
 $call OffsetAlgaeGrowthThreshold(-1)
-$call Unpause()
+// $call Unpause()
 
 :: unlockTradeGraphs
 @trigger        AdvisorOpened
@@ -91,7 +97,7 @@ $call Unpause()
 @forcePolicy    Economy
 @once
 {local @advisorEcon}    Here to set some economic poli--
-$call Pause()
+// $call Pause()
 {@advisorEconPrairie}   Howdy! Hope I'm not interrupting anything important.
 {local @advisorEcon}    Um... Go ahead.
 {@advisorEconPrairie}   Well, I was inspired by Winston's PIP system...
@@ -103,4 +109,4 @@ $call UnlockAdvisorModule("Economy")
 {@advisorEconPrairie}   Those should give you some targets for a healthy economy.
 {viewpoliciesnext}
 {local @advisorEcon}    Splendid....
-$call Unpause()
+// $call Unpause()

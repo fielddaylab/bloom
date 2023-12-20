@@ -30,6 +30,7 @@ namespace Zavala.Advisor {
         public CastableEvent<PolicyType> PolicySlotClicked = new CastableEvent<PolicyType>();
         public CastableEvent<CardData> PolicyCardSelected = new CastableEvent<CardData>();
         public ActionEvent PolicyCloseButtonClicked = new ActionEvent();
+        public ActionEvent OnPolicyUpdated = new ActionEvent();
 
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
         public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region, bool forced) {
@@ -43,19 +44,21 @@ namespace Zavala.Advisor {
                 ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
             }
 
-
             Policies[region].Map[policyType] = (PolicyLevel)policyIndex;
             Policies[region].EverSet[policyType] = true; // this policy has now been set
+            bool policySetSuccessful = false;
             switch (policyType) {
                 case PolicyType.RunoffPolicy:
                     // read runoff policy
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].RunoffPenalty = RunoffPenaltyVals[policyIndex];
-                    return true;
+                    policySetSuccessful = true;
+                    break;
                 case PolicyType.SkimmingPolicy:
                     // read skimming policy
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].SkimmerCost = SkimmerPolicyVals[policyIndex];
                     PhosphorusSkimmerUtility.SpawnSkimmersInRegion(region, policyIndex);
-                    return true;
+                    policySetSuccessful = true;
+                    break;
                     /*
                 case PolicyType.ExportTaxPolicy:
                     Policies[region].ExportTax = (ExportTaxLevel)policyIndex;
@@ -66,14 +69,20 @@ namespace Zavala.Advisor {
                 case PolicyType.ImportTaxPolicy:
                     // set this region's import tax to the initialized import tax value for the given index
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].ImportTax = ImportTaxVals[policyIndex];
-                    return true;
+                    policySetSuccessful = true;
+                    break;
                 case PolicyType.SalesTaxPolicy:
                     // set this region's purchase tax to the initialized sales tax value for the given index
                     Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].PurchaseTax = SalesTaxVals[policyIndex];
-                    return true; 
+                    policySetSuccessful = true;
+                    break;
                 default:
-                    return false;
+                    break;
             }
+
+            OnPolicyUpdated?.Invoke();
+
+            return policySetSuccessful;
         }
 
         public void InitializePolicyValues() {

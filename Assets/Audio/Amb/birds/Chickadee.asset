@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 810f72fe494cd8b4a81f272ef9260ada, type: 3}
+  m_Name: Chickadee
+  m_EditorClassIdentifier: 
+  Clips:
+  - {fileID: 8300000, guid: 0f47c96d2a2d2044eaf670284751bee6, type: 3}
+  - {fileID: 8300000, guid: b4f1739666cdfe64c921557672f6c574, type: 3}
+  - {fileID: 8300000, guid: 9f1c2dedf6437e54a8325f7b2cd99290, type: 3}
+  Volume:
+    Base: 1
+    ModifierMin: 0
+    ModifierMax: 0
+  Pitch:
+    Base: 1
+    ModifierMin: 0
+    ModifierMax: 0
+  Delay:
+    Base: 0
+    ModifierMin: 0
+    ModifierMax: 0
+  Tag:
+    m_Source: 
+    m_HashValue: 0

@@ -56,7 +56,7 @@ namespace Zavala.Scripting {
                                                                        
                                     Log.Msg("[EventActorUtility] AutoTriggerAlert ACTIVATED");
                                     //EventActorUtility.TriggerActorAlert(component);
-                                    GlobalAlertUtility.PushEventToGlobal(Game.Gui.GetShared<GlobalAlertButton>(), component);
+                                    GlobalAlertUtility.PushEventOfActorToGlobal(Game.Gui.GetShared<GlobalAlertButton>(), component);
                                     conditions.Remove(autoTrig);
                                     break;
                                 } else {

@@ -9,10 +9,6 @@ using Zavala.Input;
 using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
-using Zavala.UI;
-using UnityEngine.EventSystems;
-using Zavala.Rendering;
-using System.Collections.Generic;
 using Zavala.Audio;
 
 namespace Zavala.Building

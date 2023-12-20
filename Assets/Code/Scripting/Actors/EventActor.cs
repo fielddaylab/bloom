@@ -84,7 +84,9 @@ namespace Zavala.Scripting {
         UnusedDigester,
         DecliningPop,
         SellingLoss,
-        Global,
+        Disconnected,
+        GlobalDummy,
+
         [Hidden]
         COUNT,
     }
@@ -192,6 +194,18 @@ namespace Zavala.Scripting {
             return false;
         }
 
+        static public bool CancelEventType(EventActor actor, EventActorAlertType alertType)
+        {
+            int index = actor.QueuedEvents.FindIndex((e, id) => e.Alert == id, alertType);
+            if (index >= 0)
+            {
+                actor.QueuedEvents.RemoveAt(index);
+                return true;
+            }
+
+            return false;
+        }
+
         static public bool IsAlertQueued(EventActor actor, EventActorAlertType alert) {
             foreach (var trigger in actor.QueuedTriggers) {
                 // in the case of alerts, "value" is the alertType
@@ -209,7 +223,21 @@ namespace Zavala.Scripting {
 
             return false;
         }
-    
+
+        static public bool IsAlertEventQueued(EventActor actor, EventActorAlertType alert)
+        {
+            foreach (var aEvent in actor.QueuedEvents)
+            {
+                // in the case of alerts, "value" is the alertType
+                if (aEvent.Alert == alert)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         static public void RegisterActor(EventActor actor, StringHash32 id) {
             if (actor == null) {
                 return;

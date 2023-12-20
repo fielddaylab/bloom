@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 810f72fe494cd8b4a81f272ef9260ada, type: 3}
+  m_Name: Cardinal
+  m_EditorClassIdentifier: 
+  Clips:
+  - {fileID: 8300000, guid: 3cab135f8629f014a84ce8572136ffbb, type: 3}
+  - {fileID: 8300000, guid: 634639cc7e7fae64e8cd573de3680334, type: 3}
+  - {fileID: 8300000, guid: 5d1a8f76e1b6a3b41905825449e50609, type: 3}
+  - {fileID: 8300000, guid: b7c4a7111f7816c4791088c703f84b6c, type: 3}
+  Volume:
+    Base: 1
+    ModifierMin: 0
+    ModifierMax: 0
+  Pitch:
+    Base: 1
+    ModifierMin: 0
+    ModifierMax: 0
+  Delay:
+    Base: 0
+    ModifierMin: 0
+    ModifierMax: 0
+  Tag:
+    m_Source: 
+    m_HashValue: 0

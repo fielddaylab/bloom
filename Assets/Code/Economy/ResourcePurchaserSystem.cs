@@ -24,7 +24,6 @@ namespace Zavala.Economy {
 
             ref ResourceBlock total = ref purchaser.Request.Received;
             ResourceBlock requestAmt = purchaser.RequestAmount;
-            
 
             if (ResourceBlock.Consume(ref total, ref requestAmt)) {
                 ResourceBlock cash = requestAmt * purchaser.PurchasePrice;

@@ -19,7 +19,7 @@ namespace Zavala.Economy
         private readonly RingBuffer<ResourceRequester> m_RequesterWorkList = new RingBuffer<ResourceRequester>(8, RingBufferMode.Expand);
         private readonly RingBuffer<MarketRequesterPriorityInfo> m_SellerPriorityWorkList = new RingBuffer<MarketRequesterPriorityInfo>(8, RingBufferMode.Expand);
         private readonly RingBuffer<MarketSupplierPriorityInfo> m_BuyerPriorityWorkList = new RingBuffer<MarketSupplierPriorityInfo>(8, RingBufferMode.Expand);
-        private readonly Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>> m_SupplierOfferMap = new Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>>();
+        private Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>> m_SupplierOfferMap = new Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>>();
         private readonly RingBuffer<MarketSupplierOffer> m_SupplierOfferWorkList = new RingBuffer<MarketSupplierOffer>(4, RingBufferMode.Expand);
 
         public override void ProcessWork(float deltaTime) {
@@ -135,8 +135,13 @@ namespace Zavala.Economy
                 for (int i = 0; i < MarketUtility.NumMarkets; i++)
                 {
                     int marketIndex = i;
+                    bool offerInMarket = false;
                     foreach (var supplierOffer in m_SupplierOfferWorkList)
                     {
+                        if ((supplierOffer.ResourceMask & MarketUtility.MarketIndexToResourceMask(marketIndex)) != 0)
+                        {
+                            offerInMarket = true;
+                        }
                         if (supplierOffer.Supplier == requester.Priorities.PrioritizedSuppliers[requester.BestPriorityIndex[marketIndex]].Target)
                         {
                             matchFound = true;
@@ -159,13 +164,15 @@ namespace Zavala.Economy
                         }
                     }
                     // ELSE MOVE TO BUYER'S NEXT BEST PRIORITY AND CONTINUE
-                    else
+                    else if (offerInMarket)
                     {
                         requester.BestPriorityIndex[marketIndex]++;
                         m_RequesterWorkList.PushBack(requester);
                     }
                 }
+                m_SupplierOfferWorkList.CopyTo(m_SupplierOfferMap[requester]);
             }
+
 
             #endregion // MarketCycle_BuyerSupplierIteration
 
@@ -329,6 +336,10 @@ namespace Zavala.Economy
                 // ignore buyers that don't overlap with shipping mask
                 ResourceMask overlap = requester.RequestMask & supplier.ShippingMask;
                 if (overlap == 0) {
+                    continue;
+                }
+                if (requester.RefusesSameBuildingType && requester.Position.Type == supplier.Position.Type)
+                {
                     continue;
                 }
 
@@ -862,6 +873,7 @@ namespace Zavala.Economy
 
             MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
 
+            // TODO: mark this request as EnRoute
              m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
 
             Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);

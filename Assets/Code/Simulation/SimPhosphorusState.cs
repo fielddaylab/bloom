@@ -6,6 +6,7 @@ using UnityEngine;
 using Zavala.Actors;
 using Zavala.Data;
 using Zavala.Economy;
+using Zavala.Rendering;
 
 namespace Zavala.Sim
 {
@@ -104,6 +105,11 @@ namespace Zavala.Sim
             if (consume && resources.PhosphorusCount > RunoffParams.RunoffConsumeFertilizerThreshold) {
                 ResourceBlock.GatherPhosphorusPrioritized(resources, totalToAdd, out ResourceBlock outBlock);
                 resources -= outBlock;
+                //ResourceBlock.Consume(ref resources, outBlock);
+                if (generator.RunoffParticleOrigin != null) {
+                    ResourceStorageUtility.RefreshStorageDisplays(generator.transform.parent.GetComponent<ResourceStorage>());
+                    VfxUtility.PlayEffect(generator.RunoffParticleOrigin.position, EffectType.Poop_Runoff);
+                }    
             }
             AddPhosphorus(phosphorus, index, totalToAdd);
             generator.AmountProducedLastTick = totalToAdd;  

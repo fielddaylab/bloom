@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Advisor;
+using Zavala.Audio;
 using Zavala.Input;
 using Zavala.Sim;
 
@@ -160,6 +161,9 @@ namespace Zavala.Cards
                 else {
                     m_DisplayCards.Clear();
                 }
+
+                SfxUtility.PlaySfx("advisor-policy-fan");
+
                 // For each card, allocate a card from the pool
                 for (int i = 0; i < cardData.Count; i++) {
                     CardData data = cardData[i];
@@ -182,6 +186,7 @@ namespace Zavala.Cards
 
         private void HandlePolicyCardSelected(CardData data) {
             if (m_Type == data.PolicyType) {
+                SfxUtility.PlaySfx("advisor-policy-select");
                 MirrorSelectedCard(data);
             }
 
