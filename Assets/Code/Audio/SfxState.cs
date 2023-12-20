@@ -6,7 +6,6 @@ using BeauPools;
 using BeauUtil;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
-using UnityEditor.VersionControl;
 
 namespace Zavala.Audio {
     public sealed class SfxState : SharedStateComponent, IRegistrationCallbacks {
