@@ -147,7 +147,7 @@ namespace FieldDay.Scripting {
         }
 
         static public void MountDisplayer(ITextDisplayer displayer) {
-            Runtime.DefaultDialogue.HideAdvisorUI();
+            Runtime.DefaultDialogue.HideDialogueUI();
             Runtime.Plugin.ConfigureDisplay(displayer, displayer as IChoiceDisplayer);
         }
 
@@ -156,7 +156,7 @@ namespace FieldDay.Scripting {
         }
 
         static public void AutoOpenPolicyCards(PolicyType type) {
-            DialogueBox box = Game.SharedState.Get<ScriptRuntimeState>().DefaultDialogue;
+            DialogueBox box = Runtime.DefaultDialogue;
             box.CardsToShow = type;
             box.ShowHand = true;
         }
@@ -168,8 +168,13 @@ namespace FieldDay.Scripting {
 
         [LeafMember("ForcePolicyInstant")]
         static public void ForcePolicyInstant(AdvisorType type) {
-            Game.SharedState.Get<ScriptRuntimeState>().DefaultDialogue.ForceExpandPolicyUI(type);
+            Runtime.DefaultDialogue.ForceExpandPolicyUI(type);
             
+        }
+
+        [LeafMember("ForceCloseDialogue")]
+        static public void ForceCloseDialogue() {
+            Runtime.DefaultDialogue.HideDialogueUI();
         }
     }
 }

@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 7613557166810901527}
   - component: {fileID: 3912968975191914243}
   - component: {fileID: 764168936872465502}
+  - component: {fileID: 3682465586839502170}
   m_Layer: 7
   m_Name: Digester
   m_TagString: PlayerPlaced
@@ -157,6 +158,7 @@ MonoBehaviour:
   AgeOfUrgency: -1
   IsLocalOption: 0
   InfiniteRequests: 0
+  RefusesSameBuildingType: 0
   OverridesBuyPrice: 0
   OverrideBlock:
     Phosphorus: 0
@@ -258,6 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47a41270c43b3b43ba993419088b887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OverrideType: 0
 --- !u!114 &2578567375535217520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,6 +276,9 @@ MonoBehaviour:
   TitleLabel:
     m_Source: location.shared.digester
     m_HashValue: 3205151346
+  OverrideTitleLabel:
+    m_Source: 
+    m_HashValue: 0
   InfoLabel:
     m_Source: location.shared.digesterInfo
     m_HashValue: 3249712714
@@ -330,6 +336,18 @@ MonoBehaviour:
   AcceptsAnyPrice: 0
   FixedSellOffer: 0
   FixedBuyOffer: 0
+--- !u!114 &3682465586839502170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f67d6077a97cc874db65d84d0756f062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &867671194487188298
 PrefabInstance:
   m_ObjectHideFlags: 0

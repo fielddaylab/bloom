@@ -1,0 +1,6 @@
+# basePath   common
+
+:: disconnectedTrigger
+@trigger        AlertExamined
+@conditions     alertType == "disconnected"
+@queued

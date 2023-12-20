@@ -77,12 +77,14 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 41bdac6579c976d4b902973664401892, type: 3}
   - {fileID: 21300000, guid: 61db9685c1b7ea243a4c109811110530, type: 3}
   - {fileID: 21300000, guid: 7d969a85e13f8244e94998181ad9e743, type: 3}
+  - {fileID: 21300000, guid: d648e195b001297419a09f0d590b6365, type: 3}
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
   - {fileID: 21300000, guid: 50b6ad0648a956c4bbf7a51cb79ef1da, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
   - {fileID: 21300000, guid: 0a49d7a676c7e7a41938c7fad1f49f83, type: 3}
   - {fileID: 21300000, guid: 4e924ea66dfed87478eda11d6f63cd7e, type: 3}
   - {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
+  - {fileID: 21300000, guid: 3c6f66f6fe705bf4ab00e21ec9a6d02d, type: 3}
   - {fileID: 21300000, guid: 94bb47f60026b934b86cc4302f2fdf39, type: 3}
   - {fileID: 21300000, guid: 89194bf60d4b2af4c8a261aa564d0611, type: 3}
   - {fileID: 21300000, guid: 654583471bf8a0e4b9d6fe8f5229fce7, type: 3}
@@ -95,6 +97,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: cd8adbd8a257d2d4fa443c63abc684ae, type: 3}
   - {fileID: 21300000, guid: 99002e29e1c7b3b42941c13ae3f483b2, type: 3}
   - {fileID: 21300000, guid: 45758679d1b51544babfafc4917155aa, type: 3}
+  - {fileID: 21300000, guid: 857ec83a58cf6e347bcbe1606be60479, type: 3}
   - {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
   - {fileID: 21300000, guid: a4e601cac11766d40b8c12bf68b1f94f, type: 3}
   - {fileID: 21300000, guid: 7fdf6d5b4cb42ca46bdb089e269472a9, type: 3}
@@ -143,12 +146,14 @@ SpriteAtlas:
   - resource_milk
   - base_unused-digester
   - storage-empty
+  - base_disconnected
   - advisor-dialogue-white
   - CloseX
   - ShopToggle
   - policyicon_import
   - cutscene_next
   - card-slot-white
+  - banner_disconnected
   - banner_bloom
   - policyicon_sales
   - PhosphorusLensIcon
@@ -161,6 +166,7 @@ SpriteAtlas:
   - base_bloom
   - banner_unused-digester
   - PopulationIcon
+  - global_alert
   - card-slot-locked-white
   - policyicon_skim
   - ShopButtonBorder

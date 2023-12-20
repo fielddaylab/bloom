@@ -112,7 +112,7 @@ namespace FieldDay.Scripting {
             }
             else {
                 // Close advisor, no policies forced
-                m_RuntimeState.DefaultDialogue.HideAdvisorUI();
+                m_RuntimeState.DefaultDialogue.HideDialogueUI();
             }
 
             if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {

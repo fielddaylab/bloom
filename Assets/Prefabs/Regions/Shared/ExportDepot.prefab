@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 5890811373593064956}
   - component: {fileID: 2458824905348431834}
   - component: {fileID: 6685339513336085785}
+  - component: {fileID: 2050193077689956040}
   m_Layer: 7
   m_Name: ExportDepot
   m_TagString: Untagged
@@ -145,6 +146,9 @@ MonoBehaviour:
   TitleLabel:
     m_Source: location.shared.depot
     m_HashValue: 1820502097
+  OverrideTitleLabel:
+    m_Source: 
+    m_HashValue: 0
   InfoLabel:
     m_Source: location.shared.depotInfo
     m_HashValue: 3359418569
@@ -165,6 +169,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OverrideType: 0
+--- !u!114 &2050193077689956040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f67d6077a97cc874db65d84d0756f062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2720125283084926349
 PrefabInstance:
   m_ObjectHideFlags: 0
