@@ -410,6 +410,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toggle
       objectReference: {fileID: 0}
+    - target: {fileID: 8498922031099620120, guid: 6a576aac4660502469d434477631e8a8, type: 3}
+      propertyPath: ClickId.m_Source
+      value: blueprints-toggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8498922031099620120, guid: 6a576aac4660502469d434477631e8a8, type: 3}
+      propertyPath: ClickId.m_HashValue
+      value: 315914232
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a576aac4660502469d434477631e8a8, type: 3}
 --- !u!224 &545534962684649677 stripped
@@ -578,6 +586,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4964790507195731688, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_Source
+      value: blueprints-destroy-begin
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_Source
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_HashValue
+      value: 3214994546
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_HashValue
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -912,6 +936,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4964790507195731688, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_Source
+      value: blueprints-undo
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_Source
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: ClickId.m_HashValue
+      value: 1977216954
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319063997591176681, guid: ef27d68856b14324aa74d11851c9167f, type: 3}
+      propertyPath: EnterId.m_HashValue
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5542873064247455406, guid: ef27d68856b14324aa74d11851c9167f, type: 3}

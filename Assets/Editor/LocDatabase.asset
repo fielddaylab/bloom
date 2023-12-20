@@ -32,6 +32,8 @@ MonoBehaviour:
       Content: Declining Population
     - Id: alerts.selling-loss
       Content: Selling at a Loss
+    - Id: alerts.disconnected
+      Content: Road Not Connected
     BasePath: alerts
     AllBasePaths:
     - Path: alerts

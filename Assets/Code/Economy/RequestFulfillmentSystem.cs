@@ -7,6 +7,7 @@ using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Advisor;
+using Zavala.Audio;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -70,6 +71,8 @@ namespace Zavala.Economy {
                             request.Fulfiller.TargetTileIndex = request.ProxyIdx;
                             request.Fulfiller.TargetWorldPos = SimWorldUtility.GetTileCenter(ZavalaGame.SimGrid.HexSize.FastIndexToPos(request.ProxyIdx));
                         }
+
+                        SfxUtility.PlaySfx3d("truck-leave", null, request.Fulfiller.transform.position);
 
                         marketData.ActiveRequests.PushBack(request);
                     }
