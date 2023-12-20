@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8274710210108649578}
   - component: {fileID: 8571083980977752943}
   - component: {fileID: 2719164954211423765}
+  - component: {fileID: 5262403372021802370}
   m_Layer: 7
   m_Name: Let It Sit Option
   m_TagString: Untagged
@@ -73,9 +74,7 @@ MonoBehaviour:
   InfiniteRequests: 1
   OverridesBuyPrice: 0
   OverrideBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
+    Phosphorus: 0
     Grain: 0
     Milk: 0
   Flagstaff: {fileID: 0}
@@ -121,6 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Amount: 1
   AmountProducedLastTick: 0
+  RunoffParticleOrigin: {fileID: 3341510548927435195}
 --- !u!114 &5602663514362957504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,6 +194,30 @@ MonoBehaviour:
     m_Source: 
     m_HashValue: 0
   EventDisplayOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &5262403372021802370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845473704882985891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuyPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  SellPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  PriceStep: 1
+  AcceptsAnyPrice: 0
+  FixedSellOffer: 0
+  FixedBuyOffer: 0
 --- !u!1 &7291294420475072060
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +236,7 @@ GameObject:
   - component: {fileID: 7291294420475072054}
   - component: {fileID: 6065373712702326176}
   - component: {fileID: 5890811373593064956}
+  - component: {fileID: 4321501763131140057}
   m_Layer: 7
   m_Name: DairyFarm_Urban
   m_TagString: Untagged
@@ -326,9 +351,7 @@ MonoBehaviour:
   InfiniteRequests: 0
   OverridesBuyPrice: 0
   OverrideBlock:
-    Manure: 0
-    MFertilizer: 0
-    DFertilizer: 0
+    Phosphorus: 0
     Grain: 0
     Milk: 0
   Flagstaff: {fileID: 0}
@@ -409,6 +432,30 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4321501763131140057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54301b54a3fce8f488e79466f066ea42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuyPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  SellPriceBlock:
+    Phosphorus: 0
+    Grain: 0
+    Milk: 0
+  PriceStep: 1
+  AcceptsAnyPrice: 0
+  FixedSellOffer: 0
+  FixedBuyOffer: 0
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -663,6 +710,11 @@ MonoBehaviour:
 --- !u!4 &2901883796794500864 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3479562866714169711, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
+  m_PrefabInstance: {fileID: 1732878763265799791}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3341510548927435195 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3914474898533967828, guid: 6cf04302bce496d4499ca3b4e1c69aa2, type: 3}
   m_PrefabInstance: {fileID: 1732878763265799791}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3791912493847872308

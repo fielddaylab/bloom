@@ -33,6 +33,9 @@ namespace Zavala.Rendering {
                 case EffectType.Poof_Road: {
                     return m_State.DefaultPoofRoadCount;
                 }
+                case EffectType.Poop_Runoff: {
+                        return m_State.DefaultPoopRunoffCount;
+                }
                 default: {
                     Log.Warn("[EffectPlaybackSystem] No effects loaded for type '{0}'", type);
                     return 0;
@@ -47,6 +50,9 @@ namespace Zavala.Rendering {
                 }
                 case EffectType.Poof_Road: {
                     return m_State.PoofEffectRoads;
+                }
+                case EffectType.Poop_Runoff: {
+                    return m_State.PoopRunoff;
                 }
                 default: {
                     Log.Warn("[EffectPlaybackSystem] No effects loaded for type '{0}'", type);

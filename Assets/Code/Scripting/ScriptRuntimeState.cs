@@ -155,7 +155,7 @@ namespace FieldDay.Scripting {
             Runtime.Plugin.ConfigureDisplay(Runtime.DefaultDialogue, Runtime.DefaultDialogue);
         }
 
-        static public void AutoOpenPolicy(PolicyType type) {
+        static public void AutoOpenPolicyCards(PolicyType type) {
             DialogueBox box = Game.SharedState.Get<ScriptRuntimeState>().DefaultDialogue;
             box.CardsToShow = type;
             box.ShowHand = true;

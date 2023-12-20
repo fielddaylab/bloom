@@ -64,8 +64,7 @@ namespace Zavala.UI {
 
         private void OnPauseUpdated(SimPauseFlags flags) {
             bool blueprints = (flags & SimPauseFlags.Blueprints) != 0;
-            AlertBase.SetAlpha(blueprints ? 0.1f : 1f);
-            Pointer.enabled = !blueprints;
+            UIAlertUtility.SetAlertFaded(this, blueprints);
         }
 
         private void HandleButtonClicked(PointerEventData evt) {
@@ -92,11 +91,20 @@ namespace Zavala.UI {
             //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
         }
 
+        public static void SetAlertFaded(UIAlert alert, bool faded) {
+            if (alert == null) {
+                return;
+            }
+            alert.Pointer.enabled = !faded;
+            alert.AlertBase.SetAlpha(faded ? 0.1f : 1.0f);
+        }
+
         public static void ClearAlert(UIAlert alert) {
             if (alert == null) {
                 Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
 ;                return; 
             }
+            alert.AlertBase.SetAlpha(1.0f);
             alert.BannerRoutine.Replace(CloseRoutine(alert, true));
         }
 
@@ -119,7 +127,7 @@ namespace Zavala.UI {
             alert.FullyOpened = true;
             alert.Masking.SetState(false);
             alert.BannerRoutine.Replace(HoldRoutine(alert, 5.0f));
-            // ClickAlert(alert);
+            ClickAlert(alert);
             yield return null;
         }
 

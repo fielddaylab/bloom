@@ -72,7 +72,7 @@ $call FocusHighlightOn("BuildModeButton")
 {@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.
 $call FocusClear()
 {@advisorEcolForest}    Once connected to a dairy farm, they'll hold onto manure for later use.
-{@advisorEcolForest}    But it won't be cheap - try to share it between s.
+{@advisorEcolForest}    But it won't be cheap - try to share it between farms.
 $call OffsetAlgaeGrowthThreshold(-1)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
@@ -103,7 +103,6 @@ $call ForcePolicyInstant("Ecology")
 @once
 $set global:importUnlocked = true
 {@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
-$call PanToBuilding("region3_city1")
 // $call Pause()
 {@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many dairy farms.
 {@advisorEcolPrairie}   But we've got plenty of <b>grain</b> over in Heath County! Maybe we could help each other?
