@@ -42,9 +42,16 @@ namespace Zavala.UI.Info {
         [SerializeField] private LayoutGroup m_Layout;
         [SerializeField] private RectTransform m_LayoutTransform;
 
+        [Space(5)]
         [SerializeField] private Sprite m_PoorWaterSprite;
         [SerializeField] private Sprite m_FairWaterSprite;
         [SerializeField] private Sprite m_GreatWaterSprite;
+
+        [Space(5)]
+        [SerializeField] private Sprite m_TollCapture;
+        [SerializeField] private Sprite m_StorageCapture;
+        [SerializeField] private Sprite m_DigesterCapture;
+        [SerializeField] private Sprite m_DepotCapture;
 
         [Header("Header")]
         [SerializeField] private Graphic m_HeaderBG;
@@ -66,6 +73,7 @@ namespace Zavala.UI.Info {
 
         [SerializeField] private GameObject m_DescriptionGroup;
         [SerializeField] private TMP_Text m_DescriptionText;
+        [SerializeField] private Image m_DescriptionImage;
 
         [SerializeField] private InfoPopupStorageCapacity m_StorageGroup;
 
@@ -177,6 +185,7 @@ namespace Zavala.UI.Info {
                     m_HeaderBG.color = DigesterColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
+                    m_DescriptionImage.sprite = m_DigesterCapture;
                     break;
                 }
 
@@ -188,6 +197,7 @@ namespace Zavala.UI.Info {
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
                     m_StorageGroup.gameObject.SetActive(true);
+                    m_DescriptionImage.sprite = m_StorageCapture;
                     break;
                 }
 
@@ -197,6 +207,7 @@ namespace Zavala.UI.Info {
                     m_HeaderBG.color = TollColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
+                    m_DescriptionImage.sprite = m_TollCapture;
                     break;
                 }
 
@@ -207,6 +218,7 @@ namespace Zavala.UI.Info {
                     m_HeaderBG.color = DepotColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
+                    m_DescriptionImage.sprite = m_DepotCapture;
                     break;
                 }
             }

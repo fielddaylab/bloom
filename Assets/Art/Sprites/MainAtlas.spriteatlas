@@ -56,6 +56,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3ded4490e0801e04595585b7729c692c, type: 3}
   - {fileID: 21300000, guid: 71e8b7a1d6ae34847875b1f5bb100f6b, type: 3}
   - {fileID: 21300000, guid: 485233e1e34500c419e4648865a72492, type: 3}
+  - {fileID: 21300000, guid: 66b8c5f1f4445a94faf44f5a77203956, type: 3}
   - {fileID: 21300000, guid: bae214028ce35f74fb50e3c2ac6e846e, type: 3}
   - {fileID: 21300000, guid: dea60d421ed042e44975dd415d966bbe, type: 3}
   - {fileID: 21300000, guid: 628a196241e4e004aa8706fab08d657e, type: 3}
@@ -67,6 +68,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: df037504ebfeed743b9e4e85e1449a30, type: 3}
   - {fileID: 21300000, guid: 57a996141414f1543822837147d4bf12, type: 3}
   - {fileID: 21300000, guid: 4e403914c71570a4297712e0dbaa3886, type: 3}
+  - {fileID: 21300000, guid: 1eab422451ce05d4399be013e243bec2, type: 3}
   - {fileID: 21300000, guid: 42f2aa24953b643469146dddc1b95237, type: 3}
   - {fileID: 21300000, guid: a1879e24680c1ba48a492b6cee354375, type: 3}
   - {fileID: 21300000, guid: 08913f24993ad8c44a614a3b70ef019b, type: 3}
@@ -98,6 +100,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 99002e29e1c7b3b42941c13ae3f483b2, type: 3}
   - {fileID: 21300000, guid: 45758679d1b51544babfafc4917155aa, type: 3}
   - {fileID: 21300000, guid: 9bf425f96313f7f42800358c69e6fba2, type: 3}
+  - {fileID: 21300000, guid: 0aec0a1a0ea208148a42178f3d051762, type: 3}
   - {fileID: 21300000, guid: 857ec83a58cf6e347bcbe1606be60479, type: 3}
   - {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
   - {fileID: 21300000, guid: a4e601cac11766d40b8c12bf68b1f94f, type: 3}
@@ -116,6 +119,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5eba4e9e389da764f8119e6c4b47bb76, type: 3}
   - {fileID: 21300000, guid: 24ba8fce21db8d846a69f995fb37c59b, type: 3}
   - {fileID: 21300000, guid: 54cfc3fe99abf0c4086d8577ee156cf5, type: 3}
+  - {fileID: 21300000, guid: 198b113fc46f2cd4287d013e53169f07, type: 3}
   - {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
   - {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
   - {fileID: 21300000, guid: 9bf9fa9f64255fa49a7107abaaa3bddb, type: 3}
@@ -126,6 +130,7 @@ SpriteAtlas:
   - MarketLensIcon
   - base_selling-loss
   - UndoIcon
+  - digester-popup
   - advisor-button_ecol
   - LensFill
   - advisor-button_econ
@@ -137,6 +142,7 @@ SpriteAtlas:
   - policy-background-white
   - BlueprintModeToggle
   - CircleGradient75-Invert
+  - toll-popup
   - DestroyIcon
   - CloseRound
   - BarGraphClamp
@@ -168,6 +174,7 @@ SpriteAtlas:
   - banner_unused-digester
   - PopulationIcon
   - card-slot-blank
+  - depot-popup
   - global_alert
   - card-slot-locked-white
   - policyicon_skim
@@ -186,6 +193,7 @@ SpriteAtlas:
   - BigDestroyBackground
   - dialog-arrow
   - PurchaseReceipt
+  - storage-popup
   - urgentflag_grain
   - resource_manure
   - storage-full
