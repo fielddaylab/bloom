@@ -11,11 +11,13 @@ using FieldDay.Debugging;
 
 namespace Zavala.Actors {
 
+    /*
     public enum OperationState {
         Low,
         Medium,
         High
     }
+    */
 
     /// <summary>
     ///  Defines a tile that can be subject to stress 
@@ -23,7 +25,7 @@ namespace Zavala.Actors {
     [DisallowMultipleComponent]
     // TODO: is this necessary?
     [RequireComponent(typeof(ResourcePurchaser))]
-    public sealed class StressableActor : BatchedComponent {
+    public sealed class StressableActor1 : BatchedComponent {
         [NonSerialized] public Dictionary<StringHash32, Action<int>> EventResponses = new Dictionary<StringHash32, Action<int>>(); // stores stress event IDs and stress response actions
         [NonSerialized] public Action StressCapAction; // action to run when this tile reaches its stress cap
         
@@ -44,7 +46,7 @@ namespace Zavala.Actors {
                 EventResponses.Add(SimAlgaeState.Event_AlgaeGrew, StressOnAdjacentEvent);
                 EventResponses.Add(ResourcePurchaser.Event_PurchaseMade, ResetStressOnSelfEvent);
                 StressCapAction = () => {
-                    rp.ChangeDemand(ResourceId.Milk, -1);
+                    // rp.ChangeDemand(ResourceId.Milk, -1);
                     ChangeOperationState(-1);
                 };
             }
@@ -67,7 +69,6 @@ namespace Zavala.Actors {
             if (dispatcherTileIndex == TileIndex) {
                 ResetStress();
                 ChangeOperationState(+1);
-
             }
         }
 

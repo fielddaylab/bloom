@@ -268,6 +268,9 @@ GameObject:
   - component: {fileID: 1730942203609106761}
   - component: {fileID: 2524356306151244216}
   - component: {fileID: 4321501763131140057}
+  - component: {fileID: 4762982661983815291}
+  - component: {fileID: 4506906798799843398}
+  - component: {fileID: 695890203303957643}
   m_Layer: 7
   m_Name: DairyFarm_Base
   m_TagString: Untagged
@@ -539,6 +542,48 @@ MonoBehaviour:
   AcceptsAnyPrice: 0
   FixedSellOffer: 0
   FixedBuyOffer: 0
+--- !u!114 &4762982661983815291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b2ef0c9f9c9044a9111a1679440f57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4506906798799843398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf20bb9fb9bdf4a4f8d8d9f855c63671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &695890203303957643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7291294420475072060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92b00db6c3a2f2344aa11245f033bd96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StressCap: 8
+  m_LowThreshold: 8
+  m_MediumThreshold: 4
+  m_HighThreshold: 0
+  StressDelta: 1
+  Position: {fileID: 0}
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -63,11 +63,15 @@ namespace Zavala.Economy
             MarketData marketData = m_StateA;
             TutorialState tutorial = Game.SharedState.Get<TutorialState>();
             BudgetData budget = Game.SharedState.Get<BudgetData>();
+            MarketConfig config = Game.SharedState.Get<MarketConfig>();
 
             foreach (var supplier in m_SupplierWorkList)
             {
                 // Take a snapshot before sells. Compare with post snapshot to see if a specific resource was sold
                 supplier.PreSaleSnapshot = MarketUtility.GetCompleteStorage(supplier);
+
+                // reset matched flag
+                supplier.MatchedThisTick = false;
 
                 // reset sold at a loss
                 supplier.SoldAtALoss = false;
@@ -83,6 +87,9 @@ namespace Zavala.Economy
             {
                 // reset matched flag
                 requester.MatchedThisTick = false;
+
+                // reset stress purchase
+                requester.PurchasedAtStressedPrice = false;
 
                 // reset priority indices for all resources
                 for (int i = 0; i < requester.BestPriorityIndex.Length; i++)
@@ -147,7 +154,7 @@ namespace Zavala.Economy
                             matchFound = true;
 
                             // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
-                            FinalizeSale(marketData, tutorial, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer);
+                            FinalizeSale(marketData, tutorial, config, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer, marketIndex);
                             m_RequestWorkList.Remove(supplierOffer.FoundRequest);
                             m_SupplierOfferWorkList.Remove(supplierOffer); // TODO: does this removal during iteration cause errors?
 
@@ -779,7 +786,7 @@ namespace Zavala.Economy
         /// <summary>
         /// Once a buyer/seller match is made, handles the resource changes, queues fulfillment, etc.
         /// </summary>
-        private void FinalizeSale(MarketData marketData, TutorialState tutorial, ResourceSupplier supplier, MarketRequestInfo? found, MarketSupplierOffer supplierOffer)
+        private void FinalizeSale(MarketData marketData, TutorialState tutorial, MarketConfig config, ResourceSupplier supplier, MarketRequestInfo? found, MarketSupplierOffer supplierOffer, int currMarketIndex)
         {
             ResourceBlock adjustedValueRequested = found.Value.Requested;
             MarketRequestInfo? adjustedFound = found;
@@ -871,7 +878,15 @@ namespace Zavala.Economy
             ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
             if (supplierOffer.BaseProfit - supplierOffer.RelativeGain < 0)
             {
-                supplier.SoldAtALoss = true;
+                if (!activeRequest.Requester.IsLocalOption)
+                {
+                    supplier.SoldAtALoss = true;
+                    supplier.MatchedThisTick = true;
+                }
+            }
+            if (supplierOffer.TotalCost >= config.StressedPurchaseThresholds[currMarketIndex])
+            {
+                activeRequest.Requester.PurchasedAtStressedPrice = true;
             }
 
             MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
@@ -887,13 +902,13 @@ namespace Zavala.Economy
                 for (int rIdx = 0; rIdx < (int)ResourceId.COUNT; rIdx++)
                 {
                     ResourceId resource = (ResourceId)rIdx;
-                    int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
+                    int memoryMarketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
                     if (activeRequest.Supplied[resource] != 0)
                     {
                         if (!activeRequest.Requester.IsLocalOption)
                         {
-                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, marketIndex, activeRequest.Requester.PriceNegotiator.BuyPriceBlock[marketIndex], !supplier.PriceNegotiator.FixedSellOffer);
-                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, marketIndex, supplier.PriceNegotiator.SellPriceBlock[marketIndex], !activeRequest.Requester.PriceNegotiator.FixedBuyOffer);
+                            PriceNegotiatorUtility.SaveLastPrice(activeRequest.Requester.PriceNegotiator, memoryMarketIndex, activeRequest.Requester.PriceNegotiator.BuyPriceBlock[memoryMarketIndex], !supplier.PriceNegotiator.FixedSellOffer);
+                            PriceNegotiatorUtility.SaveLastPrice(supplier.PriceNegotiator, memoryMarketIndex, supplier.PriceNegotiator.SellPriceBlock[memoryMarketIndex], !activeRequest.Requester.PriceNegotiator.FixedBuyOffer);
                         }
                     }
                 }

@@ -17,5 +17,11 @@ namespace Zavala.Actors {
 
             base.OnDisable();
         }
+
+        public void AdustTimer(int change)
+        {
+            if (Timer.Period + change <= 0) return;
+            Timer.Period += change;
+        }
     }
 }

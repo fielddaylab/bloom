@@ -32,7 +32,13 @@ namespace Zavala.Economy {
             if (PurchasePrice[resource] + change <= 0) return;
             PurchasePrice[resource] += change;
         }
-        public void ChangeDemand(ResourceId resource, int change) {
+        public void ChangeDemandTimer(ResourceId resource, int change)
+        {
+            ChangeRequestAmount(resource, change);
+            // ChangePurchasePrice(resource, change);
+            Log.Msg("[ResourcePurchaser] {0} demand changed by {1} for actor {2}", resource, change, transform.name);
+        }
+        public void ChangeDemandAmount(ResourceId resource, int change) {
             ChangeRequestAmount(resource, change);
             // ChangePurchasePrice(resource, change);
             Log.Msg("[ResourcePurchaser] {0} demand changed by {1} for actor {2}", resource, change, transform.name);

@@ -11,21 +11,21 @@ namespace Zavala.Economy {
         public TransportCosts TransportCosts;
 
         [Header("Per-Region")]
-        public PurchaseCosts TemplateCosts = new PurchaseCosts(); // Used for setting multiple defaults at once
         public MarketPurchaseCosts TemplateMarketCosts = new MarketPurchaseCosts(); // Used for setting multiple defaults at once
-        // starting point for individual prices
-        public PurchaseCosts[] DefaultPurchasePerRegion = new PurchaseCosts[RegionInfo.MaxRegions];
         // starting point for individual prices
         public MarketPurchaseCosts[] DefaultMarketPurchasePerRegion = new MarketPurchaseCosts[RegionInfo.MaxRegions];
         [NonSerialized]
         public PurchaseCostAdjustments[] UserAdjustmentsPerRegion = new PurchaseCostAdjustments[RegionInfo.MaxRegions];
+
+        public MarketPriceBlock StressedPurchaseThresholds; // prices over which a requester will get stressed
+
 
 #if UNITY_EDITOR
 
         [ContextMenu("Apply To All Region Buy Fields")]
         private void ApplyAllBuys()
         {
-            for (int i = 0; i < DefaultPurchasePerRegion.Length; i++)
+            for (int i = 0; i < DefaultMarketPurchasePerRegion.Length; i++)
             {
                 DefaultMarketPurchasePerRegion[i].Buy = TemplateMarketCosts.Buy;
             }
@@ -34,7 +34,7 @@ namespace Zavala.Economy {
         [ContextMenu("Apply To All Region Sell Fields")]
         private void ApplyAllSells()
         {
-            for (int i = 0; i < DefaultPurchasePerRegion.Length; i++)
+            for (int i = 0; i < DefaultMarketPurchasePerRegion.Length; i++)
             {
                 DefaultMarketPurchasePerRegion[i].Sell = TemplateMarketCosts.Sell;
             }

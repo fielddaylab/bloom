@@ -26,6 +26,7 @@ namespace Zavala.Economy {
         [NonSerialized] public MarketRequesterPriorityList Priorities;
         [NonSerialized] public int[] BestPriorityIndex;
         [NonSerialized] public bool MatchedThisTick;
+        [NonSerialized] public bool PurchasedAtStressedPrice;
 
         [NonSerialized] public ResourceBlock Requested;
         [NonSerialized] public int RequestCount;

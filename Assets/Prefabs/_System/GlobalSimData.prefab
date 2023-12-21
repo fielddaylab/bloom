@@ -183,230 +183,100 @@ MonoBehaviour:
       DFertilizer: 5
       Grain: 0
       Milk: 0
-  TemplateCosts:
-    Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
   TemplateMarketCosts:
     Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
-  DefaultPurchasePerRegion:
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-  - Buy:
-      Manure: 10
-      MFertilizer: 35
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
-    Sell:
-      Manure: 10
-      MFertilizer: 15
-      DFertilizer: 15
-      Grain: 20
-      Milk: 20
+      Milk: 40
   DefaultMarketPurchasePerRegion:
   - Buy:
-      Phosphorus: 30
+      Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
   - Buy:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
     Sell:
       Phosphorus: 10
       Grain: 20
-      Milk: 20
+      Milk: 40
+  StressedPurchaseThresholds:
+    Phosphorus: 30
+    Grain: 40
+    Milk: 0
 --- !u!114 &7708306960153739432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1064,6 +934,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d23c001c265cd4f92bfe8232f78e07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Loop: {fileID: 0}
   SceneOnFail:
     m_ScenePath: Assets/Scenes/TitleScreen.unity
     m_GUID: 3a1ab0f762ee5684cb6a80d40c4c4dc9
