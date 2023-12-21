@@ -20,53 +20,54 @@ Runoff Fine
 None
 
 :: RunoffPolicy.none.hint
-None Hint
+
+With <i>no</i> <b>runnoff fine</b>, Dairy Farms will only sell manure if they earn a profit. 
 
 :: RunoffPolicy.low
 Low
 
 :: RunoffPolicy.low.hint
-Low Hint
+Dairy Farms will receive a <i>low</i> <b>runoff fine</b> of $8 for every unit of manure they let sit on their farm. This fine encourages them to sell manure.
 
 :: RunoffPolicy.high
 High
 
 :: RunoffPolicy.high.hint
-High Hint
+Dairy Farms will receive a <i>high</i> <b>runoff fine</b> of $16 for every unit of manure they let sit on their farm. This fine encourages them to sell manure.
 
 :: RunoffPolicy.alt
 Very High
 
 :: RunoffPolicy.alt.hint
-Very High Hint
+With a <i>very high</i> <b>runoff fine</b>, Dairy Farms will always try to sell manure, even if it loses money. 
 
 // SKIMMING
 :: SkimmingPolicy.category
-Skimming Level
+Lake Cleanup
 
 :: SkimmingPolicy.none
 None
 
 :: SkimmingPolicy.none.hint
-None Hint
+With <i>no</i> <b>lake cleanup policy</b>, you aren't doing anything to remove algae from the lakes. 
 
 :: SkimmingPolicy.low
-Low
+Low Skimming
 
 :: SkimmingPolicy.low.hint
-Low Hint
+A <i>low</i> <b>lake cleanup policy</b> will clear algae from 1 water area for a recurring $1 cost. The phosphorus is not being removed, just the algae blooms. 
 
 :: SkimmingPolicy.high
-High
+High Skimming
 
 :: SkimmingPolicy.high.hint
-High Hint
+A <i>high</i> <b>lake cleanup policy</b> will clear algae from 2 water areas for a recurring $2 cost. The phosphorus is not being removed, just the algae blooms. 
 
 :: SkimmingPolicy.alt
-Dredge
+Skim & Dredge
 
 :: SkimmingPolicy.alt.hint
-Dredge Hint
+<b>Dredging</b> will clear phosphorus and algae from 3 water areas for a recurring $4 cost. This removes <i>some</i> of the phosphorus.
 
 // IMPORT
 :: ImportTaxPolicy.category
@@ -76,19 +77,20 @@ Import Policy
 None
 
 :: ImportTaxPolicy.none.hint
-Import None Hint
+With <i>no</i> <b>import policy</b>, you aren't doing anything to encourage trade between regions. 
 
 :: ImportTaxPolicy.low
 Low Subsidy
 
 :: ImportTaxPolicy.low.hint
-Import Low Subsidy Hint
-
+A <i>low</i> <b>import subsidy</b> will encourage this county to buy resources they are lacking from other counties for a cost of $4 per purchase. It cost farmers more to transport goods from further away because shipping costs are greater over longer distances.
 :: ImportTaxPolicy.high
 High Subsidy
 
 :: ImportTaxPolicy.high.hint
 Import High Subsidy Hint
+A <i>high</i> <b>import subsidy</b> will encourage locals to buy resources they are lacking from other counties for a cost of $8 per purchase. It cost farmers more to transport goods from further away because shipping costs are greater over longer distances.
+
 
 :: ImportTaxPolicy.alt
 Tax
@@ -104,22 +106,22 @@ Sales Policy
 None
 
 :: SalesTaxPolicy.none.hint
-Sales None hint
+Even without sales tax, you'll gain $5 for every milk shipment the city consumes.
 
 :: SalesTaxPolicy.low
 Low Tax
 
 :: SalesTaxPolicy.low.hint
-Sales Low Tax Hint
+With low sales tax, you'll gain $2 with every purchase on top of city revenue.
 
 :: SalesTaxPolicy.high
 High Tax
 
 :: SalesTaxPolicy.high.hint
-Sales High Tax Hint
+With high sales tax, you'll gain $4 with every purchase on top of city revenue.
 
 :: SalesTaxPolicy.alt
 Subsidy
 
 :: SalesTaxPolicy.alt.hint
-Sales Subsidy Hint
+The subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourages buyers by lowering their costs.

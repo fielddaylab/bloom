@@ -71,21 +71,21 @@ MonoBehaviour:
     - Id: cards.RunoffPolicy.alt.hint
       Content: Very High Hint
     - Id: cards.SkimmingPolicy.category
-      Content: Skimming Level
+      Content: Lake Cleanup
     - Id: cards.SkimmingPolicy.none
       Content: None
     - Id: cards.SkimmingPolicy.none.hint
       Content: None Hint
     - Id: cards.SkimmingPolicy.low
-      Content: Low
+      Content: Low Skimming
     - Id: cards.SkimmingPolicy.low.hint
       Content: Low Hint
     - Id: cards.SkimmingPolicy.high
-      Content: High
+      Content: High Skimming
     - Id: cards.SkimmingPolicy.high.hint
       Content: High Hint
     - Id: cards.SkimmingPolicy.alt
-      Content: Dredge
+      Content: Skim & Dredge
     - Id: cards.SkimmingPolicy.alt.hint
       Content: Dredge Hint
     - Id: cards.ImportTaxPolicy.category

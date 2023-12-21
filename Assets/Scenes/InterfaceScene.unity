@@ -3233,18 +3233,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1854820554859452804, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
-      propertyPath: m_TBDefault.b
-      value: 0.6627451
-      objectReference: {fileID: 0}
-    - target: {fileID: 1854820554859452804, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
-      propertyPath: m_TBDefault.g
-      value: 0.8745099
-      objectReference: {fileID: 0}
-    - target: {fileID: 1854820554859452804, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
-      propertyPath: m_TBDefault.r
-      value: 0.90196085
-      objectReference: {fileID: 0}
-    - target: {fileID: 1854820554859452804, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
       propertyPath: m_DestroyOverlay
       value: 
       objectReference: {fileID: 0}
@@ -3562,7 +3550,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7253732121223325057, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -14.9999695
+      value: -15.0000305
       objectReference: {fileID: 0}
     - target: {fileID: 7253732121738218049, guid: e031c5e9a9266d1429d8cb13b75b37ea, type: 3}
       propertyPath: m_IsActive
