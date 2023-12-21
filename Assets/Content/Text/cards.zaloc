@@ -43,7 +43,7 @@ With a <i>very high</i> <b>runoff fine</b>, Dairy Farms will always try to sell 
 
 // SKIMMING
 :: SkimmingPolicy.category
-Skimming Level
+Lake Cleanup
 
 :: SkimmingPolicy.none
 None
@@ -52,19 +52,19 @@ None
 With <i>no</i> <b>lake cleanup policy</b>, you aren't doing anything to remove algae from the lakes. 
 
 :: SkimmingPolicy.low
-Low
+Low Skimming
 
 :: SkimmingPolicy.low.hint
 A <i>low</i> <b>lake cleanup policy</b> will clear algae from 1 water area for a recurring $1 cost. The phosphorus is not being removed, just the algae blooms. 
 
 :: SkimmingPolicy.high
-High
+High Skimming
 
 :: SkimmingPolicy.high.hint
 A <i>high</i> <b>lake cleanup policy</b> will clear algae from 2 water areas for a recurring $2 cost. The phosphorus is not being removed, just the algae blooms. 
 
 :: SkimmingPolicy.alt
-Dredge
+Skim & Dredge
 
 :: SkimmingPolicy.alt.hint
 <b>Dredging</b> will clear phosphorus and algae from 3 water areas for a recurring $4 cost. This removes <i>some</i> of the phosphorus.

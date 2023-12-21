@@ -3141,7 +3141,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: a4e601cac11766d40b8c12bf68b1f94f, type: 3}
     - target: {fileID: 5399932216319823800, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_text
-      value: Skimming Level
+      value: Lake Cleanup Policy
       objectReference: {fileID: 0}
     - target: {fileID: 6812766340987576988, guid: bd1184edd213fac48b7e5509900bab79, type: 3}
       propertyPath: m_DefaultText.m_Source

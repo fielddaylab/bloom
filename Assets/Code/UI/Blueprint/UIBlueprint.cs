@@ -108,7 +108,7 @@ namespace Zavala.UI
             policies.PolicyCardSelected.Register(HandlePolicyCardSelected);
 
             UpdatePolicyBoxTexts();
-
+            HandleRegionSwitched();
             m_BuildButton.gameObject.SetActive(false);
         }
 
@@ -137,6 +137,11 @@ namespace Zavala.UI
 
             // Update funds remaining
             m_FundsRemainingText.text = "" + (playerFunds - totalCost);
+        }
+
+        public void UpdateDefaultColor(int newRegion) {
+            m_TBDefault = m_TBColorPerRegion[newRegion];
+            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
         }
 
         #region UI Handlers
@@ -172,7 +177,9 @@ namespace Zavala.UI
 
         private void HandleRegionSwitched()
         {
-            UpdatePolicyBoxTexts();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            UpdateDefaultColor(grid.CurrRegionIndex);
+            UpdatePolicyBoxTexts(grid);
         }
 
         private void HandleBuildConfirmButtonClicked()
@@ -503,10 +510,12 @@ namespace Zavala.UI
             m_DestroyCommandLayout.blocksRaycasts = canInteract;
         }
 
-        private void UpdatePolicyBoxTexts()
+        private void UpdatePolicyBoxTexts(SimGridState grid = null)
         {
             PolicyState policies = Game.SharedState.Get<PolicyState>();
-            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            if (grid == null) {
+                grid = Game.SharedState.Get<SimGridState>();
+            } 
 
             foreach (var box in m_PolicyBoxes)
             {
