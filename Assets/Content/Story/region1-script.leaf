@@ -50,10 +50,10 @@ $call Unpause()
 @conditions     intro:tutorialComplete = false
 @cutscene
 @once
-{@advisorEconHill}      Select your <i>Road</i> tool. 
-{@advisorEcolHill}      You can't build over any of our protected forests or deep water.
 {@advisorEconHill}      Each road segment costs $5. 
-{@advisorEconHill}      Now CLICK and DRAG from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
+{@advisorEconHill}      You will see a running total of your costs as you build.
+{@advisorEcolHill}      You can't build over any of our protected forests or deep water.
+{@advisorEconHill}      Select your <i>Road</i> tool and build a road between the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
 $call ShowAnimatedTutorial("ClickDragTutorial")
 
 
@@ -77,8 +77,7 @@ $if intro:citiesConnected
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect city and dairy
-    {@advisorEconHill}      The <b>receipt</b> keeps a running total of your costs.
-    // {@advisorEconHill}      Now the Grain Farm can buy <i>manure</i> from the Dairy Farm.
+    // {@advisorEconHill}   Now the Grain Farm can buy <i>manure</i> from the Dairy Farm.
     {@advisorEconHill}      Now Bertram can buy Henreitta's <i>grain</i> for his cows...
     {@advisorEconHill}      and the fine people of Pendleton Hills buy the <i>milk</i>.
     $if !intro:citiesConnected 
@@ -98,7 +97,7 @@ $set intro:citiesConnected = true
 $if intro:farmsConnected
     $call HideAnimatedTutorial()
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Excellent! Now the the City has a source of <i>milk</i>!
+    {@advisorEconHill}      Excellent! The the City has a source of <i>milk</i>!
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
@@ -116,7 +115,7 @@ $endif
 @cutscene
 $set intro:farmsAndCities = true
 $call HideAnimatedTutorial()
-{@advisorEconHill}      Now everything is connected.
+{@advisorEconHill}      Everything in the county is connected.
 {@advisorEconHill}      The city income taxes give SAGA a budget. 
 {@advisorEconHill}      But SAGA may need more funding.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
