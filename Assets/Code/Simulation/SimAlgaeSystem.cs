@@ -43,7 +43,7 @@ namespace Zavala.Sim {
                     }
                     // increment by step
                     if (algaeGrowth < 1) {
-                        algaeGrowth += AlgaeSim.AlgaeGrowthIncrement;
+                        ChangeCurrentAlgae(ref algaeGrowth, AlgaeSim.AlgaeGrowthIncrement, tile);
                     }
                 }
 
@@ -52,8 +52,21 @@ namespace Zavala.Sim {
 
                 m_StateA.Algae.BloomedTiles.RemoveWhere(
                     tile => !m_StateA.Algae.GrowingTiles.Contains(tile) 
-                    && (m_StateA.Algae.State[tile].PercentAlgae -= AlgaeSim.AlgaeGrowthIncrement) <= 0);
+                    && ChangeCurrentAlgae(ref m_StateA.Algae.State[tile].PercentAlgae, -AlgaeSim.AlgaeGrowthIncrement, tile) <= 0);
             }
+        }
+
+
+        private float ChangeCurrentAlgae(ref float current, float delta, int tileIndex) {
+            if (current + delta > 1) {
+                delta = 1 - current;
+            } else if (current + delta < 0) { //
+                delta = -current;
+            }
+            current += delta;
+            int region = m_StateC.Terrain.Info[tileIndex].RegionIndex;
+            SimAlgaeUtility.RecordAlgaeToRegionTotal(m_StateA, region, delta);
+            return current;
         }
 
         private void DispatchGrowthEvent (float currentGrowth, int tileIndex, ref AlgaeBuffers algaeBuffers) {

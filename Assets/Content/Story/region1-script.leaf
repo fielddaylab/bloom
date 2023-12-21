@@ -189,13 +189,16 @@ $elseif local:policyType == "ImportTaxPolicy"
     {local @advisorEcon}    The import subsidy here is costing too much. The county is broke. 
 $endif
 {local @advisorEcon}    I must set it to none for now.
-{local @advisorEcon}    If you implement a tax so we can get some money.
+{local @advisorEcon}    I recommend you implement a tax so we can get some funding.
 
 :: choseFirstPolicy
 // @cutscene
 $set intro:tutorialComplete = true
 {@advisorEconHill}  A fine choice. 
 {@advisorEconHill}  Let's get this economy started, shall we?
+$call PauseUser()
+{@advisorEconHill}  Use the <b>spacebar</b> to toggle pause.
+$call ShowAnimatedTutorial("PauseTutorial")
 $call OffsetAlgaeGrowthThreshold(-2)
 $call ActivateSim()
 
@@ -461,3 +464,21 @@ $endif
 {viewpoliciesnext}
 {local @advisorEcon}    Perhaps you can build a shorter road, or lower taxes and penalties.
 // $call Unpause()
+
+
+:: GameFailed
+@trigger        GameFailed
+@cutscene
+$if FailureIsEnabled()
+{local @advisorEcon}    You failed :C
+{local @advisorEcon}      {$local:failureType} in region {$local:regionIndex}
+$call CutsceneBegin()
+	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
+	$call CutsceneAllImages(0.5)
+	Your efforts were not enough. You have been replaced as SAGA director. Perhaps your replacement will fare better...
+    Proper shutdown is not implemented. Reload the page to start again.
+    $call EndGame()
+$else
+{@advisorEconUrban}      Heh heh, you would've failed here, but failure was disabled. Right on.
+{@advisorEconUrban}      {$local:failureType} in region {$local:regionIndex}
+$endif

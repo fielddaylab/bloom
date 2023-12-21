@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Building;
 using Zavala.Sim;
+using Zavala.UI.Tutorial;
 
 namespace Zavala {
     public class PauseFader : MonoBehaviour {
@@ -91,6 +92,7 @@ namespace Zavala {
                     m_BorderState = false;
                     m_BorderColorRoutine.Stop();
                     m_BorderFadeRoutine.Replace(this, FadeOut(m_BorderFader, m_FadeTime));
+                    TutorialState.HidePanel();
                 }
             } else {
                 Color c;

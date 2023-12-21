@@ -6,6 +6,7 @@ using FieldDay.Systems;
 using Leaf.Runtime;
 using System;
 using UnityEngine;
+using Zavala.Data;
 
 namespace Zavala.Sim {
     public sealed class SimAlgaeState : SharedStateComponent, IRegistrationCallbacks {
@@ -17,23 +18,38 @@ namespace Zavala.Sim {
         [NonSerialized] public AlgaeBuffers Algae;
         // public GameObject AlgaePrefab;
 
+        [Header("Per-Region")]
+        [NonSerialized] public float[] TotalAlgaePerRegion;
+
         void IRegistrationCallbacks.OnDeregister() {
         }
 
         void IRegistrationCallbacks.OnRegister() {
             CurrentMinPForAlgaeGrowth = AlgaeSim.MinPForAlgaeGrowthDefault;
             SimGridState gridState = ZavalaGame.SimGrid;
+            TotalAlgaePerRegion = new float[RegionInfo.MaxRegions];
             Algae.Create(gridState.HexSize);
         }
     }
     public class SimAlgaeUtility {
+        static public float AddAlgaeToTile(SimAlgaeState algaeState, int tileIndex, float delta) {
+            ref float current = ref algaeState.Algae.State[tileIndex].PercentAlgae;
+            if (current + delta > 1) {
+                delta = 1 - current;
+            } else if (current + delta < 0) { //
+                delta = -current;
+            }
+            current += delta;
+            int region = Game.SharedState.Get<SimGridState>().Terrain.Info[tileIndex].RegionIndex;
+            RecordAlgaeToRegionTotal(algaeState, region, delta);
+            return delta;
+        }
         static public float RemoveAlgae(SimAlgaeState algaeState, int tileIndex, float amount) {
-            Assert.True(amount >= 0);
-            ref float percentAlgae = ref algaeState.Algae.State[tileIndex].PercentAlgae;
-            amount = Math.Min(amount, percentAlgae);
-            percentAlgae -= amount;
+            return AddAlgaeToTile(algaeState, tileIndex, -amount);
+        }
 
-            return amount;
+        static public void RecordAlgaeToRegionTotal(SimAlgaeState state, int regionIndex, float amt) {
+            state.TotalAlgaePerRegion[regionIndex] += amt;
         }
 
         [LeafMember("SetAlgaeGrowthThreshold")]

@@ -7,6 +7,7 @@ using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Zavala.Data;
 using Zavala.Roads;
+using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.UI;
 
@@ -542,6 +543,7 @@ namespace Zavala.Economy
                         if (dairyFarmSupplier && grainFarmRequester && difTiles)
                         {
                             ScriptUtility.Trigger(GameTriggers.FarmConnection);
+                            Game.SharedState.Get<WinLossState>().FarmsConnectedInRegion[requester.Position.RegionIndex] = true;
                         }
                         if (dairyFarmSupplier && cityRequester && difTiles)
                         {

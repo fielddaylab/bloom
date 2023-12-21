@@ -10,6 +10,13 @@ using Zavala.Sim;
 using FieldDay.Debugging;
 
 namespace Zavala.Actors {
+
+    public enum OperationState {
+        Low,
+        Medium,
+        High
+    }
+
     /// <summary>
     ///  Defines a tile that can be subject to stress 
     /// </summary>
@@ -24,6 +31,7 @@ namespace Zavala.Actors {
         // TODO: temporarily hardcoded
         public int StressCap = 8;
         [NonSerialized] public int CurrentStress;
+        [NonSerialized] public OperationState OperationState;
         [NonSerialized] public int TileIndex;
 
         private void Awake() {
@@ -37,10 +45,16 @@ namespace Zavala.Actors {
                 EventResponses.Add(ResourcePurchaser.Event_PurchaseMade, ResetStressOnSelfEvent);
                 StressCapAction = () => {
                     rp.ChangeDemand(ResourceId.Milk, -1);
+                    ChangeOperationState(-1);
                 };
             }
         }
 
+        private void ChangeOperationState(int delta) {
+            if (OperationState + delta <= OperationState.High && OperationState + delta >= OperationState.Low) {
+                OperationState += delta;
+            }
+        }
 
         // TODO: there may be a more expedient data structure for these Actions?
         private void StressOnSelfEvent(int dispatcherTileIndex) {
@@ -52,6 +66,8 @@ namespace Zavala.Actors {
         private void ResetStressOnSelfEvent(int dispatcherTileIndex) {
             if (dispatcherTileIndex == TileIndex) {
                 ResetStress();
+                ChangeOperationState(+1);
+
             }
         }
 

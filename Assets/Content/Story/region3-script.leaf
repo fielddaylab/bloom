@@ -59,6 +59,13 @@ $endif
 @trigger        RegionReachedAge
 @conditions     regionId == 3
 $call SendGlobalAlertForNode("region3_city1", region3.unlockPhosphorusView)
+$call AddRegionAgeDeltaTrigger(4, 15)
+
+:: queueUnlockMarketView
+@trigger        RegionReachedAge
+@conditions     regionId == 3, AdvisorModuleIsUnlocked("Ecology")
+$call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
+
 
 :: unlockPhosphorusView
 @cutscene
@@ -92,21 +99,12 @@ $call OffsetAlgaeGrowthThreshold(-1)
 // $call Unpause()
 
 :: unlockTradeGraphs
-@trigger        AdvisorOpened
-@conditions     advisorType == "Economy", !CameraInRegion(3), Visited("region3.unlockPhosphorusView")
-@forcePolicy    Economy
-@once
-{local @advisorEcon}    Here to set some economic poli--
-// $call Pause()
+@cutscene
+@queued
 {@advisorEconPrairie}   Howdy! Hope I'm not interrupting anything important.
-{local @advisorEcon}    Um... Go ahead.
-{@advisorEconPrairie}   Well, I was inspired by Winston's PIP system...
+{@advisorEconPrairie}   I was inspired by Winston's PIP system...
 {@advisorEconPrairie}   So I whipped up something of an economic equivalent!
 $call UnlockAdvisorModule("Economy")
-{local @advisorEcon}    Finally!
-{local @advisorEcon}    ...not that I was jealous or anything.
 {@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph and a <b>Funding Target</b> bar chart.
 {@advisorEconPrairie}   Those should give you some targets for a healthy economy.
-{viewpoliciesnext}
-{local @advisorEcon}    Splendid....
 // $call Unpause()

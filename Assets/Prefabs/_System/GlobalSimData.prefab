@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 3560866004370143141}
   - component: {fileID: 6508540445729216726}
   - component: {fileID: 1896609051031572452}
+  - component: {fileID: 2724776597150088491}
   m_Layer: 0
   m_Name: GlobalSimData
   m_TagString: Untagged
@@ -1051,3 +1052,120 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212d5eba398cdd8438b04805712c4793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2724776597150088491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708306960153739425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7d23c001c265cd4f92bfe8232f78e07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SceneOnFail:
+    m_ScenePath: Assets/Scenes/TitleScreen.unity
+    m_GUID: 3a1ab0f762ee5684cb6a80d40c4c4dc9
+  IgnoreFailure: 0
+  FailureConditionsPerRegion:
+  - Region: 0
+    IndependentFailureConditions:
+    - Type: 0
+      BudgetBelow: 15
+      CheckFarmsUnconnected: 1
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 0
+    - Type: 1
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 10
+    - Type: 2
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 192
+      TotalAlgaeAbove: 12
+      CityFallingDurationAbove: 0
+  - Region: 1
+    IndependentFailureConditions:
+    - Type: 0
+      BudgetBelow: 20
+      CheckFarmsUnconnected: 1
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 0
+    - Type: 1
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 10
+    - Type: 2
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 384
+      TotalAlgaeAbove: 24
+      CityFallingDurationAbove: 0
+  - Region: 2
+    IndependentFailureConditions:
+    - Type: 0
+      BudgetBelow: 15
+      CheckFarmsUnconnected: 1
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 0
+    - Type: 1
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 10
+    - Type: 2
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 320
+      TotalAlgaeAbove: 20
+      CityFallingDurationAbove: 0
+  - Region: 3
+    IndependentFailureConditions:
+    - Type: 0
+      BudgetBelow: 20
+      CheckFarmsUnconnected: 1
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 0
+    - Type: 1
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 10
+    - Type: 2
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 560
+      TotalAlgaeAbove: 35
+      CityFallingDurationAbove: 0
+  - Region: 4
+    IndependentFailureConditions:
+    - Type: 0
+      BudgetBelow: 15
+      CheckFarmsUnconnected: 1
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 0
+    - Type: 1
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 10
+    - Type: 2
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 384
+      TotalAlgaeAbove: 24
+      CityFallingDurationAbove: 0
