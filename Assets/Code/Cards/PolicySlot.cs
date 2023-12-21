@@ -1,5 +1,6 @@
 using BeauRoutine;
 using FieldDay;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -20,8 +21,11 @@ namespace Zavala.Cards
 
         [SerializeField] private Image m_OverlayImage; // The locked/open slot image
         [SerializeField] private Graphic m_SlotBackground;
+        [SerializeField] private Sprite m_BlankSprite;
         [SerializeField] private Sprite m_LockedSprite;
         [SerializeField] private Sprite m_UnlockedSprite;
+
+        [SerializeField] private TMP_Text m_HintText;
 
         private Color32 m_LockedColor;
         private Color32 m_UnlockedColor;
@@ -29,6 +33,8 @@ namespace Zavala.Cards
 
         private Routine m_ChoiceRoutine;
         private List<CardUI> m_DisplayCards;
+
+        private CardData m_LastKnownCard;
 
         private enum HandState {
             Hidden,
@@ -56,6 +62,9 @@ namespace Zavala.Cards
         }
 
         public void PopulateSlot(PolicyType newType) {
+            m_LastKnownCard = new CardData();
+            m_LastKnownCard.IsValid = false;
+
             m_Type = newType;
 
             // If this slot type is unlocked, enable button / disable if not
@@ -78,6 +87,8 @@ namespace Zavala.Cards
                 m_Button.enabled = false;
                 m_Text.SetText("");
             }
+
+            m_HintText.gameObject.SetActive(false);
 
 
             // TODO: if we add possibility for no policy to be selected, implement check here
@@ -174,6 +185,9 @@ namespace Zavala.Cards
                     card.transform.SetAsFirstSibling();
                     m_DisplayCards.Add(card);
                     card.Button.onClick.AddListener(() => { OnCardClicked(policyState, data, card); });
+                    card.ClearHoverListeners();
+                    card.OnCardHover += OnCardHoverStart;
+                    card.OnCardHoverExit += OnCardHoverExit;
                 }
 
                 m_ChoiceRoutine.Replace(ShowHandRoutine());
@@ -219,9 +233,35 @@ namespace Zavala.Cards
             CardUIUtility.ExtractLocText(data, out string locText);
             // TODO: extract font effects
             m_OverlayImage.sprite = sprite;
-            m_OverlayImage.color = Color.white;
+            // m_OverlayImage.color = Color.white;
             m_Text.SetText(locText);
             m_OverlayImage.enabled = true;
+            m_LastKnownCard = data;
+        }
+
+        private void OnCardHoverStart(object sender, CardEventArgs args)
+        {
+            m_HintText.gameObject.SetActive(true);
+            m_OverlayImage.sprite = m_BlankSprite;
+
+            CardUIUtility.ExtractLocHintText(args.Data, out string locText);
+            m_HintText.SetText(locText);
+
+            CardUIUtility.ExtractLocText(args.Data, out locText);
+            m_Text.SetText(locText);
+        }
+
+        private void OnCardHoverExit(object sender, EventArgs args)
+        {
+            m_HintText.gameObject.SetActive(false);
+            m_OverlayImage.sprite = m_UnlockedSprite;
+
+            m_HintText.SetText("");
+
+            if (m_LastKnownCard.IsValid)
+            {
+                MirrorSelectedCard(m_LastKnownCard);
+            }
         }
 
         #region Routines
@@ -251,6 +291,10 @@ namespace Zavala.Cards
 
 
         private IEnumerator HideHandRoutine() {
+            m_HintText.gameObject.SetActive(false);
+            m_HintText.SetText("");
+            
+            // TODO: Hide hint text
             if (m_HandState == HandState.Hidden) {
                 yield break;
             }

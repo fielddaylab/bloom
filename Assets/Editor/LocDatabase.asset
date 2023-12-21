@@ -56,42 +56,74 @@ MonoBehaviour:
       Content: Runoff Fine
     - Id: cards.RunoffPolicy.none
       Content: None
+    - Id: cards.RunoffPolicy.none.hint
+      Content: None Hint
     - Id: cards.RunoffPolicy.low
       Content: Low
+    - Id: cards.RunoffPolicy.low.hint
+      Content: Low Hint
     - Id: cards.RunoffPolicy.high
       Content: High
+    - Id: cards.RunoffPolicy.high.hint
+      Content: High Hint
     - Id: cards.RunoffPolicy.alt
       Content: Very High
+    - Id: cards.RunoffPolicy.alt.hint
+      Content: Very High Hint
     - Id: cards.SkimmingPolicy.category
       Content: Skimming Level
     - Id: cards.SkimmingPolicy.none
       Content: None
+    - Id: cards.SkimmingPolicy.none.hint
+      Content: None Hint
     - Id: cards.SkimmingPolicy.low
       Content: Low
+    - Id: cards.SkimmingPolicy.low.hint
+      Content: Low Hint
     - Id: cards.SkimmingPolicy.high
       Content: High
+    - Id: cards.SkimmingPolicy.high.hint
+      Content: High Hint
     - Id: cards.SkimmingPolicy.alt
       Content: Dredge
+    - Id: cards.SkimmingPolicy.alt.hint
+      Content: Dredge Hint
     - Id: cards.ImportTaxPolicy.category
       Content: Import Policy
     - Id: cards.ImportTaxPolicy.none
       Content: None
+    - Id: cards.ImportTaxPolicy.none.hint
+      Content: Import None Hint
     - Id: cards.ImportTaxPolicy.low
       Content: Low Subsidy
+    - Id: cards.ImportTaxPolicy.low.hint
+      Content: Import Low Subsidy Hint
     - Id: cards.ImportTaxPolicy.high
       Content: High Subsidy
+    - Id: cards.ImportTaxPolicy.high.hint
+      Content: Import High Subsidy Hint
     - Id: cards.ImportTaxPolicy.alt
       Content: Tax
+    - Id: cards.ImportTaxPolicy.alt.hint
+      Content: Import Tax Hint
     - Id: cards.SalesTaxPolicy.category
       Content: Sales Policy
     - Id: cards.SalesTaxPolicy.none
       Content: None
+    - Id: cards.SalesTaxPolicy.none.hint
+      Content: Sales None hint
     - Id: cards.SalesTaxPolicy.low
       Content: Low Tax
+    - Id: cards.SalesTaxPolicy.low.hint
+      Content: Sales Low Tax Hint
     - Id: cards.SalesTaxPolicy.high
       Content: High Tax
+    - Id: cards.SalesTaxPolicy.high.hint
+      Content: Sales High Tax Hint
     - Id: cards.SalesTaxPolicy.alt
       Content: Subsidy
+    - Id: cards.SalesTaxPolicy.alt.hint
+      Content: Sales Subsidy Hint
     BasePath: cards
     AllBasePaths:
     - Path: cards
