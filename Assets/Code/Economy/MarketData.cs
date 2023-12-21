@@ -304,7 +304,8 @@ namespace Zavala.Economy
         static public void RegisterInifiniteProducer(ResourceProducer producer) {
             MarketData marketData = Game.SharedState.Get<MarketData>();
             Assert.NotNull(marketData);
-            QueueRequest(producer.Request, producer.Requires);
+            // QueueRequest(producer.Request, producer.Requires);
+            QueueMultipleSingleRequests(producer.Request, producer.Requires);
         }
 
         static public void DeregisterInfiniteProducer(ResourceProducer producer) {

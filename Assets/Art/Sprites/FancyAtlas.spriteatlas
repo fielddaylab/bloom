@@ -61,6 +61,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 901af485fc54e614ba9314e2d9d1181b, type: 3}
   - {fileID: 21300000, guid: 5f7487069363ed343a878e4a4a2023a2, type: 3}
   - {fileID: 21300000, guid: 479a03262c720c74b8ced10525243aef, type: 3}
+  - {fileID: 21300000, guid: 20e2c826d1d7eaf4fac6d0a44baccf7a, type: 3}
   - {fileID: 21300000, guid: 515091a6475be6c4c990770f321dea50, type: 3}
   - {fileID: 21300000, guid: 72672cd65ee38ca458430482179011bb, type: 3}
   - {fileID: 21300000, guid: b55285f6fa5d00e4eb593d7c062b15fc, type: 3}
@@ -88,7 +89,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
   - {fileID: 21300000, guid: 2fec7a1da840dee489f3d26206010190, type: 3}
   - {fileID: 21300000, guid: 7422652db3e2cd649b64fa5d423c0bd8, type: 3}
-  - {fileID: 21300000, guid: e568dc7dacd60d547a4ca781cecd3e19, type: 3}
   - {fileID: 21300000, guid: e2cc728d020e63644b360da35eebe4e4, type: 3}
   - {fileID: 21300000, guid: 614482ad74b34e74dae5a14482079394, type: 3}
   - {fileID: 21300000, guid: 49ab58adde7fc8e4abbfef3225a18e79, type: 3}
@@ -108,6 +108,7 @@ SpriteAtlas:
   - policy-sales_2
   - cafo_wetland
   - advisor-ecol_forest
+  - advisor-econ-wetland
   - advisor-ecol_wetland
   - policy-sales_0
   - policy-runoff_1
@@ -135,7 +136,6 @@ SpriteAtlas:
   - char-balthazar
   - grain_wetland
   - policy-runoff_2
-  - advisor-econ_wetland
   - policy-skim_0
   - advisor-econ_urban
   - policy-sales_3
