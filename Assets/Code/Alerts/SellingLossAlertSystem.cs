@@ -19,8 +19,12 @@ namespace Zavala.Sim
                 return;
             }
             // Check if a supplier sold at a loss
-            
-            if (supplier.SoldAtALoss) {
+
+            StressableActor stressable = supplier.GetComponent<StressableActor>();
+            if (!stressable) { return; }
+            if (!supplier.SoldAtALoss) { return; }
+            if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Medium])
+            {
                 // if so, create alert on this tile
                 bool sellsGrain = (supplier.ShippingMask & ResourceMask.Grain) != 0;
                 EventActorUtility.QueueAlert(actor, EventActorAlertType.SellingLoss, tile.TileIndex, tile.RegionIndex,

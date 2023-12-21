@@ -38,14 +38,21 @@ namespace Zavala.Actors {
         [SerializeField] private int m_MediumThreshold = 4;     // >=
         [SerializeField] private int m_HighThreshold = 0;       // >=
 
+        [SerializeField] private OperationState m_StartingState = OperationState.High;
+
+
         #endregion // Inspector
 
         [NonSerialized] public Dictionary<StressCategory, int> CurrentStress;
         [NonSerialized] public Dictionary<OperationState, int> OperationThresholds;
         [NonSerialized] public int TotalStress;
+        [NonSerialized] public float AvgStress;
         [NonSerialized] public OperationState OperationState;
         [NonSerialized] public bool ChangedOperationThisTick;
         [NonSerialized] public OperationState PrevState;
+
+        [NonSerialized] public Dictionary<StressCategory, bool> StressMask;
+        [NonSerialized] public int StressCount;
 
         public int StressDelta = 1; // value jumps between operation states
 
@@ -53,10 +60,37 @@ namespace Zavala.Actors {
 
         public void OnRegister()
         {
+            int startingStress = 0;
+            if (m_StartingState == OperationState.Medium)
+            {
+                startingStress = m_MediumThreshold;
+            }
+            else if (m_StartingState == OperationState.Low)
+            {
+                startingStress = m_HighThreshold;
+            }
+
+
+            int numStressCategories = 0;
+            bool bloomStress = this.GetComponent<BloomStressable>();
+            bool resourceStress = this.GetComponent<ResourceStressable>();
+            bool financialStress = this.GetComponent<RequesterFinancialStressable>() || this.GetComponent<SupplierFinancialStressable>();
+
+            if (bloomStress) { numStressCategories++; }
+            if (resourceStress) { numStressCategories++; }
+            if (financialStress) { numStressCategories++; }
+            StressCount = numStressCategories;
+
             CurrentStress = new Dictionary<StressCategory, int>() {
-                { StressCategory.Bloom, 0 },
-                { StressCategory.Resource, 0 },
-                { StressCategory.Financial, 0 },
+                { StressCategory.Bloom, bloomStress ? startingStress : 0 },
+                { StressCategory.Resource, resourceStress ? startingStress : 0 },
+                { StressCategory.Financial, financialStress ? startingStress : 0 },
+            };
+
+            StressMask = new Dictionary<StressCategory, bool>() {
+                { StressCategory.Bloom, bloomStress },
+                { StressCategory.Resource, resourceStress },
+                { StressCategory.Financial, financialStress },
             };
 
             OperationThresholds = new Dictionary<OperationState, int>() {
@@ -66,6 +100,9 @@ namespace Zavala.Actors {
             };
 
             Position = this.GetComponent<OccupiesTile>();
+
+            StressUtility.RecalculateTotalStress(this);
+            StressUtility.UpdateOperationState(this);
         }
 
         public void OnDeregister()
@@ -77,17 +114,18 @@ namespace Zavala.Actors {
         static public void IncrementStress(StressableActor actor, StressCategory category)
         {
             actor.CurrentStress[category]++;
-            RecalculateTotalStress(actor);
+            //RecalculateTotalStress(actor);
 
-            if (actor.TotalStress > actor.StressCap)
+            if (actor.CurrentStress[category] > actor.StressCap)
             {
                 // hit upper bound; undo
                 actor.CurrentStress[category]--;
-                RecalculateTotalStress(actor);
+                //RecalculateTotalStress(actor);
             }
             else
             {
                 // apply changes
+                RecalculateTotalStress(actor);
                 UpdateOperationState(actor);
 
                 DebugDraw.AddWorldText(actor.transform.position, "Stressed to " + actor.CurrentStress[category], Color.red, 3);
@@ -98,23 +136,23 @@ namespace Zavala.Actors {
         static public void DecrementStress(StressableActor actor, StressCategory category)
         {
             actor.CurrentStress[category]--;
-            RecalculateTotalStress(actor);
+            // RecalculateTotalStress(actor);
 
             if (actor.CurrentStress[category] < 0)
             {
                 // hit lower bound
                 actor.CurrentStress[category]++;
-                RecalculateTotalStress(actor);
+                // RecalculateTotalStress(actor);
             }
             else
             {
                 // apply changes
+                RecalculateTotalStress(actor);
                 UpdateOperationState(actor);
 
                 DebugDraw.AddWorldText(actor.transform.position, "Unstressed to " + actor.CurrentStress[category], Color.blue, 3);
                 Log.Msg("[StressableActor] Actor {0} unstressed! Current: {1}", actor.transform.name, actor.CurrentStress[category]);
             }
-
         }
 
         static public void ResetStress(StressableActor actor, StressCategory category)
@@ -123,16 +161,17 @@ namespace Zavala.Actors {
             RecalculateTotalStress(actor);
         }
 
-        static private void RecalculateTotalStress(StressableActor actor)
+        static public void RecalculateTotalStress(StressableActor actor)
         {
             actor.TotalStress = actor.CurrentStress[StressCategory.Bloom]
                 + actor.CurrentStress[StressCategory.Resource]
                 + actor.CurrentStress[StressCategory.Financial];
+            actor.AvgStress = actor.TotalStress / actor.StressCount;
         }
 
-        static private void UpdateOperationState(StressableActor actor)
+        static public void UpdateOperationState(StressableActor actor)
         {
-            if (actor.TotalStress >= actor.OperationThresholds[OperationState.Low])
+            if (actor.AvgStress >= actor.OperationThresholds[OperationState.Low])
             {
                 if (actor.OperationState != OperationState.Low)
                 {
@@ -141,7 +180,7 @@ namespace Zavala.Actors {
                     actor.ChangedOperationThisTick = true;
                 }
             }
-            else if (actor.TotalStress >= actor.OperationThresholds[OperationState.Medium])
+            else if (actor.AvgStress >= actor.OperationThresholds[OperationState.Medium])
             {
                 if (actor.OperationState != OperationState.Medium)
                 {

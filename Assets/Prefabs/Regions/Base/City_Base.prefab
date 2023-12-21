@@ -338,6 +338,7 @@ MonoBehaviour:
   m_LowThreshold: 8
   m_MediumThreshold: 4
   m_HighThreshold: 0
+  m_StartingState: 1
   StressDelta: 1
 --- !u!1 &5417570481552996235
 GameObject:
