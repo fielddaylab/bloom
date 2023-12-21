@@ -477,7 +477,7 @@ $call CutsceneBegin()
 	$call CutsceneAllImages(0.5)
 	Your efforts were not enough. You have been replaced as SAGA director. Perhaps your replacement will fare better...
     Proper shutdown is not implemented. Reload the page to start again.
-    $call EndGame()
+    // $call EndGame()
 $else
 {@advisorEconUrban}      Heh heh, you would've failed here, but failure was disabled. Right on.
 {@advisorEconUrban}      {$local:endType} in region {$local:regionIndex}
@@ -492,4 +492,5 @@ $call CutsceneBegin()
 	$call CutsceneAllImages(0.5)
 	With your help, these regions are blooming into a thriving interconnected economy.
     Perhaps we couldn't stop the blooms entirely, but by activating a fertilizer market, we've kept them managed.
-    $call EndGame()
+    Proper shutdown is not implemented. Reload the page to start again.
+    // $call EndGame()
