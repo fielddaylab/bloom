@@ -156,7 +156,7 @@ namespace Zavala.Scripting {
 
             // Activate queued script node event
             using (TempVarTable varTable = TempVarTable.Alloc()) {
-                if (!actor.QueuedEvents.TryPopBack(out EventActorQueuedEvent newEvent)) {
+                if (!actor.QueuedEvents.TryPopFront(out EventActorQueuedEvent newEvent)) {
                     // No event linked with this event
                     return;
                 }
@@ -260,7 +260,6 @@ namespace Zavala.Scripting {
         static public void DeregisterActor(EventActor actor) {
             if (!actor.Id.IsEmpty) {
                 StringHash32 oldId = actor.Id;
-
                 if (Game.SharedState.TryGet(out ScriptRuntimeState runtime)) {
                     runtime.NamedActors.Remove(oldId);
                 }

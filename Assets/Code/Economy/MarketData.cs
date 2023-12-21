@@ -7,6 +7,7 @@ using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Zavala.Data;
 using Zavala.Roads;
+using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.UI;
 
@@ -17,6 +18,7 @@ namespace Zavala.Economy
     {
         public SimTimer MarketTimer;
         public bool UpdatePrioritiesNow;
+        [NonSerialized] public uint TickIndex;
 
         public RingBuffer<ResourceRequester> Buyers;
         public RingBuffer<ResourceSupplier> Suppliers;
@@ -55,12 +57,12 @@ namespace Zavala.Economy
             ActiveRequests = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
             NegotiationQueue = new RingBuffer<PriceNegotiation>(16, RingBufferMode.Expand);
 
-            int pieChartHistoryDepth = 10;
+            int pieChartHistoryDepth = 36;
             DataHistoryUtil.InitializeDataHistory(ref CFertilizerSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref ManureSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref DFertilizerSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
 
-            int barChartHistoryDepth = 10;
+            int barChartHistoryDepth = 36;
             DataHistoryUtil.InitializeDataHistory(ref SalesTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref ImportTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref PenaltiesHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
@@ -303,7 +305,8 @@ namespace Zavala.Economy
         static public void RegisterInifiniteProducer(ResourceProducer producer) {
             MarketData marketData = Game.SharedState.Get<MarketData>();
             Assert.NotNull(marketData);
-            QueueRequest(producer.Request, producer.Requires);
+            // QueueRequest(producer.Request, producer.Requires);
+            QueueMultipleSingleRequests(producer.Request, producer.Requires);
         }
 
         static public void DeregisterInfiniteProducer(ResourceProducer producer) {
@@ -540,6 +543,7 @@ namespace Zavala.Economy
                         if (dairyFarmSupplier && grainFarmRequester && difTiles)
                         {
                             ScriptUtility.Trigger(GameTriggers.FarmConnection);
+                            Game.SharedState.Get<WinLossState>().FarmsConnectedInRegion[requester.Position.RegionIndex] = true;
                         }
                         if (dairyFarmSupplier && cityRequester && difTiles)
                         {

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ui-click
   m_EditorClassIdentifier: 
   Clips:
-  - {fileID: 8300000, guid: 37db165dd822f7443b12b3b4623d0016, type: 3}
+  - {fileID: 8300000, guid: 3dd2dd9f863497044a3af4ff34e502b6, type: 3}
   Volume:
     Base: 1
     ModifierMin: 0
@@ -29,3 +29,6 @@ MonoBehaviour:
   Tag:
     m_Source: 
     m_HashValue: 0
+  Spread: 0
+  Range: 1
+  ZoomRange: 64

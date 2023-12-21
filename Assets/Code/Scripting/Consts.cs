@@ -34,6 +34,10 @@ namespace Zavala
         static public readonly StringHash32 DestroyModeEnded = "destroy:ended";
 
         static public readonly StringHash32 DialogueClosing = "dialog:closing";
+
+        static public readonly StringHash32 GameFailed = "game:failed";
+        static public readonly StringHash32 GameCompleted = "game:completed";
+
     }
 
     static public class GameTriggers
@@ -54,6 +58,10 @@ namespace Zavala
         static public readonly StringHash32 ExternalImport = "ExternalImport";
         static public readonly StringHash32 InternalBlimpSent = "InternalBlimpSent";
         static public readonly StringHash32 InternalBlimpReceived = "InternalBlimpReceived";
+
+        static public readonly StringHash32 GameFailed = "GameFailed";
+        static public readonly StringHash32 GameCompleted = "GameCompleted";
+
     }
 
     static public class GameAlerts

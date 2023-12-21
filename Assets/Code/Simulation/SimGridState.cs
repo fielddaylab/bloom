@@ -153,6 +153,13 @@ namespace Zavala.Sim {
                 group.GroupIndex = groupIndex;
             }
 
+            // water audio
+            foreach(var waterEmitter in asset.WaterEmitters) {
+                int worldIndex = subRegion.FastIndexToGridIndex(waterEmitter.LocalTileIndex);
+                Vector3 pos = HexVector.ToWorld(worldIndex, grid.Terrain.Info[worldIndex].Height, world.WorldSpace); // height buffer hasn't been extracted yet
+                GameObject.Instantiate(world.WaterAudioPrefabs[waterEmitter.Variant], pos, Quaternion.identity);
+            }
+
             // spawn buildings
             foreach (var obj in asset.Buildings) {
                 int mapIndex = subRegion.FastIndexToGridIndex(obj.LocalTileIndex);

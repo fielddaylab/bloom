@@ -40,6 +40,7 @@ namespace Zavala.UI
 
         [SerializeField] private RectGraphic m_TopBarBG;
         [SerializeField] private Color m_TBDefault;
+        [SerializeField] private Color[] m_TBColorPerRegion;
         [SerializeField] private Color m_TBBlueprint;
 
         [SerializeField] private CanvasGroup m_PolicyBoxGroup;
@@ -219,6 +220,7 @@ namespace Zavala.UI
             m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(true));
             m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(false));
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
+            Game.Gui.GetShared<GlobalAlertButton>().Hide();
         }
 
         public void OnExitedBlueprintMode()
@@ -228,6 +230,11 @@ namespace Zavala.UI
             m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(true));
             m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(true));
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
+            Game.Gui.GetShared<GlobalAlertButton>().Show();
+        }
+
+        public void OnSwitchedRegion() {
+            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
         }
 
         public void OnBuildConfirmClicked()

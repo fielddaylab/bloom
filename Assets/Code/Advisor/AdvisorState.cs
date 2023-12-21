@@ -26,6 +26,11 @@ namespace Zavala.Advisor {
             ZavalaGame.Gui.GetShared<LensUI>().Unlock(type);
         }
 
+        [LeafMember("AdvisorModuleIsUnlocked")]
+        public static bool ModuleIsUnlocked(AdvisorType type) {
+            return Game.Gui.GetShared<LensUI>().isUnlocked(type);
+        }
+
         [DebugMenuFactory]
         static private DMInfo AdvisorModuleUnlockUtility() {
             DMInfo info = new DMInfo("Advisor Modules");

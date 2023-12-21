@@ -19,14 +19,26 @@ Runoff Fine
 :: RunoffPolicy.none
 None
 
+:: RunoffPolicy.none.hint
+None Hint
+
 :: RunoffPolicy.low
 Low
+
+:: RunoffPolicy.low.hint
+Low Hint
 
 :: RunoffPolicy.high
 High
 
+:: RunoffPolicy.high.hint
+High Hint
+
 :: RunoffPolicy.alt
 Very High
+
+:: RunoffPolicy.alt.hint
+Very High Hint
 
 // SKIMMING
 :: SkimmingPolicy.category
@@ -35,14 +47,26 @@ Skimming Level
 :: SkimmingPolicy.none
 None
 
+:: SkimmingPolicy.none.hint
+None Hint
+
 :: SkimmingPolicy.low
 Low
+
+:: SkimmingPolicy.low.hint
+Low Hint
 
 :: SkimmingPolicy.high
 High
 
+:: SkimmingPolicy.high.hint
+High Hint
+
 :: SkimmingPolicy.alt
 Dredge
+
+:: SkimmingPolicy.alt.hint
+Dredge Hint
 
 // IMPORT
 :: ImportTaxPolicy.category
@@ -51,14 +75,26 @@ Import Policy
 :: ImportTaxPolicy.none
 None
 
+:: ImportTaxPolicy.none.hint
+Import None Hint
+
 :: ImportTaxPolicy.low
 Low Subsidy
+
+:: ImportTaxPolicy.low.hint
+Import Low Subsidy Hint
 
 :: ImportTaxPolicy.high
 High Subsidy
 
+:: ImportTaxPolicy.high.hint
+Import High Subsidy Hint
+
 :: ImportTaxPolicy.alt
 Tax
+
+:: ImportTaxPolicy.alt.hint
+Import Tax Hint
 
 // SALES
 :: SalesTaxPolicy.category
@@ -67,11 +103,23 @@ Sales Policy
 :: SalesTaxPolicy.none
 None
 
+:: SalesTaxPolicy.none.hint
+Sales None hint
+
 :: SalesTaxPolicy.low
 Low Tax
+
+:: SalesTaxPolicy.low.hint
+Sales Low Tax Hint
 
 :: SalesTaxPolicy.high
 High Tax
 
+:: SalesTaxPolicy.high.hint
+Sales High Tax Hint
+
 :: SalesTaxPolicy.alt
 Subsidy
+
+:: SalesTaxPolicy.alt.hint
+Sales Subsidy Hint

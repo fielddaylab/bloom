@@ -95,7 +95,7 @@ namespace Zavala.Editor {
             HashSet<int> occupiedIndices = new HashSet<int>(region.Width);
 
             region.Tiles = RegionImport.ReadTerrain(tileData, ImportSettings.HEIGHT_SCALE);
-            RegionImport.ReadStaticConstructions(tileData, region.Id, occupiedIndices, region.Tiles, out region.Buildings, out region.Modifiers, out region.Spanners);
+            RegionImport.ReadStaticConstructions(tileData, region.Id, occupiedIndices, region.Tiles, out region.Buildings, out region.Modifiers, out region.Spanners, out region.WaterEmitters);
             region.Roads = RegionImport.ReadRoads(tileData, occupiedIndices);
             region.Points = RegionImport.ReadScriptPoints(tileData);
             RegionImport.ReadWaterGroups(tileData, region.Tiles, out region.WaterGroupLocalIndices, out region.WaterGroups);

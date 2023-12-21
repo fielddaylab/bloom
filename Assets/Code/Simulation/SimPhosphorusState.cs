@@ -18,6 +18,7 @@ namespace Zavala.Sim
 
         [Header("Per-Region")]
         public DataHistory[] HistoryPerRegion;
+        [NonSerialized] public long[] TotalPPerRegion;
 
         void IRegistrationCallbacks.OnDeregister() {
         }
@@ -26,7 +27,7 @@ namespace Zavala.Sim
             SimGridState gridState = ZavalaGame.SimGrid;
             Phosphorus.Create(gridState.HexSize);
             UpdatedPhosphorusRegionMask = 0;
-
+            TotalPPerRegion = new long[RegionInfo.MaxRegions];
             DataHistoryUtil.InitializeDataHistory(ref HistoryPerRegion, RegionInfo.MaxRegions, 20);
         }
     }
@@ -92,6 +93,7 @@ namespace Zavala.Sim
             }
 
             state.HistoryPerRegion[regionIndex].AddPending(phosphorusDelta);
+            state.TotalPPerRegion[regionIndex] += (phosphorusDelta);
         }
 
         static public void GenerateProportionalPhosphorus(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator generator, ref ResourceBlock resources, int manureMod, int mFertMod, int dFertMod, bool consume) {

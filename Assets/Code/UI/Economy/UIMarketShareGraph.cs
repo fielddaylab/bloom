@@ -13,7 +13,6 @@ namespace Zavala.UI
 {
     public class UIMarketShareGraph : BatchedComponent
     {
-        public int MaxHistoryCount = 20;
         public MarketShareGraphRenderer Renderer;
 
         protected override void OnEnable() {

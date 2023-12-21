@@ -250,6 +250,19 @@ namespace Zavala.UI {
             }
         }
 
+        public bool isUnlocked(AdvisorType type) {
+            switch (type) {
+                case AdvisorType.Ecology: {
+                    return m_HasEco;
+                }
+                case AdvisorType.Economy: {
+                    return m_HasEcon;
+                }
+                default:
+                    return false;
+            }
+        }
+
         #region IGuiPanel
 
         public override bool IsTransitioning() {

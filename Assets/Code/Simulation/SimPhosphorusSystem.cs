@@ -3,6 +3,7 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
+using Zavala.Scripting;
 
 namespace Zavala.Sim {
     [SysUpdate(GameLoopPhase.Update, -50, ZavalaGame.SimulationUpdateMask)]
@@ -21,6 +22,8 @@ namespace Zavala.Sim {
 
                     RegionUnlockState unlockState = Game.SharedState.Get<RegionUnlockState>();
                     RegionAgeState ageState = Game.SharedState.Get<RegionAgeState>();
+                    
+                    Game.SharedState.Get<WinLossState>().CheckTimer = true;
 
                     RegionUnlockUtility.RegisterPTimerAdvanced(unlockState);
                     RegionAgeUtility.RegisterPTimerAdvanced(ageState);

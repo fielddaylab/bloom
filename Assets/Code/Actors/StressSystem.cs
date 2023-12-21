@@ -8,6 +8,7 @@ using FieldDay.Debugging;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Economy;
+using Zavala.Scripting;
 
 namespace Zavala.Actors {
     [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
@@ -16,8 +17,19 @@ namespace Zavala.Actors {
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
+            WinLossState winLossState = Game.SharedState.Get<WinLossState>();
+
             foreach (var component in m_Components) {
                 CheckStressCap(component.Primary);
+                int idx = actor.GetComponent<OccupiesTile>().RegionIndex;
+
+                if (component.Primary.OperationState == OperationState.Low) {
+                    winLossState.CityFallingTimersPerRegion[idx] += 1;
+                    // if you have multiple cities, each will increment.
+                } else {
+                    winLossState.CityFallingTimersPerRegion[idx] = 0;
+                    // BUT any of them healing will make it better
+                }
             }
         }
  

@@ -24,7 +24,6 @@ namespace Zavala.Economy {
 
             ref ResourceBlock total = ref purchaser.Request.Received;
             ResourceBlock requestAmt = purchaser.RequestAmount;
-            
 
             if (ResourceBlock.Consume(ref total, ref requestAmt)) {
                 ResourceBlock cash = requestAmt * purchaser.PurchasePrice;
@@ -37,7 +36,9 @@ namespace Zavala.Economy {
                 HexVector vec = HexVector.FromWorld(purchaser.transform.position, world.WorldSpace);
                 ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseMade, grid.HexSize.FastPosToIndex(vec));
             } else {
-                MarketUtility.QueueRequest(purchaser.Request, purchaser.RequestAmount);
+                // MarketUtility.QueueRequest(purchaser.Request, purchaser.RequestAmount);
+                MarketUtility.QueueMultipleSingleRequests(purchaser.Request, purchaser.RequestAmount);
+
                 DebugDraw.AddWorldText(purchaser.transform.position, "Requesting!", Color.yellow, 2);
             }
         }

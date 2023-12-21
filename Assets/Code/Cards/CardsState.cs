@@ -18,12 +18,14 @@ namespace Zavala.Cards
         public PolicyType PolicyType;
         public PolicyLevel PolicyLevel;
         public string ImgPath;
+        public bool IsValid;
 
         public CardData(SerializedHash32 cardID, string header, PolicyType policyType, PolicyLevel level, string imgPath) {
             CardID = cardID;
             PolicyType = policyType;
             PolicyLevel = level;
             ImgPath = imgPath;
+            IsValid = true;
         }
     }
 

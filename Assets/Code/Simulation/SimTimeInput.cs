@@ -40,6 +40,10 @@ namespace Zavala.Sim {
         public static void PauseEvent() {
             SetPaused(true, SimPauseFlags.Scripted);
         }
+        [LeafMember("PauseUser")] 
+        public static void PausePlayerEvent() {
+            SetPaused(true, SimPauseFlags.User);
+        }
 
         [LeafMember("Unpause")]
         public static void UnpauseEvent() {

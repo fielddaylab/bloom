@@ -58,7 +58,9 @@ namespace Zavala.Economy {
                 return;
             }
 
-            MarketUtility.QueueRequest(producer.Request, producer.Requires);
+            //MarketUtility.QueueRequest(producer.Request, producer.Requires);
+            MarketUtility.QueueMultipleSingleRequests(producer.Request, producer.Requires);
+
             DebugDraw.AddWorldText(producer.transform.position, "Requesting!", Color.yellow, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
         }
     }
