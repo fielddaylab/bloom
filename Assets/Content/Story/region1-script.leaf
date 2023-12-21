@@ -198,7 +198,7 @@ $set intro:tutorialComplete = true
 $call PauseUser()
 {@advisorEconHill}  Use the <b>spacebar</b> to toggle pause.
 $call ShowAnimatedTutorial("PauseTutorial")
-$call OffsetAlgaeGrowthThreshold(-2)
+$call OffsetAlgaeGrowthThreshold(0)
 $call ActivateSim()
 
 // :: sittingOmens
@@ -243,7 +243,7 @@ $set intro:tutorialComplete = true
 $set intro:pendingPolicy = true
 $call UnlockCards(SalesTaxPolicy)
 $call AddAutoAlertCondition("Bloom", 1)
-$call OffsetAlgaeGrowthThreshold(-2)
+$call OffsetAlgaeGrowthThreshold(0)
 $call ReleaseDialogueInteraction()
 // $call Unpause()
 $call ActivateSim()
@@ -307,11 +307,7 @@ $elseif local:policyType == "SalesTaxPolicy"
     $elseif local:policyIndex == 2
         {local @advisorEcon}    With high Sales Tax, you'll gain $4 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-<<<<<<< Updated upstream
-        {local @advisorEcon}    Sales subsidy encourages buyers with $2 discount for every purchase. 
-=======
         {local @advisorEcon}    Sales Subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourages buyers.
->>>>>>> Stashed changes
         {local @advisorEcon}    But that money comes from the SAGA county budget!
     $endif
 $elseif local:policyType == "ImportTaxPolicy"
@@ -423,7 +419,7 @@ $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/f
     $call CutsceneClearImages()
 $call CutsceneEnd()
 {@advisorEcolHill}    Something must be done! I need to find out what's causing it.
-$call OffsetAlgaeGrowthThreshold(0)
+$call OffsetAlgaeGrowthThreshold(1)
 $call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)
 // $call Unpause()

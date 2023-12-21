@@ -23,7 +23,12 @@ namespace Zavala.Advisor {
     public static class AdvisorUtility {
         [LeafMember("UnlockAdvisorModule")]
         public static void UnlockModule(AdvisorType type) {
-            ZavalaGame.Gui.GetShared<LensUI>().Unlock(type);
+            Game.Gui.GetShared<LensUI>().Unlock(type);
+        }
+
+        [LeafMember("ForceAdvisorModule")]
+        public static void ForceModule(AdvisorType type) {
+            Game.Gui.GetShared<LensUI>().ForceLens(type);
         }
 
         [LeafMember("AdvisorModuleIsUnlocked")]

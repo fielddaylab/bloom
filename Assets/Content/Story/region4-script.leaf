@@ -14,7 +14,7 @@ $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We've dealt with these algae blooms here before...
 {@advisorEcolWetland}    The phosphorus flows down through waterways into our marshland.
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
-$call OffsetAlgaeGrowthThreshold(-2)
+$call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom", 2)
 // $call Unpause()
 
@@ -92,7 +92,7 @@ $call UnlockShopItem("Digester")
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEconWetland}   Digesters have been added to your Build Mode menu.
 $call FocusClear()
-$call OffsetAlgaeGrowthThreshold(0)
+$call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()
 // $call AddRegionAgeDeltaTrigger(4, 10)
 

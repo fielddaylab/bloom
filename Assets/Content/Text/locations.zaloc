@@ -16,7 +16,7 @@ Phos 4 Us
 Natalie's Dairy Farm
 
 :: region2_cafo2.name
-Natalie's Dairy Farm
+Natalie's Deluxe Creamery
 
 :: region2_grain1.name
 Emmett's Grain Farm
@@ -28,7 +28,7 @@ Yewgrove
 Winnie's Dairy Farm
 
 :: region3_grain1.name
-Zora's Grain Farm
+Zora's Corn Emporium
 
 :: region3_grain2.name
 Zora's Grain Farm
@@ -40,10 +40,10 @@ Veldt City
 Neil's Dairy Farm
 
 :: region4_cafo2.name
-Neil's Dairy Farm
+Neil's Buttermilk Bonanza
 
 :: region4_cafo3.name
-Neil's Dairy Farm
+Neil's Organic Dairy
 
 :: region4_grain1.name
 Cindy's Grain Farm
@@ -56,6 +56,12 @@ Tabitha's Dairy Farm
 
 :: region5_grain1.name
 Tom's Grain Farm
+
+:: region5_grain2.name
+Tom's Barley Palace
+
+:: region5_grain3.name
+Tom's Wholesome Sorghum
 
 :: region5_city1.name
 East Smokestack

@@ -58,7 +58,7 @@ $endif
 :: queueUnlockPhosphorusView
 @trigger        RegionReachedAge
 @conditions     regionId == 3
-$call SendGlobalAlertForNode("region3_city1", region3.unlockPhosphorusView)
+$call SendGlobalAlertForNode("region2_city1", region3.unlockPhosphorusView)
 $call AddRegionAgeDeltaTrigger(4, 15)
 
 :: queueUnlockMarketView
@@ -71,31 +71,29 @@ $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
 @cutscene
 @queued
 // $call Pause()
-{@cityPrairie}      Hey, um... Sorry to butt in, but...
-$call PanToBuilding("region3_city1")
-{@cityPrairie}      I've been working on a research project at Veldt U that might help SAGA...
+{@advisorEconForest}    Oh no...
 $call CutsceneBegin()
-    $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
-    $call CutsceneNextImage()
-    This problem is more widespread than first thought...
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneNextImage()
-    If we hope to keep our ecosystem in balance, we will need new tools.
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneNextImage()
-    Our fate hangs in the balance.
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneClearImages()
+    $call CutscenePrepareImages("act3/3-1-1.png", "act3/3-1-2.png", "act3/3-1-3.png")
+    $call CutsceneAllImages(0.5)
+    We thought the gross algae was only in Knoll County... How could blooms reach our forest?
+    $call CutscenePrepareImages("act3/3-2-1.png", "act3/3-2-2.png", "act3/3-2-3.png")
+	$call CutsceneAllImages(0.5)
+	We need to figure out what is happening. Veldt University sent its best scholars to help figure out what is going on.
+    $call CutscenePrepareImages("act3/3-3-1.png", "act3/3-3-2.png", "act3/3-3-3.png")
+	$call CutsceneAllImages(0.5)
+    Their new technology senses the flow of phosphorus... Rainwater is washing it <i>downward</i> and into our lakes!
+    $call CutscenePrepareImages("act3/3-4-1.png", "act3/3-4-2.png", "act3/3-4-3.png")
+	$call CutsceneAllImages(0.5)
+	This situation is dire... Could this tool help us locate the source of phosphorus and put a stop to it?
 $call CutsceneEnd()
-{@cityPrairie}      I call it PIP: Persistent Imaging of Phosphorus.
+{@cityPrairie}      ...I call it PIP! Persistent Imaging of Phosphorus.
+{@cityPrairie}      Let's head over to Cypress County to try it out.
 $call UnlockAdvisorModule("Ecology")
-{local @advisorEcol}How does it-- ooh, a shiny new button!
-{@cityPrairie}      That's PIP! It uses a network of sensors to track phosphorus concentrations.
-{@cityPrairie}      And shows it to you as moving red dots! I hope that helps.
-$call OffsetAlgaeGrowthThreshold(-1)
+$call PanToBuilding("region2_cafo2")
+{@advisorEconForest}   Good heavens!
+$call ForceAdvisorModule("Ecology")
+{@advisorEcolForest}   Our poor lakes...
+$call OffsetAlgaeGrowthThreshold(1)
 // $call Unpause()
 
 :: unlockTradeGraphs

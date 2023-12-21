@@ -26,7 +26,7 @@ $call CutsceneBegin()
     $call CutsceneClearText()
     $call CutsceneClearImages()
 $call CutsceneEnd()
-$call OffsetAlgaeGrowthThreshold(-1)
+$call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()
 
 :: bloomGeneric

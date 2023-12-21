@@ -57,51 +57,72 @@ MonoBehaviour:
     - Id: cards.RunoffPolicy.none
       Content: None
     - Id: cards.RunoffPolicy.none.hint
-      Content: None Hint
+      Content: With <i>no</i> <b>runnoff fine</b>, Dairy Farms will only sell manure
+        if they earn a profit.
     - Id: cards.RunoffPolicy.low
       Content: Low
     - Id: cards.RunoffPolicy.low.hint
-      Content: Low Hint
+      Content: Dairy Farms will receive a <i>low</i> <b>runoff fine</b> of $8 for
+        every unit of manure they let sit on their farm. This fine encourages them
+        to sell manure.
     - Id: cards.RunoffPolicy.high
       Content: High
     - Id: cards.RunoffPolicy.high.hint
-      Content: High Hint
+      Content: Dairy Farms will receive a <i>high</i> <b>runoff fine</b> of $16 for
+        every unit of manure they let sit on their farm. This fine encourages them
+        to sell manure.
     - Id: cards.RunoffPolicy.alt
       Content: Very High
     - Id: cards.RunoffPolicy.alt.hint
-      Content: Very High Hint
+      Content: With a <i>very high</i> <b>runoff fine</b>, Dairy Farms will always
+        try to sell manure, even if it loses money.
     - Id: cards.SkimmingPolicy.category
       Content: Lake Cleanup
     - Id: cards.SkimmingPolicy.none
       Content: None
     - Id: cards.SkimmingPolicy.none.hint
-      Content: None Hint
+      Content: With <i>no</i> <b>lake cleanup policy</b>, you aren't doing anything
+        to remove algae from the lakes.
     - Id: cards.SkimmingPolicy.low
       Content: Low Skimming
     - Id: cards.SkimmingPolicy.low.hint
-      Content: Low Hint
+      Content: A <i>low</i> <b>lake cleanup policy</b> will clear algae from 1 water
+        area for a recurring $1 cost. The phosphorus is not being removed, just the
+        algae blooms.
     - Id: cards.SkimmingPolicy.high
       Content: High Skimming
     - Id: cards.SkimmingPolicy.high.hint
-      Content: High Hint
+      Content: A <i>high</i> <b>lake cleanup policy</b> will clear algae from 2 water
+        areas for a recurring $2 cost. The phosphorus is not being removed, just
+        the algae blooms.
     - Id: cards.SkimmingPolicy.alt
       Content: Skim & Dredge
     - Id: cards.SkimmingPolicy.alt.hint
-      Content: Dredge Hint
+      Content: <b>Dredging</b> will clear phosphorus and algae from 3 water areas
+        for a recurring $4 cost. This removes <i>some</i> of the phosphorus.
     - Id: cards.ImportTaxPolicy.category
       Content: Import Policy
     - Id: cards.ImportTaxPolicy.none
       Content: None
     - Id: cards.ImportTaxPolicy.none.hint
-      Content: Import None Hint
+      Content: With <i>no</i> <b>import policy</b>, you aren't doing anything to
+        encourage trade between regions.
     - Id: cards.ImportTaxPolicy.low
       Content: Low Subsidy
     - Id: cards.ImportTaxPolicy.low.hint
-      Content: Import Low Subsidy Hint
+      Content: A <i>low</i> <b>import subsidy</b> will encourage this county to buy
+        resources they are lacking from other counties for a cost of $4 per purchase.
+        It cost farmers more to transport goods from further away because shipping
+        costs are greater over longer distances.
     - Id: cards.ImportTaxPolicy.high
       Content: High Subsidy
     - Id: cards.ImportTaxPolicy.high.hint
-      Content: Import High Subsidy Hint
+      Content: 'Import High Subsidy Hint
+
+        A <i>high</i> <b>import subsidy</b>
+        will encourage locals to buy resources they are lacking from other counties
+        for a cost of $8 per purchase. It cost farmers more to transport goods from
+        further away because shipping costs are greater over longer distances.'
     - Id: cards.ImportTaxPolicy.alt
       Content: Tax
     - Id: cards.ImportTaxPolicy.alt.hint
@@ -111,19 +132,23 @@ MonoBehaviour:
     - Id: cards.SalesTaxPolicy.none
       Content: None
     - Id: cards.SalesTaxPolicy.none.hint
-      Content: Sales None hint
+      Content: Even without sales tax, you'll gain $5 for every milk shipment the
+        city consumes.
     - Id: cards.SalesTaxPolicy.low
       Content: Low Tax
     - Id: cards.SalesTaxPolicy.low.hint
-      Content: Sales Low Tax Hint
+      Content: With low sales tax, you'll gain $2 with every purchase on top of city
+        revenue.
     - Id: cards.SalesTaxPolicy.high
       Content: High Tax
     - Id: cards.SalesTaxPolicy.high.hint
-      Content: Sales High Tax Hint
+      Content: With high sales tax, you'll gain $4 with every purchase on top of
+        city revenue.
     - Id: cards.SalesTaxPolicy.alt
       Content: Subsidy
     - Id: cards.SalesTaxPolicy.alt.hint
-      Content: Sales Subsidy Hint
+      Content: The subsidy costs you $2 for every purchase except for fertilzer from
+        Phos4Us. Subsidies encourages buyers by lowering their costs.
     BasePath: cards
     AllBasePaths:
     - Path: cards
@@ -145,7 +170,7 @@ MonoBehaviour:
     - Id: location.region2_cafo1.name
       Content: Natalie's Dairy Farm
     - Id: location.region2_cafo2.name
-      Content: Natalie's Dairy Farm
+      Content: Natalie's Deluxe Creamery
     - Id: location.region2_grain1.name
       Content: Emmett's Grain Farm
     - Id: location.region2_city1.name
@@ -153,7 +178,7 @@ MonoBehaviour:
     - Id: location.region3_cafo1.name
       Content: Winnie's Dairy Farm
     - Id: location.region3_grain1.name
-      Content: Zora's Grain Farm
+      Content: Zora's Corn Emporium
     - Id: location.region3_grain2.name
       Content: Zora's Grain Farm
     - Id: location.region3_city1.name
@@ -161,9 +186,9 @@ MonoBehaviour:
     - Id: location.region4_cafo1.name
       Content: Neil's Dairy Farm
     - Id: location.region4_cafo2.name
-      Content: Neil's Dairy Farm
+      Content: Neil's Buttermilk Bonanza
     - Id: location.region4_cafo3.name
-      Content: Neil's Dairy Farm
+      Content: Neil's Organic Dairy
     - Id: location.region4_grain1.name
       Content: Cindy's Grain Farm
     - Id: location.region4_city1.name
@@ -172,6 +197,10 @@ MonoBehaviour:
       Content: Tabitha's Dairy Farm
     - Id: location.region5_grain1.name
       Content: Tom's Grain Farm
+    - Id: location.region5_grain2.name
+      Content: Tom's Barley Palace
+    - Id: location.region5_grain3.name
+      Content: Tom's Wholesome Sorghum
     - Id: location.region5_city1.name
       Content: East Smokestack
     - Id: location.region5_city2.name
@@ -248,9 +277,9 @@ MonoBehaviour:
     - Path: location
       Start: 0
     - Path: location.shared
-      Start: 23
+      Start: 25
     - Path: region
-      Start: 40
+      Start: 42
     NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc

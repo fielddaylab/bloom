@@ -263,6 +263,19 @@ namespace Zavala.UI {
             }
         }
 
+        public void ForceLens(AdvisorType type) {
+            switch (type) {
+                case AdvisorType.Ecology: {
+                    OnEcoClicked();
+                    break;
+                }
+                case AdvisorType.Economy: {
+                    OnEconClicked();
+                    break;
+                }
+            }
+        }
+
         #region IGuiPanel
 
         public override bool IsTransitioning() {
