@@ -307,7 +307,7 @@ $elseif local:policyType == "SalesTaxPolicy"
     $elseif local:policyIndex == 2
         {local @advisorEcon}    With high sales tax, you'll gain $4 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    Sales subsidy encourages buyers with $4 discount for every purchase. 
+        {local @advisorEcon}    Sales subsidy encourages buyers with $2 discount for every purchase. 
         {local @advisorEcon}    But that money comes from the SAGA county budget!
     $endif
 $elseif local:policyType == "ImportTaxPolicy"

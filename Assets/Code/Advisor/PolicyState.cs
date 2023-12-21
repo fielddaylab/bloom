@@ -99,9 +99,13 @@ namespace Zavala.Advisor {
             ImportTaxVals[3].SetAll(4);  // TAX
 
             SalesTaxVals[0].SetAll(0); // NONE
+            SalesTaxVals[0].MFertilizer = 0;
             SalesTaxVals[1].SetAll(2); // LOW TAX
+            SalesTaxVals[1].MFertilizer = 0;
             SalesTaxVals[2].SetAll(4); // HIGH TAX
-            SalesTaxVals[3].SetAll(-4);// SUBSIDY
+            SalesTaxVals[2].MFertilizer = 0;
+            SalesTaxVals[3].SetAll(-2);// SUBSIDY
+            SalesTaxVals[3].MFertilizer = 0;
 
             RunoffPenaltyVals[0].Manure = 0;
             RunoffPenaltyVals[1].Manure = 8;
