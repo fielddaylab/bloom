@@ -1068,104 +1068,126 @@ MonoBehaviour:
     m_ScenePath: Assets/Scenes/TitleScreen.unity
     m_GUID: 3a1ab0f762ee5684cb6a80d40c4c4dc9
   IgnoreFailure: 0
-  FailureConditionsPerRegion:
+  EndConditionsPerRegion:
   - Region: 0
-    IndependentFailureConditions:
+    IndependentEndConditions:
     - Type: 0
       BudgetBelow: 15
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
+      RegionAgeAbove: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 192
       TotalAlgaeAbove: 12
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
   - Region: 1
-    IndependentFailureConditions:
+    IndependentEndConditions:
     - Type: 0
       BudgetBelow: 20
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
+      RegionAgeAbove: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 384
       TotalAlgaeAbove: 24
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
   - Region: 2
-    IndependentFailureConditions:
+    IndependentEndConditions:
     - Type: 0
       BudgetBelow: 15
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
+      RegionAgeAbove: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 320
       TotalAlgaeAbove: 20
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
   - Region: 3
-    IndependentFailureConditions:
+    IndependentEndConditions:
     - Type: 0
       BudgetBelow: 20
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
+      RegionAgeAbove: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 560
       TotalAlgaeAbove: 35
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
   - Region: 4
-    IndependentFailureConditions:
+    IndependentEndConditions:
     - Type: 0
       BudgetBelow: 15
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
-      CityFallingDurationAbove: 10
+      CityFallingDurationAbove: 27
+      RegionAgeAbove: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 384
       TotalAlgaeAbove: 24
       CityFallingDurationAbove: 0
+      RegionAgeAbove: 0
+    - Type: 3
+      BudgetBelow: 0
+      CheckFarmsUnconnected: 0
+      TotalPhosphorusAbove: 0
+      TotalAlgaeAbove: 0
+      CityFallingDurationAbove: 0
+      RegionAgeAbove: 40

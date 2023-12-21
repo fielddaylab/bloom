@@ -9,42 +9,42 @@ using FieldDay.SharedState;
 using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using Zavala.Sim;
 using Zavala.UI;
 
 namespace Zavala.Scripting {
 
-    public enum FailureType {
+    public enum EndType {
         OutOfMoney,
         CityFailed,
-        TooManyBlooms
+        TooManyBlooms,
+        Succeeded
     }
 
 
 
     [Serializable]
     // Failure conditions 
-    public struct FailureCondition {
-        public FailureType Type;
+    public struct EndGameConditions {
+        public EndType Type;
         public int BudgetBelow;
         public bool CheckFarmsUnconnected;
         public int TotalPhosphorusAbove;
         public float TotalAlgaeAbove;
         public int CityFallingDurationAbove;
+        public int RegionAgeAbove;
     }
 
     [Serializable]
     public struct ConditionsPerRegion {
         public RegionId Region;
-        public List<FailureCondition> IndependentFailureConditions;
+        public List<EndGameConditions> IndependentEndConditions;
     }
 
     public class WinLossState : SharedStateComponent, IRegistrationCallbacks {
-
         public SceneReference SceneOnFail;
         public bool IgnoreFailure = false;
-        public ConditionsPerRegion[] FailureConditionsPerRegion;
+        public ConditionsPerRegion[] EndConditionsPerRegion;
         [NonSerialized] public bool[] FarmsConnectedInRegion;
         [NonSerialized] public int[] CityFallingTimersPerRegion;
         [NonSerialized] public bool CheckTimer;
