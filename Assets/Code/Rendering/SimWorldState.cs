@@ -42,6 +42,7 @@ namespace Zavala.World {
         [Header("Tile Spawning")]
         public TileInstance DefaultWaterPrefab;
         public WaterGroupInstance WaterProxyPrefab;
+        public SfxLoopSource[] WaterAudioPrefabs;
 
         [Header("Bounds Calculations")]
         public float BottomBounds = 100;

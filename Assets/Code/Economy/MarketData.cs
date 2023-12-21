@@ -17,6 +17,7 @@ namespace Zavala.Economy
     {
         public SimTimer MarketTimer;
         public bool UpdatePrioritiesNow;
+        [NonSerialized] public uint TickIndex;
 
         public RingBuffer<ResourceRequester> Buyers;
         public RingBuffer<ResourceSupplier> Suppliers;
@@ -55,12 +56,12 @@ namespace Zavala.Economy
             ActiveRequests = new RingBuffer<MarketActiveRequestInfo>(16, RingBufferMode.Expand);
             NegotiationQueue = new RingBuffer<PriceNegotiation>(16, RingBufferMode.Expand);
 
-            int pieChartHistoryDepth = 10;
+            int pieChartHistoryDepth = 36;
             DataHistoryUtil.InitializeDataHistory(ref CFertilizerSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref ManureSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref DFertilizerSaleHistory, RegionInfo.MaxRegions, pieChartHistoryDepth);
 
-            int barChartHistoryDepth = 10;
+            int barChartHistoryDepth = 36;
             DataHistoryUtil.InitializeDataHistory(ref SalesTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref ImportTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref PenaltiesHistory, RegionInfo.MaxRegions, barChartHistoryDepth);

@@ -92,7 +92,7 @@ namespace Zavala.Audio {
                 }
                 Vector3 camPos = worldToCamera.MultiplyPoint3x4(pos);
                 float fHeight = CameraHelper.HeightForDistanceAndFOV(Mathf.Abs(camPos.z), cameraFov);
-                Vector3 viewportOffset = new Vector3(DistanceScale * camPos.x / fHeight, DistanceScale * camPos.y / fHeight, DistanceScale * camPos.z / entry.ZoomScale);
+                Vector3 viewportOffset = new Vector3(DistanceScale * camPos.x / fHeight, DistanceScale * camPos.y / fHeight, camPos.z / entry.ZoomScale);
                 entry.Position.position = listenerPos + (listenerRot * viewportOffset);
             }
         }
@@ -198,8 +198,8 @@ namespace Zavala.Audio {
         }
 
         private void PlayClip(SfxPlayData play, SfxAsset asset, AudioClip clip, StringHash32 clipId) {
-            float spread = 45;
-            float zoomScale = 64;
+            float spread = 80;
+            float zoomScale = 80;
             if (asset != null) {
                 if (asset.Randomizer == null) {
                     asset.Randomizer = new RandomDeck<AudioClip>(asset.Clips);
@@ -215,7 +215,8 @@ namespace Zavala.Audio {
                 }
 
                 spread = asset.Spread;
-                play.Distance *= asset.Range;
+                play.MinDistance *= asset.Range;
+                play.MaxDistance *= asset.Range;
                 zoomScale = asset.Range;
             }
 
@@ -251,8 +252,8 @@ namespace Zavala.Audio {
                 src.spatialBlend = 1;
                 src.spread = spread;
                 src.rolloffMode = AudioRolloffMode.Linear;
-                src.minDistance = 0.1f;
-                src.maxDistance = play.Distance;
+                src.minDistance = play.MinDistance;
+                src.maxDistance = play.MaxDistance;
             } else {
                 active.PositionUpdateIndex = -1;
                 src.spatialBlend = 0;

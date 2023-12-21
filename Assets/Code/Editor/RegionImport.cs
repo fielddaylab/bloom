@@ -210,10 +210,12 @@ namespace Zavala.Editor {
             "Hill", "Forest", "Prairie", "Wetland", "Urban"
         };
 
-        static public void ReadStaticConstructions(in TiledData data, RegionId regionId, HashSet<int> occupiedTileIndices, TerrainTileInfo[] tiles, out RegionAsset.BuildingData[] buildings, out RegionAsset.ModifierData[] modifiers, out RegionAsset.SpannerData[] spanners) {
+        static public void ReadStaticConstructions(in TiledData data, RegionId regionId, HashSet<int> occupiedTileIndices, TerrainTileInfo[] tiles,
+            out RegionAsset.BuildingData[] buildings, out RegionAsset.ModifierData[] modifiers, out RegionAsset.SpannerData[] spanners, out RegionAsset.WaterSoundEmitter[] waterSounds) {
             List<RegionAsset.BuildingData> buildingList = new List<RegionAsset.BuildingData>(8);
             List<RegionAsset.ModifierData> modifierList = new List<RegionAsset.ModifierData>(8);
             List<RegionAsset.SpannerData> spannerList = new List<RegionAsset.SpannerData>(8);
+            List<RegionAsset.WaterSoundEmitter> waterList = new List<RegionAsset.WaterSoundEmitter>(8);
 
             JSON objectArray = data.ObjectLayer["objects"];
             foreach(var obj in objectArray.Children) {
@@ -337,12 +339,23 @@ namespace Zavala.Editor {
                                 tiles[pos].Flags |= TerrainFlags.NonBuildable;
                                 break;
                             }
+                        case 11:
+                        case 12:
+                        case 13:
+                            { // water sound group
+                                waterList.Add(new RegionAsset.WaterSoundEmitter() {
+                                    LocalTileIndex = (ushort) pos,
+                                    Variant = (ushort) (objType - 11)
+                                });
+                                break;
+                            }
                     }
                 }
             }
             buildings = buildingList.ToArray();
             modifiers = modifierList.ToArray();
             spanners = spannerList.ToArray();
+            waterSounds = waterList.ToArray();
         }
 
         static public RegionAsset.RoadData[] ReadRoads(in TiledData data, HashSet<int> occupiedTileIndices) {

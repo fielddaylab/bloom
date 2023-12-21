@@ -91,7 +91,8 @@ namespace Zavala.Audio {
 
         public int TransformId;
         public Vector3 TransformOffset;
-        public float Distance;
+        public float MinDistance;
+        public float MaxDistance;
     }
 
     [StructLayout(LayoutKind.Explicit)]
@@ -191,7 +192,7 @@ namespace Zavala.Audio {
             return handle;
         }
 
-        static public UniqueId16 LoopSfx3d(AudioClip clip, Transform position, Vector3 offset, float distance = 1, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
+        static public UniqueId16 LoopSfx3d(AudioClip clip, Transform position, Vector3 offset, float minDistance = 0.1f, float maxDistance = 1f, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
             SfxState state = Game.SharedState.Get<SfxState>();
             UniqueId16 handle = state.LoopHandleAllocator.Alloc();
             state.CommandQueue.PushBack(new SfxCommand() {
@@ -205,7 +206,8 @@ namespace Zavala.Audio {
                     Flags = SfxPlayFlags.Loop | SfxPlayFlags.Randomize | SfxPlayFlags.Positional,
                     TransformId = UnityHelper.Id(position),
                     TransformOffset = offset,
-                    Distance = distance,
+                    MinDistance = minDistance,
+                    MaxDistance = maxDistance,
                     Handle = handle
                 }
             });

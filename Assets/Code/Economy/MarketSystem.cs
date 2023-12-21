@@ -191,7 +191,10 @@ namespace Zavala.Economy
 
             #region MarketCycle_History
 
-            MarketUtility.FinalizeCycleHistory(marketData);
+            m_StateA.TickIndex++;
+            if ((m_StateA.TickIndex % 3) == 0) {
+                MarketUtility.FinalizeCycleHistory(marketData);
+            }
 
             #endregion // MarketCycle_History
 

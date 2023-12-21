@@ -80,6 +80,12 @@ namespace Zavala {
         }
 
         [Serializable]
+        public struct WaterSoundEmitter {
+            public ushort LocalTileIndex;
+            public ushort Variant;
+        }
+
+        [Serializable]
         public struct WaterGroupRange {
             public ushort Offset;
             public ushort Length;
@@ -108,6 +114,7 @@ namespace Zavala {
         public BorderPoint[] Borders = Array.Empty<BorderPoint>();
         public SpannerData[] Spanners = Array.Empty<SpannerData>();
         public ushort[] EdgeVisualUpdateSet = Array.Empty<ushort>();
+        public WaterSoundEmitter[] WaterEmitters = Array.Empty<WaterSoundEmitter>();
 
         [Header("Groups")]
         public ushort[] WaterGroupLocalIndices = Array.Empty<ushort>();

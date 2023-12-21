@@ -105,6 +105,10 @@ MonoBehaviour:
   TileRadius: 0.5
   DefaultWaterPrefab: {fileID: 7097652779095066658, guid: 5887f51366947f240ae408caadcb0af1, type: 3}
   WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
+  WaterAudioPrefabs:
+  - {fileID: 8794654112055953242, guid: 8c1dfe4a070cc90488502caec0423680, type: 3}
+  - {fileID: 2209706915810175229, guid: e798a57c174ebd24fb8e011bb3480281, type: 3}
+  - {fileID: 8331112805994635528, guid: 101ad540f4b588349b0030b1d9e22602, type: 3}
   BottomBounds: 0
   BoundsExpand: 1.5
   TollBoothPrefab: {fileID: 7291294420475072060, guid: e91eaf6fb0d4dfa42acf6c43a5f30133, type: 3}

@@ -1617,6 +1617,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketShareGraph
       objectReference: {fileID: 0}
+    - target: {fileID: 4109056581307088363, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: MaxHistoryCount
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 7074782271129698276, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: MaxTicks
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7074782271129698276, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
       propertyPath: OutlineColor.b
       value: 0.6862745

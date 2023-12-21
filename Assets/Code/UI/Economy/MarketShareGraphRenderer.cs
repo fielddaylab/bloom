@@ -13,7 +13,7 @@ namespace Zavala.UI {
         public Color MFertilizerColor;
         public Color OutlineColor;
         public float OutlineThickness;
-        [Range(3, 20)] public int MaxTicks = 20;
+        [Range(3, 100)] public int MaxTicks = 20;
 
         public Action OnDataUpdated;
 
@@ -116,7 +116,7 @@ namespace Zavala.UI {
                 maxValue = Math.Max(maxValue, mFertilizerVal + manureVal + dFertilizerVal);
             }
 
-            maxValue = Math.Max(4, 2 + (float) Math.Ceiling(maxValue / 4) * 4);
+            maxValue = Math.Max(4, (float) Math.Ceiling(maxValue / 4) * 4);
 
             float scaling = rect.height / maxValue;
             float baseY = rect.yMin;

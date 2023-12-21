@@ -323,7 +323,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 33
+    Flags: 49
     Height: 150
   - RegionIndex: 65535
     Category: 2
@@ -398,7 +398,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 33
+    Flags: 49
     Height: 200
   - RegionIndex: 65535
     Category: 2
@@ -1752,6 +1752,43 @@ MonoBehaviour:
       m_HashValue: 1368788856
     Type: 10
   EdgeVisualUpdateSet: 080009000a000b0011001200130014001500160019001e00250026002b002c00390047004f005400620070007e008c009a00af00bb00e500
+  WaterEmitters:
+  - LocalTileIndex: 147
+    Variant: 2
+  - LocalTileIndex: 184
+    Variant: 1
+  - LocalTileIndex: 199
+    Variant: 0
+  - LocalTileIndex: 228
+    Variant: 0
+  - LocalTileIndex: 127
+    Variant: 2
+  - LocalTileIndex: 99
+    Variant: 2
+  - LocalTileIndex: 71
+    Variant: 2
+  - LocalTileIndex: 45
+    Variant: 2
+  - LocalTileIndex: 33
+    Variant: 2
+  - LocalTileIndex: 36
+    Variant: 2
+  - LocalTileIndex: 24
+    Variant: 2
+  - LocalTileIndex: 49
+    Variant: 0
+  - LocalTileIndex: 77
+    Variant: 0
+  - LocalTileIndex: 104
+    Variant: 0
+  - LocalTileIndex: 132
+    Variant: 0
+  - LocalTileIndex: 159
+    Variant: 0
+  - LocalTileIndex: 175
+    Variant: 0
+  - LocalTileIndex: 30
+    Variant: 0
   WaterGroupLocalIndices: 080009000a000b001100120013001400150016001700180019001e001f002000210022002400250026002b002c002d002e002f003100320039003a003b003e00470048004a004d004f005400550056005700580059005a005c00620063006700680070007100740075007e007f0080008c008d008f009a009c00aa007800840085009200930094009e009f00a000a100a200ac00ae00af00ab00b800b900bb00c700d400d600e400e500
   WaterGroups:
   - Offset: 0
