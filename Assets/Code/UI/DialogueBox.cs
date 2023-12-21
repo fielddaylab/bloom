@@ -264,6 +264,9 @@ namespace Zavala.UI {
                 m_PolicyExpansionContainer.gameObject.SetActive(false);
             }
 
+            CameraInputState camState = Game.SharedState.Get<CameraInputState>();
+            camState.LockRegion = Tile.InvalidIndex16;
+
             yield return m_Rect.AnchorPosTo(m_OffscreenY, 0.3f, Axis.Y).Ease(Curve.CubeIn);
             m_CloseButton.gameObject.SetActive(true);
             this.gameObject.SetActive(false);
@@ -315,6 +318,17 @@ namespace Zavala.UI {
                 ShowHand = false;
             }
             m_FullyExpanded = true;
+            CameraInputState camState = Game.SharedState.Get<CameraInputState>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            camState.LockRegion = grid.CurrRegionIndex;
+
+            SimWorldState world = Game.SharedState.Get<SimWorldState>();
+            Bounds b = world.RegionBounds[camState.LockRegion];
+            b.Expand(0.25f);
+
+            Vector3 bMin = b.min, bMax = b.max;
+            camState.LockedBounds = Rect.MinMaxRect(bMin.x, bMin.z, bMax.x, bMax.z);
+
             ForceAdvisorPolicies = AdvisorType.None;
             m_ButtonText.TryPopulate("Next");
             yield return null;
