@@ -64,7 +64,8 @@ namespace Zavala.UI {
 
         private void OnPauseUpdated(SimPauseFlags flags) {
             bool blueprints = (flags & SimPauseFlags.Blueprints) != 0;
-            UIAlertUtility.SetAlertFaded(this, blueprints);
+            bool globalAlert = (flags & SimPauseFlags.PendingGlobalAlert) != 0;
+            UIAlertUtility.SetAlertFaded(this, blueprints || globalAlert);
         }
 
         private void HandleButtonClicked(PointerEventData evt) {

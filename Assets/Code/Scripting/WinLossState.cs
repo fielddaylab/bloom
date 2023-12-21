@@ -9,6 +9,7 @@ using FieldDay.SharedState;
 using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Zavala.Sim;
 using Zavala.UI;
 
@@ -42,6 +43,7 @@ namespace Zavala.Scripting {
     }
 
     public class WinLossState : SharedStateComponent, IRegistrationCallbacks {
+        public GameLoop Loop;
         public SceneReference SceneOnFail;
         public bool IgnoreFailure = false;
         public ConditionsPerRegion[] EndConditionsPerRegion;
@@ -67,8 +69,11 @@ namespace Zavala.Scripting {
         [LeafMember("EndGame")]
         public static void EndGame() {
             // make sure to deregister anything that registers itself on start without deregistering on end
+            // Game.Scenes.UnloadScene(Game.Scenes.)
+            WinLossState wls = Game.SharedState.Get<WinLossState>();
+            GameObject.Destroy(wls.Loop);
             SimAllocator.Reset();
-            Game.Scenes.LoadMainScene(Game.SharedState.Get<WinLossState>().SceneOnFail);
+            Game.Scenes.LoadMainScene(wls.SceneOnFail);
         }
 
         public static void IgnoreFailure() {
@@ -86,6 +91,9 @@ namespace Zavala.Scripting {
             info.AddButton("Disable Failure", () => {
                 IgnoreFailure();
                 CutscenePanel.End();
+            });
+            info.AddButton("End Game", () => {
+                EndGame();
             });
             return info;
         }

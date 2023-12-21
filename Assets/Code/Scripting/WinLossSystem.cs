@@ -63,7 +63,7 @@ namespace Zavala.Scripting {
 
         private void TriggerEnding(EndGameConditions cond, int regionIndex) {
             if (cond.Type == EndType.Succeeded) {
-                Log.Msg("[WinLossSystem] TRIGGERED GAME WIN {0} in Region {1}", cond.Type, regionIndex);
+                Log.Warn("[WinLossSystem] TRIGGERED GAME WIN {0} in Region {1}", cond.Type, regionIndex);
                 using (TempVarTable varTable = TempVarTable.Alloc()) {
                     varTable.Set("endType", cond.Type.ToString());
                     varTable.Set("regionIndex", regionIndex);
@@ -71,7 +71,7 @@ namespace Zavala.Scripting {
                 }
                 return;
             } 
-            Log.Msg("[WinLossSystem] TRIGGERED GAME FAIL {0} in Region {1}", cond.Type, regionIndex);
+            Log.Warn("[WinLossSystem] TRIGGERED GAME FAIL {0} in Region {1}", cond.Type, regionIndex);
 
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("endType", cond.Type.ToString());

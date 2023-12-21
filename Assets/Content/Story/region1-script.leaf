@@ -467,6 +467,7 @@ $endif
 
 :: GameFailed
 @trigger        GameFailed
+@conditions     FailureIsEnabled()
 @cutscene
 $if FailureIsEnabled()
 {local @advisorEcon}    You failed :C
@@ -477,9 +478,8 @@ $call CutsceneBegin()
 	Your efforts were not enough. You have been replaced as SAGA director. Perhaps your replacement will fare better...
     Proper shutdown is not implemented. Reload the page to start again.
     // $call EndGame()
-$else
-{@advisorEconUrban}      Heh heh, you would've failed here, but failure was disabled. Right on.
-{@advisorEconUrban}      {$local:endType} in region {$local:regionIndex}
+// {@advisorEconUrban}      Heh heh, you would've failed here, but failure was disabled. Right on.
+// {@advisorEconUrban}      {$local:endType} in region {$local:regionIndex}
 $endif
 
 :: GameCompleted

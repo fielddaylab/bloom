@@ -24,8 +24,8 @@ namespace Zavala.Scripting
             }
 
             // if no active events, create alert
-            if (!component.DisplayingEvent && component.QueuedEvents.Count > 0) {
-                component.QueuedEvents.TryPeekBack<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
+            if (component.QueuedEvents.Count > 0 && !component.DisplayingEvent) { // only create if they have events and aren't displaying them
+                component.QueuedEvents.TryPeekFront<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
 
                 if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
                     // do not create UI banners for the fake global alerts

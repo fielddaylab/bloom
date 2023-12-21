@@ -24,7 +24,11 @@ namespace Zavala.Sim
             if (generator.AmountProducedLastTick >= RunoffParams.ExcessRunoffThreshold) {
                 // if so, create alert on this tile
                 Debug.Log("[ExcessRunoffAlertSystem] Amount generated last tick: " + generator.AmountProducedLastTick);
-                EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex);
+                if (generator.transform.parent != null && generator.transform.parent.TryGetComponent(out EventActor parentActor)) {
+                    EventActorUtility.QueueAlert(parentActor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex);
+                } else {
+                    EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex);
+                }
             }
         }
     }
