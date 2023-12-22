@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEcolUrban
   m_EditorClassIdentifier: 
   NameId: Danae
-  TitleId: Ecological Advisor
+  TitleId: Ecological Advisor (Smokestack City)
   IsAdvisor: 1
   IsEcon: 0
   BackgroundColor:

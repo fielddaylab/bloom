@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEcolForest
   m_EditorClassIdentifier: 
   NameId: Sage
-  TitleId: Cypress County Ecological Advisor
+  TitleId: Ecological Advisor (Cypress County)
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2

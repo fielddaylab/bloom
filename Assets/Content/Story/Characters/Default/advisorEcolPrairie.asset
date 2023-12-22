@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEcolPrairie
   m_EditorClassIdentifier: 
   NameId: Sandra
-  TitleId: Heath County Ecological Advisor
+  TitleId: Ecological Advisor (Heath County)
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2

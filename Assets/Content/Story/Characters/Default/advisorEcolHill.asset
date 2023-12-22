@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEcolHill
   m_EditorClassIdentifier: 
   NameId: Mara
-  TitleId: Knoll County Ecological Advisor
+  TitleId: Ecological Advisor (Knoll County)
   IsAdvisor: 1
   BackgroundColor:
     serializedVersion: 2

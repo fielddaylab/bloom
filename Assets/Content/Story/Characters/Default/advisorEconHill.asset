@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: advisorEconHill
   m_EditorClassIdentifier: 
   NameId: Pippin
-  TitleId: Knoll County Economic Advisor
+  TitleId: Economic Advisor (Knoll County)
   IsAdvisor: 1
   IsEcon: 1
   BackgroundColor:

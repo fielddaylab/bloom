@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: cityHill
   m_EditorClassIdentifier: 
   NameId: Alexis
-  TitleId: Journalist
+  TitleId: Journalist (Knoll County)
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2

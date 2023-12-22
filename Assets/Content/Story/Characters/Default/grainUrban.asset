@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: grainUrban
   m_EditorClassIdentifier: 
   NameId: Tom
-  TitleId: Grain Farmer
+  TitleId: Grain Farmer (Smokestack City)
   IsAdvisor: 0
   BackgroundColor:
     serializedVersion: 2
