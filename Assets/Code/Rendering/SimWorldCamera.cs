@@ -8,6 +8,8 @@ using Zavala.Scripting;
 using FieldDay.Scripting;
 using Zavala.Input;
 using System;
+using BeauUtil.Debugger;
+using FieldDay;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -38,17 +40,27 @@ namespace Zavala.World {
         public static void PanCameraToActor(StringHash32 id) {
             if (!ScriptUtility.ActorExists(id))
             {
+                Log.Error("[WorldCameraUtility] Error: tried to pan to nonexistent actor.");
                 return;
             }
-            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform.position);
+            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform.position);
+        }
+
+        [LeafMember("PanToBuildingOffset")]
+        public static void PanCameraToActor(StringHash32 id, int xzoffset) {
+            if (!ScriptUtility.ActorExists(id)) {
+                Log.Error("[WorldCameraUtility] Error: tried to pan to nonexistent actor.");
+                return;
+            }
+            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform.position + new Vector3(xzoffset, 0f, xzoffset));
         }
 
         public static void PanCameraToTransform(Transform t) {
-            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), t.position);
+            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), t.position);
         }
 
         public static void PanCameraToPoint(Vector3 pt) {
-            PanCameraToPoint(ZavalaGame.SharedState.Get<SimWorldCamera>(), pt);
+            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), pt);
         }
 
 

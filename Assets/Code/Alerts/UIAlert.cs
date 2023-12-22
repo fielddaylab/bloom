@@ -31,6 +31,7 @@ namespace Zavala.UI {
         [NonSerialized] public Routine BannerRoutine;
         [NonSerialized] public bool FullyOpened = false;
         [NonSerialized] public Routine FadeRoutine;
+        [NonSerialized] public bool KeepFaded;
 
         private void Awake() {
             AlertBannerRect.SetAnchorPos(-3f, Axis.X);
@@ -64,8 +65,8 @@ namespace Zavala.UI {
 
         private void OnPauseUpdated(SimPauseFlags flags) {
             bool blueprints = (flags & SimPauseFlags.Blueprints) != 0;
-            bool globalAlert = (flags & SimPauseFlags.PendingGlobalAlert) != 0;
-            UIAlertUtility.SetAlertFaded(this, blueprints || globalAlert);
+            // bool globalAlert = (flags & SimPauseFlags.PendingGlobalAlert) != 0;
+            UIAlertUtility.SetAlertFaded(this, blueprints);
         }
 
         private void HandleButtonClicked(PointerEventData evt) {
@@ -95,6 +96,9 @@ namespace Zavala.UI {
         public static void SetAlertFaded(UIAlert alert, bool faded) {
             if (alert == null) {
                 return;
+            }
+            if (alert.KeepFaded) {
+                faded = true;
             }
             alert.Pointer.enabled = !faded;
             alert.AlertBase.SetAlpha(faded ? 0.1f : 1.0f);

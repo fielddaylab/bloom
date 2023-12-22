@@ -117,12 +117,10 @@ MonoBehaviour:
     - Id: cards.ImportTaxPolicy.high
       Content: High Subsidy
     - Id: cards.ImportTaxPolicy.high.hint
-      Content: 'Import High Subsidy Hint
-
-        A <i>high</i> <b>import subsidy</b>
-        will encourage locals to buy resources they are lacking from other counties
-        for a cost of $8 per purchase. It cost farmers more to transport goods from
-        further away because shipping costs are greater over longer distances.'
+      Content: A <i>high</i> <b>import subsidy</b> will encourage locals to buy resources
+        they are lacking from other counties for a cost of $8 per purchase. It cost
+        farmers more to transport goods from further away because shipping costs
+        are greater over longer distances.
     - Id: cards.ImportTaxPolicy.alt
       Content: Tax
     - Id: cards.ImportTaxPolicy.alt.hint
@@ -302,6 +300,8 @@ MonoBehaviour:
       Content: Economy View
     - Id: ui.lens.market.graph.time
       Content: Time
+    - Id: ui.lens.market.graph.yaxis
+      Content: Fertilizer Types
     - Id: ui.lens.market.graph.header
       Content: Total Fertilizer Market Share
     - Id: ui.lens.market.targets.header

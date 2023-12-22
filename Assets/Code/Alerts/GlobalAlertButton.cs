@@ -1,10 +1,7 @@
-using BeauPools;
 using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
-using BeauUtil.UI;
 using FieldDay;
-using FieldDay.Components;
 using FieldDay.Scripting;
 using FieldDay.UI;
 using Leaf.Runtime;
@@ -63,6 +60,7 @@ namespace Zavala.UI {
             if (QueuedActors.Count > 0) {
                 m_Routine.Replace(GlobalAlertUtility.AppearRoutine(this));
                 SimTimeInput.SetPaused(true, SimPauseFlags.PendingGlobalAlert);
+                // UIAlertUtility.SetAlertFaded(QueuedActors.PeekFront().DisplayingEvent, true);
             } else {
                 m_Routine.Replace(GlobalAlertUtility.DisappearRoutine(this));
                 SimTimeInput.SetPaused(false, SimPauseFlags.PendingGlobalAlert);

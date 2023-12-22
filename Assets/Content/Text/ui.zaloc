@@ -24,6 +24,9 @@ Economy View
 :: lens.market.graph.time
 Time
 
+:: lens.market.graph.yaxis
+Fertilizer Types
+
 :: lens.market.graph.header
 Total Fertilizer Market Share
 

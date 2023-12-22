@@ -2,6 +2,7 @@ using BeauUtil;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
+using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -95,15 +96,14 @@ namespace Zavala.Advisor {
 
             ImportTaxVals[0].SetAll(0);  // NONE
             ImportTaxVals[1].SetAll(-4); // LOW SUBSIDY
+            ImportTaxVals[1].MFertilizer = 0;
             ImportTaxVals[2].SetAll(-8); // HIGH SUBSIDY
+            ImportTaxVals[2].MFertilizer = 0;
             ImportTaxVals[3].SetAll(4);  // TAX
 
             SalesTaxVals[0].SetAll(0); // NONE
-            SalesTaxVals[0].MFertilizer = 0;
             SalesTaxVals[1].SetAll(2); // LOW TAX
-            SalesTaxVals[1].MFertilizer = 0;
             SalesTaxVals[2].SetAll(4); // HIGH TAX
-            SalesTaxVals[2].MFertilizer = 0;
             SalesTaxVals[3].SetAll(-2);// SUBSIDY
             SalesTaxVals[3].MFertilizer = 0;
 
@@ -168,6 +168,18 @@ namespace Zavala.Advisor {
         public static void ForcePolicyToNone(PolicyType type, Transform instigator, int regionIndex) {
             WorldCameraUtility.PanCameraToTransform(instigator);
             Game.SharedState.Get<PolicyState>().SetPolicyByIndex(type, 0, regionIndex, true);
+        }
+        public static void ForcePolicyToNone(PolicyType type, string instigatorName, int regionIndex) {
+            WorldCameraUtility.PanCameraToActor(instigatorName);
+            Game.SharedState.Get<PolicyState>().SetPolicyByIndex(type, 0, regionIndex, true);
+        }
+
+        [LeafMember("PolicyLevelInRegion")]
+        public static int CurrentIndexOfPolicyInRegion(int regionOneIndexed, PolicyType type) {
+            int regionZeroIndexed = regionOneIndexed--;
+            PolicyState policy = Game.SharedState.Get<PolicyState>();
+            PolicyLevel lvl = policy.Policies[regionZeroIndexed].Map[type];
+            return (int)lvl;
         }
     }
 

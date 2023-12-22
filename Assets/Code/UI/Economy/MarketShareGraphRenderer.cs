@@ -37,8 +37,9 @@ namespace Zavala.UI {
         #region Input
 
         public unsafe void Populate(float* mFertilizerPoints, float* manurePoints, float* dFertilizerPoints, int tickCount) {
+            // TEMPORARY FIX: clamp the tick count to max ticks. These CopyArrays were going out of bounds. I'm not sure why yet.
+            tickCount = Math.Clamp(tickCount, 0, MaxTicks);
             m_TickCount = tickCount;
-
             Unsafe.CopyArray(mFertilizerPoints, tickCount, m_MFertilizerPoints, 0);
             Unsafe.CopyArray(manurePoints, tickCount, m_ManurePoints, 0);
             Unsafe.CopyArray(dFertilizerPoints, tickCount, m_DFertilizerPoints, 0);

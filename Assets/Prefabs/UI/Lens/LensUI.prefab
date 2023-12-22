@@ -351,7 +351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9803922, g: 0.86666673, b: 0.69803923, a: 1}
+  m_Color: {r: 0.9056604, g: 0.8321823, b: 0.72196513, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
@@ -1603,7 +1603,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 215210445500644600, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -230
+      value: -170
       objectReference: {fileID: 0}
     - target: {fileID: 215210445500644600, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1621,29 +1621,49 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 422913481587018614, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_Color.a
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 1459242894565005456, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
       propertyPath: m_Name
       value: MarketShareGraph
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640721066741201492, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640721066741201492, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4109056581307088363, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
       propertyPath: MaxHistoryCount
       value: 36
       objectReference: {fileID: 0}
-    - target: {fileID: 7074782271129698276, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
-      propertyPath: MaxTicks
-      value: 12
+    - target: {fileID: 4428253839079621252, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7074782271129698276, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
-      propertyPath: OutlineColor.b
-      value: 0.6862745
+    - target: {fileID: 4428253839079621252, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7074782271129698276, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
-      propertyPath: OutlineColor.g
-      value: 0.8470589
+    - target: {fileID: 4428253839079621252, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7074782271129698276, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
-      propertyPath: OutlineColor.r
-      value: 0.9607844
+    - target: {fileID: 5458692613837208769, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458692613837208769, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458692613837208769, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75ba8836ed7be5849a8ffd36e9a2a10d, type: 3}

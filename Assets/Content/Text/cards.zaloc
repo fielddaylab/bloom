@@ -84,11 +84,11 @@ Low Subsidy
 
 :: ImportTaxPolicy.low.hint
 A <i>low</i> <b>import subsidy</b> will encourage this county to buy resources they are lacking from other counties for a cost of $4 per purchase. It cost farmers more to transport goods from further away because shipping costs are greater over longer distances.
+
 :: ImportTaxPolicy.high
 High Subsidy
 
 :: ImportTaxPolicy.high.hint
-Import High Subsidy Hint
 A <i>high</i> <b>import subsidy</b> will encourage locals to buy resources they are lacking from other counties for a cost of $8 per purchase. It cost farmers more to transport goods from further away because shipping costs are greater over longer distances.
 
 

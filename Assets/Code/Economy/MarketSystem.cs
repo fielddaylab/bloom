@@ -5,6 +5,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
+using Zavala.Advisor;
 using Zavala.Roads;
 using Zavala.Sim;
 
@@ -998,7 +999,8 @@ namespace Zavala.Economy
                 }
                 else
                 {
-                    // TODO: handle not enough money for skimming policy
+                    string actor = "region" + region + "_city1";
+                    PolicyUtility.ForcePolicyToNone(PolicyType.SkimmingPolicy, actor, region);
                 }
             }
         }

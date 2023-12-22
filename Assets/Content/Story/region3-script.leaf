@@ -90,8 +90,8 @@ $call CutsceneEnd()
 {@cityPrairie}      Let's head over to Cypress County to try it out.
 $call UnlockAdvisorModule("Ecology")
 $call PanToBuilding("region2_cafo2")
-{@advisorEconForest}   Good heavens!
 $call ForceAdvisorModule("Ecology")
+{@advisorEconForest}   Good heavens!
 {@advisorEcolForest}   Our poor lakes...
 $call OffsetAlgaeGrowthThreshold(1)
 // $call Unpause()

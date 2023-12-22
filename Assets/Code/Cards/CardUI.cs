@@ -71,7 +71,8 @@ namespace Zavala.Cards {
         {
             string typeText = Loc.Find("cards." + data.PolicyType.ToString() + ".category");
             string hintText = Loc.Find("cards." + data.PolicyType.ToString() + "." + data.PolicyLevel.ToString().ToLower() + ".hint");
-            locText = typeText + ":\n\n" + hintText;
+            //locText = typeText + ":\n\n" + hintText;
+            locText = hintText;
 
         }
 

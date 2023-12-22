@@ -54,6 +54,7 @@ $call Unpause()
 {@advisorEconHill}      You will see a running total of your costs as you build.
 {@advisorEcolHill}      You can't build over any of our protected forests or deep water.
 {@advisorEconHill}      Select your <i>Road</i> tool and build a road between the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
+$call PanToBuildingOffset("region1_grain1", -1)
 $call ShowAnimatedTutorial("ClickDragTutorial")
 
 
@@ -171,9 +172,9 @@ $call FocusClear()
 @trigger        PolicySet
 @conditions     policyForced == false
 @cutscene
+$set intro:pendingPolicy = false
 $branch .policyDescriptions
 $if intro:tutorialComplete = false
-    $set intro:pendingPolicy = false
     $branch .choseFirstPolicy
 $endif
 
@@ -181,13 +182,19 @@ $endif
 @trigger        PolicySet
 @conditions     policyIndex == 0, policyForced == true
 @cutscene
-{local @advisorEcon}    Oh dear.
 $if local:policyType == "SalesTaxPolicy"
+    {local @advisorEcon}    Oh dear.
     {local @advisorEcon}    The sales subsidy here is costing too much. The county is out of money. 
+    {local @advisorEcon}    I must set it to none for now.
 $elseif local:policyType == "ImportTaxPolicy"
+    {local @advisorEcon}    Oh dear.
     {local @advisorEcon}    The import subsidy here is costing too much. The county is broke. 
+    {local @advisorEcon}    I must set it to none for now.
+$elseif local:policyType == "SkimmingPolicy"
+    {local @advisorEcol}    Jeepers!
+    {local @advisorEcol}    Our lake cleanup policy is costing too much. The county budget has run dry!
+    {local @advisorEcol}    I'll have to set it to none for now.
 $endif
-{local @advisorEcon}    I must set it to none for now.
 {local @advisorEcon}    I recommend you implement a tax so we can get some funding.
 
 :: choseFirstPolicy
@@ -386,11 +393,16 @@ $call UnlockCards(RunoffPolicy)
 @queued
 // $call Pause()
 {local @advisorEcol}    More runoff... 
-{local @advisorEcol}    Maybe we ought to increase our runoff fine?
-{local @advisorEcon}    Careful now! We don't want to bankrupt our farmers.
-{local @advisorEcon}    We just need to give them a more favorable option.
+$if PolicyLevelInRegion(1, "RunoffPolicy") < 3
+    {@advisorEcolHill}      Maybe we ought to increase our runoff fine?
+    {@advisorEconHill}      Careful now! We don't want to bankrupt our farmers.
+    {@advisorEconHill}      We just need to give them a more favorable option.
+$else
+    {@advisorEcolHill}      Our runoff fine is high as can be...
+    {@advisorEconHill}      Perhaps this farm needs a manure buyer.
+$endif
 $if Visited("region2.unlockStorage")
-    {local @advisorEcon}    Or build a <b>Storage</b> unit instead.
+    {local @advisorEcon}    Or we could build a <b>Storage</b> unit.
 $endif
 
 :: discoverFirstBloom
@@ -404,19 +416,10 @@ $set global:bloomDiscovered = true
 {@advisorEcolHill}    What's this...?
 $call CutsceneBegin()
 $call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/frame1-3.png")
-    $call CutsceneNextImage()
+    $call CutsceneAllImages(0.5)
     Something is wrong with the lakes... They are swamped with revolting green mire!
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneNextImage()
     Manure from Dairy Farms must be running off into the lake with rainwater.
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneNextImage()
     The cities need the farms for their milk, and farmers are struggling as is...
-    {wait 1}
-    $call CutsceneClearText()
-    $call CutsceneClearImages()
 $call CutsceneEnd()
 {@advisorEcolHill}    Something must be done! I need to find out what's causing it.
 $call OffsetAlgaeGrowthThreshold(1)
@@ -428,13 +431,18 @@ $call AddAutoAlertCondition("ExcessRunoff", 1)
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 1, global:runoffDiscovered
 @forcePolicy    Ecology
-{local @advisorEcol}    Yikes... Another algae bloom. What should we do about it?
-{local @advisorEcol}    We could address the causes by penalizing farms for letting manure sit in the fields.
-$if PolicyIsUnlocked(SkimmingPolicy)
-    {local @advisorEcol}    Or use skimmers to clean up.
+{@advisorEcolHill}      Yikes... Another algae bloom. What should we do about it?
+$set local:runoffLevel = PolicyLevelInRegion(1, "RunoffPolicy")
+$if local:runoffLevel < 1
+    {@advisorEcolHill}      We could address the causes by penalizing farms for letting manure sit in the fields.
+$elseif local:runoffLevel < 3
+    {@advisorEcolHill}      Maybe our runoff fine isn't high enough.
+$endif
+$if PolicyLevelInRegion(1, "SkimmingPolicy") < 1
+    {@advisorEcolHill}      Or we could use skimmers to clean up.
 $endif
 {viewpoliciesnext}
-{local @advisorEcol}    Your choice, boss.
+{@advisorEcolHill}     Your choice, boss.
 
 // TODO: add event/trigger for city stress (nearby bloom and/or lacking milk)
 
@@ -448,7 +456,8 @@ $endif
 {local @advisorEcon}    Hmm... This farmer is losing money when they sell.
 {local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
 {viewpoliciesnext}
-{local @advisorEcon}    You can build a shorter road, or decrease taxes and penalties.
+{local @advisorEcon}    Perhaps you can build a shorter road.
+or decrease taxes and penalties.
 // $call Unpause()
 
 :: SellAtLossCafo

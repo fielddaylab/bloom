@@ -195,7 +195,6 @@ MonoBehaviour:
   - {r: 0.9960785, g: 0.8470589, b: 0.40000004, a: 0.9098039}
   - {r: 0.6862745, g: 0.9568628, b: 0.91372555, a: 0.9098039}
   - {r: 0.9843138, g: 0.8117648, b: 1, a: 0.9098039}
-  m_TBBlueprint: {r: 0.02745098, g: 0.47843137, b: 0.5137255, a: 0.9098039}
   m_PolicyBoxGroup: {fileID: 6082244985375745504}
   m_PolicyBoxes:
   - {fileID: 8076735051405191059}
@@ -1927,7 +1926,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1249365799934713102, guid: b71595893f886bc4b9351665fc80346b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -15
+      value: -15.0000305
       objectReference: {fileID: 0}
     - target: {fileID: 1249365799934713102, guid: b71595893f886bc4b9351665fc80346b, type: 3}
       propertyPath: m_AnchoredPosition.y

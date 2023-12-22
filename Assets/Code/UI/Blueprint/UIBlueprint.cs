@@ -35,13 +35,13 @@ namespace Zavala.UI
         [SerializeField] private Button m_BuildUndoButton;   // Undo button when in Build Mode
 
         [Header("Top Bar")]
-        [SerializeField] private TMP_Text m_BuildingModeText;
+        [SerializeField] private Graphic m_BuildingModeText;
         [SerializeField] private TMP_Text m_RegionText;
 
         [SerializeField] private RectGraphic m_TopBarBG;
         [SerializeField] private Color m_TBDefault;
         [SerializeField] private Color[] m_TBColorPerRegion;
-        [SerializeField] private Color m_TBBlueprint;
+        // [SerializeField] private Color m_TBBlueprint;
 
         [SerializeField] private CanvasGroup m_PolicyBoxGroup;
         [SerializeField] private UIPolicyBox[] m_PolicyBoxes;
@@ -77,7 +77,7 @@ namespace Zavala.UI
             Game.Events.Register(GameEvents.PolicyTypeUnlocked, HandlePolicyTypeUnlocked);
 
             m_ReceiptGroup.alpha = 0;
-            m_BuildingModeText.alpha = 0;
+            m_BuildingModeText.SetAlpha(0);
             m_BuildCommandLayout.alpha = 0;
             m_BuildCommandLayout.blocksRaycasts = false;
             m_DestroyCommandLayout.alpha = 0;
@@ -141,7 +141,7 @@ namespace Zavala.UI
 
         public void UpdateDefaultColor(int newRegion) {
             m_TBDefault = m_TBColorPerRegion[newRegion];
-            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
+            m_TopBarRoutine.Replace(this, TopBarColorTransition());
         }
 
         #region UI Handlers
@@ -238,10 +238,6 @@ namespace Zavala.UI
             m_PolicyBoxRoutine.Replace(this, PolicyBoxAppearanceTransition(true));
             m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
             Game.Gui.GetShared<GlobalAlertButton>().Show();
-        }
-
-        public void OnSwitchedRegion() {
-            m_TopBarRoutine.Replace(this, TopBarAppearanceTransition(false));
         }
 
         public void OnBuildConfirmClicked()
@@ -355,6 +351,10 @@ namespace Zavala.UI
 
         #region Routines
 
+        private IEnumerator TopBarColorTransition() {
+            yield return m_TopBarBG.ColorTo(m_TBDefault, 0.1f);
+        }
+
         private IEnumerator TopBarAppearanceTransition(bool inBMode)
         {
             if (inBMode)
@@ -363,7 +363,7 @@ namespace Zavala.UI
                 shopState.ManualUpdateRequested = true;
 
                 yield return Routine.Combine(
-                    m_TopBarBG.ColorTo(m_TBBlueprint, 0.1f),
+                    m_TopBarBG.ColorTo(m_TBDefault, 0.1f),
                     m_BuildingModeText.FadeTo(1, .1f),
                     m_BuildingModeText.rectTransform.MoveTo(11, .1f, Axis.Y, Space.Self),
                     m_RegionText.rectTransform.MoveTo(-7, .1f, Axis.Y, Space.Self),
