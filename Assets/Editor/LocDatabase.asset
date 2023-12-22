@@ -21,7 +21,7 @@ MonoBehaviour:
     - Id: alerts.bloom
       Content: Algae Bloom
     - Id: alerts.excess-runoff
-      Content: Excessive Runoff
+      Content: Excess Runoff
     - Id: alerts.die-off
       Content: Die-Off
     - Id: alerts.crit-imbalance
@@ -31,7 +31,7 @@ MonoBehaviour:
     - Id: alerts.declining-pop
       Content: Declining Population
     - Id: alerts.selling-loss
-      Content: Selling at a Loss
+      Content: Losing Money
     - Id: alerts.disconnected
       Content: Road Not Connected
     BasePath: alerts
@@ -136,17 +136,18 @@ MonoBehaviour:
       Content: Low Tax
     - Id: cards.SalesTaxPolicy.low.hint
       Content: With low sales tax, you'll gain $2 with every purchase on top of city
-        revenue.
+        revenue and gain $5 for every milk shipment the city consumes.
     - Id: cards.SalesTaxPolicy.high
       Content: High Tax
     - Id: cards.SalesTaxPolicy.high.hint
       Content: With high sales tax, you'll gain $4 with every purchase on top of
-        city revenue.
+        city revenue and gain $5 for every milk shipment the city consumes.
     - Id: cards.SalesTaxPolicy.alt
       Content: Subsidy
     - Id: cards.SalesTaxPolicy.alt.hint
       Content: The subsidy costs you $2 for every purchase except for fertilzer from
-        Phos4Us. Subsidies encourages buyers by lowering their costs.
+        Phos4Us. Subsidies encourages buyers by lowering their costs. You will continue
+        to gain $5 for every milk shipment the city consumes.
     BasePath: cards
     AllBasePaths:
     - Path: cards

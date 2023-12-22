@@ -80,7 +80,6 @@ namespace Zavala {
             }
 
             m_LastMode = nextMode;
-            m_UserPauseGroup.gameObject.SetActive(false); // hide, only show if UserPause
 
             if (nextMode == Mode.Cutscene) {
                 m_DefaultState = true;
@@ -97,13 +96,15 @@ namespace Zavala {
                     m_BorderFadeRoutine.Replace(this, FadeOut(m_BorderFader, m_FadeTime));
                     TutorialState.HidePanel();
                 }
-            } else {
+            } else { // pauses with borders
+                // TODO: make the userPauseGroup fade out properly
+                m_UserPauseGroup.gameObject.SetActive(false); // hide, only show if UserPause
                 Color c;
                 if (nextMode == Mode.Blueprints) {
                     c = m_BlueprintPauseColor;
                 } else if (nextMode == Mode.Destroy) {
                     c = m_DestroyPauseColor;
-                } else {
+                } else { // Mode.UserPause
                     m_UserPauseGroup.gameObject.SetActive(true);
                     c = m_UserPauseColor;
                 }

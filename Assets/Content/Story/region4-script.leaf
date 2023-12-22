@@ -115,12 +115,13 @@ $call OffsetAlgaeGrowthThreshold(2)
 :: buildFirstDigester
 @trigger        PlayerBuiltBuilding
 @conditions     buildingType == "Digester"
-@once           
+@once       
+$set global:builtDigester = true
 $call AddRegionAgeDeltaTrigger(4, 10)
 
 :: unlockExportDepots
 @trigger    RegionReachedAge 
-@conditions regionId == 4, Visited("region4.buildFirstDigester")
+@conditions regionId == 4, global:builtDigester
 @once
 {@advisorEconWetland}   Now that we have a digester up and running...
 {@advisorEconWetland}   What's stopping us from shipping out our own digested fertilizer?

@@ -75,7 +75,10 @@ namespace Zavala.Economy
                 supplier.MatchedThisTick = false;
 
                 // reset sold at a loss
-                supplier.SoldAtALoss = false;
+                supplier.SoldAtALossExcludingMilk = false;
+
+                // sold milk this tick
+                supplier.MatchedThisTickWasMilk = false;
 
                 // reset priority indices
                 for (int i = 0; i < supplier.BestPriorityIndex.Length; i++)
@@ -91,6 +94,9 @@ namespace Zavala.Economy
 
                 // reset stress purchase
                 requester.PurchasedAtStressedPrice = false;
+
+                // subsidy applied this tick, relieves stress
+                requester.SubsidyAppliedThisTick = false;
 
                 // reset priority indices for all resources
                 for (int i = 0; i < requester.BestPriorityIndex.Length; i++)
@@ -881,12 +887,26 @@ namespace Zavala.Economy
             {
                 if (!activeRequest.Requester.IsLocalOption)
                 {
-                    supplier.SoldAtALoss = true;
                     supplier.MatchedThisTick = true;
+
+                    if (activeRequest.Supplied.Milk == 0) {
+                        supplier.SoldAtALossExcludingMilk = true;
+                        Log.Warn("[MarketSystem] SOLD AT A LOSS, EXCLUDING MILK");
+                    } else {
+                        supplier.MatchedThisTickWasMilk = true;
+                    }
+
                 }
             }
-            if (supplierOffer.TotalCost >= config.StressedPurchaseThresholds[currMarketIndex])
+            // TODO: MARKETS ARE NOT YET FILTERED BY RESOURCE! using this helper temporarily
+            int dummyMarketIndex = GetMarketIndexOfResourceBlock(activeRequest.Supplied);
+            if (supplierOffer.TotalCost >= config.StressedPurchaseThresholds[dummyMarketIndex])
             {
+                Log.Warn("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!", 
+                    activeRequest.Requester.transform.name,
+                    activeRequest.Supplied,
+                    supplierOffer.TotalCost,
+                    config.StressedPurchaseThresholds[dummyMarketIndex]);
                 activeRequest.Requester.PurchasedAtStressedPrice = true;
             }
 
@@ -925,6 +945,20 @@ namespace Zavala.Economy
             }
 
             adjustedFound.Value.Requester.MatchedThisTick = true;
+            if (supplierOffer.BaseTaxRevenue.Sales < 0 || supplierOffer.BaseTaxRevenue.Import < 0) {
+                adjustedFound.Value.Requester.SubsidyAppliedThisTick = true;
+            }
+        }
+
+        private int GetMarketIndexOfResourceBlock(ResourceBlock supplied) {
+            if (supplied.PhosphorusCount > 0) {
+                return 0;
+            } else if (supplied.Grain > 0) {
+                return 1;
+            } else if (supplied.Milk > 0) {
+                return 2;
+            }
+            return -1;
         }
 
         private void ProcessNegotiations(TutorialState tutorial)

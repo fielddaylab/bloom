@@ -20,15 +20,17 @@ namespace Zavala.Actors
             MarketData market = Game.SharedState.Get<MarketData>();
             if (market.MarketTimer.HasAdvanced())
             {
-                if (supplier.MatchedThisTick/*&& subsidyAppliedThisTick*/)
+                if (supplier.MatchedThisTick && !supplier.MatchedThisTickWasMilk)
                 {
-                    financeStress.MatchedSinceLast++;
+                    financeStress.NonMilkSoldSinceLast++;
+                    // EXCLUDE MILK
                     // MatchedSinceLast should be equal to the number of finalized that were were not milk
                 }
-
-                if (supplier.SoldAtALoss)
+                
+                if (supplier.SoldAtALossExcludingMilk)
                 {
                     financeStress.SoldAtLossSinceLast++;
+                    // EXCLUDE MILK
                     // SoldAtLossSinceLast Doesn't include milk sales
                 }
             }
@@ -38,11 +40,12 @@ namespace Zavala.Actors
                 return;
             }
 
-            int soldUnstressed = financeStress.MatchedSinceLast - financeStress.SoldAtLossSinceLast;
+            int soldUnstressed = financeStress.NonMilkSoldSinceLast - financeStress.SoldAtLossSinceLast;
+            Log.Warn("[SupplierFinancialStressSystem] NonMilkSold: {0}, SoldAtLoss: {1}", financeStress.NonMilkSoldSinceLast, financeStress.SoldAtLossSinceLast);
 
             // TODO: may need to shift this to AFTER market system?
-            if (financeStress.MatchedSinceLast > 0 && financeStress.SoldAtLossSinceLast >= soldUnstressed)
-            {
+            if (financeStress.NonMilkSoldSinceLast > 0 && financeStress.SoldAtLossSinceLast >= soldUnstressed)
+            { // if we've sold something (not milk), but sold more things at a loss than not:
                 financeStress.TriggerCounter++;
                 if (financeStress.TriggerCounter >= financeStress.NumTriggersPerStressTick)
                 {
@@ -50,7 +53,7 @@ namespace Zavala.Actors
                     financeStress.TriggerCounter = 0;
                 }
             }
-            else
+            else if (soldUnstressed > 0)
             {
                 // decrease stress
                 financeStress.TriggerCounter++;
@@ -61,7 +64,7 @@ namespace Zavala.Actors
                 }
             }
 
-            financeStress.MatchedSinceLast = 0;
+            financeStress.NonMilkSoldSinceLast = 0;
             financeStress.SoldAtLossSinceLast = 0;
         }
     }

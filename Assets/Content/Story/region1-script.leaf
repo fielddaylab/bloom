@@ -369,7 +369,7 @@ $call ForcePolicyInstant("Economy")
 
 :: runoffTrigger
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1
+@conditions     alertType == "excess-runoff", alertRegion == 1, isFromGrainFarm == false
 @forcePolicy    Ecology
 @queued
 @cutscene
@@ -389,7 +389,7 @@ $call UnlockCards(RunoffPolicy)
 
 :: genericRunoff
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered
+@conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered, isFromGrainFarm == false
 @queued
 // $call Pause()
 {local @advisorEcol}    More runoff... 
@@ -404,6 +404,19 @@ $endif
 $if Visited("region2.unlockStorage")
     {local @advisorEcon}    Or we could build a <b>Storage</b> unit.
 $endif
+
+:: grainRunoff
+@trigger        AlertExamined
+@conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == true
+{local @advisorEcol}        Runoff from a grain farm...
+{local @advisorEcol}        All fertilizer causes <i>some</i> runoff... 
+{local @advisorEcol}        But mineral fertilizer from Phos4Us tends to be overapplied.
+{local @grainFarmer}        It's the cheapest option I've got!
+{local @advisorEcol}        Maybe we can find a manure seller nearby.
+$if global:builtDigester
+    {local @advisorEcol}        Or better yet, some digested fertilizer!
+$endif
+
 
 :: discoverFirstBloom
 @trigger        AlertExamined
@@ -452,12 +465,14 @@ $endif
 @forcePolicy    Economy
 @queued
 // $call Pause()
-{local @grainFarmer}    My best option still loses me money... How am I gonna feed my family?
-{local @advisorEcon}    Hmm... This farmer is losing money when they sell.
-{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
+{@grainFarmerHill}      Aw shucks... How am I gonna feed my family?
+{@advisorEconHill}      Hmm... This farmer is losing money when they sell.
+{@advisorEconHill}      I suspect their phosphorus source is too expensive. 
 {viewpoliciesnext}
-{local @advisorEcon}    Perhaps you can build a shorter road.
-or decrease taxes and penalties.
+{@advisorEconHill}      Perhaps you can build a shorter road to decrease shipping costs.
+$if global:builtDigester
+    {@advisorEconHill}      I've heard that Digested Fertilizer is cheaper to ship.
+$endif
 // $call Unpause()
 
 :: SellAtLossCafo
@@ -467,10 +482,20 @@ or decrease taxes and penalties.
 @queued
 // $call Pause()
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
-{local @advisorEcon}    Hmm... This supplier is selling at a loss.
-{local @advisorEcon}    If we want to keep business running smoothly, we'd best find a way to lower costs.
+{@advisorEconHill}      Hmm... Bertram here is in a rough spot.
+{@advisorEconHill}      If we want to keep business running smoothly, we'd best find a way to lower costs.
 {viewpoliciesnext}
-{local @advisorEcon}    Perhaps you can build a shorter road, or lower taxes and penalties.
+$set local:runoffLevel = PolicyLevelInRegion(1, "RunoffPolicy")
+$if local:runoffLevel > 0
+    {@advisorEconHill}      I would suggest ditching that runoff fine.
+    {@advisorEcolHill}      And let Bertram pollute? I don't approve...
+$endif
+$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
+$if local:taxLevel > 0
+    $if local:taxLevel < 3
+    {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
+    $endif
+$endif
 // $call Unpause()
 
 

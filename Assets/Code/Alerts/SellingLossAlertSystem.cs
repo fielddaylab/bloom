@@ -22,7 +22,7 @@ namespace Zavala.Sim
 
             StressableActor stressable = supplier.GetComponent<StressableActor>();
             if (!stressable) { return; }
-            if (!supplier.SoldAtALoss) { return; }
+            // if (!supplier.SoldAtALossExcludingMilk) { return; }
             if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Medium])
             {
                 // if so, create alert on this tile

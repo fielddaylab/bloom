@@ -128,8 +128,8 @@ namespace Zavala.Actors {
                 RecalculateTotalStress(actor);
                 UpdateOperationState(actor);
 
-                DebugDraw.AddWorldText(actor.transform.position, "Stressed to " + actor.CurrentStress[category], Color.red, 3);
-                Log.Msg("[StressableActor] Actor {0} stressed! Current: {1}", actor.transform.name, actor.CurrentStress[category]);
+                DebugDraw.AddWorldText(actor.transform.position + Vector3.up, "Stressed to " + actor.CurrentStress[category], Color.red, 3);
+                Log.Msg("[StressableActor] Actor {0} increased {1} stress! Current: {2}", actor.transform.name, category, actor.CurrentStress[category]);
             }
         }
 
@@ -150,8 +150,8 @@ namespace Zavala.Actors {
                 RecalculateTotalStress(actor);
                 UpdateOperationState(actor);
 
-                DebugDraw.AddWorldText(actor.transform.position, "Unstressed to " + actor.CurrentStress[category], Color.blue, 3);
-                Log.Msg("[StressableActor] Actor {0} unstressed! Current: {1}", actor.transform.name, actor.CurrentStress[category]);
+                DebugDraw.AddWorldText(actor.transform.position + Vector3.up, "Unstressed to " + actor.CurrentStress[category], Color.blue, 3);
+                Log.Msg("[StressableActor] Actor {0} decreased {1} stress! Current: {2}", actor.transform.name, category, actor.CurrentStress[category]);
             }
         }
 
