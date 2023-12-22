@@ -319,16 +319,13 @@ $elseif local:policyType == "SalesTaxPolicy"
     $endif
 $elseif local:policyType == "ImportTaxPolicy"
     $if     local:policyIndex == 0
-        {local @advisorEcon}    With no Import Policy, goods will generally go to the nearest buyer.
+        {local @advisorEcon}    With no Import Policy, we won't offset any shipping costs.
     $elseif local:policyIndex == 1
-        {local @advisorEcon}    A low <b>Import subsidy</b> will gently encourage locals to buy resources from other counties.
-        {local @advisorEcon}    But its funding will come from your budget!
+        {local @advisorEcon}    With a Milk Subsidy, we'll pay $6 for each milk imported to offset shipping costs.
     $elseif local:policyIndex == 2
-        {local @advisorEcon}    A high <b>Import Subsidy</b> will strongly encourage locals to buy resources from other counties.
-        {local @advisorEcon}    But its funding will come from your budget!
+        {local @advisorEcon}    With a Grain Subsidy, we'll pay $6 for each grain imported to offset shipping costs.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    An <b>Import Tax</b> will discourage locals to buy resources from other counties.
-        {local @advisorEcon}    But you'll gain some funding if they do!
+        {local @advisorEcon}    With a Fertilizer Subsidy, we'll pay $6 for each manure or digester fertilizer imported to offset shipping costs.
     $endif
 $endif
 

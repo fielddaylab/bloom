@@ -101,30 +101,27 @@ MonoBehaviour:
       Content: <b>Dredging</b> will clear phosphorus and algae from 3 water areas
         for a recurring $4 cost. This removes <i>some</i> of the phosphorus.
     - Id: cards.ImportTaxPolicy.category
-      Content: Import Policy
+      Content: Import Subsidy
     - Id: cards.ImportTaxPolicy.none
       Content: None
     - Id: cards.ImportTaxPolicy.none.hint
-      Content: With <i>no</i> <b>import policy</b>, you aren't doing anything to
-        encourage trade between regions.
+      Content: With no Import Subsidy, you aren't doing anything to encourage trade
+        between regions.
     - Id: cards.ImportTaxPolicy.low
-      Content: Low Subsidy
+      Content: Milk
     - Id: cards.ImportTaxPolicy.low.hint
-      Content: A <i>low</i> <b>import subsidy</b> will encourage this county to buy
-        resources they are lacking from other counties for a cost of $4 per purchase.
-        It cost farmers more to transport goods from further away because shipping
-        costs are greater over longer distances.
+      Content: A Milk Subsidy costs $6 per unit to offset the shipping cost of importing
+        milk from other counties.
     - Id: cards.ImportTaxPolicy.high
-      Content: High Subsidy
+      Content: Grain
     - Id: cards.ImportTaxPolicy.high.hint
-      Content: A <i>high</i> <b>import subsidy</b> will encourage locals to buy resources
-        they are lacking from other counties for a cost of $8 per purchase. It cost
-        farmers more to transport goods from further away because shipping costs
-        are greater over longer distances.
+      Content: A Grain Subsidy costs $6 per unit to offset the shipping cost of importing
+        grain from other counties.
     - Id: cards.ImportTaxPolicy.alt
-      Content: Tax
+      Content: Fertilizer
     - Id: cards.ImportTaxPolicy.alt.hint
-      Content: Import Tax Hint
+      Content: A Fertilizer Subsidy costs $6 per unit to offset the shipping cost
+        of importing manure and digested fertilizer from other counties.
     - Id: cards.SalesTaxPolicy.category
       Content: Sales Policy
     - Id: cards.SalesTaxPolicy.none
@@ -229,9 +226,9 @@ MonoBehaviour:
       Content: Digesters buy raw manure and turn it into fertilizer that can be shipped
         for cheap.
     - Id: location.shared.toll
-      Content: Toll Road
+      Content: Border Gate
     - Id: location.shared.tollDesc
-      Content: Tolls connect roads from neighboring counties, allowing sales between
+      Content: Gates connect roads from neighboring counties, allowing sales between
         them.
     - Id: location.shared.storageInfo
       Content: <i><u>buys</u> and <u>sells</u> raw manure</i>

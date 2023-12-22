@@ -166,6 +166,10 @@ namespace Zavala.Actors {
             actor.TotalStress = actor.CurrentStress[StressCategory.Bloom]
                 + actor.CurrentStress[StressCategory.Resource]
                 + actor.CurrentStress[StressCategory.Financial];
+            if (actor.StressCount == 0) {
+                actor.AvgStress = 0;
+                return;
+            }
             actor.AvgStress = actor.TotalStress / actor.StressCount;
         }
 

@@ -95,17 +95,20 @@ namespace Zavala.Advisor {
             */
 
             ImportTaxVals[0].SetAll(0);  // NONE
-            ImportTaxVals[1].SetAll(-4); // LOW SUBSIDY
-            ImportTaxVals[1].MFertilizer = 0;
-            ImportTaxVals[2].SetAll(-8); // HIGH SUBSIDY
-            ImportTaxVals[2].MFertilizer = 0;
-            ImportTaxVals[3].SetAll(4);  // TAX
+            ImportTaxVals[1].SetAll(0); // MILK IMPORT SUBSIDY
+            ImportTaxVals[1].Milk = -6;
+            ImportTaxVals[2].SetAll(0); // GRAIN IMPORT SUBSIDY
+            ImportTaxVals[2].Grain = -6;
+            ImportTaxVals[3].SetAll(0);  // FERT IMPORT SUBSIDY
+            ImportTaxVals[3].DFertilizer = -6;
+            ImportTaxVals[3].Manure = -6;
+
 
             SalesTaxVals[0].SetAll(0); // NONE
             SalesTaxVals[1].SetAll(2); // LOW TAX
             SalesTaxVals[2].SetAll(4); // HIGH TAX
             SalesTaxVals[3].SetAll(-2);// SUBSIDY
-            SalesTaxVals[3].MFertilizer = 0;
+            SalesTaxVals[3].MFertilizer = 0; // don't apply subsidies to Phos4Us
 
             RunoffPenaltyVals[0].Manure = 0;
             RunoffPenaltyVals[1].Manure = 8;

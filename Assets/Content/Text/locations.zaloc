@@ -103,10 +103,10 @@ Manure Digester
 Digesters buy raw manure and turn it into fertilizer that can be shipped for cheap.
 
 :: toll
-Toll Road
+Border Gate
 
 :: tollDesc
-Tolls connect roads from neighboring counties, allowing sales between them.
+Gates connect roads from neighboring counties, allowing sales between them.
 
 :: storageInfo
 <i><u>buys</u> and <u>sells</u> raw manure</i>
