@@ -10302,7 +10302,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 22
+  near clip plane: 5
   far clip plane: 400
   field of view: 11
   orthographic: 0
