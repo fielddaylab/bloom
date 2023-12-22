@@ -15,6 +15,7 @@ MonoBehaviour:
   NameId: Pippin
   TitleId: Knoll County Economic Advisor
   IsAdvisor: 1
+  IsEcon: 1
   BackgroundColor:
     serializedVersion: 2
     rgba: 4289912314

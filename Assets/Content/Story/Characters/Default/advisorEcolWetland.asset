@@ -15,9 +15,10 @@ MonoBehaviour:
   NameId: Ethan
   TitleId: Muskeg County Ecological Advisor
   IsAdvisor: 1
+  IsEcon: 0
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4293918624
+    rgba: 4294311875
   PanelColor:
     serializedVersion: 2
     rgba: 4294377433

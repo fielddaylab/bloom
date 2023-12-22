@@ -20,6 +20,7 @@ namespace Zavala {
         }
 
         [SerializeField] private Graphic m_DefaultFader;
+        [SerializeField] private CanvasGroup m_UserPauseGroup;
         [SerializeField] private CanvasGroup m_BorderFader;
         [SerializeField] private Graphic[] m_BorderGraphics;
 
@@ -49,6 +50,7 @@ namespace Zavala {
             m_DefaultFaderAlpha = m_DefaultFader.color.a;
 
             m_DefaultFader.SetAlpha(0);
+            m_UserPauseGroup.gameObject.SetActive(false);
             m_BorderFader.alpha = 0;
 
             SimTimeUtility.OnPauseUpdated.Register(OnPauseUpdated);
@@ -78,6 +80,7 @@ namespace Zavala {
             }
 
             m_LastMode = nextMode;
+            m_UserPauseGroup.gameObject.SetActive(false); // hide, only show if UserPause
 
             if (nextMode == Mode.Cutscene) {
                 m_DefaultState = true;
@@ -101,6 +104,7 @@ namespace Zavala {
                 } else if (nextMode == Mode.Destroy) {
                     c = m_DestroyPauseColor;
                 } else {
+                    m_UserPauseGroup.gameObject.SetActive(true);
                     c = m_UserPauseColor;
                 }
 

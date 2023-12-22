@@ -15,6 +15,7 @@ MonoBehaviour:
   NameId: Danae
   TitleId: Ecological Advisor
   IsAdvisor: 1
+  IsEcon: 0
   BackgroundColor:
     serializedVersion: 2
     rgba: 4292407257
@@ -23,7 +24,7 @@ MonoBehaviour:
     rgba: 4294377433
   HighlightColor:
     serializedVersion: 2
-    rgba: 4293816758
+    rgba: 4291524005
   NameColor:
     serializedVersion: 2
     rgba: 4290501631

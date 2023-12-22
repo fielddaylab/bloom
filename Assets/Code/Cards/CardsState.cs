@@ -46,6 +46,12 @@ namespace Zavala.Cards
         public TextAsset CardDefs;
         public SpriteLibrary Sprites;
 
+        [Header("Slot Colors")]
+        public Color EconLockedSlot;
+        public Color EconUnlockedSlot;
+        public Color EcolLockedSlot;
+        public Color EcolUnlockedSlot;
+
         [HideInInspector] public Dictionary<SerializedHash32, CardData> AllCards;
         [HideInInspector] public List<SerializedHash32> UnlockedCards;
 

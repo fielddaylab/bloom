@@ -74,16 +74,16 @@ namespace Zavala.Cards
             if (slotUnlocked) {
                 m_OverlayImage.enabled = true; // set to open slot image
                 m_OverlayImage.sprite = m_UnlockedSprite;
-                m_OverlayImage.color = m_UnlockedColor;
-                m_SlotBackground.color = m_SlotColor;
+                m_OverlayImage.color = m_LockedColor; // 
+                m_SlotBackground.color = m_UnlockedColor;
                 m_Button.enabled = true;
                 m_Text.SetText(Loc.Find("cards." + m_Type.ToString() + ".category"));
             }
             else {
                 m_OverlayImage.enabled = true; // set to locked slot image
                 m_OverlayImage.sprite = m_LockedSprite;
-                m_OverlayImage.color = m_LockedColor;
-                m_SlotBackground.color = m_UnlockedColor; // same color is used for locked background as locked foreground
+                m_OverlayImage.color = m_SlotColor;
+                m_SlotBackground.color = m_LockedColor; // same color is used for locked background as locked foreground
                 m_Button.enabled = false;
                 m_Text.SetText("");
             }
@@ -118,10 +118,19 @@ namespace Zavala.Cards
             }
         }
 
-        public void SetColors(Color slotColor, Color lockedColor, Color unlockedColor) {
-            m_SlotColor = slotColor;
-            m_LockedColor = lockedColor;
-            m_UnlockedColor = unlockedColor;
+        public void SetColors(bool isEcon, Color panelColor) {
+            CardsState cardState = Game.SharedState.Get<CardsState>();
+            if (isEcon) {
+                // econ advisor
+                m_LockedColor = cardState.EconLockedSlot;
+                m_UnlockedColor = cardState.EconUnlockedSlot;
+                m_SlotColor = panelColor;
+            } else {
+                // ecol advisor
+                m_LockedColor = cardState.EcolLockedSlot;
+                m_UnlockedColor = cardState.EcolUnlockedSlot;
+                m_SlotColor = panelColor;
+            }
         }
 
         public void InstantHideHand() {
@@ -179,7 +188,7 @@ namespace Zavala.Cards
                 for (int i = 0; i < cardData.Count; i++) {
                     CardData data = cardData[i];
                     CardUI card = pools.Cards.Alloc(this.transform.parent != null ? this.transform.parent : this.transform);
-                    CardUIUtility.PopulateCard(card, data, cardState.Sprites, m_SlotColor);
+                    CardUIUtility.PopulateCard(card, data, cardState.Sprites, m_UnlockedColor);
 
                     card.transform.localPosition = this.transform.localPosition;
                     card.transform.SetAsFirstSibling();
@@ -233,7 +242,7 @@ namespace Zavala.Cards
             CardUIUtility.ExtractLocText(data, out string locText);
             // TODO: extract font effects
             m_OverlayImage.sprite = sprite;
-            // m_OverlayImage.color = Color.white;
+            m_OverlayImage.color = Color.white;
             m_Text.SetText(locText);
             m_OverlayImage.enabled = true;
             m_LastKnownCard = data;
@@ -243,6 +252,7 @@ namespace Zavala.Cards
         {
             m_HintText.gameObject.SetActive(true);
             m_OverlayImage.sprite = m_BlankSprite;
+            m_OverlayImage.color = m_LockedColor;
 
             CardUIUtility.ExtractLocHintText(args.Data, out string locText);
             m_HintText.SetText(locText);

@@ -10,6 +10,7 @@ namespace Zavala.Scripting {
         public string NameId;
         public string TitleId;
         public bool IsAdvisor;
+        public bool IsEcon;
 
         [Header("Color Schemes")]
         public Color32 BackgroundColor;

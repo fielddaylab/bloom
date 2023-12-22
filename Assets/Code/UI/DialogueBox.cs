@@ -131,7 +131,7 @@ namespace Zavala.UI {
                         if (isAdvisor) {
                             panelBG = charDef.PanelBackground;
                             foreach (PolicySlot slot in m_PolicySlots) {
-                                slot.SetColors(highlightColor, panelColor, boxColor);
+                                slot.SetColors(charDef.IsEcon, panelColor);
                                 m_PolicyBackground.color = panelColor;
                             }
                         }
