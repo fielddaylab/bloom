@@ -12,6 +12,6 @@ namespace Zavala.Actors
         [NonSerialized] public int TriggerCounter = 0;
 
         [NonSerialized] public int PurchasedStressedSinceLast = 0;
-        [NonSerialized] public int MatchedSinceLast = 0;
+        [NonSerialized] public int MatchedSinceLast = 0; //Matched with subsidy since last
     }
 }

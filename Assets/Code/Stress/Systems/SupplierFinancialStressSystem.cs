@@ -20,14 +20,16 @@ namespace Zavala.Actors
             MarketData market = Game.SharedState.Get<MarketData>();
             if (market.MarketTimer.HasAdvanced())
             {
-                if (supplier.MatchedThisTick)
+                if (supplier.MatchedThisTick/*&& subsidyAppliedThisTick*/)
                 {
                     financeStress.MatchedSinceLast++;
+                    // MatchedSinceLast should be equal to the number of finalized that were were not milk
                 }
 
                 if (supplier.SoldAtALoss)
                 {
                     financeStress.SoldAtLossSinceLast++;
+                    // SoldAtLossSinceLast Doesn't include milk sales
                 }
             }
 

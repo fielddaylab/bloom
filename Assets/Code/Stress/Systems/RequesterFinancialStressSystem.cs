@@ -23,6 +23,7 @@ namespace Zavala.Actors
                 if (requester.MatchedThisTick)
                 {
                     financeStress.MatchedSinceLast++;
+                    // check for subsidy
                 }
 
                 if (requester.PurchasedAtStressedPrice)
