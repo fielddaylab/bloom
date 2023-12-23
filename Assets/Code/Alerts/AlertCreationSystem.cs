@@ -26,7 +26,7 @@ namespace Zavala.Scripting
 
             // if no active events, create alert
             if (component.QueuedEvents.Count > 0 && !component.DisplayingEvent) { // only create if they have events and aren't displaying them
-                component.QueuedEvents.TryPeekFront<EventActorQueuedEvent>(out EventActorQueuedEvent peekEvent);
+                component.QueuedEvents.TryPeekFront(out EventActorQueuedEvent peekEvent);
 
                 if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
                     // do not create UI banners for the fake global alerts
@@ -46,6 +46,7 @@ namespace Zavala.Scripting
                 alert.AlertBase.sprite = GetAlertBaseSprite(peekEvent.Alert, m_AlertAssets);
                 alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
                 
+                /* TEMPORARILY REMOVING FADED ALERTS
                 if ((Game.SharedState.Get<SimTimeState>().Paused & SimPauseFlags.PendingGlobalAlert) != 0) {
                     // kinda hacky but - if there's a queued global alert, that means the game will pause soon,
                     // so the only event queued should be the one being sent to global
@@ -54,6 +55,7 @@ namespace Zavala.Scripting
                 } else {
                     UIAlertUtility.SetAlertFaded(alert, false);
                 }
+                */
                 Debug.Log("[Alerts] Created new alert!");
                 component.DisplayingEvent = alert;
             }

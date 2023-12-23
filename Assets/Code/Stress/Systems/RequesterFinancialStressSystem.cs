@@ -20,9 +20,9 @@ namespace Zavala.Actors
             MarketData market = Game.SharedState.Get<MarketData>();
             if (market.MarketTimer.HasAdvanced())
             {
-                if (requester.MatchedThisTick)
+                if (requester.MatchedThisTick && requester.SubsidyAppliedThisTick)
                 {
-                    financeStress.MatchedSinceLast++;
+                    financeStress.DealsFoundSinceLast++;
                     // check for subsidy
                 }
 
@@ -37,10 +37,11 @@ namespace Zavala.Actors
                 return;
             }
 
-            int purchasedUnstressed = financeStress.MatchedSinceLast - financeStress.PurchasedStressedSinceLast;
+            int purchasedUnstressed = financeStress.DealsFoundSinceLast - financeStress.PurchasedStressedSinceLast;
+            Log.Warn("[RequesterFinancialStressSystem] DealsFound: {0}, PurchasedStressed: {1}", financeStress.DealsFoundSinceLast, financeStress.PurchasedStressedSinceLast);
 
             // TODO: may need to shift this to AFTER market system?
-            if (financeStress.MatchedSinceLast > 0 && financeStress.PurchasedStressedSinceLast >= purchasedUnstressed)
+            if (financeStress.PurchasedStressedSinceLast > 0 && financeStress.PurchasedStressedSinceLast >= purchasedUnstressed)
             {
                 financeStress.TriggerCounter++;
                 if (financeStress.TriggerCounter >= financeStress.NumTriggersPerStressTick)
@@ -49,9 +50,9 @@ namespace Zavala.Actors
                     financeStress.TriggerCounter = 0;
                 }
             }
-            else
+            else if (financeStress.DealsFoundSinceLast > 0)
             {
-                // decrease stress every not loss sale
+                // decrease stress for every deal found
                 financeStress.TriggerCounter++;
                 if (financeStress.TriggerCounter >= financeStress.NumTriggersPerStressTick)
                 {
@@ -60,7 +61,7 @@ namespace Zavala.Actors
                 }
             }
 
-            financeStress.MatchedSinceLast = 0;
+            financeStress.DealsFoundSinceLast = 0;
             financeStress.PurchasedStressedSinceLast = 0;
         }
     }

@@ -25,8 +25,9 @@ namespace Zavala.Economy {
         [NonSerialized] public ResourceStorage Storage;
         [NonSerialized] public MarketRequesterPriorityList Priorities;
         [NonSerialized] public int[] BestPriorityIndex;
-        [NonSerialized] public bool MatchedThisTick;
-        [NonSerialized] public bool PurchasedAtStressedPrice;
+        [NonSerialized] public bool MatchedThisTick = false;
+        [NonSerialized] public bool SubsidyAppliedThisTick = false;
+        [NonSerialized] public bool PurchasedAtStressedPrice = false;
 
         [NonSerialized] public ResourceBlock Requested;
         [NonSerialized] public int RequestCount;

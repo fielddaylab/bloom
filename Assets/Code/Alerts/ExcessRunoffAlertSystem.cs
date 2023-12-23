@@ -1,3 +1,4 @@
+using BeauUtil.Debugger;
 using BeauUtil.Variants;
 using FieldDay;
 using FieldDay.Systems;
@@ -20,14 +21,16 @@ namespace Zavala.Sim
             }
 
             // check if runoff is excessive
-            Debug.Log("[Phosphorus] Amount generated last tick: " + generator.AmountProducedLastTick);
+            Log.Msg("[ExcessRunoffAlertSystem] Amount generated last tick: " + generator.AmountProducedLastTick);
             if (generator.AmountProducedLastTick >= RunoffParams.ExcessRunoffThreshold) {
                 // if so, create alert on this tile
-                Debug.Log("[ExcessRunoffAlertSystem] Amount generated last tick: " + generator.AmountProducedLastTick);
                 if (generator.transform.parent != null && generator.transform.parent.TryGetComponent(out EventActor parentActor)) {
-                    EventActorUtility.QueueAlert(parentActor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex);
+                    EventActorUtility.QueueAlert(parentActor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
+                        new NamedVariant("isFromGrainFarm", false));
                 } else {
-                    EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex);
+                    Log.Warn("[ExcessRunoffAlertSystem] Creating grain alert?");
+                    EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
+                        new NamedVariant("isFromGrainFarm", true));
                 }
             }
         }

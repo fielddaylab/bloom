@@ -8,6 +8,6 @@
     "Zavala.Sim.PhosphorusSim::MinFlowThreshold": 4,
     "Zavala.Sim.PhosphorusSim::MinFlowProportion": 0.699999988079071,
     "Zavala.Sim.PhosphorusSim::MaxFlowProportionSteep": 0.800000011920929,
-    "Zavala.Sim.RunoffParams::MFertilizerRunoffProportion": 2,
-    "Zavala.Sim.RunoffParams::ExcessRunoffThreshold": 8
+    "Zavala.Sim.RunoffParams::MFertilizerRunoffProportion": 4,
+    "Zavala.Sim.RunoffParams::ExcessRunoffThreshold": 4
 }

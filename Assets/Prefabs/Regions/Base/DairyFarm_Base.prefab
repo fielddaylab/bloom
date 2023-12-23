@@ -582,8 +582,8 @@ MonoBehaviour:
   m_LowThreshold: 8
   m_MediumThreshold: 4
   m_HighThreshold: 0
+  m_StartingState: 2
   StressDelta: 1
-  Position: {fileID: 0}
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0

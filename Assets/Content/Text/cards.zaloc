@@ -71,32 +71,31 @@ Skim & Dredge
 
 // IMPORT
 :: ImportTaxPolicy.category
-Import Policy
+Import Subsidy
 
 :: ImportTaxPolicy.none
 None
 
 :: ImportTaxPolicy.none.hint
-With <i>no</i> <b>import policy</b>, you aren't doing anything to encourage trade between regions. 
+With no Import Subsidy, you aren't doing anything to encourage trade between regions. 
 
 :: ImportTaxPolicy.low
-Low Subsidy
+Milk
 
 :: ImportTaxPolicy.low.hint
-A <i>low</i> <b>import subsidy</b> will encourage this county to buy resources they are lacking from other counties for a cost of $4 per purchase. It cost farmers more to transport goods from further away because shipping costs are greater over longer distances.
+A Milk Subsidy costs $6 per unit to offset the shipping cost of importing milk from other counties.
 
 :: ImportTaxPolicy.high
-High Subsidy
+Grain
 
 :: ImportTaxPolicy.high.hint
-A <i>high</i> <b>import subsidy</b> will encourage locals to buy resources they are lacking from other counties for a cost of $8 per purchase. It cost farmers more to transport goods from further away because shipping costs are greater over longer distances.
-
+A Grain Subsidy costs $6 per unit to offset the shipping cost of importing grain from other counties.
 
 :: ImportTaxPolicy.alt
-Tax
+Fertilizer
 
 :: ImportTaxPolicy.alt.hint
-Import Tax Hint
+A Fertilizer Subsidy costs $6 per unit to offset the shipping cost of importing manure and digested fertilizer from other counties.
 
 // SALES
 :: SalesTaxPolicy.category

@@ -17,8 +17,10 @@ namespace Zavala.Economy {
         [NonSerialized] public OccupiesTile Position;
 
         [NonSerialized] public ResourceStorage Storage;
-        [NonSerialized] public bool SoldAtALoss = false;
+        [NonSerialized] public bool SoldAtALossExcludingMilk = false;
         [NonSerialized] public bool MatchedThisTick = false;
+        [NonSerialized] public bool MatchedThisTickWasMilk = false;
+        // [NonSerialized] public bool SubsidyAppliedThisTick = false;
 
         [NonSerialized] public MarketSupplierPriorityList Priorities;
         [NonSerialized] public int[] BestPriorityIndex;
@@ -51,7 +53,7 @@ namespace Zavala.Economy {
             MarketUtility.DeregisterSupplier(this);
             RoadUtility.DeregisterSource(Position);
 
-            SoldAtALoss = false;
+            SoldAtALossExcludingMilk = false;
             Priorities.PrioritizedBuyers.Clear();
 
             base.OnDisable();

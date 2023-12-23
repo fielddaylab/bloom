@@ -274,8 +274,8 @@ MonoBehaviour:
       Grain: 20
       Milk: 40
   StressedPurchaseThresholds:
-    Phosphorus: 30
-    Grain: 40
+    Phosphorus: 31
+    Grain: 50
     Milk: 0
 --- !u!114 &7708306960153739432
 MonoBehaviour:
@@ -942,7 +942,7 @@ MonoBehaviour:
   SceneOnFail:
     m_ScenePath: Assets/Scenes/TitleScreen.unity
     m_GUID: 3a1ab0f762ee5684cb6a80d40c4c4dc9
-  IgnoreFailure: 0
+  IgnoreFailure: 1
   EndConditionsPerRegion:
   - Region: 0
     IndependentEndConditions:

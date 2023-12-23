@@ -73,6 +73,7 @@ namespace Zavala.Scripting {
         public NamedVariant RegionIndex;
         public EventActorAlertType Alert;
         public int TileIndex;
+        // public bool WasSentToGlobal;
     }
 
     public enum EventActorAlertType {
