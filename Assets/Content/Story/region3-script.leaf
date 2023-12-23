@@ -47,7 +47,8 @@ $endif
 {@advisorEcolPrairie}    I say we should just shut those large Dairy Farms down.
 
 $if Visited("region2.unlockStorage")
-    {@advisorEcolPrairie}    Otherwise, we could build more storage units.
+    {@advisorEcolForest}    We have to find a way to get the manure off the ground.
+    
 $endif
 $if PolicyIsUnlocked(SkimmingPolicy)
     {@advisorEcolPrairie}    Or use skimmers to clean up.
