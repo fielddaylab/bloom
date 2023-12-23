@@ -160,13 +160,13 @@ $set intro:pendingPolicy = true
 {viewpoliciesnext}
 {@advisorEconHill}      You can set it to None if you like, but we ought to decide.
 
-:: setPolicyReminder
-@trigger AdvisorOpened
-@conditions advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete == false, Visited("region1.letsGetStarted")
-@forcePolicy    Economy
-$call FocusClear()
-{viewpoliciesnext}
-{@advisorEconHill}      Choose a Sales Policy and we can continue.
+// :: setPolicyReminder
+// @trigger AdvisorOpened
+// @conditions advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete == false, Visited("region1.letsGetStarted")
+// @forcePolicy    Economy
+// $call FocusClear()
+// {viewpoliciesnext}
+// {@advisorEconHill}      Choose a Sales Policy and we can continue.
 
 :: policySet
 @trigger        PolicySet
@@ -418,20 +418,27 @@ $endif
 :: discoverFirstBloom
 @trigger        AlertExamined
 @cutscene
-@conditions     alertType == "bloom", alertRegion == 1
+@conditions     alertType == "bloom", alertRegion == 1 
 @once
 // $call Pause()
 $set global:bloomDiscovered = true
 // TODO: trigger ACT 2 HERE.
 {@advisorEcolHill}    What's this...?
 $call CutsceneBegin()
-$call CutscenePrepareImages("intro/frame1-3.png", "intro/frame1-3.png", "intro/frame1-3.png")
+    $call CutscenePrepareImages("act2/2-1-1.png", "act2/2-1-2.png", "act2/2-1-3.png")
     $call CutsceneAllImages(0.5)
-    Something is wrong with the lakes... They are swamped with revolting green mire!
-    Manure from Dairy Farms must be running off into the lake with rainwater.
-    The cities need the farms for their milk, and farmers are struggling as is...
+    Something is wrong with the lakes. They are filled with revolting green algae! This can't be safe for our ecosystem.
+    $call CutscenePrepareImages("act2/2-2-1.png", "act2/2-2-2.png", "act2/2-2-3.png")
+	$call CutsceneAllImages(0.5)
+	Could they grain farmers be to blame? Algae loves phosphorus, and they import phosphorus from elsewhere and overapply it!
+    $call CutscenePrepareImages("act2/2-3-1.png", "act2/2-3-2.png", "act2/2-3-3.png")
+	$call CutsceneAllImages(0.5)
+	Or the dairy farmers? Their cows' phosphorus-filled manure runs off into the lakes too! But it's expensive to ship elsewhere...
+    $call CutscenePrepareImages("act2/2-4-1.png", "act2/2-4-2.png", "act2/2-4-3.png")
+	$call CutsceneAllImages(0.5)
+	Both make good points... But our cities need milk. You - and SAGA - will need to take action.
 $call CutsceneEnd()
-{@advisorEcolHill}    Something must be done! I need to find out what's causing it.
+{@advisorEcolHill}    Something must be done! I'll keep an eye out for any phosphorus runoff.
 $call OffsetAlgaeGrowthThreshold(1)
 $call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)
@@ -458,25 +465,30 @@ $endif
 
 :: SellAtLossGrain
 @trigger        AlertExamined
-@conditions     alertType == "selling-loss", alertRegion == 1, isFromGrainFarm == true
+@conditions     alertType == "selling-loss", isFromGrainFarm == true
 @forcePolicy    Economy
-@queued
 // $call Pause()
-{@grainFarmerHill}      Aw shucks... How am I gonna feed my family?
-{@advisorEconHill}      Hmm... This farmer is losing money when they sell.
-{@advisorEconHill}      I suspect their phosphorus source is too expensive. 
-{viewpoliciesnext}
-{@advisorEconHill}      Perhaps you can build a shorter road to decrease shipping costs.
-$if global:builtDigester
-    {@advisorEconHill}      I've heard that Digested Fertilizer is cheaper to ship.
+{local @grainFarmer}      Aw shucks... How am I gonna feed my family?
+{local @advisorEcon}      Hmm... This farmer is losing money when they sell.
+{local @advisorEcon}      I suspect their phosphorus source is too expensive. 
+{local @advisorEcon}      Perhaps you can build a shorter road to decrease shipping costs.
+$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
+$if local:taxLevel > 0
+    $if local:taxLevel < 3
+    {local @advisorEcon}    Or set a more favorable tax policy.
+    $endif
 $endif
+$if global:builtDigester
+    {local @advisorEcon}  Otherwise, that <i>Digested Fertilizer is cheaper to ship...
+$endif
+{viewpoliciesnext}
+{local @advisorEcon}    It's your choice, Director.     
 // $call Unpause()
 
 :: SellAtLossCafo
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss", alertRegion == 1, isFromGrainFarm == false
 @forcePolicy    Economy
-@queued
 // $call Pause()
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {@advisorEconHill}      Hmm... Bertram here is in a rough spot.
@@ -501,7 +513,7 @@ $endif
 @conditions     FailureIsEnabled()
 @cutscene
 $if FailureIsEnabled()
-{local @advisorEcon}    You failed :C
+{local @advisorEcon}    You failed D:
 {local @advisorEcon}      {$local:endType} in region {$local:regionIndex}
 $call CutsceneBegin()
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
@@ -515,6 +527,7 @@ $endif
 
 :: GameCompleted
 @trigger       GameCompleted
+@conditions    FailureIsEnabled()
 @cutscene
 {local @advisorEcon}    You won :D Yippee!
 $call CutsceneBegin()

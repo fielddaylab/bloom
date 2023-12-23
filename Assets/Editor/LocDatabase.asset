@@ -303,7 +303,7 @@ MonoBehaviour:
     - Id: ui.lens.market.graph.header
       Content: Total Fertilizer Market Share
     - Id: ui.lens.market.targets.header
-      Content: Market Targets
+      Content: Local Market Targets
     - Id: ui.popup.info.buying
       Content: 'Buying:'
     - Id: ui.popup.info.selling

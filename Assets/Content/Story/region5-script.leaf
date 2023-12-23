@@ -23,7 +23,7 @@ $call CutsceneBegin()
     Now we have the tools and policies to recycle and ship our own fertilizer. Could we outcompete Phos4Us? 
 	$call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
 	$call CutsceneAllImages(0.5)
-    It's a race to the end... We stem the flow of phosphorus before algae overtakes our cities!
+    It's a race to the end... We must stem the flow of phosphorus before algae overtakes our cities!
     $call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
 	$call CutsceneAllImages(0.5)
     The stakes are high... Are you up to the task?

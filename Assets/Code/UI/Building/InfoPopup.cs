@@ -206,7 +206,7 @@ namespace Zavala.UI.Info {
                     m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
                     m_HeaderBG.color = TollColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
-                    m_DescriptionText.gameObject.SetActive(true);
+                    m_DescriptionText.gameObject.SetActive(false);
                     m_DescriptionImage.sprite = m_TollCapture;
                     break;
                 }
