@@ -99,8 +99,8 @@ $call UnlockShopItem("Storage")
 
 :: runoffGeneric // triggered by runoffBranch
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
-{@advisorEcolForest}    I say we build more <b>Storage</b> units.
-{@advisorEconForest}    Those could help, but they won't come cheap.
+{@advisorEcolForest}    We have to find a way to use the manure for fertilizer. 
+{@advisorEconForest}     <b>Storage</b> units help, but they aren't cheap.
 {viewpoliciesnext}
 {@advisorEcolForest}    A policy adjustment, then?
 $call ForcePolicyInstant("Ecology")
@@ -151,7 +151,7 @@ $call ForcePolicyInstant("Economy")
 @forcePolicy    Ecology
 {@advisorEcolForest}    More algae blooms... Gross!
 $if global:storageUnlocked
-    {@advisorEcolForest}    I say we build more storage to stop runoff.
+    {@advisorEcolForest}    We have to get the manure off the ground. It can be used as fertilizer or at put in <b>Storage</b> units.
 $endif
 $if PolicyIsUnlocked(SkimmingPolicy)
     {@advisorEcolForest}    Or use skimmers to clean up.

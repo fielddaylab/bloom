@@ -112,17 +112,17 @@ Even without sales tax, you'll gain $5 for every milk shipment the city consumes
 Low Tax
 
 :: SalesTaxPolicy.low.hint
-With low sales tax, you'll gain $2 with every purchase on top of city revenue and gain $5 for every milk shipment the city consumes.
+With low sales tax, you'll gain $2 with every purchase of any good.
 
 
 :: SalesTaxPolicy.high
 High Tax
 
 :: SalesTaxPolicy.high.hint
-With high sales tax, you'll gain $4 with every purchase on top of city revenue and gain $5 for every milk shipment the city consumes.
+With high sales tax, you'll gain $4 with every purchase of any good.
 
 :: SalesTaxPolicy.alt
 Subsidy
 
 :: SalesTaxPolicy.alt.hint
-The subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourages buyers by lowering their costs. You will continue to gain $5 for every milk shipment the city consumes.
+The subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourages buyers by lowering their costs.
