@@ -38,7 +38,7 @@ namespace Zavala.Actors
             }
 
             int purchasedUnstressed = financeStress.DealsFoundSinceLast - financeStress.PurchasedStressedSinceLast;
-            Log.Warn("[RequesterFinancialStressSystem] DealsFound: {0}, PurchasedStressed: {1}", financeStress.DealsFoundSinceLast, financeStress.PurchasedStressedSinceLast);
+            Log.Msg("[RequesterFinancialStressSystem] DealsFound: {0}, PurchasedStressed: {1}", financeStress.DealsFoundSinceLast, financeStress.PurchasedStressedSinceLast);
 
             // TODO: may need to shift this to AFTER market system?
             if (financeStress.PurchasedStressedSinceLast > 0 && financeStress.PurchasedStressedSinceLast >= purchasedUnstressed)

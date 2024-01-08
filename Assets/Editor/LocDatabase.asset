@@ -52,6 +52,10 @@ MonoBehaviour:
       Content: Low
     - Id: cards.severity.high
       Content: High
+    - Id: cards.DummyMilkRevenue.category
+      Content: Milk Revenue
+    - Id: cards.DummyMilkRevenue.none
+      Content: Always Active
     - Id: cards.RunoffPolicy.category
       Content: Runoff Fine
     - Id: cards.RunoffPolicy.none
@@ -132,19 +136,16 @@ MonoBehaviour:
     - Id: cards.SalesTaxPolicy.low
       Content: Low Tax
     - Id: cards.SalesTaxPolicy.low.hint
-      Content: With low sales tax, you'll gain $2 with every purchase on top of city
-        revenue and gain $5 for every milk shipment the city consumes.
+      Content: With low sales tax, you'll gain $2 with every purchase of any good.
     - Id: cards.SalesTaxPolicy.high
       Content: High Tax
     - Id: cards.SalesTaxPolicy.high.hint
-      Content: With high sales tax, you'll gain $4 with every purchase on top of
-        city revenue and gain $5 for every milk shipment the city consumes.
+      Content: With high sales tax, you'll gain $4 with every purchase of any good.
     - Id: cards.SalesTaxPolicy.alt
       Content: Subsidy
     - Id: cards.SalesTaxPolicy.alt.hint
       Content: The subsidy costs you $2 for every purchase except for fertilzer from
-        Phos4Us. Subsidies encourages buyers by lowering their costs. You will continue
-        to gain $5 for every milk shipment the city consumes.
+        Phos4Us. Subsidies encourages buyers by lowering their costs.
     BasePath: cards
     AllBasePaths:
     - Path: cards

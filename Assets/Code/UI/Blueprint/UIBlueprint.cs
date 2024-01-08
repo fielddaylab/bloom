@@ -45,6 +45,7 @@ namespace Zavala.UI
 
         [SerializeField] private CanvasGroup m_PolicyBoxGroup;
         [SerializeField] private UIPolicyBox[] m_PolicyBoxes;
+        [SerializeField] private UIPolicyBox m_MilkRevenueBox; // Not in m_PolicyBoxes as it is not associated with a PolicyType
 
         [Header("Receipt")]
         [SerializeField] private CanvasGroup m_ReceiptGroup;
@@ -98,6 +99,8 @@ namespace Zavala.UI
                 box.gameObject.SetActive(false);
                 box.Popup.Group.alpha = 0;
             }
+            m_MilkRevenueBox.gameObject.SetActive(true);
+            m_MilkRevenueBox.Popup.Group.alpha = 0;
 
             return null;
         }
@@ -305,39 +308,48 @@ namespace Zavala.UI
             //m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
 
-        public void OnMarketTickAdvanced(MarketData data, SimGridState grid)
-        {
+        public void OnMarketTickAdvanced(MarketData data, SimGridState grid) {
+
+            int region = grid.CurrRegionIndex;
+            if (data.SalesTaxHistory[region].Net.Count <= 0) return;
+
+            // Show milk revenue popup (dummy policy box, not associated with a PolicyType)
+            // POP instead of PEEK because this one is not needed for any graphs, and isn't synced with market ticks.
+            if (data.MilkRevenueHistory[region].Net.TryPopFront(out int milkRev) && milkRev != 0) {
+                PolicyBoxUtility.SetPopupAmt(m_MilkRevenueBox.Popup, milkRev);
+                PolicyBoxUtility.PlayPopupRoutine(m_MilkRevenueBox);
+            }  
+
+
             // Show new popups
-            foreach(var box in m_PolicyBoxes)
+            foreach (var box in m_PolicyBoxes)
             {
                 int amt = 0;
 
                 // TODO: calculate amounts from data history
-                if (data.SalesTaxHistory[grid.CurrRegionIndex].Net.Count > 0)
-                {
+
                     // TODO: calculate amounts from data history
                     switch(box.PolicyType)
                     {
                         case PolicyType.SalesTaxPolicy:
-                            amt = data.SalesTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            amt = data.SalesTaxHistory[region].Net.PeekFront();
                             PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                             break;
                         case PolicyType.ImportTaxPolicy:
-                            amt = data.ImportTaxHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            amt = data.ImportTaxHistory[region].Net.PeekFront();
                             PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                             break;
                         case PolicyType.RunoffPolicy:
-                            amt = data.PenaltiesHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            amt = data.PenaltiesHistory[region].Net.PeekFront();
                             // PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                             continue; // skip past playing animation, go to next policy
                         case PolicyType.SkimmingPolicy:
-                            amt = data.SkimmerCostHistory[grid.CurrRegionIndex].Net.PeekFront();
+                            amt = data.SkimmerCostHistory[region].Net.PeekFront();
                             PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                             break;
                         default:
                             break;
                     }
-                }
 
                 // Display animation
                 if (amt != 0)

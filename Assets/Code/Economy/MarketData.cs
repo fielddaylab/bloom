@@ -44,6 +44,8 @@ namespace Zavala.Economy
         // Skimmer
         public DataHistory[] SkimmerCostHistory;
 
+        // Milk Revenue
+        public DataHistory[] MilkRevenueHistory;
 
         void IRegistrationCallbacks.OnDeregister() {
         }
@@ -67,8 +69,10 @@ namespace Zavala.Economy
             DataHistoryUtil.InitializeDataHistory(ref ImportTaxHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref PenaltiesHistory, RegionInfo.MaxRegions, barChartHistoryDepth);
 
-            int skimmerHistoryDepth = 2;
-            DataHistoryUtil.InitializeDataHistory(ref SkimmerCostHistory, RegionInfo.MaxRegions, skimmerHistoryDepth);
+            int miscHistoryDepth = 4;
+            DataHistoryUtil.InitializeDataHistory(ref SkimmerCostHistory, RegionInfo.MaxRegions, miscHistoryDepth);
+            DataHistoryUtil.InitializeDataHistory(ref MilkRevenueHistory, RegionInfo.MaxRegions, miscHistoryDepth);
+
         }
     }
 
@@ -432,6 +436,10 @@ namespace Zavala.Economy
             marketData.SkimmerCostHistory[regionIndex].AddPending(skimmerCost);
         }
 
+        public static void RecordMilkRevenueToHistory(MarketData marketData, int milkRevenue, int regionIndex) {
+            marketData.MilkRevenueHistory[regionIndex].AddPending(milkRevenue);
+        }
+
         public static void FinalizeCycleHistory(MarketData marketData) {
             // Pie Chart
             for (int i = 0; i < marketData.CFertilizerSaleHistory.Length; i++) {
@@ -459,6 +467,11 @@ namespace Zavala.Economy
             for (int i = 0; i < marketData.SkimmerCostHistory.Length; i++)
             {
                 marketData.SkimmerCostHistory[i].ConvertPending();
+            }
+
+            // Milk Revenue
+            for (int i = 0; i < marketData.MilkRevenueHistory.Length; i++) {
+                marketData.MilkRevenueHistory[i].ConvertPending();
             }
         }
 

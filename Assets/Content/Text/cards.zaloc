@@ -12,6 +12,14 @@ Low
 :: severity.high
 High
 
+// MILK REVENUE
+:: DummyMilkRevenue.category
+Milk Revenue
+
+:: DummyMilkRevenue.none
+Always Active
+
+
 // RUNOFF
 :: RunoffPolicy.category
 Runoff Fine

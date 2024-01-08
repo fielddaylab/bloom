@@ -77,7 +77,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RequestMask: 16
   MaxRequests: 3
-  AgeOfUrgency: 20
+  AgeOfUrgency: 30
   IsLocalOption: 0
   InfiniteRequests: 0
   RefusesSameBuildingType: 0

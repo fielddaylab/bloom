@@ -66,6 +66,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 72672cd65ee38ca458430482179011bb, type: 3}
   - {fileID: 21300000, guid: b55285f6fa5d00e4eb593d7c062b15fc, type: 3}
   - {fileID: 21300000, guid: 22383a87d579ab84aaac524370c41317, type: 3}
+  - {fileID: 21300000, guid: 312c4ba7e2be4334bb0a3c5acd350d15, type: 3}
   - {fileID: 21300000, guid: b53b1538761d4cc4a9aa46586c322d8a, type: 3}
   - {fileID: 21300000, guid: 371b64b8ab90383469292c663e1dc866, type: 3}
   - {fileID: 21300000, guid: af582ab87b4a1f146a99d9adaa0a8097, type: 3}
@@ -75,7 +76,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e132d05ab7367dc46b915a30d956bbc4, type: 3}
   - {fileID: 21300000, guid: ee19c47af36bd79449808e67e5fd48c8, type: 3}
   - {fileID: 21300000, guid: 3221538a6ea084f42bdadc9ce3f60b40, type: 3}
-  - {fileID: 21300000, guid: e39f42aab065b7641a33851700b992c7, type: 3}
   - {fileID: 21300000, guid: c90324ba8f6d6084aaffdd2c3c0f017b, type: 3}
   - {fileID: 21300000, guid: 5003940beef422d4693a43a7aaf83470, type: 3}
   - {fileID: 21300000, guid: a00cd84bdab17764fa00e8d8c3cc95b2, type: 3}
@@ -113,6 +113,7 @@ SpriteAtlas:
   - policy-sales_0
   - policy-runoff_1
   - advisor-ecol_urban
+  - policy-skim_1
   - advisor-econ_hills
   - advisor-econ_prairie
   - policy-import_0
@@ -122,7 +123,6 @@ SpriteAtlas:
   - advisor-ecol_prairie
   - policy-runoff_3
   - grain_hills
-  - policy-skim_2
   - policy-import_3
   - city_hills
   - manure-resource
@@ -142,7 +142,7 @@ SpriteAtlas:
   - grain_prairie
   - grain-resource
   - cafo_hills
-  - policy-skim_1
+  - policy-skim_2
   - city_wetland
   m_RenderDataMap: {}
   m_Tag: FancyAtlas

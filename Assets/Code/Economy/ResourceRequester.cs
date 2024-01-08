@@ -12,7 +12,7 @@ namespace Zavala.Economy {
     public sealed class ResourceRequester : BatchedComponent {
         [AutoEnum] public ResourceMask RequestMask;
         public int MaxRequests = 3;
-        public int AgeOfUrgency = 20; // Min age at which requests begin to be marked as urgent
+        public int AgeOfUrgency = 30; // Min age at which requests begin to be marked as urgent
 
         public bool IsLocalOption = false; // used by Let It Sit option on Dairy Farms
         public bool InfiniteRequests = false;  // used by Let It Sit option on Dairy Farms

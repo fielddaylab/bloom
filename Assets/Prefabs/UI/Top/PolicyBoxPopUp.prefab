@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8839060936701881886}
   - component: {fileID: 6603650058873489753}
   - component: {fileID: 8666151609453551020}
-  - component: {fileID: 4334917296908436240}
   m_Layer: 5
   m_Name: Amt Text
   m_TagString: Untagged
@@ -95,8 +94,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -152,25 +151,6 @@ MonoBehaviour:
   m_Offset0: {x: 0, y: 0}
   m_Offset1: {x: 0, y: 0}
   m_Offset2: {x: 0, y: 0}
---- !u!114 &4334917296908436240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2164157049299710635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d846625481429e4bb310e7d50693c3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Text: {fileID: 6603650058873489753}
-  m_DefaultText:
-    m_Source: cards.RunoffPolicy.category
-    m_HashValue: 766725288
-  m_TintSprites: 0
-  m_Prefix: 
-  m_Postfix: 
 --- !u!1 &3661672544175084644
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000019073486}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4685741110615911560
@@ -251,15 +231,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8745098, g: 0.8039216, b: 0.16078432, a: 1}
+  m_Color: {r: 0.9490196, g: 0.6392157, b: 0.015686275, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_CornerRadius: 15
-  m_Resolution: 2
+  m_CornerRadius: 4
+  m_Resolution: 1
   m_Outline: 0
   m_Thickness: 1
 --- !u!1 &7167347784582636670
@@ -302,8 +282,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 120, y: -14.6}
-  m_SizeDelta: {x: 0, y: 18}
+  m_AnchoredPosition: {x: 120, y: 0}
+  m_SizeDelta: {x: 0, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3524825409264167842
 CanvasRenderer:
@@ -326,10 +306,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 5
-    m_Right: 5
-    m_Top: 5
-    m_Bottom: 5
+    m_Left: 2
+    m_Right: 2
+    m_Top: 2
+    m_Bottom: 2
   m_ChildAlignment: 4
   m_Spacing: 0
   m_ChildForceExpandWidth: 0

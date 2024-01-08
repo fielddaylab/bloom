@@ -891,7 +891,7 @@ namespace Zavala.Economy
 
                     if (activeRequest.Supplied.Milk == 0) {
                         supplier.SoldAtALossExcludingMilk = true;
-                        Log.Warn("[MarketSystem] SOLD AT A LOSS, EXCLUDING MILK");
+                        Log.Msg("[MarketSystem] SOLD AT A LOSS, EXCLUDING MILK");
                     } else {
                         supplier.MatchedThisTickWasMilk = true;
                     }
@@ -902,7 +902,7 @@ namespace Zavala.Economy
             int dummyMarketIndex = GetMarketIndexOfResourceBlock(activeRequest.Supplied);
             if (supplierOffer.TotalCost >= config.StressedPurchaseThresholds[dummyMarketIndex])
             {
-                Log.Warn("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!", 
+                Log.Msg("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!", 
                     activeRequest.Requester.transform.name,
                     activeRequest.Supplied,
                     supplierOffer.TotalCost,

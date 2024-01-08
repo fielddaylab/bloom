@@ -41,7 +41,7 @@ namespace Zavala.Actors
             }
 
             int soldUnstressed = financeStress.NonMilkSoldSinceLast - financeStress.SoldAtLossSinceLast;
-            Log.Warn("[SupplierFinancialStressSystem] NonMilkSold: {0}, SoldAtLoss: {1}", financeStress.NonMilkSoldSinceLast, financeStress.SoldAtLossSinceLast);
+            Log.Msg("[SupplierFinancialStressSystem] NonMilkSold: {0}, SoldAtLoss: {1}", financeStress.NonMilkSoldSinceLast, financeStress.SoldAtLossSinceLast);
 
             // TODO: may need to shift this to AFTER market system?
             if (financeStress.NonMilkSoldSinceLast > 0 && financeStress.SoldAtLossSinceLast >= soldUnstressed)
