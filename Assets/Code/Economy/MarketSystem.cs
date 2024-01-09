@@ -145,6 +145,12 @@ namespace Zavala.Economy
 
                 // IF ANY SELLER MATCHES THE BEST PRIORITY INDEX...
                 bool matchFound = false;
+
+                // Skip this requester if they couldn't hold what they are requesting.
+                if (!MarketUtility.CanHoldRequest(requester)) {
+                    Log.Msg("[MarketSystem] Requester {0} cannot hold their request! Skipping...", requester.name);
+                    continue;
+                }
                 // TODO: only iterate through resources that match buyer's buy mask
                 for (int i = 0; i < MarketUtility.NumMarkets; i++)
                 {

@@ -135,7 +135,7 @@ MonoBehaviour:
   IsLocalOption: 0
   InfiniteRequests: 1
   RefusesSameBuildingType: 1
-  OverridesBuyPrice: 1
+  OverridesBuyPrice: 0
   OverrideBlock:
     Phosphorus: 0
     Grain: 0

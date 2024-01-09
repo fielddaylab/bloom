@@ -154,10 +154,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capacity:
-    Manure: 8
-    MFertilizer: 8
-    DFertilizer: 8
-    Grain: 8
+    Manure: 0
+    MFertilizer: 0
+    DFertilizer: 0
+    Grain: 0
     Milk: 8
   Current:
     Manure: 0

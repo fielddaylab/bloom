@@ -322,11 +322,13 @@ namespace Zavala.Economy {
         /// Returns if a resource block can be fully added to the given source block.
         /// </summary>
         static public bool CanAddFull(in ResourceBlock source, in ResourceBlock production, in ResourceBlock capacity) {
-            return source.Manure + production.Manure <= capacity.Manure
+            bool eval =  source.Manure + production.Manure <= capacity.Manure
                 && source.MFertilizer + production.MFertilizer <= capacity.MFertilizer
                 && source.DFertilizer + production.DFertilizer <= capacity.DFertilizer
                 && source.Grain + production.Grain <= capacity.Grain
                 && source.Milk + production.Milk <= capacity.Milk;
+            // Log.Msg("[ResourceUtility] CanAddFull {0} + {1} < {2}? {3}", source, production, capacity, eval);
+            return eval;
         }
 
         /// <summary>
@@ -338,24 +340,31 @@ namespace Zavala.Economy {
         }
 
         /// <summary>
-        /// Clamps the given block to the given capacity.
+        /// Attempts to clamp the given block to the given capacity, returns true if anything was clamped.
         /// </summary>
-        static public void Clamp(ref ResourceBlock source, in ResourceBlock capacity) {
+        static public bool TryClamp(ref ResourceBlock source, in ResourceBlock capacity) {
+            bool somethingClamped = false;
             if (source.Manure > capacity.Manure) {
+                somethingClamped = true;
                 source.Manure = capacity.Manure;
             }
             if (source.MFertilizer > capacity.MFertilizer) {
+                somethingClamped = true;
                 source.MFertilizer = capacity.MFertilizer;
             }
             if (source.DFertilizer> capacity.DFertilizer) {
+                somethingClamped = true;
                 source.DFertilizer = capacity.DFertilizer;
             }
             if (source.Grain > capacity.Grain) {
+                somethingClamped = true;
                 source.Grain = capacity.Grain;
             }
             if (source.Milk > capacity.Milk) {
+                somethingClamped = true;
                 source.Milk = capacity.Milk;
             }
+            return somethingClamped;
         }
 
         /// <summary>

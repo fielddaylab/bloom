@@ -77,9 +77,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capacity:
-    Manure: 8
-    MFertilizer: 8
-    DFertilizer: 8
+    Manure: 6
+    MFertilizer: 6
+    DFertilizer: 6
     Grain: 8
     Milk: 0
   Current:
@@ -338,6 +338,7 @@ MonoBehaviour:
   m_LowThreshold: 8
   m_MediumThreshold: 4
   m_HighThreshold: 0
+  m_StartingState: 2
   StressDelta: 1
 --- !u!1001 &3743880648583490365
 PrefabInstance:

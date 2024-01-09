@@ -29,7 +29,7 @@ namespace Zavala.Economy {
 
             // Post inifinite requests when enabled
             if (Request && Request.InfiniteRequests) {
-                MarketUtility.RegisterInifiniteProducer(this);
+                MarketUtility.RegisterInfiniteProducer(this);
             }
         }
 

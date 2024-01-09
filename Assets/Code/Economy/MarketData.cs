@@ -306,7 +306,7 @@ namespace Zavala.Economy
             }
         }
 
-        static public void RegisterInifiniteProducer(ResourceProducer producer) {
+        static public void RegisterInfiniteProducer(ResourceProducer producer) {
             MarketData marketData = Game.SharedState.Get<MarketData>();
             Assert.NotNull(marketData);
             // QueueRequest(producer.Request, producer.Requires);
@@ -329,6 +329,12 @@ namespace Zavala.Economy
         static public bool QueueRequest(ResourceRequester requester, ResourceBlock request) {
             request &= requester.RequestMask;
 
+            if (requester.Storage != null 
+                && !ResourceBlock.CanAddFull(in requester.Storage.Current, in request, in requester.Storage.Capacity)) {
+                // couldn't fit this request in storage, don't queue it
+                Log.Warn("[MarketUtility] Requester {0} could not fit request {1}, not queuing", requester, request);
+                return false;
+            }
             if (request.IsPositive && requester.RequestCount < requester.MaxRequests) {
                 requester.Requested += request;
                 requester.RequestCount++;
@@ -370,6 +376,11 @@ namespace Zavala.Economy
             MarketData marketData = Game.SharedState.Get<MarketData>();
             Assert.NotNull(marketData);
             marketData.FulfillQueue.PushBack(request);
+        }
+
+        static public bool CanHoldRequest(ResourceRequester requester) {
+            if (requester.Storage == null) return false;
+            return ResourceBlock.CanAddFull(requester.Storage.Current, requester.Requested, requester.Storage.Capacity);
         }
 
         #endregion // Requests

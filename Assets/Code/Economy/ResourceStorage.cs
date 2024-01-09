@@ -1,5 +1,6 @@
 using BeauPools;
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay.Components;
 using UnityEngine;
 
@@ -37,6 +38,9 @@ namespace Zavala.Economy {
     public static class ResourceStorageUtility {
         public static void RefreshStorageDisplays(ResourceStorage storage) {
             if (storage == null || storage.Displays.Length <= 0) return;
+            if (ResourceBlock.TryClamp(ref storage.Current, storage.Capacity)) {
+                Log.Warn("[ResourceStorage] Storage {0} went over capacity! Clamping...", storage.name);
+            }
             foreach (ResourceDisplay display in storage.Displays) {
                 int extensionAdd = 0;
                 if (storage.StorageExtensionReq != null) {
