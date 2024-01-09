@@ -157,3 +157,25 @@ $if PolicyIsUnlocked(SkimmingPolicy)
 $endif
 {viewpoliciesnext}
 {@advisorEcolForest}    But you're the boss.
+
+:: unlockSkimmers
+@trigger        AlertExamined
+@conditions     alertType == "bloom", alertRegion == 2, AgeOfRegion(4) > 0, global:readyForSkimmers
+@forcePolicy    Ecology
+@cutscene
+@once
+{local @advisorEcol}    More algae blooms...
+$if global:skimmersUnlocked == false // band-aid solution for queued "once" alert nodes
+    $set global:skimmersUnlocked = true
+    {@advisorEcolWetland}   Well, we have all these trawlers... What if we used them to skim algae off the lakes?
+    {@advisorEconWetland}   Well, it could be costly... And it won't remove the underlying phosphorus.
+    {@advisorEconWetland}   For that, we'd need expensive dredgers.
+    {@advisorEcolWetland}   But skimmers could help mitigate the worst effects for now. 
+    {viewpoliciesnext}
+    {local @advisorEcol}    It's up to you, Director.
+    $call UnlockCards(SkimmingPolicy)
+    $call AddAutoAlertCondition("Bloom", 4)
+$else
+    {viewpoliciesnext}
+    {local @advisorEcon}    Maybe those newfangled skimmers can help?
+$endif

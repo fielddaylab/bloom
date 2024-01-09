@@ -1,6 +1,7 @@
 {
     "Zavala.Sim.AlgaeSim::MinPForAlgaeGrowthDefault": 8,
     "Zavala.Sim.AlgaeSim::AlgaeGrowthIncrement": 0.0500000007450581,
+    "Zavala.UI.GlobalAlertParams::GlobalAlertDelay": 10,
     "Zavala.Economy.MarketParams::TruckSpeed": 1.80000007152557,
     "Zavala.Economy.MarketParams::TicksPerNegotiation": 2,
     "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 25,

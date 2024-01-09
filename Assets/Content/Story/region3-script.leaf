@@ -79,13 +79,13 @@ $call CutsceneBegin()
     We thought the gross algae was only in Knoll County... How could blooms reach our forest?
     $call CutscenePrepareImages("act3/3-2-1.png", "act3/3-2-2.png", "act3/3-2-3.png")
 	$call CutsceneAllImages(0.5)
-	We need to figure out what is happening. Veldt University sent its best scholars to help figure out what is going on.
+	We need to figure out what is happening. Veldt University sent its best scholars to help investigate.
     $call CutscenePrepareImages("act3/3-3-1.png", "act3/3-3-2.png", "act3/3-3-3.png")
 	$call CutsceneAllImages(0.5)
-    Their new technology senses the flow of phosphorus... Rainwater is washing it <i>downward</i> and into our lakes!
+    Their new technology senses the flow of phosphorus... It flows <i>downward</i> through groundwater and into our lakes!
     $call CutscenePrepareImages("act3/3-4-1.png", "act3/3-4-2.png", "act3/3-4-3.png")
 	$call CutsceneAllImages(0.5)
-	This situation is dire... Could this tool help us locate the source of phosphorus and put a stop to it?
+	This situation is dire... Could this tool help us locate sources of phosphorus and put a stop to them?
 $call CutsceneEnd()
 {@cityPrairie}      ...I call it PIP! Persistent Imaging of Phosphorus.
 {@cityPrairie}      Let's head over to Cypress County to try it out.

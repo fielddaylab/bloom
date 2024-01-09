@@ -168,46 +168,6 @@ $set intro:pendingPolicy = true
 // {viewpoliciesnext}
 // {@advisorEconHill}      Choose a Sales Policy and we can continue.
 
-:: policySet
-@trigger        PolicySet
-@conditions     policyForced == false
-@cutscene
-$set intro:pendingPolicy = false
-$branch .policyDescriptions
-$if intro:tutorialComplete = false
-    $branch .choseFirstPolicy
-$endif
-
-:: policyForcedToZero
-@trigger        PolicySet
-@conditions     policyIndex == 0, policyForced == true
-@cutscene
-$if local:policyType == "SalesTaxPolicy"
-    {local @advisorEcon}    Oh dear.
-    {local @advisorEcon}    The sales subsidy here is costing too much. The county is out of money. 
-    {local @advisorEcon}    I must set it to none for now.
-$elseif local:policyType == "ImportTaxPolicy"
-    {local @advisorEcon}    Oh dear.
-    {local @advisorEcon}    The import subsidy here is costing too much. The county is broke. 
-    {local @advisorEcon}    I must set it to none for now.
-$elseif local:policyType == "SkimmingPolicy"
-    {local @advisorEcol}    Jeepers!
-    {local @advisorEcol}    Our lake cleanup policy is costing too much. The county budget has run dry!
-    {local @advisorEcol}    I'll have to set it to none for now.
-$endif
-{local @advisorEcon}    I recommend you implement a tax so we can get some funding.
-
-:: choseFirstPolicy
-// @cutscene
-$set intro:tutorialComplete = true
-{@advisorEconHill}  A fine choice. 
-{@advisorEconHill}  Let's get this economy started, shall we?
-$call PauseUser()
-{@advisorEconHill}  Use the <b>spacebar</b> to toggle pause.
-$call ShowAnimatedTutorial("PauseTutorial")
-$call OffsetAlgaeGrowthThreshold(0)
-$call ActivateSim()
-
 // :: sittingOmens
 // @trigger        LetSat
 // @conditions     intro:citiesConnected, intro:farmsConnected
@@ -239,25 +199,6 @@ $call AddAutoAlertCondition("Bloom", 1)
 // $call Unpause()
 
 
-:: skipTutorial
-@trigger    TutorialSkipped
-$call CutsceneEnd()
-$call FocusClear()
-{@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
-$call SendGlobalAlertForNode("region1_city1", region1.testGlobalAlert)
-$call HideAnimatedTutorial()
-$set intro:tutorialComplete = true
-$set intro:pendingPolicy = true
-$call UnlockCards(SalesTaxPolicy)
-$call AddAutoAlertCondition("Bloom", 1)
-$call OffsetAlgaeGrowthThreshold(0)
-$call ReleaseDialogueInteraction()
-// $call Unpause()
-$call ActivateSim()
-
-:: testGlobalAlert
-@queued
-{local  @urbanite}  I hear you've skipped the tutorial... pretty cool.
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -279,54 +220,6 @@ $if PolicyIsUnlocked(SalesTaxPolicy)
     {local @advisorEcon}    Here are the economic policies.
 $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
-$endif
-
-:: policyDescriptions
-// TODO: lookup policy costs
-$if local:policyType == "RunoffPolicy"
-    $if     local:policyIndex == 0
-        {local @advisorEcol}    With no runoff fine, Dairy Farms will only sell manure if it earns a profit.
-    $elseif local:policyIndex == 1
-        {local @advisorEcol}    With a low runoff fine, Dairy Farms will sell manure if the loss is less than $8 per unit.
-    $elseif local:policyIndex == 2
-        {local @advisorEcol}    With a high runoff fine, Dairy Farms will sell manure if the loss is less than $16 per unit.
-    $elseif local:policyIndex == 3
-        {local @advisorEcol}    With a very high runoff fine, Dairy Farms will try to sell manure, even if it loses money.
-    $endif
-$elseif local:policyType == "SkimmingPolicy"
-    $if     local:policyIndex == 0
-        {local @advisorEcol}    With no Lake Cleanup, you aren't doing anything to remove algae from the lakes. 
-    $elseif local:policyIndex == 1
-        {local @advisorEcol}    Low Lake Cleanup policy will clear algae from 1 water area for a recurring $1 cost.
-        {local @advisorEcol}    But this won't remove all the phosphorus!
-    $elseif local:policyIndex == 2
-        {local @advisorEcol}    High Lake Cleanup policy will clear algae from 2 water areas for a recurring $2 cost.
-        {local @advisorEcol}    But this won't remove all the phosphorus!
-    $elseif local:policyIndex == 3
-        {local @advisorEcol}    Dredging will clear algae from 3 water areas <b>and</b> remove some phosphorus.
-        {local @advisorEcol}    But it will cost a recurring $4!
-    $endif
-$elseif local:policyType == "SalesTaxPolicy"
-    $if     local:policyIndex == 0
-        {local @advisorEcon}    Even without Sales Tax, you'll gain $5 for each milk shipment the city consumes.
-    $elseif local:policyIndex == 1
-        {local @advisorEcon}    With low Sales Tax, you'll gain $2 with every purchase on top of city revenue.
-    $elseif local:policyIndex == 2
-        {local @advisorEcon}    With high Sales Tax, you'll gain $4 with every purchase on top of city revenue.
-    $elseif local:policyIndex == 3
-        {local @advisorEcon}    Sales Subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourages buyers.
-        {local @advisorEcon}    But that money comes from the SAGA county budget!
-    $endif
-$elseif local:policyType == "ImportTaxPolicy"
-    $if     local:policyIndex == 0
-        {local @advisorEcon}    With no Import Policy, we won't offset any shipping costs.
-    $elseif local:policyIndex == 1
-        {local @advisorEcon}    With a Milk Subsidy, we'll pay $6 for each milk imported to offset shipping costs.
-    $elseif local:policyIndex == 2
-        {local @advisorEcon}    With a Grain Subsidy, we'll pay $6 for each grain imported to offset shipping costs.
-    $elseif local:policyIndex == 3
-        {local @advisorEcon}    With a Fertilizer Subsidy, we'll pay $6 for each manure or digester fertilizer imported to offset shipping costs.
-    $endif
 $endif
 
 :: openedToForest
@@ -402,19 +295,6 @@ $if Visited("region2.unlockStorage")
     {local @advisorEcon}    Or we could build a <b>Storage</b> unit.
 $endif
 
-:: grainRunoff
-@trigger        AlertExamined
-@conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == true
-{local @advisorEcol}        Runoff from a grain farm...
-{local @advisorEcol}        All fertilizer causes <i>some</i> runoff... 
-{local @advisorEcol}        But mineral fertilizer from Phos4Us tends to be overapplied.
-{local @grainFarmer}        It's the cheapest option I've got!
-{local @advisorEcol}        Maybe we can find a manure seller nearby.
-$if global:builtDigester
-    {local @advisorEcol}        Or better yet, some digested fertilizer!
-$endif
-
-
 :: discoverFirstBloom
 @trigger        AlertExamined
 @cutscene
@@ -430,13 +310,16 @@ $call CutsceneBegin()
     Something is wrong with the lakes. They are filled with revolting green algae! This can't be safe for our ecosystem.
     $call CutscenePrepareImages("act2/2-2-1.png", "act2/2-2-2.png", "act2/2-2-3.png")
 	$call CutsceneAllImages(0.5)
-	Could they grain farmers be to blame? Algae loves phosphorus, and they import phosphorus from elsewhere and overapply it!
+	Could the grain farmers be to blame? Algae loves phosphorus, and they import phosphorus and overapply it!
     $call CutscenePrepareImages("act2/2-3-1.png", "act2/2-3-2.png", "act2/2-3-3.png")
 	$call CutsceneAllImages(0.5)
-	Or the dairy farmers? Their cows' phosphorus-filled manure runs off into the lakes too! But it's expensive to ship elsewhere...
+	Or the dairy farmers? Their cows' phosphorus-filled manure runs off into the lakes too! But it's expensive to ship away...
     $call CutscenePrepareImages("act2/2-4-1.png", "act2/2-4-2.png", "act2/2-4-3.png")
 	$call CutsceneAllImages(0.5)
-	Both make good points... But our cities need milk. You - and SAGA - will need to take action.
+    Nearby farms might be able to afford manure fertilizer... But long-distance shipping is just too costly!
+    $call CutscenePrepareImages("act2/2-5-1.png", "act2/2-5-2.png", "act2/2-5-3.png")
+	$call CutsceneAllImages(0.5)
+	Whoever is to blame, our cities need milk and clean water. You - and SAGA - will need to take action.
 $call CutsceneEnd()
 {@advisorEcolHill}    Something must be done! I'll keep an eye out for any phosphorus runoff.
 $call OffsetAlgaeGrowthThreshold(1)
@@ -463,28 +346,6 @@ $endif
 
 // TODO: add event/trigger for city stress (nearby bloom and/or lacking milk)
 
-:: SellAtLossGrain
-@trigger        AlertExamined
-@conditions     alertType == "selling-loss", isFromGrainFarm == true
-@forcePolicy    Economy
-// $call Pause()
-{local @grainFarmer}      Aw shucks... How am I gonna feed my family?
-{local @advisorEcon}      Hmm... This farmer is losing money when they sell.
-{local @advisorEcon}      I suspect their phosphorus source is too expensive. 
-{local @advisorEcon}      Perhaps you can build a shorter road to decrease shipping costs.
-$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
-$if local:taxLevel > 0
-    $if local:taxLevel < 3
-    {local @advisorEcon}    Or set a more favorable tax policy.
-    $endif
-$endif
-$if global:builtDigester
-    {local @advisorEcon}  Otherwise, that <i>Digested Fertilizer is cheaper to ship...
-$endif
-{viewpoliciesnext}
-{local @advisorEcon}    It's your choice, Director.     
-// $call Unpause()
-
 :: SellAtLossCafo
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss", alertRegion == 1, isFromGrainFarm == false
@@ -506,34 +367,3 @@ $if local:taxLevel > 0
     $endif
 $endif
 // $call Unpause()
-
-
-:: GameFailed
-@trigger        GameFailed
-@conditions     FailureIsEnabled()
-@cutscene
-$if FailureIsEnabled()
-{local @advisorEcon}    You failed D:
-{local @advisorEcon}      {$local:endType} in region {$local:regionIndex}
-$call CutsceneBegin()
-	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
-	$call CutsceneAllImages(0.5)
-	Your efforts were not enough. You have been replaced as SAGA director. Perhaps your replacement will fare better...
-    Proper shutdown is not implemented. Reload the page to start again.
-    // $call EndGame()
-// {@advisorEconUrban}      Heh heh, you would've failed here, but failure was disabled. Right on.
-// {@advisorEconUrban}      {$local:endType} in region {$local:regionIndex}
-$endif
-
-:: GameCompleted
-@trigger       GameCompleted
-@conditions    FailureIsEnabled()
-@cutscene
-{local @advisorEcon}    You won :D Yippee!
-$call CutsceneBegin()
-	$call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
-	$call CutsceneAllImages(0.5)
-	With your help, these regions are blooming into a thriving interconnected economy.
-    Perhaps we couldn't stop the blooms entirely, but by activating a fertilizer market, we've kept them managed.
-    Proper shutdown is not implemented. Reload the page to start again.
-    // $call EndGame()

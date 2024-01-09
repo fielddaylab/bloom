@@ -147,7 +147,7 @@ namespace Zavala.Economy
                 bool matchFound = false;
 
                 // Skip this requester if they couldn't hold what they are requesting.
-                if (!MarketUtility.CanHoldRequest(requester)) {
+                if (requester.InfiniteRequests && !MarketUtility.CanHoldRequest(requester)) {
                     Log.Msg("[MarketSystem] Requester {0} cannot hold their request! Skipping...", requester.name);
                     continue;
                 }

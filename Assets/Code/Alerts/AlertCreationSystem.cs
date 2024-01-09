@@ -16,7 +16,9 @@ namespace Zavala.Scripting
         static private readonly Vector3 EventDisplayOffset = new Vector3(0, 1.0f, 0);
 
         [SerializeField] private SpriteLibrary m_AlertAssets;
-
+        public override void ProcessWork(float deltaTime) {
+            base.ProcessWork(deltaTime); // process work per component.
+        }
         public override void ProcessWorkForComponent(EventActor component, float deltaTime) {
             if (Loc.IsServiceLoading()) {
                 // Don't create alerts until localization has loaded (avoids empty banners)
@@ -45,17 +47,12 @@ namespace Zavala.Scripting
 
                 alert.AlertBase.sprite = GetAlertBaseSprite(peekEvent.Alert, m_AlertAssets);
                 alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
-                
-                /* TEMPORARILY REMOVING FADED ALERTS
-                if ((Game.SharedState.Get<SimTimeState>().Paused & SimPauseFlags.PendingGlobalAlert) != 0) {
-                    // kinda hacky but - if there's a queued global alert, that means the game will pause soon,
-                    // so the only event queued should be the one being sent to global
+
+                if (Game.Gui.GetShared<GlobalAlertButton>().QueuedActors.Contains(component)) {
                     alert.KeepFaded = true;
                     UIAlertUtility.SetAlertFaded(alert, true);
-                } else {
-                    UIAlertUtility.SetAlertFaded(alert, false);
                 }
-                */
+
                 Debug.Log("[Alerts] Created new alert!");
                 component.DisplayingEvent = alert;
             }

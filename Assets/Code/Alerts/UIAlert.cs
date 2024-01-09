@@ -109,6 +109,7 @@ namespace Zavala.UI {
                 Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
 ;                return; 
             }
+            alert.KeepFaded = false;
             alert.AlertBase.SetAlpha(1.0f);
             alert.BannerRoutine.Replace(CloseRoutine(alert, true));
         }

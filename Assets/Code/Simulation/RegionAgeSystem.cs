@@ -6,6 +6,7 @@ using UnityEngine;
 using Zavala.World;
 using FieldDay.Scripting;
 using System;
+using Zavala.UI;
 
 namespace Zavala.Sim
 {
@@ -36,8 +37,10 @@ namespace Zavala.Sim
                 if (triggerExists) {
                     CheckTrigger((RegionId)i, age);
                 }
-
             }
+
+            // TODO: Find a better place for this? Could create a system, but GlobalAlertButton isn't a SharedState
+            GlobalAlertUtility.TickGlobalAlertDelay(Game.Gui.GetShared<GlobalAlertButton>());
         }
 
         private void CheckTrigger(RegionId region, int age) {

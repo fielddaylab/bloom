@@ -326,30 +326,28 @@ namespace Zavala.UI
             {
                 int amt = 0;
 
-                // TODO: calculate amounts from data history
-
-                    // TODO: calculate amounts from data history
-                    switch(box.PolicyType)
-                    {
-                        case PolicyType.SalesTaxPolicy:
-                            amt = data.SalesTaxHistory[region].Net.PeekFront();
-                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                            break;
-                        case PolicyType.ImportTaxPolicy:
-                            amt = data.ImportTaxHistory[region].Net.PeekFront();
-                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                            break;
-                        case PolicyType.RunoffPolicy:
-                            amt = data.PenaltiesHistory[region].Net.PeekFront();
-                            // PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                            continue; // skip past playing animation, go to next policy
-                        case PolicyType.SkimmingPolicy:
-                            amt = data.SkimmerCostHistory[region].Net.PeekFront();
-                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
-                            break;
-                        default:
-                            break;
-                    }
+                // TODO: Only play routine if history has been updated
+                switch(box.PolicyType)
+                {
+                    case PolicyType.SalesTaxPolicy:
+                        amt = data.SalesTaxHistory[region].Net.PeekFront();
+                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                        break;
+                    case PolicyType.ImportTaxPolicy:
+                        amt = data.ImportTaxHistory[region].Net.PeekFront();
+                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                        break;
+                    case PolicyType.RunoffPolicy:
+                        amt = data.PenaltiesHistory[region].Net.PeekFront();
+                        // PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                        continue; // skip past playing animation, go to next policy
+                    case PolicyType.SkimmingPolicy:
+                        amt = data.SkimmerCostHistory[region].Net.PeekFront();
+                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                        break;
+                    default:
+                        break;
+                }
 
                 // Display animation
                 if (amt != 0)

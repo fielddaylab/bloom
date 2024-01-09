@@ -2,6 +2,7 @@ using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Data;
 using FieldDay.Scripting;
 using FieldDay.UI;
 using Leaf.Runtime;
@@ -21,18 +22,18 @@ namespace Zavala.UI {
         //public SpriteRenderer AlertBanner;
         //public RectTransform AlertBannerRect;
         //public PointerListener Pointer;
-        public RectTransform m_Rect; 
+        public RectTransform m_Rect;
         public int MaxQueuedEvents = 5; // there should really only ever be 1 but let's keep it to 5 for emergencies
 
         public Button m_Button;
-
         public RingBuffer<EventActor> QueuedActors = new RingBuffer<EventActor>(5);
         [NonSerialized] public Routine m_Routine;
+        [NonSerialized] public int TicksSinceFired = 0;
 
         protected override void Awake() {
             base.Awake();
 
-            UpdateButtonRoutine();
+            m_Routine.Replace(GlobalAlertUtility.DisappearRoutine(this));
             m_Button.onClick.AddListener(HandleButtonClicked);
         }
 
@@ -46,24 +47,28 @@ namespace Zavala.UI {
             if (!QueuedActors.TryPopFront(out EventActor actor)) {
                 Log.Warn("[GlobalAlertButton] Couldn't pop front of QueuedActors :( Button showing without actors queued?");
             }
-            
+
             Assert.NotNull(actor);
 
             Log.Msg("[GlobalAlertButton] Popped actor {0}", actor.gameObject.name);
             EventActorUtility.TriggerActorAlert(actor);
             UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+            TicksSinceFired = 0;
             UpdateButtonRoutine();
-           // UIAlertUtility.ClickAlert(Actor);
+            m_Routine.Replace(GlobalAlertUtility.DisappearRoutine(this));
+            SimTimeInput.SetPaused(false, SimPauseFlags.PendingGlobalAlert);
+
+            // UIAlertUtility.ClickAlert(Actor);
         }
 
         public void UpdateButtonRoutine() {
+            if (TicksSinceFired < GlobalAlertParams.GlobalAlertDelay) return;
             if (QueuedActors.Count > 0) {
                 m_Routine.Replace(GlobalAlertUtility.AppearRoutine(this));
                 SimTimeInput.SetPaused(true, SimPauseFlags.PendingGlobalAlert);
                 // UIAlertUtility.SetAlertFaded(QueuedActors.PeekFront().DisplayingEvent, true);
             } else {
-                m_Routine.Replace(GlobalAlertUtility.DisappearRoutine(this));
-                SimTimeInput.SetPaused(false, SimPauseFlags.PendingGlobalAlert);
+                // SimTimeInput.SetPaused(false, SimPauseFlags.PendingGlobalAlert);               
             }
         }
 
@@ -72,9 +77,23 @@ namespace Zavala.UI {
 
     public static class GlobalAlertUtility {
 
+        public static void TickGlobalAlertDelay(GlobalAlertButton button) {
+            if (button.TicksSinceFired < GlobalAlertParams.GlobalAlertDelay) {
+                button.TicksSinceFired++;
+                Log.Msg("[GlobalAlertButton] Ticking global alert delay... {0} of {1}", button.TicksSinceFired, GlobalAlertParams.GlobalAlertDelay);
+            }
+            if (button.TicksSinceFired >= GlobalAlertParams.GlobalAlertDelay) {
+                button.UpdateButtonRoutine();
+            }
+        }
+
         // static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
         public static void PushEventOfActorToGlobal(GlobalAlertButton button, EventActor actor) {
             button.QueuedActors.PushBack(actor);
+            if (actor.DisplayingEvent) {
+                actor.DisplayingEvent.KeepFaded = true;
+                UIAlertUtility.SetAlertFaded(actor.DisplayingEvent, true);
+            }
             button.UpdateButtonRoutine();
         }
 
@@ -107,7 +126,7 @@ namespace Zavala.UI {
             while (true) {
                 yield return button.m_Rect.ScaleTo(1.1f, 0.5f).Ease(Curve.Smooth);
                 yield return button.m_Rect.ScaleTo(0.9f, 0.5f).Ease(Curve.Smooth);
-            }   
+            }
         }
         public static IEnumerator DisappearRoutine(GlobalAlertButton button) {
             yield return Routine.Combine(
@@ -116,6 +135,9 @@ namespace Zavala.UI {
             button.gameObject.SetActive(false);
             yield return null;
         }
-    }
 
+    }
+    public static class GlobalAlertParams {
+        [ConfigVar("Global Alert Delay", 0, 30, 2)] static public int GlobalAlertDelay = 10;
+    }
 }

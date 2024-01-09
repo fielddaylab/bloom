@@ -379,7 +379,11 @@ namespace Zavala.Economy
         }
 
         static public bool CanHoldRequest(ResourceRequester requester) {
-            if (requester.Storage == null) return false;
+            if (requester.Storage == null) {
+                Log.Warn("[CanHoldRequest] Requester {0} has null storage, returning false", requester.name);
+                return false;
+            }
+            Log.Msg("[CanHoldRequest] Checking Requester {0}...", requester.name);
             return ResourceBlock.CanAddFull(requester.Storage.Current, requester.Requested, requester.Storage.Capacity);
         }
 
