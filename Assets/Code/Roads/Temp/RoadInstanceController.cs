@@ -1,20 +1,23 @@
 using BeauRoutine;
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scenes;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Zavala.Building;
 using Zavala.Rendering;
+using Zavala.Sim;
 
 namespace Zavala.Roads {
     public class RoadInstanceController : MonoBehaviour
     {
         public Transform RoadMeshTransform;
         public MeshFilter RoadMesh;
+        [NonSerialized] public Mesh BridgeMesh;
         public DecorationRenderer RampSolidDecorations;
         public DecorationRenderer RampStagedDecorations;
+        public DecorationRenderer BridgeSolidDecorations;
         public TileAdjacencyDataSet<RoadRampType> Ramps;
         public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
         public BuildingPreview MatSwap;
@@ -32,6 +35,7 @@ namespace Zavala.Roads {
             library.Lookup(flowMask | stageMask, out var roadData);
 
             controller.RoadMesh.sharedMesh = roadData.Mesh;
+            controller.BridgeMesh = roadData.BridgeMesh;
             controller.RoadMeshTransform.localScale = roadData.Scale;
             controller.RoadMeshTransform.localRotation = roadData.Rotation;
 
@@ -40,8 +44,8 @@ namespace Zavala.Roads {
                 controller.BPCompareMask = stageMask;
             }
 
-            UpdateRampDecorations(controller, library, stageMask, true);
-            UpdateRampDecorations(controller, library, flowMask, false);
+            UpdateRampDecorations(controller, library, stageMask, true); // holo
+            UpdateRampDecorations(controller, library, flowMask, false); // solid
         }
 
         static public void ClearBPMask(RoadNetwork network, int tileIndex)
@@ -59,7 +63,10 @@ namespace Zavala.Roads {
         static private void UpdateRampDecorations(RoadInstanceController controller, RoadLibrary library, TileAdjacencyMask mask, bool isStaging)
         {
             if (isStaging) { controller.RampStagedDecorations.Decorations.Clear(); }
-            else { controller.RampSolidDecorations.Decorations.Clear(); }
+            else { 
+                controller.RampSolidDecorations.Decorations.Clear(); 
+                controller.BridgeSolidDecorations.Decorations.Clear();
+            }
 
             for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++)
             {
@@ -74,6 +81,23 @@ namespace Zavala.Roads {
                     else { DecorationUtility.AddDecoration(controller.RampSolidDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale())); }
                 }
             }
+
+            // Bridge mesh decorations
+            if (controller.BridgeMesh == null) return;
+
+            TerrainFlags flags = Game.SharedState.Get<SimGridState>().Terrain.Info[controller.Position.TileIndex].Flags;
+            if ((flags & TerrainFlags.IsWater) != 0) {
+                Transform rt = controller.RoadMeshTransform;
+                if (isStaging) {
+                    DecorationUtility.AddDecoration(controller.RampStagedDecorations, controller.BridgeMesh, Matrix4x4.TRS(library.BridgeOffset, rt.localRotation, rt.localScale));
+                } else {
+                    Log.Msg("[RoadInstanceController] Attempting to add solid bridge decoration...");
+                    DecorationUtility.AddDecoration(controller.BridgeSolidDecorations, controller.BridgeMesh, Matrix4x4.TRS(library.BridgeOffset, rt.localRotation, rt.localScale));
+
+                }
+            }
+
         }
+
     }
 }

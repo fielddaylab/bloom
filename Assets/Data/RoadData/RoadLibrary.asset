@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: RoadLibrary
   m_EditorClassIdentifier: 
   m_RadiusReference: 0.4425
-  m_ErrorMesh: {fileID: -9021107288864181710, guid: 10062f6b1a26696409de55f713bbd5cc, type: 3}
+  m_ErrorMesh: {fileID: 109572994666580542, guid: 75c3a0a38921af24ba296e8dd93f6bba, type: 3}
   m_RampMesh: {fileID: 6862800605819043482, guid: bc3e68134ffea004aac86d220180fac6, type: 3}
   m_SteepRampMesh: {fileID: 740791061461220447, guid: 11ac513c2fcaeec4fb8bdde7eff66070, type: 3}
   m_RampOffset: {x: 0, y: 0, z: -0.34}
   m_RampScale: {x: 1, y: 1, z: 1}
+  BridgeOffset: {x: 0, y: 0, z: 0}
   m_RotationEntries:
   - TileIndex: 65535
     Rotation: 0
@@ -150,53 +151,66 @@ MonoBehaviour:
   m_Tiles:
   - Mesh: {fileID: -5031213115080317316, guid: c0938dc8a975204468311a3aa5e1acd4, type: 3}
     Rotation: {x: 0, y: -0.02975356, z: 0, w: 0.9995573}
+    BridgeMesh: {fileID: 6690675043248878688, guid: 84186d04c20012e4a935234e4a48fd3b, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -560200869890172199, guid: 16d7c8f38306ec142af60fbd01c7977c, type: 3}
     Rotation: {x: -0.7071055, y: -0.0013575807, z: -0.0013575807, w: 0.7071055}
+    BridgeMesh: {fileID: 3475736667272725857, guid: 3335f42fd5ecabd4dbf9540e05e3820f, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -2437352718369479403, guid: 7c98332fdee9ad84f87f998334506653, type: 3}
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    BridgeMesh: {fileID: 7713023955521607094, guid: a216e4b95c61e8f43a52033e1872e023, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -6426049537567011659, guid: d270d72d1b82124429b6a0423689fa11, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
+    BridgeMesh: {fileID: -79686926365484054, guid: b2bcb627f8a0512458bc1556e0726b43, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -8190670822274758712, guid: ba4f5808c86083e459923f98f4b151df, type: 3}
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    BridgeMesh: {fileID: 258406082947957996, guid: 47e98c242686b83419b97580bc45a8e3, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -8190670822274758712, guid: ba4f5808c86083e459923f98f4b151df, type: 3}
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    BridgeMesh: {fileID: 258406082947957996, guid: 47e98c242686b83419b97580bc45a8e3, type: 3}
     Scale: 1.0290698
     FlipX: 1
   - Mesh: {fileID: 74385664878217107, guid: e6dee5cf39531fb4e8fef25f3ced3ba6, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
+    BridgeMesh: {fileID: 0}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -7111516067272048804, guid: 6f5251317db69624081ece513d808f65, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
+    BridgeMesh: {fileID: -6656099570632612962, guid: d0b7d5599f260ce4db44f48e2e8f8a70, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: 8093775828332650069, guid: 327e343eaaed2284e83eb4193cb7d7c9, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
+    BridgeMesh: {fileID: -5432728671488985256, guid: 86b5ffbcf9d16f94bb4530a71ac976c1, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: 8169044024069081611, guid: 870e11741a0aa5348935b3e5a9db52bd, type: 3}
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    BridgeMesh: {fileID: -8677729988393888924, guid: b972ed0d692aa614bacb0c9fd59c42ae, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: 6234407200144437915, guid: 00688e623f2af6841afd1929544dac97, type: 3}
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    BridgeMesh: {fileID: 2592694685296243468, guid: f43353763be83f044a9bdf156c790137, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: 3377081414010363017, guid: 120ce30d619fc664dac2459065a80372, type: 3}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
+    BridgeMesh: {fileID: 5412297770073039241, guid: de4a023d97f31104b92e077e5a5aebb1, type: 3}
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: 6687094826593772474, guid: 5cad6522083b8ef4990f10ad95a4506c, type: 3}
     Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    BridgeMesh: {fileID: 4062507226813695382, guid: 8ced9c4310241b846a9aa156b69db01d, type: 3}
     Scale: 1.0290698
     FlipX: 0

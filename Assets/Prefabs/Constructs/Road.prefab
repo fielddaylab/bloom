@@ -4920,6 +4920,7 @@ GameObject:
   - component: {fileID: 1723040191123504645}
   - component: {fileID: 1379674122801371436}
   - component: {fileID: 7418557678709288407}
+  - component: {fileID: 7409405493383104625}
   m_Layer: 8
   m_Name: Road
   m_TagString: PlayerPlaced
@@ -4990,6 +4991,7 @@ MonoBehaviour:
   RoadMesh: {fileID: 110408958775330870}
   RampSolidDecorations: {fileID: 1723040191123504645}
   RampStagedDecorations: {fileID: 1379674122801371436}
+  BridgeSolidDecorations: {fileID: 7409405493383104625}
   BPCompareMask:
     Value: 0
   MatSwap: {fileID: 7418557678709288407}
@@ -5057,3 +5059,19 @@ MonoBehaviour:
   m_Occupies: {fileID: 5074091816765350726}
   m_InitialHide: []
   m_PreviewMesh: {fileID: 0}
+--- !u!114 &7409405493383104625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417343884172520992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988c1229e213c884faa32d8fbb225d67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DEBUG_InitialElements: []
+  Layer: 8
+  Material: {fileID: 2100000, guid: ce470f66ae041964ab5a18dca1ad070d, type: 2}
+  DefaultMesh: {fileID: 0}

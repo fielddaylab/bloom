@@ -24,6 +24,7 @@ namespace Zavala {
         private struct TileData {
             public Mesh Mesh;
             public Quaternion Rotation;
+            public Mesh BridgeMesh;
             public float Scale;
             public bool FlipX;
         }
@@ -31,6 +32,7 @@ namespace Zavala {
         public struct AssembledRoadData {
             public Mesh Mesh;
             public Quaternion Rotation;
+            public Mesh BridgeMesh;
             public Vector3 Scale;
             public int Turns;
         }
@@ -41,6 +43,7 @@ namespace Zavala {
         [SerializeField] private Mesh m_SteepRampMesh = null;
         [SerializeField] private Vector3 m_RampOffset = new Vector3(0, 0, 0.43f);
         [SerializeField] private Vector3 m_RampScale = Vector3.one;
+        [SerializeField] public  Vector3 BridgeOffset = new Vector3(0, 0, 0);
 
         [Space]
         [SerializeField] private RotationEntry[] m_RotationEntries = new RotationEntry[64];
@@ -65,6 +68,7 @@ namespace Zavala {
             TileData tileData = m_Tiles[rotData.TileIndex];
 
             roadData.Mesh = tileData.Mesh;
+            roadData.BridgeMesh = tileData.BridgeMesh;
             roadData.Rotation = HexGrid.RotateQuaternion(tileData.Rotation, rotData.Rotation);
             roadData.Scale = new Vector3(tileData.Scale, tileData.Scale, tileData.Scale);
             if (tileData.FlipX) {
