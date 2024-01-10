@@ -326,23 +326,23 @@ namespace Zavala.UI
             {
                 int amt = 0;
 
-                // TODO: Only play routine if history has been updated
+                // TODO: This is fired every tick, but Net is only updated every 3 ticks. 
                 switch(box.PolicyType)
                 {
                     case PolicyType.SalesTaxPolicy:
-                        amt = data.SalesTaxHistory[region].Net.PeekFront();
+                        amt = data.SalesTaxHistory[region].LastChange();
                         PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         break;
                     case PolicyType.ImportTaxPolicy:
-                        amt = data.ImportTaxHistory[region].Net.PeekFront();
+                        amt = data.ImportTaxHistory[region].LastChange();
                         PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         break;
                     case PolicyType.RunoffPolicy:
-                        amt = data.PenaltiesHistory[region].Net.PeekFront();
+                        amt = data.PenaltiesHistory[region].LastChange();
                         // PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         continue; // skip past playing animation, go to next policy
                     case PolicyType.SkimmingPolicy:
-                        amt = data.SkimmerCostHistory[region].Net.PeekFront();
+                        amt = data.SkimmerCostHistory[region].LastChange();
                         PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         break;
                     default:

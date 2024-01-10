@@ -85,7 +85,7 @@ $call FocusClear()
 {@advisorEcolForest}    Once connected to a Dairy Farm, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between Dairy Farms.
 
-$call OffsetAlgaeGrowthThreshold(1)
+$call OffsetAlgaeGrowthThreshold(0)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
 

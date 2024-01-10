@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BeauUtil;
+using BeauUtil.Debugger;
 using UnityEngine;
 
 namespace Zavala.Data
@@ -15,10 +16,20 @@ namespace Zavala.Data
         public readonly int MaxHistory = 20; // how far back history is stored
 
         public int Pending;
+        public int PrevPending;
         public RingBuffer<int> Net; // store show much P was produced/removed over the previous ticks
 
         public void AddPending(int pendingDelta) {
+            Log.Msg("[DataHistory] AddPending {0}", pendingDelta);
+            PrevPending = Pending;
+            Log.Msg("[DataHistory] PrevPending {0}", PrevPending);
             Pending += pendingDelta;
+            Log.Msg("[DataHistory] New Pending {0}", Pending);
+        }
+
+        public int LastChange() {
+            Log.Msg("[DataHistory] LastChange {0}", Pending - PrevPending);
+            return Pending - PrevPending;
         }
 
         public void ConvertPending() {
@@ -27,6 +38,7 @@ namespace Zavala.Data
 
             // reset phosphorus changes for next tick
             Pending = 0;
+            PrevPending = 0;
         }
 
         /// <summary>

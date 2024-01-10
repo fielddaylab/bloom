@@ -28,7 +28,7 @@ namespace Zavala.Sim
                     EventActorUtility.QueueAlert(parentActor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
                         new NamedVariant("isFromGrainFarm", false));
                 } else {
-                    Log.Warn("[ExcessRunoffAlertSystem] Creating grain alert?");
+                    Log.Msg("[ExcessRunoffAlertSystem] Attempting to create grain alert");
                     EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
                         new NamedVariant("isFromGrainFarm", true));
                 }

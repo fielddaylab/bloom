@@ -5,6 +5,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
+using Zavala.Actors;
 using Zavala.Advisor;
 using Zavala.Roads;
 using Zavala.Sim;
@@ -906,7 +907,8 @@ namespace Zavala.Economy
             }
             // TODO: MARKETS ARE NOT YET FILTERED BY RESOURCE! using this helper temporarily
             int dummyMarketIndex = GetMarketIndexOfResourceBlock(activeRequest.Supplied);
-            if (supplierOffer.TotalCost >= config.StressedPurchaseThresholds[dummyMarketIndex])
+            int stressThreshold = config.StressedPurchaseThresholds[dummyMarketIndex];
+            if (stressThreshold != 0 && supplierOffer.TotalCost > stressThreshold)
             {
                 Log.Msg("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!", 
                     activeRequest.Requester.transform.name,
