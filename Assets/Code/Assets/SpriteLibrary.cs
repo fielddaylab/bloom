@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay.Data;
 using UnityEngine;
 using Zavala.Sim;
@@ -23,14 +24,16 @@ namespace Zavala {
             if (m_Map == null) {
                 m_Map = new Dictionary<StringHash32, Sprite>(m_Entries.Length, CompareUtils.DefaultEquals<StringHash32>());
                 foreach (var sprite in m_Sprites) {
+                    Log.Msg("[SpriteLibrary] Adding sprite {0}",sprite.name);
                     m_Map.Add(sprite.name, sprite);
                 }
-
+               
                 foreach (var entry in m_Entries) {
                     StringHash32 id = entry.Id;
                     if (id.IsEmpty) {
                         id = entry.Sprite.name;
                     }
+                    Log.Msg("[SpriteLibrary] Adding entry {0}", id);
                     m_Map.Add(id, entry.Sprite);
                 }
             }
