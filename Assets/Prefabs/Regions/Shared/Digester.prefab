@@ -159,9 +159,9 @@ MonoBehaviour:
   IsLocalOption: 0
   InfiniteRequests: 0
   RefusesSameBuildingType: 0
-  OverridesBuyPrice: 0
+  OverridesBuyPrice: 1
   OverrideBlock:
-    Phosphorus: 0
+    Phosphorus: 15
     Grain: 0
     Milk: 0
   Flagstaff: {fileID: 0}

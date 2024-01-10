@@ -307,13 +307,13 @@ $set global:bloomDiscovered = true
 $call CutsceneBegin()
     $call CutscenePrepareImages("act2/2-1-1.png", "act2/2-1-2.png", "act2/2-1-3.png")
     $call CutsceneAllImages(0.5)
-    Something is wrong with the lakes. They are filled with revolting green algae! This can't be safe for our ecosystem.
+    Something is wrong with the lakes. They are filled with revolting green algae! It's depleting lake oxygen and killing fish...
     $call CutscenePrepareImages("act2/2-2-1.png", "act2/2-2-2.png", "act2/2-2-3.png")
 	$call CutsceneAllImages(0.5)
 	Could the grain farmers be to blame? Algae loves phosphorus, and they import phosphorus and overapply it!
     $call CutscenePrepareImages("act2/2-3-1.png", "act2/2-3-2.png", "act2/2-3-3.png")
 	$call CutsceneAllImages(0.5)
-	Or the dairy farmers? Their cows' phosphorus-filled manure runs off into the lakes too! But it's expensive to ship away...
+	Or are the dairy farmers at fault? Their cows' phosphorus-filled manure runs off into the lakes too!
     $call CutscenePrepareImages("act2/2-4-1.png", "act2/2-4-2.png", "act2/2-4-3.png")
 	$call CutsceneAllImages(0.5)
     Nearby farms might be able to afford manure fertilizer... But long-distance shipping is just too costly!

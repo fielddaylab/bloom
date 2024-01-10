@@ -2,6 +2,7 @@ using System;
 using BeauRoutine;
 using BeauRoutine.Extensions;
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.UI;
 using TMPro;
@@ -468,6 +469,7 @@ namespace Zavala.UI.Info {
         }
 
         private void UpdateData(bool forceRefresh) {
+            Log.Msg("[InfoPopup] Updating data...");
             switch (m_Mode) {
                 case BuildingType.DairyFarm: {
                     if (m_ConnectionsDirty || forceRefresh) {
@@ -593,6 +595,7 @@ namespace Zavala.UI.Info {
         private void OnPolicyUpdated()
         {
             m_ConnectionsDirty = true;
+            UpdateData(true);
         }
 
         #endregion // Handlers

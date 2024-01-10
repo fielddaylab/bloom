@@ -274,7 +274,7 @@ MonoBehaviour:
       Grain: 20
       Milk: 40
   StressedPurchaseThresholds:
-    Phosphorus: 34
+    Phosphorus: 33
     Grain: 50
     Milk: 0
 --- !u!114 &7708306960153739432

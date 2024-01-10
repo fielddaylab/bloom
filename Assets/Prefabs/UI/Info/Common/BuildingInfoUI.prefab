@@ -1310,7 +1310,7 @@ MonoBehaviour:
   m_PreviewInEditMode: 0
   m_CurrentTarget: {fileID: 0}
   m_TargetWorldOffset:
-    Local: {x: 0, y: 1.5, z: 0}
+    Local: {x: 0, y: 1, z: 0}
     World: {x: 0, y: 0, z: 0}
   m_LocalOffset: {x: 0, y: 0}
   m_ClampToParentRect: 1

@@ -55,13 +55,16 @@ $call CutsceneBegin()
     The protected lands of Muskeg County have been a safe haven for local species... until now. Algae blooms are threatening their ecosystem!
     $call CutscenePrepareImages("act4/4-2-1.png", "act4/4-2-2.png", "act4/4-2-3.png")
 	$call CutsceneAllImages(0.5)
-    Our elite naval rangers are prepared to control the algae with their Skimmers.
+    Our elite naval rangers are prepared to mitigate the algae with their Skimmers.
 	$call CutscenePrepareImages("act4/4-3-1.png", "act4/4-3-2.png", "act4/4-3-3.png")
 	$call CutsceneAllImages(0.5)
-    And this old digester... It could turn heavy manure into light, shippable fertilizer. Building new ones could cut off imports!
+    And this old manure processor... It used to turn manure into fertilizer, but it was too expensive to run. Could SAGA use it to beat Phos4Us?
 	$call CutscenePrepareImages("act4/4-4-1.png", "act4/4-4-2.png", "act4/4-4-3.png")
 	$call CutsceneAllImages(0.5)
-    We've had our differences in the past. But now our counties must band together to fight this threat... united!
+    That processed manure 
+    $call CutscenePrepareImages("act4/4-5-1.png", "act4/4-5-2.png", "act4/4-5-3.png")
+	$call CutsceneAllImages(0.5)
+    Our counties have had their differences in the past. But now we must band together to fight this threat... united!
 $call CutsceneEnd()
 $call UnlockShopItem("Digester")
 {@advisorEcolWetland}   Here are the schematics for that <b>Digester</b>.

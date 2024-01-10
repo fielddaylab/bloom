@@ -549,6 +549,11 @@ namespace Zavala.Economy
             Log.Msg("[MarketSystem] Updated buyer priorities");
         }
 
+        public void UpdateAllMarketPriorities() {
+            UpdateAllSupplierPriorities();
+            UpdateAllRequesterPriorities();
+        }
+
         private void UpdateRequesterPriority(ResourceRequester requester, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState)
         {
             m_SellerPriorityWorkList.Clear();
