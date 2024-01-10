@@ -381,7 +381,7 @@ namespace Zavala.Sim {
 
 
         // Alert Threshold
-        [ConfigVar("Excess Alert Threshold", 1, 30, 2)] static public int ExcessRunoffThreshold = 12;
+        [ConfigVar("Excess Alert Threshold", 0, 12, 1)] static public int ExcessRunoffThreshold = 12;
 
 
         #endregion // Tunable Parameters

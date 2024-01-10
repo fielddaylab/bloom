@@ -11,7 +11,7 @@ $call PauseAlertType("ExcessRunoff")
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.5)
-    You are assigned the Director of the region's Sustainable Agricultural Growth Administration: SAGA.
+    You have become the Director of the region's Sustainable Agricultural Growth Administration: SAGA.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.5)
 	This region is young. It's your job as SAGA director to help them grow...
@@ -191,11 +191,24 @@ $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
 {@advisorEconHill}      Henrietta's Grain Farm imported some <i>fertilizer</i>.
 {local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
-{local @grainFarmer}    ...and its cheap to ship to my farm.
+{local @grainFarmer}    ...and it's cheap to ship to my farm.
 {@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
-{@advisorEcolHill}      This could disrupt the ecological balance!
+{@advisorEcolHill}      This could disrupt the phosphorus cycle!
 $call AddAutoAlertCondition("Bloom", 1)
-{@advisorEconHill}      I'm afraid this is the only economically feasible option.
+{@advisorEconHill}      I'm sure Henrietta has a good reason. Let's have a look...
+$call OpenInfoPopup("region1_grain1")
+{local @grainFarmer}    Phos4Us is the only game in town!
+{@advisorEcolHill}      What about manure? That has phosphorus.
+$call CloseInfoPopup()
+{@advisorEconHill}      Shall we ask Bertram?
+$call OpenInfoPopup("region1_cafo1")
+$call Wait(0.5)
+{local @cafoFarmer}     I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
+{local @cafoFarmer}     Better to just let it sit.
+$call CloseInfoPopup()
+{@advisorEconHill}      I see.
+{@advisorEconHill}      You can always check a location's decisions by <b>clicking</b> it.
+
 // $call Unpause()
 
 

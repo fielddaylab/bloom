@@ -93,6 +93,7 @@ namespace Zavala.UI.Info {
         [NonSerialized] private ResourceRequester m_SelectedRequester;
         [NonSerialized] private ResourcePurchaser m_SelectedPurchaser;
         [NonSerialized] private bool m_ConnectionsDirty;
+        [NonSerialized] public bool HoldOpen;
 
         private readonly RingBuffer<MarketQueryResultInfo> m_QueryResults = new RingBuffer<MarketQueryResultInfo>(16, RingBufferMode.Expand);
 

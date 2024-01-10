@@ -1,6 +1,10 @@
+using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Rendering;
+using FieldDay.Scripting;
 using FieldDay.Systems;
+using Leaf.Runtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,20 +24,20 @@ namespace Zavala.UI.Info {
                 return;
             }
 
-            if ((m_StateB.Paused & DisallowFlags) != 0) {
+            if ((m_StateB.Paused & DisallowFlags) != 0 && !popupUI.HoldOpen) {
                 popupUI.Hide();
                 return;
             }
 
             if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
-                if (SimWorldUtility.IsPointerOverUI()) {
+                if (SimWorldUtility.IsPointerOverUI() && !popupUI.HoldOpen) {
                     popupUI.Hide();
                 } else {
                     HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);
                     if (infoPopup != null) {
                         popupUI.LoadTarget(infoPopup);
-                        World.WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
-                    } else {
+                        WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
+                    } else if (!popupUI.HoldOpen) {
                         popupUI.Hide();
                     }
                 }
@@ -46,6 +50,33 @@ namespace Zavala.UI.Info {
             } else {
                 return null;
             }
+        }
+
+
+    }
+
+    public static class InfoPopupUtility {
+
+        [LeafMember("OpenInfoPopup")]
+        static public void OpenActorInfo(StringHash32 id, bool holdOpen = true) {
+            if (!ScriptUtility.ActorExists(id)) {
+                Log.Error("[InfoPopupSystem] Error: tried to open info for nonexistent actor.");
+                return;
+            }
+
+            if (ScriptUtility.LookupActor(id).TryGetComponent(out HasInfoPopup target)) {
+                InfoPopup ip = Game.Gui.GetShared<InfoPopup>();
+                ip.LoadTarget(target);
+                ip.HoldOpen = holdOpen;
+                WorldCameraUtility.PanCameraToTransform(target.transform);
+            }
+        }
+
+        [LeafMember("CloseInfoPopup")]
+        static public void CloseInfoPopup() {
+            InfoPopup ip = Game.Gui.GetShared<InfoPopup>();
+            ip.HoldOpen = false;
+            ip.Hide();
         }
     }
 }

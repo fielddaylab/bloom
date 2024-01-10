@@ -170,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Camera: {fileID: 963194227}
   LookTarget: {fileID: 336053}
-  PanTargetOffset: {x: 1.5, y: 0, z: 1.5}
+  PanTargetOffset: {x: 1.3, y: 0, z: 1.3}
   CameraMoveSpeed: 4
   CameraMaxZoomDist: -13
   CameraMinZoomDist: -30
