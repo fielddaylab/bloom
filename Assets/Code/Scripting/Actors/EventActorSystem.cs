@@ -37,6 +37,13 @@ namespace Zavala.Scripting {
 
                     if (node != null) {
                         EventActorUtility.CancelEvent(component, trigger.EventId);
+
+                        // If the node has @once, check if it has been queued to an alert.
+                        if ((node.Flags & ScriptNodeFlags.Once) != 0 && node.QueuedToAlert) {
+                            Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to an alert", node.FullName, component.Id.ToDebugString());
+                            return;
+                        }
+
                         if (component.QueuedEvents.Count < component.MaxQueuedEvents) {
                             EventActorQueuedEvent queuedEvent = new EventActorQueuedEvent() {
                                 Argument = trigger.Argument,
@@ -47,7 +54,9 @@ namespace Zavala.Scripting {
                                 TileIndex = trigger.TileIndex,
                                 Alert = trigger.Alert
                             };
+
                             component.QueuedEvents.PushBack(queuedEvent);
+                            // node.QueuedToAlert = true;
                             HashSet<AutoAlertCondition> conditions = ZavalaGame.SharedState.Get<AlertState>().AutoTriggerAlerts;
                             foreach (AutoAlertCondition autoTrig in conditions) {
                                 Log.Msg("[EventActorUtility] Checking for AutoTriggerAlert...");

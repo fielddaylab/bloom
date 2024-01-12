@@ -7,9 +7,10 @@ namespace Zavala.Sim
 {
     public class PhosphorusSkimmer : BatchedComponent
     {
-        public float AlgaeSkimAmt;
-        public int PhosSkimAmt;
+        //public float AlgaeSkimAmt;
+        //public int PhosSkimAmt;
         public SkimmerType Type;
+        public int[] NeighborIndices;
 
         public MeshFilter Mesh;
         public MeshRenderer Renderer;

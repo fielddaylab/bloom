@@ -33,6 +33,9 @@ Zora's Corn Emporium
 :: region3_grain2.name
 Zora's Grain Farm
 
+:: region3_grain3.name
+Zora's Wholesome Sorgum
+
 :: region3_city1.name
 Veldt City
 
@@ -60,8 +63,6 @@ Tom's Grain Farm
 :: region5_grain2.name
 Tom's Barley Palace
 
-:: region5_grain3.name
-Tom's Wholesome Sorghum
 
 :: region5_city1.name
 East Smokestack

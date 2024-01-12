@@ -148,67 +148,67 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
-    Flags: 72
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 72
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 74
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 72
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 74
-    Height: 50
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 74
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 72
-    Height: 50
-  - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 72
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 0
+    Flags: 105
     Height: 50
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
     Flags: 105
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 74
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 72
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 74
+    Height: 50
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 0
+    SubCategory: 0
+    Flags: 1
+    Height: 65535
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 74
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 72
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 72
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 1
+    SubCategory: 1
+    Flags: 0
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 73
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -233,7 +233,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 48
     Height: 50
   - RegionIndex: 65535
     Category: 2
@@ -251,10 +251,10 @@ MonoBehaviour:
     Flags: 74
     Height: 50
   - RegionIndex: 65535
-    Category: 2
+    Category: 0
     SubCategory: 0
-    Flags: 74
-    Height: 50
+    Flags: 1
+    Height: 65535
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
@@ -293,7 +293,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
-    Flags: 105
+    Flags: 73
     Height: 50
   - RegionIndex: 65535
     Category: 1
@@ -308,27 +308,27 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 176
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
     Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
-    Height: 50
-  - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 48
+    Flags: 128
     Height: 50
   - RegionIndex: 65535
     Category: 2
     SubCategory: 0
-    Flags: 72
+    Flags: 8
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 8
+    Height: 50
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 74
     Height: 50
   - RegionIndex: 65535
     Category: 2
@@ -396,14 +396,14 @@ MonoBehaviour:
     Flags: 49
     Height: 100
   - RegionIndex: 65535
-    Category: 1
-    SubCategory: 1
-    Flags: 128
+    Category: 2
+    SubCategory: 0
+    Flags: 8
     Height: 50
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 48
     Height: 100
   - RegionIndex: 65535
     Category: 2
@@ -563,7 +563,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 48
+    Flags: 0
     Height: 200
   - RegionIndex: 65535
     Category: 1
@@ -601,14 +601,14 @@ MonoBehaviour:
     Flags: 128
     Height: 150
   - RegionIndex: 65535
-    Category: 2
-    SubCategory: 0
-    Flags: 74
-    Height: 150
-  - RegionIndex: 65535
     Category: 1
     SubCategory: 1
     Flags: 2
+    Height: 150
+  - RegionIndex: 65535
+    Category: 2
+    SubCategory: 0
+    Flags: 74
     Height: 150
   - RegionIndex: 65535
     Category: 1
@@ -723,7 +723,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 2
+    Flags: 290
     Height: 200
   - RegionIndex: 65535
     Category: 1
@@ -808,7 +808,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 290
+    Flags: 2
     Height: 250
   - RegionIndex: 65535
     Category: 0
@@ -846,7 +846,7 @@ MonoBehaviour:
       m_Type: 1
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 61
+  - LocalTileIndex: 43
     ScriptName:
       m_Source: region5_city1
       m_HashValue: 3736374729
@@ -996,7 +996,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 55
+  - LocalTileIndex: 27
     ScriptName:
       m_Source: region5_skimmer2
       m_HashValue: 1269592227
@@ -1011,7 +1011,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 38
+  - LocalTileIndex: 26
     ScriptName:
       m_Source: region5_skimmer3
       m_HashValue: 1252814608
@@ -1026,7 +1026,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 109
+  - LocalTileIndex: 77
     ScriptName:
       m_Source: region5_grain2
       m_HashValue: 3092011802
@@ -1034,21 +1034,6 @@ MonoBehaviour:
     LocationName:
       m_Source: location.region5_grain2.name
       m_HashValue: 2723001944
-    CharacterId:
-      m_Source: grainUrban
-      m_HashValue: 4139424720
-    AdditionalData:
-      m_Type: 0
-      m_RawValue: 0
-      m_StringHashSource: 
-  - LocalTileIndex: 58
-    ScriptName:
-      m_Source: region5_grain3
-      m_HashValue: 3108789421
-    Type: 1
-    LocationName:
-      m_Source: location.region5_grain3.name
-      m_HashValue: 3975097621
     CharacterId:
       m_Source: grainUrban
       m_HashValue: 4139424720
@@ -1302,18 +1287,18 @@ MonoBehaviour:
     SharedCornerCW: 3
   - LocalTileIndex: 46
     Borders:
+      Value: 24
+    SharedCornerCCW: 1
+    SharedCornerCW: 3
+  - LocalTileIndex: 62
+    Borders:
       Value: 8
     SharedCornerCCW: 1
     SharedCornerCW: 2
-  - LocalTileIndex: 47
+  - LocalTileIndex: 63
     Borders:
       Value: 28
     SharedCornerCCW: 0
-    SharedCornerCW: 3
-  - LocalTileIndex: 63
-    Borders:
-      Value: 24
-    SharedCornerCCW: 1
     SharedCornerCW: 3
   - LocalTileIndex: 79
     Borders:
@@ -1321,7 +1306,7 @@ MonoBehaviour:
     SharedCornerCCW: 1
     SharedCornerCW: 3
   Spanners:
-  - LocalTileIndex: 158
+  - LocalTileIndex: 141
     ScriptName:
       m_Source: toll_booth_3to2
       m_HashValue: 1469454570
@@ -1331,7 +1316,7 @@ MonoBehaviour:
       m_Source: toll_booth_5to2
       m_HashValue: 3013887564
     Type: 10
-  EdgeVisualUpdateSet: 03000400050006000700080009000a000b000d00110012001c001e0021002e002f0030003f0040004f00500051005f006f007500
+  EdgeVisualUpdateSet: 03000400050006000700080009000a000b000d00110012001c001e0021002e0030003e003f0040004f00500051005f006f007600
   WaterEmitters:
   - LocalTileIndex: 94
     Variant: 2
@@ -1359,10 +1344,10 @@ MonoBehaviour:
     Variant: 0
   - LocalTileIndex: 101
     Variant: 0
-  WaterGroupLocalIndices: 03000400050006000700080009000a000b000d00110012001300140015001700180019001a001b001c001d001e0021002200230026002c002d002e002f00300031003200360037003e003f0040004100420047004e004f00500051005200550056005e005f0065006f007500
+  WaterGroupLocalIndices: 03000400050006000700080009000a000b000d00110012001300140015001700180019001a001b001c001d001e0021002200230026002c002d002e00300031003200360037003e003f0040004100420047004e004f00500051005200550056005e005f0065006f007600
   WaterGroups:
   - Offset: 0
-    Length: 54
+    Length: 53
   LeafScript: {fileID: 0}
   Ambience: {fileID: 11400000, guid: 4f4b64f195ca21747a143f74651acb2f, type: 2}
   Id: 4

@@ -14,16 +14,17 @@ namespace Zavala.Sim
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
+            StressableActor stressable = supplier.GetComponent<StressableActor>();
+            if (!stressable) { return; }
+
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.SellingLoss)) {
-                // only add this trigger once
+                if (stressable.StressImproving)
+                    EventActorUtility.CancelEventType(actor, EventActorAlertType.SellingLoss);
                 return;
             }
             // Check if a supplier sold at a loss
 
-            StressableActor stressable = supplier.GetComponent<StressableActor>();
-            if (!stressable) { return; }
-            // if (!supplier.SoldAtALossExcludingMilk) { return; }
-            if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Medium])
+            if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Okay])
             {
                 // if so, create alert on this tile
                 bool sellsGrain = (supplier.ShippingMask & ResourceMask.Grain) != 0;

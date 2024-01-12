@@ -4991,7 +4991,6 @@ MonoBehaviour:
   RoadMesh: {fileID: 110408958775330870}
   RampSolidDecorations: {fileID: 1723040191123504645}
   RampStagedDecorations: {fileID: 1379674122801371436}
-  BridgeSolidDecorations: {fileID: 7409405493383104625}
   BPCompareMask:
     Value: 0
   MatSwap: {fileID: 7418557678709288407}
@@ -5073,5 +5072,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DEBUG_InitialElements: []
   Layer: 8
-  Material: {fileID: 2100000, guid: ce470f66ae041964ab5a18dca1ad070d, type: 2}
+  Material: {fileID: 2100000, guid: c689da3acd6c04bb9b3c6b4b53be3280, type: 2}
   DefaultMesh: {fileID: 0}

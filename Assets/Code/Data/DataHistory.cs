@@ -20,15 +20,13 @@ namespace Zavala.Data
         public RingBuffer<int> Net; // store show much P was produced/removed over the previous ticks
 
         public void AddPending(int pendingDelta) {
-            Log.Msg("[DataHistory] AddPending {0}", pendingDelta);
             PrevPending = Pending;
-            Log.Msg("[DataHistory] PrevPending {0}", PrevPending);
             Pending += pendingDelta;
-            Log.Msg("[DataHistory] New Pending {0}", Pending);
+            // Log.Msg("[DataHistory] AddPending {0}, PrevPending {1}, New Pending {2}", pendingDelta, PrevPending, Pending);
         }
 
         public int LastChange() {
-            Log.Msg("[DataHistory] LastChange {0}", Pending - PrevPending);
+            // Log.Msg("[DataHistory] LastChange {0}", Pending - PrevPending);
             return Pending - PrevPending;
         }
 

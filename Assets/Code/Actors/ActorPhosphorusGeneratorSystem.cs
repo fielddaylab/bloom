@@ -22,17 +22,14 @@ namespace Zavala.Actors {
             foreach(var componentGroup in m_Components) {
                 if (componentGroup.ComponentA.HasAdvanced()) {
                     SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
-                    SimPhospohorusUtility.GenerateProportionalPhosphorus(
+                    SimPhospohorusUtility.TryRunoffManure(
                     // SimPhospohorusUtility.GenerateStaticPhosphorus(
                         phosphorus,
                         componentGroup.ComponentC.TileIndex,
                         componentGroup.Primary,
                         ref componentGroup.ComponentB.Current,
-                        RunoffParams.SittingManureRunoffProportion,
-                        RunoffParams.MFertilizerRunoffProportion,
-                        RunoffParams.DFertilizerRunoffProportion,
-                        componentGroup.Primary.ConsumeFertilizerForRunoff
-                        ) ;
+                        RunoffParams.SittingManureRunoffProportion
+                        );
                     
                 }
             }

@@ -22,7 +22,7 @@ namespace Zavala.Sim {
         // begin growing algae when this P threshold is exceeded
         [ConfigVar("Minimum Phosphorus for Algae Growth", 1, 64, 1)] static public int MinPForAlgaeGrowthDefault = 15;
         // gain this percentage of growth per sim tick that P is above threshold
-        [ConfigVar("Algae Growth Increment", 0, 0.2f, 0.01f)] static public float AlgaeGrowthIncrement = 0.1f;
+        [ConfigVar("Algae Growth Increment", 0, 0.2f, 0.01f)] static public float AlgaeGrowthIncrement = 0.02f;
         #endregion
 
     }

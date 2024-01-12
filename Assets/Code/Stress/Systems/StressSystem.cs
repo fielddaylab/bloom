@@ -24,11 +24,11 @@ namespace Zavala.Actors {
                 switch (actor.Position.Type)
                 {
                     case BuildingType.GrainFarm:
-                        timerDelta = actor.PrevState < actor.OperationState ? actor.StressDelta : -actor.StressDelta;
+                        timerDelta = actor.PrevState < actor.OperationState ? -actor.StressDelta : actor.StressDelta;
                         timer.AdustTimer(timerDelta);
                         break;
                     case BuildingType.DairyFarm:
-                        timerDelta = actor.PrevState < actor.OperationState ? actor.StressDelta : -actor.StressDelta;
+                        timerDelta = actor.PrevState < actor.OperationState ? -actor.StressDelta : actor.StressDelta;
                         timer.AdustTimer(timerDelta);
                         break;
                     case BuildingType.City:
@@ -41,20 +41,18 @@ namespace Zavala.Actors {
                 }
             }
 
-            // TODO: future optimization: I think we can just use Primary.OperationState, instead of iterating through all components?
-            WinLossState winLossState = Game.SharedState.Get<WinLossState>();
+            actor.ChangedOperationThisTick = false;
 
-            /*
-            foreach (var component in m_Components) {
-                if (component.Primary.OperationState == OperationState.Low) {
-                    winLossState.CityFallingTimersPerRegion[component.Primary.Position.RegionIndex] += 1;
+            if (actor.Position.Type == BuildingType.City) {
+                WinLossState winLossState = Game.SharedState.Get<WinLossState>();
+                if (actor.OperationState == OperationState.Bad) {
+                    winLossState.CityFallingTimersPerRegion[actor.Position.RegionIndex] += 1;
                     // if you have multiple cities, each will increment.
                 } else {
-                    winLossState.CityFallingTimersPerRegion[component.Primary.Position.RegionIndex] = 0;
+                    winLossState.CityFallingTimersPerRegion[actor.Position.RegionIndex] = 0;
                     // BUT any of them healing will make it better
                 }
             }
-            */
         }
     }
 }

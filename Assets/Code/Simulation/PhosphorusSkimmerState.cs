@@ -78,6 +78,7 @@ namespace Zavala.World {
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
             PhosphorusSkimmer skim = skimmerPool.Alloc(worldPos);
+            skim.NeighborIndices = GetWaterNeighborIdx(pos, grid);
             SetSkimType(skim, isDredger ? SkimmerType.Dredge : SkimmerType.Algae);
             skim.transform.Rotate(0, grid.Random.Next(0, 360), 0);
             return skim;
@@ -93,5 +94,20 @@ namespace Zavala.World {
             }
             skim.Type = type;
         }
+
+        private static int[] GetWaterNeighborIdx(HexVector pos, SimGridState grid) {
+            int[] neighbors = new int[(int)TileDirection.COUNT - 1];
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                int adjIdx = grid.HexSize.FastPosToIndex(HexVector.Offset(pos, dir));
+                
+                if ((grid.Terrain.Info[adjIdx].Flags & TerrainFlags.IsWater) != 0) {
+                    neighbors[(int)dir - 1] = adjIdx;
+                } else {
+                    neighbors[(int)dir - 1] = -1;
+                }
+            }
+            return neighbors;
+        }
+
     }
 }

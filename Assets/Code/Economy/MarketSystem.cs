@@ -438,7 +438,7 @@ namespace Zavala.Economy
                 }
                 float salesTax = adjustments.PurchaseTax[primary];
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary];
-
+                Log.Msg("[MarketSystem] Shipping cost: {0} to {1}, {2} * {3} = {4}", supplier.name, requester.name, connectionSummary.Distance, config.TransportCosts.CostPerTile[primary], shippingCost);
                 if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
                     // add flat rate export depot shipping fee
                     shippingCost += config.TransportCosts.ExportDepotFlatRate[primary];

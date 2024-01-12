@@ -12,9 +12,9 @@ using FieldDay.Debugging;
 namespace Zavala.Actors {
 
     public enum OperationState {
-        Low,
-        Medium,
-        High
+        Bad,
+        Okay,
+        Great
     }
 
     public enum StressCategory
@@ -34,11 +34,11 @@ namespace Zavala.Actors {
 
         public int StressCap = 8;
 
-        [SerializeField] private int m_LowThreshold = 8;        // >=
-        [SerializeField] private int m_MediumThreshold = 4;     // >=
-        [SerializeField] private int m_HighThreshold = 0;       // >=
+        [SerializeField] private int m_BadThreshold = 8;        // >=
+        [SerializeField] private int m_OkayThreshold = 4;     // >=
+        [SerializeField] private int m_GreatThreshold = 0;       // >=
 
-        [SerializeField] private OperationState m_StartingState = OperationState.High;
+        [SerializeField] private OperationState m_StartingState = OperationState.Great;
 
 
         #endregion // Inspector
@@ -48,7 +48,8 @@ namespace Zavala.Actors {
         [NonSerialized] public int TotalStress;
         [NonSerialized] public float AvgStress;
         [NonSerialized] public OperationState OperationState;
-        [NonSerialized] public bool ChangedOperationThisTick;
+        [NonSerialized] public bool ChangedOperationThisTick = false;
+        [NonSerialized] public bool StressImproving = false; // this would be more robust as a PrevStress dictionary
         [NonSerialized] public OperationState PrevState;
 
         [NonSerialized] public Dictionary<StressCategory, bool> StressMask;
@@ -61,14 +62,16 @@ namespace Zavala.Actors {
         public void OnRegister()
         {
             int startingStress = 0;
-            if (m_StartingState == OperationState.Medium)
+            if (m_StartingState == OperationState.Okay)
             {
-                startingStress = m_MediumThreshold;
+                startingStress = m_OkayThreshold;
             }
-            else if (m_StartingState == OperationState.Low)
+            else if (m_StartingState == OperationState.Bad)
             {
-                startingStress = m_HighThreshold;
+                startingStress = m_GreatThreshold;
             }
+            OperationState = m_StartingState;
+            PrevState = m_StartingState;
 
 
             int numStressCategories = 0;
@@ -94,9 +97,9 @@ namespace Zavala.Actors {
             };
 
             OperationThresholds = new Dictionary<OperationState, int>() {
-                { OperationState.Low, m_LowThreshold },
-                { OperationState.Medium, m_MediumThreshold },
-                { OperationState.High, m_HighThreshold },
+                { OperationState.Bad, m_BadThreshold },
+                { OperationState.Okay, m_OkayThreshold },
+                { OperationState.Great, m_GreatThreshold },
             };
 
             Position = this.GetComponent<OccupiesTile>();
@@ -115,6 +118,7 @@ namespace Zavala.Actors {
         {
             actor.CurrentStress[category]++;
             //RecalculateTotalStress(actor);
+            actor.StressImproving = false;
 
             if (actor.CurrentStress[category] > actor.StressCap)
             {
@@ -127,7 +131,6 @@ namespace Zavala.Actors {
                 // apply changes
                 RecalculateTotalStress(actor);
                 UpdateOperationState(actor);
-
                 DebugDraw.AddWorldText(actor.transform.position + Vector3.up, "Stressed to " + actor.CurrentStress[category], Color.red, 3);
                 Log.Msg("[StressableActor] Actor {0} increased {1} stress! Current: {2}", actor.transform.name, category, actor.CurrentStress[category]);
             }
@@ -137,6 +140,7 @@ namespace Zavala.Actors {
         {
             actor.CurrentStress[category]--;
             // RecalculateTotalStress(actor);
+            actor.StressImproving = true;
 
             if (actor.CurrentStress[category] < 0)
             {
@@ -175,33 +179,39 @@ namespace Zavala.Actors {
 
         static public void UpdateOperationState(StressableActor actor)
         {
-            if (actor.AvgStress >= actor.OperationThresholds[OperationState.Low])
+            actor.ChangedOperationThisTick = false;
+
+            if (actor.AvgStress >= actor.OperationThresholds[OperationState.Bad])
             {
-                if (actor.OperationState != OperationState.Low)
+                if (actor.OperationState != OperationState.Bad)
                 {
                     actor.PrevState = actor.OperationState;
-                    actor.OperationState = OperationState.Low;
+                    actor.OperationState = OperationState.Bad;
                     actor.ChangedOperationThisTick = true;
+                    return;
                 }
             }
-            else if (actor.AvgStress >= actor.OperationThresholds[OperationState.Medium])
+            else if (actor.AvgStress >= actor.OperationThresholds[OperationState.Okay])
             {
-                if (actor.OperationState != OperationState.Medium)
+                if (actor.OperationState != OperationState.Okay)
                 {
                     actor.PrevState = actor.OperationState;
-                    actor.OperationState = OperationState.Medium;
+                    actor.OperationState = OperationState.Okay;
                     actor.ChangedOperationThisTick = true;
+                    return;
                 }
             }
             else // if (actor.TotalStress >= actor.OperationThresholds[OperationState.High])
             {
-                if (actor.OperationState != OperationState.High)
+                if (actor.OperationState != OperationState.Great)
                 {
                     actor.PrevState = actor.OperationState;
-                    actor.OperationState = OperationState.High;
+                    actor.OperationState = OperationState.Great;
                     actor.ChangedOperationThisTick = true;
+                    return;
                 }
             }
+            actor.PrevState = actor.OperationState;
         }
     }
 }

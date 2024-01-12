@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timer:
-    Period: 6
+    Period: 8
 --- !u!114 &5421243799934890593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,11 +335,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StressCap: 8
-  m_LowThreshold: 8
-  m_MediumThreshold: 4
-  m_HighThreshold: 0
+  m_BadThreshold: 8
+  m_OkayThreshold: 4
+  m_GreatThreshold: 0
   m_StartingState: 2
-  StressDelta: 1
+  StressDelta: 4
 --- !u!1001 &3743880648583490365
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -175,7 +175,7 @@ MonoBehaviour:
       Manure: 3
       MFertilizer: 2
       DFertilizer: 1
-      Grain: 3
+      Grain: 1
       Milk: 1
     ExportDepotFlatRate:
       Manure: 0
@@ -574,7 +574,7 @@ MonoBehaviour:
         Value: 0
       NodeTitle: region1.specialDelivery
     RegionIndexUnlocks: 01000000
-  - UnlockDelay: 15
+  - UnlockDelay: 20
     UnlockConditions:
     - Type: 6
       ChecksRegions: 01000000

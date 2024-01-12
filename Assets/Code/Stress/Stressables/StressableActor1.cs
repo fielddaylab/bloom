@@ -53,7 +53,7 @@ namespace Zavala.Actors {
         }
 
         private void ChangeOperationState(int delta) {
-            if (OperationState + delta <= OperationState.High && OperationState + delta >= OperationState.Low) {
+            if (OperationState + delta <= OperationState.Great && OperationState + delta >= OperationState.Bad) {
                 OperationState += delta;
             }
         }

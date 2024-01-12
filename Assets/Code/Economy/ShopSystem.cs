@@ -2,6 +2,7 @@ using System;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Data;
 using FieldDay.Debugging;
 using FieldDay.Systems;
 using Leaf.Runtime;
@@ -48,9 +49,13 @@ namespace Zavala.Economy {
 
 
     static public class ShopUtility {
-        private const int ROAD_COST = 5;
-        private const int STORAGE_COST = 100;
-        private const int DIGESTER_COST = 200;
+        [ConfigVar("Road Cost", 1, 10, 1)] static public int RoadCost = 5;
+        [ConfigVar("Storage Cost", 10, 100, 10)] static public int StorageCost = 100;
+        [ConfigVar("Digester Cost", 10, 300, 10)] static public int DigesterCost = 200;
+
+        //private const int ROAD_COST = 5;
+        //private const int STORAGE_COST = 100;
+        //private const int DIGESTER_COST = 200;
 
         static public void RefreshShop(BudgetData budgetData, ShopState shopState, SimGridState gridState) {
             uint idx = gridState.CurrRegionIndex;
@@ -61,11 +66,11 @@ namespace Zavala.Economy {
         public static int PriceLookup(UserBuildTool building) {
             switch (building) {
                 case UserBuildTool.Road:
-                    return ROAD_COST;
+                    return RoadCost;
                 case UserBuildTool.Storage:
-                    return STORAGE_COST;
+                    return StorageCost;
                 case UserBuildTool.Digester:
-                    return DIGESTER_COST;
+                    return DigesterCost;
                 default:
                     return 0;
             }
@@ -76,11 +81,11 @@ namespace Zavala.Economy {
             switch (building)
             {
                 case BuildingType.Road:
-                    return ROAD_COST;
+                    return RoadCost;
                 case BuildingType.Storage:
-                    return STORAGE_COST;
+                    return StorageCost;
                 case BuildingType.Digester:
-                    return DIGESTER_COST;
+                    return DigesterCost;
                 default:
                     return 0;
             }

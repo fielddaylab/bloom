@@ -158,6 +158,30 @@ namespace Zavala {
         }
 
         /// <summary>
+        /// Returns an array of HexVectors of tiles adjacent to the given index.
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <returns></returns>
+        public HexVector[] GetNeighbors(int idx) {
+            if (IndexToPos(idx, out int x, out int y)) {
+                return GetNeighbors(new HexVector(x, y));
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns an array of HexVectors of the tiles adjacent to the given pos.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public HexVector[] GetNeighbors(HexVector pos) {
+            HexVector[] neighbors = new HexVector[(int)TileDirection.COUNT - 1];
+            for (TileDirection dir = (TileDirection)1; dir < TileDirection.COUNT; dir++) {
+                neighbors[(int)dir - 1] = HexVector.Offset(pos, dir);
+            }
+            return neighbors;
+        }
+        /// <summary>
         /// Returns the direction between two indices.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -284,7 +308,7 @@ namespace Zavala {
         }
 
         #endregion // Index to Position
-    
+
         #region Tables
 
         // Important notes on the offset tables

@@ -32,7 +32,7 @@ namespace Zavala.Sim {
         }
     }
     public class SimAlgaeUtility {
-        static public float AddAlgaeToTile(SimAlgaeState algaeState, int tileIndex, float delta) {
+        static public float AddAlgaeToTile(SimAlgaeState algaeState, int tileIndex, float delta, int region) {
             ref float current = ref algaeState.Algae.State[tileIndex].PercentAlgae;
             if (current + delta > 1) {
                 delta = 1 - current;
@@ -40,12 +40,12 @@ namespace Zavala.Sim {
                 delta = -current;
             }
             current += delta;
-            int region = Game.SharedState.Get<SimGridState>().Terrain.Info[tileIndex].RegionIndex;
+            //int region = Game.SharedState.Get<SimGridState>().Terrain.Info[tileIndex].RegionIndex;
             RecordAlgaeToRegionTotal(algaeState, region, delta);
             return delta;
         }
-        static public float RemoveAlgae(SimAlgaeState algaeState, int tileIndex, float amount) {
-            return AddAlgaeToTile(algaeState, tileIndex, -amount);
+        static public float RemoveAlgae(SimAlgaeState algaeState, int tileIndex, float amount, int region) {
+            return AddAlgaeToTile(algaeState, tileIndex, -amount, region);
         }
 
         static public void RecordAlgaeToRegionTotal(SimAlgaeState state, int regionIndex, float amt) {

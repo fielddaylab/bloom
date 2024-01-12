@@ -17,7 +17,7 @@ namespace Zavala.Roads {
         [NonSerialized] public Mesh BridgeMesh;
         public DecorationRenderer RampSolidDecorations;
         public DecorationRenderer RampStagedDecorations;
-        public DecorationRenderer BridgeSolidDecorations;
+        // public DecorationRenderer BridgeSolidDecorations;
         public TileAdjacencyDataSet<RoadRampType> Ramps;
         public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
         public BuildingPreview MatSwap;
@@ -65,7 +65,6 @@ namespace Zavala.Roads {
             if (isStaging) { controller.RampStagedDecorations.Decorations.Clear(); }
             else { 
                 controller.RampSolidDecorations.Decorations.Clear(); 
-                controller.BridgeSolidDecorations.Decorations.Clear();
             }
 
             for (TileDirection dir = TileDirection.Self + 1; dir < TileDirection.COUNT; dir++)
@@ -88,11 +87,15 @@ namespace Zavala.Roads {
             TerrainFlags flags = Game.SharedState.Get<SimGridState>().Terrain.Info[controller.Position.TileIndex].Flags;
             if ((flags & TerrainFlags.IsWater) != 0) {
                 Transform rt = controller.RoadMeshTransform;
+                Vector3 bridgeScale = Vector3.one;
+                if (rt.localScale.x < 0) {
+                    bridgeScale.x *= -1;
+                }
                 if (isStaging) {
-                    DecorationUtility.AddDecoration(controller.RampStagedDecorations, controller.BridgeMesh, Matrix4x4.TRS(library.BridgeOffset, rt.localRotation, rt.localScale));
+                    DecorationUtility.AddDecoration(controller.RampSolidDecorations, controller.BridgeMesh, Matrix4x4.TRS(library.BridgeOffset, rt.localRotation, bridgeScale));
                 } else {
                     Log.Msg("[RoadInstanceController] Attempting to add solid bridge decoration...");
-                    DecorationUtility.AddDecoration(controller.BridgeSolidDecorations, controller.BridgeMesh, Matrix4x4.TRS(library.BridgeOffset, rt.localRotation, rt.localScale));
+                    DecorationUtility.AddDecoration(controller.RampSolidDecorations, controller.BridgeMesh, Matrix4x4.TRS(library.BridgeOffset, rt.localRotation, bridgeScale));
 
                 }
             }

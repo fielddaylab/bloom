@@ -97,7 +97,6 @@ namespace Zavala.Sim
         }
 
         static public void GenerateProportionalPhosphorus(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator generator, ref ResourceBlock resources, int manureMod, int mFertMod, int dFertMod, bool consume) {
-            int index = tileIndex;
 
             int totalToAdd = generator.Amount * (
                 resources.Manure * manureMod +
@@ -113,8 +112,25 @@ namespace Zavala.Sim
                     VfxUtility.PlayEffect(generator.RunoffParticleOrigin.position, EffectType.Poop_Runoff);
                 }    
             }
-            AddPhosphorus(phosphorus, index, totalToAdd);
+            AddPhosphorus(phosphorus, tileIndex, totalToAdd);
             generator.AmountProducedLastTick = totalToAdd;  
+        }
+
+        static public bool TryRunoffManure(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator gen, ref ResourceBlock resources, int phosToProduce) {
+            if (resources.Manure < RunoffParams.RunoffConsumeFertilizerThreshold) {
+                AddPhosphorus(phosphorus, tileIndex, RunoffParams.PassiveManureRunoff);
+                gen.AmountProducedLastTick = RunoffParams.PassiveManureRunoff;
+                return false;
+            }
+
+            resources.Manure -= RunoffParams.RunoffConsumeFertilizerThreshold;
+            if (gen.RunoffParticleOrigin != null) {
+                ResourceStorageUtility.RefreshStorageDisplays(gen.transform.parent.GetComponent<ResourceStorage>());
+                VfxUtility.PlayEffect(gen.RunoffParticleOrigin.position, EffectType.Poop_Runoff);
+            }
+            AddPhosphorus(phosphorus, tileIndex, phosToProduce);
+            gen.AmountProducedLastTick = phosToProduce;
+            return true;
         }
     }
 }

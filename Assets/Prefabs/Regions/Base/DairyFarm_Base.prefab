@@ -579,11 +579,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StressCap: 8
-  m_LowThreshold: 8
-  m_MediumThreshold: 4
-  m_HighThreshold: 0
+  m_BadThreshold: 8
+  m_OkayThreshold: 4
+  m_GreatThreshold: 0
   m_StartingState: 2
-  StressDelta: 1
+  StressDelta: 4
 --- !u!1001 &1006795544907063840
 PrefabInstance:
   m_ObjectHideFlags: 0

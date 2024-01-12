@@ -21,14 +21,15 @@ namespace Zavala.Sim
             }
 
             // check if runoff is excessive
-            Log.Msg("[ExcessRunoffAlertSystem] Amount generated last tick: " + generator.AmountProducedLastTick);
+            Log.Msg("[ExcessRunoffAlertSystem] Amount generated last tick by {0}: {1}", actor.name, generator.AmountProducedLastTick);
             if (generator.AmountProducedLastTick >= RunoffParams.ExcessRunoffThreshold) {
                 // if so, create alert on this tile
                 if (generator.transform.parent != null && generator.transform.parent.TryGetComponent(out EventActor parentActor)) {
+                    Log.Msg("                          Sending runoff alert from {0}", actor.name);
                     EventActorUtility.QueueAlert(parentActor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
                         new NamedVariant("isFromGrainFarm", false));
                 } else {
-                    Log.Msg("[ExcessRunoffAlertSystem] Attempting to create grain alert");
+                    Log.Msg("                          Sending runoff alert from {0}", actor.name);
                     EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
                         new NamedVariant("isFromGrainFarm", true));
                 }

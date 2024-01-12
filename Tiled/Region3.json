@@ -121,6 +121,18 @@
                 {
                  "gid":33,
                  "height":55,
+                 "id":137,
+                 "name":"region3_grain2",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":99,
+                 "y":234.333
+                }, 
+                {
+                 "gid":33,
+                 "height":55,
                  "id":94,
                  "name":"region3_grain1",
                  "rotation":0,
@@ -213,7 +225,8 @@
                  "width":64,
                  "x":241,
                  "y":215
-                }, 
+                },
+            
                 {
                  "gid":42,
                  "height":55,
@@ -225,8 +238,7 @@
                  "width":64,
                  "x":242,
                  "y":274
-                },
-            
+                }, 
                 {
                  "gid":42,
                  "height":55,
@@ -296,8 +308,8 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":239,
-                 "y":439
+                 "x":239.5,
+                 "y":489.5
                 }, 
                 {
                  "gid":43,
@@ -308,8 +320,8 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":334,
-                 "y":438.5
+                 "x":383.5,
+                 "y":459
                 }, 
                 {
                  "gid":43,
@@ -320,8 +332,8 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":287.5,
-                 "y":462.5
+                 "x":288.5,
+                 "y":459
                 }, 
                 {
                  "gid":36,
@@ -358,7 +370,8 @@
                  "width":64,
                  "x":147.5,
                  "y":376
-                }, 
+                },
+            
                 {
                  "gid":36,
                  "height":55,
@@ -370,8 +383,7 @@
                  "width":64,
                  "x":485.333333333333,
                  "y":402.666666666667
-                },
-            
+                }, 
                 {
                  "gid":36,
                  "height":55,
@@ -501,9 +513,10 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":331.5,
-                 "y":487.5
-                }, 
+                 "x":335,
+                 "y":487
+                },
+            
                 {
                  "gid":46,
                  "height":55,
@@ -513,17 +526,29 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":242.5,
+                 "x":241.5,
                  "y":489
+                }, 
+                {
+                 "gid":33,
+                 "height":55,
+                 "id":138,
+                 "name":"region3_grain3",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":194.666666666667,
+                 "y":567.166666666667
                 }],
-         "opacity":1,
+         "opacity":0.9,
          "type":"objectgroup",
          "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":137,
+ "nextobjectid":139,
  "orientation":"hexagonal",
  "renderorder":"right-up",
  "staggeraxis":"x",

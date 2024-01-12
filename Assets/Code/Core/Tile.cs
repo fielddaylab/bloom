@@ -153,7 +153,7 @@ namespace Zavala
 
         public override string ToString() {
             if (Value == 0) {
-                return "";
+                return "[empty]";
             }
 
             StringBuilder sb = new StringBuilder();

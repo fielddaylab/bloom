@@ -372,7 +372,7 @@ namespace Zavala.UI.Info {
             m_PurchaseContents.MilkStatus.gameObject.SetActive(true);
             StressableActor actor = m_SelectedPurchaser.GetComponent<StressableActor>();
 
-            if (actor.OperationState == OperationState.High)
+            if (actor.OperationState == OperationState.Great)
             {
                 m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.rising"));
                 m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.rising"));
@@ -384,16 +384,16 @@ namespace Zavala.UI.Info {
                 m_PurchaseContents.Arrow.rectTransform.SetRotation(90, Axis.Z, Space.Self);
 
                 // if water is less than great (>= to 4), don't show as contributing factor
-                if (actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Medium])
+                if (actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Okay])
                 {
                     m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
                 }
-                if (actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Medium])
+                if (actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Okay])
                 {
                     m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
                 }
             }
-            else if (actor.OperationState == OperationState.Low)
+            else if (actor.OperationState == OperationState.Bad)
             {
                 m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.falling"));
                 m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.falling"));
@@ -405,11 +405,11 @@ namespace Zavala.UI.Info {
                 m_PurchaseContents.Arrow.rectTransform.SetRotation(-90, Axis.Z, Space.Self);
 
                 // if water is better than bad (7 or less), don't show as contributing factor
-                if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Low])
+                if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
                 }
-                if (actor.CurrentStress[StressCategory.Resource] < actor.OperationThresholds[OperationState.Low])
+                if (actor.CurrentStress[StressCategory.Resource] < actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
                 }
@@ -424,13 +424,13 @@ namespace Zavala.UI.Info {
                 m_PurchaseContents.Arrow.gameObject.SetActive(false);
 
                 // if water is great or terrible (< 4 or >= 8), don't show as contributing factor
-                if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Medium]
-                    && actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Low])
+                if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Okay]
+                    && actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
                 }
-                if (actor.CurrentStress[StressCategory.Resource] < actor.OperationThresholds[OperationState.Medium]
-                     && actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Low])
+                if (actor.CurrentStress[StressCategory.Resource] < actor.OperationThresholds[OperationState.Okay]
+                     && actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
                 }

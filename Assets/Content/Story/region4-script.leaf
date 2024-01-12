@@ -48,6 +48,7 @@ $endif
 @once
 // TODO: make this a die-off event  
 // // $call Pause()
+$set global:digestersUnlocked = true
 {@advisorEcolWetland}   It's just as we feared...
 $call CutsceneBegin()
     $call CutscenePrepareImages("act4/4-1-1.png", "act4/4-1-2.png", "act4/4-1-3.png")
@@ -61,7 +62,7 @@ $call CutsceneBegin()
     And this old manure processor... It used to turn manure into fertilizer, but it was too expensive to run. Could SAGA use it to beat Phos4Us?
 	$call CutscenePrepareImages("act4/4-4-1.png", "act4/4-4-2.png", "act4/4-4-3.png")
 	$call CutsceneAllImages(0.5)
-    That processed manure 
+    That processed fertilizer could be shipped much more cheaply, all throughout the area!
     $call CutscenePrepareImages("act4/4-5-1.png", "act4/4-5-2.png", "act4/4-5-3.png")
 	$call CutsceneAllImages(0.5)
     Our counties have had their differences in the past. But now we must band together to fight this threat... united!
@@ -85,7 +86,7 @@ $call OffsetAlgaeGrowthThreshold(2)
 
 :: bloomGeneric
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 4, PolicyIsUnlocked(SkimmingPolicy)
+@conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked, global:digestersUnlocked
 @forcePolicy    Ecology
 {@advisorEcolWetland}     Hmph... Algae blooms. Nasty business.
 {@advisorEcolWetland}     Seems to me we should reduce phosphorus runoff.
