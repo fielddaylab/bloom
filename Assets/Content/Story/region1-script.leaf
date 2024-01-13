@@ -34,6 +34,7 @@ $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
 $call PanToBuilding("region1_cafo1")
 {@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
+{@advisorEconHill}      Our region is a great producer of milk. 
 {@advisorEcolHill}      Well, it's a bit more than just a "dairy farm," its a huge operation.
 {@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
