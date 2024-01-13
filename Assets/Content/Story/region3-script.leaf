@@ -93,7 +93,7 @@ $call UnlockAdvisorModule("Ecology")
 $call PanToBuilding("region2_cafo2")
 $call ForceAdvisorModule("Ecology")
 {@advisorEconForest}   Good heavens!
-{@advisorEcolForest}   Our poor lakes...
+{@advisorEcolForest}   There is phosphorus in the lakes even where we don't see the blooms! Our poor lakes...
 $call OffsetAlgaeGrowthThreshold(1)
 // $call Unpause()
 
