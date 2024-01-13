@@ -267,6 +267,7 @@ namespace Zavala.Cards
             m_OverlayImage.sprite = m_UnlockedSprite;
 
             m_HintText.SetText("");
+            m_Text.SetText(Loc.Find("cards." + m_Type.ToString() + ".category"));
 
             if (m_LastKnownCard.IsValid)
             {

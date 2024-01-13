@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zavala.Advisor;
 using Zavala.Audio;
 
 namespace Zavala.Cards {

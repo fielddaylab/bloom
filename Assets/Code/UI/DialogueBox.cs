@@ -226,7 +226,7 @@ namespace Zavala.UI {
         public void HideDialogueUI() {
             if (ForceAdvisorPolicies != AdvisorType.None) return; // don't close until AdvisorPoliciesToShow has been set to none
             HideCardsInstant();
-            m_PoliciesActive = false;
+            // m_PoliciesActive = false;
             m_TransitionRoutine.Replace(HideRoutine());
         }
 
@@ -258,10 +258,11 @@ namespace Zavala.UI {
             SimTimeInput.SetPaused(false, SimPauseFlags.DialogBox);
             m_AdvisorButtons.ShowAdvisorButtons();
             if (m_PolicyExpansionContainer.gameObject.activeSelf) {
-                m_PoliciesActive = false;
-                m_PolicyCloseButton.gameObject.SetActive(false);
-                yield return m_PolicyExpansionContainer.AnchorPosTo(m_OffscreenPanelY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
-                m_PolicyExpansionContainer.gameObject.SetActive(false);
+                //m_PoliciesActive = false;
+                //m_PolicyCloseButton.gameObject.SetActive(false);
+                //yield return m_PolicyExpansionContainer.AnchorPosTo(m_OffscreenPanelY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
+                //m_PolicyExpansionContainer.gameObject.SetActive(false);
+                yield return CollapsePolicyUIRoutine();
             }
 
             CameraInputState camState = Game.SharedState.Get<CameraInputState>();
@@ -308,6 +309,7 @@ namespace Zavala.UI {
             yield return m_Rect.AnchorPosTo(m_OnscreenPolicyY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
             // yield return
             m_PolicyExpansionContainer.gameObject.SetActive(true);
+            m_PoliciesActive = true;
             m_PolicyCloseButton.gameObject.SetActive(true);
             m_CloseButton.gameObject.SetActive(false);
             yield return m_PolicyExpansionContainer.AnchorPosTo(m_OnscreenPanelY, 0.2f, Axis.Y).Ease(Curve.CubeIn);

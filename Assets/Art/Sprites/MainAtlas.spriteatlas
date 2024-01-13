@@ -118,6 +118,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 17a65e8d986ee9944b416e0bfa8a4c33, type: 3}
   - {fileID: 21300000, guid: fab52f1e1c3fcc448a0241831b299c14, type: 3}
   - {fileID: 21300000, guid: 5d813f3e537b05e40ba3cbe7825ade0b, type: 3}
+  - {fileID: 21300000, guid: d708494e86461a14e98d820ffac30144, type: 3}
   - {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
   - {fileID: 21300000, guid: 767dd87e72022f14a9a64358bca57712, type: 3}
   - {fileID: 21300000, guid: 5eba4e9e389da764f8119e6c4b47bb76, type: 3}
@@ -196,6 +197,7 @@ SpriteAtlas:
   - controls_pause
   - ToolImageStorage
   - Cursor-Normal
+  - arrow_white
   - ToolImageDigester
   - Square
   - BigDestroyBackground

@@ -24,6 +24,10 @@ namespace Zavala {
             if (m_Map == null) {
                 m_Map = new Dictionary<StringHash32, Sprite>(m_Entries.Length, CompareUtils.DefaultEquals<StringHash32>());
                 foreach (var sprite in m_Sprites) {
+                    if (sprite == null) {
+                        Log.Error("[SpriteLibrary] Error: Missing sprite in {0}", name);
+                        continue;
+                    }
                     Log.Msg("[SpriteLibrary] Adding sprite {0}",sprite.name);
                     m_Map.Add(sprite.name, sprite);
                 }

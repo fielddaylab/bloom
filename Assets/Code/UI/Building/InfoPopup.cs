@@ -242,6 +242,9 @@ namespace Zavala.UI.Info {
             }
         }
 
+        /// <summary>
+        /// Populate seller (CAFO) popup
+        /// </summary>
         private void PopulateShippingWide()
         {
             Root.sizeDelta = new Vector2(WideWidth - 80, WideHeight);
@@ -258,7 +261,7 @@ namespace Zavala.UI.Info {
                 if (i < queryCount)
                 {
                     var results = m_QueryResults[i];
-                    bool forSale = !results.Requester.IsLocalOption;
+                    bool forSale = true;
                     bool runoffAffected = results.TaxRevenue.Penalties > 0;
                     InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOptionBanner, i);
                     InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
@@ -282,6 +285,9 @@ namespace Zavala.UI.Info {
             }
         }
 
+        /// <summary>
+        /// Populate buyer popup
+        /// </summary>
         private void PopulatePurchasingWide()
         {
             Root.sizeDelta = new Vector2(WideWidth, WideHeight);

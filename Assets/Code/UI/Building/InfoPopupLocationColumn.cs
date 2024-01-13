@@ -11,6 +11,7 @@ namespace Zavala.UI.Info
         public Graphic Background;
         public TMP_Text NameLabel;
         public TMP_Text RegionLabel;
+        public Image Arrow;
 
         [Header("Prices")]
         public GameObject PriceGroup;

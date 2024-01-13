@@ -411,8 +411,8 @@ MonoBehaviour:
   m_OffscreenY: -270
   m_OnscreenY: 0
   m_OnscreenPolicyY: -10
-  m_OnscreenPanelY: 0
-  m_OffscreenPanelY: -270
+  m_OnscreenPanelY: 135
+  m_OffscreenPanelY: -120
 --- !u!1 &2186653336543893110
 GameObject:
   m_ObjectHideFlags: 0
@@ -1675,7 +1675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 207583996201158695, guid: 640a29a9047ace54f8b6202c5ea947c6, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 395
+      value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 207583996201158695, guid: 640a29a9047ace54f8b6202c5ea947c6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1711,7 +1711,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 207583996201158695, guid: 640a29a9047ace54f8b6202c5ea947c6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 135
       objectReference: {fileID: 0}
     - target: {fileID: 207583996201158695, guid: 640a29a9047ace54f8b6202c5ea947c6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1731,7 +1731,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1141680806853963930, guid: 640a29a9047ace54f8b6202c5ea947c6, type: 3}
       propertyPath: m_UVRect.height
-      value: 5.765625
+      value: 4.03125
       objectReference: {fileID: 0}
     - target: {fileID: 5989986204678489493, guid: 640a29a9047ace54f8b6202c5ea947c6, type: 3}
       propertyPath: m_Name
