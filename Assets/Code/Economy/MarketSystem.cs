@@ -971,6 +971,7 @@ namespace Zavala.Economy
             } else if (supplied.Milk > 0) {
                 return 2;
             }
+            Log.Warn("[MarketSystem] Failed to get MarketIndex for ResourceBlock {0}", supplied);
             return -1;
         }
 

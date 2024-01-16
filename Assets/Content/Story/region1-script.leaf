@@ -352,8 +352,10 @@ $if local:runoffLevel < 1
 $elseif local:runoffLevel < 3
     {@advisorEcolHill}      Maybe our runoff fine isn't high enough.
 $endif
-$if PolicyLevelInRegion(1, "SkimmingPolicy") < 1
+$if PolicyIsUnlocked("SkimmingPolicy") 
+    $if PolicyLevelInRegion(1, "SkimmingPolicy") < 1
     {@advisorEcolHill}      Or we could use skimmers to clean up.
+    $endif
 $endif
 {viewpoliciesnext}
 {@advisorEcolHill}     Your choice, boss.
@@ -363,7 +365,6 @@ $endif
 :: SellAtLossCafo
 @trigger        AlertExamined
 @conditions     alertType == "selling-loss", alertRegion == 1, isFromGrainFarm == false
-@forcePolicy    Economy
 // $call Pause()
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {@advisorEconHill}      Hmm... Bertram here is in a rough spot.
@@ -372,7 +373,8 @@ $endif
 $set local:runoffLevel = PolicyLevelInRegion(1, "RunoffPolicy")
 $if local:runoffLevel > 0
     {@advisorEconHill}      I would suggest ditching that runoff fine.
-    {@advisorEcolHill}      And let Bertram pollute? I don't approve...
+    {@advisorEcolHill}      And let Bertram pollute? I'm not so sure...
+    $call ForcePolicyInstant("Ecology")
 $endif
 $set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
 $if local:taxLevel > 0
@@ -380,4 +382,5 @@ $if local:taxLevel > 0
     {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
     $endif
 $endif
+    $call ForcePolicyInstant("Economy")
 // $call Unpause()

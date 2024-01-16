@@ -117,6 +117,8 @@ namespace Zavala.Sim
         }
 
         static public bool TryRunoffManure(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator gen, ref ResourceBlock resources, int phosToProduce) {
+            if (!gen.ConsumeFertilizerForRunoff || resources.Manure <= 0) return false;
+
             if (resources.Manure < RunoffParams.RunoffConsumeFertilizerThreshold) {
                 AddPhosphorus(phosphorus, tileIndex, RunoffParams.PassiveManureRunoff);
                 gen.AmountProducedLastTick = RunoffParams.PassiveManureRunoff;

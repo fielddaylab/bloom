@@ -2,6 +2,7 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using BeauUtil.Variants;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Sim;
@@ -29,10 +30,19 @@ namespace Zavala.Scripting
             // if no active events, create alert
             if (component.QueuedEvents.Count > 0 && !component.DisplayingEvent) { // only create if they have events and aren't displaying them
                 component.QueuedEvents.TryPeekFront(out EventActorQueuedEvent peekEvent);
-
                 if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
                     // do not create UI banners for the fake global alerts
                     return;
+                }
+
+                ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, peekEvent.ScriptId);
+                if ((node.Flags & ScriptNodeFlags.Once) != 0) {
+                    if (node.QueuedToAlert) {
+                        Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to an alert", node.FullName, component.Id.ToDebugString());
+                        return;
+                    } else {
+                        node.QueuedToAlert = true;
+                    }
                 }
 
                 // allocate new alert from pool

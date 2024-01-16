@@ -20,8 +20,8 @@ MonoBehaviour:
     ModifierMax: 0
   Pitch:
     Base: 1
-    ModifierMin: -0.05
-    ModifierMax: 0.05
+    ModifierMin: -0.1
+    ModifierMax: 0.1
   Delay:
     Base: 0
     ModifierMin: 0

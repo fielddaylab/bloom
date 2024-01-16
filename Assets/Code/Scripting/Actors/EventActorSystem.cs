@@ -36,6 +36,7 @@ namespace Zavala.Scripting {
                     // OR allow any number to display the alert, but once one has been clicked, remove all alerts that share that same ID
 
                     if (node != null) {
+                        // cancel any events of the same trigger type
                         EventActorUtility.CancelEvent(component, trigger.EventId);
 
                         // If the node has @once, check if it has been queued to an alert.
@@ -56,13 +57,12 @@ namespace Zavala.Scripting {
                             };
 
                             component.QueuedEvents.PushBack(queuedEvent);
-                            // node.QueuedToAlert = true;
                             HashSet<AutoAlertCondition> conditions = ZavalaGame.SharedState.Get<AlertState>().AutoTriggerAlerts;
                             foreach (AutoAlertCondition autoTrig in conditions) {
                                 Log.Msg("[EventActorUtility] Checking for AutoTriggerAlert...");
                                 if ((autoTrig.Alert == EventActorAlertType.None || autoTrig.Alert == queuedEvent.Alert) &&
                                     (autoTrig.RegionIndex == -1 || autoTrig.RegionIndex == queuedEvent.RegionIndex.Value)) {
-                                                                       
+                                    // node.QueuedToAlert = true;
                                     Log.Msg("[EventActorUtility] AutoTriggerAlert ACTIVATED");
                                     //EventActorUtility.TriggerActorAlert(component);
                                     GlobalAlertUtility.PushEventOfActorToGlobal(Game.Gui.GetShared<GlobalAlertButton>(), component);

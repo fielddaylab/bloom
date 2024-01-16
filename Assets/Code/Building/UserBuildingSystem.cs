@@ -428,10 +428,9 @@ namespace Zavala.Building
                 {
                     BuildingPools pools = Game.SharedState.Get<BuildingPools>();
                     RoadUtility.CreateRoadObject(network, grid, pools, tileIndex, m_ValidHoloRoadMaterial);
-
-                    // Add to running cost
-                    ShopUtility.EnqueueCost(m_StateD, ShopUtility.PriceLookup(UserBuildTool.Road));
                 }
+                // Add to running cost (include end roads)
+                ShopUtility.EnqueueCost(m_StateD, ShopUtility.PriceLookup(UserBuildTool.Road));
 
                 SfxUtility.PlaySfx("build-road");
             }
@@ -467,8 +466,8 @@ namespace Zavala.Building
             RoadUtility.UnstageRoad(network, grid, tileIndex);
 
             m_StateC.RoadToolState.TracedTileIdxs.RemoveAt(tracedIndex);
-            // skip refunding start and end roads, because they didn't cost anything to begin with
-            if (m_StateC.RoadToolState.TracedTileIdxs.Count <= 0 || tracedIndex <= 0 || (network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
+            // skip refunding first road, because it didn't cost anything to begin with
+            if (tracedIndex <= 0) {
                 return;
             } else {
                 ShopUtility.EnqueueCost(m_StateD, -ShopUtility.PriceLookup(UserBuildTool.Road));
@@ -524,7 +523,7 @@ namespace Zavala.Building
                 } else if (i == roadCount - 1) { // last node
                     int endIndex = currIndex;
                     // if start == end (loop road), don't double-count the deduction
-                    if (endIndex != startIndex) deductNum++;
+                    // if (endIndex != startIndex) deductNum++;
 
                     BuildingPools pools = Game.SharedState.Get<BuildingPools>();
                     RoadUtility.RemoveStagedRoadObj(network, pools, currIndex, !tileInfo.FlowMask.IsEmpty);
@@ -563,11 +562,11 @@ namespace Zavala.Building
 
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
-                    if (!isEndpoint) {
+                    if (!isEndpoint || i == roadCount - 1) {
                         unitCost = ShopUtility.PriceLookup(UserBuildTool.Road);
                     } else {
                         unitCost = 0;
-                    }
+                    } 
 
                     // Add the road commit to the overall chain
                     GameObject roadObj = isEndpoint ? null : network.RoadObjects[roadObjIdx].gameObject;

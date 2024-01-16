@@ -104,9 +104,9 @@ namespace Zavala.Advisor {
             ImportTaxVals[3].Manure = -6;
 
 
-            SalesTaxVals[0].SetAll(0); // NONE
-            SalesTaxVals[1].SetAll(2); // LOW TAX
-            SalesTaxVals[2].SetAll(4); // HIGH TAX
+            SalesTaxVals[0].SetAll(0); // NONE 
+            SalesTaxVals[1].SetAll(1); // LOW TAX
+            SalesTaxVals[2].SetAll(3); // HIGH TAX
             SalesTaxVals[3].SetAll(-2);// SUBSIDY
             SalesTaxVals[3].MFertilizer = 0; // don't apply subsidies to Phos4Us
 

@@ -206,9 +206,10 @@ namespace Zavala.UI.Info {
                 case BuildingType.TollBooth:
                 {
                     m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_SubheaderLabel.SetText("");
                     m_HeaderBG.color = TollColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
-                    m_DescriptionText.gameObject.SetActive(false);
+                    m_DescriptionText.gameObject.SetActive(true);
                     m_DescriptionImage.sprite = m_TollCapture;
                     break;
                 }

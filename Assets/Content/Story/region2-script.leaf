@@ -59,6 +59,7 @@ $endif
 {@advisorEcolForest}    The finest forests in the state, if I do say so myself.
 {@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
 {@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
+// $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
 $call AddAutoAlertCondition("ExcessRunoff", 2)
 
 

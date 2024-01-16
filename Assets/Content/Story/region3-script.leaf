@@ -60,7 +60,7 @@ $endif
 @trigger        RegionReachedAge
 @conditions     regionId == 3
 $call SendGlobalAlertForNode("region2_city1", region3.unlockPhosphorusView)
-$call AddRegionAgeDeltaTrigger(4, 15)
+$call AddRegionAgeDeltaTrigger(3, 15)
 
 :: queueUnlockMarketView
 @trigger        RegionReachedAge
@@ -82,7 +82,7 @@ $call CutsceneBegin()
 	We need to figure out what is happening. Veldt University sent its best scholars to help investigate.
     $call CutscenePrepareImages("act3/3-3-1.png", "act3/3-3-2.png", "act3/3-3-3.png")
 	$call CutsceneAllImages(0.5)
-    Their new technology senses the flow of phosphorus... It flows <i>downward</i> through groundwater and into our lakes!
+    Their new technology senses the flow of phosphorus... It flows through groundwater and downward into our lakes!
     $call CutscenePrepareImages("act3/3-4-1.png", "act3/3-4-2.png", "act3/3-4-3.png")
 	$call CutsceneAllImages(0.5)
 	This situation is dire... Could this tool help us locate sources of phosphorus and put a stop to them?

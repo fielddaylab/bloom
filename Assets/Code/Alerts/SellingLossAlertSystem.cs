@@ -24,7 +24,7 @@ namespace Zavala.Sim
             }
             // Check if a supplier sold at a loss
 
-            if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Okay])
+            if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Okay] && !stressable.StressImproving)
             {
                 // if so, create alert on this tile
                 bool sellsGrain = (supplier.ShippingMask & ResourceMask.Grain) != 0;
