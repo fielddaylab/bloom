@@ -108,7 +108,7 @@ $call AddRegionAgeDeltaTrigger(4, 10)
 {@advisorEcolWetland}   Do we really want to be like them? All that extra phosphorus got us into this mess.
 {@advisorEconWetland}   Maybe so... But if we're efficient enough, we can outcompete them!
 {@advisorEcolWetland}   That could <i>close the loop</i>... and stop the import of phosphorus!
-$call UnlockExportDepot("region4_export1")
+$call UnlockExportDepot("region2_export1")
 
 :: firstBlimpReceived
 @trigger InternalBlimpSent

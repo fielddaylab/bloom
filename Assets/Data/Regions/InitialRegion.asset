@@ -84,7 +84,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 290
-    Height: 50
+    Height: 0
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
@@ -753,17 +753,13 @@ MonoBehaviour:
     Type: 10
   EdgeVisualUpdateSet: 110019001f002100270028002f003700
   WaterEmitters:
-  - LocalTileIndex: 47
-    Variant: 0
-  - LocalTileIndex: 31
-    Variant: 0
-  - LocalTileIndex: 29
+  - LocalTileIndex: 33
     Variant: 0
   - LocalTileIndex: 27
     Variant: 1
-  - LocalTileIndex: 33
+  - LocalTileIndex: 30
     Variant: 1
-  - LocalTileIndex: 17
+  - LocalTileIndex: 47
     Variant: 1
   WaterGroupLocalIndices: 110019001a001b001c001d001e001f00210022002300270028002a002f003700
   WaterGroups:
