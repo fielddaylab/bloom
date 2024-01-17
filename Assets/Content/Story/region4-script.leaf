@@ -114,6 +114,6 @@ $call UnlockExportDepot("region2_export1")
 @trigger InternalBlimpSent
 @once
 {@advisorEconWetland}   Huzzah!
-$call PanToBuilding("region4_export1")
+$call PanToBuilding("region2_export1")
 {@advisorEconWetland}   Our export depot has sent out digested fertilizer...
 {@advisorEconWetland}   This could be the start of a brand new market!

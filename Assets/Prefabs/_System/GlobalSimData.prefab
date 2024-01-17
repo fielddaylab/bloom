@@ -953,6 +953,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -960,6 +961,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -967,6 +969,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 12
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
   - Region: 1
     IndependentEndConditions:
     - Type: 0
@@ -976,6 +979,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -983,6 +987,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -990,6 +995,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 24
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
   - Region: 2
     IndependentEndConditions:
     - Type: 0
@@ -999,6 +1005,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1006,6 +1013,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1013,6 +1021,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 20
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
   - Region: 3
     IndependentEndConditions:
     - Type: 0
@@ -1022,6 +1031,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1029,6 +1039,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1036,6 +1047,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 35
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
   - Region: 4
     IndependentEndConditions:
     - Type: 0
@@ -1045,6 +1057,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1052,6 +1065,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 27
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1059,6 +1073,7 @@ MonoBehaviour:
       TotalAlgaeAbove: 24
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
+      NodeReached: 
     - Type: 3
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1066,3 +1081,4 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
       RegionAgeAbove: 60
+      NodeReached: region4.firstBlimpReceived

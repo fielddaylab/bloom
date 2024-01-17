@@ -1,4 +1,5 @@
 
+using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
@@ -128,6 +129,18 @@ namespace Zavala.Scripting {
             if (m_StateB.Regions[(int)region].Age < age) {
                 triggered = false;
             }
+        }
+
+        private void EvaluateNodeReached(ref bool triggered, string title) {
+            if (title == "" || title == null) return;
+
+            if (!title.Contains("region")) {
+                Log.Warn("[WinLossSystem] NodeReached condition: use format region1.nodeTitle. Yours: " + title);
+            }
+            if (!ScriptUtility.Persistence.SessionViewedNodeIds.Contains(new StringHash32(title))) {
+                triggered = false;
+            }
+
         }
 
         #endregion

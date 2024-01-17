@@ -34,6 +34,7 @@ namespace Zavala.Scripting {
         public float TotalAlgaeAbove;
         public int CityFallingDurationAbove;
         public int RegionAgeAbove;
+        public string NodeReached;
     }
 
     [Serializable]
