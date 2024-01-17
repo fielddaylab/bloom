@@ -217,10 +217,12 @@ namespace Zavala.UI.Info {
 
             col.BasePriceCol.gameObject.SetActive(true);
             SetMoneyText(col.BasePriceCol.Number, basePrice);
+            col.BasePriceCol.Number.color = ActiveNumberColor;
 
             int shippingPrice = info.ShippingCost;
             col.ShippingCol.gameObject.SetActive(true);
             SetMoneyText(col.ShippingCol.Number, shippingPrice);
+            col.ShippingCol.Number.color = NegativeColor;
 
             //int distance = info.Distance;
             //SetShippingRateText(col.ShippingCol.Detail, distance, shippingPrice);
@@ -251,10 +253,12 @@ namespace Zavala.UI.Info {
             }
             else if (import < 0) {
                 SetMoneyText(col.ImportTaxCol.Number, import, " " + Loc.Find("ui.popup.info.subsidyBlurb"));
+                col.ImportTaxCol.Number.color = PositiveColor;
             }
             else
             {
                 SetMoneyText(col.ImportTaxCol.Number, import, " " + Loc.Find("ui.popup.info.taxBlurb"));
+                col.ImportTaxCol.Number.color = NegativeColor;
             }
 
             col.SalesTaxCol.Number.color = ActiveNumberColor;
@@ -275,10 +279,12 @@ namespace Zavala.UI.Info {
             else if (salesTax < 0)
             {
                 SetMoneyText(col.SalesTaxCol.Number, salesTax, " " + Loc.Find("ui.popup.info.subsidyBlurb"));
+                col.SalesTaxCol.Number.color = PositiveColor;
             }
             else
             {
                 SetMoneyText(col.SalesTaxCol.Number, salesTax, " " + Loc.Find("ui.popup.info.taxBlurb"));
+                col.SalesTaxCol.Number.color = NegativeColor;
             }
 
             int penalties = info.TaxRevenue.Penalties;
@@ -288,6 +294,7 @@ namespace Zavala.UI.Info {
             }
             else { 
                 SetMoneyText(col.PenaltyCol.Number, penalties);
+                col.PenaltyCol.Number.color = NegativeColor;
             }
 
             int totalCost = basePrice + shippingPrice + import + salesTax + penalties;
@@ -297,7 +304,7 @@ namespace Zavala.UI.Info {
 
             if (isSecondary)
             {
-                col.TotalPriceCol.Number.color = NegativeColor;
+                col.TotalPriceCol.Number.color = ActiveNumberColor;
             }
             else
             {
@@ -338,10 +345,12 @@ namespace Zavala.UI.Info {
             }
             col.BasePriceCol.gameObject.SetActive(true);
             SetMoneyText(col.BasePriceCol.Number, basePrice);
+            col.BasePriceCol.Number.color = ActiveNumberColor;
 
             int shippingPrice = info.ShippingCost;
             col.ShippingCol.gameObject.SetActive(true);
             SetMoneyText(col.ShippingCol.Number, -shippingPrice);
+            col.ShippingCol.Number.color = NegativeColor;
 
             //int distance = info.Distance;
             //SetShippingRateText(col.ShippingCol.Detail, distance, shippingPrice);
@@ -363,8 +372,8 @@ namespace Zavala.UI.Info {
             col.SalesTaxCol.gameObject.SetActive(false);
             if (salesTax == 0) { col.SalesTaxCol.Number.SetText(EmptyEntry); }
             else { SetMoneyText(col.SalesTaxCol.Number, (-salesTax)); }
+   
 
-            col.PenaltyCol.Number.color = ActiveNumberColor;
             int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(true);
             if (penalties == 0) { 
@@ -373,20 +382,21 @@ namespace Zavala.UI.Info {
             }
             else {
                 SetMoneyText(col.PenaltyCol.Number, (-penalties), " " + Loc.Find("ui.popup.info.penaltyFine"));
+                col.PenaltyCol.Number.color = NegativeColor;
                 //col.PolicyIcon.gameObject.SetActive(true);
             }
 
-            int totalCost = info.Profit + (salesTax + import);
+
+            int totalProfit = info.Profit /* + (salesTax + import)*/; // Commenting this out: sales tax and import tax do not give sellers any profit.
             col.TotalProfitCol.gameObject.SetActive(true);
             col.TotalPriceCol.gameObject.SetActive(false);
-            SetMoneyText(col.TotalProfitCol.Number, totalCost);
-
-            if (isSecondary)
-            {
+            SetMoneyText(col.TotalProfitCol.Number, totalProfit);
+            
+            if (totalProfit < 0) {
                 col.TotalProfitCol.Number.color = NegativeColor;
-            }
-            else
-            {
+            } else if (isSecondary) {
+                col.TotalProfitCol.Number.color = ActiveNumberColor;
+            } else {
                 col.TotalProfitCol.Number.color = PositiveColor;
                 if (forSale)
                 {

@@ -444,30 +444,28 @@ namespace Zavala.Economy
                     shippingCost += config.TransportCosts.ExportDepotFlatRate[primary];
                 }
 
-                float profit = 0;
+                float basePrice = 0;
                 float relativeGain = 0; // How much this supplier stands to gain by NOT incurring penalties from not selling
                 if (requester.IsLocalOption) {
-                    profit -= adjustments.RunoffPenalty[primary];
-                }
-                else {
-                    if (requester.OverridesBuyPrice) {
-                        profit = requester.OverrideBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
-                    }
-                    else {
-                        // Err towards buyer purchase cost (TODO: unless they accept anything?)
-                        // profit = requester.PriceNegotiator.PriceBlock[primary];
+                    basePrice -= adjustments.RunoffPenalty[primary];
+                } else if (requester.OverridesBuyPrice) {
+                    basePrice = requester.OverrideBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
+                } else {
+                    // Err towards buyer purchase cost (TODO: unless they accept anything?)
+                    // profit = requester.PriceNegotiator.PriceBlock[primary];
 
-                        profit = supplier.PriceNegotiator.SellPriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
-                    }
-
-                    if (supplier.Storage.StorageExtensionReq != null) {
-                        // since this has a local option that would penalize runoff, that means the farm would sell it to this alternative for that much less (so the score for the purchaser should be higher)
-                        // relativeGain += adjustments.RunoffPenalty[primary];
-                    }
+                    basePrice = supplier.PriceNegotiator.SellPriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
                 }
 
-                float costToBuyer = profit + (shippingCost + salesTax + importCost);
-                float score = profit + relativeGain - (shippingCost + salesTax + importCost); // supplier wants to maximize score
+                //if (supplier.Storage.StorageExtensionReq != null) {
+                //    // since this has a local option that would penalize runoff, that means the farm would sell it to this alternative for that much less (so the score for the purchaser should be higher)
+                //    // relativeGain += adjustments.RunoffPenalty[primary];
+                //}
+
+                float costToBuyer = basePrice + (shippingCost + salesTax + importCost);
+                // float score = profit + relativeGain - (shippingCost + salesTax + importCost); // supplier wants to maximize score
+                // TODO: why is "importCost"
+                float score = basePrice - shippingCost; // the seller/supplier wants to maximize score
 
                 GeneratedTaxRevenue taxRevenue = new GeneratedTaxRevenue();
                 taxRevenue.Sales = requester.IsLocalOption ? 0 : adjustments.PurchaseTax[primary];
@@ -549,10 +547,6 @@ namespace Zavala.Economy
             Log.Msg("[MarketSystem] Updated buyer priorities");
         }
 
-        public void UpdateAllMarketPriorities() {
-            UpdateAllSupplierPriorities();
-            UpdateAllRequesterPriorities();
-        }
 
         private void UpdateRequesterPriority(ResourceRequester requester, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState)
         {
@@ -654,7 +648,9 @@ namespace Zavala.Economy
                 {
                     importCost = adjustments.ImportTax[primary];
                 }
-                float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary] + adjustments.PurchaseTax[primary] + importCost;
+                float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary];
+
+                int salesTax = adjustments.PurchaseTax[primary];
 
                 if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16)
                 {
@@ -690,7 +686,7 @@ namespace Zavala.Economy
                     */
                 }
 
-                float totalCostForBuyer = purchaseCost + shippingCost;
+                float totalCostForBuyer = purchaseCost + shippingCost + salesTax + importCost;
                 float score = totalCostForBuyer; // buyer wants to minimize score
 
                 // NEGOTIATION PASS
@@ -923,7 +919,7 @@ namespace Zavala.Economy
                 activeRequest.Requester.PurchasedAtStressedPrice = true;
             }
 
-            MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
+            // MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
 
             // TODO: mark this request as EnRoute
              m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system

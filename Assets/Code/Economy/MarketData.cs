@@ -622,7 +622,7 @@ namespace Zavala.Economy
                             ShippingCost = data.ShippingCost,
                             Distance = data.Distance,
                             PathFlags = data.Path.Flags,
-                            Profit = data.Profit - data.RelativeGain,
+                            Profit = data.Profit /*- data.RelativeGain*/,
                             CostToBuyer = data.CostToBuyer,
                             ProxyIdx = data.ProxyIdx,
                             TaxRevenue = data.TaxRevenue // NOTE: does not return correct value when supplier ships through export depot proxy
@@ -648,7 +648,7 @@ namespace Zavala.Economy
                         result.ShippingCost = data.ShippingCost;
                         result.Distance = data.Distance;
                         result.PathFlags = data.Path.Flags;
-                        result.Profit = data.Profit - data.RelativeGain;
+                        result.Profit = data.Profit /*- data.RelativeGain*/;
                         result.TaxRevenue = data.TaxRevenue;
                         result.CostToBuyer = data.CostToBuyer;
                         found = true;
@@ -673,7 +673,7 @@ namespace Zavala.Economy
                         ShippingCost = data.ShippingCost,
                         Distance = data.Distance,
                         PathFlags = data.Path.Flags,
-                        Profit = data.Profit - data.RelativeGain,
+                        Profit = data.Profit /* - data.RelativeGain */,
                         TaxRevenue = data.TaxRevenue
                     });
                     count++;

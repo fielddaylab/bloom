@@ -311,7 +311,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timer:
-    Period: 8
+    Period: 6
 --- !u!114 &7291294420475072056
 MonoBehaviour:
   m_ObjectHideFlags: 0

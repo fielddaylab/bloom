@@ -72,7 +72,7 @@ $call UnlockShopItem("Digester")
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEconWetland}   They've been added to your Build Mode menu.
 $call FocusClear()
-$call OffsetAlgaeGrowthThreshold(2)
+$call OffsetAlgaeGrowthThreshold(1)
 // $call Unpause()
 // $call AddRegionAgeDeltaTrigger(4, 10)
 

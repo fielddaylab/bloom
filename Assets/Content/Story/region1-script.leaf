@@ -190,7 +190,7 @@ $set intro:pendingPolicy = true
 // $set intro:exporterFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
-{@advisorEconHill}      Henrietta's Grain Farm imported some <i>fertilizer</i>.
+{@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
 {local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
 {local @grainFarmer}    ...and it's cheap to ship to my farm.
 {@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
@@ -371,16 +371,18 @@ $endif
 {@advisorEconHill}      If we want to keep business running smoothly, we'd best find a way to lower costs.
 {viewpoliciesnext}
 $set local:runoffLevel = PolicyLevelInRegion(1, "RunoffPolicy")
+$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
 $if local:runoffLevel > 0
     {@advisorEconHill}      I would suggest ditching that runoff fine.
     {@advisorEcolHill}      And let Bertram pollute? I'm not so sure...
     $call ForcePolicyInstant("Ecology")
-$endif
-$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
-$if local:taxLevel > 0
+$elseif local:taxLevel > 0
     $if local:taxLevel < 3
-    {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
+        {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
+        {@advisorEconHill}      A Subsidy might help
+        $call ForcePolicyInstant("Economy")
     $endif
+$else
+        $call ForcePolicyInstant("Economy")
 $endif
-    $call ForcePolicyInstant("Economy")
 // $call Unpause()

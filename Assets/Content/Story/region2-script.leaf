@@ -77,16 +77,16 @@ $endif
 :: unlockStorage
 @conditions     global:runoffDiscovered
 @once
-{local @cafoFarmer}     Hmm... This sitting manure leaches into the water table faster than it's used.
-{local @cafoFarmer}     Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
+$call Wait(0.5)
+{@cafoForest}     Hmm... This sitting manure leaches into the water table faster than it's used.
+{@cafoForest}     Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
 {@advisorEcolForest}    Not a half bad idea.
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.
 $call FocusClear()
 {@advisorEcolForest}    Once connected to a Dairy Farm, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between Dairy Farms.
-
-$call OffsetAlgaeGrowthThreshold(0)
+// $call OffsetAlgaeGrowthThreshold(0)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
 
@@ -106,29 +106,41 @@ $call UnlockShopItem("Storage")
 {@advisorEcolForest}    A policy adjustment, then?
 $call ForcePolicyInstant("Ecology")
 
-
-// triggered by opening runoff in region 2 after region 3 has been opened
-// feedback: use a farmer instead
-:: unlockImportTax
+:: queueUnlockPhosphorusView
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
-@cutscene      
-@once
-$set global:importUnlocked = true
-{@advisorEcolPrairie}   Hiiii, d'you mind if I intrude? Great, so:
+@cutscene
+$call SendGlobalAlertForNode("region2_city1", region2.unlockPhosphorusView)
+
+:: unlockPhosphorusView
+@cutscene
+@queued
 // $call Pause()
-{@advisorEcolPrairie}   I think I figured it out. Cypress County might just have too many Dairy Farms.
-{@advisorEcolPrairie}   But we've got plenty of <b>grain</b> over in Heath County! Maybe we could help each other?
-{@advisorEconPrairie}   Good point! Inter-region trade could be critical to addressing this problem...
-{@advisorEconPrairie}   Perhaps we need to offset shipping costs.
-{@advisorEconPrairie}   I've unlocked a policy for setting <b>Import Subsidies.</b>
-$call UnlockCards(ImportTaxPolicy)
-{@advisorEconPrairie}   Import <b>Subsidies</b> will encourage buying from other regions - but it'll come from your budget.
-{@advisorEconForest}    Hmph. Well I say everyone should just buy local. 
-$call ForcePolicyInstant("Economy")
-{viewpoliciesnext}
-{@advisorEconForest}    But it's up to you, Director.
-// $call Unpause()
+{@advisorEconForest}    Oh no...
+$call CutsceneBegin()
+    $call CutscenePrepareImages("act3/3-1-1.png", "act3/3-1-2.png", "act3/3-1-3.png")
+    $call CutsceneAllImages(0.5)
+    We thought the gross algae was only in Knoll County... How could blooms reach our forest?
+    $call CutscenePrepareImages("act3/3-2-1.png", "act3/3-2-2.png", "act3/3-2-3.png")
+	$call CutsceneAllImages(0.5)
+	We need to figure out what is happening. Veldt University sent its best scholars to help investigate.
+    $call CutscenePrepareImages("act3/3-3-1.png", "act3/3-3-2.png", "act3/3-3-3.png")
+	$call CutsceneAllImages(0.5)
+    Their new technology senses the flow of phosphorus... It flows through groundwater and downward into our lakes!
+    $call CutscenePrepareImages("act3/3-4-1.png", "act3/3-4-2.png", "act3/3-4-3.png")
+	$call CutsceneAllImages(0.5)
+	This situation is dire... Could this tool help us locate sources of phosphorus and put a stop to them?
+$call CutsceneEnd()
+{@cityPrairie}      ...I call it PIP! Persistent Imaging of Phosphorus.
+{@cityPrairie}      Let's try it out here in Cypress County.
+$call UnlockAdvisorModule("Ecology")
+$call PanToBuilding("region2_cafo2")
+$call ForceAdvisorModule("Ecology")
+{@advisorEconForest}   Good heavens!
+{@advisorEcolForest}   There is phosphorus in the water even where we don't see the blooms! Our poor lakes...
+$call AddRegionAgeDeltaTrigger(3, 15) // for unlocking MARKET GRAPHS.
+
+$call OffsetAlgaeGrowthThreshold(1)
 
 :: testBloomTriggerForest
 @trigger        AlertExamined

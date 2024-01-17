@@ -26,14 +26,14 @@ namespace Zavala.Data
         }
 
         public int LastChange() {
-            // Log.Msg("[DataHistory] LastChange {0}", Pending - PrevPending);
+            // Log.Msg("[DataHistory] LastChange {0} - {1} = {2}", Pending, PrevPending, Pending - PrevPending);
             return Pending - PrevPending;
         }
 
         public void ConvertPending() {
             // add any phosphorus changes that have been recorded
             Net.PushFront(Pending);
-
+            // Log.Msg("[DataHistory] Converted to net: {0}", Pending);
             // reset phosphorus changes for next tick
             Pending = 0;
             PrevPending = 0;

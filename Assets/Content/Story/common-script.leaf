@@ -75,11 +75,11 @@ $elseif local:policyType == "SalesTaxPolicy"
     $if     local:policyIndex == 0
         {local @advisorEcon}    Even without Sales Tax, you'll gain $5 for each milk shipment the city consumes.
     $elseif local:policyIndex == 1
-        {local @advisorEcon}    With low Sales Tax, you'll gain $2 with every purchase on top of city revenue.
+        {local @advisorEcon}    With low Sales Tax, you'll gain $1 with every purchase on top of city revenue.
     $elseif local:policyIndex == 2
-        {local @advisorEcon}    With high Sales Tax, you'll gain $4 with every purchase on top of city revenue.
+        {local @advisorEcon}    With high Sales Tax, you'll gain $3 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    Sales Subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourages buyers.
+        {local @advisorEcon}    Sales Subsidy costs you $2 for every internal purchase. Subsidies encourage buyers.
         {local @advisorEcon}    But that money comes from the SAGA county budget!
     $endif
 $elseif local:policyType == "ImportTaxPolicy"

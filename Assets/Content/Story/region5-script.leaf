@@ -28,7 +28,7 @@ $call CutsceneBegin()
 	$call CutsceneAllImages(0.5)
     The stakes are high... Are you up to the task?
 $call CutsceneEnd()
-$call OffsetAlgaeGrowthThreshold(2)
+// $call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()
 
 :: bloomGeneric

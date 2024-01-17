@@ -362,7 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f5bce2403f8124e9edef615ac5ac95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_initialBudgetsPerRegion: 3c000000000000005a00000000000000550000000000000050000000000000005a00000000000000
+  m_initialBudgetsPerRegion: 3c000000000000005f00000000000000550000000000000050000000000000005a00000000000000
 --- !u!114 &7708306960153739439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -942,7 +942,7 @@ MonoBehaviour:
   SceneOnFail:
     m_ScenePath: Assets/Scenes/TitleScreen.unity
     m_GUID: 3a1ab0f762ee5684cb6a80d40c4c4dc9
-  IgnoreFailure: 1
+  IgnoreFailure: 0
   EndConditionsPerRegion:
   - Region: 0
     IndependentEndConditions:

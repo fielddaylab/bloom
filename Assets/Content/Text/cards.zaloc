@@ -119,14 +119,14 @@ Even without sales tax, you'll gain $5 for every milk shipment the city consumes
 Low Tax
 
 :: SalesTaxPolicy.low.hint
-With low sales tax, you'll gain $2 with every purchase of any good.
+With low sales tax, you'll gain $1 with every purchase of any good.
 
 
 :: SalesTaxPolicy.high
 High Tax
 
 :: SalesTaxPolicy.high.hint
-With high sales tax, you'll gain $4 with every purchase of any good.
+With high sales tax, you'll gain $3 with every purchase of any good.
 
 :: SalesTaxPolicy.alt
 Subsidy
