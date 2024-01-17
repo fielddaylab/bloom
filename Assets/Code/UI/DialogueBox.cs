@@ -4,6 +4,7 @@ using System.Collections.Generic;
 //using System.Linq;
 using BeauRoutine;
 using BeauUtil;
+using BeauUtil.Debugger;
 using BeauUtil.Tags;
 using FieldDay;
 using FieldDay.Scenes;
@@ -100,6 +101,7 @@ namespace Zavala.UI {
         #region Display
 
         public IEnumerator CompleteLine() {
+            Log.Msg("[DialogueBox] Line Complete");
             return WaitForInput();
         }
 
@@ -160,6 +162,9 @@ namespace Zavala.UI {
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
                 m_TransitionRoutine.Replace(ShowRoutine());
+            } else {
+                // no string to prepare...
+                // m_TransitionRoutine.Replace(HideRoutine());
             }
             return m_LocalHandler;
         }
@@ -187,6 +192,7 @@ namespace Zavala.UI {
 
         public void ForceExpandPolicyUI(AdvisorType aType) {
             ForceAdvisorPolicies = aType;
+            // collapse any current, will force expand when closed
             CollapsePolicyUI();
         }
 
@@ -194,14 +200,9 @@ namespace Zavala.UI {
             // Load relevant policy slot types according to advisor type
             // TODO: room for more flexibility here, such as an adaptive number of slots
             if (advisorType == AdvisorType.None) return;
-            if (m_PoliciesActive) {
-                
-            } else {
-
-            }
+            m_PoliciesActive = true;
             PopulateSlotsForAdvisor(advisorType);
             HideCardsInstant();
-            m_PoliciesActive = true;
             m_TransitionRoutine.Replace(ExpandPolicyUIRoutine());
         }
 
@@ -228,6 +229,10 @@ namespace Zavala.UI {
             HideCardsInstant();
             // m_PoliciesActive = false;
             m_TransitionRoutine.Replace(HideRoutine());
+        }
+
+        public void ShowButton(bool show) {
+            m_ButtonContainer.gameObject.SetActive(show);
         }
 
         private void HideCardsInstant() {
@@ -284,24 +289,34 @@ namespace Zavala.UI {
             if (!m_ButtonContainer) {
                 yield break;
             }
+            Log.Msg("[DialogueBox] Waiting for input...");
 
             InputState input = Game.SharedState.Get<InputState>();
-            m_ButtonContainer.gameObject.SetActive(true);
+            //m_ButtonContainer.gameObject.SetActive(true);
 
-            if (m_PoliciesActive || ForceAdvisorPolicies != AdvisorType.None) {
+            while (ForceAdvisorPolicies != AdvisorType.None) {
+                Log.Msg("   > Advisor forced: {0}", ForceAdvisorPolicies);
+                // don't check for click if policies are being opened
+                yield return null;
+            } 
+            if (m_PoliciesActive) {
                 while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
+                    Log.Msg("   > Pointer over hierarchy: {0}", Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer));
                     yield return null;
                 }
+                Log.Msg("   > Policies active, but clicked!");
             } else {
                 while (!input.ButtonPressed(InputButton.PrimaryMouse)) {
                     yield return null;
                 }
             }
             input.ConsumedButtons |= InputButton.PrimaryMouse;
+            Log.Msg("[DialogueBox] BREAK!");
             yield break;
         }
 
         private IEnumerator ExpandPolicyUIRoutine() {
+            m_PoliciesActive = true;
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             m_PolicyCloseButton.onClick.RemoveAllListeners();
             m_PolicyCloseButton.onClick.AddListener(() => { policyState.PolicyCloseButtonClicked?.Invoke(); });
@@ -309,7 +324,6 @@ namespace Zavala.UI {
             yield return m_Rect.AnchorPosTo(m_OnscreenPolicyY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
             // yield return
             m_PolicyExpansionContainer.gameObject.SetActive(true);
-            m_PoliciesActive = true;
             m_PolicyCloseButton.gameObject.SetActive(true);
             m_CloseButton.gameObject.SetActive(false);
             yield return m_PolicyExpansionContainer.AnchorPosTo(m_OnscreenPanelY, 0.2f, Axis.Y).Ease(Curve.CubeIn);
@@ -337,11 +351,12 @@ namespace Zavala.UI {
         }
 
         private IEnumerator CollapsePolicyUIRoutine() {
-            // if (!m_PoliciesActive) yield break;
-            m_PolicyCloseButton.gameObject.SetActive(false);
-            yield return m_PolicyExpansionContainer.AnchorPosTo(m_OffscreenPanelY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
-            m_PolicyExpansionContainer.gameObject.SetActive(false);
-            m_PoliciesActive = false;
+            if (m_PoliciesActive) {
+                m_PolicyCloseButton.gameObject.SetActive(false);
+                yield return m_PolicyExpansionContainer.AnchorPosTo(m_OffscreenPanelY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
+                m_PolicyExpansionContainer.gameObject.SetActive(false);
+                m_PoliciesActive = false;
+            }
             if (ForceAdvisorPolicies != AdvisorType.None) {
                 ExpandPolicyUI(ForceAdvisorPolicies);
             }

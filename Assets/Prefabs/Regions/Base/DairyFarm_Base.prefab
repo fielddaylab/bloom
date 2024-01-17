@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capacity:
-    Manure: 32
+    Manure: 2
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0

@@ -23,6 +23,7 @@ namespace Zavala.Input {
 
             CheckKeyboard(ref buttons, InputButton.Pause, KeyCode.Space);
             CheckKeyboard(ref buttons, InputButton.Pause, KeyCode.P);
+            CheckKeyboard(ref buttons, InputButton.Pause, KeyCode.Escape);
 
             CheckMouse(ref buttons, InputButton.PrimaryMouse, 0);
             CheckMouse(ref buttons, InputButton.RightMouse, 1);

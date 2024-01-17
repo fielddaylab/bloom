@@ -721,21 +721,6 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 86
-    ScriptName:
-      m_Source: region3_grain2
-      m_HashValue: 1463420348
-    Type: 1
-    LocationName:
-      m_Source: location.region3_grain2.name
-      m_HashValue: 1119785950
-    CharacterId:
-      m_Source: grainPrairie
-      m_HashValue: 2946469784
-    AdditionalData:
-      m_Type: 0
-      m_RawValue: 0
-      m_StringHashSource: 
   - LocalTileIndex: 69
     ScriptName:
       m_Source: region3_grain1

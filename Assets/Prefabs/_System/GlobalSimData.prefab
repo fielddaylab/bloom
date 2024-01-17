@@ -639,7 +639,7 @@ MonoBehaviour:
         Value: 20
       NodeTitle: region1.runoffTrigger
     RegionIndexUnlocks: 02000000
-  - UnlockDelay: 15
+  - UnlockDelay: 25
     UnlockConditions:
     - Type: 6
       ChecksRegions: 02000000
@@ -702,7 +702,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-      NodeTitle: region2.unlockImportTax
+      NodeTitle: region2.unlockPhosphorusView
     RegionIndexUnlocks: 03000000
   - UnlockDelay: 15
     UnlockConditions:
@@ -1065,4 +1065,4 @@ MonoBehaviour:
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
-      RegionAgeAbove: 40
+      RegionAgeAbove: 60

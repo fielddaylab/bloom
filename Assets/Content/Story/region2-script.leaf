@@ -86,7 +86,7 @@ $call FocusHighlightOn("BuildModeButton")
 $call FocusClear()
 {@advisorEcolForest}    Once connected to a Dairy Farm, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between Dairy Farms.
-// $call OffsetAlgaeGrowthThreshold(0)
+$call OffsetAlgaeGrowthThreshold(0)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
 
@@ -106,15 +106,19 @@ $call UnlockShopItem("Storage")
 {@advisorEcolForest}    A policy adjustment, then?
 $call ForcePolicyInstant("Ecology")
 
-:: queueUnlockPhosphorusView
+// :: queueUnlockPhosphorusView
+// @trigger        AlertExamined
+// @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
+// @cutscene
+// @once
+// $call SendGlobalAlertForNode("region2_city1", region2.unlockPhosphorusView)
+
+:: unlockPhosphorusView
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
 @cutscene
-$call SendGlobalAlertForNode("region2_city1", region2.unlockPhosphorusView)
-
-:: unlockPhosphorusView
-@cutscene
 @queued
+@once
 // $call Pause()
 {@advisorEconForest}    Oh no...
 $call CutsceneBegin()

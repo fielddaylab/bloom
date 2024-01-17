@@ -15,7 +15,7 @@ $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    They'll be conducting research about this algae unpleasantness.
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom", 2) // for unlocking PIPS
-$call AddRegionAgeTrigger(3, 10) // for unlocking Import Tax
+$call AddRegionAgeTrigger(3, 10) // for unlocking IMPORT TAX
 // $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -62,6 +62,7 @@ $endif
 :: queueUnlockImportTax
 @trigger        RegionReachedAge
 @conditions     regionId == 3
+@once
 $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
 
 // triggered by opening runoff in region 2 after region 3 has been opened
@@ -91,6 +92,8 @@ $call ForcePolicyInstant("Economy")
 :: queueUnlockMarketView
 @trigger        RegionReachedAge
 @conditions     regionId == 3, global:importUnlocked, AdvisorModuleIsUnlocked("Ecology")
+@cutscene
+@once
 $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
 
 :: unlockTradeGraphs

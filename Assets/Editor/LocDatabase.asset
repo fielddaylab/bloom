@@ -136,11 +136,11 @@ MonoBehaviour:
     - Id: cards.SalesTaxPolicy.low
       Content: Low Tax
     - Id: cards.SalesTaxPolicy.low.hint
-      Content: With low sales tax, you'll gain $2 with every purchase of any good.
+      Content: With low sales tax, you'll gain $1 with every purchase of any good.
     - Id: cards.SalesTaxPolicy.high
       Content: High Tax
     - Id: cards.SalesTaxPolicy.high.hint
-      Content: With high sales tax, you'll gain $4 with every purchase of any good.
+      Content: With high sales tax, you'll gain $3 with every purchase of any good.
     - Id: cards.SalesTaxPolicy.alt
       Content: Subsidy
     - Id: cards.SalesTaxPolicy.alt.hint
@@ -179,7 +179,7 @@ MonoBehaviour:
     - Id: location.region3_grain2.name
       Content: Zora's Grain Farm
     - Id: location.region3_grain3.name
-      Content: Zora's Wholesome Sorgum
+      Content: Zora's Sorghum
     - Id: location.region3_city1.name
       Content: Veldt City
     - Id: location.region4_cafo1.name
@@ -308,9 +308,9 @@ MonoBehaviour:
 
         are selling:'
     - Id: ui.popup.info.selling
-      Content: 'Which option
+      Content: 'Which is most
 
-        is the cheapest?'
+        profitable?'
     - Id: ui.popup.info.city.falling
       Content: "The City\u2019s population is <u><color=\"red\">falling</color></u>
         due to:"

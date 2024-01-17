@@ -16,6 +16,8 @@ namespace Zavala.Sim {
         public override void ProcessWork(float deltaTime) {
             if (m_StateB.Timer.HasAdvanced()) {
                 // for each tile that had a phosphorus change:
+
+                // IMPORTANT: only tiles that have had a change in phosphorus check if they should grow!
                 foreach (int tileIndex in m_StateB.Phosphorus.Changes.AffectedTiles) {
                     // check if tile is water
                     ushort flags = m_StateB.Phosphorus.Info[tileIndex].Flags;
@@ -29,10 +31,12 @@ namespace Zavala.Sim {
                     } else {
                         m_StateA.Algae.GrowingTiles.Remove(tileIndex);
                         m_StateA.Algae.State[tileIndex].IsPeaked = false;
+                        // m_StateA.Algae.PeakingTiles.Remove(tileIndex);
                     }
 
 
                 }
+
                 // Grow algae
                 foreach (int tile in m_StateA.Algae.GrowingTiles) {
                     ref float algaeGrowth = ref m_StateA.Algae.State[tile].PercentAlgae;

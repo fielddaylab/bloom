@@ -1,3 +1,4 @@
+using BeauUtil.Debugger;
 using BeauUtil.Variants;
 using FieldDay;
 using FieldDay.Systems;
@@ -14,14 +15,18 @@ namespace Zavala.Sim
     public class BloomAlertSystem : ComponentSystemBehaviour<EventActor, OccupiesTile>
     {
         public override void ProcessWorkForComponent(EventActor actor, OccupiesTile tile, float deltaTime) {
+            SimAlgaeState simAlgae = Game.SharedState.Get<SimAlgaeState>();
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.Bloom)) {
-                // only add this trigger once
+                if (!simAlgae.Algae.BloomedTiles.Contains(tile.TileIndex)) {
+                    Log.Msg("[BloomAlertSystem] Bloom receding, attempted to cancel alert");
+                    EventActorUtility.CancelEventType(actor, EventActorAlertType.Bloom);
+                }
                 return;
             }
 
             bool bloomPeaked = false;
 
-            SimAlgaeState simAlgae = Game.SharedState.Get<SimAlgaeState>();
+            // SimAlgaeState simAlgae = Game.SharedState.Get<SimAlgaeState>();
             bloomPeaked = simAlgae.Algae.PeakingTiles.Contains(tile.TileIndex);
 
             if (bloomPeaked) {

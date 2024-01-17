@@ -20,7 +20,7 @@ MonoBehaviour:
   m_RampScale: {x: 1, y: 1, z: 1}
   BridgeOffset: {x: 0, y: 0, z: 0}
   m_RotationEntries:
-  - TileIndex: 65535
+  - TileIndex: 13
     Rotation: 0
   - TileIndex: 6
     Rotation: 4

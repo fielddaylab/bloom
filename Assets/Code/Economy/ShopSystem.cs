@@ -51,7 +51,7 @@ namespace Zavala.Economy {
     static public class ShopUtility {
         [ConfigVar("Road Cost", 1, 10, 1)] static public int RoadCost = 5;
         [ConfigVar("Storage Cost", 10, 100, 10)] static public int StorageCost = 100;
-        [ConfigVar("Digester Cost", 10, 300, 10)] static public int DigesterCost = 200;
+        [ConfigVar("Digester Cost", 10, 300, 10)] static public int DigesterCost = 150;
 
         //private const int ROAD_COST = 5;
         //private const int STORAGE_COST = 100;

@@ -108,7 +108,9 @@ namespace FieldDay.Scripting {
         public override void OnNodeExit(ScriptNode inNode, LeafThreadState<ScriptNode> inThreadState) {
             if ((inNode.Flags & ScriptNodeFlags.ForcePolicy) != 0) {
                 // View Policies: expand
-                m_RuntimeState.DefaultDialogue.ExpandPolicyUI(inNode.AdvisorType);
+                m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
+                //m_RuntimeState.DefaultDialogue.ForceAdvisorPolicies = inNode.AdvisorType;
+                //m_RuntimeState.DefaultDialogue.ExpandPolicyUI(inNode.AdvisorType);
             }
             else {
                 // Close advisor, no policies forced

@@ -1,3 +1,4 @@
+using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace Zavala.Sim {
                 storage.Current = default;
                 ResourceStorageUtility.RefreshStorageDisplays(storage);
                 ResourceStorageUtility.RefreshStorageDisplays(recycler.ReturnTo);
-                Debug.Log("[Sitting] Sitting storage returned!");
+                Log.Msg("[Sitting] Sitting storage returned! Left in SITTING: {0}", storage.Current.Manure);
             }
             else {
                 // TODO: Handle too much letting run off to return
