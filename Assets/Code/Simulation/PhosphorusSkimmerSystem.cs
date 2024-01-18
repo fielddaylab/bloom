@@ -2,41 +2,85 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Data;
 using FieldDay.Systems;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zavala.Actors;
-namespace Zavala.Sim
-{
-    [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)]
-    public class PhosphorusSkimmerSystem : ComponentSystemBehaviour<PhosphorusSkimmer, ActorTimer, OccupiesTile>
-    {
-        public override void ProcessWorkForComponent(PhosphorusSkimmer skimmer, ActorTimer timer, OccupiesTile position, float deltaTime) {
-            if (!timer.Timer.HasAdvanced()) {
+using Zavala.Advisor;
+using Zavala.Economy;
+using Zavala.World;
+
+namespace Zavala.Sim {
+    [SysUpdate(GameLoopPhase.Update, -48, ZavalaGame.SimulationUpdateMask)] // after algae system
+    public class PhosphorusSkimmerSystem : SharedStateSystemBehaviour<PhosphorusSkimmerState, SimPhosphorusState, SimAlgaeState, PolicyState> {
+
+        public override void ProcessWork(float deltaTime) {
+            if (!m_StateA.SkimTimer.Advance(deltaTime, ZavalaGame.SimTime)) {
                 return;
             }
+
+            for (int i = 0; i < RegionInfo.MaxRegions; i++) {
+                ProcessSkimmerRegion(m_StateA.SkimmerLocsPerRegion[i], i);
+            }
+        }
+
+        #region Helper Methods
+
+        private void ProcessSkimmerRegion(List<SkimmerLocation> skimmerList, int regionIndex) {
+            int regionCost = 0;
+            foreach (SkimmerLocation loc in skimmerList) {
+                if (loc.PlacedSkimmer == null) continue;
+                regionCost += ProcessSkimmer(loc.PlacedSkimmer, loc.TileIndex, regionIndex);
+            }
+            if (regionCost == 0) return;
+            TryPayForSkimmerRegion(regionCost, regionIndex);
+
+        }
+
+        private void TryPayForSkimmerRegion(int cost, int region) {
+            MarketData market = Game.SharedState.Get<MarketData>();
+            BudgetData budget = Game.SharedState.Get<BudgetData>();
+            if (BudgetUtility.TrySpendBudget(budget, cost, (uint)region)) {
+                MarketUtility.RecordSkimmerCostToHistory(market, -cost, region);
+            } else {
+                string actor = "region" + (region + 1) + "_city1";
+                PolicyUtility.ForcePolicyToNone(PolicyType.SkimmingPolicy, actor, region);
+            }
+        }
+
+        private int ProcessSkimmer(PhosphorusSkimmer skimmer, int tileIndex, int regionIndex) {
+            int returnCost = 0;
+            float removedAmt = 0;
             if (skimmer.Type == SkimmerType.Algae) {
-                SimAlgaeState aState = Game.SharedState.Get<SimAlgaeState>();
-                float removedAmt = SimAlgaeUtility.RemoveAlgae(aState, position.TileIndex, SkimmerParams.AlgaeSkimAmt, position.RegionIndex);
-                Debug.Log("[Skimmer] Skimmed " + removedAmt + "  units of Algae");
+                returnCost = SkimmerParams.AlgaeSkimCost;
+                removedAmt = SimAlgaeUtility.RemoveAlgae(m_StateC, tileIndex, SkimmerParams.AlgaeSkimAmt, regionIndex);
                 foreach (int idx in skimmer.NeighborIndices) {
                     if (idx < 0) continue;
-                    float bonusAmt = SimAlgaeUtility.RemoveAlgae(aState, idx, SkimmerParams.AlgaeSkimAmt/2, position.RegionIndex);
-                    Debug.Log("[Skimmer] Skimmed " + bonusAmt + "  units of Algae");
-
+                    removedAmt += SimAlgaeUtility.RemoveAlgae(m_StateC, idx, SkimmerParams.AlgaeSkimAmt / 2, regionIndex);
                 }
+                Debug.Log("[Skimmer] Skimmed " + removedAmt + "  units of Algae");
             } else if (skimmer.Type == SkimmerType.Dredge) {
                 // Remove P from tile
-                SimPhosphorusState pState = Game.SharedState.Get<SimPhosphorusState>();
-                int removedAmt = SimPhospohorusUtility.RemovePhosphorus(pState, position.TileIndex, SkimmerParams.PhosDredgeAmt);
-                foreach (int idx in skimmer.NeighborIndices) {
+                returnCost = SkimmerParams.PhosDredgeCost;
+                removedAmt = SimPhospohorusUtility.RemovePhosphorus(m_StateB, tileIndex, SkimmerParams.PhosDredgeAmt);
+                foreach (int idx  in skimmer.NeighborIndices) {
                     if (idx < 0) continue;
-                    removedAmt += SimPhospohorusUtility.RemovePhosphorus(pState, idx, SkimmerParams.PhosDredgeAmt/2);
+                    removedAmt += SimPhospohorusUtility.RemovePhosphorus(m_StateB, idx, SkimmerParams.PhosDredgeAmt / 2);
                 }
                 Debug.Log("[Skimmer] Dredged " + removedAmt + "  units of P");
             }
+            // if (removedAmt != 0) {
+                return returnCost;
+            // } else return 0;
         }
+
+        #endregion
+
     }
 
     public static class SkimmerParams {
+        [ConfigVar("Algae Skimmer Cost", 0, 5, 1)] static public int AlgaeSkimCost = 1;
+        [ConfigVar("Phos Dredge Cost", 0, 10, 1)] static public int PhosDredgeCost = 2;
         [ConfigVar("Algae Skim Amount", 0f, 0.4f, 0.04f)] static public float AlgaeSkimAmt = 0.16f;
         [ConfigVar("Phos Dredge Amount", 0, 10, 2)] static public int PhosDredgeAmt = 8;
 

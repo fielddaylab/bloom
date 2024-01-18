@@ -908,6 +908,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814c2c69ec3567042854e8349d20a917, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SkimTimer:
+    Period: 6
   SkimmerMesh:
     Mesh: {fileID: 9209418838542290804, guid: 29127c188e8083344bcac38a6f315a24, type: 3}
     Material: {fileID: 2100000, guid: bf7fd34d6a47c4f4db1bb0c052164e91, type: 2}

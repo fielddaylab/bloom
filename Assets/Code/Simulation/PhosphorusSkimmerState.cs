@@ -5,14 +5,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Advisor;
 using Zavala.Building;
+using Zavala.Economy;
 using Zavala.Sim;
 using static Zavala.Building.BuildingPools;
 
 namespace Zavala.World {
-
-
     public class PhosphorusSkimmerState : SharedStateComponent, IRegistrationCallbacks {
+        public SimTimer SkimTimer;
+        
         [NonSerialized] public List<SkimmerLocation>[] SkimmerLocsPerRegion;
         public SimpleMeshConfig SkimmerMesh;
         public SimpleMeshConfig DredgerMesh;
@@ -34,6 +36,7 @@ namespace Zavala.World {
     }
 
     public static class PhosphorusSkimmerUtility {
+
         /// <summary>
         /// Add a skimmer location to the global skimmer location storage.
         /// </summary>
@@ -41,7 +44,6 @@ namespace Zavala.World {
         /// <param name="regionIndex">Region to add this skimmer location to.</param>
         /// <param name="tileIndex">The tile index of this skimmer location.</param>
         /// <param name="type">The type of skimmer - Algae or Dredger</param>
-
         public static void AddSkimmerLocation(PhosphorusSkimmerState skimState, int regionIndex, int tileIndex) {
             skimState.SkimmerLocsPerRegion[regionIndex].Add(new SkimmerLocation {
                 TileIndex = tileIndex

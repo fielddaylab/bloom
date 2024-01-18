@@ -206,7 +206,7 @@ namespace Zavala.Economy
 
             #region MarketCycle_RecurringPolicyCosts
 
-            ProcessSkimmerCosts(grid, marketData, budget);
+            // ProcessSkimmerCosts(grid, marketData, budget);
 
             #endregion // MarketCycle_RecurringPolicyCosts
 
@@ -1036,14 +1036,14 @@ namespace Zavala.Economy
             // Record skimmer cost per region
             for (int region = 0; region < grid.RegionCount; region++)
             {
-                int cost = m_StateB.UserAdjustmentsPerRegion[region].SkimmerCost;
+                int cost = 1; //m_StateB.UserAdjustmentsPerRegion[region].SkimmerCost;
                 if (BudgetUtility.TrySpendBudget(budget, cost, (uint)region))
                 {
                     MarketUtility.RecordSkimmerCostToHistory(marketData, -cost, region);
                 }
                 else
                 {
-                    string actor = "region" + region + "_city1";
+                    string actor = "region" + (region+1) + "_city1";
                     PolicyUtility.ForcePolicyToNone(PolicyType.SkimmingPolicy, actor, region);
                 }
             }

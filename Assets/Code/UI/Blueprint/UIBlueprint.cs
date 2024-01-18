@@ -108,7 +108,8 @@ namespace Zavala.UI
         private void OnEnable()
         {
             PolicyState policies = Game.SharedState.Get<PolicyState>();
-            policies.PolicyCardSelected.Register(HandlePolicyCardSelected);
+            // policies.PolicyCardSelected.Register(HandlePolicyCardSelected);
+            policies.OnPolicyUpdated.Register(HandlePolicyUpdated);
 
             UpdatePolicyBoxTexts();
             HandleRegionSwitched();
@@ -175,6 +176,10 @@ namespace Zavala.UI
 
         private void HandlePolicyCardSelected(CardData data)
         {
+            UpdatePolicyBoxTexts();
+        }
+
+        private void HandlePolicyUpdated() {
             UpdatePolicyBoxTexts();
         }
 
@@ -326,7 +331,6 @@ namespace Zavala.UI
             {
                 int amt = 0;
 
-                // TODO: This is fired every tick, but Net is only updated every 3 ticks. 
                 switch(box.PolicyType)
                 {
                     case PolicyType.SalesTaxPolicy:
@@ -342,8 +346,10 @@ namespace Zavala.UI
                         // PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
                         continue; // skip past playing animation, go to next policy
                     case PolicyType.SkimmingPolicy:
-                        amt = data.SkimmerCostHistory[region].LastChange();
-                        PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                        if (data.SkimmerCostHistory[region].Net.TryPopFront(out int skim)){
+                            amt = skim;
+                            PolicyBoxUtility.SetPopupAmt(box.Popup, amt);
+                        }
                         break;
                     default:
                         break;

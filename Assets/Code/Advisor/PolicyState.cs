@@ -26,7 +26,7 @@ namespace Zavala.Advisor {
         public static ResourceBlock[] ImportTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] SalesTaxVals = new ResourceBlock[4];
         public static ResourceBlock[] RunoffPenaltyVals = new ResourceBlock[4];
-        public static int[] SkimmerPolicyVals = new int[4];
+        // public static int[] SkimmerPolicyVals = new int[4];
 
         public CastableEvent<PolicyType> PolicySlotClicked = new CastableEvent<PolicyType>();
         public CastableEvent<CardData> PolicyCardSelected = new CastableEvent<CardData>();
@@ -56,7 +56,7 @@ namespace Zavala.Advisor {
                     break;
                 case PolicyType.SkimmingPolicy:
                     // read skimming policy
-                    Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].SkimmerCost = SkimmerPolicyVals[policyIndex];
+                    // Game.SharedState.Get<MarketConfig>().UserAdjustmentsPerRegion[region].SkimmerCost = SkimmerPolicyVals[policyIndex];
                     PhosphorusSkimmerUtility.SpawnSkimmersInRegion(region, policyIndex);
                     policySetSuccessful = true;
                     break;
@@ -115,10 +115,10 @@ namespace Zavala.Advisor {
             RunoffPenaltyVals[2].Manure = 16;
             RunoffPenaltyVals[3].Manure = 99;
 
-            SkimmerPolicyVals[0] = 0; 
-            SkimmerPolicyVals[1] = 1; 
-            SkimmerPolicyVals[2] = 2; 
-            SkimmerPolicyVals[3] = 4; // dredge
+            //SkimmerPolicyVals[0] = 0; 
+            //SkimmerPolicyVals[1] = 1; // these are PER SKIMMER
+            //SkimmerPolicyVals[2] = 1; // budget spent in PhosphorusSkimmerSystem
+            //SkimmerPolicyVals[3] = 1; // dredgers cost DOUBLE (done in PhosphorusSkimmerSystem)
         }
 
         private void InitializePolicyMap() {
