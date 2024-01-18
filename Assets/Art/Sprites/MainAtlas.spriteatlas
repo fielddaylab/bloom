@@ -107,6 +107,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
   - {fileID: 21300000, guid: a4e601cac11766d40b8c12bf68b1f94f, type: 3}
   - {fileID: 21300000, guid: 7fdf6d5b4cb42ca46bdb089e269472a9, type: 3}
+  - {fileID: 21300000, guid: f61ec57bfd96306489cb92dddffafe75, type: 3}
   - {fileID: 21300000, guid: 2221949b943795844a143b042d89dd3e, type: 3}
   - {fileID: 21300000, guid: 597519ab059d08b4a9d5df0fd202bbe4, type: 3}
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
@@ -186,6 +187,7 @@ SpriteAtlas:
   - card-slot-locked-white
   - policyicon_skim
   - ShopButtonBorder
+  - base_dialogue
   - policy-button-white
   - icon_shipping
   - base_excess-runoff

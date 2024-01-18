@@ -132,6 +132,7 @@ namespace Zavala.Sim
                 ResourceStorageUtility.RefreshStorageDisplays(gen.transform.parent.GetComponent<ResourceStorage>());
                 VfxUtility.PlayEffect(gen.RunoffParticleOrigin.position, EffectType.Poop_Runoff);
             }
+            gen.SoldManureRecently = false;
             AddPhosphorus(phosphorus, tileIndex, RunoffParams.SittingManureRunoffProportion);
             gen.AmountProducedLastTick = RunoffParams.SittingManureRunoffProportion;
             return true;

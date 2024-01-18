@@ -28,7 +28,18 @@ namespace Zavala.Scripting
             }
 
             // if no active events, create alert
-            if (component.QueuedEvents.Count > 0 && !component.DisplayingEvent) { // only create if they have events and aren't displaying them
+            if (component.QueuedEvents.Count > 0) { // only create if they have events and aren't displaying them
+                if (component.DisplayingEvent) {
+                    if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue) {
+                        // Clear the shown alert
+                        UIAlertUtility.ClearAlert(component.DisplayingEvent);
+                    } else {
+                        // Skip queueing for this actor, it is already displaying an important (non-dialogue) event
+                        return;
+                    }
+                                     
+                }
+                
                 component.QueuedEvents.TryPeekFront(out EventActorQueuedEvent peekEvent);
                 if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
                     // do not create UI banners for the fake global alerts
@@ -51,7 +62,7 @@ namespace Zavala.Scripting
 
                 // assign component as alert's Actor
                 alert.Actor = component;
-
+                alert.AlertType = peekEvent.Alert;
                 // assign localized banner text
                 alert.EventText.SetText(GameAlerts.GetLocalizedName(peekEvent.Alert));
 
@@ -81,6 +92,10 @@ namespace Zavala.Scripting
         }
 
         static private Sprite GetAlertBannerSprite(EventActorAlertType type, SpriteLibrary library) {
+            if (type == EventActorAlertType.Dialogue) {
+                // NO BANNER for dialogue alerts
+                return null;
+            }
             StringHash32 id = "banner_";
             id = id.FastConcat(GameAlerts.GetAlertName(type));
             if (!library.TryLookup(id, out Sprite sprite)) {

@@ -26,7 +26,7 @@ $call CutsceneEnd()
 {@advisorEconHill}      Greetings! Welcome to Knoll County.
 $call ForceDialogueInteraction()
 {@advisorEconHill}      I'm here to advise you on money matters. 
-{@advisorEconHill}      Knoll County is growing...
+{@advisorEconHill}      Knoll County is a growing producer of milk...
 {@advisorEconHill}      ...but these farms and businesses aren't connected.
 $call PanToBuilding("region1_city1")
 {@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
@@ -34,8 +34,7 @@ $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
 $call PanToBuilding("region1_cafo1")
 {@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
-{@advisorEconHill}      Our region is a great producer of milk. 
-{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm," its a huge operation.
+{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm;" it's a huge operation.
 {@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
@@ -141,7 +140,7 @@ $call FocusHighlightOn("EconomyAdvisor")
 :: letsGetStarted
 @trigger AdvisorOpened
 @conditions     advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete == false
-@forcePolicy    Economy
+// @forcePolicy    Economy
 @cutscene
 @once
 $call FocusClear()
@@ -150,16 +149,18 @@ $set intro:pendingPolicy = true
 {@advisorEconHill}     Sales Policy can provide additional revenue.
 {viewpoliciesnext}
 {@advisorEconHill}     But set it too high, and trade may be hindered.
+$call ForcePolicyInstant("Economy")
 
 :: closedWithoutSettingPolicy
 @trigger    AdvisorClosed
 @conditions intro:pendingPolicy == true, intro:tutorialComplete == false
-@forcePolicy    Economy
+// @forcePolicy    Economy
 @cutscene
 {@advisorEconHill}      Hold on there!
 {@advisorEconHill}      Make sure to set a Sales Policy before you leave.
 {viewpoliciesnext}
 {@advisorEconHill}      You can set it to None if you like, but we ought to decide.
+$call ForcePolicyInstant("Economy")
 
 // :: setPolicyReminder
 // @trigger AdvisorOpened
@@ -208,7 +209,7 @@ $call Wait(0.5)
 {local @cafoFarmer}     Better to just let it sit.
 $call CloseInfoPopup()
 {@advisorEconHill}      I see.
-{@advisorEconHill}      You can always check a location's decisions by <b>clicking</b> it.
+{@advisorEconHill}      You can always check a farm's <b>Fertilizer decisions</b> by <b>clicking</b> it.
 
 // $call Unpause()
 
@@ -228,7 +229,7 @@ $endif
 :: economyAdvisorOpen
 @trigger        AdvisorOpened
 @conditions     advisorType == "Economy", CameraInRegion(1), intro:tutorialComplete
-// @forcePolicyEarly    Economy
+// @forcePolicy   Economy
 $if PolicyIsUnlocked(SalesTaxPolicy)
     $call ForcePolicyInstant("Economy")
     {local @advisorEcon}    Here are the economic policies.
@@ -251,13 +252,14 @@ $call ForcePolicyInstant("Economy")
 @trigger        AdvisorOpened
 @conditions     advisorType == "Ecology", CameraInRegion(1), RegionUnlocked(3)
 @priority       High
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 @once
 {@advisorEcolHill}      Ugh... Those Heath County hayseeds always irked me.
 {@advisorEcolHill}      They think they're better than everyone because of their fancy college.
 {@advisorEcolHill}      Plus their straw hats are weird!
 {viewpoliciesnext}
 {@advisorEcolHill}      Anyway, what can I help you with?
+$call ForcePolicyInstant("Ecology")
 
 
 // :: preBloomRunoff
@@ -274,7 +276,7 @@ $call ForcePolicyInstant("Economy")
 :: runoffTrigger
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff", alertRegion == 1, isFromGrainFarm == false
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 @queued
 @cutscene
 @once
@@ -290,6 +292,7 @@ $call UnlockCards(RunoffPolicy)
 {@advisorEconHill}      But Bertram is correct. Selling at a loss could disrupt the supply chain.
 {viewpoliciesnext}
 {@advisorEcolHill}      What do you think, boss?
+$call ForcePolicyInstant("Ecology")
 
 :: genericRunoff
 @trigger        AlertExamined
@@ -306,7 +309,7 @@ $else
     {@advisorEconHill}      Perhaps this farm needs a manure buyer.
 $endif
 $if Visited("region2.unlockStorage")
-    {local @advisorEcon}    Or we could build a <b>Storage</b> unit.
+    {@advisorEconHill}    Or we could build a <b>Storage</b> unit.
 $endif
 
 :: discoverFirstBloom
@@ -344,7 +347,7 @@ $call AddAutoAlertCondition("ExcessRunoff", 1)
 :: genericBloomTrigger
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 1, global:runoffDiscovered
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 {@advisorEcolHill}      Yikes... Another algae bloom. What should we do about it?
 $set local:runoffLevel = PolicyLevelInRegion(1, "RunoffPolicy")
 $if local:runoffLevel < 1
@@ -359,6 +362,7 @@ $if PolicyIsUnlocked("SkimmingPolicy")
 $endif
 {viewpoliciesnext}
 {@advisorEcolHill}     Your choice, boss.
+$call ForcePolicyInstant("Ecology")
 
 // TODO: add event/trigger for city stress (nearby bloom and/or lacking milk)
 

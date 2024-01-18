@@ -43,7 +43,7 @@ $endif
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 3, global:bloomDiscovered
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 {@advisorEcolPrairie}    Eep! An algae bloom!
 {@advisorEcolPrairie}    I say we should just shut those large Dairy Farms down.
 
@@ -56,6 +56,7 @@ $if PolicyIsUnlocked(SkimmingPolicy)
 $endif
 {viewpoliciesnext}
 {@advisorEcolPrairie}    What do you think?
+$call ForcePolicyInstant("Ecology")
 
 // $call Unpause()
 

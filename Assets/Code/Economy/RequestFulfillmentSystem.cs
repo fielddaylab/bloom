@@ -6,6 +6,7 @@ using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
+using Zavala.Actors;
 using Zavala.Advisor;
 using Zavala.Audio;
 using Zavala.Sim;
@@ -61,6 +62,10 @@ namespace Zavala.Economy {
                         // create a truck
                         request.Fulfiller = pools.Trucks.Alloc();
                         pools.Trucks.SetTruckMesh(request.Fulfiller, request.Supplied.PositiveMask);
+                        if (request.Supplied.Manure > 0 && !request.Requester.IsLocalOption) {
+                            ActorPhosphorusGenerator gen = request.Supplier.GetComponentInChildren<ActorPhosphorusGenerator>();
+                            if (gen != null) gen.SoldManureRecently = true;
+                        }
                         FulfillerUtility.InitializeFulfiller(request.Fulfiller, request, request.Path);
 
                         // divvy route between trucks and blimps through proxy, if applicable

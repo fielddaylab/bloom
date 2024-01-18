@@ -21,7 +21,10 @@ namespace Zavala.Actors {
     {
         Bloom,
         Resource,
-        Financial
+        Financial,
+
+        [Hidden]
+        COUNT
     }
 
     /// <summary>
@@ -44,12 +47,12 @@ namespace Zavala.Actors {
         #endregion // Inspector
 
         [NonSerialized] public Dictionary<StressCategory, int> CurrentStress;
+        [NonSerialized] public bool[] StressImproving;
         [NonSerialized] public Dictionary<OperationState, int> OperationThresholds;
         [NonSerialized] public int TotalStress;
         [NonSerialized] public float AvgStress;
         [NonSerialized] public OperationState OperationState;
         [NonSerialized] public bool ChangedOperationThisTick = false;
-        [NonSerialized] public bool StressImproving = false; // this would be more robust as a PrevStress dictionary
         [NonSerialized] public OperationState PrevState;
 
         [NonSerialized] public Dictionary<StressCategory, bool> StressMask;
@@ -90,6 +93,8 @@ namespace Zavala.Actors {
                 { StressCategory.Financial, financialStress ? startingStress : 0 },
             };
 
+            StressImproving = new bool[(int)StressCategory.COUNT];
+
             StressMask = new Dictionary<StressCategory, bool>() {
                 { StressCategory.Bloom, bloomStress },
                 { StressCategory.Resource, resourceStress },
@@ -118,7 +123,7 @@ namespace Zavala.Actors {
         {
             actor.CurrentStress[category]++;
             //RecalculateTotalStress(actor);
-            actor.StressImproving = false;
+            actor.StressImproving[(int)category] = false;
 
             if (actor.CurrentStress[category] > actor.StressCap)
             {
@@ -140,7 +145,7 @@ namespace Zavala.Actors {
         {
             actor.CurrentStress[category]--;
             // RecalculateTotalStress(actor);
-            actor.StressImproving = true;
+            actor.StressImproving[(int)category] = true;
 
             if (actor.CurrentStress[category] < 0)
             {

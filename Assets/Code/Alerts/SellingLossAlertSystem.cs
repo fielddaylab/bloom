@@ -4,6 +4,7 @@ using FieldDay.Systems;
 using Zavala.Actors;
 using Zavala.Economy;
 using Zavala.Scripting;
+using Zavala.UI;
 
 namespace Zavala.Sim
 {
@@ -18,13 +19,14 @@ namespace Zavala.Sim
             if (!stressable) { return; }
 
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.SellingLoss)) {
-                if (stressable.StressImproving)
-                    EventActorUtility.CancelEventType(actor, EventActorAlertType.SellingLoss);
+                if (stressable.StressImproving[(int)StressCategory.Financial])
+                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    // EventActorUtility.CancelEventType(actor, EventActorAlertType.SellingLoss);
                 return;
             }
             // Check if a supplier sold at a loss
 
-            if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Okay] && !stressable.StressImproving)
+            if (stressable.CurrentStress[StressCategory.Financial] >= stressable.OperationThresholds[OperationState.Okay] && !stressable.StressImproving[(int)StressCategory.Financial])
             {
                 // if so, create alert on this tile
                 bool sellsGrain = (supplier.ShippingMask & ResourceMask.Grain) != 0;

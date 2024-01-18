@@ -59,6 +59,7 @@ namespace Zavala.Scripting
                 return NullValue();
             }
 
+            // TODO: is it possible to check if there is a "local:alertRegion" var in the leaf script and use that instead?
             int regionKey = (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex;
             
             ScriptCharacterRemap remap;

@@ -94,8 +94,16 @@ $elseif local:policyType == "ImportTaxPolicy"
     $endif
 $endif
 
-:: grainRunoff
+:: runoffCafoGeneric
 @trigger        AlertExamined
+@priority Low
+@conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == false
+PLACEHOLDER
+
+
+:: grainRunoffGeneric
+@trigger        AlertExamined
+@priority Low
 @conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == true
 {local @advisorEcol}        Runoff from a grain farm...
 {local @advisorEcol}        All fertilizer causes <i>some</i> runoff... 
@@ -106,10 +114,17 @@ $if global:builtDigester
     {local @advisorEcol}        Or better yet, some digested fertilizer!
 $endif
 
-:: SellAtLossGrain
+:: sellAtLossCafoGeneric
 @trigger        AlertExamined
+@priority Low
+@conditions     alertType == "selling-loss", isFromGrainFarm == false
+PLACEHOLDER
+
+:: sellAtLossGrainGeneric
+@trigger        AlertExamined
+@priority Low
 @conditions     alertType == "selling-loss", isFromGrainFarm == true
-@forcePolicy    Economy
+// @forcePolicy    Economy
 // $call Pause()
 {local @grainFarmer}      Aw shucks... How am I gonna feed my family?
 {local @advisorEcon}      Hmm... This farmer is losing money when they sell.
@@ -125,7 +140,8 @@ $if global:builtDigester
     {local @advisorEcon}  Otherwise, that <i>Digested Fertilizer is cheaper to ship...
 $endif
 {viewpoliciesnext}
-{local @advisorEcon}    It's your choice, Director.     
+{local @advisorEcon}    It's your choice, Director.
+$call ForcePolicyInstant("Economy")     
 // $call Unpause()
 
 

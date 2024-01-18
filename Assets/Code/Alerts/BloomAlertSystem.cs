@@ -6,28 +6,30 @@ using UnityEngine;
 using Zavala.Actors;
 using Zavala.Economy;
 using Zavala.Scripting;
+using Zavala.UI;
 using Zavala.World;
 
 namespace Zavala.Sim
 {
     [SysUpdate(GameLoopPhase.Update, 0, ZavalaGame.SimulationUpdateMask)] // after SimAlgaeSystem
     // Set execution order to after SimAlgaeStateSystem
-    public class BloomAlertSystem : ComponentSystemBehaviour<EventActor, OccupiesTile>
+    public class BloomAlertSystem : ComponentSystemBehaviour<EventActor, ActorTimer, OccupiesTile>
     {
-        public override void ProcessWorkForComponent(EventActor actor, OccupiesTile tile, float deltaTime) {
+        public override void ProcessWorkForComponent(EventActor actor, ActorTimer timer, OccupiesTile tile, float deltaTime) {
+            if (!timer.Timer.HasAdvanced()) return;
+            
             SimAlgaeState simAlgae = Game.SharedState.Get<SimAlgaeState>();
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.Bloom)) {
                 if (!simAlgae.Algae.BloomedTiles.Contains(tile.TileIndex)) {
                     Log.Msg("[BloomAlertSystem] Bloom receding, attempted to cancel alert");
-                    EventActorUtility.CancelEventType(actor, EventActorAlertType.Bloom);
+                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    //EventActorUtility.CancelEventType(actor, EventActorAlertType.Bloom);
                 }
                 return;
             }
 
-            bool bloomPeaked = false;
-
             // SimAlgaeState simAlgae = Game.SharedState.Get<SimAlgaeState>();
-            bloomPeaked = simAlgae.Algae.PeakingTiles.Contains(tile.TileIndex);
+            bool bloomPeaked = simAlgae.Algae.PeakingTiles.Contains(tile.TileIndex);
 
             if (bloomPeaked) {
                 EventActorUtility.QueueAlert(actor, EventActorAlertType.Bloom, tile.TileIndex, tile.RegionIndex);

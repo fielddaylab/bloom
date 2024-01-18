@@ -32,6 +32,7 @@ namespace Zavala.UI {
         [NonSerialized] public bool FullyOpened = false;
         [NonSerialized] public Routine FadeRoutine;
         [NonSerialized] public bool KeepFaded;
+        [NonSerialized] public EventActorAlertType AlertType;
 
         private void Awake() {
             AlertBannerRect.SetAnchorPos(-3f, Axis.X);
@@ -115,6 +116,7 @@ namespace Zavala.UI {
         }
 
         public static void FreeAlert(UIAlert alert) {
+            EventActorUtility.CancelEventType(alert.Actor, alert.AlertType);
             // free this alert
             UIPools pools = Game.SharedState.Get<UIPools>();
             pools.Alerts.Free(alert);
@@ -132,7 +134,7 @@ namespace Zavala.UI {
             );
             alert.FullyOpened = true;
             alert.Masking.SetState(false);
-            alert.BannerRoutine.Replace(HoldRoutine(alert, 5.0f));
+            alert.BannerRoutine.Replace(HoldRoutine(alert, 3.0f));
             ClickAlert(alert);
             yield return null;
         }

@@ -8,6 +8,7 @@ $call SendGlobalAlertForNode("region4_city1", region4.regionUnlocked)
 
 :: regionUnlocked
 @queued
+@cutscene
 // // $call Pause()
 {@advisorEcolWetland}    Welcome to Muskeg County, boss.
 $call PanToBuilding("region4_city1")
@@ -87,9 +88,10 @@ $call OffsetAlgaeGrowthThreshold(1)
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked, global:digestersUnlocked
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 {@advisorEcolWetland}     Hmph... Algae blooms. Nasty business.
 {@advisorEcolWetland}     Seems to me we should reduce phosphorus runoff.
+$call ForcePolicyInstant("Ecology")
 
 :: buildFirstDigester
 @trigger        PlayerBuiltBuilding

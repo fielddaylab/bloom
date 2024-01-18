@@ -149,7 +149,7 @@ $call OffsetAlgaeGrowthThreshold(1)
 :: testBloomTriggerForest
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 @priority       Low
 @once
 // $call Pause()
@@ -158,13 +158,14 @@ $call OffsetAlgaeGrowthThreshold(1)
 {@advisorEcolHill}      Pft! That's rich coming from <i>Stellar Forest Management</i> over here.
 {viewpoliciesnext}
 {@advisorEcolForest}    It's not our fault you let your <i>filth</i> flow down here.
+$call ForcePolicyInstant("Ecology")
 // $call Unpause()
 
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
 @priority       Low
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 {@advisorEcolForest}    More algae blooms... Gross!
 $if global:storageUnlocked
     {@advisorEcolForest}    We have to get the manure off the ground. It can be used as fertilizer or at put in <b>Storage</b> units.
@@ -174,11 +175,12 @@ $if PolicyIsUnlocked(SkimmingPolicy)
 $endif
 {viewpoliciesnext}
 {@advisorEcolForest}    But you're the boss.
+$call ForcePolicyInstant("Ecology")
 
 :: unlockSkimmers
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, AgeOfRegion(4) > 0, global:readyForSkimmers
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 @cutscene
 @once
 {local @advisorEcol}    More algae blooms...
@@ -196,3 +198,4 @@ $else
     {viewpoliciesnext}
     {local @advisorEcon}    Maybe those newfangled skimmers can help?
 $endif
+$call ForcePolicyInstant("Ecology")

@@ -5,6 +5,7 @@ using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Actors;
 using Zavala.Scripting;
+using Zavala.UI;
 
 namespace Zavala.Sim
 {
@@ -15,7 +16,16 @@ namespace Zavala.Sim
             if (!timer.Timer.HasAdvanced()) {
                 return;
             }
+            bool isFromGrainFarm = true;
+            if (generator.transform.parent != null && generator.transform.parent.TryGetComponent(out EventActor parentActor)) {
+                isFromGrainFarm = false;
+                actor = parentActor;
+            }
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.ExcessRunoff)) {
+                if (generator.SoldManureRecently) {
+                    // Sold manure recently - cancel any existing alert!
+                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                } 
                 // only add this trigger once
                 return;
             }
@@ -24,15 +34,9 @@ namespace Zavala.Sim
             Log.Msg("[ExcessRunoffAlertSystem] Amount generated last tick by {0}: {1}", actor.name, generator.AmountProducedLastTick);
             if (generator.AmountProducedLastTick >= RunoffParams.ExcessRunoffThreshold) {
                 // if so, create alert on this tile
-                if (generator.transform.parent != null && generator.transform.parent.TryGetComponent(out EventActor parentActor)) {
-                    Log.Msg("                          Sending runoff alert from {0}", actor.name);
-                    EventActorUtility.QueueAlert(parentActor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
-                        new NamedVariant("isFromGrainFarm", false));
-                } else {
-                    Log.Msg("                          Sending runoff alert from {0}", actor.name);
-                    EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
-                        new NamedVariant("isFromGrainFarm", true));
-                }
+                Log.Msg("-----> Sending runoff alert from {0}", actor.name);
+                EventActorUtility.QueueAlert(actor, EventActorAlertType.ExcessRunoff, tile.TileIndex, tile.RegionIndex, 
+                    new NamedVariant("isFromGrainFarm", isFromGrainFarm));
             }
         }
     }

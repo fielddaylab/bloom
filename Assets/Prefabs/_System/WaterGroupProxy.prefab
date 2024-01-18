@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7335549365864788880}
   - component: {fileID: 1720985003621321387}
   - component: {fileID: 8533110041535147668}
+  - component: {fileID: 3686470443600727727}
   m_Layer: 0
   m_Name: WaterGroupProxy
   m_TagString: Untagged
@@ -66,3 +67,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GroupIndex: 0
+--- !u!114 &3686470443600727727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3805232196430239443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e3b0c9ed15a50f4d95d30f9ff7de740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Timer:
+    Period: 3

@@ -29,6 +29,7 @@ namespace FieldDay.Scripting {
 
             LeafUtils.ConfigureDefaultParsers(m_TagParseConfig, this, null);
             m_TagParseConfig.AddReplace("local", ReplaceLocalIdOf);
+            // TODO: add replace "alert" to use local:alertRegion?
             m_TagParseConfig.AddEvent("viewpoliciesnext", "ViewPolicies");
 
             LeafUtils.ConfigureDefaultHandlers(m_TagHandler, this);

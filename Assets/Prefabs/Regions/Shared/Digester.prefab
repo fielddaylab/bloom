@@ -161,7 +161,7 @@ MonoBehaviour:
   RefusesSameBuildingType: 0
   OverridesBuyPrice: 1
   OverrideBlock:
-    Phosphorus: 15
+    Phosphorus: 18
     Grain: 0
     Milk: 0
   Flagstaff: {fileID: 0}

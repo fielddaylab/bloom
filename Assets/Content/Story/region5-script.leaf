@@ -34,10 +34,11 @@ $call CutsceneEnd()
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 5, global:bloomDiscovered
-@forcePolicy    Ecology
+// @forcePolicy    Ecology
 {@advisorEcolUrban}     Algae blooms... This doesn't bode well.
 {viewpoliciesnext}
-{@advisorEcolUrban}     We'd best handle these before they reach the city.
+{@advisorEcolUrban}     We'd best handle these before they reach the city!
+$call ForcePolicyInstant("Ecology")
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened

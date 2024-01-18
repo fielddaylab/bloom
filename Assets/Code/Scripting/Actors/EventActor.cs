@@ -87,6 +87,7 @@ namespace Zavala.Scripting {
         SellingLoss,
         Disconnected,
         GlobalDummy,
+        Dialogue, // Specific case with no banner
 
         [Hidden]
         COUNT,
@@ -118,7 +119,15 @@ namespace Zavala.Scripting {
                 Alert = alert,
                 RegionIndex = new NamedVariant("alertRegion", regionIndex+1), // 0-indexed to 1-indexed
                 TileIndex = tileIndex
-            }); ;
+            });
+        }
+
+        static public void QueueAlert(EventActor actor, EventActorAlertType type) {
+            if (actor != null && actor.gameObject.TryGetComponent(out OccupiesTile tile)) {
+                QueueAlert(actor, type, tile.TileIndex, tile.RegionIndex);
+            } else {
+                Log.Msg("[EventActorUtility] Failed to queue alert: actor {0} has no OccupiesTile", actor);
+            }
         }
 
         static public void AddAutoAlertCondition(AutoAlertCondition cond) {
@@ -151,6 +160,20 @@ namespace Zavala.Scripting {
                 // false - it's paused already, so unpause
                 UnpauseAlertType(alertType); 
             }
+        }
+
+        [LeafMember("QueueDialogueBubble")]
+        static public void QueueDialogueAlert(StringHash32 actor, StringHash32 targetNode) {
+            EventActor target = ScriptUtility.LookupActor(actor);
+            if (target == null) {
+                Log.Warn("[EventActorUtility] Failed to queue dialogue for actor {0}: actor not found!", actor.ToDebugString());
+                return;
+            }
+            EventActorQueuedEvent fakeEvent = new() {
+                ScriptId = targetNode,
+                Alert = EventActorAlertType.Dialogue
+            };
+            target.QueuedEvents.PushBack(fakeEvent);
         }
 
         public static void TriggerActorAlert(EventActor actor) {
@@ -207,7 +230,14 @@ namespace Zavala.Scripting {
             return false;
         }
 
-        static public bool IsAlertQueued(EventActor actor, EventActorAlertType alert) {
+        /// <summary>
+        /// Returns whether the actor has any QueuedTriggers or QueuedEvents of the given type.
+        /// </summary>
+        /// <param name="actor">The actor to check.</param>
+        /// <param name="alert">The alert type to check for.</param>
+        /// <returns></returns>
+        static public bool IsAlertQueued(EventActor actor, EventActorAlertType alert, bool checkParent = false) {
+            if (actor == null) return false;
             foreach (var trigger in actor.QueuedTriggers) {
                 // in the case of alerts, "value" is the alertType
                 if (trigger.Alert == alert) {
