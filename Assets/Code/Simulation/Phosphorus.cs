@@ -285,8 +285,8 @@ namespace Zavala.Sim {
 
             // more flows through water - preserve fewer phosphorus at current tile
             if ((tileInfo.Flags & (ushort) TerrainFlags.IsWater) != 0) {
-                // remainProportion *= remainProportion;
-                remainProportion *= 0.5f;
+                remainProportion *= remainProportion;
+                // remainProportion *= 0.5f;
                 isWater = true;
             }
 

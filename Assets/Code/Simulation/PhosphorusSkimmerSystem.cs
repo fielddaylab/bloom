@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 using Zavala.Actors;
 using Zavala.Advisor;
 using Zavala.Economy;
+using Zavala.Rendering;
 using Zavala.World;
 
 namespace Zavala.Sim {
@@ -19,6 +20,7 @@ namespace Zavala.Sim {
                 return;
             }
 
+            // TODO: iterate only through unlocked regions/regions where skimmer policy has been set
             for (int i = 0; i < RegionInfo.MaxRegions; i++) {
                 ProcessSkimmerRegion(m_StateA.SkimmerLocsPerRegion[i], i);
             }
@@ -69,9 +71,11 @@ namespace Zavala.Sim {
                 }
                 Debug.Log("[Skimmer] Dredged " + removedAmt + "  units of P");
             }
-            // if (removedAmt != 0) {
+            if (removedAmt != 0) {
+                //    VfxUtility.PlayEffect(skimmer.transform.position, EffectType.Algae_Remove);
+                skimmer.SkimParticles.Play();
                 return returnCost;
-            // } else return 0;
+            } else return 0;
         }
 
         #endregion

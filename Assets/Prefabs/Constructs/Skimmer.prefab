@@ -118,11 +118,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c11e6f7b47ded446a2aec0c36d02dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AlgaeSkimAmt: 0.15
-  PhosSkimAmt: 8
   Type: 0
+  NeighborIndices: 
   Mesh: {fileID: 3715709998471520561}
   Renderer: {fileID: 1473853312814274043}
+  SkimParticles: {fileID: 1043634438761924097}
 --- !u!114 &1976245010908455185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,6 +300,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5412720830129975458}
     m_Modifications:
+    - target: {fileID: 833858533068772910, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 833858533068772910, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1214382850396781752, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -350,10 +358,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1986521090625218050, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
+--- !u!198 &1043634438761924097 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 833858533068772910, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
+  m_PrefabInstance: {fileID: 426098228912115759}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1527728321134275735 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1214382850396781752, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}

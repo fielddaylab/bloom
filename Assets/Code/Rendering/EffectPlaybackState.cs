@@ -8,10 +8,12 @@ namespace Zavala.Rendering {
         public ParticleSystem PoofEffect;
         public ParticleSystem PoofEffectRoads;
         public ParticleSystem PoopRunoff;
+        public ParticleSystem AlgaeRemove;
 
         public int DefaultPoofCount;
         public int DefaultPoofRoadCount;
         public int DefaultPoopRunoffCount;
+        public int DefaultAlgaeCount;
 
         public RingBuffer<EffectRequest> Requests = new RingBuffer<EffectRequest>(8, RingBufferMode.Expand);
     }
@@ -25,7 +27,8 @@ namespace Zavala.Rendering {
     public enum EffectType {
         Poof,
         Poof_Road,
-        Poop_Runoff
+        Poop_Runoff,
+        Algae_Remove
     }
 
     static public class VfxUtility {
@@ -36,5 +39,14 @@ namespace Zavala.Rendering {
                 Count = count
             });
         }
+
+        static public void PlayEffect(Vector3 position, EffectType type, EffectPlaybackState state, float rotateY = 0f, int count = 0) {
+            state.Requests.PushBack(new EffectRequest() {
+                Position = position,
+                Type = type,
+                Count = count
+            });
+        }
+
     }
 }

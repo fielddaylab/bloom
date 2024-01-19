@@ -36,6 +36,9 @@ namespace Zavala.Rendering {
                 case EffectType.Poop_Runoff: {
                         return m_State.DefaultPoopRunoffCount;
                 }
+                case EffectType.Algae_Remove: {
+                        return m_State.DefaultAlgaeCount;
+                    }
                 default: {
                     Log.Warn("[EffectPlaybackSystem] No effects loaded for type '{0}'", type);
                     return 0;
@@ -53,6 +56,9 @@ namespace Zavala.Rendering {
                 }
                 case EffectType.Poop_Runoff: {
                     return m_State.PoopRunoff;
+                }
+                case EffectType.Algae_Remove: {
+                        return m_State.AlgaeRemove;
                 }
                 default: {
                     Log.Warn("[EffectPlaybackSystem] No effects loaded for type '{0}'", type);

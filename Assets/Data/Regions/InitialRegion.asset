@@ -521,7 +521,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 27
+  - LocalTileIndex: 42
     ScriptName:
       m_Source: region1_skimmer3
       m_HashValue: 1267406452
@@ -536,7 +536,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 42
+  - LocalTileIndex: 27
     ScriptName:
       m_Source: region1_skimmer2
       m_HashValue: 1284184071

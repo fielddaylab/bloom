@@ -14,6 +14,8 @@ namespace Zavala.Sim
 
         public MeshFilter Mesh;
         public MeshRenderer Renderer;
+
+        public ParticleSystem SkimParticles;
     }
 
     public enum SkimmerType {

@@ -124,6 +124,7 @@ MonoBehaviour:
   AmountProducedLastTick: 0
   RunoffParticleOrigin: {fileID: 3341510548927435195}
   ConsumeFertilizerForRunoff: 1
+  SoldManureRecently: 0
 --- !u!114 &5602663514362957504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,12 +654,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 0bf46926e13434640b198d262a97d911, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 0bf46926e13434640b198d262a97d911, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 533c077b47b9a7a4ab7a89c849984132, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 0bf46926e13434640b198d262a97d911, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: e1b1d7f7754944246a28cb2074a81645, type: 2}
     - target: {fileID: -5754084199372789682, guid: 0bf46926e13434640b198d262a97d911, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -687,7 +692,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.337
+      value: -0.357
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
       propertyPath: m_LocalPosition.y
@@ -695,7 +700,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.035
+      value: -0.002
       objectReference: {fileID: 0}
     - target: {fileID: 3479562866714169711, guid: 38095e00fa4929c4bb4719b1e31e0104, type: 3}
       propertyPath: m_LocalRotation.w
