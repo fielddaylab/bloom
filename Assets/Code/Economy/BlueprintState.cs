@@ -299,10 +299,12 @@ namespace Zavala.Economy
                                 switch (builtType) {
                                     case BuildingType.Storage: {
                                         ub.IndexWithinType = toolState.NumStoragesBuilt++;
+                                        toolState.StorageBuiltInRegion[currRegion] = true;
                                         break;
                                     }
                                     case BuildingType.Digester: {
                                         ub.IndexWithinType = toolState.NumDigestersBuilt++;
+                                        toolState.DigesterBuiltInRegion[currRegion] = true;
                                         break;
                                     }
                                 }

@@ -21,6 +21,7 @@ namespace Zavala.Economy {
         [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
 
         [NonSerialized] public bool ProducedLastTick = false; // used by production runoff system
+        [NonSerialized] public ResourceBlock ConsumedLastTick;   // used by production runoff: what did they use to produce
 
         private void Awake() {
             this.CacheComponent(ref Storage);

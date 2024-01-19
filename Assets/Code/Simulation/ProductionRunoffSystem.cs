@@ -24,8 +24,8 @@ namespace Zavala.Actors
         }
 
         public override void ProcessWork(float deltaTime) {
-            SimGridState grid = ZavalaGame.SimGrid;
-            SimWorldState world = ZavalaGame.SimWorld;
+            //SimGridState grid = ZavalaGame.SimGrid;
+            //SimWorldState world = ZavalaGame.SimWorld;
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
 
             foreach (var componentGroup in m_Components) {
@@ -35,8 +35,8 @@ namespace Zavala.Actors
 
                     // TODO: doesn't work on grain farms
                     ResourceBlock lastProduced = componentGroup.ComponentA.Produces;
-                    ResourceBlock lastRequired = componentGroup.ComponentA.Requires;
-                    if (lastRequired.PhosphorusCount == 0) {
+                    ResourceBlock lastConsumed = componentGroup.ComponentA.ConsumedLastTick;
+                    if (lastConsumed.PhosphorusCount == 0) {
                         // Only apply to phosph application on grain farm
                         continue;
                     }
@@ -51,7 +51,7 @@ namespace Zavala.Actors
                         phosphorus,
                         index,
                         componentGroup.Primary,
-                        ref lastRequired,
+                        ref lastConsumed,
                         RunoffParams.AppliedManureRunoffProportion,
                         RunoffParams.MFertilizerRunoffProportion,
                         RunoffParams.DFertilizerRunoffProportion,

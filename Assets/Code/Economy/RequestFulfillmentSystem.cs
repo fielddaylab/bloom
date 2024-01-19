@@ -64,7 +64,8 @@ namespace Zavala.Economy {
                         pools.Trucks.SetTruckMesh(request.Fulfiller, request.Supplied.PositiveMask);
                         if (request.Supplied.Manure > 0 && !request.Requester.IsLocalOption) {
                             ActorPhosphorusGenerator gen = request.Supplier.GetComponentInChildren<ActorPhosphorusGenerator>();
-                            if (gen != null) gen.SoldManureRecently = true;
+                            // sold manure, runoff improving
+                            if (gen != null) gen.RunoffImproving = true;
                         }
                         FulfillerUtility.InitializeFulfiller(request.Fulfiller, request, request.Path);
 

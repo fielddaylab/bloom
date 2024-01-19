@@ -24,6 +24,7 @@ namespace Zavala.Economy {
                 producer.Storage.Current += produced;
                 ResourceStorageUtility.RefreshStorageDisplays(producer.Storage);
                 producer.ProducedLastTick = true;
+                producer.ConsumedLastTick = consumed;
 
                 // Refresh sell price for produced resources
                 if (producer.PriceNegotiator)

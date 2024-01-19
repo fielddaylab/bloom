@@ -92,11 +92,9 @@ namespace Zavala.Scripting {
             };
         }
         private void EvaluateFarmsUnconnected(ref bool triggered, uint region) {
-            //Log.Error("[WinLossState] EvaluateFarmsUnconnected is not implemented. Don't use it yet.");
             if (m_StateA.FarmsConnectedInRegion[region]) {
                 triggered = false;
             }
-            // TODO: use unconnected alerts to evaluate
         }
 
         private void EvaluateTotalPAbove(ref bool triggered, int num, uint region) {

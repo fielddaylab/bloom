@@ -113,11 +113,15 @@ namespace Zavala.Sim
                 }    
             }
             AddPhosphorus(phosphorus, tileIndex, totalToAdd);
-            generator.AmountProducedLastTick = totalToAdd;  
+            generator.AmountProducedLastTick = totalToAdd;
+            if (totalToAdd > 0 && totalToAdd < mFertMod) {
+                generator.RunoffImproving = true;
+            } else generator.RunoffImproving = false;
         }
 
         static public bool TryRunoffManure(SimPhosphorusState phosphorus, int tileIndex, ActorPhosphorusGenerator gen, ref ResourceBlock resources) {
-            if (!gen.ConsumeFertilizerForRunoff || resources.Manure <= 0) {
+            if (!gen.ConsumeFertilizerForRunoff) return false;
+            if (resources.Manure <= 0) {
                 gen.AmountProducedLastTick = 0;
                 return false;
             }
@@ -132,7 +136,7 @@ namespace Zavala.Sim
                 ResourceStorageUtility.RefreshStorageDisplays(gen.transform.parent.GetComponent<ResourceStorage>());
                 VfxUtility.PlayEffect(gen.RunoffParticleOrigin.position, EffectType.Poop_Runoff);
             }
-            gen.SoldManureRecently = false;
+            gen.RunoffImproving = false;
             AddPhosphorus(phosphorus, tileIndex, RunoffParams.SittingManureRunoffProportion);
             gen.AmountProducedLastTick = RunoffParams.SittingManureRunoffProportion;
             return true;

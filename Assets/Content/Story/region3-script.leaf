@@ -7,6 +7,7 @@ $call SendGlobalAlertForNode("region3_city1", region3.regionUnlocked)
 
 :: regionUnlocked
 @queued
+@cutscene
 // $call Pause()
 {@advisorEconPrairie}    Howdy there! 
 $call PanToBuilding("region3_city1")
@@ -15,7 +16,7 @@ $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    They'll be conducting research about this algae unpleasantness.
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom", 2) // for unlocking PIPS
-$call AddRegionAgeTrigger(3, 10) // for unlocking IMPORT TAX
+$call AddRegionAgeTrigger(3, 20) // for unlocking IMPORT TAX
 // $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -45,14 +46,13 @@ $endif
 @conditions     alertType == "bloom", alertRegion == 3, global:bloomDiscovered
 // @forcePolicy    Ecology
 {@advisorEcolPrairie}    Eep! An algae bloom!
-{@advisorEcolPrairie}    I say we should just shut those large Dairy Farms down.
-
-$if Visited("region2.unlockStorage")
-    {@advisorEcolForest}    We have to find a way to get the manure off the ground.
-    
-$endif
-$if PolicyIsUnlocked(SkimmingPolicy)
-    {@advisorEcolPrairie}    Or use skimmers to clean up.
+{@advisorEcolPrairie}    I say we just shut those large Dairy Farms down.
+{@advisorEconPrairie}    Come now, Sandra, our cities need milk!
+{@advisorEconPrairie}    I don't reckon they'll be going vegan anytime soon.
+$if PolicyIsUnlocked(SkimmingPolicy), PolicyLevelInRegion(3, "SkimmingPolicy") < 3
+    {@advisorEcolPrairie} Well, we could at least increase our skimming policy.
+    {@advisorEcolPrairie} That'll get rid of some Algae.
+    {@advisorEcolPrairie} And if we Dredge, that'll remove some phosphorus too!
 $endif
 {viewpoliciesnext}
 {@advisorEcolPrairie}    What do you think?

@@ -179,7 +179,7 @@ namespace Zavala.Advisor {
 
         [LeafMember("PolicyLevelInRegion")]
         public static int CurrentIndexOfPolicyInRegion(int regionOneIndexed, PolicyType type) {
-            int regionZeroIndexed = regionOneIndexed--;
+            int regionZeroIndexed = regionOneIndexed - 1;
             PolicyState policy = Game.SharedState.Get<PolicyState>();
             PolicyLevel lvl = policy.Policies[regionZeroIndexed].Map[type];
             return (int)lvl;

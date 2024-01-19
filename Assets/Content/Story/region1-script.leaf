@@ -308,7 +308,8 @@ $else
     {@advisorEcolHill}      Our runoff fine is high as can be...
     {@advisorEconHill}      Perhaps this farm needs a manure buyer.
 $endif
-$if Visited("region2.unlockStorage")
+
+$if Visited("region2.unlockStorage"), !BuildingBuiltInRegion(1, "Storage")
     {@advisorEconHill}    Or we could build a <b>Storage</b> unit.
 $endif
 
@@ -355,10 +356,8 @@ $if local:runoffLevel < 1
 $elseif local:runoffLevel < 3
     {@advisorEcolHill}      Maybe our runoff fine isn't high enough.
 $endif
-$if PolicyIsUnlocked("SkimmingPolicy") 
-    $if PolicyLevelInRegion(1, "SkimmingPolicy") < 1
+$if PolicyIsUnlocked("SkimmingPolicy"), PolicyLevelInRegion(1, "SkimmingPolicy") < 1
     {@advisorEcolHill}      Or we could use skimmers to clean up.
-    $endif
 $endif
 {viewpoliciesnext}
 {@advisorEcolHill}     Your choice, boss.
@@ -380,13 +379,11 @@ $if local:runoffLevel > 0
     {@advisorEconHill}      I would suggest ditching that runoff fine.
     {@advisorEcolHill}      And let Bertram pollute? I'm not so sure...
     $call ForcePolicyInstant("Ecology")
-$elseif local:taxLevel > 0
-    $if local:taxLevel < 3
-        {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
-        {@advisorEconHill}      A Subsidy might help
-        $call ForcePolicyInstant("Economy")
-    $endif
+$elseif local:taxLevel > 0, local:taxLevel < 3
+    {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
+    {@advisorEconHill}      A Subsidy might help
+    $call ForcePolicyInstant("Economy")
 $else
-        $call ForcePolicyInstant("Economy")
+    $call ForcePolicyInstant("Economy")
 $endif
 // $call Unpause()

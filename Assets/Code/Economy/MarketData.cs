@@ -543,7 +543,6 @@ namespace Zavala.Economy
         #region Roads
 
         public static void TriggerConnectionTriggers(MarketData marketData, RoadNetwork network, HexGridSize gridSize) {
-            // TODO: if we're only ever checking these in the intro, may be worth adding another variable to only calc this during intro
             foreach(var supplier in marketData.Suppliers) {
                 foreach (var requester in marketData.Buyers) {
                     // ignore buyers that don't overlap with shipping mask
@@ -567,6 +566,7 @@ namespace Zavala.Economy
                         bool dairyFarmSupplier = supplier.Position.Type == BuildingType.DairyFarm;
                         bool grainFarmRequester = requester.Position.Type == BuildingType.GrainFarm;
                         bool cityRequester = requester.Position.Type == BuildingType.City;
+                        bool storageRequester = requester.Position.Type == BuildingType.Storage;
                         bool difTiles = supplier.Position.TileIndex != requester.Position.TileIndex;
                         if (dairyFarmSupplier && grainFarmRequester && difTiles)
                         {
@@ -576,6 +576,9 @@ namespace Zavala.Economy
                         if (dairyFarmSupplier && cityRequester && difTiles)
                         {
                             ScriptUtility.Trigger(GameTriggers.CityConnection);
+                        }
+                        if (storageRequester) {
+
                         }
                     }
                 }

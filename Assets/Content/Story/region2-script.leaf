@@ -65,7 +65,7 @@ $call AddAutoAlertCondition("ExcessRunoff", 2)
 
 :: runoffBranch
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 2, global:runoffDiscovered
+@conditions     alertType == "excess-runoff", alertRegion == 2, global:runoffDiscovered, !isFromGrainFarm
 // $call Pause()
 $if Visited("region2.unlockStorage")
     $branch .runoffGeneric
@@ -80,12 +80,14 @@ $endif
 $call Wait(0.5)
 {@cafoForest}     Hmm... This sitting manure leaches into the water table faster than it's used.
 {@cafoForest}     Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
-{@advisorEcolForest}    Not a half bad idea.
+{@advisorEconForest}    Why not build your own storage?
+{@cafoForest}     Seriously!? There's no way I could afford that at every farm.
+{@advisorEcolForest}    Natalie's got a point.
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.
-$call FocusClear()
 {@advisorEcolForest}    Once connected to a Dairy Farm, they'll hold onto manure for later use.
 {@advisorEcolForest}    But it won't be cheap - try to share it between Dairy Farms.
+$call FocusClear()
 $call OffsetAlgaeGrowthThreshold(0)
 $set global:storageUnlocked = true
 $call UnlockShopItem("Storage")
@@ -101,10 +103,23 @@ $call UnlockShopItem("Storage")
 :: runoffGeneric // triggered by runoffBranch
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
 {@advisorEcolForest}    We have to find a way to use the manure for fertilizer. 
-{@advisorEconForest}     <b>Storage</b> units help, but they aren't cheap.
-{viewpoliciesnext}
-{@advisorEcolForest}    A policy adjustment, then?
-$call ForcePolicyInstant("Ecology")
+$if BuildingBuiltInRegion("Storage", 2)
+    {@advisorEconForest}     Another <b>Storage</b> unit could help, but they aren't cheap.
+$else
+    {@advisorEconForest}     A <b>Storage</b> unit might help, but they aren't cheap.
+$endif
+$set local:runoffLevel = PolicyLevelInRegion(2, "RunoffPolicy")
+$if local:runoffLevel < 1
+    {viewpoliciesnext}
+    {@advisorEcolForest}    Then maybe we ought to institute a runoff penalty.
+    $call ForcePolicyInstant("Ecology")
+$elseif local:runoffLevel < 3
+    {viewpoliciesnext}
+    {@advisorEcolForest}    Then maybe we need to increase our runoff penalty.
+    $call ForcePolicyInstant("Ecology")
+$else
+    {@advisorEcolForest}    Perhaps this farm needs a manure buyer.
+$endif
 
 // :: queueUnlockPhosphorusView
 // @trigger        AlertExamined
@@ -142,7 +157,7 @@ $call PanToBuilding("region2_cafo2")
 $call ForceAdvisorModule("Ecology")
 {@advisorEconForest}   Good heavens!
 {@advisorEcolForest}   There is phosphorus in the water even where we don't see the blooms! Our poor lakes...
-$call AddRegionAgeDeltaTrigger(3, 15) // for unlocking MARKET GRAPHS.
+$call AddRegionAgeDeltaTrigger(3, 20) // for unlocking MARKET GRAPHS.
 
 $call OffsetAlgaeGrowthThreshold(1)
 
@@ -150,7 +165,7 @@ $call OffsetAlgaeGrowthThreshold(1)
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
 // @forcePolicy    Ecology
-@priority       Low
+@evalPriority   -5
 @once
 // $call Pause()
 {@advisorEcolForest}    Ugh... I can't believe there's an algae bloom <i>here!</i>
@@ -164,14 +179,18 @@ $call ForcePolicyInstant("Ecology")
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
-@priority       Low
+@evalPriority   -3
 // @forcePolicy    Ecology
 {@advisorEcolForest}    More algae blooms... Gross!
+{@advisorEcolForest}    It must be the phosphorus in our water.
 $if global:storageUnlocked
-    {@advisorEcolForest}    We have to get the manure off the ground. It can be used as fertilizer or at put in <b>Storage</b> units.
+    {@advisorEcolForest} Make sure to minimize runoff by sending manure away.
+    {@advisorEcolForest} It can be used at a Grain Farm or kept in Storage.
 $endif
-$if PolicyIsUnlocked(SkimmingPolicy)
-    {@advisorEcolForest}    Or use skimmers to clean up.
+$if PolicyIsUnlocked(SkimmingPolicy), PolicyLevelInRegion(2, "SkimmingPolicy") < 3
+    {@advisorEcolForest} Skimmers can clean up algae...
+    {@advisorEcolForest} But we need dredgers to remove the phosphorus.
+    {@advisorEcolForest} Either way, they won't come cheap.
 $endif
 {viewpoliciesnext}
 {@advisorEcolForest}    But you're the boss.

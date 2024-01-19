@@ -9,6 +9,7 @@
 @trigger        PolicySet
 @conditions     policyIndex == 0, policyForced == true
 @cutscene
+$Wait(2.0)
 $if local:policyType == "SalesTaxPolicy"
     {local @advisorEcon}    Oh dear.
     {local @advisorEcon}    The sales subsidy here is costing too much. The county is out of money. 
@@ -96,48 +97,76 @@ $endif
 
 :: runoffCafoGeneric
 @trigger        AlertExamined
-@priority Low
+@evalPriority   -3
 @conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == false
-PLACEHOLDER
+{local @advisorEcol}    This dairy farm is letting manure sit!
+{local @cafoFarmer}     Sorry, but it's my best option!
+$set local:runoffLevel = PolicyLevelInRegion(local:alertRegion, "RunoffPolicy")
+$if local:runoffLevel < 1
+    {local @advisorEcol}    I say we institute a runoff fine.
+    {local @advisorEcol}    That'll discourage wasting manure.
+    {local @advisorEcon}    Careful now... Losing money to a fine could slow their operations!
+$elseif local:runoffLevel < 3
+    {local @advisorEcol}    Maybe our runoff fine isn't high enough?
+    {local @advisorEcon}    Careful now... Losing money to a fine could slow their operations!
+$endif
 
+$if global:storageUnlocked, !BuildingBuiltInRegion(local:alertRegion, "Storage")
+    {local @cafoFarmer}     Can SAGA build one of those <b>Storage</b> units?
+    {local @cafoFarmer}     I could sell manure there without it running off.
+$endif
 
 :: grainRunoffGeneric
 @trigger        AlertExamined
-@priority Low
+@evalPriority   -3
 @conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == true
-{local @advisorEcol}        Runoff from a grain farm...
-{local @advisorEcol}        All fertilizer causes <i>some</i> runoff... 
-{local @advisorEcol}        But mineral fertilizer from Phos4Us tends to be overapplied.
-{local @grainFarmer}        It's the cheapest option I've got!
-{local @advisorEcol}        Maybe we can find a manure seller nearby.
+{local @advisorEcol}    Runoff from a grain farm...
+{local @advisorEcol}    All fertilizer causes <i>some</i> runoff... 
+{local @advisorEcol}    But mineral fertilizer from Phos4Us tends to be overapplied.
+{local @grainFarmer}    It's the cheapest option I've got!
+{local @advisorEcol}    Maybe we can find a manure seller nearby.
 $if global:builtDigester
-    {local @advisorEcol}        Or better yet, some digested fertilizer!
+    {local @advisorEcol}Or better yet, some digested fertilizer!
 $endif
 
 :: sellAtLossCafoGeneric
 @trigger        AlertExamined
-@priority Low
+@evalPriority   -3
 @conditions     alertType == "selling-loss", isFromGrainFarm == false
-PLACEHOLDER
+{local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
+{local @advisorEcon}    This dairy farm is under financial stress.
+{local @advisorEcon}    They may be selling manure at a loss!
+$set local:runoffLevel = PolicyLevelInRegion(local:alertRegion, "RunoffPolicy")
+$if local:runoffLevel > 0
+    {local @advisorEcon}    We could remove that runoff fine.
+    {local @advisorEcol}    Hey, that fine is the only thing keeping them from polluting!
+$endif
+$set local:taxLevel = PolicyLevelInRegion(local:alertRegion, "SalesTaxPolicy")
+$if local:taxLevel < 3
+    {local @advisorEcon}    We could set a more favorable Sales Tax policy.
+    {local @advisorEcon}    I'm sure our farmers would appreciate a Subsidy.
+$elseif global:digestersUnlocked, !BuildingBuiltInRegion(local:alertRegion, "Digester")
+    {local @advisorEcol}    I say we give them a digester. They'll pay lots for manure!
+$endif
+{local @advisorEcon}    If we don't fix this, our cities won't get enough milk!
+
 
 :: sellAtLossGrainGeneric
 @trigger        AlertExamined
-@priority Low
+@evalPriority   -3
 @conditions     alertType == "selling-loss", isFromGrainFarm == true
 // @forcePolicy    Economy
 // $call Pause()
 {local @grainFarmer}      Aw shucks... How am I gonna feed my family?
-{local @advisorEcon}      Hmm... This farmer is losing money when they sell.
+{local @advisorEcon}      Hmm... This farmer is losing money.
 {local @advisorEcon}      I suspect their phosphorus source is too expensive. 
 {local @advisorEcon}      Perhaps you can build a shorter road to decrease shipping costs.
-$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
-$if local:taxLevel > 0
-    $if local:taxLevel < 3
+$set local:taxLevel = PolicyLevelInRegion(local:alertRegion, "SalesTaxPolicy")
+$if local:taxLevel > 0, local:taxLevel < 3
     {local @advisorEcon}    Or set a more favorable tax policy.
-    $endif
 $endif
 $if global:builtDigester
-    {local @advisorEcon}  Otherwise, that <i>Digested Fertilizer is cheaper to ship...
+    {local @advisorEcon}  Otherwise, that <i>Digested Fertilizer</i> is cheaper to ship...
 $endif
 {viewpoliciesnext}
 {local @advisorEcon}    It's your choice, Director.
@@ -169,8 +198,18 @@ $call ActivateSim()
 @conditions     FailureIsEnabled()
 @cutscene
 $if FailureIsEnabled()
-{local @advisorEcon}    You failed D:
-{local @advisorEcon}      {$local:endType} in region {$local:regionIndex}
+{local @advisorEcon}    I have bad news... you've failed.
+$if local:endType == "CityFailed"
+    {local @urbanite}       The city in region {$local:regionIndex} was stressed too long...
+    {local @urbanite}       They succumbed to the milk riots and demanded your resignation.
+$elseif local:endType == "TooManyBlooms"
+    {local @advisorEcol}    The waterways in region {$local:regionIndex} have become choked with algae.
+    {local @advisorEcol}    Our ecosystem couldn't recover...
+$elseif local:endType == "OutOfMoney"
+    {local @advisorEcon}    SAGA ran out of funds with no way to earn them back...
+$elseif local:endType == "Succeeded"
+    ERROR! "Succeeded" should not be the endType of a failed game.
+$endif
 $call CutsceneBegin()
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
 	$call CutsceneAllImages(0.5)

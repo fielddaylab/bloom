@@ -7,6 +7,8 @@ using BeauUtil;
 using Zavala.Sim;
 using Zavala.World;
 using Zavala.Roads;
+using Leaf.Runtime;
+using BeauUtil.Debugger;
 
 namespace Zavala.Building {
     public struct RoadToolState {
@@ -46,7 +48,10 @@ namespace Zavala.Building {
 
         [NonSerialized] public int TotalBuildingsBuilt;
         [NonSerialized] public int NumStoragesBuilt;
+        [NonSerialized] public bool[] StorageBuiltInRegion;
+
         [NonSerialized] public int NumDigestersBuilt;
+        [NonSerialized] public bool[] DigesterBuiltInRegion;
 
         [NonSerialized] public bool ToolUpdated;
 
@@ -64,6 +69,8 @@ namespace Zavala.Building {
             BlockedIdxs = new HashSet<int>(64);
             BlockedAdjIdxs = new RingBuffer<int>(32, RingBufferMode.Expand);
             BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
+            StorageBuiltInRegion = new bool[RegionInfo.MaxRegions];
+            DigesterBuiltInRegion = new bool[RegionInfo.MaxRegions];
         }
 
         /// <summary>
@@ -84,6 +91,27 @@ namespace Zavala.Building {
     }
 
     public static class BuildToolUtility {
+
+
+        [LeafMember("BuildingBuiltInRegion")]
+        public static bool BuildingBuiltInRegionLeaf(uint region, BuildingType type) {
+            return BuildingBuiltInRegion(region - 1, type); // 1-indexed to 0-indexed
+        }
+        public static bool BuildingBuiltInRegion(uint region, BuildingType type) {
+            BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+            switch (type) {
+                case BuildingType.Digester: {
+                    return bts.DigesterBuiltInRegion[region];
+                }
+                case BuildingType.Storage: {
+                    return bts.StorageBuiltInRegion[region];
+                }
+                default: {
+                    Log.Warn("[BuildToolUtility] Tried to check if {0} built in region {1}: building {0} not set up!", type, region);
+                    return false;
+                }
+            }
+        }
         public static void SetTool(BuildToolState bts, UserBuildTool toolType)
         {
             bts.ActiveTool = toolType;

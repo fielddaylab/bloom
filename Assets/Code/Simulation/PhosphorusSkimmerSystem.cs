@@ -71,8 +71,12 @@ namespace Zavala.Sim {
                 }
                 Debug.Log("[Skimmer] Dredged " + removedAmt + "  units of P");
             }
+            // TODO:Currently uses Mary's skimmer particles, which have a new ParticleSystem on every Skimmer.
+            //      This is less efficient than using the single ParticleSystem through VfxUtility,
+            //      but I wasn't able to make the single ParticleSystem rotate properly to align with each Skimmer.
+            //      I tried using EmitParams.rotation, EmitParams.rotation3D, and ParticleSystem.shape.rotation - none were quite right
             if (removedAmt != 0) {
-                //    VfxUtility.PlayEffect(skimmer.transform.position, EffectType.Algae_Remove);
+                VfxUtility.PlayEffect(skimmer.transform.position, EffectType.Algae_Remove);
                 skimmer.SkimParticles.Play();
                 return returnCost;
             } else return 0;

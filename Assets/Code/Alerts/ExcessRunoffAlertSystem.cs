@@ -22,7 +22,7 @@ namespace Zavala.Sim
                 actor = parentActor;
             }
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.ExcessRunoff)) {
-                if (generator.SoldManureRecently) {
+                if (generator.RunoffImproving) {
                     // Sold manure recently - cancel any existing alert!
                     UIAlertUtility.ClearAlert(actor.DisplayingEvent);
                 } 
