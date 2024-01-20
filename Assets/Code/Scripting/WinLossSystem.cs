@@ -5,7 +5,6 @@ using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using System;
-using System.Collections.Generic;
 using Zavala.Economy;
 using Zavala.Sim;
 
@@ -21,7 +20,7 @@ namespace Zavala.Scripting {
         #region Work
 
         public override void ProcessWork(float deltaTime) {
-            if (!m_StateA.CheckTimer) {
+            if (!m_StateA.EndCheckTimer.Advance(deltaTime, ZavalaGame.SimTime)) {
                 return;
             }
             // if (m_StateA.IgnoreFailure) {
@@ -59,6 +58,8 @@ namespace Zavala.Scripting {
             EvaluateTotalAlgaeAbove(ref endPending, cond.TotalAlgaeAbove, region);
             EvaluateCityFallingFor(ref endPending, cond.CityFallingDurationAbove, region);
             EvaluateRegionAgeAbove(ref endPending, cond.RegionAgeAbove, region);
+            EvaluateNodeReached(ref endPending, cond.NodeReached);
+            EvaluateFertilizerProportions(ref endPending, cond.MFertilizerRatio, cond.DFertilizerRatio);
             return endPending;
         }
 
@@ -139,6 +140,44 @@ namespace Zavala.Scripting {
                 triggered = false;
             }
 
+        }
+
+        private void EvaluateFertilizerProportions(ref bool triggered, TargetRatio MFertProp, TargetRatio DFertProp) {
+            if (MFertProp.Target <= 0 && DFertProp.Target <= 0) return;
+            bool MFertMet;
+            bool DFertMet;
+            MarketData data = Game.SharedState.Get<MarketData>();
+            int totalMFert = 0, totalDFert = 0, totalManure = 0;
+            int depth = (int)m_StateA.EndCheckTimer.Period;
+            for (int region = 0; region < ZavalaGame.SimGrid.RegionCount; region++) {
+                data.CFertilizerSaleHistory[region].TryGetTotal(depth, out int regionMFert);
+                totalMFert += regionMFert;
+                data.ManureSaleHistory[region].TryGetTotal(depth, out int regionManure);
+                totalManure += regionManure;
+                data.DFertilizerSaleHistory[region].TryGetTotal(depth, out int regionDFert);
+                totalDFert += regionDFert;
+            }
+            float[] ratios = new float[3];
+            MarketUtility.CalculateRatios(ref ratios, new int[3] { totalMFert, totalManure, totalDFert });
+            
+            float MFertVal = ratios[0];
+            float DFertVal = ratios[2];
+            Log.Msg("[WinLossSystem: Evaluating Fert. proportions: {0}:{1}:{2} over past {3} ticks", ratios[0], ratios[1], ratios[2], depth );
+
+            if (MFertProp.Target == 0 && !MFertProp.Above) {
+                // uninitialized
+                MFertMet = true;
+            } else {
+                MFertMet = MFertProp.Above ? MFertVal > MFertProp.Target : MFertVal < MFertProp.Target;
+            }
+            if (DFertProp.Target == 0 && !DFertProp.Above) {
+                // uninitialized
+                DFertMet = true;
+            } else {
+                DFertMet = DFertProp.Above ? DFertVal > DFertProp.Target : DFertVal < DFertProp.Target;
+            }
+            triggered = MFertMet && DFertMet;
+            return;
         }
 
         #endregion

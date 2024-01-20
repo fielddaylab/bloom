@@ -28,13 +28,24 @@ namespace Zavala.Scripting {
     // Failure conditions 
     public struct EndGameConditions {
         public EndType Type;
+        [Header("Failure")]
         public int BudgetBelow;
         public bool CheckFarmsUnconnected;
         public int TotalPhosphorusAbove;
         public float TotalAlgaeAbove;
         public int CityFallingDurationAbove;
+        [Header("Success")]
         public int RegionAgeAbove;
         public string NodeReached;
+        public TargetRatio DFertilizerRatio;
+        public TargetRatio MFertilizerRatio;
+    }
+
+    [Serializable]
+    public struct TargetRatio {
+        [Range(0f, 1f)]
+        public float Target;
+        public bool Above;
     }
 
     [Serializable]
@@ -44,6 +55,8 @@ namespace Zavala.Scripting {
     }
 
     public class WinLossState : SharedStateComponent, IRegistrationCallbacks {
+        public SimTimer EndCheckTimer;
+
         public GameLoop Loop;
         public SceneReference SceneOnFail;
         public bool IgnoreFailure = false;

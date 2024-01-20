@@ -940,6 +940,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d23c001c265cd4f92bfe8232f78e07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EndCheckTimer:
+    Period: 6
   Loop: {fileID: 0}
   SceneOnFail:
     m_ScenePath: Assets/Scenes/TitleScreen.unity
@@ -956,6 +958,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -964,6 +972,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -972,6 +986,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
   - Region: 1
     IndependentEndConditions:
     - Type: 0
@@ -982,6 +1002,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -990,6 +1016,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -998,6 +1030,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
   - Region: 2
     IndependentEndConditions:
     - Type: 0
@@ -1008,6 +1046,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1016,6 +1060,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1024,6 +1074,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
   - Region: 3
     IndependentEndConditions:
     - Type: 0
@@ -1034,6 +1090,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1042,6 +1104,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 10
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1050,6 +1118,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
   - Region: 4
     IndependentEndConditions:
     - Type: 0
@@ -1060,6 +1134,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1068,6 +1148,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 27
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1076,6 +1162,12 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
+      DFertilizerRatio:
+        Target: 0
+        Above: 0
+      MFertilizerRatio:
+        Target: 0
+        Above: 0
     - Type: 3
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1084,3 +1176,9 @@ MonoBehaviour:
       CityFallingDurationAbove: 0
       RegionAgeAbove: 60
       NodeReached: region4.firstBlimpReceived
+      DFertilizerRatio:
+        Target: 0.2
+        Above: 1
+      MFertilizerRatio:
+        Target: 0.2
+        Above: 0
