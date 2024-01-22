@@ -106,7 +106,7 @@ Material:
     - _AlphaClip: 0
     - _BakedLightingStength: 1.23
     - _BendSpeed: 2.42
-    - _BendStrength: 3.73
+    - _BendStrength: 5.15
     - _Blend: 0
     - _BottomFogFade: -0.25
     - _BottomFogHeight: -1
