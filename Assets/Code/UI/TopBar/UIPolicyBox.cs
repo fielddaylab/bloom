@@ -97,8 +97,8 @@ namespace Zavala.UI {
 
         static public void UpdateLevelText(PolicyState policyState, SimGridState grid, UIPolicyBox box)
         {
-            if (policyState.Policies[grid.CurrRegionIndex].EverSet[box.PolicyType]) {
-                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[box.PolicyType];
+            if (policyState.Policies[grid.CurrRegionIndex].EverSet[(int) box.PolicyType]) {
+                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[(int) box.PolicyType];
                 box.LevelText.text = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());
                 box.NotSetHighlight.gameObject.SetActive(false);
             } else {

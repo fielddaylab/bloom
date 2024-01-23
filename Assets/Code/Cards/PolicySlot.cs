@@ -98,8 +98,8 @@ namespace Zavala.Cards
                 // load current policy
                 PolicyState policyState = Game.SharedState.Get<PolicyState>();
                 SimGridState grid = Game.SharedState.Get<SimGridState>();
-                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[newType];
-                if (policyState.Policies[grid.CurrRegionIndex].EverSet[newType]) {
+                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[(int) newType];
+                if (policyState.Policies[grid.CurrRegionIndex].EverSet[(int) newType]) {
                     // Has been set before -- look for current policy
                     for (int i = 0; i < unlockedCards.Count; i++) {
                         if (unlockedCards[i].PolicyLevel == level) {

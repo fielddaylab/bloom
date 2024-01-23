@@ -1,12 +1,14 @@
 using System;
 using BeauUtil;
+using FieldDay;
 using FieldDay.Data;
 using FieldDay.SharedState;
 using UnityEngine;
+using Zavala.Data;
 using Zavala.Sim;
 
 namespace Zavala.Economy {
-    public sealed class MarketConfig : SharedStateComponent {
+    public sealed class MarketConfig : SharedStateComponent, IRegistrationCallbacks, ISaveStatePostLoad {
         [Header("Global")]
         public TransportCosts TransportCosts;
 
@@ -41,6 +43,18 @@ namespace Zavala.Economy {
         }
 
 #endif // UNITY_EDITOR
+
+        void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
+        }
+
+        void IRegistrationCallbacks.OnRegister() {
+            ZavalaGame.SaveBuffer.RegisterPostLoad(this);
+        }
+
+        void ISaveStatePostLoad.PostLoad() {
+            // TODO: update user adjustments based on current policies
+        }
     }
 
     [Serializable]

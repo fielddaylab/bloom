@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Advisor;
 using Zavala.Building;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.Sim;
 using static Zavala.Building.BuildingPools;
 
 namespace Zavala.World {
-    public class PhosphorusSkimmerState : SharedStateComponent, IRegistrationCallbacks {
+    public class PhosphorusSkimmerState : SharedStateComponent, IRegistrationCallbacks, ISaveStatePostLoad {
         public SimTimer SkimTimer;
         
         [NonSerialized] public List<SkimmerLocation>[] SkimmerLocsPerRegion;
@@ -24,9 +25,16 @@ namespace Zavala.World {
             for (int i = 0; i < RegionInfo.MaxRegions; i++) {
                 SkimmerLocsPerRegion[i] = new List<SkimmerLocation>();
             }
+
+            ZavalaGame.SaveBuffer.RegisterPostLoad(this);
         }
 
         public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
+        }
+
+        void ISaveStatePostLoad.PostLoad() {
+            // TODO: Implement
         }
     }
 

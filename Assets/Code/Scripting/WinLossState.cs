@@ -51,13 +51,13 @@ namespace Zavala.Scripting {
     [Serializable]
     public struct ConditionsPerRegion {
         public RegionId Region;
-        public List<EndGameConditions> IndependentEndConditions;
+        public EndGameConditions[] IndependentEndConditions;
     }
 
     public class WinLossState : SharedStateComponent, IRegistrationCallbacks {
         public SimTimer EndCheckTimer;
 
-        public GameLoop Loop;
+        //public GameLoop Loop;
         public SceneReference SceneOnFail;
         public bool IgnoreFailure = false;
         public ConditionsPerRegion[] EndConditionsPerRegion;
@@ -85,7 +85,6 @@ namespace Zavala.Scripting {
             // make sure to deregister anything that registers itself on start without deregistering on end
             // Game.Scenes.UnloadScene(Game.Scenes.)
             WinLossState wls = Game.SharedState.Get<WinLossState>();
-            GameObject.Destroy(wls.Loop);
             SimAllocator.Reset();
             Game.Scenes.LoadMainScene(wls.SceneOnFail);
         }

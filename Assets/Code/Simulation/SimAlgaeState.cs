@@ -9,7 +9,7 @@ using UnityEngine;
 using Zavala.Data;
 
 namespace Zavala.Sim {
-    public sealed class SimAlgaeState : SharedStateComponent, IRegistrationCallbacks {
+    public sealed class SimAlgaeState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
         static public readonly StringHash32 Event_AlgaeFormed = "AlgaeState::AlgaeFormed";
         static public readonly StringHash32 Event_AlgaeGrew = "AlgaeState::AlgaeGrew";
         static public readonly StringHash32 Event_AlgaePeaked = "AlgaeState::AlgaePeaked";
@@ -29,6 +29,14 @@ namespace Zavala.Sim {
             SimGridState gridState = ZavalaGame.SimGrid;
             TotalAlgaePerRegion = new float[RegionInfo.MaxRegions];
             Algae.Create(gridState.HexSize);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            // TODO: Implement
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            // TODO: Implement
         }
     }
     public class SimAlgaeUtility {

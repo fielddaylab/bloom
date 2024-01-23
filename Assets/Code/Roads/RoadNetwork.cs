@@ -12,11 +12,12 @@ using FieldDay.Scripting;
 using Zavala.Economy;
 using Zavala.Rendering;
 using UnityEditor;
+using Zavala.Data;
 
 namespace Zavala.Roads
 {
     [SharedStateInitOrder(10)]
-    public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks
+    public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
     {
         [NonSerialized] public RoadBuffers Roads;
         [NonSerialized] public RingBuffer<RoadInstanceController> RoadObjects; // The physical instances of road prefabs
@@ -40,9 +41,20 @@ namespace Zavala.Roads
             Destinations = new RingBuffer<RoadDestinationInfo>(32, RingBufferMode.Expand);
             Sources = new RingBuffer<RoadSourceInfo>(32, RingBufferMode.Expand);
             ExportDepotMap = new Dictionary<uint, List<ResourceSupplierProxy>>();
+
+            ZavalaGame.SaveBuffer.RegisterHandler("Roads", this);
         }
 
         void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Roads");
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            // TODO: Implement
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            // TODO: Implement
         }
 
         #endregion // Registration

@@ -46,16 +46,16 @@ namespace Zavala.Actors {
 
         #endregion // Inspector
 
-        [NonSerialized] public Dictionary<StressCategory, int> CurrentStress;
-        [NonSerialized] public bool[] StressImproving;
-        [NonSerialized] public Dictionary<OperationState, int> OperationThresholds;
+        [NonSerialized] public Dictionary<StressCategory, int> CurrentStress; // TODO: Replace with array
+        [NonSerialized] public bool[] StressImproving; // TODO: Replace with bitmask
+        [NonSerialized] public Dictionary<OperationState, int> OperationThresholds; // TODO: Replace with array
         [NonSerialized] public int TotalStress;
         [NonSerialized] public float AvgStress;
         [NonSerialized] public OperationState OperationState;
         [NonSerialized] public bool ChangedOperationThisTick = false;
         [NonSerialized] public OperationState PrevState;
 
-        [NonSerialized] public Dictionary<StressCategory, bool> StressMask;
+        [NonSerialized] public Dictionary<StressCategory, bool> StressMask; // TODO: Replace with bitmask
         [NonSerialized] public int StressCount;
 
         public int StressDelta = 1; // value jumps between operation states

@@ -10,7 +10,7 @@ using Zavala.Rendering;
 
 namespace Zavala.Sim
 {
-    public sealed class SimPhosphorusState : SharedStateComponent, IRegistrationCallbacks {
+    public sealed class SimPhosphorusState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
         public SimTimer Timer;
 
         [NonSerialized] public PhosphorusBuffers Phosphorus;
@@ -21,6 +21,7 @@ namespace Zavala.Sim
         [NonSerialized] public long[] TotalPPerRegion;
 
         void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Phosphorus");
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -29,6 +30,16 @@ namespace Zavala.Sim
             UpdatedPhosphorusRegionMask = 0;
             TotalPPerRegion = new long[RegionInfo.MaxRegions];
             DataHistoryUtil.InitializeDataHistory(ref HistoryPerRegion, RegionInfo.MaxRegions, 20);
+
+            ZavalaGame.SaveBuffer.RegisterHandler("Phosphorus", this, 100);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            
         }
     }
 

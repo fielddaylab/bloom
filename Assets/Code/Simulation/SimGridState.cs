@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Zavala.Audio;
 using Zavala.Building;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.Rendering;
 using Zavala.Roads;
@@ -20,7 +21,7 @@ using Zavala.World;
 
 namespace Zavala.Sim {
     [SharedStateInitOrder(-1)]
-    public sealed class SimGridState : SharedStateComponent, IRegistrationCallbacks {
+    public sealed class SimGridState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
         static public readonly StringHash32 Event_RegionUpdated = "SimGridState::TerrainUpdated";
 
         #region Inspector
@@ -43,6 +44,7 @@ namespace Zavala.Sim {
         [NonSerialized] public ushort CurrRegionIndex;
 
         [NonSerialized] public HashSet<ushort> UpdatedRegions = new HashSet<ushort>();
+        [NonSerialized] public HexGridSubregion SimulationRegion;
 
         [NonSerialized] public int GlobalMaxHeight; // the highest tile height across all regions
 
@@ -69,6 +71,14 @@ namespace Zavala.Sim {
             GlobalMaxHeight = 0;
 
             GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this, WorldData));
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            // TODO: Implement
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            // TODO: Implement
         }
     }
 
@@ -247,6 +257,12 @@ namespace Zavala.Sim {
 
             RegenRegionInfo(grid, regionIndex, subRegion);
             worldState.MaxHeight = HexVector.ToWorld(new HexVector(), grid.GlobalMaxHeight, worldState.WorldSpace).y;
+
+            if (regionIndex == 0) {
+                grid.SimulationRegion = subRegion;
+            } else {
+                HexGridSubregion.Merge(ref grid.SimulationRegion, subRegion);
+            }
         }
 
         /// <summary>

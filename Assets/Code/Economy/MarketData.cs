@@ -10,11 +10,12 @@ using Zavala.Roads;
 using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.UI;
+using static UnityEditor.Experimental.GraphView.Port;
 
 namespace Zavala.Economy
 {
     [SharedStateInitOrder(10)]
-    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks
+    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
     {
         public SimTimer MarketTimer;
         public bool UpdatePrioritiesNow;
@@ -48,6 +49,7 @@ namespace Zavala.Economy
         public DataHistory[] MilkRevenueHistory;
 
         void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("MarketData");
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -73,6 +75,19 @@ namespace Zavala.Economy
             DataHistoryUtil.InitializeDataHistory(ref SkimmerCostHistory, RegionInfo.MaxRegions, miscHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref MilkRevenueHistory, RegionInfo.MaxRegions, miscHistoryDepth);
 
+            ZavalaGame.SaveBuffer.RegisterHandler("MarketData", this);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            Unsafe.Read(ref TickIndex, ref data, ref remaining);
+
+            // TODO: Implement
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            Unsafe.Write(TickIndex, ref data, ref written, capacity);
+            
+            // TODO: Implement
         }
     }
 

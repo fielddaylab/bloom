@@ -240,7 +240,7 @@ namespace Zavala.UI.Info {
             col.ImportTaxCol.gameObject.SetActive(true);
             if (import == 0)
             {
-                bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
+                bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[(int) Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
                 if (importActive)
                 {
                     SetMoneyText(col.ImportTaxCol.Number, import);
@@ -265,7 +265,7 @@ namespace Zavala.UI.Info {
             int salesTax = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].PurchaseTax[info.Resource];
             col.SalesTaxCol.gameObject.SetActive(true);
             if (salesTax == 0) {
-                bool salesActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.SalesTaxPolicy] != PolicyLevel.None;
+                bool salesActive = policyState.Policies[grid.CurrRegionIndex].Map[(int) Advisor.PolicyType.SalesTaxPolicy] != PolicyLevel.None;
                 if (salesActive)
                 {
                     SetMoneyText(col.SalesTaxCol.Number, salesTax);
@@ -419,7 +419,7 @@ namespace Zavala.UI.Info {
             headers.TotalProfitColHeader.gameObject.SetActive(true);
             headers.TotalPriceColHeader.gameObject.SetActive(false);
 
-            bool penaltyActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.RunoffPolicy] != PolicyLevel.None;
+            bool penaltyActive = policyState.Policies[grid.CurrRegionIndex].Map[(int) Advisor.PolicyType.RunoffPolicy] != PolicyLevel.None;
             if (penaltyActive) {
                 headers.PenaltyColHeader.Icon.SetAlpha(ActiveAlpha);
                 headers.PenaltyColHeader.Text.SetAlpha(ActiveAlpha);
@@ -440,7 +440,7 @@ namespace Zavala.UI.Info {
             headers.TotalProfitColHeader.gameObject.SetActive(false);
             headers.TotalPriceColHeader.gameObject.SetActive(true);
 
-            bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
+            bool importActive = policyState.Policies[grid.CurrRegionIndex].Map[(int) Advisor.PolicyType.ImportTaxPolicy] != PolicyLevel.None;
             if (importActive) {
                 headers.ImportTaxColHeader.Icon.SetAlpha(ActiveAlpha); 
                 headers.ImportTaxColHeader.Text.SetAlpha(ActiveAlpha);
@@ -450,7 +450,7 @@ namespace Zavala.UI.Info {
                 headers.ImportTaxColHeader.Text.SetAlpha(InactiveAlpha);
             }
 
-            bool salesActive = policyState.Policies[grid.CurrRegionIndex].Map[Advisor.PolicyType.SalesTaxPolicy] != PolicyLevel.None;
+            bool salesActive = policyState.Policies[grid.CurrRegionIndex].Map[(int) Advisor.PolicyType.SalesTaxPolicy] != PolicyLevel.None;
             if (salesActive) { 
                 headers.SalesTaxColHeader.Icon.SetAlpha(ActiveAlpha); 
                 headers.SalesTaxColHeader.Text.SetAlpha(ActiveAlpha); 

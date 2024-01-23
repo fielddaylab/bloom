@@ -9,6 +9,7 @@ using BeauUtil;
 using Leaf.Runtime;
 using BeauUtil.Debugger;
 using FieldDay.Debugging;
+using Zavala.Data;
 
 namespace Zavala.Cards
 {
@@ -41,7 +42,7 @@ namespace Zavala.Cards
     }
 
     [SharedStateInitOrder(10)]
-    public sealed class CardsState : SharedStateComponent, IRegistrationCallbacks
+    public sealed class CardsState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
     {
         public TextAsset CardDefs;
         public SpriteLibrary Sprites;
@@ -52,31 +53,53 @@ namespace Zavala.Cards
         public Color EcolLockedSlot;
         public Color EcolUnlockedSlot;
 
-        [HideInInspector] public Dictionary<SerializedHash32, CardData> AllCards;
-        [HideInInspector] public List<SerializedHash32> UnlockedCards;
+        [HideInInspector] public Dictionary<StringHash32, CardData> AllCards;
+        [HideInInspector] public List<StringHash32> UnlockedCards;
 
         #region Card Mappings
 
-        [HideInInspector] public Dictionary<PolicyType, List<SerializedHash32>> CardMap; // maps slot type to list of relevant cards
+        [HideInInspector] public Dictionary<PolicyType, List<StringHash32>> CardMap; // maps slot type to list of relevant cards
 
         #endregion // Card Mappings
 
         public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Cards");
         }
 
         public void OnRegister() {
             // Initialize Lists
-            AllCards = new Dictionary<SerializedHash32, CardData>();
-            UnlockedCards = new List<SerializedHash32>();
+            AllCards = new Dictionary<StringHash32, CardData>();
+            UnlockedCards = new List<StringHash32>();
 
-            CardMap = new Dictionary<PolicyType, List<SerializedHash32>>();
+            CardMap = new Dictionary<PolicyType, List<StringHash32>>();
 
             foreach (PolicyType pType in Enum.GetValues(typeof(PolicyType))) {
-                CardMap.Add(pType, new List<SerializedHash32>());
+                CardMap.Add(pType, new List<StringHash32>());
             }
 
             // Populate Card data
             CardsUtility.PopulateCards(this);
+
+            ZavalaGame.SaveBuffer.RegisterHandler("Cards", this);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            int count = Unsafe.Read<int>(ref data, ref remaining);
+
+            UnlockedCards.Clear();
+            ListUtils.EnsureCapacityPow2(ref UnlockedCards, count);
+
+            for(int i = 0; i < count; i++) {
+                UnlockedCards.Add(Unsafe.Read<StringHash32>(ref data, ref remaining));
+            }
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            Unsafe.Write(UnlockedCards.Count, ref data, ref written, capacity);
+
+            for(int i = 0; i < UnlockedCards.Count; i++) {
+                Unsafe.Write(UnlockedCards[i], ref data, ref written, capacity);
+            }
         }
     }
 
@@ -113,7 +136,7 @@ namespace Zavala.Cards
                     cardsState.AllCards.Add(newCard.CardID, newCard);
 
                     // add card to list of cards that should appear for the given sim id (queried when slot is selected)
-                    List<SerializedHash32> relevant = cardsState.CardMap[newCard.PolicyType];
+                    List<StringHash32> relevant = cardsState.CardMap[newCard.PolicyType];
                     relevant.Add(newCard.CardID);
                     cardsState.CardMap[newCard.PolicyType] = relevant;
 
@@ -203,7 +226,7 @@ namespace Zavala.Cards
         static public List<CardData> GetUnlockedOptions(CardsState state, PolicyType slotType) {
             List<CardData> allOptions = new List<CardData>();
 
-            List<SerializedHash32> cardIDs = state.CardMap[slotType];
+            List<StringHash32> cardIDs = state.CardMap[slotType];
 
             foreach (SerializedHash32 cardID in cardIDs) {
                 if (state.UnlockedCards.Contains(cardID)) {
@@ -217,7 +240,7 @@ namespace Zavala.Cards
         static public List<CardData> GetAllOptions(CardsState state, PolicyType type) {
             List<CardData> allOptions = new List<CardData>();
 
-            List<SerializedHash32> cardIDs = state.CardMap[type];
+            List<StringHash32> cardIDs = state.CardMap[type];
 
             foreach (SerializedHash32 cardID in cardIDs) {
                 allOptions.Add(state.AllCards[cardID]);
@@ -238,8 +261,8 @@ namespace Zavala.Cards
         }
 
         static public bool PolicyIsUnlocked(CardsState state, PolicyType type) {
-            List<SerializedHash32> unlockIds = state.CardMap[type];
-            foreach (SerializedHash32 id in unlockIds) {
+            List<StringHash32> unlockIds = state.CardMap[type];
+            foreach (StringHash32 id in unlockIds) {
                 if (state.UnlockedCards.Contains(id)) {
                     // if UnlockedCards contains any of the IDs of this policy, return true
                     return true;
@@ -256,9 +279,9 @@ namespace Zavala.Cards
 
         static public void UnlockCardsByType(CardsState state, PolicyType type) {
 
-            List<SerializedHash32> unlockIds = state.CardMap[type];
+            List<StringHash32> unlockIds = state.CardMap[type];
 
-            foreach (SerializedHash32 id in unlockIds) {
+            foreach (StringHash32 id in unlockIds) {
                 if (state.UnlockedCards.Contains(id)) {
                     continue;
                 }

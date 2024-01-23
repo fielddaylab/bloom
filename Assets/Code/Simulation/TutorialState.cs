@@ -1,3 +1,4 @@
+using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
@@ -9,11 +10,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Advisor;
 using Zavala.Cards;
+using Zavala.Data;
 using Zavala.UI.Tutorial;
 
 namespace Zavala.Sim
 {
-    public class TutorialState : SharedStateComponent
+    public class TutorialState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
     {
         public enum State {
             InactiveSim, // deactivate sim forces until basic tutorial (connecting roads) is completed
@@ -46,6 +48,22 @@ namespace Zavala.Sim
                 ScriptUtility.Trigger(GameTriggers.TutorialSkipped);
             });
             return menu;
+        }
+
+        unsafe void IRegistrationCallbacks.OnRegister() {
+            ZavalaGame.SaveBuffer.RegisterHandler("Tutorial", this);
+        }
+
+        void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Tutorial");
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            Unsafe.Write(CurrState, ref data, ref written, capacity);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            Unsafe.Read(ref CurrState, ref data, ref remaining);
         }
     }
 }

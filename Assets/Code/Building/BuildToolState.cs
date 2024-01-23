@@ -9,6 +9,7 @@ using Zavala.World;
 using Zavala.Roads;
 using Leaf.Runtime;
 using BeauUtil.Debugger;
+using Zavala.Data;
 
 namespace Zavala.Building {
     public struct RoadToolState {
@@ -37,7 +38,7 @@ namespace Zavala.Building {
     }
 
     [SharedStateInitOrder(10)]
-    public class BuildToolState : SharedStateComponent, IRegistrationCallbacks {
+    public class BuildToolState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
         public const int UserBuildingIdStart = 1024;
 
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
@@ -48,10 +49,10 @@ namespace Zavala.Building {
 
         [NonSerialized] public int TotalBuildingsBuilt;
         [NonSerialized] public int NumStoragesBuilt;
-        [NonSerialized] public bool[] StorageBuiltInRegion;
+        [NonSerialized] public BitSet32 StorageBuiltInRegion;
 
         [NonSerialized] public int NumDigestersBuilt;
-        [NonSerialized] public bool[] DigesterBuiltInRegion;
+        [NonSerialized] public BitSet32 DigesterBuiltInRegion;
 
         [NonSerialized] public bool ToolUpdated;
 
@@ -61,6 +62,7 @@ namespace Zavala.Building {
         [NonSerialized] public SimBuffer<byte> BlockedTileBuffer;
 
         public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("BuildTool");
         }
 
         public void OnRegister() {
@@ -69,8 +71,10 @@ namespace Zavala.Building {
             BlockedIdxs = new HashSet<int>(64);
             BlockedAdjIdxs = new RingBuffer<int>(32, RingBufferMode.Expand);
             BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
-            StorageBuiltInRegion = new bool[RegionInfo.MaxRegions];
-            DigesterBuiltInRegion = new bool[RegionInfo.MaxRegions];
+            StorageBuiltInRegion = default;
+            DigesterBuiltInRegion = default;
+
+            ZavalaGame.SaveBuffer.RegisterHandler("BuildTool", this);
         }
 
         /// <summary>
@@ -78,6 +82,27 @@ namespace Zavala.Building {
         /// </summary>
         public void ClearRoadTool() {
             RoadToolState.ClearState();
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            Unsafe.Write(TotalBuildingsBuilt, ref data, ref written, capacity);
+            Unsafe.Write(NumStoragesBuilt, ref data, ref written, capacity);
+            Unsafe.Write(NumDigestersBuilt, ref data, ref written, capacity);
+
+            StorageBuiltInRegion.Unpack(out uint storageRegionBits);
+            Unsafe.Write((byte) storageRegionBits, ref data, ref written, capacity);
+
+            DigesterBuiltInRegion.Unpack(out uint digesterRegionBits);
+            Unsafe.Write((byte) digesterRegionBits, ref data, ref written, capacity);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            Unsafe.Read(ref TotalBuildingsBuilt, ref data, ref remaining);
+            Unsafe.Read(ref NumStoragesBuilt, ref data, ref remaining);
+            Unsafe.Read(ref NumDigestersBuilt, ref data, ref remaining);
+
+            StorageBuiltInRegion = new BitSet32(Unsafe.Read<byte>(ref data, ref remaining));
+            DigesterBuiltInRegion = new BitSet32(Unsafe.Read<byte>(ref data, ref remaining));
         }
     }
 
@@ -101,10 +126,10 @@ namespace Zavala.Building {
             BuildToolState bts = Game.SharedState.Get<BuildToolState>();
             switch (type) {
                 case BuildingType.Digester: {
-                    return bts.DigesterBuiltInRegion[region];
+                    return bts.DigesterBuiltInRegion[(int) region];
                 }
                 case BuildingType.Storage: {
-                    return bts.StorageBuiltInRegion[region];
+                    return bts.StorageBuiltInRegion[(int) region];
                 }
                 default: {
                     Log.Warn("[BuildToolUtility] Tried to check if {0} built in region {1}: building {0} not set up!", type, region);

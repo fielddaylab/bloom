@@ -8,6 +8,7 @@ using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.World;
 
@@ -77,12 +78,30 @@ namespace Zavala.Sim {
         public RegionId[] RegionIndexUnlocks;
     }
 
-    public class RegionUnlockState : SharedStateComponent
+    public class RegionUnlockState : SharedStateComponent, ISaveStateChunkObject, IRegistrationCallbacks
     {
         public List<UnlockGroup> UnlockGroups;
         [NonSerialized] public int UnlockCount;
 
         [NonSerialized] public bool SimPhosphorusAdvanced;
+
+        public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("RegionUnlock");
+        }
+
+        public void OnRegister() {
+            ZavalaGame.SaveBuffer.RegisterHandler("RegionUnlock", this);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+            UnlockCount = Unsafe.Read<byte>(ref data, ref remaining);
+            SimPhosphorusAdvanced = Unsafe.Read<bool>(ref data, ref remaining);
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
+            Unsafe.Write((byte) UnlockCount, ref data, ref written, capacity);
+            Unsafe.Write(SimPhosphorusAdvanced, ref data, ref written, capacity);
+        }
     }
 
     static public class RegionUnlockUtility {

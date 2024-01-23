@@ -8,7 +8,7 @@ namespace Zavala.Sim {
     public class RegionAgeState : SharedStateComponent, IRegistrationCallbacks
     {
         [NonSerialized] public bool SimPhosphorusAdvanced;
-        [NonSerialized] public Dictionary<RegionId, int> AgeTriggers;
+        [NonSerialized] public Dictionary<RegionId, int> AgeTriggers; // TODO: Replace with array
 
         public void OnRegister() {
             AgeTriggers = new Dictionary<RegionId, int>(3);

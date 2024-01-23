@@ -6,6 +6,7 @@ using FieldDay.SharedState;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Scripting;
+using Zavala.Data;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -30,15 +31,21 @@ namespace Zavala {
         [SharedStateReference] static public SimWorldState SimWorld { get; private set; }
 
         /// <summary>
+        /// Save state buffer.
+        /// </summary>
+        static public SaveMgr SaveBuffer { get; private set; }
+
+        /// <summary>
         /// Event system.
         /// </summary>
         static public new EventDispatcher<object> Events { get; set; }
 
         [InvokePreBoot]
         static private void OnPreBoot() {
-            SimAllocator.Initialize(4 * Unsafe.MiB); // 6 MB simulation allocation buffer
+            SimAllocator.Initialize(600 * Unsafe.KiB); // 600KiB simulation allocation buffer
             Events = new EventDispatcher<object>();
             Game.SetEventDispatcher(Events);
+            SaveBuffer = new SaveMgr();
 
             GameLoop.OnShutdown.Register(OnShutdown);
         }
@@ -57,6 +64,7 @@ namespace Zavala {
 
         static private void OnShutdown() {
             SimAllocator.Destroy();
+            SaveBuffer.Free();
         }
     }
 
