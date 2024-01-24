@@ -41,6 +41,12 @@ are selling:
 Which is most
 profitable?
 
+:: popup.info.buyingResource
+Buying
+
+:: popup.info.sellingResource
+Selling
+
 :: popup.info.city.falling
 The City’s population is <u><color="red">falling</color></u> due to:
 

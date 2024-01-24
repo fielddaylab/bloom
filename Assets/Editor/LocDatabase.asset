@@ -239,8 +239,7 @@ MonoBehaviour:
     - Id: location.shared.depotInfo
       Content: <i><u>buys</u> and <u>sells</u> digested fertilizer</i>
     - Id: location.shared.depotDesc
-      Content: Export Depot can sell fertilizer to neighboring counties quickly and
-        cheaply
+      Content: Export Depots can ship and sell processed manure long distances cheaply.
     - Id: location.shared.grain
       Content: Fertilizer Suppliers
     - Id: location.shared.dairy

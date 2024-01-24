@@ -590,6 +590,24 @@ namespace Zavala.Economy
         #region Queries
 
         /// <summary>
+        /// Calls the appropriate Gather/Update Purchase/Shipping Sources method based on given bools
+        /// </summary>
+        static public int GeneralMarketQuery(ResourceRequester requester, ResourceSupplier supplier, RingBuffer<MarketQueryResultInfo> buffer, ResourceMask resource, bool isShipping, bool gather) {
+            if (isShipping) {
+                if (gather) {
+                    return GatherShippingSources(supplier, buffer, resource);
+                } else {
+                    return UpdateShippingSources(supplier, buffer, resource);
+                }
+            } else {
+                if (gather) {
+                    return GatherPurchaseSources(requester, buffer, resource);
+                } else {
+                    return UpdatePurchaseSources(requester, buffer);
+                }
+            }
+        }
+        /// <summary>
         /// Gathers info on where the given requester is purchasing their supplies from.
         /// </summary>
         static public int GatherPurchaseSources(ResourceRequester requester, RingBuffer<MarketQueryResultInfo> buffer, ResourceMask resource) {

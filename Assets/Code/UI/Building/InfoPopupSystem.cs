@@ -29,18 +29,28 @@ namespace Zavala.UI.Info {
                 return;
             }
 
-            if (m_StateA.ButtonPressed(InputButton.PrimaryMouse)) {
-                if (SimWorldUtility.IsPointerOverUI() && !popupUI.HoldOpen) {
+            if (m_StateA.ButtonPressed(InputButton.PrimaryMouse) && !SimWorldUtility.IsPointerOverUI()) {
+
+                if (popupUI.IsVisible() && !popupUI.HoldOpen) {
                     popupUI.Hide();
                 } else {
                     HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);
                     if (infoPopup != null) {
                         popupUI.LoadTarget(infoPopup);
                         WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
-                    } else if (!popupUI.HoldOpen) {
-                        popupUI.Hide();
                     }
                 }
+                //if (SimWorldUtility.IsPointerOverUI() && !popupUI.HoldOpen) {
+                //    popupUI.Hide();
+                //} else {
+                //    HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);
+                //    if (infoPopup != null) {
+                //        popupUI.LoadTarget(infoPopup);
+                //        WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
+                //    } else if (!popupUI.HoldOpen) {
+                //        popupUI.Hide();
+                //    }
+                //}
             }
         }
 

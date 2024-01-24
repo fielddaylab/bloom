@@ -320,7 +320,7 @@ namespace Zavala.UI.Info {
             }
         }
 
-        static public void LoadProfitIntoCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary)
+        static public void LoadProfitIntoCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, MarketQueryResultInfo info, MarketConfig config, bool forSale, bool isSecondary, bool showRunoff)
         {
             col.PriceGroup.SetActive(true);
             ActivateProfitHeaders(headers, policyState, grid);
@@ -372,18 +372,18 @@ namespace Zavala.UI.Info {
             col.SalesTaxCol.gameObject.SetActive(false);
             if (salesTax == 0) { col.SalesTaxCol.Number.SetText(EmptyEntry); }
             else { SetMoneyText(col.SalesTaxCol.Number, (-salesTax)); }
-   
 
-            int penalties = info.TaxRevenue.Penalties;
-            col.PenaltyCol.gameObject.SetActive(true);
-            if (penalties == 0) { 
-                col.PenaltyCol.Number.SetText(EmptyEntry);
-                col.PenaltyCol.Number.color = InactiveNumberColor;
-            }
-            else {
-                SetMoneyText(col.PenaltyCol.Number, (-penalties), " " + Loc.Find("ui.popup.info.penaltyFine"));
-                col.PenaltyCol.Number.color = NegativeColor;
-                //col.PolicyIcon.gameObject.SetActive(true);
+            col.PenaltyCol.gameObject.SetActive(showRunoff);
+            if (showRunoff) {
+                int penalties = info.TaxRevenue.Penalties;
+                if (penalties == 0) {
+                    col.PenaltyCol.Number.SetText(EmptyEntry);
+                    col.PenaltyCol.Number.color = InactiveNumberColor;
+                } else {
+                    SetMoneyText(col.PenaltyCol.Number, (-penalties), " " + Loc.Find("ui.popup.info.penaltyFine"));
+                    col.PenaltyCol.Number.color = NegativeColor;
+                    //col.PolicyIcon.gameObject.SetActive(true);
+                }
             }
 
 
@@ -415,7 +415,7 @@ namespace Zavala.UI.Info {
             headers.ShippingColHeader.gameObject.SetActive(true);
             headers.ImportTaxColHeader.gameObject.SetActive(false);
             headers.SalesTaxColHeader.gameObject.SetActive(false);
-            headers.PenaltyColHeader.gameObject.SetActive(true);
+            //headers.PenaltyColHeader.gameObject.SetActive(true);
             headers.TotalProfitColHeader.gameObject.SetActive(true);
             headers.TotalPriceColHeader.gameObject.SetActive(false);
 

@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Generic;
 using BeauRoutine;
 using BeauRoutine.Extensions;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scenes;
 using FieldDay.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zavala.Actors;
 using Zavala.Advisor;
@@ -16,7 +19,7 @@ using Zavala.Scripting;
 using Zavala.Sim;
 
 namespace Zavala.UI.Info {
-    public class InfoPopup : SharedRoutinePanel {
+    public class InfoPopup : SharedRoutinePanel, IScenePreload {
         static private readonly Color GrainFarmColor = Colors.Hex("#C8E295");
         static private readonly Color DairyFarmColor = Colors.Hex("#E2CD95");
         static private readonly Color CityColor = Colors.Hex("#99FFCE");
@@ -24,6 +27,8 @@ namespace Zavala.UI.Info {
         static private readonly Color TollColor = Colors.Hex("#E8F279");
         static private readonly Color StorageColor = Colors.Hex("#F2D779");
         static private readonly Color DepotColor = Colors.Hex("#FFC34E");
+        static private readonly Color FrameColor = Colors.Hex("FFFBE3");
+        static private readonly Color FrameShadedColor = Colors.Hex("EFE9C4");
 
         static private readonly int NarrowWidth = 270;
         static private readonly int NarrowHeight = 300;
@@ -42,6 +47,10 @@ namespace Zavala.UI.Info {
         [SerializeField] private RectTransform m_PinTransform;
         [SerializeField] private LayoutGroup m_Layout;
         [SerializeField] private RectTransform m_LayoutTransform;
+
+        [Header("Tabs")]
+        [SerializeField] private GameObject m_TabGroup;
+        [SerializeField] private InfoPopupTab[] m_Tabs;
 
         [Space(5)]
         [SerializeField] private Sprite m_PoorWaterSprite;
@@ -79,8 +88,8 @@ namespace Zavala.UI.Info {
         [SerializeField] private InfoPopupStorageCapacity m_StorageGroup;
 
 
-        public GameObject m_BestOptionBanner;
-        public TMP_Text m_BestOptionText;
+        [SerializeField] private GameObject m_BestOptionBanner;
+        [SerializeField] private TMP_Text m_BestOptionText;
 
         #endregion // Inspector
 
@@ -92,6 +101,7 @@ namespace Zavala.UI.Info {
         [NonSerialized] private ResourceSupplier m_SelectedSupplier;
         [NonSerialized] private ResourceRequester m_SelectedRequester;
         [NonSerialized] private ResourcePurchaser m_SelectedPurchaser;
+        [NonSerialized] private ResourceMask m_ActiveResource;
         [NonSerialized] private bool m_ConnectionsDirty;
         [NonSerialized] public bool HoldOpen;
 
@@ -107,6 +117,17 @@ namespace Zavala.UI.Info {
 
         #endregion // State
 
+        #region Preload
+
+        public IEnumerator<WorkSlicer.Result?> Preload() {
+            foreach (InfoPopupTab tab in m_Tabs) {
+                tab.TabButton.onClick.AddListener(() => HandleTabClicked(tab.Resource));
+            }
+            return null;
+        }
+
+        #endregion
+
         #region Unity Events
 
         protected override void Awake() {
@@ -116,6 +137,8 @@ namespace Zavala.UI.Info {
             Game.SharedState.Get<RoadNetwork>().OnConnectionsReevaluated.Register(OnRoadNetworkRebuilt);
             Game.SharedState.Get<PolicyState>().OnPolicyUpdated.Register(OnPolicyUpdated);
         }
+
+
 
         #endregion // Unity Events
 
@@ -140,6 +163,7 @@ namespace Zavala.UI.Info {
             m_SelectedPurchaser = null;
             m_SelectedRequester = null;
             m_SelectedSupplier = null;
+            m_TabGroup.SetActive(false);
             m_PurchaseContents.gameObject.SetActive(false);
             m_MarketContentsRows.gameObject.SetActive(false);
             m_MarketContentsColsGroup.gameObject.SetActive(false);
@@ -151,24 +175,32 @@ namespace Zavala.UI.Info {
 
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
-                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.OverrideTitleLabel));
-                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel) + " : " + Loc.Find(m_SelectedLocation.RegionId));
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.RegionId));
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
+                    m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = GrainFarmColor;
                     m_ResourceIcon.gameObject.SetActive(true);
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
+                    m_TabGroup.SetActive(true);
+                    SetTabsVisible((ResourceMask)0b01110); // weird to hardcode this?
+                    PickTab(ResourceMask.Phosphorus);
                     break;
                 }
 
                 case BuildingType.DairyFarm: {
-                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.OverrideTitleLabel));
-                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel) + " : " + Loc.Find(m_SelectedLocation.RegionId));
+                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.RegionId));
+                    m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = DairyFarmColor;
                     m_ResourceIcon.gameObject.SetActive(true);
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
+                    m_TabGroup.SetActive(true);
+                    SetTabsVisible((ResourceMask)0b11001); // weird to hardcode this?
+                    PickTab(ResourceMask.Manure);
                     break;
                     }
 
@@ -243,12 +275,22 @@ namespace Zavala.UI.Info {
             }
         }
 
+        private void PopulateMarketDisplay(bool isShipping) {
+            if (isShipping) {
+                PopulateShippingWide();
+            } else {
+                PopulatePurchasingWide();
+            }
+        }
+
         /// <summary>
         /// Populate seller (CAFO) popup
         /// </summary>
         private void PopulateShippingWide()
         {
-            Root.sizeDelta = new Vector2(WideWidth - 80, WideHeight);
+            bool showRunoff = (m_ActiveResource & ResourceMask.Manure) != 0;
+            int shrinkShipping = showRunoff ? 70 : 120;
+            Root.sizeDelta = new Vector2(WideWidth - shrinkShipping, WideHeight);
 
             int queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
             ConfigureCols(WideNumRows);
@@ -265,13 +307,14 @@ namespace Zavala.UI.Info {
                     bool forSale = true;
                     bool runoffAffected = results.TaxRevenue.Penalties > 0;
                     InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOptionBanner, i);
-                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
+                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, showRunoff);
                 }
                 else
                 {
                     // load empty col group
                     InfoPopupMarketUtility.LoadEmptyProfitCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOptionBanner, i);
                 }
+                m_MarketContentsColHeaders.PenaltyColHeader.gameObject.SetActive(showRunoff);
             }
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
             if (m_BestOptionBanner.activeSelf)
@@ -477,59 +520,32 @@ namespace Zavala.UI.Info {
         }
 
         private void UpdateData(bool forceRefresh) {
-            Log.Msg("[InfoPopup] Updating data...");
+            Log.Msg("[InfoPopup] Updating data... resource: {0}", m_ActiveResource);
+            bool refresh = m_ConnectionsDirty || forceRefresh;
             switch (m_Mode) {
                 case BuildingType.DairyFarm: {
-                    if (m_ConnectionsDirty || forceRefresh) {
+                    bool shipping = m_ActiveResource != ResourceMask.Grain;
+                    if (refresh) {
                         m_QueryResults.Clear();
-                        MarketUtility.GatherShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.Manure);
-                    } else {
-                        MarketUtility.UpdateShippingSources(m_SelectedSupplier, m_QueryResults, ResourceMask.Manure);
+                        m_SubheaderLabel.SetText(BuySellString(shipping));
                     }
-                    m_QueryResults.Sort(SortResultsDescending);
-                    PopulateShippingWide();
+
+                        MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_QueryResults, m_ActiveResource, shipping, refresh);
+
+                    SortQueryResults(shipping);
+                    PopulateMarketDisplay(shipping);
                     break;
                 }
 
                 case BuildingType.GrainFarm: {
-                    if (m_ConnectionsDirty || forceRefresh) {
+                    bool shipping = m_ActiveResource == ResourceMask.Grain;
+                    if (refresh) {
                         m_QueryResults.Clear();
-                        MarketUtility.GatherPurchaseSources(m_SelectedRequester, m_QueryResults, ResourceMask.Phosphorus);
-                    } else {
-                        MarketUtility.UpdatePurchaseSources(m_SelectedRequester, m_QueryResults);
+                        m_SubheaderLabel.SetText(BuySellString(shipping));
                     }
-                    m_QueryResults.Sort((a, b) => {
-                        int dif = a.CostToBuyer - b.CostToBuyer;
-                        if (dif == 0)
-                        {
-                            // tie break
-                            if (b.Supplier.Position.IsExternal && a.Supplier.Position.IsExternal)
-                            {
-                                // no additional tiebreaker (random)
-                                return 0;
-                            }
-                            else if (b.Supplier.Position.IsExternal)
-                            {
-                                // favor a
-                                return -1;
-                            }
-                            else if (a.Supplier.Position.IsExternal)
-                            {
-                                // favor b
-                                return 1;
-                            }
-                            else
-                            {
-                                // favor closest option
-                                return b.Distance - a.Distance;
-                            }
-                        }
-                        else
-                        {
-                            return dif;
-                        }
-                    });
-                    PopulatePurchasingWide();
+                    MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_QueryResults, m_ActiveResource, shipping, refresh);
+                    SortQueryResults(shipping);
+                    PopulateMarketDisplay(shipping);
                     break;
                 }
 
@@ -560,6 +576,77 @@ namespace Zavala.UI.Info {
             }
 
             m_ConnectionsDirty = false;
+        }
+
+        private void SortQueryResults(bool isShippingResource) {
+            if (isShippingResource) {
+                m_QueryResults.Sort(SortResultsDescending);
+            } else {
+                m_QueryResults.Sort((a, b) => {
+                    int dif = a.CostToBuyer - b.CostToBuyer;
+                    if (dif == 0) {
+                        // tie break
+                        if (b.Supplier.Position.IsExternal && a.Supplier.Position.IsExternal) {
+                            // no additional tiebreaker (random)
+                            return 0;
+                        } else if (b.Supplier.Position.IsExternal) {
+                            // favor a
+                            return -1;
+                        } else if (a.Supplier.Position.IsExternal) {
+                            // favor b
+                            return 1;
+                        } else {
+                            // favor closest option
+                            return b.Distance - a.Distance;
+                        }
+                    } else {
+                        return dif;
+                    }
+                });
+            }
+        }
+
+        private void SetTabsVisible(ResourceMask relevantResources) {
+            foreach (InfoPopupTab tab in m_Tabs) {
+                ResourceMask r = tab.Resource;
+                if ((relevantResources & r) != 0) { // full overlaps only
+                    tab.gameObject.SetActive(true);
+                    // special case to disable fert. on cafos
+                    if ((r & ResourceMask.MFertilizer) != 0 && (relevantResources & ResourceMask.Milk) != 0) {
+                        tab.gameObject.SetActive(false);
+                    }
+                } else {
+                    tab.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        private void PickTab(ResourceMask resource) {
+            foreach (InfoPopupTab tab in m_Tabs) {
+                if ((tab.Resource & resource) != 0) {
+                    m_ActiveResource = resource;
+                    tab.TintTab(FrameColor);
+                    m_ResourceIcon.sprite = tab.GetSprite();
+                } else {
+                    tab.TintTab(FrameShadedColor);
+                }
+            }
+        }
+
+        private void HandleTabClicked(ResourceMask resource) {
+            PickTab(resource);
+            UpdateData(true);
+        }
+
+        private string BuySellString(bool isShipping) {
+            string val = "";
+            if (isShipping) {
+                val += Loc.Find("ui.popup.info.sellingResource") + " ";
+            } else {
+                val += Loc.Find("ui.popup.info.buyingResource") + " ";
+            }
+            val += m_ActiveResource.ToString();
+            return val;
         }
 
         #endregion // Load

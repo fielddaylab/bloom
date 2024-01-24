@@ -289,29 +289,29 @@ namespace Zavala.UI {
             if (!m_ButtonContainer) {
                 yield break;
             }
-            Log.Msg("[DialogueBox] Waiting for input...");
+            //Log.Msg("[DialogueBox] Waiting for input...");
 
             InputState input = Game.SharedState.Get<InputState>();
             //m_ButtonContainer.gameObject.SetActive(true);
 
             while (ForceAdvisorPolicies != AdvisorType.None) {
-                Log.Msg("   > Advisor forced: {0}", ForceAdvisorPolicies);
+                //Log.Msg("   > Advisor forced: {0}", ForceAdvisorPolicies);
                 // don't check for click if policies are being opened
                 yield return null;
             } 
             if (m_PoliciesActive) {
                 while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
-                    Log.Msg("   > Pointer over hierarchy: {0}", Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer));
+                    //Log.Msg("   > Pointer over hierarchy: {0}", Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer));
                     yield return null;
                 }
-                Log.Msg("   > Policies active, but clicked!");
+                //Log.Msg("   > Policies active, but clicked!");
             } else {
                 while (!input.ButtonPressed(InputButton.PrimaryMouse)) {
                     yield return null;
                 }
             }
             input.ConsumedButtons |= InputButton.PrimaryMouse;
-            Log.Msg("[DialogueBox] BREAK!");
+            //Log.Msg("[DialogueBox] BREAK!");
             yield break;
         }
 
