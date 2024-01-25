@@ -310,6 +310,10 @@ MonoBehaviour:
       Content: 'Which is most
 
         profitable?'
+    - Id: ui.popup.info.buyingResource
+      Content: Buying
+    - Id: ui.popup.info.sellingResource
+      Content: Selling
     - Id: ui.popup.info.city.falling
       Content: "The City\u2019s population is <u><color=\"red\">falling</color></u>
         due to:"

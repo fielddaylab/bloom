@@ -241,6 +241,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Renderer: {fileID: 1895349179121568628}
+  m_Renderers:
+  - {fileID: 1895349179121568628}
   m_Snapping: {fileID: 4665823543789613535}
   m_Particles: {fileID: 1250573020439187508}
   m_Occupies: {fileID: 4665823543789613532}

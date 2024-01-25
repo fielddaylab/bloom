@@ -14,7 +14,7 @@ namespace Zavala.Roads {
     {
         public Transform RoadMeshTransform;
         public MeshFilter RoadMesh;
-        [NonSerialized] public Mesh BridgeMesh;
+        public MeshFilter BridgeMesh;
         public DecorationRenderer RampSolidDecorations;
         public DecorationRenderer RampStagedDecorations;
         // public DecorationRenderer BridgeSolidDecorations;
@@ -35,13 +35,23 @@ namespace Zavala.Roads {
             library.Lookup(flowMask | stageMask, out var roadData);
 
             controller.RoadMesh.sharedMesh = roadData.Mesh;
-            controller.BridgeMesh = roadData.BridgeMesh;
+            controller.BridgeMesh.sharedMesh = roadData.BridgeMesh;
+            controller.BridgeMesh.gameObject.SetActive(false);
             controller.RoadMeshTransform.localScale = roadData.Scale;
             controller.RoadMeshTransform.localRotation = roadData.Rotation;
 
             if (!stageMask.IsEmpty)
             {
                 controller.BPCompareMask = stageMask;
+            }
+
+            if (roadData.BridgeMesh != null) {
+                // TODO: slow to get this for every tile? consider passing in flags
+                TerrainFlags flags = Game.SharedState.Get<SimGridState>().Terrain.Info[controller.Position.TileIndex].Flags;
+                if ((flags & TerrainFlags.IsWater) != 0) {
+                    controller.BridgeMesh.gameObject.SetActive(true);
+                    controller.BridgeMesh.transform.localRotation = roadData.BridgeRotation;
+                }
             }
 
             UpdateRampDecorations(controller, library, stageMask, true); // holo
@@ -59,6 +69,7 @@ namespace Zavala.Roads {
             }
 
         }
+
 
         static private void UpdateRampDecorations(RoadInstanceController controller, RoadLibrary library, TileAdjacencyMask mask, bool isStaging)
         {
@@ -80,7 +91,7 @@ namespace Zavala.Roads {
                     else { DecorationUtility.AddDecoration(controller.RampSolidDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale())); }
                 }
             }
-
+            /* 
             // Bridge mesh decorations
             if (controller.BridgeMesh == null) return;
 
@@ -99,6 +110,7 @@ namespace Zavala.Roads {
 
                 }
             }
+            */
 
         }
 

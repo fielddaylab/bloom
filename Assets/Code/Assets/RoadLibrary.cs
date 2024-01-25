@@ -24,6 +24,7 @@ namespace Zavala {
         private struct TileData {
             public Mesh Mesh;
             public Quaternion Rotation;
+            public Vector3 BridgeRotation;
             public Mesh BridgeMesh;
             public float Scale;
             public bool FlipX;
@@ -32,6 +33,7 @@ namespace Zavala {
         public struct AssembledRoadData {
             public Mesh Mesh;
             public Quaternion Rotation;
+            public Quaternion BridgeRotation;
             public Mesh BridgeMesh;
             public Vector3 Scale;
             public int Turns;
@@ -70,6 +72,7 @@ namespace Zavala {
             roadData.Mesh = tileData.Mesh;
             roadData.BridgeMesh = tileData.BridgeMesh;
             roadData.Rotation = HexGrid.RotateQuaternion(tileData.Rotation, rotData.Rotation);
+            roadData.BridgeRotation = Quaternion.Euler(tileData.BridgeRotation);
             roadData.Scale = new Vector3(tileData.Scale, tileData.Scale, tileData.Scale);
             if (tileData.FlipX) {
                 roadData.Scale.x = -roadData.Scale.x;
