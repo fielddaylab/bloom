@@ -40,7 +40,7 @@ namespace Zavala.Advisor {
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("policyType", policyType.ToString());
                 varTable.Set("policyIndex", policyIndex);
-                varTable.Set("policyRegion", region);
+                varTable.Set("alertRegion", region+1); // 0-indexed to 1-indexed
                 varTable.Set("policyForced", forced);
                 ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
             }

@@ -176,8 +176,12 @@ namespace FieldDay.Scripting {
                 StringHash32 characterId = inTag.Data.Substring(1);
                 ScriptCharacterDB db = Game.SharedState.Get<ScriptCharacterDB>();
 
+                int regionOverride = -1;
+                if (LeafEvalContext.FromObject(inContext).Table.TryLookup("alertRegion", out Variant region)) {
+                    regionOverride = region.AsInt() - 1; // 1-indexed to 0-indexed
+                }
                 // TODO: refactor into emitting the character event directly
-                return "{@" + ScriptCharacterDBUtility.GetRemapped(db, characterId).name + "}";
+                return "{@" + ScriptCharacterDBUtility.GetRemapped(db, characterId, regionOverride).name + "}";
             }
 
             Debug.LogError("[ScriptPlugin] No local id could be found for " + inTag.Data.Substring(1));

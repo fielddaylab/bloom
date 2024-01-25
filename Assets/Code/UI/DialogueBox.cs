@@ -101,7 +101,7 @@ namespace Zavala.UI {
         #region Display
 
         public IEnumerator CompleteLine() {
-            Log.Msg("[DialogueBox] Line Complete");
+            // Log.Msg("[DialogueBox] Line Complete");
             return WaitForInput();
         }
 

@@ -52,16 +52,20 @@ namespace Zavala.Scripting
             return def;
         }
 
-        static public ScriptCharacterDef GetRemapped(ScriptCharacterDB db, StringHash32 inId) {
+        static public ScriptCharacterDef GetRemapped(ScriptCharacterDB db, StringHash32 inId, int regionOverride = -1) {
             EnsureCreated(db);
 
             if (inId.IsEmpty) {
                 return NullValue();
             }
 
-            // TODO: is it possible to check if there is a "local:alertRegion" var in the leaf script and use that instead?
-            int regionKey = (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex;
-            
+            int regionKey;
+            if (regionOverride < 0) {
+                regionKey = (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex;
+            } else {
+                regionKey = regionOverride;
+            }
+
             ScriptCharacterRemap remap;
             db.LocalIdRemap.TryGetValue(inId, out remap);
             if (object.ReferenceEquals(remap, null)) {
