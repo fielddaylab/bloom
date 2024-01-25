@@ -8,16 +8,18 @@ using Zavala.Economy;
 using BeauUtil.Debugger;
 using Zavala.Sim;
 using FieldDay.Debugging;
+using Zavala.Building;
+using Zavala.Data;
 
 namespace Zavala.Actors {
 
-    public enum OperationState {
+    public enum OperationState : byte {
         Bad,
         Okay,
         Great
     }
 
-    public enum StressCategory
+    public enum StressCategory : byte
     {
         Bloom,
         Resource,
@@ -32,7 +34,7 @@ namespace Zavala.Actors {
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(OccupiesTile))]
-    public sealed class StressableActor : BatchedComponent, IRegistrationCallbacks {
+    public sealed class StressableActor : BatchedComponent, IRegistrationCallbacks, IPersistBuildingComponent {
         #region Inspector
 
         public int StressCap = 8;
@@ -46,16 +48,16 @@ namespace Zavala.Actors {
 
         #endregion // Inspector
 
-        [NonSerialized] public Dictionary<StressCategory, int> CurrentStress; // TODO: Replace with array
-        [NonSerialized] public bool[] StressImproving; // TODO: Replace with bitmask
-        [NonSerialized] public Dictionary<OperationState, int> OperationThresholds; // TODO: Replace with array
+        [NonSerialized] public EMap<StressCategory, int> CurrentStress; // TODO: Replace with array
+        [NonSerialized] public BitSet32 StressImproving; // TODO: Replace with bitmask
+        [NonSerialized] public EMap<OperationState, int> OperationThresholds;
         [NonSerialized] public int TotalStress;
         [NonSerialized] public float AvgStress;
         [NonSerialized] public OperationState OperationState;
         [NonSerialized] public bool ChangedOperationThisTick = false;
         [NonSerialized] public OperationState PrevState;
 
-        [NonSerialized] public Dictionary<StressCategory, bool> StressMask; // TODO: Replace with bitmask
+        [NonSerialized] public BitSet32 StressMask; // TODO: Replace with bitmask
         [NonSerialized] public int StressCount;
 
         public int StressDelta = 1; // value jumps between operation states
@@ -87,25 +89,22 @@ namespace Zavala.Actors {
             if (financialStress) { numStressCategories++; }
             StressCount = numStressCategories;
 
-            CurrentStress = new Dictionary<StressCategory, int>() {
-                { StressCategory.Bloom, bloomStress ? startingStress : 0 },
-                { StressCategory.Resource, resourceStress ? startingStress : 0 },
-                { StressCategory.Financial, financialStress ? startingStress : 0 },
-            };
+            CurrentStress = new EMap<StressCategory, int>(3);
+            CurrentStress[0] = bloomStress ? startingStress : 0;
+            CurrentStress[1] = resourceStress ? startingStress : 0;
+            CurrentStress[2] = financialStress ? startingStress : 0;
 
-            StressImproving = new bool[(int)StressCategory.COUNT];
+            StressImproving = new BitSet32();
 
-            StressMask = new Dictionary<StressCategory, bool>() {
-                { StressCategory.Bloom, bloomStress },
-                { StressCategory.Resource, resourceStress },
-                { StressCategory.Financial, financialStress },
-            };
+            StressMask = new BitSet32();
+            StressMask[(int) StressCategory.Bloom] = bloomStress;
+            StressMask[(int) StressCategory.Resource] = resourceStress;
+            StressMask[(int) StressCategory.Financial] = financialStress;
 
-            OperationThresholds = new Dictionary<OperationState, int>() {
-                { OperationState.Bad, m_BadThreshold },
-                { OperationState.Okay, m_OkayThreshold },
-                { OperationState.Great, m_GreatThreshold },
-            };
+            OperationThresholds = new EMap<OperationState, int>(3);
+            OperationThresholds[0] = m_BadThreshold;
+            OperationThresholds[1] = m_OkayThreshold;
+            OperationThresholds[2] = m_GreatThreshold;
 
             Position = this.GetComponent<OccupiesTile>();
 
@@ -115,6 +114,35 @@ namespace Zavala.Actors {
 
         public void OnDeregister()
         {
+        }
+
+        void IPersistBuildingComponent.Write(PersistBuilding building, ref ByteWriter writer) {
+            for(int i = 0; i < 3; i++) {
+                writer.Write(CurrentStress[i]);
+            }
+            writer.Write(TotalStress);
+            writer.Write(AvgStress);
+            writer.Write(OperationState);
+            writer.Write(PrevState);
+
+            uint mask;
+            StressImproving.Unpack(out mask);
+            writer.Write((byte) mask);
+            StressMask.Unpack(out mask);
+            writer.Write((byte) mask);
+        }
+
+        void IPersistBuildingComponent.Read(PersistBuilding building, ref ByteReader reader) {
+            for(int i = 0; i < 3; i++) {
+                reader.Read(ref CurrentStress[i]);
+            }
+            reader.Read(ref TotalStress);
+            reader.Read(ref AvgStress);
+            reader.Read(ref OperationState);
+            reader.Read(ref PrevState);
+
+            StressImproving = new BitSet32(reader.Read<byte>());
+            StressMask = new BitSet32(reader.Read<byte>());
         }
     }
 

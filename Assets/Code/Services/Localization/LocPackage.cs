@@ -16,8 +16,8 @@ namespace Zavala
     {
         private const int MaxCompressedSize = 1024 * 1024 * 4;
 
-        private readonly Dictionary<StringHash32, string> m_Nodes = new Dictionary<StringHash32, string>(512);
-        private readonly HashSet<StringHash32> m_IdsWithEvents = Collections.NewSet<StringHash32>(128);
+        private readonly Dictionary<StringHash32, string> m_Nodes = MapUtils.Create<StringHash32, string>(512);
+        private readonly HashSet<StringHash32> m_IdsWithEvents = SetUtils.Create<StringHash32>(128);
 
         [BlockMeta("basePath"), Preserve] private string m_RootPath = string.Empty;
 
@@ -119,7 +119,8 @@ namespace Zavala
                     }
                 }
                 nodeCount = ReadNodeCount(ref pinned);
-                Collections.Initialize(ioPackage.m_IdsWithEvents, nodeCount);
+                ioPackage.m_IdsWithEvents.Clear();
+                SetUtils.EnsureCapacity(ioPackage.m_IdsWithEvents, nodeCount);
                 while(nodeCount-- > 0) {
                     ioPackage.m_IdsWithEvents.Add(ReadNodeId(ref pinned));
                     if (nodeCount % 64 == 0) {

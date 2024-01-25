@@ -70,6 +70,7 @@ namespace Zavala {
 
         private const int WindowSize = 256;
         private const int MinRunLength = 3;
+        private const int MaxRunLength = 255 + MinRunLength;
         private const int MaxRunLengthThreshold = 32;
 
         private unsafe struct CompressionMatch
@@ -145,16 +146,16 @@ namespace Zavala {
                 long length = (src - windowStart);
                 windowSize = (int)Math.Min(WindowSize, length);
 
-                match = FindMatch(src, (int)(srcEnd - src), windowSize);
+                match = FindMatch(src, Math.Min((int)(srcEnd - src), MaxRunLength), windowSize);
                 if (match.Length == 0) {
-                    // Log.Msg("[{0}] encoding literal: {1}", length, HexString(src, 1));
+                    Log.Msg("[{0}] encoding literal: {1}", length, HexString(src, 1));
                     *dest++ = *src++;
                 }
                 else {
                     groupMask |= 1;
                     matchOffset = (int)(src - match.Start);
                     matchLength = match.Length;
-                    // Log.Msg("[{0}] encoding sequence <{1},{2}>: {3}", length, matchOffset, matchLength, HexString(match.Start, match.Length));
+                    Log.Msg("[{0}] encoding sequence <{1},{2}>: {3}", length, matchOffset, matchLength, HexString(match.Start, match.Length));
                     *dest++ = (byte)(matchOffset - 1);
                     *dest++ = (byte)(matchLength - MinRunLength);
                     src += match.Length;
@@ -282,15 +283,16 @@ namespace Zavala {
 
                     seekPtr = dest - runOffset;
 
-                    for (int i = 0; i < runLength; i++) {
+                    int lengthRemaining = runLength;
+                    while(lengthRemaining-- > 0) {
                         *dest++ = *seekPtr++;
                     }
 
-                    // Log.Msg("[{0}] decoding sequence <{1},{2}>: {3}", length, runOffset, runLength, HexString(dest - runOffset - runLength, runLength));
+                    Log.Msg("[{0}] decoding sequence <{1},{2}>: {3}", length, runOffset, runLength, HexString(dest - runOffset - runLength, runLength));
                 }
                 else {
                     // literal
-                    // Log.Msg("[{0}] decoding literal: {1}", length, HexString(src, 1));
+                    Log.Msg("[{0}] decoding literal: {1}", length, HexString(src, 1));
                     *dest++ = *src++;
                 }
 

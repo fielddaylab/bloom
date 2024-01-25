@@ -53,6 +53,7 @@ namespace Zavala.Sim {
         [NonSerialized] public System.Random Random;
 
         void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Grid");
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -70,15 +71,28 @@ namespace Zavala.Sim {
 
             GlobalMaxHeight = 0;
 
+            ZavalaGame.SaveBuffer.RegisterHandler("Grid", this, -100);
+
             GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this, WorldData));
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
-            // TODO: Implement
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+            CurrRegionIndex = reader.Read<byte>();
+
+            byte regionCount = reader.Read<byte>();
+            SimDataUtility.LoadRegionsFromSaveData(this, WorldData, ZavalaGame.SimWorld, regionCount);
+
+            for(int i = 0; i < regionCount; i++) {
+                Regions[i].Age = reader.Read<int>();
+            }
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
-            // TODO: Implement
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            writer.Write((byte) CurrRegionIndex);
+            writer.Write((byte) RegionCount);
+            for(int i = 0; i < RegionCount; i++) {
+                writer.Write(Regions[i].Age);
+            }
         }
     }
 
@@ -86,11 +100,21 @@ namespace Zavala.Sim {
         static public void LateInitializeData(SimGridState grid, WorldAsset world) {
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
             SimWorldState worldState = Game.SharedState.Get<SimWorldState>();
-            LoadRegionDataFromWorld(grid, world, 0, worldState);
-            RegenTerrainDependentInfo(grid, phosphorus);
-            // GenerateRandomPhosphorus(grid, phosphorus);
 
+            if (ZavalaGame.SaveBuffer.HasSave) {
+                ZavalaGame.SaveBuffer.HandleChunks();
+            } else {
+                LoadRegionDataFromWorld(grid, world, 0, worldState);
+            }
+
+            RegenTerrainDependentInfo(grid, phosphorus);
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
+        }
+
+        static public void LoadRegionsFromSaveData(SimGridState gridState, WorldAsset world, SimWorldState worldState, int regionCount) {
+            for(int i = 0; i < regionCount; i++) {
+                LoadRegionDataFromWorld(gridState, world, i, worldState);
+            }
         }
 
         static public void LoadAndRegenRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex, SimWorldState worldState) {

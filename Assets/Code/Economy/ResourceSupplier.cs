@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BeauPools;
 using BeauUtil;
+using FieldDay;
 using FieldDay.Components;
 using UnityEngine;
 using Zavala.Roads;
@@ -50,11 +51,13 @@ namespace Zavala.Economy {
         }
 
         protected override void OnDisable() {
-            MarketUtility.DeregisterSupplier(this);
-            RoadUtility.DeregisterSource(Position);
+            if (Frame.IsLoadingOrLoaded(this)) {
+                MarketUtility.DeregisterSupplier(this);
+                RoadUtility.DeregisterSource(Position);
 
-            SoldAtALossExcludingMilk = false;
-            Priorities.PrioritizedBuyers.Clear();
+                SoldAtALossExcludingMilk = false;
+                Priorities.PrioritizedBuyers.Clear();
+            }
 
             base.OnDisable();
         }

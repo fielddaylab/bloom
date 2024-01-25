@@ -154,6 +154,11 @@ namespace FieldDay.Scenes {
         /// <summary>
         /// The scene will not be unloaded when the next main scene is loaded.
         /// </summary>
-        Persistent = 0x04
+        Persistent = 0x04,
+
+        /// <summary>
+        /// This scene will be reloaded, even if it is already loaded
+        /// </summary>
+        ForceReload = 0x08,
     }
 }

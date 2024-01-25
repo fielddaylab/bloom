@@ -42,12 +42,13 @@ namespace Zavala {
 
         [InvokePreBoot]
         static private void OnPreBoot() {
-            SimAllocator.Initialize(600 * Unsafe.KiB); // 600KiB simulation allocation buffer
+            SimAllocator.Initialize(700 * Unsafe.KiB); // 700KiB simulation allocation buffer
             Events = new EventDispatcher<object>();
             Game.SetEventDispatcher(Events);
             SaveBuffer = new SaveMgr();
 
             GameLoop.OnShutdown.Register(OnShutdown);
+            Game.Scenes.OnSceneUnload.Register(OnSceneUnload);
         }
 
         [InvokeOnBoot]
@@ -60,6 +61,10 @@ namespace Zavala {
                     ScriptUtility.Trigger(GameTriggers.GameBooted);
                 }
             });
+        }
+
+        static private void OnSceneUnload() {
+            SimAllocator.Reset();
         }
 
         static private void OnShutdown() {

@@ -1,3 +1,4 @@
+using BeauUtil;
 using FieldDay;
 using FieldDay.Components;
 using System;
@@ -25,7 +26,7 @@ namespace Zavala {
         }
 
         private void OnDisable() {
-            if (Game.IsShuttingDown) {
+            if (Game.IsShuttingDown || !Frame.IsLoadingOrLoaded(this)) {
                 return;
             }
 

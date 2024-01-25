@@ -158,29 +158,29 @@ namespace Zavala.Advisor {
             SetPolicyByIndex(data.PolicyType, (int)data.PolicyLevel, (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex, false);
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
-            Unsafe.Write((byte) Policies.Length, ref data, ref written, capacity);
-            Unsafe.Write((byte) PolicyBlock.PolicyTypeCount, ref data, ref written, capacity);
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            writer.Write((byte) Policies.Length);
+            writer.Write((byte) PolicyBlock.PolicyTypeCount);
             for(int i = 0; i < Policies.Length; i++) {
                 Policies[i].EverSet.Unpack(out uint bitset);
-                Unsafe.Write((byte) bitset, ref data, ref written, capacity);
+                writer.Write((byte) bitset);
                 for(int j = 0; j < PolicyBlock.PolicyTypeCount; j++) {
-                    Unsafe.Write((byte) Policies[i].Map[j], ref data, ref written, capacity);
+                    writer.Write((byte) Policies[i].Map[j]);
                 }
             }
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
-            int regionCount = Unsafe.Read<byte>(ref data, ref remaining);
-            int policyTypeCount = Unsafe.Read<byte>(ref data, ref remaining);
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+            int regionCount = reader.Read<byte>();
+            int policyTypeCount = reader.Read<byte>();
 
             ArrayUtils.EnsureCapacity(ref Policies, regionCount);
 
             for(int i = 0; i < regionCount; i++) {
-                Policies[i].EverSet = new BitSet32(Unsafe.Read<byte>(ref data, ref remaining));
+                Policies[i].EverSet = new BitSet32(reader.Read<byte>());
                 ArrayUtils.EnsureCapacity(ref Policies[i].Map, policyTypeCount);
                 for(int j = 0; j < policyTypeCount; j++) {
-                    Policies[i].Map[j] = (PolicyLevel) Unsafe.Read<byte>(ref data, ref remaining);
+                    Policies[i].Map[j] = (PolicyLevel) reader.Read<byte>();
                 }
             }
         }

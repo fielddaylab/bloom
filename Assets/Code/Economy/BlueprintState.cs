@@ -292,7 +292,7 @@ namespace Zavala.Economy
                             VfxUtility.PlayEffect(commitAction.BuiltObj.transform.position, EffectType.Poof);
                             SfxUtility.PlaySfx("build-poof");
 
-                            int buildingId = BuildToolState.UserBuildingIdStart + toolState.TotalBuildingsBuilt++;
+                            toolState.TotalBuildingsBuilt++;
 
                             UserBuilding ub = commitAction.BuiltObj.GetComponent<UserBuilding>();
                             if (ub != null) {

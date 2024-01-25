@@ -259,6 +259,30 @@ namespace FieldDay {
             return true;
         }
 
+        /// <summary>
+        /// Is the given GameObject in a loaded or loading scene.
+        /// </summary>
+        static public bool IsLoadingOrLoaded(Component component) {
+            if (ReferenceEquals(component, null) || !component) {
+                return false;
+            }
+
+            SceneHelper.LoadingState loadingState = component.gameObject.scene.GetLoadingState();
+            return loadingState == SceneHelper.LoadingState.Loading || loadingState == SceneHelper.LoadingState.Loaded;
+        }
+
+        /// <summary>
+        /// Is the given GameObject in a loaded or loading scene.
+        /// </summary>
+        static public bool IsLoadingOrLoaded(GameObject gameObject) {
+            if (ReferenceEquals(gameObject, null) || !gameObject) {
+                return false;
+            }
+
+            SceneHelper.LoadingState loadingState = gameObject.scene.GetLoadingState();
+            return loadingState == SceneHelper.LoadingState.Loading || loadingState == SceneHelper.LoadingState.Loaded;
+        }
+
         #endregion // Active Checks
     
         #region Editor

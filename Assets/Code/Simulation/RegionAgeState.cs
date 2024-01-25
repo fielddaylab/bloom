@@ -8,10 +8,10 @@ namespace Zavala.Sim {
     public class RegionAgeState : SharedStateComponent, IRegistrationCallbacks
     {
         [NonSerialized] public bool SimPhosphorusAdvanced;
-        [NonSerialized] public Dictionary<RegionId, int> AgeTriggers; // TODO: Replace with array
+        [NonSerialized] public EMap<RegionId, int> AgeTriggers;
 
         public void OnRegister() {
-            AgeTriggers = new Dictionary<RegionId, int>(3);
+            AgeTriggers = new EMap<RegionId, int>(RegionInfo.MaxRegions);
         }
 
         public void OnDeregister() {
@@ -27,14 +27,14 @@ namespace Zavala.Sim {
 
         [LeafMember("AddRegionAgeTrigger")]
         static public void AddRegionAgeTrigger(int region, int age) {
-            ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers.Add((RegionId)region-1, age); // 1-indexed to 0-indexed
+            ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers[region - 1] = age; // 1-indexed to 0-indexed
         }
 
         [LeafMember("AddRegionAgeDeltaTrigger")]
         static public void AddRegionAgeDeltaTrigger(int region, int delay) {
             region--; // 1-indexed to 0-indexed
             int finalAge = ZavalaGame.SharedState.Get<SimGridState>().Regions[region].Age + delay;
-            ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers.Add((RegionId)region, finalAge); 
+            ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers[region] = finalAge; 
         }
     }
 }

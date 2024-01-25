@@ -42,22 +42,30 @@ namespace Zavala.Roads
             Sources = new RingBuffer<RoadSourceInfo>(32, RingBufferMode.Expand);
             ExportDepotMap = new Dictionary<uint, List<ResourceSupplierProxy>>();
 
-            ZavalaGame.SaveBuffer.RegisterHandler("Roads", this);
+            ZavalaGame.SaveBuffer.RegisterHandler("Roads", this, 50);
         }
 
         void IRegistrationCallbacks.OnDeregister() {
             ZavalaGame.SaveBuffer.DeregisterHandler("Roads");
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
-            // TODO: Implement
-        }
-
-        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
-            // TODO: Implement
-        }
-
         #endregion // Registration
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            for (int i = 0; i < consts.DataRegion.Size; i++) {
+                int idx = consts.DataRegion.FastIndexToGridIndex(i);
+                writer.Write(Roads.Info[idx].FlowMask.Value);
+            }
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+            for (int i = 0; i < consts.DataRegion.Size; i++) {
+                int idx = consts.DataRegion.FastIndexToGridIndex(i);
+                reader.Read(ref Roads.Info[idx].FlowMask.Value);
+            }
+
+            // TODO: queue road reconstruction
+        }
     }
 
     [Flags]

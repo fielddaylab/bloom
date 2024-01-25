@@ -3,10 +3,12 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Components;
 using UnityEngine;
+using Zavala.Building;
+using Zavala.Data;
 
 namespace Zavala.Economy {
     [DisallowMultipleComponent]
-    public sealed class ResourceStorage : BatchedComponent {
+    public sealed class ResourceStorage : BatchedComponent, IPersistBuildingComponent {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock Capacity = new ResourceBlock() {
             Manure = 8,
@@ -32,6 +34,14 @@ namespace Zavala.Economy {
             Current.SetAll(0);
 
             base.OnDisable();
+        }
+
+        void IPersistBuildingComponent.Read(PersistBuilding building, ref ByteReader reader) {
+            Current.Read(ref reader);
+        }
+
+        void IPersistBuildingComponent.Write(PersistBuilding building, ref ByteWriter writer) {
+            Current.Write(ref writer);
         }
     }
 

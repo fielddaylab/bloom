@@ -57,8 +57,6 @@ namespace Zavala.Sim {
         }
 
         public override void Shutdown() {
-            SimAllocator.Destroy();
-
             base.Shutdown();
         }
 

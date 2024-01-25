@@ -10,10 +10,11 @@ using Zavala.Input;
 using System;
 using BeauUtil.Debugger;
 using FieldDay;
+using Zavala.Data;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
-    public sealed class SimWorldCamera : SharedStateComponent {
+    public sealed class SimWorldCamera : SharedStateComponent, ISaveStateChunkObject, IRegistrationCallbacks {
         #region Inspector
 
         [Header("Camera Positioning")]
@@ -31,7 +32,24 @@ namespace Zavala.World {
         [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
         [NonSerialized] public Vector3 PanTargetPoint;
+
+        void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Camera");
+        }
+
+        void IRegistrationCallbacks.OnRegister() {
+            ZavalaGame.SaveBuffer.RegisterHandler("Camera", this);
+        }
+
         #endregion // Inspector
+
+        void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+            LookTarget.position = reader.Read<Vector3>();
+        }
+
+        void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            writer.Write(LookTarget.position);
+        }
     }
 
     public static class WorldCameraUtility {

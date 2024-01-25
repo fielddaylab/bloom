@@ -260,12 +260,17 @@ namespace FieldDay.Scenes {
 
         public void LoadMainScene(string scenePath) {
             Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
-            QueueMainLoadInternal(scenePath, true);
+            QueueMainLoadInternal(scenePath, true, false);
         }
 
         public void LoadMainScene(SceneReference scene) {
             Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
-            QueueMainLoadInternal(scene.Path, true);
+            QueueMainLoadInternal(scene.Path, true, false);
+        }
+
+        public void ReloadMainScene() {
+            Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
+            QueueMainLoadInternal(m_MainScene.Scene.path, true, true);
         }
 
         #endregion // Main Load
@@ -419,7 +424,7 @@ namespace FieldDay.Scenes {
 
         internal void Prepare() {
             if (m_MainScene == null && !m_MainSceneLoadProcess) {
-                QueueMainLoadInternal(SceneManager.GetActiveScene().path, false);
+                QueueMainLoadInternal(SceneManager.GetActiveScene().path, false, true);
             }
 
             // need to ensure we still have a scene reamining when unloading,
@@ -526,17 +531,17 @@ namespace FieldDay.Scenes {
             }
         }
 
-        private void QueueMainLoadInternal(string path, bool killNonPersistentLoads) {
+        private void QueueMainLoadInternal(string path, bool killNonPersistentLoads, bool force) {
             SceneDataExt data = SceneDataExt.GetByPath(path);
 
-            if (data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
+            if (!force && data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
                 return;
             }
 
             LoadProcessArgs args = new LoadProcessArgs() {
                 Path = path,
                 Type = SceneType.Main,
-                Flags = 0,
+                Flags = force ? SceneImportFlags.ForceReload : 0,
                 Tag = default,
                 Transform = null
             };
@@ -569,7 +574,6 @@ namespace FieldDay.Scenes {
                 m_LoadProcessQueue.PushBack(args);
             }
         }
-
 
         #endregion // Internal
 
@@ -902,7 +906,7 @@ namespace FieldDay.Scenes {
 
                 // validate
                 SceneDataExt existing = SceneDataExt.GetByPath(args.Path);
-                if (existing != null && existing.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
+                if ((args.Flags & SceneImportFlags.ForceReload) == 0 && existing != null && existing.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
                     yield break;
                 }
 

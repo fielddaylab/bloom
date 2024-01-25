@@ -7,6 +7,7 @@ using Leaf.Runtime;
 using System;
 using UnityEngine;
 using Zavala.Data;
+using static UnityEditor.Experimental.GraphView.Port;
 
 namespace Zavala.Sim {
     public sealed class SimAlgaeState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
@@ -22,6 +23,7 @@ namespace Zavala.Sim {
         [NonSerialized] public float[] TotalAlgaePerRegion;
 
         void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Algae");
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -29,14 +31,47 @@ namespace Zavala.Sim {
             SimGridState gridState = ZavalaGame.SimGrid;
             TotalAlgaePerRegion = new float[RegionInfo.MaxRegions];
             Algae.Create(gridState.HexSize);
+
+            ZavalaGame.SaveBuffer.RegisterHandler("Algae", this, 101);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
-            // TODO: Implement
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+            int delta = reader.Read<int>();
+
+            Algae.PeakingTiles.Clear();
+            Algae.BloomedTiles.Clear();
+            Algae.GrowingTiles.Clear();
+
+            CurrentMinPForAlgaeGrowth = AlgaeSim.MinPForAlgaeGrowthDefault + delta;
+            ArrayUtils.EnsureCapacity(ref TotalAlgaePerRegion, consts.MaxRegions);
+            for (int i = 0; i < consts.MaxRegions; i++) {
+                reader.Read(ref TotalAlgaePerRegion[i]);
+            }
+
+            for (int i = 0; i < consts.DataRegion.Size; i++) {
+                int idx = consts.DataRegion.FastIndexToGridIndex(i);
+                ref var state = ref Algae.State[idx];
+                reader.Read(ref state.PercentAlgae);
+                state.IsPeaked = state.PercentAlgae >= 1;
+                if (state.IsPeaked) {
+                    Algae.PeakingTiles.Add(idx);
+                } else if (state.PercentAlgae > 0) {
+                    Algae.GrowingTiles.Add(idx);
+                    Algae.BloomedTiles.Add(idx);
+                }
+            }
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
-            // TODO: Implement
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            writer.Write(CurrentMinPForAlgaeGrowth - AlgaeSim.MinPForAlgaeGrowthDefault);
+            for(int i = 0; i < consts.MaxRegions; i++) {
+                writer.Write(TotalAlgaePerRegion[i]);
+            }
+
+            for (int i = 0; i < consts.DataRegion.Size; i++) {
+                int idx = consts.DataRegion.FastIndexToGridIndex(i);
+                writer.Write(Algae.State[idx].PercentAlgae);
+            }
         }
     }
     public class SimAlgaeUtility {

@@ -23,12 +23,14 @@ namespace Zavala {
         private void OnEnable() {
             RefreshData();
             Game.Events.Register(SimGridState.Event_RegionUpdated, RefreshData);
+            Game.Components.Register(this);
         }
 
         private void OnDisable() {
             if (Game.IsShuttingDown) {
                 return;
             }
+            Game.Components.Deregister(this);
             Game.Events.Deregister(SimGridState.Event_RegionUpdated, RefreshData);
         }
 

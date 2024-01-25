@@ -29,38 +29,50 @@ namespace FieldDay.Scripting {
             ZavalaGame.SaveBuffer.RegisterHandler("ScriptPersist", this, -100);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
             GlobalVars.Clear();
             IntroVars.Clear();
+            SavedViewedNodeIds.Clear();
 
-            int globalCount = Unsafe.Read<ushort>(ref data, ref remaining);
+            int globalCount = reader.Read<ushort>();
             GlobalVars.Capacity = Mathf.NextPowerOfTwo(globalCount);
             for(int i = 0; i < globalCount; i++) {
-                NamedVariant variant = Unsafe.Read<NamedVariant>(ref data, ref remaining);
+                NamedVariant variant = reader.Read<NamedVariant>();
                 GlobalVars.Set(variant.Id, variant.Value);
             }
 
             GlobalVars.Optimize();
 
-            int introCount = Unsafe.Read<ushort>(ref data, ref remaining);
+            int introCount = reader.Read<ushort>();
             IntroVars.Capacity = Mathf.NextPowerOfTwo(globalCount);
             for (int i = 0; i < introCount; i++) {
-                NamedVariant variant = Unsafe.Read<NamedVariant>(ref data, ref remaining);
+                NamedVariant variant = reader.Read<NamedVariant>();
                 IntroVars.Set(variant.Id, variant.Value);
             }
 
             IntroVars.Optimize();
+
+            int viewedNodeCount = reader.Read<ushort>();
+            SetUtils.EnsureCapacity(SavedViewedNodeIds, viewedNodeCount);
+            for(int i = 0; i < viewedNodeCount; i++) {
+                SavedViewedNodeIds.Add(reader.Read<StringHash32>());
+            }
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
-            Unsafe.Write((ushort) GlobalVars.Count, ref data, ref written, capacity);
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            writer.Write((ushort) GlobalVars.Count);
             for(int i = 0; i < GlobalVars.Count; i++) {
-                Unsafe.Write(GlobalVars[i], ref data, ref written, capacity);
+                writer.Write(GlobalVars[i]);
             }
 
-            Unsafe.Write((ushort) IntroVars.Count, ref data, ref written, capacity);
+            writer.Write((ushort) IntroVars.Count);
             for (int i = 0; i < IntroVars.Count; i++) {
-                Unsafe.Write(IntroVars[i], ref data, ref written, capacity);
+                writer.Write(IntroVars[i]);
+            }
+
+            writer.Write((ushort) SavedViewedNodeIds.Count);
+            foreach(var node in SavedViewedNodeIds) {
+                writer.Write(node);
             }
         }
     }

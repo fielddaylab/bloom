@@ -78,15 +78,33 @@ namespace Zavala.Economy
             ZavalaGame.SaveBuffer.RegisterHandler("MarketData", this);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
-            Unsafe.Read(ref TickIndex, ref data, ref remaining);
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+            reader.Read(ref TickIndex);
+
+            DataHistoryUtil.Read(ref CFertilizerSaleHistory, ref reader);
+            DataHistoryUtil.Read(ref ManureSaleHistory, ref reader);
+            DataHistoryUtil.Read(ref DFertilizerSaleHistory, ref reader);
+            DataHistoryUtil.Read(ref SalesTaxHistory, ref reader);
+            DataHistoryUtil.Read(ref ImportTaxHistory, ref reader);
+            DataHistoryUtil.Read(ref PenaltiesHistory, ref reader);
+            DataHistoryUtil.Read(ref SkimmerCostHistory, ref reader);
+            DataHistoryUtil.Read(ref MilkRevenueHistory, ref reader);
 
             // TODO: Implement
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
-            Unsafe.Write(TickIndex, ref data, ref written, capacity);
-            
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            writer.Write(TickIndex);
+
+            DataHistoryUtil.Write(CFertilizerSaleHistory, ref writer);
+            DataHistoryUtil.Write(ManureSaleHistory, ref writer);
+            DataHistoryUtil.Write(DFertilizerSaleHistory, ref writer);
+            DataHistoryUtil.Write(SalesTaxHistory, ref writer);
+            DataHistoryUtil.Write(ImportTaxHistory, ref writer);
+            DataHistoryUtil.Write(PenaltiesHistory, ref writer);
+            DataHistoryUtil.Write(SkimmerCostHistory, ref writer);
+            DataHistoryUtil.Write(MilkRevenueHistory, ref writer);
+
             // TODO: Implement
         }
     }

@@ -47,7 +47,7 @@ namespace Zavala
 
         #if DEVELOPMENT
 
-        [NonSerialized] private readonly HashSet<StringHash32> m_UsageAudit = Zavala.Collections.NewSet<StringHash32>(1024);
+        [NonSerialized] private readonly HashSet<StringHash32> m_UsageAudit = SetUtils.Create<StringHash32>(1024);
 
         #endif // DEVELOPMENT
         

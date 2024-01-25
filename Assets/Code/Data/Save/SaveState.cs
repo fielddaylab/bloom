@@ -16,6 +16,7 @@ namespace Zavala.Data {
     public struct SaveStateChunkHeader {
         public StringHash32 Id;
         public uint ChunkLength;
+        public uint ChunkLengthUncompressed;
     }
 
     public struct SaveStateChunkConsts {
@@ -24,12 +25,12 @@ namespace Zavala.Data {
         public HexGridSubregion DataRegion;
     }
 
-    public unsafe delegate void SaveStateChunkWriter(object context, ref byte* data, ref int bytesWritten, int capacity, SaveStateChunkConsts consts);
-    public unsafe delegate void SaveStateChunkReader(object context, ref byte* data, ref int bytesRemaining, SaveStateChunkConsts consts);
+    public delegate void SaveStateChunkWriter(object context, ref ByteWriter writer, SaveStateChunkConsts consts);
+    public delegate void SaveStateChunkReader(object context, ref ByteReader reader, SaveStateChunkConsts consts);
 
-    public unsafe interface ISaveStateChunkObject {
-        void Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts);
-        void Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts);
+    public interface ISaveStateChunkObject {
+        void Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts);
+        void Read(object self, ref ByteReader reader, SaveStateChunkConsts consts);
     }
 
     public interface ISaveStatePostLoad {

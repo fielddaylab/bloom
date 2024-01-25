@@ -39,8 +39,6 @@ namespace Zavala.Building {
 
     [SharedStateInitOrder(10)]
     public class BuildToolState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
-        public const int UserBuildingIdStart = 1024;
-
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public RoadToolState RoadToolState;
 
@@ -84,25 +82,25 @@ namespace Zavala.Building {
             RoadToolState.ClearState();
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref byte* data, ref int written, int capacity, SaveStateChunkConsts consts) {
-            Unsafe.Write(TotalBuildingsBuilt, ref data, ref written, capacity);
-            Unsafe.Write(NumStoragesBuilt, ref data, ref written, capacity);
-            Unsafe.Write(NumDigestersBuilt, ref data, ref written, capacity);
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+            writer.Write(TotalBuildingsBuilt);
+            writer.Write(NumStoragesBuilt);
+            writer.Write(NumDigestersBuilt);
 
             StorageBuiltInRegion.Unpack(out uint storageRegionBits);
-            Unsafe.Write((byte) storageRegionBits, ref data, ref written, capacity);
+            writer.Write((byte) storageRegionBits);
 
             DigesterBuiltInRegion.Unpack(out uint digesterRegionBits);
-            Unsafe.Write((byte) digesterRegionBits, ref data, ref written, capacity);
+            writer.Write((byte) digesterRegionBits);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref byte* data, ref int remaining, SaveStateChunkConsts consts) {
-            Unsafe.Read(ref TotalBuildingsBuilt, ref data, ref remaining);
-            Unsafe.Read(ref NumStoragesBuilt, ref data, ref remaining);
-            Unsafe.Read(ref NumDigestersBuilt, ref data, ref remaining);
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+            reader.Read(ref TotalBuildingsBuilt);
+            reader.Read(ref NumStoragesBuilt);
+            reader.Read(ref NumDigestersBuilt);
 
-            StorageBuiltInRegion = new BitSet32(Unsafe.Read<byte>(ref data, ref remaining));
-            DigesterBuiltInRegion = new BitSet32(Unsafe.Read<byte>(ref data, ref remaining));
+            StorageBuiltInRegion = new BitSet32(reader.Read<byte>());
+            DigesterBuiltInRegion = new BitSet32(reader.Read<byte>());
         }
     }
 
