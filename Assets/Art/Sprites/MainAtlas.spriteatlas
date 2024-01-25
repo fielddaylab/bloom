@@ -125,6 +125,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5eba4e9e389da764f8119e6c4b47bb76, type: 3}
   - {fileID: 21300000, guid: 24ba8fce21db8d846a69f995fb37c59b, type: 3}
   - {fileID: 21300000, guid: 54cfc3fe99abf0c4086d8577ee156cf5, type: 3}
+  - {fileID: 21300000, guid: 82b59a2f0c34e2b47b10eda9bf8b5b96, type: 3}
   - {fileID: 21300000, guid: 198b113fc46f2cd4287d013e53169f07, type: 3}
   - {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
   - {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
@@ -205,6 +206,7 @@ SpriteAtlas:
   - BigDestroyBackground
   - dialog-arrow
   - PurchaseReceipt
+  - close-button
   - storage-popup
   - urgentflag_grain
   - resource_manure

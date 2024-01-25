@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using BeauRoutine.Extensions;
+using Zavala.Cards;
+using TMPro;
 
 namespace Zavala.UI
 {
@@ -18,6 +20,11 @@ namespace Zavala.UI
         [SerializeField] private Button m_ReturnButton;
         [SerializeField] private RectTransform m_Rect;
 
+        [Space(5)]
+        [Header("Text")]
+        [SerializeField] private TextAsset m_CreditsTextAsset;
+        [SerializeField] private TMP_Text m_CreditsText;
+
         #endregion // Inspector
 
         private Routine m_TransitionRoutine;
@@ -27,6 +34,8 @@ namespace Zavala.UI
         private void OnEnable()
         {
             m_ReturnButton.onClick.AddListener(HandleReturnClicked);
+
+            ParseCredits();
         }
 
         #endregion // Unity Callbacks
@@ -59,8 +68,28 @@ namespace Zavala.UI
         private IEnumerator ExitRoutine()
         {
             yield return m_Rect.AnchorPosTo(TRANSITION_X, TRANSITION_TIME, Axis.X).Ease(Curve.CubeOut);
+
+            ResetLayout();
         }
 
         #endregion // Routines
+
+        private void ResetLayout()
+        {
+            
+        }
+
+        #region Credits Parsing
+
+        private void ParseCredits()
+        {
+            List<string> creditsBlocks = TextIO.TextAssetToList(m_CreditsTextAsset, "::");
+
+
+
+            m_CreditsText.SetText(creditsBlocks[0]);
+        }
+
+        #endregion // Credits Parsing
     }
 }
