@@ -531,7 +531,7 @@ namespace Zavala.Building
                 
             }
 
-            if (roadCount < 3 && !anyRoad) {
+            if (roadCount < 2 /*&& !anyRoad*/) {
                 // can only connect to adj tile if at least one is a road
                 return false;
             }
