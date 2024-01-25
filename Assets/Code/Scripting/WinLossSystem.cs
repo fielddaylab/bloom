@@ -7,6 +7,7 @@ using FieldDay.Systems;
 using System;
 using Zavala.Economy;
 using Zavala.Sim;
+using Zavala.World;
 
 namespace Zavala.Scripting {
     public class WinLossSystem : SharedStateSystemBehaviour<WinLossState, SimGridState, RegionUnlockState> {
@@ -68,7 +69,7 @@ namespace Zavala.Scripting {
                 Log.Warn("[WinLossSystem] TRIGGERED GAME WIN {0} in Region {1}", cond.Type, regionIndex);
                 using (TempVarTable varTable = TempVarTable.Alloc()) {
                     varTable.Set("endType", cond.Type.ToString());
-                    varTable.Set("regionIndex", regionIndex);
+                    varTable.Set("alertRegion", regionIndex + 1);
                     ScriptUtility.Trigger(GameTriggers.GameCompleted, varTable);
                 }
                 return;
@@ -77,7 +78,8 @@ namespace Zavala.Scripting {
 
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("endType", cond.Type.ToString());
-                varTable.Set("regionIndex", regionIndex);
+                varTable.Set("alertRegion", regionIndex + 1);
+                WorldCameraUtility.PanCameraToRegionCity(regionIndex + 1);
                 ScriptUtility.Trigger(GameTriggers.GameFailed, varTable);
             }
         }

@@ -35,6 +35,7 @@ namespace Zavala.World {
     }
 
     public static class WorldCameraUtility {
+        [SharedStateReference] static public SimWorldCamera Cam { get; private set; }
 
         [LeafMember("PanToBuilding")]
         public static void PanCameraToActor(StringHash32 id) {
@@ -43,7 +44,7 @@ namespace Zavala.World {
                 Log.Error("[WorldCameraUtility] Error: tried to pan to nonexistent actor.");
                 return;
             }
-            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform.position);
+            PanCameraToPoint(Cam, ScriptUtility.LookupActor(id).transform.position);
         }
 
         [LeafMember("PanToBuildingOffset")]
@@ -52,15 +53,21 @@ namespace Zavala.World {
                 Log.Error("[WorldCameraUtility] Error: tried to pan to nonexistent actor.");
                 return;
             }
-            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), ScriptUtility.LookupActor(id).transform.position + new Vector3(xzoffset, 0f, xzoffset));
+            PanCameraToPoint(Cam, ScriptUtility.LookupActor(id).transform.position + new Vector3(xzoffset, 0f, xzoffset));
+        }
+
+        [LeafMember("PanToRegionCity")]
+        public static void PanCameraToRegionCity(int regionOneIndexed) {
+            string cityId = "region" + regionOneIndexed.ToStringLookup() + "_city1";
+            PanCameraToActor(cityId, -1);
         }
 
         public static void PanCameraToTransform(Transform t) {
-            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), t.position);
+            PanCameraToPoint(Cam, t.position);
         }
 
         public static void PanCameraToPoint(Vector3 pt) {
-            PanCameraToPoint(Game.SharedState.Get<SimWorldCamera>(), pt);
+            PanCameraToPoint(Cam, pt);
         }
 
 
@@ -70,9 +77,8 @@ namespace Zavala.World {
         }
 
         private static IEnumerator PanRoutine(SimWorldCamera cam) {
-            yield return cam.LookTarget.MoveToWithSpeed(cam.PanTargetPoint, cam.CameraMoveSpeed, Axis.XZ).Ease(Curve.Smooth);
-            // cam.PanTargetPoint;
-
+            // yield return cam.LookTarget.MoveTo(cam.PanTargetPoint, 0.5f, Axis.XZ).Ease(Curve.Smooth);
+            yield return cam.LookTarget.MoveToWithSpeed(cam.PanTargetPoint, cam.CameraMoveSpeed, Axis.XZ).Ease(Curve.CubeOut);
             yield return null;
         }
 
