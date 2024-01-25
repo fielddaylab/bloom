@@ -475,6 +475,7 @@ MonoBehaviour:
   NameLabel: {fileID: 255466456258285580}
   RegionLabel: {fileID: 7169908300617803081}
   Arrow: {fileID: 3650927436475929429}
+  ArrowText: {fileID: 2691305775378122082}
   PriceGroup: {fileID: 502169146404820167}
   PriceLayout: {fileID: 6073462408510411465}
   BasePriceCol: {fileID: 8848541607716950744}

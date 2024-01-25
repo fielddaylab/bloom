@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 5}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2564574997494220046
@@ -66,7 +66,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Cheapest fertilizer sellers:'
+  m_text: 'Which is the most
+
+    profitable?'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b8f7b9f6b1727ad44b72c4dcdaf06660, type: 2}
   m_sharedMaterial: {fileID: -7097076961263154809, guid: b8f7b9f6b1727ad44b72c4dcdaf06660, type: 2}
@@ -677,6 +679,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3963800827592362286}
   - component: {fileID: 7919600969904489001}
+  - component: {fileID: 3349566884281914984}
   m_Layer: 5
   m_Name: Best Option Banner
   m_TagString: Untagged
@@ -706,7 +709,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 11.3, y: 119.399994}
-  m_SizeDelta: {x: 120, y: 40}
+  m_SizeDelta: {x: 130, y: 40}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &7919600969904489001
 CanvasRenderer:
@@ -716,6 +719,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8256755349198844284}
   m_CullTransparentMesh: 1
+--- !u!114 &3349566884281914984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256755349198844284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 663c19e561d64ee4ea2158616f6334f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Banner: {fileID: 2379719903294499292}
+  Arrow: {fileID: 2805585942599458527}
+  ArrowText: {fileID: 7790059064468652822}
 --- !u!1001 &89311991392934597
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -34,18 +34,24 @@ Total Fertilizer Market Share
 Local Market Targets
 
 :: popup.info.buying
-If suppliers 
-are selling:
+Which is the
+cheapest?
+
+:: popup.info.buyingArrow
+Buy:
 
 :: popup.info.selling
-Which is most
+Which is the most
 profitable?
 
+:: popup.info.sellingArrow
+Sell:
+
 :: popup.info.buyingResource
-Buying
+Purchases
 
 :: popup.info.sellingResource
-Selling
+Sales
 
 :: popup.info.city.falling
 The City’s population is <u><color="red">falling</color></u> due to:

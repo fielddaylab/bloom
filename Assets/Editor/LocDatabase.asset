@@ -306,10 +306,14 @@ MonoBehaviour:
       Content: 'If suppliers
 
         are selling:'
+    - Id: ui.popup.info.buyingArrow
+      Content: 'Buy:'
     - Id: ui.popup.info.selling
       Content: 'Which is most
 
         profitable?'
+    - Id: ui.popup.info.sellingArrow
+      Content: 'Sell:'
     - Id: ui.popup.info.buyingResource
       Content: Buying
     - Id: ui.popup.info.sellingResource
