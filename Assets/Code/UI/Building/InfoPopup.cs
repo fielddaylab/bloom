@@ -260,7 +260,7 @@ namespace Zavala.UI.Info {
 
             m_Pin.Pin(thing.transform);
             PopulateHeader();
-            UpdateData(true);
+            Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
 
             Show();
         }
@@ -522,6 +522,7 @@ namespace Zavala.UI.Info {
         private void UpdateData(bool forceRefresh) {
             Log.Msg("[InfoPopup] Updating data... resource: {0}", m_ActiveResource);
             bool refresh = m_ConnectionsDirty || forceRefresh;
+
             switch (m_Mode) {
                 case BuildingType.DairyFarm: {
                     bool shipping = m_ActiveResource != ResourceMask.Grain;
@@ -530,7 +531,7 @@ namespace Zavala.UI.Info {
                         m_SubheaderLabel.SetText(BuySellString(shipping));
                     }
 
-                        MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_QueryResults, m_ActiveResource, shipping, refresh);
+                    MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_QueryResults, m_ActiveResource, shipping, refresh);
 
                     SortQueryResults(shipping);
                     PopulateMarketDisplay(shipping);
@@ -635,7 +636,7 @@ namespace Zavala.UI.Info {
 
         private void HandleTabClicked(ResourceMask resource) {
             PickTab(resource);
-            UpdateData(true);
+            Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
         }
 
         private string BuySellString(bool isShipping) {
@@ -690,7 +691,7 @@ namespace Zavala.UI.Info {
         private void OnPolicyUpdated()
         {
             m_ConnectionsDirty = true;
-            UpdateData(true);
+            Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
         }
 
         #endregion // Handlers

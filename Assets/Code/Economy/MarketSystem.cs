@@ -24,26 +24,30 @@ namespace Zavala.Economy
         private Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>> m_SupplierOfferMap = new Dictionary<ResourceRequester, RingBuffer<MarketSupplierOffer>>();
         private readonly RingBuffer<MarketSupplierOffer> m_SupplierOfferWorkList = new RingBuffer<MarketSupplierOffer>(4, RingBufferMode.Expand);
 
-        public override void ProcessWork(float deltaTime) {
+        public override void ProcessWork(float deltaTime)
+        {
             SimTimeState time = ZavalaGame.SimTime;
 
             MoveReceivedToStorage();
 
             bool marketCycle = m_StateA.MarketTimer.Advance(deltaTime, time);
 
-            if (m_StateA.UpdatePrioritiesNow || marketCycle) {
+            if (m_StateA.UpdatePrioritiesNow || marketCycle)
+            {
                 UpdateAllSupplierPriorities();
                 UpdateAllRequesterPriorities();
                 m_StateA.UpdatePrioritiesNow = false;
                 ZavalaGame.Events.Dispatch(GameEvents.MarketPrioritiesRebuilt);
             }
 
-            if (marketCycle) {
+            if (marketCycle)
+            {
                 ProcessMarketCycle();
             }
         }
 
-        private void ProcessMarketCycle() {
+        private void ProcessMarketCycle()
+        {
 
             #region MarketCycle_InitialSetup
             // INITIAL SETUP
@@ -117,7 +121,8 @@ namespace Zavala.Economy
 
             // FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER
             // TODO: FOR EACH MARKET
-            foreach (var supplier in m_SupplierWorkList) {
+            foreach (var supplier in m_SupplierWorkList)
+            {
                 for (int i = 0; i < MarketUtility.NumMarkets; i++)
                 {
                     ResourceMask marketMask = MarketUtility.MarketIndexToResourceMask(i);
@@ -140,7 +145,8 @@ namespace Zavala.Economy
                 m_SupplierOfferMap[requester].CopyTo(m_SupplierOfferWorkList);
 
                 // SORT SELLER LISTS BY FAMILIARITY
-                m_SupplierOfferWorkList.Sort((a, b) => {
+                m_SupplierOfferWorkList.Sort((a, b) =>
+                {
                     return b.FamiliarityScore - a.FamiliarityScore;
                 });
 
@@ -148,7 +154,8 @@ namespace Zavala.Economy
                 bool matchFound = false;
 
                 // Skip this requester if they couldn't hold what they are requesting.
-                if (requester.InfiniteRequests && !MarketUtility.CanHoldRequest(requester)) {
+                if (requester.InfiniteRequests && !MarketUtility.CanHoldRequest(requester))
+                {
                     Log.Msg("[MarketSystem] Requester {0} cannot hold their request! Skipping...", requester.name);
                     continue;
                 }
@@ -213,7 +220,8 @@ namespace Zavala.Economy
             #region MarketCycle_History
 
             m_StateA.TickIndex++;
-            if ((m_StateA.TickIndex % 3) == 0) {
+            if ((m_StateA.TickIndex % 3) == 0)
+            {
                 MarketUtility.FinalizeCycleHistory(marketData);
             }
 
@@ -235,9 +243,35 @@ namespace Zavala.Economy
             #endregion // PostMarketCycle_Dispatches
         }
 
+        #region IRegistrationCallbacks
+
+        public void OnEnable()
+        {
+            Game.Events?.Register(GameEvents.ForceMarketPrioritiesRebuild, HandleForcePrioritiesRebuild);
+        }
+
+        public void OnDisable()
+        {
+            Game.Events?.Deregister(GameEvents.ForceMarketPrioritiesRebuild, HandleForcePrioritiesRebuild);
+        }
+
+        #endregion // IRegistrationCallbacks
+
+        #region Handlers
+
+        private void HandleForcePrioritiesRebuild()
+        {
+            UpdateAllSupplierPriorities();
+            UpdateAllRequesterPriorities();
+            ZavalaGame.Events.Dispatch(GameEvents.MarketPrioritiesRebuilt);
+        }
+
+        #endregion // Handlers
+
         #region Market Processing
 
-        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, ResourceMask resourceMask, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path, out int costToBuyer) {
+        private unsafe MarketRequestInfo? FindHighestPriorityBuyer(ResourceSupplier supplier, RingBuffer<MarketRequestInfo> requests, ResourceMask resourceMask, out int profit, out int relativeGain, out GeneratedTaxRevenue taxRevenue, out ushort proxyIdx, out RoadPathSummary path, out int costToBuyer)
+        {
             int highestPriorityIndex = int.MaxValue;
             int highestPriorityRequestIndex = -1;
             ResourceBlock current;
@@ -245,31 +279,39 @@ namespace Zavala.Economy
             proxyIdx = Tile.InvalidIndex16;
 
             int marketIndex = MarketUtility.ResourceMaskToMarketIndex(resourceMask);
-            for (int i = 0; i < requests.Count; i++) {
+            for (int i = 0; i < requests.Count; i++)
+            {
                 // only consider requests of the specified type
                 if ((requests[i].Requested & resourceMask).IsZero)
                 {
                     continue;
                 }
-                if (!supplier.Storage.InfiniteSupply) {
+                if (!supplier.Storage.InfiniteSupply)
+                {
 
-                    if (supplier.Storage.StorageExtensionStore == null) {
+                    if (supplier.Storage.StorageExtensionStore == null)
+                    {
                         current = supplier.Storage.Current;
                     }
-                    else if (requests[i].Requester.Position.TileIndex == supplier.Storage.StorageExtensionReq.Position.TileIndex) {
+                    else if (requests[i].Requester.Position.TileIndex == supplier.Storage.StorageExtensionReq.Position.TileIndex)
+                    {
                         current = supplier.Storage.Current;
                     }
-                    else {
+                    else
+                    {
                         current = supplier.Storage.Current + supplier.Storage.StorageExtensionStore.Current;
                     }
                     current = current & supplier.ShippingMask;
 
                     // current resources must fulfill the request unless the request is infinite AND a local option
-                    if (!ResourceBlock.Fulfills(current, requests[i].Requested)) {
-                        if (requests[i].Requester.InfiniteRequests && requests[i].Requester.IsLocalOption) {
+                    if (!ResourceBlock.Fulfills(current, requests[i].Requested))
+                    {
+                        if (requests[i].Requester.InfiniteRequests && requests[i].Requester.IsLocalOption)
+                        {
                             // no need to fulfill the request to consider it
                         }
-                        else {
+                        else
+                        {
                             // not a valid buyer, since this supplier cannot fulfill the request
                             continue;
                         }
@@ -277,7 +319,8 @@ namespace Zavala.Economy
                 }
 
                 int priorityIndex = supplier.Priorities.PrioritizedBuyers.FindIndex((i, b) => i.Target == b, requests[i].Requester);
-                if (priorityIndex < supplier.BestPriorityIndex[marketIndex]) {
+                if (priorityIndex < supplier.BestPriorityIndex[marketIndex])
+                {
                     continue;
                 }
                 /*
@@ -287,7 +330,8 @@ namespace Zavala.Economy
                 }
                 */
 
-                if (priorityIndex == supplier.BestPriorityIndex[marketIndex]) {
+                if (priorityIndex == supplier.BestPriorityIndex[marketIndex])
+                {
                     MarketRequestInfo request = requests[i];
                     profit = supplier.Priorities.PrioritizedBuyers[priorityIndex].Profit;
                     relativeGain = supplier.Priorities.PrioritizedBuyers[priorityIndex].RelativeGain;
@@ -300,13 +344,15 @@ namespace Zavala.Economy
                     return request;
                 }
 
-                if (priorityIndex < highestPriorityIndex) {
+                if (priorityIndex < highestPriorityIndex)
+                {
                     highestPriorityIndex = priorityIndex;
                     highestPriorityRequestIndex = i;
                 }
             }
 
-            if (highestPriorityRequestIndex >= supplier.BestPriorityIndex[marketIndex]) {
+            if (highestPriorityRequestIndex >= supplier.BestPriorityIndex[marketIndex])
+            {
                 MarketRequestInfo request = requests[highestPriorityRequestIndex];
                 profit = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].Profit;
                 relativeGain = supplier.Priorities.PrioritizedBuyers[highestPriorityIndex].RelativeGain;
@@ -327,7 +373,8 @@ namespace Zavala.Economy
             return null;
         }
 
-        private void UpdateAllSupplierPriorities() {
+        private void UpdateAllSupplierPriorities()
+        {
             m_StateA.Buyers.CopyTo(m_RequesterWorkList);
 
             RoadNetwork roadState = Game.SharedState.Get<RoadNetwork>();
@@ -339,7 +386,8 @@ namespace Zavala.Economy
                 requester.PriceNegotiator.OfferedRecord.SetAll((int)NegotiableCode.NO_OFFER);
             }
 
-            foreach (var supplier in m_StateA.Suppliers) {
+            foreach (var supplier in m_StateA.Suppliers)
+            {
                 supplier.PriceNegotiator.OfferedRecord.SetAll((int)NegotiableCode.NO_OFFER);
                 UpdateSupplierPriority(supplier, m_StateA, m_StateB, roadState, gridSize, tutorialState);
             }
@@ -350,16 +398,19 @@ namespace Zavala.Economy
             Log.Msg("[MarketSystem] Updated supplier priorities");
         }
 
-        private void UpdateSupplierPriority(ResourceSupplier supplier, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState) {
+        private void UpdateSupplierPriority(ResourceSupplier supplier, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState)
+        {
             m_BuyerPriorityWorkList.Clear();
             supplier.Priorities.PrioritizedBuyers.Clear();
 
             ResourceMask shippingMask = supplier.ShippingMask;
 
-            foreach (var requester in m_RequesterWorkList) {
+            foreach (var requester in m_RequesterWorkList)
+            {
                 // ignore buyers that don't overlap with shipping mask
                 ResourceMask overlap = requester.RequestMask & supplier.ShippingMask;
-                if (overlap == 0) {
+                if (overlap == 0)
+                {
                     continue;
                 }
                 if (requester.RefusesSameBuildingType && requester.Position.Type == supplier.Position.Type)
@@ -368,23 +419,28 @@ namespace Zavala.Economy
                 }
 
                 RoadPathSummary connectionSummary;
-                if (supplier.Position.IsExternal) {
+                if (supplier.Position.IsExternal)
+                {
                     connectionSummary = new RoadPathSummary();
-                    connectionSummary.DestinationIdx = (ushort) requester.Position.TileIndex;
+                    connectionSummary.DestinationIdx = (ushort)requester.Position.TileIndex;
                     connectionSummary.Connected = true;
                 }
-                else {
+                else
+                {
                     connectionSummary = RoadUtility.IsConnected(network, gridSize, supplier.Position.TileIndex, requester.Position.TileIndex);
                 }
 
-                if (!connectionSummary.Connected) {
+                if (!connectionSummary.Connected)
+                {
                     continue;
                 }
-                if (connectionSummary.Distance != 0 && requester.IsLocalOption) {
+                if (connectionSummary.Distance != 0 && requester.IsLocalOption)
+                {
                     // Exclude local options from lists of non-local tiles
                     continue;
                 }
-                if (supplier.Position.TileIndex == requester.Position.TileIndex && !requester.IsLocalOption) {
+                if (supplier.Position.TileIndex == requester.Position.TileIndex && !requester.IsLocalOption)
+                {
                     // Exclude a tile from supplying itself -- storage, I'm looking at you :(
                     continue;
                 }
@@ -392,33 +448,42 @@ namespace Zavala.Economy
                 bool proxyMatch = false;
 
                 //External case
-                if (supplier.Position.IsExternal) {
+                if (supplier.Position.IsExternal)
+                {
                     // Don't summon blimps until basic tutorial completes
-                    if (tutorialState.CurrState <= TutorialState.State.InactiveSim) {
+                    if (tutorialState.CurrState <= TutorialState.State.InactiveSim)
+                    {
                         continue;
                     }
                 }
                 // Regular case
-                else {
+                else
+                {
                     // Adjust for if is a proxy connection
-                    if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
+                    if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16)
+                    {
                         // If proxy connection, ensure proxy is for the right type of resource
                         uint region = ZavalaGame.SimGrid.Terrain.Regions[connectionSummary.ProxyConnectionIdx];
-                        if (network.ExportDepotMap.ContainsKey(region)) {
+                        if (network.ExportDepotMap.ContainsKey(region))
+                        {
                             List<ResourceSupplierProxy> proxies = network.ExportDepotMap[region];
-                            foreach (var proxy in proxies) {
+                            foreach (var proxy in proxies)
+                            {
                                 // For each export depot, check if supplier is connected to it.
-                                if (connectionSummary.ProxyConnectionIdx == proxy.Position.TileIndex) {
+                                if (connectionSummary.ProxyConnectionIdx == proxy.Position.TileIndex)
+                                {
                                     ResourceMask proxyOverlap = overlap & proxy.ProxyMask;
 
-                                    if (proxyOverlap != 0) {
+                                    if (proxyOverlap != 0)
+                                    {
                                         proxyMatch = true;
                                     }
                                 }
                             }
                         }
 
-                        if (!proxyMatch) {
+                        if (!proxyMatch)
+                        {
                             // no match
                             continue;
                         }
@@ -433,24 +498,31 @@ namespace Zavala.Economy
                 // Only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
                 int importCost = 0;
-                if (supplier.Position.IsExternal || (supplier.Position.RegionIndex != requester.Position.RegionIndex)) {
+                if (supplier.Position.IsExternal || (supplier.Position.RegionIndex != requester.Position.RegionIndex))
+                {
                     importCost = adjustments.ImportTax[primary];
                 }
                 float salesTax = adjustments.PurchaseTax[primary];
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary];
                 Log.Msg("[MarketSystem] Shipping cost: {0} to {1}, {2} * {3} = {4}", supplier.name, requester.name, connectionSummary.Distance, config.TransportCosts.CostPerTile[primary], shippingCost);
-                if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16) {
+                if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16)
+                {
                     // add flat rate export depot shipping fee
                     shippingCost += config.TransportCosts.ExportDepotFlatRate[primary];
                 }
 
                 float basePrice = 0;
                 float relativeGain = 0; // How much this supplier stands to gain by NOT incurring penalties from not selling
-                if (requester.IsLocalOption) {
+                if (requester.IsLocalOption)
+                {
                     basePrice -= adjustments.RunoffPenalty[primary];
-                } else if (requester.OverridesBuyPrice) {
+                }
+                else if (requester.OverridesBuyPrice)
+                {
                     basePrice = requester.OverrideBlock[MarketUtility.ResourceIdToMarketIndex(primary)];
-                } else {
+                }
+                else
+                {
                     // Err towards buyer purchase cost (TODO: unless they accept anything?)
                     // profit = requester.PriceNegotiator.PriceBlock[primary];
 
@@ -511,7 +583,8 @@ namespace Zavala.Economy
                 });
             }
 
-            m_BuyerPriorityWorkList.Sort((a, b) => {
+            m_BuyerPriorityWorkList.Sort((a, b) =>
+            {
                 int dif = b.Profit - a.Profit;
                 if (dif == 0)
                 {
@@ -724,7 +797,8 @@ namespace Zavala.Economy
                 });
             }
 
-            m_SellerPriorityWorkList.Sort((a, b) => {
+            m_SellerPriorityWorkList.Sort((a, b) =>
+            {
                 int dif = a.Cost - b.Cost;
                 if (dif == 0)
                 {
@@ -761,12 +835,12 @@ namespace Zavala.Economy
             m_SellerPriorityWorkList.CopyTo(requester.Priorities.PrioritizedSuppliers);
         }
 
-       private void ReassignSellerHighestPriorityBuyer(ResourceSupplier supplier, ResourceMask resourceMask)
+        private void ReassignSellerHighestPriorityBuyer(ResourceSupplier supplier, ResourceMask resourceMask)
         {
             // TODO: return if resource is not in seller's shipping mask
             // TODO: trim RequestWorkList to only include this resource
             MarketRequestInfo? found = FindHighestPriorityBuyer(supplier, m_RequestWorkList, resourceMask, out int baseProfit, out int relativeGain, out GeneratedTaxRevenue baseTaxRevenue, out ushort proxyIdx, out RoadPathSummary summary, out int costToBuyer);
-            
+
             // Only add to mapping if value is not null AND requester has not already been claimed in an optimal match
             // TODO: matched per resource
             if (found.HasValue && !found.Value.Requester.MatchedThisTick)
@@ -871,7 +945,8 @@ namespace Zavala.Economy
                     // subtract main storage from whole value
                     mainStorageBlock = ResourceBlock.Consume(ref adjustedValueRequested, supplier.Storage.Current);
 
-                    if (supplier.Storage.StorageExtensionStore != null) {
+                    if (supplier.Storage.StorageExtensionStore != null)
+                    {
                         // subtract remaining value from extension storage
                         extensionBlock = ResourceBlock.Consume(ref supplier.Storage.StorageExtensionStore.Current, adjustedValueRequested);
                     }
@@ -897,10 +972,13 @@ namespace Zavala.Economy
                 {
                     supplier.MatchedThisTick = true;
 
-                    if (activeRequest.Supplied.Milk == 0) {
+                    if (activeRequest.Supplied.Milk == 0)
+                    {
                         supplier.SoldAtALossExcludingMilk = true;
                         Log.Msg("[MarketSystem] SOLD AT A LOSS, EXCLUDING MILK");
-                    } else {
+                    }
+                    else
+                    {
                         supplier.MatchedThisTickWasMilk = true;
                     }
 
@@ -911,7 +989,7 @@ namespace Zavala.Economy
             int stressThreshold = config.StressedPurchaseThresholds[dummyMarketIndex];
             if (stressThreshold != 0 && supplierOffer.TotalCost > stressThreshold)
             {
-                Log.Msg("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!", 
+                Log.Msg("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!",
                     activeRequest.Requester.transform.name,
                     activeRequest.Supplied,
                     supplierOffer.TotalCost,
@@ -922,7 +1000,7 @@ namespace Zavala.Economy
             // MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
 
             // TODO: mark this request as EnRoute
-             m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
+            m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
 
             Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
 
@@ -954,17 +1032,24 @@ namespace Zavala.Economy
             }
 
             adjustedFound.Value.Requester.MatchedThisTick = true;
-            if (supplierOffer.BaseTaxRevenue.Sales < 0 || supplierOffer.BaseTaxRevenue.Import < 0) {
+            if (supplierOffer.BaseTaxRevenue.Sales < 0 || supplierOffer.BaseTaxRevenue.Import < 0)
+            {
                 adjustedFound.Value.Requester.SubsidyAppliedThisTick = true;
             }
         }
 
-        private int GetMarketIndexOfResourceBlock(ResourceBlock supplied) {
-            if (supplied.PhosphorusCount > 0) {
+        private int GetMarketIndexOfResourceBlock(ResourceBlock supplied)
+        {
+            if (supplied.PhosphorusCount > 0)
+            {
                 return 0;
-            } else if (supplied.Grain > 0) {
+            }
+            else if (supplied.Grain > 0)
+            {
                 return 1;
-            } else if (supplied.Milk > 0) {
+            }
+            else if (supplied.Milk > 0)
+            {
                 return 2;
             }
             Log.Warn("[MarketSystem] Failed to get MarketIndex for ResourceBlock {0}", supplied);
@@ -1001,11 +1086,14 @@ namespace Zavala.Economy
             }
 
             // NEGOTIATIONS FOR REQUESTERS
-            if (tutorial.CurrState >= TutorialState.State.ActiveSim) {
+            if (tutorial.CurrState >= TutorialState.State.ActiveSim)
+            {
                 // for all remaining, increment their age
-                for (int i = 0; i < m_RequestWorkList.Count; i++) {
+                for (int i = 0; i < m_RequestWorkList.Count; i++)
+                {
                     m_RequestWorkList[i].Age++;
-                    if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency && m_RequestWorkList[i].Requester.AgeOfUrgency > 0) {
+                    if (m_RequestWorkList[i].Age >= m_RequestWorkList[i].Requester.AgeOfUrgency && m_RequestWorkList[i].Requester.AgeOfUrgency > 0)
+                    {
                         m_StateD.NewUrgents.Add(m_RequestWorkList[i]);
                         ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, m_RequestWorkList[i].Requester.Position.TileIndex);
                     }
@@ -1043,7 +1131,7 @@ namespace Zavala.Economy
                 }
                 else
                 {
-                    string actor = "region" + (region+1) + "_city1";
+                    string actor = "region" + (region + 1) + "_city1";
                     PolicyUtility.ForcePolicyToNone(PolicyType.SkimmingPolicy, actor, region);
                 }
             }
