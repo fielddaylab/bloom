@@ -1,0 +1,119 @@
+PRODUCTION CREDITS
+
+:: Executive Producers
+Sarah Gagnon
+David Gagnon
+Victor Zavala
+
+:: Producer
+Sarah Gagnon
+
+:: Creative Director
+Sarah Gagnon
+
+:: Art Director
+Eric Lang
+
+:: Game Design 
+Amelia Moser (Lead)
+Mary Benetti
+Autumn Beauchesne
+Phil Doughtery
+David Gagnon 
+Sarah Gagnon
+Levi Huillet
+Eric Lang 
+Bobby Lockhart 
+Jim Mathews
+
+:: User Interface Design
+Eric Lang
+
+:: Game Engineers
+Autumn Beauchesne (Lead)
+Levi Huillet
+Amelia Moser
+
+:: Illustration
+Reyna Groff
+
+:: 3D Art and Animation
+Mary Benetti (Lead)
+Forest San Filippo
+
+:: Writing
+Sarah Gagnon
+Amelia Moser
+
+:: Logo & Poster Art
+Eric Lang
+Reyna Groff
+
+:: Director of Education 
+Jim Mathews
+
+:: Sound Direction
+Eric Lang
+
+:: Music and Sound Design
+Autumn Beauchesne
+Cyril Peck (Lead)
+
+:: Subject Matter Advisors
+Victor Zavala (UW-Madison) Lead
+Gerardo Ruiz-Mercado (EPA)
+David Cole (UW-Madison)
+Lauren Knose (EPA)
+
+
+:: Educator Support Materials
+Jim Mathews
+
+:: Web Development
+Eric Lang
+
+:: Game Analytics
+David Gagnon
+Levi Huillet
+Luke Swanson
+
+:: QA Lead
+Jim Mathews 
+
+:: Director of Wisconsin Center for Education Research 
+Courtney Bell
+
+:: Administrative Support
+Rosie Bell
+Angel Cartagena
+Mariana Castro
+Gwendolyn Goplin
+Mary Hegge
+Ahna Holliday
+Maria Huckleberry
+Nicole Kleinschmidt
+Brandon Schmidt
+Jennifer Scianna
+Mai Vang
+
+:: Student Playtesting Classrooms
+
+
+:: Additional Thanks to
+Chris Baker 
+Nora Juniper Gagnon
+Jacques "Bear" Gagnon
+Shari Metclaf 
+Geoffrey Nelson
+Jenn Scianna 
+
+:: Funding Provided By
+
+
+:: Open Source Technologies
+BeauData 
+BeauRoutine
+BeauUtil
+Leaf
+OpenGameData
+
