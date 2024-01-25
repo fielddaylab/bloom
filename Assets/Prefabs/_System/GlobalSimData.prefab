@@ -186,93 +186,53 @@ MonoBehaviour:
   TemplateMarketCosts:
     Buy:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
     Sell:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
   DefaultMarketPurchasePerRegion:
   - Buy:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
     Sell:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
   - Buy:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
     Sell:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
   - Buy:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
     Sell:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
   - Buy:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
     Sell:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
   - Buy:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
     Sell:
       Phosphorus: 10
-      Grain: 20
-      Milk: 40
-  - Buy:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-    Sell:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-  - Buy:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-    Sell:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-  - Buy:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-    Sell:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-  - Buy:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-    Sell:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-  - Buy:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
-    Sell:
-      Phosphorus: 10
-      Grain: 20
-      Milk: 40
+      Grain: 40
+      Milk: 60
   StressedPurchaseThresholds:
     Phosphorus: 32
     Grain: 50
