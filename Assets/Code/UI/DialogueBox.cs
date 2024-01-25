@@ -98,6 +98,10 @@ namespace Zavala.UI {
             SimTimeUtility.OnPauseUpdated.Register(HandlePauseFlagsUpdated);
         }
 
+        private void OnDestroy() {
+            m_TransitionRoutine.Stop();
+        }
+
         #region Display
 
         public IEnumerator CompleteLine() {
@@ -161,7 +165,7 @@ namespace Zavala.UI {
                     }
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
-                m_TransitionRoutine.Replace(ShowRoutine());
+                m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
             } else {
                 // no string to prepare...
                 // m_TransitionRoutine.Replace(HideRoutine());
@@ -203,12 +207,12 @@ namespace Zavala.UI {
             m_PoliciesActive = true;
             PopulateSlotsForAdvisor(advisorType);
             HideCardsInstant();
-            m_TransitionRoutine.Replace(ExpandPolicyUIRoutine());
+            m_TransitionRoutine.Replace(this, ExpandPolicyUIRoutine()).ExecuteWhileDisabled();
         }
 
         public void CollapsePolicyUI() {
             HideCardsInstant();
-            m_TransitionRoutine.Replace(CollapsePolicyUIRoutine());
+            m_TransitionRoutine.Replace(this, CollapsePolicyUIRoutine()).ExecuteWhileDisabled();
 
         }
 

@@ -71,12 +71,12 @@ namespace Zavala.Audio {
         }
 
         private void UpdatePositionalAudio() {
-            if (m_State.PositionalUpdateList.Length <= 0) {
+            if (m_State.PositionalUpdateList.Length <= 0 || !Game.SharedState.TryGet<SimWorldCamera>(out var cam)) {
                 return;
             }
 
             // TODO: better method of storing these?
-            Camera c = Game.SharedState.Get<SimWorldCamera>().Camera;
+            Camera c = cam.Camera;
             AudioListener listener = c.GetComponent<AudioListener>();
 
             listener.transform.GetPositionAndRotation(out Vector3 listenerPos, out Quaternion listenerRot);
@@ -99,7 +99,7 @@ namespace Zavala.Audio {
 
         private void FreeHandle(UniqueId16 handle) {
             if (handle != UniqueId16.Invalid) {
-                m_State.LoopHandleAllocator.Free(handle);
+                m_State.HandleAllocator.Free(handle);
             }
         }
 
@@ -147,7 +147,7 @@ namespace Zavala.Audio {
         }
 
         private void StopWithHandle(UniqueId16 handle) {
-            if (!m_State.LoopHandleAllocator.IsValid(handle)) {
+            if (!m_State.HandleAllocator.IsValid(handle)) {
                 return;
             }
 

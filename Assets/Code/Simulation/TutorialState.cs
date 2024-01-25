@@ -58,11 +58,11 @@ namespace Zavala.Sim
             ZavalaGame.SaveBuffer.DeregisterHandler("Tutorial");
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(CurrState);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             reader.Read(ref CurrState);
         }
     }

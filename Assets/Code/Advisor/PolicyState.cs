@@ -158,7 +158,7 @@ namespace Zavala.Advisor {
             SetPolicyByIndex(data.PolicyType, (int)data.PolicyLevel, (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex, false);
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write((byte) Policies.Length);
             writer.Write((byte) PolicyBlock.PolicyTypeCount);
             for(int i = 0; i < Policies.Length; i++) {
@@ -170,7 +170,7 @@ namespace Zavala.Advisor {
             }
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             int regionCount = reader.Read<byte>();
             int policyTypeCount = reader.Read<byte>();
 

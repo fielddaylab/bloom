@@ -16,7 +16,6 @@ namespace Zavala.Sim {
 
         public void OnDeregister() {
         }
-
     }
 
      static public class RegionAgeUtility

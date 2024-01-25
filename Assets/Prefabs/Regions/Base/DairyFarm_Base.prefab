@@ -521,6 +521,7 @@ MonoBehaviour:
   Position: {fileID: 7291294420475072053}
   PersistentComponents:
   - {fileID: 7291294420475072056}
+  - {fileID: 6065373712702326176}
   - {fileID: 4762982661983815291}
   - {fileID: 4506906798799843398}
   - {fileID: 695890203303957643}

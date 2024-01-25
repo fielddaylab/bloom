@@ -35,7 +35,8 @@ namespace Zavala.Sim {
             ZavalaGame.SaveBuffer.RegisterHandler("Algae", this, 101);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            SimPhosphorusState phos = Game.SharedState.Get<SimPhosphorusState>();
             int delta = reader.Read<int>();
 
             Algae.PeakingTiles.Clear();
@@ -53,16 +54,22 @@ namespace Zavala.Sim {
                 ref var state = ref Algae.State[idx];
                 reader.Read(ref state.PercentAlgae);
                 state.IsPeaked = state.PercentAlgae >= 1;
+                int phosphorus = phos.Phosphorus.CurrentState()[idx].Count;
                 if (state.IsPeaked) {
                     Algae.PeakingTiles.Add(idx);
-                } else if (state.PercentAlgae > 0) {
-                    Algae.GrowingTiles.Add(idx);
+                }
+                
+                if (state.PercentAlgae > 0) {
                     Algae.BloomedTiles.Add(idx);
+                }
+
+                if (phosphorus >= CurrentMinPForAlgaeGrowth) {
+                    Algae.GrowingTiles.Add(idx);
                 }
             }
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(CurrentMinPForAlgaeGrowth - AlgaeSim.MinPForAlgaeGrowthDefault);
             for(int i = 0; i < consts.MaxRegions; i++) {
                 writer.Write(TotalAlgaePerRegion[i]);

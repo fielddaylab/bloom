@@ -42,7 +42,7 @@ namespace Zavala.UI {
         }
 
         public void Expand() {
-            m_shopRoutine.Replace(ExpandShopRoutine()); 
+            m_shopRoutine.Replace(this, ExpandShopRoutine()); 
         }
 
         public void Collapse() {
@@ -51,7 +51,7 @@ namespace Zavala.UI {
                 BuildToolUtility.SetTool(Game.SharedState.Get<BuildToolState>(), UserBuildTool.None);
             }
 
-            m_shopRoutine.Replace(CollapseRoutine());
+            m_shopRoutine.Replace(this, CollapseRoutine());
         }
 
         public void RefreshCostChecks(int currBudget) {

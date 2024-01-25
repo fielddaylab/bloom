@@ -94,6 +94,16 @@ namespace FieldDay.Scenes {
             return (m_VisitState & flags) == flags;
         }
 
+        /// <summary>
+        /// Queue of callbacks for when the scene is marked loaded.
+        /// </summary>
+        public RingBuffer<Action> LoadedCallbackQueue = new RingBuffer<Action>(32, RingBufferMode.Expand);
+        
+        /// <summary>
+        /// Queues of callbacks for when the scene is marked as being unloaded.
+        /// </summary>
+        public RingBuffer<Action> UnloadingCallbackQueue = new RingBuffer<Action>(32, RingBufferMode.Expand);
+
         #region Tracking
 
         static private readonly List<SceneDataExt> s_Loaded = new List<SceneDataExt>(4);

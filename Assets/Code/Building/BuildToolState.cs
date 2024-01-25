@@ -82,7 +82,7 @@ namespace Zavala.Building {
             RoadToolState.ClearState();
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(TotalBuildingsBuilt);
             writer.Write(NumStoragesBuilt);
             writer.Write(NumDigestersBuilt);
@@ -94,7 +94,7 @@ namespace Zavala.Building {
             writer.Write((byte) digesterRegionBits);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             reader.Read(ref TotalBuildingsBuilt);
             reader.Read(ref NumStoragesBuilt);
             reader.Read(ref NumDigestersBuilt);

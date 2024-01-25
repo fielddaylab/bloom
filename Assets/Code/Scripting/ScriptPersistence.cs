@@ -13,7 +13,6 @@ namespace FieldDay.Scripting {
         // node ids
         public RingBuffer<StringHash32> RecentViewedNodeIds = new RingBuffer<StringHash32>(32, RingBufferMode.Overwrite);
         public HashSet<StringHash32> SessionViewedNodeIds = new HashSet<StringHash32>(256);
-        public HashSet<StringHash32> SavedViewedNodeIds = new HashSet<StringHash32>(64);
 
         public VariantTable GlobalVars = new VariantTable("global");
         public VariantTable IntroVars = new VariantTable("intro");
@@ -29,10 +28,10 @@ namespace FieldDay.Scripting {
             ZavalaGame.SaveBuffer.RegisterHandler("ScriptPersist", this, -100);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             GlobalVars.Clear();
             IntroVars.Clear();
-            SavedViewedNodeIds.Clear();
+            SessionViewedNodeIds.Clear();
 
             int globalCount = reader.Read<ushort>();
             GlobalVars.Capacity = Mathf.NextPowerOfTwo(globalCount);
@@ -53,13 +52,13 @@ namespace FieldDay.Scripting {
             IntroVars.Optimize();
 
             int viewedNodeCount = reader.Read<ushort>();
-            SetUtils.EnsureCapacity(SavedViewedNodeIds, viewedNodeCount);
+            SetUtils.EnsureCapacity(SessionViewedNodeIds, viewedNodeCount);
             for(int i = 0; i < viewedNodeCount; i++) {
-                SavedViewedNodeIds.Add(reader.Read<StringHash32>());
+                SessionViewedNodeIds.Add(reader.Read<StringHash32>());
             }
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write((ushort) GlobalVars.Count);
             for(int i = 0; i < GlobalVars.Count; i++) {
                 writer.Write(GlobalVars[i]);
@@ -70,8 +69,8 @@ namespace FieldDay.Scripting {
                 writer.Write(IntroVars[i]);
             }
 
-            writer.Write((ushort) SavedViewedNodeIds.Count);
-            foreach(var node in SavedViewedNodeIds) {
+            writer.Write((ushort) SessionViewedNodeIds.Count);
+            foreach(var node in SessionViewedNodeIds) {
                 writer.Write(node);
             }
         }

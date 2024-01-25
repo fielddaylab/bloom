@@ -1,10 +1,9 @@
+//#define RLE_DEBUG
+
 using System;
 using System.Runtime.InteropServices;
 using BeauUtil;
 using BeauUtil.Debugger;
-using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace Zavala {
     static public unsafe class UnsafeExt {
@@ -148,14 +147,18 @@ namespace Zavala {
 
                 match = FindMatch(src, Math.Min((int)(srcEnd - src), MaxRunLength), windowSize);
                 if (match.Length == 0) {
+#if RLE_DEBUG
                     Log.Msg("[{0}] encoding literal: {1}", length, HexString(src, 1));
+#endif // RLE_DEBUG
                     *dest++ = *src++;
                 }
                 else {
                     groupMask |= 1;
                     matchOffset = (int)(src - match.Start);
                     matchLength = match.Length;
+#if RLE_DEBUG
                     Log.Msg("[{0}] encoding sequence <{1},{2}>: {3}", length, matchOffset, matchLength, HexString(match.Start, match.Length));
+#endif // RLE_DEBUG
                     *dest++ = (byte)(matchOffset - 1);
                     *dest++ = (byte)(matchLength - MinRunLength);
                     src += match.Length;
@@ -288,11 +291,15 @@ namespace Zavala {
                         *dest++ = *seekPtr++;
                     }
 
+#if RLE_DEBUG
                     Log.Msg("[{0}] decoding sequence <{1},{2}>: {3}", length, runOffset, runLength, HexString(dest - runOffset - runLength, runLength));
+#endif // RLE_DEBUG
                 }
                 else {
                     // literal
+#if RLE_DEBUG
                     Log.Msg("[{0}] decoding literal: {1}", length, HexString(src, 1));
+#endif // RLE_DEBUG
                     *dest++ = *src++;
                 }
 
@@ -338,6 +345,8 @@ namespace Zavala {
 
         #endregion // Encryption
 
+#if RLE_DEBUG
+
         static private string HexString(byte* src, int srcSize) {
             int bufferSize = 3 * srcSize - 1;
             char* buffer = stackalloc char[bufferSize];
@@ -362,5 +371,7 @@ namespace Zavala {
         }
 
         private const string HexSrc = "0123456789ABCDEF";
+
+#endif // RLE_DEBUG
     }
 }

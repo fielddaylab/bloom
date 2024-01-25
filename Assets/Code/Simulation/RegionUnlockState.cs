@@ -93,12 +93,12 @@ namespace Zavala.Sim {
             ZavalaGame.SaveBuffer.RegisterHandler("RegionUnlock", this);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             UnlockCount = reader.Read<byte>();
             SimPhosphorusAdvanced = reader.Read<bool>();
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write((byte) UnlockCount);
             writer.Write(SimPhosphorusAdvanced);
         }

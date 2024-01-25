@@ -1,14 +1,16 @@
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Data;
+using Zavala.World;
 
 namespace Zavala.Building {
     public class BuildingPersistence : MonoBehaviour, ISaveStateChunkObject, ISaveStatePostLoad {
         #region Types
 
-        private struct DataRecord {
+        private struct PersistenceRecord {
             public int TileIndex;
             public BuildingType Type;
             public int AuxComponentCount;
@@ -17,19 +19,17 @@ namespace Zavala.Building {
 
         #endregion // Types
 
-        private Unsafe.ArenaHandle m_DelayedDataArena;
-
         private void OnEnable() {
             ZavalaGame.SaveBuffer.RegisterHandler("Buildings", this, 40);
-            m_DelayedDataArena = SimAllocator.AllocArena(64 * Unsafe.KiB);
+            ZavalaGame.SaveBuffer.RegisterPostLoad(this);
         }
 
         private void OnDisable() {
-            m_DelayedDataArena.Release();
             ZavalaGame.SaveBuffer.DeregisterHandler("Buildings");
+            ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             var iter = Game.Components.ComponentsOfType<PersistBuilding>(out int persistCount);
             writer.Write(persistCount);
 
@@ -55,12 +55,69 @@ namespace Zavala.Building {
             }
         }
 
-        void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
-            
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            var world = ZavalaGame.SimWorld;
+
+            int persistCount = reader.Read<int>();
+
+            var data = scratch.CreateBlock<PersistenceRecord>("BuildingPersistence", persistCount);
+            for(int i = 0; i < persistCount; i++) {
+                ref PersistenceRecord record = ref data[i];
+
+                record.TileIndex = reader.Read<ushort>();
+                record.Type = reader.Read<BuildingType>();
+                record.AuxComponentCount = reader.Read<byte>();
+
+                ushort totalSize = reader.Read<ushort>();
+                UnsafeSpan<byte> blockCopy = scratch.Alloc<byte>(totalSize);
+                Unsafe.Copy(reader.Head, totalSize, blockCopy.Ptr);
+                reader.Skip(totalSize);
+
+                record.AuxComponentData = blockCopy;
+
+                if (record.Type == BuildingType.Storage || record.Type == BuildingType.Digester) {
+                    world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingSpawnData>() {
+                        TileIndex = (ushort) record.TileIndex,
+                        Data = new BuildingSpawnData() {
+                            Type = record.Type
+                        }
+                    });
+                }
+            }
         }
 
-        void ISaveStatePostLoad.PostLoad() {
-            // ensure user buildings will spawn correctly
+        unsafe void ISaveStatePostLoad.PostLoad(SaveMgr save, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            var data = scratch.GetBlock<PersistenceRecord>("BuildingPersistence");
+
+            var iter = Game.Components.ComponentsOfType<PersistBuilding>(out int persistCount);
+            Assert.True(persistCount == data.Length);
+
+            while (iter.MoveNext()) {
+                var comp = iter.Current;
+
+                bool found = false;
+                for(int i = 0; i < data.Length; i++) {
+                    var record = data[i];
+                    if (record.TileIndex == comp.Position.TileIndex) {
+                        // unpack data
+                        ByteReader reader;
+                        reader.Head = record.AuxComponentData.Ptr;
+                        reader.Remaining = record.AuxComponentData.Length;
+                        reader.Tag = default;
+
+                        Assert.True(record.AuxComponentCount == comp.PersistentComponents.Length);
+
+                        for(int compIdx = 0; compIdx < comp.PersistentComponents.Length; compIdx++) {
+                            ((IPersistBuildingComponent) comp.PersistentComponents[compIdx]).Read(comp, ref reader);
+                        }
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                Assert.True(found, "Could not find data for building '{0}'", comp.name);
+            }
         }
     }
 }

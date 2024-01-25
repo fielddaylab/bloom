@@ -43,12 +43,14 @@ namespace Zavala.World {
 
         #endregion // Inspector
 
-        void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             LookTarget.position = reader.Read<Vector3>();
+            Camera.transform.SetPosition(reader.Read<float>(), Axis.Z, Space.Self);
         }
 
-        void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(LookTarget.position);
+            writer.Write(Camera.transform.localPosition.z);
         }
     }
 
@@ -84,7 +86,7 @@ namespace Zavala.World {
 
         public static void PanCameraToPoint(SimWorldCamera cam, Vector3 pt) {
             cam.PanTargetPoint = pt + cam.PanTargetOffset;
-            cam.TransitionRoutine.Replace(PanRoutine(cam)).SetPhase(RoutinePhase.Update);
+            cam.TransitionRoutine.Replace(cam, PanRoutine(cam)).SetPhase(RoutinePhase.Update);
         }
 
         private static IEnumerator PanRoutine(SimWorldCamera cam) {

@@ -37,13 +37,13 @@ namespace Zavala.Economy
             ZavalaGame.SaveBuffer.DeregisterHandler("Budget");
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             for(int i = 0; i < consts.MaxRegions; i++) {
                 writer.Write(BudgetsPerRegion[i].Net);
             }
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             ArrayUtils.EnsureCapacity(ref BudgetsPerRegion, consts.MaxRegions);
             for(int i = 0; i < consts.MaxRegions; i++) {
                 reader.Read(ref BudgetsPerRegion[i].Net);

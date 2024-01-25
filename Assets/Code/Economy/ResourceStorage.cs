@@ -1,4 +1,3 @@
-using BeauPools;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Components;
@@ -38,10 +37,20 @@ namespace Zavala.Economy {
 
         void IPersistBuildingComponent.Read(PersistBuilding building, ref ByteReader reader) {
             Current.Read(ref reader);
+
+            if (StorageExtensionStore != null) {
+                StorageExtensionStore.Current.Read(ref reader);
+            }
+
+            ResourceStorageUtility.RefreshStorageDisplays(this);
         }
 
         void IPersistBuildingComponent.Write(PersistBuilding building, ref ByteWriter writer) {
             Current.Write(ref writer);
+
+            if (StorageExtensionStore != null) {
+                StorageExtensionStore.Current.Write(ref writer);
+            }
         }
     }
 

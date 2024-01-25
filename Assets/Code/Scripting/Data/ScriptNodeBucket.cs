@@ -145,19 +145,8 @@ namespace FieldDay.Scripting {
             }
 
             if ((node.Flags & ScriptNodeFlags.Once) != 0) {
-                switch (node.PersistenceType) {
-                    case ScriptNodeMemoryTarget.Persistent: {
-                        if (persistence.SavedViewedNodeIds.Contains(node.Id())) {
-                            return false;
-                        }
-                        break;
-                    }
-                    case ScriptNodeMemoryTarget.Session: {
-                        if (persistence.SessionViewedNodeIds.Contains(node.Id())) {
-                            return false;
-                        }
-                        break;
-                    }
+                if (persistence.SessionViewedNodeIds.Contains(node.Id())) {
+                    return false;
                 }
             } else if (node.RepeatPeriod > 0) {
                 int viewedIndex = persistence.RecentViewedNodeIds.IndexOf(node.Id());

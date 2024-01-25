@@ -152,7 +152,7 @@ namespace FieldDay.Scripting {
         }
 
         static public void UnmountDisplayer(ITextDisplayer displayer) {
-            Runtime.Plugin.ConfigureDisplay(Runtime.DefaultDialogue, Runtime.DefaultDialogue);
+            Runtime?.Plugin.ConfigureDisplay(Runtime.DefaultDialogue, Runtime.DefaultDialogue);
         }
 
         static public void AutoOpenPolicyCards(PolicyType type) {

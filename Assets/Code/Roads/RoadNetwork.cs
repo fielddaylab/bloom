@@ -17,7 +17,7 @@ using Zavala.Data;
 namespace Zavala.Roads
 {
     [SharedStateInitOrder(10)]
-    public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
+    public sealed class RoadNetwork : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject, ISaveStatePostLoad
     {
         [NonSerialized] public RoadBuffers Roads;
         [NonSerialized] public RingBuffer<RoadInstanceController> RoadObjects; // The physical instances of road prefabs
@@ -43,28 +43,50 @@ namespace Zavala.Roads
             ExportDepotMap = new Dictionary<uint, List<ResourceSupplierProxy>>();
 
             ZavalaGame.SaveBuffer.RegisterHandler("Roads", this, 50);
+            ZavalaGame.SaveBuffer.RegisterPostLoad(this);
         }
 
         void IRegistrationCallbacks.OnDeregister() {
             ZavalaGame.SaveBuffer.DeregisterHandler("Roads");
+            ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
         }
 
         #endregion // Registration
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             for (int i = 0; i < consts.DataRegion.Size; i++) {
                 int idx = consts.DataRegion.FastIndexToGridIndex(i);
                 writer.Write(Roads.Info[idx].FlowMask.Value);
             }
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             for (int i = 0; i < consts.DataRegion.Size; i++) {
                 int idx = consts.DataRegion.FastIndexToGridIndex(i);
                 reader.Read(ref Roads.Info[idx].FlowMask.Value);
             }
+        }
 
-            // TODO: queue road reconstruction
+        void ISaveStatePostLoad.PostLoad(SaveMgr saveMgr, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            BuildingPools pools = Game.SharedState.Get<BuildingPools>();
+
+            for (int i = 0; i < consts.DataRegion.Size; i++) {
+                int idx = consts.DataRegion.FastIndexToGridIndex(i);
+                ref var roadInfo = ref Roads.Info[idx];
+                if (!roadInfo.FlowMask.IsEmpty) {
+                    SimWorldUtility.QueueVisualUpdate((ushort) idx, VisualUpdateType.Road);
+                    if ((roadInfo.Flags & RoadFlags.IsConnectionEndpoint) == 0) {
+                        roadInfo.Flags |= RoadFlags.IsAnchor;
+                        roadInfo.Flags |= RoadFlags.IsRoad;
+
+                        if ((roadInfo.Flags & RoadFlags.IsTollbooth) == 0) {
+                            RoadUtility.CreateRoadObject(this, ZavalaGame.SimGrid, pools, idx, null, false);
+                        }
+                    }
+                }
+            }
+
+            UpdateNeeded = true;
         }
     }
 
@@ -314,7 +336,7 @@ namespace Zavala.Roads
             */
         }
 
-        static public void CreateRoadObject(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, Material holoMat)
+        static public void CreateRoadObject(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, Material holoMat, bool preview = true)
         {
             HexVector pos = grid.HexSize.FastIndexToPos(tileIndex);
             Vector3 worldPos = SimWorldUtility.GetTileCenter(pos);
@@ -323,9 +345,11 @@ namespace Zavala.Roads
 
             newRoad.gameObject.SetActive(true);
 
-            // temporarily render the build as holo
-            var matSwap = newRoad.GetComponent<BuildingPreview>();
-            if (matSwap) { matSwap.Preview(holoMat); }
+            if (preview) {
+                // temporarily render the build as holo
+                var matSwap = newRoad.GetComponent<BuildingPreview>();
+                if (matSwap) { matSwap.Preview(holoMat); }
+            }
 
             newRoad.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(tileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
                 if (c < a - 50)

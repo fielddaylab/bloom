@@ -273,8 +273,8 @@ namespace Zavala.UI
 
         public void OnDestroyModeClicked()
         {
-            m_BuildCommandLayoutRoutine.Replace(BuildCommandAppearanceTransition(false));
-            m_DestroyCommandLayoutRoutine.Replace(DestroyCommandAppearanceTransition(true));
+            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
+            m_DestroyCommandLayoutRoutine.Replace(this, DestroyCommandAppearanceTransition(true));
             m_ShopToggle.gameObject.SetActive(false);
             m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(false));
 

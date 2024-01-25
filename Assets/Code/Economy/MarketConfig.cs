@@ -4,6 +4,8 @@ using FieldDay;
 using FieldDay.Data;
 using FieldDay.SharedState;
 using UnityEngine;
+using Zavala.Advisor;
+using Zavala.Cards;
 using Zavala.Data;
 using Zavala.Sim;
 
@@ -52,8 +54,33 @@ namespace Zavala.Economy {
             ZavalaGame.SaveBuffer.RegisterPostLoad(this);
         }
 
-        void ISaveStatePostLoad.PostLoad() {
-            // TODO: update user adjustments based on current policies
+        void ISaveStatePostLoad.PostLoad(SaveMgr save, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            PolicyState policy = Game.SharedState.Get<PolicyState>();
+
+            for(int region = 0; region < RegionInfo.MaxRegions; region++) {
+                var block = policy.Policies[region];
+                for(int type = 0; type < block.Map.Length; type++) {
+                    if (!block.EverSet[type]) {
+                        continue;
+                    }
+
+                    int lvl = (int) block.Map[type];
+                    switch ((PolicyType) type) {
+                        case PolicyType.RunoffPolicy: {
+                            UserAdjustmentsPerRegion[region].RunoffPenalty = PolicyState.RunoffPenaltyVals[lvl];
+                            break;
+                        }
+                        case PolicyType.ImportTaxPolicy: {
+                            UserAdjustmentsPerRegion[region].RunoffPenalty = PolicyState.ImportTaxVals[lvl];
+                            break;
+                        }
+                        case PolicyType.SalesTaxPolicy: {
+                            UserAdjustmentsPerRegion[region].PurchaseTax = PolicyState.SalesTaxVals[lvl];
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -1,22 +1,20 @@
 using BeauPools;
+using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
-using FieldDay.Systems;
 using Leaf.Runtime;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Zavala.Audio;
 using Zavala.Building;
 using Zavala.Data;
 using Zavala.Economy;
-using Zavala.Rendering;
 using Zavala.Roads;
-using Zavala.Scripting;
 using Zavala.World;
 
 namespace Zavala.Sim {
@@ -73,10 +71,10 @@ namespace Zavala.Sim {
 
             ZavalaGame.SaveBuffer.RegisterHandler("Grid", this, -100);
 
-            GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this, WorldData));
+            Game.Scenes.QueueOnLoad(() => SimDataUtility.LateInitializeData(this, WorldData));
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             CurrRegionIndex = reader.Read<byte>();
 
             byte regionCount = reader.Read<byte>();
@@ -87,7 +85,7 @@ namespace Zavala.Sim {
             }
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write((byte) CurrRegionIndex);
             writer.Write((byte) RegionCount);
             for(int i = 0; i < RegionCount; i++) {
@@ -98,6 +96,11 @@ namespace Zavala.Sim {
 
     static public class SimDataUtility {
         static public void LateInitializeData(SimGridState grid, WorldAsset world) {
+            SimTimeUtility.Pause(SimPauseFlags.Loading, ZavalaGame.SimTime);
+            Routine.Start(LateInitializeProcess(grid, world));
+        }
+
+        static private IEnumerator LateInitializeProcess(SimGridState grid, WorldAsset world) {
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
             SimWorldState worldState = Game.SharedState.Get<SimWorldState>();
 
@@ -108,7 +111,17 @@ namespace Zavala.Sim {
             }
 
             RegenTerrainDependentInfo(grid, phosphorus);
+            yield return null;
+
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
+
+            if (ZavalaGame.SaveBuffer.HasSave) {
+                ZavalaGame.SaveBuffer.HandlePostLoad();
+                yield return null;
+            }
+
+            SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
+            ScriptUtility.Trigger(GameTriggers.GameBooted);
         }
 
         static public void LoadRegionsFromSaveData(SimGridState gridState, WorldAsset world, SimWorldState worldState, int regionCount) {

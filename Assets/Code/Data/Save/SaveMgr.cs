@@ -28,14 +28,17 @@ namespace Zavala.Data {
 
         public const int TotalBufferSize = 256 * Unsafe.KiB; // 256k buffer
         public const int MainBufferSize = 128 * Unsafe.KiB; // 128k buffer
-        public const int ChunkBufferSize = 128 * Unsafe.KiB; // 128k buffer
+        public const int ChunkBufferSize = 64 * Unsafe.KiB; // 64k buffer
+        public const int ScratchBufferSize = 64 * Unsafe.KiB; // 64k buffer
 
         private unsafe byte* m_Buffer;
         private unsafe byte* m_ChunkBuffer;
+        private unsafe Unsafe.ArenaHandle m_ScratchBuffer;
 
         private int m_UsedSize;
         private SaveStateHeader m_CurrentHeader;
         private SaveStateChunkConsts m_CurrentConsts;
+        private SaveScratchpad m_CurrentScratch;
         private RingBuffer<ChunkRecord> m_ChunkRecords = new RingBuffer<ChunkRecord>(32, RingBufferMode.Expand);
         private StringHash32 m_ActiveChunk;
 
@@ -54,6 +57,7 @@ namespace Zavala.Data {
             Free();
             m_Buffer = (byte*) Unsafe.Alloc(TotalBufferSize);
             m_ChunkBuffer = m_Buffer + MainBufferSize;
+            m_ScratchBuffer = Unsafe.CreateArena(m_ChunkBuffer + ChunkBufferSize, ScratchBufferSize);
         }
 
         public unsafe void Free() {
@@ -61,6 +65,7 @@ namespace Zavala.Data {
                 Unsafe.Free(m_Buffer);
                 m_Buffer = null;
                 m_ChunkBuffer = null;
+                m_ScratchBuffer = default;
             }
         }
 
@@ -157,6 +162,14 @@ namespace Zavala.Data {
 
             writer.Write(manifest);
 
+            m_ScratchBuffer.Reset();
+
+            SaveScratchpad scratch;
+            scratch.Allocator = m_ScratchBuffer;
+            scratch.BlockCount = 0;
+            scratch.Blocks = m_ScratchBuffer.AllocSpan<SaveScratchBlock>(32);
+            m_CurrentScratch = scratch;
+
             byte* manifestLengthChecksumMarker = writer.Head;
             int manifestLengthCalcMarker = writer.Written;
 
@@ -176,7 +189,7 @@ namespace Zavala.Data {
                 chunkWriter.Capacity = ChunkBufferSize;
                 chunkWriter.Tag = chunk.Id;
 
-                chunk.Writer(chunk.Context, ref chunkWriter, consts);
+                chunk.Writer(chunk.Context, ref chunkWriter, consts, ref m_CurrentScratch);
 
                 byte* chunkDataStart = writer.Head;
                 int compressedSize;
@@ -197,8 +210,8 @@ namespace Zavala.Data {
                 });
 
                 Log.Msg("[SaveMgr] Wrote chunk '{0}' ({1}, {2} uncompressed)", chunk.Id, Unsafe.FormatBytes(chunkHeader.ChunkLength), Unsafe.FormatBytes(chunkHeader.ChunkLengthUncompressed));
-                Log.Msg("...compressed " + Unsafe.DumpMemory(chunkDataStart, chunkHeader.ChunkLength, ' ', 2));
-                Log.Msg("...uncompressed " + Unsafe.DumpMemory(m_ChunkBuffer, chunkWriter.Written, ' ', 2));
+                //Log.Msg("...compressed " + Unsafe.DumpMemory(chunkDataStart, chunkHeader.ChunkLength, ' ', 2));
+                //Log.Msg("...uncompressed " + Unsafe.DumpMemory(m_ChunkBuffer, chunkWriter.Written, ' ', 2));
             }
 
             manifest.Length = (uint) (writer.Written - manifestLengthCalcMarker);
@@ -262,6 +275,13 @@ namespace Zavala.Data {
             consts.DataRegion = new HexGridSubregion(consts.GridSize).Subregion(dataX, dataY, dataW, dataH);
             m_CurrentConsts = consts;
 
+            SaveScratchpad scratch;
+            scratch.Allocator = m_ScratchBuffer;
+            m_ScratchBuffer.Reset();
+            scratch.BlockCount = 0;
+            scratch.Blocks = m_ScratchBuffer.AllocSpan<SaveScratchBlock>(32);
+            m_CurrentScratch = scratch;
+
             SaveStateManifest manifest = reader.Read<SaveStateManifest>();
             if (manifest.Length != reader.Remaining) {
                 Log.Error("[SaveMgr] Mismatch between read bytes ({0}) and manifest bytes ({1})", reader.Remaining, manifest.Length);
@@ -285,7 +305,7 @@ namespace Zavala.Data {
                     Data = new UnsafeSpan<byte>(reader.Head, chunkHeader.ChunkLength)
                 });
                 Log.Msg("[SaveMgr] Read chunk '{0}' ({1}, {2} uncompressed)", chunkHeader.Id, Unsafe.FormatBytes(chunkHeader.ChunkLength), Unsafe.FormatBytes(chunkHeader.ChunkLengthUncompressed));
-                Log.Msg("...compressed " + Unsafe.DumpMemory(reader.Head, chunkHeader.ChunkLength, ' ', 2));
+                //Log.Msg("...compressed " + Unsafe.DumpMemory(reader.Head, chunkHeader.ChunkLength, ' ', 2));
                 reader.Skip((int) chunkHeader.ChunkLength);
             }
 
@@ -293,12 +313,18 @@ namespace Zavala.Data {
         }
 
         public void HandleChunks() {
-            foreach(var chunk in m_ChunkRecords) {
+            foreach (var chunk in m_ChunkRecords) {
                 if (m_ChunkReaders.TryGetValue(chunk.Id, out ChunkReader reader)) {
                     ByteReader bytes = UnpackChunkRecord(chunk);
-                    reader.Reader(reader.Context, ref bytes, m_CurrentConsts);
+                    reader.Reader(reader.Context, ref bytes, m_CurrentConsts, ref m_CurrentScratch);
                     ReleaseChunk(bytes);
                 }
+            }
+        }
+
+        public void HandlePostLoad() {
+            foreach (var postLoad in m_PostLoadHandlers) {
+                postLoad.PostLoad(this, m_CurrentConsts, ref m_CurrentScratch);
             }
         }
 
@@ -325,7 +351,7 @@ namespace Zavala.Data {
 
             m_ActiveChunk = record.Id;
             if (record.UncompressedSize == record.Data.Length) {
-                Log.Msg("...uncompressed " + Unsafe.DumpMemory(record.Data.Ptr, record.Data.Length, ' ', 2));
+                //Log.Msg("...uncompressed " + Unsafe.DumpMemory(record.Data.Ptr, record.Data.Length, ' ', 2));
                 return new ByteReader() {
                     Head = record.Data.Ptr,
                     Remaining = record.Data.Length,
@@ -333,9 +359,9 @@ namespace Zavala.Data {
                 };
             } else {
                 int decompressedSize;
-                UnsafeExt.Decompress(record.Data.Ptr, record.Data.Length, m_ChunkBuffer, ChunkBufferSize, &decompressedSize);
-                Assert.True(record.UncompressedSize == decompressedSize);
-                Log.Msg("...uncompressed " + Unsafe.DumpMemory(m_ChunkBuffer, decompressedSize, ' ', 2));
+                bool decompressed = UnsafeExt.Decompress(record.Data.Ptr, record.Data.Length, m_ChunkBuffer, ChunkBufferSize, &decompressedSize);
+                Assert.True(decompressed && record.UncompressedSize == decompressedSize);
+                //Log.Msg("...uncompressed " + Unsafe.DumpMemory(m_ChunkBuffer, decompressedSize, ' ', 2));
                 return new ByteReader() {
                     Head = m_ChunkBuffer,
                     Remaining = decompressedSize,

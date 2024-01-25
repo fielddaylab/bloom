@@ -246,7 +246,7 @@ namespace Zavala.World {
             ExportRevealState eReveal = Game.SharedState.Get<ExportRevealState>();
             InteractionState interactions = Game.SharedState.Get<InteractionState>();
 
-            world.ExportRevealRoutine.Replace(RevealExportDepot(world, grid, eReveal, interactions, id));
+            world.ExportRevealRoutine.Replace(world, RevealExportDepot(world, grid, eReveal, interactions, id));
         }
 
         [DebugMenuFactory]

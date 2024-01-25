@@ -15,7 +15,7 @@ using static UnityEditor.Experimental.GraphView.Port;
 namespace Zavala.Economy
 {
     [SharedStateInitOrder(10)]
-    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
+    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject, ISaveStatePostLoad
     {
         public SimTimer MarketTimer;
         public bool UpdatePrioritiesNow;
@@ -78,7 +78,11 @@ namespace Zavala.Economy
             ZavalaGame.SaveBuffer.RegisterHandler("MarketData", this);
         }
 
-        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts) {
+        void ISaveStatePostLoad.PostLoad(SaveMgr saveMgr, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            UpdatePrioritiesNow = true;
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             reader.Read(ref TickIndex);
 
             DataHistoryUtil.Read(ref CFertilizerSaleHistory, ref reader);
@@ -89,11 +93,9 @@ namespace Zavala.Economy
             DataHistoryUtil.Read(ref PenaltiesHistory, ref reader);
             DataHistoryUtil.Read(ref SkimmerCostHistory, ref reader);
             DataHistoryUtil.Read(ref MilkRevenueHistory, ref reader);
-
-            // TODO: Implement
         }
 
-        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts) {
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(TickIndex);
 
             DataHistoryUtil.Write(CFertilizerSaleHistory, ref writer);
@@ -104,8 +106,6 @@ namespace Zavala.Economy
             DataHistoryUtil.Write(PenaltiesHistory, ref writer);
             DataHistoryUtil.Write(SkimmerCostHistory, ref writer);
             DataHistoryUtil.Write(MilkRevenueHistory, ref writer);
-
-            // TODO: Implement
         }
     }
 

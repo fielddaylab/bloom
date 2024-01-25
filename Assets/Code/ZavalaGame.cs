@@ -55,12 +55,6 @@ namespace Zavala {
         static private void OnBoot() {
             CursorUtility.HideCursor();
             Profiler.enabled = false;
-
-            Scenes.OnMainSceneReady.Register(() => {
-                if (ScriptUtility.Runtime) {
-                    ScriptUtility.Trigger(GameTriggers.GameBooted);
-                }
-            });
         }
 
         static private void OnSceneUnload() {

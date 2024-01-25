@@ -35,5 +35,11 @@ namespace Zavala.Movement
             Mesh.material.color = color;
             */
         }
+
+        protected override void OnDisable() {
+            base.OnDisable();
+
+            MovementRoutine.Stop();
+        }
     }
 }
