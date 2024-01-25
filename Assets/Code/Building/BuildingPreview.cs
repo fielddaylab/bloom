@@ -14,7 +14,8 @@ namespace Zavala.Building
     public class BuildingPreview : BatchedComponent
     {
         [Header("Components")]
-        [SerializeField] private MeshRenderer m_Renderer;
+        // [SerializeField] private MeshRenderer m_Renderer;
+        [SerializeField] private MeshRenderer[] m_Renderers;
         [SerializeField] private SnapToTile m_Snapping;
         [SerializeField] private ParticleSystem m_Particles;
         [SerializeField] private OccupiesTile m_Occupies;
@@ -23,11 +24,15 @@ namespace Zavala.Building
         [SerializeField] private GameObject[] m_InitialHide;
         [SerializeField] private Mesh m_PreviewMesh;
 
-        [NonSerialized] private MeshFilter m_MeshFilter;
-        [NonSerialized] private Mesh m_OriginalMesh;
-        [NonSerialized] private Material m_OriginalMat;
+        //[NonSerialized] private MeshFilter m_MeshFilter;
+        [NonSerialized] private MeshFilter[] m_MeshFilters;
+        //[NonSerialized] private Mesh m_OriginalMesh;
+        [NonSerialized] private Mesh[] m_OriginalMeshes;
+        //[NonSerialized] private Material m_OriginalMat;
+        [NonSerialized] private Material[] m_OriginalMats;
 
         #region Unity Callbacks
+
 
         protected override void OnEnable()
         {
@@ -36,13 +41,27 @@ namespace Zavala.Building
             foreach (var obj in m_InitialHide) {
                 obj.SetActive(false);
             }
+            int numRenderers = m_Renderers.Length;
 
-            if (m_PreviewMesh && m_Renderer) {
-                m_MeshFilter = m_Renderer.GetComponent<MeshFilter>();
-                m_OriginalMesh = m_MeshFilter.sharedMesh;
+            if (m_PreviewMesh) {
+                // allocate current and original meshes
+                m_MeshFilters = new MeshFilter[numRenderers];
+                m_OriginalMeshes = new Mesh[numRenderers];
+
+                for (int i = 0; i < numRenderers; i++) {
+                    m_MeshFilters[i] = m_Renderers[i].GetComponent<MeshFilter>();
+                    m_OriginalMeshes[i] = m_MeshFilters[i].sharedMesh;
+                }
+
             }
 
-            if (m_Renderer && !m_OriginalMat) { m_OriginalMat = m_Renderer.sharedMaterial; }
+            if (numRenderers > 0 && m_OriginalMats == null) {
+                // allocate original materials
+                m_OriginalMats = new Material[numRenderers];
+                for (int i = 0; i < numRenderers; i++) {
+                    m_OriginalMats[i] = m_Renderers[i].sharedMaterial;
+                }
+            }
         }
 
         protected override void OnDisable() {
@@ -55,12 +74,18 @@ namespace Zavala.Building
                 SimWorldUtility.QueueVisualUpdate((ushort) m_Occupies.TileIndex, VisualUpdateType.Preview);
             }
 
-            if (m_Renderer && m_OriginalMat) {
-                m_Renderer.sharedMaterial = m_OriginalMat;
+            if (m_OriginalMats != null) {
+                // revert to original materials
+                for (int i = 0; i < m_Renderers.Length; i++) {
+                    m_Renderers[i].sharedMaterial = m_OriginalMats[i];
+                }
             }
 
-            if (m_MeshFilter) {
-                m_MeshFilter.sharedMesh = m_OriginalMesh;
+            if (m_MeshFilters != null) {
+                // revert to original meshes
+                for (int i = 0; i < m_MeshFilters.Length; i++) {
+                    m_MeshFilters[i].sharedMesh = m_OriginalMeshes[i];
+                }
             }
 
             base.OnDisable();
@@ -105,14 +130,17 @@ namespace Zavala.Building
 
         public void Preview(Material newMat)
         {
-            m_Renderer.sharedMaterial = newMat;
+            for (int i = 0; i < m_Renderers.Length; i++) {
+                // set material of all renderers to new material
+                m_Renderers[i].sharedMaterial = newMat;
+                // if this is set up to show preview mesh as well, set all filters to that
+                if (m_MeshFilters != null) {
+                    m_MeshFilters[i].sharedMesh = m_PreviewMesh;
+                }
+            }
             if (m_Occupies) {
                 ZavalaGame.SimGrid.Terrain.Info[m_Occupies.TileIndex].Flags |= Sim.TerrainFlags.IsPreview;
                 SimWorldUtility.QueueVisualUpdate((ushort) m_Occupies.TileIndex, VisualUpdateType.Preview);
-            }
-
-            if (m_MeshFilter) {
-                m_MeshFilter.sharedMesh = m_PreviewMesh;
             }
 
             m_Particles.Play();
@@ -120,10 +148,13 @@ namespace Zavala.Building
 
         private void ResetMaterial()
         {
-            m_Renderer.sharedMaterial = m_OriginalMat;
-
-            if (m_MeshFilter) {
-                m_MeshFilter.sharedMesh = m_OriginalMesh;
+            for (int i = 0; i < m_Renderers.Length; i++) {
+                // set material of all renderers to new material
+                m_Renderers[i].sharedMaterial = m_OriginalMats[i];
+                // if this is set up to show preview mesh as well, set all filters to that
+                if (m_MeshFilters != null) {
+                    m_MeshFilters[i].sharedMesh = m_OriginalMeshes[i];
+                }
             }
         }
     }
