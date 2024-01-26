@@ -94,6 +94,8 @@ namespace FieldDay.Scripting {
             if ((inNode.Flags & ScriptNodeFlags.ForcePolicyEarly) != 0) {
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
             }
+
+            m_RuntimeState.DefaultDialogue.MarkNodeEntered();
         }
 
         public override void OnNodeExit(ScriptNode inNode, LeafThreadState<ScriptNode> inThreadState) {
@@ -101,12 +103,13 @@ namespace FieldDay.Scripting {
                 // View Policies: expand
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
                 //m_RuntimeState.DefaultDialogue.ForceAdvisorPolicies = inNode.AdvisorType;
-                //m_RuntimeState.DefaultDialogue.ExpandPolicyUI(inNode.AdvisorType);
+                // m_RuntimeState.DefaultDialogue.ExpandPolicyUI(inNode.AdvisorType);
             }
             else {
                 // Close advisor, no policies forced
                 m_RuntimeState.DefaultDialogue.HideDialogueUI();
             }
+            m_RuntimeState.DefaultDialogue.MarkNodeExited();
 
             if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {
                 GameLoop.QueueEndOfFrame(LateEndCutsceneDelegate);

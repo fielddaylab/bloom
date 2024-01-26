@@ -67,6 +67,8 @@ namespace Zavala.UI {
         [NonSerialized] public PolicyType CardsToShow;
         [NonSerialized] private bool m_PoliciesActive;
 
+        private bool m_NodeExiting;
+
         private void Start() {
             m_PolicyExpansionContainer.gameObject.SetActive(false);
 
@@ -96,6 +98,8 @@ namespace Zavala.UI {
             m_Rect.SetAnchorPos(m_OffscreenY, Axis.Y);
 
             SimTimeUtility.OnPauseUpdated.Register(HandlePauseFlagsUpdated);
+
+            m_NodeExiting = false;
         }
 
         private void OnDestroy() {
@@ -194,7 +198,7 @@ namespace Zavala.UI {
 
         #region Leaf Flag Interactions
 
-        public void ForceExpandPolicyUI(AdvisorType aType) {
+        public void ForceExpandPolicyUI(AdvisorType aType, bool nodeExiting = false) {
             ForceAdvisorPolicies = aType;
             // collapse any current, will force expand when closed
             CollapsePolicyUI();
@@ -213,7 +217,6 @@ namespace Zavala.UI {
         public void CollapsePolicyUI() {
             HideCardsInstant();
             m_TransitionRoutine.Replace(this, CollapsePolicyUIRoutine()).ExecuteWhileDisabled();
-
         }
 
         private void PopulateSlotsForAdvisor(AdvisorType type) {
@@ -243,6 +246,16 @@ namespace Zavala.UI {
             foreach (PolicySlot slot in m_PolicySlots) {
                 slot.InstantHideHand();
             }
+        }
+
+        public void MarkNodeEntered()
+        {
+            m_NodeExiting = false;
+        }
+
+        public void MarkNodeExited()
+        {
+            m_NodeExiting = true;
         }
 
         #endregion // Leaf Flag Interactions
@@ -350,7 +363,21 @@ namespace Zavala.UI {
             camState.LockedBounds = Rect.MinMaxRect(bMin.x, bMin.z, bMax.x, bMax.z);
 
             ForceAdvisorPolicies = AdvisorType.None;
+
+            // Check if leaf has next line
+            if (m_NodeExiting)
+            {
+                // if not, add manual next listener
+                Debug.Log("[Close Next] Node exiting");
+                m_Button.onClick.AddListener(OnManualNext);
+            }
+            else
+            {
+                Debug.Log("[Close Next] Node not exiting");
+            }
             m_ButtonText.TryPopulate("Next");
+
+
             yield return null;
         }
 
@@ -391,6 +418,15 @@ namespace Zavala.UI {
         IEnumerator<WorkSlicer.Result?> IScenePreload.Preload() {
             m_AdvisorButtons = FindAnyObjectByType<AdvisorButtonContainer>(FindObjectsInactive.Include);
             return null;
+        }
+
+        /// <summary>
+        /// Click next button after force policy
+        /// </summary>
+        private void OnManualNext()
+        {
+            HideDialogueUI();
+            m_Button.onClick.RemoveListener(OnManualNext);
         }
 
         #endregion // Handlers

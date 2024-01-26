@@ -261,6 +261,7 @@ namespace Zavala.Economy
 
         private void HandleForcePrioritiesRebuild()
         {
+            if (m_StateA == null) { return; }
             UpdateAllSupplierPriorities();
             UpdateAllRequesterPriorities();
             ZavalaGame.Events.Dispatch(GameEvents.MarketPrioritiesRebuilt);

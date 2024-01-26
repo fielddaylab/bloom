@@ -169,7 +169,6 @@ namespace FieldDay.Scripting {
         [LeafMember("ForcePolicyInstant")]
         static public void ForcePolicyInstant(AdvisorType type) {
             Runtime.DefaultDialogue.ForceExpandPolicyUI(type);
-            
         }
 
         [LeafMember("ForceCloseDialogue")]
