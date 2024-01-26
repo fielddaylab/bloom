@@ -505,7 +505,7 @@ namespace Zavala.Economy
                 }
                 float salesTax = adjustments.PurchaseTax[primary];
                 float shippingCost = connectionSummary.Distance * config.TransportCosts.CostPerTile[primary];
-                Log.Msg("[MarketSystem] Shipping cost: {0} to {1}, {2} * {3} = {4}", supplier.name, requester.name, connectionSummary.Distance, config.TransportCosts.CostPerTile[primary], shippingCost);
+                // Log.Msg("[MarketSystem] Shipping cost: {0} to {1}, {2} * {3} = {4}", supplier.name, requester.name, connectionSummary.Distance, config.TransportCosts.CostPerTile[primary], shippingCost);
                 if (connectionSummary.ProxyConnectionIdx != Tile.InvalidIndex16)
                 {
                     // add flat rate export depot shipping fee
@@ -976,7 +976,7 @@ namespace Zavala.Economy
                     if (activeRequest.Supplied.Milk == 0)
                     {
                         supplier.SoldAtALossExcludingMilk = true;
-                        Log.Msg("[MarketSystem] SOLD AT A LOSS, EXCLUDING MILK");
+                        // Log.Msg("[MarketSystem] SOLD AT A LOSS, EXCLUDING MILK");
                     }
                     else
                     {
@@ -990,12 +990,13 @@ namespace Zavala.Economy
             int stressThreshold = config.StressedPurchaseThresholds[dummyMarketIndex];
             if (stressThreshold != 0 && supplierOffer.TotalCost > stressThreshold)
             {
-                Log.Msg("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!",
+                /*Log.Msg("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!",
                     activeRequest.Requester.transform.name,
                     activeRequest.Supplied,
                     supplierOffer.TotalCost,
                     config.StressedPurchaseThresholds[dummyMarketIndex]);
                 activeRequest.Requester.PurchasedAtStressedPrice = true;
+                */
             }
 
             // MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
@@ -1003,7 +1004,7 @@ namespace Zavala.Economy
             // TODO: mark this request as EnRoute
             m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
 
-            Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
+            // Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);
 
             if (tutorial.CurrState >= TutorialState.State.ActiveSim)
             {
