@@ -2144,9 +2144,61 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1532779141732675988, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532779141732675988, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532779141732675988, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_UVRect.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532779141732675988, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_UVRect.height
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1797984205264329857, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_Name
       value: CreditsPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2217098333269608564, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055958482743921801, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5553256648770307469, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_UVRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_UVRect.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_UVRect.width
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
+      propertyPath: m_UVRect.height
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
