@@ -174,6 +174,17 @@ $call ForcePolicyInstant("Economy")
 // $call Unpause()
 
 
+:: cityStressGeneric
+@trigger        AlertExamined
+@evalPriority   -3
+@conditions     alertType == "declining-pop"
+// $call Pause()
+{local @urbanite}      Dang. Our city population is shrinking...
+{local @urbanite}      We need clean water and a stable supply of milk to do well.
+$call OpenInfoPopup("region1_city1", false)
+// $call Unpause()
+
+
 :: skipTutorial
 @trigger    TutorialSkipped
 $call CutsceneEnd()

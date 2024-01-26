@@ -487,17 +487,35 @@ namespace Zavala.UI.Info {
 
                 m_PurchaseContents.Arrow.gameObject.SetActive(false);
 
+                m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
+                m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
+
                 // if water is great or terrible (< 4 or >= 8), don't show as contributing factor
                 if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Okay]
                     && actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Bad])
                 {
-                    m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
+                    m_PurchaseContents.WaterStatus.gameObject.SetActive(true);
                 }
                 if (actor.CurrentStress[StressCategory.Resource] < actor.OperationThresholds[OperationState.Okay]
                      && actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Bad])
                 {
-                    m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
+                    m_PurchaseContents.MilkStatus.gameObject.SetActive(true);
                 }
+
+                /*
+                // if neither status are within okay range, show the worst
+                if (!m_PurchaseContents.MilkStatus.gameObject.activeSelf && !m_PurchaseContents.WaterStatus.gameObject.activeSelf)
+                {
+                    if (actor.CurrentStress[StressCategory.Resource] >= actor.CurrentStress[StressCategory.Bloom])
+                    {
+                        m_PurchaseContents.MilkStatus.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        m_PurchaseContents.WaterStatus.gameObject.SetActive(true);
+                    }
+                }
+                */
             }
 
             if (gameObject.activeSelf) {

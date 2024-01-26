@@ -39,9 +39,9 @@ namespace Zavala.Actors {
 
         public int StressCap = 8;
 
-        [SerializeField] private int m_BadThreshold = 8;        // >=
-        [SerializeField] private int m_OkayThreshold = 4;     // >=
-        [SerializeField] private int m_GreatThreshold = 0;       // >=
+        public int BadThreshold = 8;        // >=
+        public int OkayThreshold = 4;     // >=
+        public int GreatThreshold = 0;       // >=
 
         [SerializeField] private OperationState m_StartingState = OperationState.Great;
 
@@ -69,11 +69,11 @@ namespace Zavala.Actors {
             int startingStress = 0;
             if (m_StartingState == OperationState.Okay)
             {
-                startingStress = m_OkayThreshold;
+                startingStress = OkayThreshold;
             }
             else if (m_StartingState == OperationState.Bad)
             {
-                startingStress = m_GreatThreshold;
+                startingStress = GreatThreshold;
             }
             OperationState = m_StartingState;
             PrevState = m_StartingState;
@@ -102,9 +102,9 @@ namespace Zavala.Actors {
             StressMask[(int) StressCategory.Financial] = financialStress;
 
             OperationThresholds = new EMap<OperationState, int>(3);
-            OperationThresholds[0] = m_BadThreshold;
-            OperationThresholds[1] = m_OkayThreshold;
-            OperationThresholds[2] = m_GreatThreshold;
+            OperationThresholds[0] = BadThreshold;
+            OperationThresholds[1] = OkayThreshold;
+            OperationThresholds[2] = GreatThreshold;
 
             Position = this.GetComponent<OccupiesTile>();
 
@@ -245,6 +245,11 @@ namespace Zavala.Actors {
                 }
             }
             actor.PrevState = actor.OperationState;
+        }
+
+        static public bool IsPeakStressed(StressableActor actor, StressCategory stressType)
+        {
+            return actor.CurrentStress[stressType] >= actor.BadThreshold;
         }
     }
 }

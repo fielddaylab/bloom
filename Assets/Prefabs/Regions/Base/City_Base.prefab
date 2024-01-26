@@ -342,9 +342,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StressCap: 8
-  m_BadThreshold: 8
-  m_OkayThreshold: 4
-  m_GreatThreshold: 0
+  BadThreshold: 7
+  OkayThreshold: 4
+  GreatThreshold: 0
   m_StartingState: 1
   StressDelta: 1
 --- !u!1 &5417570481552996235
