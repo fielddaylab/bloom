@@ -101,7 +101,7 @@ $endif
 @conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == false
 {local @advisorEcol}    This dairy farm is letting manure sit!
 {local @cafoFarmer}     Sorry, but it's my best option!
-$set local:runoffLevel = PolicyLevelInRegion(local:alertRegion, "RunoffPolicy")
+$set local:runoffLevel = PolicyLevelInRegion($local:alertRegion, "RunoffPolicy")
 $if local:runoffLevel < 1
     {local @advisorEcol}    I say we institute a runoff fine.
     {local @advisorEcol}    That'll discourage wasting manure.
@@ -111,7 +111,7 @@ $elseif local:runoffLevel < 3
     {local @advisorEcon}    Careful now... Losing money to a fine could slow their operations!
 $endif
 
-$if global:storageUnlocked, !BuildingBuiltInRegion(local:alertRegion, "Storage")
+$if global:storageUnlocked, !BuildingBuiltInRegion($local:alertRegion, "Storage")
     {local @cafoFarmer}     Can SAGA build one of those <b>Storage</b> units?
     {local @cafoFarmer}     I could sell manure there without it running off.
 $endif
@@ -136,16 +136,16 @@ $endif
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {local @advisorEcon}    This dairy farm is under financial stress.
 {local @advisorEcon}    They may be selling manure at a loss!
-$set local:runoffLevel = PolicyLevelInRegion(local:alertRegion, "RunoffPolicy")
+$set local:runoffLevel = PolicyLevelInRegion($local:alertRegion, "RunoffPolicy")
 $if local:runoffLevel > 0
     {local @advisorEcon}    We could remove that runoff fine.
     {local @advisorEcol}    Hey, that fine is the only thing keeping them from polluting!
 $endif
-$set local:taxLevel = PolicyLevelInRegion(local:alertRegion, "SalesTaxPolicy")
+$set local:taxLevel = PolicyLevelInRegion($local:alertRegion, "SalesTaxPolicy")
 $if local:taxLevel < 3
     {local @advisorEcon}    We could set a more favorable Sales Tax policy.
     {local @advisorEcon}    I'm sure our farmers would appreciate a Subsidy.
-$elseif global:digestersUnlocked, !BuildingBuiltInRegion(local:alertRegion, "Digester")
+$elseif global:digestersUnlocked, !BuildingBuiltInRegion($local:alertRegion, "Digester")
     {local @advisorEcol}    I say we give them a digester. They'll pay lots for manure!
 $endif
 {local @advisorEcon}    If we don't fix this, our cities won't get enough milk!
@@ -161,7 +161,7 @@ $endif
 {local @advisorEcon}      Hmm... This farmer is losing money.
 {local @advisorEcon}      I suspect their phosphorus source is too expensive. 
 {local @advisorEcon}      Perhaps you can build a shorter road to decrease shipping costs.
-$set local:taxLevel = PolicyLevelInRegion(local:alertRegion, "SalesTaxPolicy")
+$set local:taxLevel = PolicyLevelInRegion($local:alertRegion, "SalesTaxPolicy")
 $if local:taxLevel > 0, local:taxLevel < 3
     {local @advisorEcon}    Or set a more favorable tax policy.
 $endif
@@ -209,15 +209,19 @@ $call ActivateSim()
 @conditions     FailureIsEnabled()
 @cutscene
 $if FailureIsEnabled()
+// $set local:regionName = GetRegionName($local:alertRegion)
 {local @advisorEcon}    I have bad news... you've failed.
 $if local:endType == "CityFailed"
-    {local @urbanite}       The city in region {$local:alertRegion} was stressed too long...
+    {local @urbanite}       The city here was stressed too long...
     {local @urbanite}       They succumbed to the milk riots and demanded your resignation.
 $elseif local:endType == "TooManyBlooms"
-    {local @advisorEcol}    The waterways in region {$local:alertRegion} have become choked with algae.
+    {local @advisorEcol}    The waterways here have become choked with algae.
     {local @advisorEcol}    Our ecosystem couldn't recover...
 $elseif local:endType == "OutOfMoney"
-    {local @advisorEcon}    SAGA ran out of funds with no way to earn them back...
+    {local @advisorEcon}    SAGA is low on funds here with no way to earn them back...
+    {local @advisorEcon}    Make sure to connect Dairy Farms to the Grain Farms immediately!
+    {local @advisorEcon}    Their trade forms the core of every county's economy.
+
 $elseif local:endType == "Succeeded"
     ERROR! "Succeeded" should not be the endType of a failed game.
 $endif

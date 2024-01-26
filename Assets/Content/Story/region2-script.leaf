@@ -22,9 +22,12 @@ $set intro:openedForestAlert = true
 $call FocusClear()
 {@advisorEconForest}    Salutations, Director.
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
-{@advisorEconForest}    Can you help us connect our farms and city to help us grow?
-{@advisorEconForest}    Our budget and policies are separate from Knoll County.
+{@advisorEconForest}    We could use your help establishing trade and growing our economy.
+$call PanToBuilding("region2_cafo1")
+{@advisorEconForest}    Keep in mind, our budget and policies are separate from Knoll County.
+$call PanToBuilding("region2_grain1")
 {@advisorEconForest}    We have more Dairy Farms than our <i>dear</i> neighbors.
+$call PanToBuilding("region2_cafo2")
 $call Unpause()
 
 

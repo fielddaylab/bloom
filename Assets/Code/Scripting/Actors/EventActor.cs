@@ -222,7 +222,7 @@ namespace Zavala.Scripting {
 
                 // Use region index as a condition for alerts
                 // SimGridState grid = Game.SharedState.Get<SimGridState>();
-                // varTable.Set("region", RegionIndexToString[grid.CurrRegionIndex]); // i.e. region == Hillside
+                varTable.Set(newEvent.RegionIndex.Id, newEvent.RegionIndex.Value); // i.e. region == Hillside
                 varTable.Set("class", actor.Class);
 
                 ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, newEvent.ScriptId);
