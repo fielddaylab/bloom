@@ -52,6 +52,9 @@ namespace Zavala.Building {
         [NonSerialized] public int NumDigestersBuilt;
         [NonSerialized] public BitSet32 DigesterBuiltInRegion;
 
+        [NonSerialized] public BitSet32 FarmsConnectedInRegion;
+        [NonSerialized] public BitSet32 CityConnectedInRegion;
+
         [NonSerialized] public bool ToolUpdated;
 
         // Blocked Tiles (for non-road buildings)
@@ -71,6 +74,9 @@ namespace Zavala.Building {
             BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
             StorageBuiltInRegion = default;
             DigesterBuiltInRegion = default;
+
+            FarmsConnectedInRegion = default;
+            CityConnectedInRegion = default;
 
             ZavalaGame.SaveBuffer.RegisterHandler("BuildTool", this);
         }
@@ -92,6 +98,13 @@ namespace Zavala.Building {
 
             DigesterBuiltInRegion.Unpack(out uint digesterRegionBits);
             writer.Write((byte) digesterRegionBits);
+
+            FarmsConnectedInRegion.Unpack(out uint farmsConnectedBits);
+            writer.Write((byte) farmsConnectedBits);
+
+            CityConnectedInRegion.Unpack(out uint citiesConnectedBits);
+            writer.Write((byte)citiesConnectedBits);
+
         }
 
         unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
@@ -101,6 +114,9 @@ namespace Zavala.Building {
 
             StorageBuiltInRegion = new BitSet32(reader.Read<byte>());
             DigesterBuiltInRegion = new BitSet32(reader.Read<byte>());
+
+            CityConnectedInRegion = new BitSet32(reader.Read<byte>());
+            FarmsConnectedInRegion = new BitSet32(reader.Read<byte>());
         }
     }
 

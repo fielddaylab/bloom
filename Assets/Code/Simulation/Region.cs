@@ -1,5 +1,6 @@
 using System;
 using BeauUtil;
+using Leaf.Runtime;
 using UnityEngine;
 
 namespace Zavala.Sim {
@@ -38,6 +39,11 @@ namespace Zavala.Sim {
 
         static public TextId GetNameLong(ushort regionIndex) {
             return regionIndex >= s_RegionLongNameTable.Length ? default : s_RegionLongNameTable[regionIndex];
+        }
+
+        [LeafMember("GetRegionName")]
+        static public string GetNameLongLeaf(ushort regionOneIndexed) {
+            return Loc.Find(GetNameLong((ushort)(regionOneIndexed - 1)));
         }
 
         static public Bounds CalculateApproximateWorldBounds(in HexGridSubregion subregion, in HexGridWorldSpace worldSpace, ushort maxHeight, float bottomBuffer, float expand) {

@@ -5,6 +5,7 @@ using FieldDay.Systems;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Building;
 using Zavala.Data;
 using Zavala.Economy;
 using Zavala.World;
@@ -70,6 +71,9 @@ namespace Zavala.Sim
                     case UnlockConditionType.NodeReached:
                         EvaluateNodeReachedPassed(ref passedCheck, conditionGroup);
                         Debug.Log("[RegionUnlockSystem] NodeReached: "+passedCheck);
+                        break;
+                    case UnlockConditionType.Connected:
+                        EvaluateConnectionPassed(ref passedCheck, conditionGroup);
                         break;
                     default:
                         break;
@@ -237,6 +241,28 @@ namespace Zavala.Sim
                 passedCheck = false;
                 return;
             }
+        }
+
+        private void EvaluateConnectionPassed(ref bool passedCheck, UnlockConditionGroup conditionGroup) {
+            if (conditionGroup.CheckFarmsConnected) {
+                BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+                foreach (int region in conditionGroup.ChecksRegions) {
+                    if (!bts.CityConnectedInRegion[region]) {
+                        passedCheck = false;
+                        return;
+                    }
+                }
+            }
+            if (conditionGroup.CheckCitiesConnected) {
+                BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+                foreach (int region in conditionGroup.ChecksRegions) {
+                    if (!bts.FarmsConnectedInRegion[region]) {
+                        passedCheck = false;
+                        return;
+                    }
+                }
+            }
+
         }
 
         #endregion // Helpers

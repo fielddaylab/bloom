@@ -533,6 +533,8 @@ MonoBehaviour:
         Below: 0
         Value: 0
       NodeTitle: region1.specialDelivery
+      CheckCitiesConnected: 0
+      CheckFarmsConnected: 0
     RegionIndexUnlocks: 01000000
   - UnlockDelay: 20
     UnlockConditions:
@@ -567,6 +569,8 @@ MonoBehaviour:
         Below: 0
         Value: 25
       NodeTitle: 
+      CheckCitiesConnected: 0
+      CheckFarmsConnected: 0
     - Type: 7
       ChecksRegions: 00000000
       Scope: 10
@@ -598,6 +602,41 @@ MonoBehaviour:
         Below: 0
         Value: 20
       NodeTitle: region1.runoffTrigger
+      CheckCitiesConnected: 0
+      CheckFarmsConnected: 0
+    - Type: 8
+      ChecksRegions: 01000000
+      Scope: 10
+      TargetRunoff:
+        Below: 0
+        Value: 0.5
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+      CheckCitiesConnected: 1
+      CheckFarmsConnected: 1
     RegionIndexUnlocks: 02000000
   - UnlockDelay: 25
     UnlockConditions:
@@ -632,6 +671,8 @@ MonoBehaviour:
         Below: 0
         Value: 15
       NodeTitle: 
+      CheckCitiesConnected: 0
+      CheckFarmsConnected: 0
     - Type: 7
       ChecksRegions: 02000000
       Scope: 10
@@ -663,6 +704,8 @@ MonoBehaviour:
         Below: 0
         Value: 20
       NodeTitle: region2.unlockPhosphorusView
+      CheckCitiesConnected: 0
+      CheckFarmsConnected: 0
     RegionIndexUnlocks: 03000000
   - UnlockDelay: 15
     UnlockConditions:
@@ -697,6 +740,41 @@ MonoBehaviour:
         Below: 0
         Value: 20
       NodeTitle: region4.unlockExportDepots
+      CheckCitiesConnected: 0
+      CheckFarmsConnected: 0
+    - Type: 8
+      ChecksRegions: 03000000
+      Scope: 10
+      TargetRunoff:
+        Below: 1
+        Value: 0.2
+      TargetCFertilizer:
+        Below: 0
+        Value: 0
+      TargetManure:
+        Below: 0
+        Value: 0
+      TargetDFertilizer:
+        Below: 0
+        Value: 0
+      TargetSalesRevenue:
+        Below: 0
+        Value: 0
+      TargetImportRevenue:
+        Below: 0
+        Value: 0
+      TargetPenaltyRevenue:
+        Below: 0
+        Value: 0
+      TargetWealth:
+        Below: 0
+        Value: 0
+      TargetAge:
+        Below: 0
+        Value: 20
+      NodeTitle: 
+      CheckCitiesConnected: 1
+      CheckFarmsConnected: 1
     RegionIndexUnlocks: 04000000
 --- !u!114 &7708306960153739477
 MonoBehaviour:
@@ -902,7 +980,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EndCheckTimer:
     Period: 6
-  Loop: {fileID: 0}
   SceneOnFail:
     m_ScenePath: Assets/Scenes/TitleScreen.unity
     m_GUID: 3a1ab0f762ee5684cb6a80d40c4c4dc9
@@ -924,6 +1001,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -938,6 +1016,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -952,6 +1031,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
   - Region: 1
     IndependentEndConditions:
     - Type: 0
@@ -968,6 +1048,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -982,6 +1063,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -996,6 +1078,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
   - Region: 2
     IndependentEndConditions:
     - Type: 0
@@ -1012,6 +1095,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1026,6 +1110,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1040,6 +1125,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
   - Region: 3
     IndependentEndConditions:
     - Type: 0
@@ -1056,6 +1142,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1070,6 +1157,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1084,6 +1172,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
   - Region: 4
     IndependentEndConditions:
     - Type: 0
@@ -1100,6 +1189,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 1
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1114,6 +1204,7 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
@@ -1128,13 +1219,14 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0
         Above: 0
+      CheckCitiesConnected: 0
     - Type: 3
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
-      RegionAgeAbove: 60
+      RegionAgeAbove: 90
       NodeReached: region4.firstBlimpReceived
       DFertilizerRatio:
         Target: 0.2
@@ -1142,3 +1234,4 @@ MonoBehaviour:
       MFertilizerRatio:
         Target: 0.2
         Above: 0
+      CheckCitiesConnected: 1
