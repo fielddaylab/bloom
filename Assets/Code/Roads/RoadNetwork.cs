@@ -67,7 +67,7 @@ namespace Zavala.Roads
             }
         }
 
-        void ISaveStatePostLoad.PostLoad(SaveMgr saveMgr, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
 
             for (int i = 0; i < consts.DataRegion.Size; i++) {

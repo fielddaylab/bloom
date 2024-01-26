@@ -78,7 +78,7 @@ namespace Zavala.Economy
             ZavalaGame.SaveBuffer.RegisterHandler("MarketData", this);
         }
 
-        void ISaveStatePostLoad.PostLoad(SaveMgr saveMgr, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             UpdatePrioritiesNow = true;
         }
 

@@ -97,6 +97,6 @@ namespace Zavala.Data {
     }
 
     public interface ISaveStatePostLoad {
-        void PostLoad(SaveMgr saveMgr, SaveStateChunkConsts consts, ref SaveScratchpad scratch);
+        void PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch);
     }
 }

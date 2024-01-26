@@ -120,6 +120,7 @@ namespace Zavala.Sim {
                 yield return null;
             }
 
+            Game.Events.Dispatch(GameEvents.GameLoaded);
             SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
             ScriptUtility.Trigger(GameTriggers.GameBooted);
         }

@@ -38,6 +38,10 @@ namespace Zavala {
         }
 
         private void SnapOnEnable() {
+            if (!this) {
+                return;
+            }
+
             OccupiesTile tile = GetComponent<OccupiesTile>();
             if (tile) {
                 SnapUtility.Snap(this, GetComponent<OccupiesTile>());

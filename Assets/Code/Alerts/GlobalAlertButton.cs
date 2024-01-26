@@ -103,7 +103,7 @@ namespace Zavala.UI {
             }
         }
 
-        void ISaveStatePostLoad.PostLoad(SaveMgr saveMgr, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             var alertIds = scratch.GetBlock<StringHash32>("GlobalAlertIds");
             for(int i = 0; i < alertIds.Length; i++) {
                 QueuedActors.PushBack(ScriptUtility.LookupActor(alertIds[i]));

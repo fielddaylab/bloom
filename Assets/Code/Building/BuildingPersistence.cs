@@ -86,7 +86,7 @@ namespace Zavala.Building {
             }
         }
 
-        unsafe void ISaveStatePostLoad.PostLoad(SaveMgr save, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+        unsafe void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             var data = scratch.GetBlock<PersistenceRecord>("BuildingPersistence");
 
             var iter = Game.Components.ComponentsOfType<PersistBuilding>(out int persistCount);

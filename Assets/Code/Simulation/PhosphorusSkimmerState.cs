@@ -31,7 +31,7 @@ namespace Zavala.World {
             ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
         }
 
-        void ISaveStatePostLoad.PostLoad(SaveMgr save, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             var policyState = Game.SharedState.Get<PolicyState>();
             for (int i = 0; i < RegionInfo.MaxRegions; i++) {
                 PolicyLevel level = policyState.Policies[i].Map[(int) PolicyType.SkimmingPolicy];

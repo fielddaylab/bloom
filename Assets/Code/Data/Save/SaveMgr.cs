@@ -26,16 +26,20 @@ namespace Zavala.Data {
             public object Context;
         }
 
-        public const int TotalBufferSize = 256 * Unsafe.KiB; // 256k buffer
-        public const int MainBufferSize = 128 * Unsafe.KiB; // 128k buffer
+        public const int MainBufferSize = 80 * Unsafe.KiB; // 80k buffer
         public const int ChunkBufferSize = 64 * Unsafe.KiB; // 64k buffer
-        public const int ScratchBufferSize = 64 * Unsafe.KiB; // 64k buffer
+        public const int ScratchBufferSize = 32 * Unsafe.KiB; // 32k buffer
+        public const int CharBufferSize = 256 * Unsafe.KiB; // 256k for chars
+        public const int TotalBufferSize = MainBufferSize + ChunkBufferSize + ScratchBufferSize + CharBufferSize;
 
         private unsafe byte* m_Buffer;
         private unsafe byte* m_ChunkBuffer;
+        private unsafe char* m_CharBuffer;
         private unsafe Unsafe.ArenaHandle m_ScratchBuffer;
 
         private int m_UsedSize;
+        private int m_CharsWritten;
+
         private SaveStateHeader m_CurrentHeader;
         private SaveStateChunkConsts m_CurrentConsts;
         private SaveScratchpad m_CurrentScratch;
@@ -57,7 +61,8 @@ namespace Zavala.Data {
             Free();
             m_Buffer = (byte*) Unsafe.Alloc(TotalBufferSize);
             m_ChunkBuffer = m_Buffer + MainBufferSize;
-            m_ScratchBuffer = Unsafe.CreateArena(m_ChunkBuffer + ChunkBufferSize, ScratchBufferSize);
+            m_CharBuffer = (char*) (m_ChunkBuffer + ChunkBufferSize);
+            m_ScratchBuffer = Unsafe.CreateArena((byte*) m_CharBuffer + CharBufferSize, ScratchBufferSize);
         }
 
         public unsafe void Free() {
@@ -65,6 +70,7 @@ namespace Zavala.Data {
                 Unsafe.Free(m_Buffer);
                 m_Buffer = null;
                 m_ChunkBuffer = null;
+                m_CharBuffer = null;
                 m_ScratchBuffer = default;
             }
         }
@@ -111,6 +117,10 @@ namespace Zavala.Data {
         #endregion // Handlers
 
         #region Write
+
+        public unsafe UnsafeSpan<byte> GetRawBytes() {
+            return new UnsafeSpan<byte>(m_Buffer, (uint) m_UsedSize);
+        }
 
         public void Write() {
             SaveStateHeader header;
@@ -232,7 +242,7 @@ namespace Zavala.Data {
             get { return m_UsedSize > 0; }
         }
 
-        public unsafe UnsafeSpan<byte> GetDecodeBuffer() {
+        public unsafe UnsafeSpan<byte> GetRawCopyDest() {
             return new UnsafeSpan<byte>(m_Buffer, MainBufferSize);
         }
 
@@ -324,20 +334,8 @@ namespace Zavala.Data {
 
         public void HandlePostLoad() {
             foreach (var postLoad in m_PostLoadHandlers) {
-                postLoad.PostLoad(this, m_CurrentConsts, ref m_CurrentScratch);
+                postLoad.PostLoad(m_CurrentConsts, ref m_CurrentScratch);
             }
-        }
-
-        public unsafe ByteReader ReadChunk(StringHash32 chunkId) {
-            for(int i = 0; i < m_ChunkRecords.Count; i++) {
-                ChunkRecord record = m_ChunkRecords[i];
-                if (record.Id == chunkId) {
-                    return UnpackChunkRecord(record);
-                }
-            }
-
-            Log.Error("[SaveMgr] No chunk with id '{0}' found", chunkId);
-            return default;
         }
 
         private unsafe ByteReader UnpackChunkRecord(ChunkRecord record) {
@@ -379,10 +377,26 @@ namespace Zavala.Data {
 
         #endregion // Read
 
+        #region Chars
+
+        public unsafe UnsafeSpan<char> GetCurrentBase64() {
+            return new UnsafeSpan<char>(m_CharBuffer, (uint) m_CharsWritten);
+        }
+
+        public unsafe UnsafeSpan<char> EncodeToBase64() {
+            var asSysSpan = new ReadOnlySpan<byte>(m_Buffer, m_UsedSize);
+            bool converted = Convert.TryToBase64Chars(asSysSpan, new Span<char>(m_CharBuffer, CharBufferSize), out int charsWritten);
+            Assert.True(converted);
+            m_CharsWritten = charsWritten;
+            return new UnsafeSpan<char>(m_CharBuffer, (uint) charsWritten);
+        }
+
+        #endregion // Chars
+
         [DebugMenuFactory]
         static private DMInfo SaveDebugMenu() {
             DMInfo info = new DMInfo("Save", 4);
-            info.AddButton("Write Current to Memory", () => ZavalaGame.SaveBuffer.Write());
+            info.AddButton("Write Current to Memory", () => SaveUtility.Save());
             info.AddButton("Read Current from Memory", () => {
                 ZavalaGame.SaveBuffer.Read();
                 Game.Scenes.ReloadMainScene();

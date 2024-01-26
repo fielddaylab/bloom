@@ -54,7 +54,7 @@ namespace Zavala.Economy {
             ZavalaGame.SaveBuffer.RegisterPostLoad(this);
         }
 
-        void ISaveStatePostLoad.PostLoad(SaveMgr save, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             PolicyState policy = Game.SharedState.Get<PolicyState>();
 
             for(int region = 0; region < RegionInfo.MaxRegions; region++) {
