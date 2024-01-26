@@ -2,6 +2,7 @@
 using UnityEngine;
 using FieldDay.Components;
 using Zavala.Roads;
+using FieldDay;
 
 namespace Zavala.Economy {
     public sealed class TollBooth : BatchedComponent {
@@ -25,6 +26,10 @@ namespace Zavala.Economy {
         }
 
         protected override void OnDisable() {
+            if (Game.IsShuttingDown || !Frame.IsLoadingOrLoaded(this)) {
+                return;
+            }
+
             RoadUtility.DeregisterSource(TileA);
             RoadUtility.DeregisterSource(TileB);
             RoadUtility.DeregisterDestination(TileA);

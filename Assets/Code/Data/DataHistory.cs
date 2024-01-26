@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using BeauUtil;
@@ -13,7 +14,7 @@ namespace Zavala.Data
             Net = new RingBuffer<int>(MaxHistory, RingBufferMode.Overwrite);
         }
 
-        public readonly int MaxHistory = 20; // how far back history is stored
+        public int MaxHistory = 20; // how far back history is stored
 
         public int Pending;
         public int PrevPending;
@@ -98,6 +99,49 @@ namespace Zavala.Data
             histories = new DataHistory[size];
             for (int i = 0; i < histories.Length; i++) {
                 histories[i] = new DataHistory(depth);
+            }
+        }
+
+        static public void Write(DataHistory[] histories, ref ByteWriter writer) {
+            writer.Write((byte) histories.Length);
+
+            for(int i = 0; i < histories.Length; i++) {
+                DataHistory history = histories[i];
+                writer.Write((byte) history.MaxHistory);
+
+                writer.Write(history.Pending);
+                writer.Write(history.PrevPending);
+
+                writer.Write((byte) history.Net.Count);
+                for(int j = 0; j < history.Net.Count; j++) {
+                    writer.Write(history.Net[j]);
+                }
+            }
+        }
+
+        static public void Read(ref DataHistory[] histories, ref ByteReader reader) {
+            int size = reader.Read<byte>();
+            Array.Resize(ref histories, size);
+
+            for(int i = 0; i < histories.Length; i++) {
+                DataHistory history = histories[i];
+                int depth = reader.Read<byte>();
+
+                if (history == null) {
+                    histories[i] = history = new DataHistory(depth);
+                } else {
+                    history.MaxHistory = depth;
+                    history.Net.Clear();
+                    history.Net.SetCapacity(depth);
+                }
+
+                history.Pending = reader.Read<int>();
+                history.PrevPending = reader.Read<int>();
+
+                int count = reader.Read<byte>();
+                while(count-- > 0) {
+                    history.Net.PushBack(reader.Read<int>());
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Zavala.Audio {
         [NonSerialized] public Dictionary<StringHash32, AudioClip> LoadedClips = MapUtils.Create<StringHash32, AudioClip>(64);
         [NonSerialized] public Dictionary<StringHash32, SfxAsset> LoadedSfxAssets = MapUtils.Create<StringHash32, SfxAsset>(64);
 
-        [NonSerialized] public UniqueIdAllocator16 LoopHandleAllocator = new UniqueIdAllocator16(64);
+        [NonSerialized] public UniqueIdAllocator16 HandleAllocator = new UniqueIdAllocator16(64);
 
         void IRegistrationCallbacks.OnDeregister() {
             PlaybackPool.Clear();
@@ -158,6 +158,57 @@ namespace Zavala.Audio {
             });
         }
 
+        static public UniqueId16 PlaySfxTracked(StringHash32 assetId, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
+            SfxState state = Game.SharedState.Get<SfxState>();
+            UniqueId16 handle = state.HandleAllocator.Alloc();
+            state.CommandQueue.PushBack(new SfxCommand() {
+                Type = SfxCommandType.PlayClip,
+                PlayData = new SfxPlayData() {
+                    Asset = new SfxAssetRef() { AssetId = assetId },
+                    Volume = volume,
+                    Pitch = pitch,
+                    Delay = 0,
+                    Tag = tag,
+                    Handle = handle
+                }
+            });
+            return handle;
+        }
+
+        static public UniqueId16 PlaySfxTracked(SfxAsset asset, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
+            SfxState state = Game.SharedState.Get<SfxState>();
+            UniqueId16 handle = state.HandleAllocator.Alloc();
+            state.CommandQueue.PushBack(new SfxCommand() {
+                Type = SfxCommandType.PlayFromAssetRef,
+                PlayData = new SfxPlayData() {
+                    Asset = new SfxAssetRef() { InstanceId = asset.GetInstanceID() },
+                    Volume = volume,
+                    Pitch = pitch,
+                    Delay = 0,
+                    Tag = tag,
+                    Handle = handle
+                }
+            });
+            return handle;
+        }
+
+        static public UniqueId16 PlaySfxTracked(AudioClip clip, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
+            SfxState state = Game.SharedState.Get<SfxState>();
+            UniqueId16 handle = state.HandleAllocator.Alloc();
+            state.CommandQueue.PushBack(new SfxCommand() {
+                Type = SfxCommandType.PlayFromAssetRef,
+                PlayData = new SfxPlayData() {
+                    Asset = new SfxAssetRef() { InstanceId = clip.GetInstanceID() },
+                    Volume = volume,
+                    Pitch = pitch,
+                    Delay = 0,
+                    Tag = tag,
+                    Handle = handle
+                }
+            });
+            return handle;
+        }
+
         static public void PlaySfx3d(StringHash32 assetId, Transform position, Vector3 offset, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
             Game.SharedState.Get<SfxState>().CommandQueue.PushBack(new SfxCommand() {
                 Type = SfxCommandType.PlayClip,
@@ -176,7 +227,7 @@ namespace Zavala.Audio {
 
         static public UniqueId16 LoopSfx(AudioClip clip, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
             SfxState state = Game.SharedState.Get<SfxState>();
-            UniqueId16 handle = state.LoopHandleAllocator.Alloc();
+            UniqueId16 handle = state.HandleAllocator.Alloc();
             state.CommandQueue.PushBack(new SfxCommand() {
                 Type = SfxCommandType.PlayFromAssetRef,
                 PlayData = new SfxPlayData() {
@@ -194,7 +245,7 @@ namespace Zavala.Audio {
 
         static public UniqueId16 LoopSfx3d(AudioClip clip, Transform position, Vector3 offset, float minDistance = 0.1f, float maxDistance = 1f, float volume = 1, float pitch = 1, float delay = 0, StringHash32 tag = default) {
             SfxState state = Game.SharedState.Get<SfxState>();
-            UniqueId16 handle = state.LoopHandleAllocator.Alloc();
+            UniqueId16 handle = state.HandleAllocator.Alloc();
             state.CommandQueue.PushBack(new SfxCommand() {
                 Type = SfxCommandType.PlayFromAssetRef,
                 PlayData = new SfxPlayData() {

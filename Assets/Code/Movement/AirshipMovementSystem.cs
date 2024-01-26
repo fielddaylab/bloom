@@ -52,15 +52,15 @@ namespace Zavala.Movement
         }
 
         private void ProcessEntering(RequestFulfiller fulfiller, AirshipInstance airship, SimTimeState timeState) {
-            airship.MovementRoutine.Replace(EnterRoutine(fulfiller, airship, timeState)).SetPhase(RoutinePhase.Manual);
+            airship.MovementRoutine.Replace(airship, EnterRoutine(fulfiller, airship, timeState)).SetPhase(RoutinePhase.Manual).ExecuteWhileDisabled();
         }
 
         private void ProcessEnRoute(RequestFulfiller fulfiller, AirshipInstance airship, SimTimeState timeState) {
-            airship.MovementRoutine.Replace(EnRouteRoutine(fulfiller, airship, timeState)).SetPhase(RoutinePhase.Manual);
+            airship.MovementRoutine.Replace(airship, EnRouteRoutine(fulfiller, airship, timeState)).SetPhase(RoutinePhase.Manual).ExecuteWhileDisabled();
         }
 
         private void ProcessExiting(RequestFulfiller fulfiller, AirshipInstance airship, SimTimeState timeState) {
-            airship.MovementRoutine.Replace(ExitRoutine(fulfiller, airship, timeState)).SetPhase(RoutinePhase.Manual);
+            airship.MovementRoutine.Replace(airship, ExitRoutine(fulfiller, airship, timeState)).SetPhase(RoutinePhase.Manual).ExecuteWhileDisabled();
             fulfiller.AtTransitionPoint = false;
         }
 

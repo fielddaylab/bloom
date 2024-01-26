@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
+using FieldDay;
 using FieldDay.Components;
 using UnityEngine;
 using Zavala.Roads;
@@ -67,14 +68,16 @@ namespace Zavala.Economy {
         }
 
         protected override void OnDisable() {
-            MarketUtility.DeregisterBuyer(this);
-            if (!IsLocalOption) {
-                RoadUtility.DeregisterDestination(Position);
-            }
+            if (Frame.IsLoadingOrLoaded(this)) {
+                MarketUtility.DeregisterBuyer(this);
+                if (!IsLocalOption) {
+                    RoadUtility.DeregisterDestination(Position);
+                }
 
-            Requested.SetAll(0);
-            RequestCount = 0;
-            Received.SetAll(0);
+                Requested.SetAll(0);
+                RequestCount = 0;
+                Received.SetAll(0);
+            }
 
             base.OnDisable();
         }

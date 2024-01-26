@@ -65,7 +65,9 @@ namespace Zavala.Building
         }
 
         protected override void OnDisable() {
-            if (Game.IsShuttingDown) {
+            base.OnDisable();
+
+            if (Game.IsShuttingDown || !Frame.IsLoadingOrLoaded(this)) {
                 return;
             }
 
@@ -87,8 +89,6 @@ namespace Zavala.Building
                     m_MeshFilters[i].sharedMesh = m_OriginalMeshes[i];
                 }
             }
-
-            base.OnDisable();
         }
 
         #endregion // Unity Callbacks

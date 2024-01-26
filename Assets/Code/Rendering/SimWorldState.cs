@@ -246,7 +246,7 @@ namespace Zavala.World {
             ExportRevealState eReveal = Game.SharedState.Get<ExportRevealState>();
             InteractionState interactions = Game.SharedState.Get<InteractionState>();
 
-            world.ExportRevealRoutine.Replace(RevealExportDepot(world, grid, eReveal, interactions, id));
+            world.ExportRevealRoutine.Replace(world, RevealExportDepot(world, grid, eReveal, interactions, id));
         }
 
         [DebugMenuFactory]
@@ -290,6 +290,12 @@ namespace Zavala.World {
             Vector3 worldPos = ScriptUtility.LookupActor(inId).transform.position;
             TryGetTileIndexFromWorld(worldPos, out int depotIndex);
             int regionIndex = grid.Terrain.Regions[depotIndex];
+
+            if (eReveal.DepotRevealMask[regionIndex]) {
+                yield break;
+            }
+
+            eReveal.DepotRevealMask[regionIndex] = true;
 
             // Disable player input
             InteractionMask disableMask = InteractionMask.None;
@@ -341,6 +347,31 @@ namespace Zavala.World {
             InteractionUtility.SetInteractions(interactions, enableMask);
 
             yield return null;
+        }
+
+        static public void RevealExportDepotInstantly(SimWorldState world, SimGridState grid, ExportRevealState eReveal, int regionIndex) {
+            world.ObstructionsWorkList = eReveal.ObstructionsPerRegion[regionIndex];
+            foreach (GameObject obj in world.ObstructionsWorkList) {
+                OccupiesTile ot = obj.GetComponent<OccupiesTile>();
+                TileEffectRendering.SetTopVisibility(world.Tiles[ot.TileIndex], true);
+                // Destroy object on top of tile
+                GameObject.Destroy(obj);
+                grid.Terrain.Info[ot.TileIndex].Flags = 0;
+            }
+            world.ObstructionsWorkList.Clear();
+
+            // Convert export depot placeholder to the real deal
+            GameObject tempDepot = eReveal.DepotsPerRegion[regionIndex];
+            StringHash32 actorId = tempDepot.GetComponent<EventActor>().Id;
+            Vector3 worldPos = tempDepot.transform.position;
+            GameObject.Destroy(tempDepot);
+
+            RegionPrefabPalette palette = world.Palettes[regionIndex];
+            var newDepot = GameObject.Instantiate(palette.ExportDepot, worldPos, Quaternion.identity);
+
+            Assert.NotNull(newDepot);
+            EventActorUtility.RegisterActor(newDepot.GetComponent<EventActor>(), actorId);
+            eReveal.DepotsPerRegion[regionIndex] = newDepot;
         }
 
         #endregion // Routines

@@ -1,18 +1,17 @@
-using BeauPools;
 using FieldDay;
 using FieldDay.SharedState;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Advisor;
 using Zavala.Building;
-using Zavala.Economy;
+using Zavala.Cards;
+using Zavala.Data;
 using Zavala.Sim;
 using static Zavala.Building.BuildingPools;
 
 namespace Zavala.World {
-    public class PhosphorusSkimmerState : SharedStateComponent, IRegistrationCallbacks {
+    public class PhosphorusSkimmerState : SharedStateComponent, IRegistrationCallbacks, ISaveStatePostLoad {
         public SimTimer SkimTimer;
         
         [NonSerialized] public List<SkimmerLocation>[] SkimmerLocsPerRegion;
@@ -24,9 +23,22 @@ namespace Zavala.World {
             for (int i = 0; i < RegionInfo.MaxRegions; i++) {
                 SkimmerLocsPerRegion[i] = new List<SkimmerLocation>();
             }
+
+            ZavalaGame.SaveBuffer.RegisterPostLoad(this);
         }
 
         public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
+        }
+
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            var policyState = Game.SharedState.Get<PolicyState>();
+            for (int i = 0; i < RegionInfo.MaxRegions; i++) {
+                PolicyLevel level = policyState.Policies[i].Map[(int) PolicyType.SkimmingPolicy];
+                if (level > 0) {
+                    PhosphorusSkimmerUtility.SpawnSkimmersInRegion(i, (int) level);
+                }
+            }
         }
     }
 
@@ -67,7 +79,7 @@ namespace Zavala.World {
             for (int i = 0; i < numSkimmers; i++) {
                 PhosphorusSkimmer skim = PlaceSkimmer(grid, skimmerPool, locs[i], i == 2); // if i == 2: third skimmer, make it a dredger
                 skim.gameObject.SetActive(true);
-                Debug.LogWarning("[PhosphorusSkimmerState] Set skimmer to " + skim);
+                Debug.Log("[PhosphorusSkimmerState] Set skimmer to " + skim);
                 locs[i] = new SkimmerLocation() {
                     TileIndex = locs[i].TileIndex,
                     PlacedSkimmer = skim

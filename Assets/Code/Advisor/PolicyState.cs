@@ -7,19 +7,22 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zavala.Cards;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.Advisor {
     public struct PolicyBlock {
-        public Dictionary<PolicyType, PolicyLevel> Map;
-        public Dictionary<PolicyType, bool> EverSet; // Whether this policy type has ever been set in its region
+        public PolicyLevel[] Map;
+        public BitSet32 EverSet; // Whether this policy type has ever been set in its region
+
+        public const int PolicyTypeCount = 4;
     }
 
     // TODO: track unlocked policies (progression)
 
-    public class PolicyState : SharedStateComponent, IRegistrationCallbacks {
+    public class PolicyState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
         [NonSerialized] public PolicyBlock[] Policies = new PolicyBlock[RegionInfo.MaxRegions];
 
         // public static ResourceBlock[] ExportTaxVals = new ResourceBlock[4];
@@ -45,8 +48,8 @@ namespace Zavala.Advisor {
                 ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
             }
 
-            Policies[region].Map[policyType] = (PolicyLevel)policyIndex;
-            Policies[region].EverSet[policyType] = true; // this policy has now been set
+            Policies[region].Map[(int) policyType] = (PolicyLevel)policyIndex;
+            Policies[region].EverSet[(int) policyType] = true; // this policy has now been set
             bool policySetSuccessful = false;
             switch (policyType) {
                 case PolicyType.RunoffPolicy:
@@ -123,18 +126,8 @@ namespace Zavala.Advisor {
 
         private void InitializePolicyMap() {
             for (int i = 0; i < Policies.Length; i++) {
-                Policies[i].Map = new Dictionary<PolicyType, PolicyLevel>() {
-                    { PolicyType.RunoffPolicy, PolicyLevel.None },
-                    { PolicyType.SkimmingPolicy, PolicyLevel.None },
-                    { PolicyType.ImportTaxPolicy, PolicyLevel.None },
-                    { PolicyType.SalesTaxPolicy, PolicyLevel.None }
-                };
-                Policies[i].EverSet = new Dictionary<PolicyType, bool>() {
-                    { PolicyType.RunoffPolicy, false },
-                    { PolicyType.SkimmingPolicy, false },
-                    { PolicyType.ImportTaxPolicy, false },
-                    { PolicyType.SalesTaxPolicy, false }
-                };
+                Policies[i].Map = new PolicyLevel[PolicyBlock.PolicyTypeCount];
+                Policies[i].EverSet = default;
             }
         }
 
@@ -152,15 +145,44 @@ namespace Zavala.Advisor {
             InitializePolicyMap();
 
             PolicyCardSelected.Register(HandlePolicyCardSelected);
+            ZavalaGame.SaveBuffer.RegisterHandler("PolicyState", this);
         }
 
         public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("PolicyState");
         }
 
         #region Handlers
 
         private void HandlePolicyCardSelected(CardData data) {
             SetPolicyByIndex(data.PolicyType, (int)data.PolicyLevel, (int)Game.SharedState.Get<SimGridState>().CurrRegionIndex, false);
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            writer.Write((byte) Policies.Length);
+            writer.Write((byte) PolicyBlock.PolicyTypeCount);
+            for(int i = 0; i < Policies.Length; i++) {
+                Policies[i].EverSet.Unpack(out uint bitset);
+                writer.Write((byte) bitset);
+                for(int j = 0; j < PolicyBlock.PolicyTypeCount; j++) {
+                    writer.Write((byte) Policies[i].Map[j]);
+                }
+            }
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            int regionCount = reader.Read<byte>();
+            int policyTypeCount = reader.Read<byte>();
+
+            ArrayUtils.EnsureCapacity(ref Policies, regionCount);
+
+            for(int i = 0; i < regionCount; i++) {
+                Policies[i].EverSet = new BitSet32(reader.Read<byte>());
+                ArrayUtils.EnsureCapacity(ref Policies[i].Map, policyTypeCount);
+                for(int j = 0; j < policyTypeCount; j++) {
+                    Policies[i].Map[j] = (PolicyLevel) reader.Read<byte>();
+                }
+            }
         }
 
         #endregion // Handlers
@@ -181,7 +203,7 @@ namespace Zavala.Advisor {
         public static int CurrentIndexOfPolicyInRegion(int regionOneIndexed, PolicyType type) {
             int regionZeroIndexed = regionOneIndexed - 1;
             PolicyState policy = Game.SharedState.Get<PolicyState>();
-            PolicyLevel lvl = policy.Policies[regionZeroIndexed].Map[type];
+            PolicyLevel lvl = policy.Policies[regionZeroIndexed].Map[(int) type];
             return (int)lvl;
         }
     }

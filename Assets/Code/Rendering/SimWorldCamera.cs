@@ -10,10 +10,11 @@ using Zavala.Input;
 using System;
 using BeauUtil.Debugger;
 using FieldDay;
+using Zavala.Data;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
-    public sealed class SimWorldCamera : SharedStateComponent {
+    public sealed class SimWorldCamera : SharedStateComponent, ISaveStateChunkObject, IRegistrationCallbacks {
         #region Inspector
 
         [Header("Camera Positioning")]
@@ -31,7 +32,26 @@ namespace Zavala.World {
         [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
         [NonSerialized] public Vector3 PanTargetPoint;
+
+        void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Camera");
+        }
+
+        void IRegistrationCallbacks.OnRegister() {
+            ZavalaGame.SaveBuffer.RegisterHandler("Camera", this);
+        }
+
         #endregion // Inspector
+
+        void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            LookTarget.position = reader.Read<Vector3>();
+            Camera.transform.SetPosition(reader.Read<float>(), Axis.Z, Space.Self);
+        }
+
+        void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            writer.Write(LookTarget.position);
+            writer.Write(Camera.transform.localPosition.z);
+        }
     }
 
     public static class WorldCameraUtility {
@@ -73,7 +93,7 @@ namespace Zavala.World {
 
         public static void PanCameraToPoint(SimWorldCamera cam, Vector3 pt) {
             cam.PanTargetPoint = pt + cam.PanTargetOffset;
-            cam.TransitionRoutine.Replace(PanRoutine(cam)).SetPhase(RoutinePhase.Update);
+            cam.TransitionRoutine.Replace(cam, PanRoutine(cam)).SetPhase(RoutinePhase.Update);
         }
 
         private static IEnumerator PanRoutine(SimWorldCamera cam) {

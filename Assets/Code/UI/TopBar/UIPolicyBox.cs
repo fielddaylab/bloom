@@ -1,14 +1,10 @@
 using BeauRoutine;
 using BeauUtil;
 using FieldDay;
-using FieldDay.Scenes;
 using FieldDay.Scripting;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using Zavala.Advisor;
 using Zavala.Cards;
@@ -49,6 +45,10 @@ namespace Zavala.UI {
             }
             m_Button.onClick.AddListener(() => HandlePolicyBoxClicked(advisorType));
             
+        }
+
+        private void OnDestroy() {
+            PopupRoutine.Stop();
         }
 
         #region Handlers
@@ -92,13 +92,13 @@ namespace Zavala.UI {
     {
         static public void PlayPopupRoutine(UIPolicyBox box)
         {
-            box.PopupRoutine.Replace(box.DisplayPopupRoutine());
+            box.PopupRoutine.Replace(box, box.DisplayPopupRoutine()).ExecuteWhileDisabled();
         }
 
         static public void UpdateLevelText(PolicyState policyState, SimGridState grid, UIPolicyBox box)
         {
-            if (policyState.Policies[grid.CurrRegionIndex].EverSet[box.PolicyType]) {
-                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[box.PolicyType];
+            if (policyState.Policies[grid.CurrRegionIndex].EverSet[(int) box.PolicyType]) {
+                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[(int) box.PolicyType];
                 box.LevelText.text = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());
                 box.NotSetHighlight.gameObject.SetActive(false);
             } else {

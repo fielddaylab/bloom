@@ -73,8 +73,11 @@ namespace Zavala.Sim {
             PathIndexAllocator = SimArena.Create<ushort>(MaxPathData);
         }
 
-        public const int MaxPathSummaries = ushort.MaxValue;
-        public const int MaxPathData = 2 << 18;
+        // 28 pre-placed buildings, ~50 user-placed buildings w/ optimal placement
+        // 78*77=6006 paths (if everything has a path to everything else)
+        // since things are filtered a bit we can reduce this to a comfortable 5000
+        public const int MaxPathSummaries = 5000;
+        public const int MaxPathData = 2 << 15; // 32k
     }
 
     /// <summary>

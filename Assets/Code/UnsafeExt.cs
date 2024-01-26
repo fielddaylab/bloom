@@ -1,10 +1,9 @@
+//#define RLE_DEBUG
+
 using System;
 using System.Runtime.InteropServices;
 using BeauUtil;
 using BeauUtil.Debugger;
-using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace Zavala {
     static public unsafe class UnsafeExt {
@@ -70,6 +69,7 @@ namespace Zavala {
 
         private const int WindowSize = 256;
         private const int MinRunLength = 3;
+        private const int MaxRunLength = 255 + MinRunLength;
         private const int MaxRunLengthThreshold = 32;
 
         private unsafe struct CompressionMatch
@@ -145,16 +145,20 @@ namespace Zavala {
                 long length = (src - windowStart);
                 windowSize = (int)Math.Min(WindowSize, length);
 
-                match = FindMatch(src, (int)(srcEnd - src), windowSize);
+                match = FindMatch(src, Math.Min((int)(srcEnd - src), MaxRunLength), windowSize);
                 if (match.Length == 0) {
-                    // Log.Msg("[{0}] encoding literal: {1}", length, HexString(src, 1));
+#if RLE_DEBUG
+                    Log.Msg("[{0}] encoding literal: {1}", length, HexString(src, 1));
+#endif // RLE_DEBUG
                     *dest++ = *src++;
                 }
                 else {
                     groupMask |= 1;
                     matchOffset = (int)(src - match.Start);
                     matchLength = match.Length;
-                    // Log.Msg("[{0}] encoding sequence <{1},{2}>: {3}", length, matchOffset, matchLength, HexString(match.Start, match.Length));
+#if RLE_DEBUG
+                    Log.Msg("[{0}] encoding sequence <{1},{2}>: {3}", length, matchOffset, matchLength, HexString(match.Start, match.Length));
+#endif // RLE_DEBUG
                     *dest++ = (byte)(matchOffset - 1);
                     *dest++ = (byte)(matchLength - MinRunLength);
                     src += match.Length;
@@ -282,15 +286,20 @@ namespace Zavala {
 
                     seekPtr = dest - runOffset;
 
-                    for (int i = 0; i < runLength; i++) {
+                    int lengthRemaining = runLength;
+                    while(lengthRemaining-- > 0) {
                         *dest++ = *seekPtr++;
                     }
 
-                    // Log.Msg("[{0}] decoding sequence <{1},{2}>: {3}", length, runOffset, runLength, HexString(dest - runOffset - runLength, runLength));
+#if RLE_DEBUG
+                    Log.Msg("[{0}] decoding sequence <{1},{2}>: {3}", length, runOffset, runLength, HexString(dest - runOffset - runLength, runLength));
+#endif // RLE_DEBUG
                 }
                 else {
                     // literal
-                    // Log.Msg("[{0}] decoding literal: {1}", length, HexString(src, 1));
+#if RLE_DEBUG
+                    Log.Msg("[{0}] decoding literal: {1}", length, HexString(src, 1));
+#endif // RLE_DEBUG
                     *dest++ = *src++;
                 }
 
@@ -336,6 +345,8 @@ namespace Zavala {
 
         #endregion // Encryption
 
+#if RLE_DEBUG
+
         static private string HexString(byte* src, int srcSize) {
             int bufferSize = 3 * srcSize - 1;
             char* buffer = stackalloc char[bufferSize];
@@ -360,5 +371,7 @@ namespace Zavala {
         }
 
         private const string HexSrc = "0123456789ABCDEF";
+
+#endif // RLE_DEBUG
     }
 }

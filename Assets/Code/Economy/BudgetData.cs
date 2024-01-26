@@ -1,9 +1,11 @@
+using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.SharedState;
 //using System.Linq;
 using UnityEngine;
+using Zavala.Data;
 using Zavala.Sim;
 
 namespace Zavala.Economy
@@ -16,7 +18,7 @@ namespace Zavala.Economy
     }
 
     [SharedStateInitOrder(10)]
-    public sealed class BudgetData : SharedStateComponent, IRegistrationCallbacks
+    public sealed class BudgetData : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
     {
         [SerializeField] private long[] m_initialBudgetsPerRegion;
 
@@ -27,9 +29,25 @@ namespace Zavala.Economy
             for (int i = 0; i < BudgetsPerRegion.Length; i++) {
                 BudgetUtility.SetBudget(this, m_initialBudgetsPerRegion[i], i);
             }
+
+            ZavalaGame.SaveBuffer.RegisterHandler("Budget", this);
         }
 
         public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Budget");
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            for(int i = 0; i < consts.MaxRegions; i++) {
+                writer.Write(BudgetsPerRegion[i].Net);
+            }
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            ArrayUtils.EnsureCapacity(ref BudgetsPerRegion, consts.MaxRegions);
+            for(int i = 0; i < consts.MaxRegions; i++) {
+                reader.Read(ref BudgetsPerRegion[i].Net);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using BeauPools;
 using BeauUtil;
 using BeauUtil.Debugger;
+using Zavala.Data;
 
 namespace Zavala.Economy {
     /// <summary>
@@ -561,6 +562,42 @@ namespace Zavala.Economy {
         static private readonly char[] StringTrimChars = new char[] { ',', ' ' };
 
         #endregion // Operators
+
+        #region Serialization
+
+        public void Write(ref ByteWriter writer) {
+            writer.Write((short) Manure);
+            writer.Write((short) MFertilizer);
+            writer.Write((short) DFertilizer);
+            writer.Write((short) Grain);
+            writer.Write((short) Milk);
+        }
+
+        public void Read(ref ByteReader reader) {
+            Manure = reader.Read<short>();
+            MFertilizer = reader.Read<short>();
+            DFertilizer = reader.Read<short>();
+            Grain = reader.Read<short>();
+            Milk = reader.Read<short>();
+        }
+
+        public void Write8(ref ByteWriter writer) {
+            writer.Write((sbyte) Manure);
+            writer.Write((sbyte) MFertilizer);
+            writer.Write((sbyte) DFertilizer);
+            writer.Write((sbyte) Grain);
+            writer.Write((sbyte) Milk);
+        }
+
+        public void Read8(ref ByteReader reader) {
+            Manure = reader.Read<sbyte>();
+            MFertilizer = reader.Read<sbyte>();
+            DFertilizer = reader.Read<sbyte>();
+            Grain = reader.Read<sbyte>();
+            Milk = reader.Read<sbyte>();
+        }
+
+        #endregion // Serialization
     }
 
     /// <summary>

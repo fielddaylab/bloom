@@ -4,11 +4,13 @@ using BeauUtil.Debugger;
 using FieldDay.Components;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
+using Zavala.Building;
+using Zavala.Data;
 
 namespace Zavala.Economy {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ResourceRequester))]
-    public sealed class ResourcePurchaser : BatchedComponent {
+    public sealed class ResourcePurchaser : BatchedComponent, IPersistBuildingComponent {
         static public readonly StringHash32 Event_PurchaseMade = "ResourcePurchaser::ResourcePurchased";
         static public readonly StringHash32 Event_PurchaseUnfulfilled = "ResourcePurchaser::PurchaseUnfulfilled";
 
@@ -28,16 +30,16 @@ namespace Zavala.Economy {
             if (RequestAmount[resource] + change <= 0) return;
             RequestAmount[resource] += change;
         }
-        public void ChangePurchasePrice(ResourceId resource, int change) {
-            if (PurchasePrice[resource] + change <= 0) return;
-            PurchasePrice[resource] += change;
-        }
-        public void ChangeDemandTimer(ResourceId resource, int change)
-        {
-            ChangeRequestAmount(resource, change);
-            // ChangePurchasePrice(resource, change);
-            Log.Msg("[ResourcePurchaser] {0} demand changed by {1} for actor {2}", resource, change, transform.name);
-        }
+        //public void ChangePurchasePrice(ResourceId resource, int change) {
+        //    if (PurchasePrice[resource] + change <= 0) return;
+        //    PurchasePrice[resource] += change;
+        //}
+        //public void ChangeDemandTimer(ResourceId resource, int change)
+        //{
+        //    ChangeRequestAmount(resource, change);
+        //    // ChangePurchasePrice(resource, change);
+        //    Log.Msg("[ResourcePurchaser] {0} demand changed by {1} for actor {2}", resource, change, transform.name);
+        //}
         public void ChangeDemandAmount(ResourceId resource, int change) {
             ChangeRequestAmount(resource, change);
             // ChangePurchasePrice(resource, change);
@@ -49,6 +51,14 @@ namespace Zavala.Economy {
             this.CacheComponent(ref Request);
 
             RequestAmountHistory.PushBack(RequestAmount);
+        }
+
+        void IPersistBuildingComponent.Write(PersistBuilding building, ref ByteWriter writer) {
+            RequestAmount.Write8(ref writer);
+        }
+
+        void IPersistBuildingComponent.Read(PersistBuilding building, ref ByteReader reader) {
+            RequestAmount.Read8(ref reader);
         }
     }
 }

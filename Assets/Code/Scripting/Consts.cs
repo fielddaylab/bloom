@@ -36,6 +36,7 @@ namespace Zavala
 
         static public readonly StringHash32 DialogueClosing = "dialog:closing";
 
+        static public readonly StringHash32 GameLoaded = "game:loaded";
         static public readonly StringHash32 GameFailed = "game:failed";
         static public readonly StringHash32 GameCompleted = "game:completed";
 

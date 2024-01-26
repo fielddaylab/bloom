@@ -13,48 +13,8 @@ MonoBehaviour:
   m_Name: InitialRegion
   m_EditorClassIdentifier: 
   Width: 8
-  Height: 10
+  Height: 9
   Tiles:
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
@@ -416,7 +376,7 @@ MonoBehaviour:
     Flags: 1
     Height: 65535
   Buildings:
-  - LocalTileIndex: 53
+  - LocalTileIndex: 45
     ScriptName:
       m_Source: region1_cafo1
       m_HashValue: 3520211273
@@ -431,7 +391,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 57
+  - LocalTileIndex: 49
     ScriptName:
       m_Source: region1_grain1
       m_HashValue: 3365541027
@@ -446,7 +406,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 19
+  - LocalTileIndex: 11
     ScriptName:
       m_Source: region1_city1
       m_HashValue: 51623813
@@ -461,7 +421,7 @@ MonoBehaviour:
       m_Type: 1
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 9
+  - LocalTileIndex: 1
     ScriptName:
       m_Source: region1_export1
       m_HashValue: 4287377266
@@ -476,7 +436,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 10
+  - LocalTileIndex: 2
     ScriptName:
       m_Source: region1_obstruct2
       m_HashValue: 229427513
@@ -491,7 +451,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 18
+  - LocalTileIndex: 10
     ScriptName:
       m_Source: region1_obstruct1
       m_HashValue: 179094656
@@ -506,7 +466,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 26
+  - LocalTileIndex: 18
     ScriptName:
       m_Source: region1_skimmer1
       m_HashValue: 1300961690
@@ -521,7 +481,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 42
+  - LocalTileIndex: 34
     ScriptName:
       m_Source: region1_skimmer3
       m_HashValue: 1267406452
@@ -536,7 +496,7 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
-  - LocalTileIndex: 27
+  - LocalTileIndex: 19
     ScriptName:
       m_Source: region1_skimmer2
       m_HashValue: 1284184071
@@ -554,17 +514,7 @@ MonoBehaviour:
   Points: []
   Roads: []
   Modifiers:
-  - LocalTileIndex: 21
-    ScriptName:
-      m_Source: 
-      m_HashValue: 0
-    Modifier: 0
-  - LocalTileIndex: 46
-    ScriptName:
-      m_Source: 
-      m_HashValue: 0
-    Modifier: 0
-  - LocalTileIndex: 68
+  - LocalTileIndex: 13
     ScriptName:
       m_Source: 
       m_HashValue: 0
@@ -574,96 +524,101 @@ MonoBehaviour:
       m_Source: 
       m_HashValue: 0
     Modifier: 0
-  - LocalTileIndex: 67
+  - LocalTileIndex: 60
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Modifier: 0
+  - LocalTileIndex: 30
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 59
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 53
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 46
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 0
+  - LocalTileIndex: 62
+    ScriptName:
+      m_Source: 
+      m_HashValue: 0
+    Modifier: 1
   - LocalTileIndex: 61
     ScriptName:
       m_Source: 
       m_HashValue: 0
-    Modifier: 0
-  - LocalTileIndex: 54
-    ScriptName:
-      m_Source: 
-      m_HashValue: 0
-    Modifier: 0
-  - LocalTileIndex: 70
-    ScriptName:
-      m_Source: 
-      m_HashValue: 0
     Modifier: 1
-  - LocalTileIndex: 69
-    ScriptName:
-      m_Source: 
-      m_HashValue: 0
-    Modifier: 1
-  - LocalTileIndex: 64
+  - LocalTileIndex: 56
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Modifier: 0
-  - LocalTileIndex: 43
+  - LocalTileIndex: 35
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Modifier: 1
   Borders:
-  - LocalTileIndex: 47
+  - LocalTileIndex: 39
     Borders:
       Value: 24
     SharedCornerCCW: 1
     SharedCornerCW: 3
-  - LocalTileIndex: 55
+  - LocalTileIndex: 47
     Borders:
       Value: 56
     SharedCornerCCW: 1
     SharedCornerCW: 4
-  - LocalTileIndex: 62
+  - LocalTileIndex: 54
     Borders:
       Value: 16
     SharedCornerCCW: 2
     SharedCornerCW: 3
-  - LocalTileIndex: 70
+  - LocalTileIndex: 62
     Borders:
       Value: 56
     SharedCornerCCW: 1
     SharedCornerCW: 4
-  - LocalTileIndex: 69
+  - LocalTileIndex: 61
     Borders:
       Value: 112
     SharedCornerCCW: 2
     SharedCornerCW: 5
-  - LocalTileIndex: 68
+  - LocalTileIndex: 60
     Borders:
       Value: 32
     SharedCornerCCW: 3
     SharedCornerCW: 4
-  - LocalTileIndex: 67
+  - LocalTileIndex: 59
     Borders:
       Value: 48
     SharedCornerCCW: 2
     SharedCornerCW: 4
-  - LocalTileIndex: 74
+  - LocalTileIndex: 66
     Borders:
       Value: 112
     SharedCornerCCW: 2
     SharedCornerCW: 5
-  - LocalTileIndex: 65
+  - LocalTileIndex: 57
     Borders:
       Value: 96
     SharedCornerCCW: 3
     SharedCornerCW: 5
-  - LocalTileIndex: 64
+  - LocalTileIndex: 56
     Borders:
       Value: 98
     SharedCornerCCW: 3
-    SharedCornerCW: 0
-  - LocalTileIndex: 56
-    Borders:
-      Value: 66
-    SharedCornerCCW: 4
     SharedCornerCW: 0
   - LocalTileIndex: 48
     Borders:
@@ -672,18 +627,18 @@ MonoBehaviour:
     SharedCornerCW: 0
   - LocalTileIndex: 40
     Borders:
+      Value: 66
+    SharedCornerCCW: 4
+    SharedCornerCW: 0
+  - LocalTileIndex: 32
+    Borders:
       Value: 70
     SharedCornerCCW: 4
     SharedCornerCW: 1
-  - LocalTileIndex: 33
+  - LocalTileIndex: 25
     Borders:
       Value: 2
     SharedCornerCCW: 5
-    SharedCornerCW: 0
-  - LocalTileIndex: 25
-    Borders:
-      Value: 66
-    SharedCornerCCW: 4
     SharedCornerCW: 0
   - LocalTileIndex: 17
     Borders:
@@ -692,38 +647,48 @@ MonoBehaviour:
     SharedCornerCW: 0
   - LocalTileIndex: 9
     Borders:
+      Value: 66
+    SharedCornerCCW: 4
+    SharedCornerCW: 0
+  - LocalTileIndex: 1
+    Borders:
       Value: 70
     SharedCornerCCW: 4
     SharedCornerCW: 1
-  - LocalTileIndex: 10
+  - LocalTileIndex: 2
     Borders:
       Value: 14
     SharedCornerCCW: 5
     SharedCornerCW: 2
-  - LocalTileIndex: 11
+  - LocalTileIndex: 3
     Borders:
       Value: 4
     SharedCornerCCW: 0
     SharedCornerCW: 1
-  - LocalTileIndex: 12
+  - LocalTileIndex: 4
     Borders:
       Value: 14
     SharedCornerCCW: 5
     SharedCornerCW: 2
-  - LocalTileIndex: 13
+  - LocalTileIndex: 5
     Borders:
       Value: 12
     SharedCornerCCW: 0
     SharedCornerCW: 2
-  - LocalTileIndex: 22
+  - LocalTileIndex: 14
     Borders:
       Value: 4
     SharedCornerCCW: 0
     SharedCornerCW: 1
-  - LocalTileIndex: 15
+  - LocalTileIndex: 7
     Borders:
       Value: 30
     SharedCornerCCW: 5
+    SharedCornerCW: 3
+  - LocalTileIndex: 15
+    Borders:
+      Value: 24
+    SharedCornerCCW: 1
     SharedCornerCW: 3
   - LocalTileIndex: 23
     Borders:
@@ -735,33 +700,28 @@ MonoBehaviour:
       Value: 24
     SharedCornerCCW: 1
     SharedCornerCW: 3
-  - LocalTileIndex: 39
-    Borders:
-      Value: 24
-    SharedCornerCCW: 1
-    SharedCornerCW: 3
   Spanners:
-  - LocalTileIndex: 48
+  - LocalTileIndex: 40
     ScriptName:
       m_Source: toll_booth_1to2
       m_HashValue: 83120352
     Type: 10
-  - LocalTileIndex: 13
+  - LocalTileIndex: 5
     ScriptName:
       m_Source: toll_booth_1to5
       m_HashValue: 200563685
     Type: 10
-  EdgeVisualUpdateSet: 110019001f002100270028002f003700
+  EdgeVisualUpdateSet: 09001100170019001f00200027002f00
   WaterEmitters:
-  - LocalTileIndex: 33
+  - LocalTileIndex: 25
     Variant: 0
-  - LocalTileIndex: 27
+  - LocalTileIndex: 19
     Variant: 1
-  - LocalTileIndex: 30
+  - LocalTileIndex: 22
     Variant: 1
-  - LocalTileIndex: 47
+  - LocalTileIndex: 39
     Variant: 1
-  WaterGroupLocalIndices: 110019001a001b001c001d001e001f00210022002300270028002a002f003700
+  WaterGroupLocalIndices: 0900110012001300140015001600170019001a001b001f002000220027002f00
   WaterGroups:
   - Offset: 0
     Length: 16

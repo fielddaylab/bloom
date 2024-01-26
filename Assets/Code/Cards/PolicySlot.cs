@@ -98,8 +98,8 @@ namespace Zavala.Cards
                 // load current policy
                 PolicyState policyState = Game.SharedState.Get<PolicyState>();
                 SimGridState grid = Game.SharedState.Get<SimGridState>();
-                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[newType];
-                if (policyState.Policies[grid.CurrRegionIndex].EverSet[newType]) {
+                PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[(int) newType];
+                if (policyState.Policies[grid.CurrRegionIndex].EverSet[(int) newType]) {
                     // Has been set before -- look for current policy
                     for (int i = 0; i < unlockedCards.Count; i++) {
                         if (unlockedCards[i].PolicyLevel == level) {
@@ -163,7 +163,7 @@ namespace Zavala.Cards
                 // Clicked a different slot
                 if (m_HandState == HandState.Visible || m_HandState == HandState.Showing) {
                     // Hide this hand in deference to other hand
-                    m_ChoiceRoutine.Replace(HideHandRoutine());
+                    m_ChoiceRoutine.Replace(this, HideHandRoutine()).ExecuteWhileDisabled();
                 }
                 return;
             }
@@ -199,11 +199,11 @@ namespace Zavala.Cards
                     card.OnCardHoverExit += OnCardHoverExit;
                 }
 
-                m_ChoiceRoutine.Replace(ShowHandRoutine());
+                m_ChoiceRoutine.Replace(this, ShowHandRoutine()).ExecuteWhileDisabled();
             }
             else if (m_HandState == HandState.Visible || m_HandState == HandState.Showing) {
                 // Hide hand
-                m_ChoiceRoutine.Replace(HideHandRoutine());
+                m_ChoiceRoutine.Replace(this, HideHandRoutine()).ExecuteWhileDisabled();
             }
         }
 
@@ -214,19 +214,19 @@ namespace Zavala.Cards
             }
 
             // Hide Hand
-            m_ChoiceRoutine.Replace(HideHandRoutine());
+            m_ChoiceRoutine.Replace(this, HideHandRoutine()).ExecuteWhileDisabled();
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
             if (gameObject.activeInHierarchy) {
                 // Hide Hand
-                m_ChoiceRoutine.Replace(HideHandRoutine());
+                m_ChoiceRoutine.Replace(this, HideHandRoutine()).ExecuteWhileDisabled();
             }
         }
 
         private void HandlePolicyCloseClicked() {
             // Hide Hand
-            m_ChoiceRoutine.Replace(HideHandRoutine());
+            m_ChoiceRoutine.Replace(this, HideHandRoutine()).ExecuteWhileDisabled();
         }
 
         private void OnCardClicked(PolicyState policyState, CardData data, CardUI card) {
@@ -286,7 +286,7 @@ namespace Zavala.Cards
             float topMost = 155;
             for (int i = 0; i < m_DisplayCards.Count; i++) {
                 RectTransform cardTransform = (RectTransform) m_DisplayCards[i].transform;
-                Routine.Start(
+                Routine.Start(this, 
                     Routine.Combine(
                         cardTransform.AnchorPosTo(new Vector2(
                             cardTransform.anchoredPosition.x - leftMost + 120 * i,
@@ -294,7 +294,7 @@ namespace Zavala.Cards
                         ), .3f, Axis.XY),
                         cardTransform.RotateTo(cardTransform.rotation.z + rotatedMost - 15f * i, .3f, Axis.Z)
                     )
-                ).OnComplete(() => { m_HandState = HandState.Visible; });
+                ).OnComplete(() => { m_HandState = HandState.Visible; }).ExecuteWhileDisabled();
             }
 
             yield return null;
@@ -314,12 +314,12 @@ namespace Zavala.Cards
 
             for (int i = 0; i < m_DisplayCards.Count; i++) {
                 Transform cardTransform = m_DisplayCards[i].transform;
-                Routine.Start(
+                Routine.Start(this, 
                     Routine.Combine(
                     cardTransform.MoveTo(this.transform.position, .3f, Axis.XY),
                     cardTransform.RotateTo(0, .3f, Axis.Z)
                     )
-                ).OnComplete(() => { m_HandState = HandState.Hidden; });
+                ).OnComplete(() => { m_HandState = HandState.Hidden; }).ExecuteWhileDisabled();
             }
 
             while (m_HandState != HandState.Hidden) {

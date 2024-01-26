@@ -10,10 +10,10 @@ public class AdvisorButtonContainer : MonoBehaviour
 
 
     public void HideAdvisorButtons() {
-        m_TransitionRoutine.Replace(HideRoutine());
+        m_TransitionRoutine.Replace(this, HideRoutine()).ExecuteWhileDisabled();
     }
     public void ShowAdvisorButtons() {
-        m_TransitionRoutine.Replace(ShowRoutine());
+        m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
     }
 
     private IEnumerator HideRoutine() {
