@@ -392,16 +392,5 @@ namespace Zavala.Data {
         }
 
         #endregion // Chars
-
-        [DebugMenuFactory]
-        static private DMInfo SaveDebugMenu() {
-            DMInfo info = new DMInfo("Save", 4);
-            info.AddButton("Write Current to Memory", () => SaveUtility.Save());
-            info.AddButton("Read Current from Memory", () => {
-                ZavalaGame.SaveBuffer.Read();
-                Game.Scenes.ReloadMainScene();
-            }, () => ZavalaGame.SaveBuffer.HasSave);
-            return info;
-        }
     }
 }

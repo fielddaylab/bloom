@@ -4,6 +4,8 @@ using System.IO;
 using BeauRoutine;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Debugging;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 
 namespace Zavala.Data {
@@ -15,11 +17,21 @@ namespace Zavala.Data {
         static public void Save() {
             var save = Game.SharedState.Get<SaveLoadState>();
             if (save.Operation) {
-                Log.Error("[SaveUtility] Save operation is ongoing");
+                Log.Error("[SaveUtility] Save/load operation is ongoing");
                 return;
             }
 
             save.Operation = Routine.Start(save, SaveRoutine());
+        }
+
+        static public void Reload() {
+            var save = Game.SharedState.Get<SaveLoadState>();
+            if (save.Operation) {
+                Log.Error("[SaveUtility] Save/load operation is ongoing");
+                return;
+            }
+
+            save.Operation = Routine.Start(save, ReloadRoutine(true));
         }
 
         static private IEnumerator SaveRoutine() {
@@ -45,5 +57,29 @@ namespace Zavala.Data {
             }
         }
 #endif // UNITY_EDITOR
+
+        static private IEnumerator ReloadRoutine(bool waitForCutsceneClose) {
+            if (waitForCutsceneClose) {
+                var scriptRuntime = ScriptUtility.Runtime;
+                while(scriptRuntime.Cutscene.IsRunning()) {
+                    yield return null;
+                }
+            }
+            yield return null;
+            if (ZavalaGame.SaveBuffer.HasSave) {
+                ZavalaGame.SaveBuffer.Read();
+            }
+            Game.Scenes.ReloadMainScene();
+        }
+
+        [DebugMenuFactory]
+        static private DMInfo SaveDebugMenu() {
+            DMInfo info = new DMInfo("Save", 4);
+            info.AddButton("Write Current to Memory", () => SaveUtility.Save());
+            info.AddButton("Read Current from Memory", () => {
+                SaveUtility.Reload();
+            }, () => ZavalaGame.SaveBuffer.HasSave);
+            return info;
+        }
     }
 }

@@ -5,6 +5,7 @@ using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using System;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.Sim;
 using Zavala.World;
@@ -80,7 +81,8 @@ namespace Zavala.Scripting {
                 varTable.Set("endType", cond.Type.ToString());
                 varTable.Set("alertRegion", regionIndex + 1);
                 WorldCameraUtility.PanCameraToRegionCity(regionIndex + 1);
-                ScriptUtility.Trigger(GameTriggers.GameFailed, varTable);
+                var handle = ScriptUtility.Trigger(GameTriggers.GameFailed, varTable);
+                SaveUtility.Reload();
             }
         }
 
