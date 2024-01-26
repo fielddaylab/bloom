@@ -287,7 +287,7 @@ namespace Zavala.UI.Info {
                 col.SalesTaxCol.Number.color = NegativeColor;
             }
 
-            int penalties = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].RunoffPenalty[info.Resource]; // info.TaxRevenue.Penalties;
+            int penalties = info.TaxRevenue.Penalties;
             col.PenaltyCol.gameObject.SetActive(false);
             if (penalties == 0) { 
                 col.PenaltyCol.Number.SetText(EmptyEntry);
@@ -375,7 +375,7 @@ namespace Zavala.UI.Info {
 
             col.PenaltyCol.gameObject.SetActive(showRunoff);
             if (showRunoff) {
-                int penalties = config.UserAdjustmentsPerRegion[info.Requester.Position.RegionIndex].RunoffPenalty[info.Resource]; // info.TaxRevenue.Penalties;
+                int penalties = info.TaxRevenue.Penalties;
                 if (penalties == 0) {
                     col.PenaltyCol.Number.SetText(EmptyEntry);
                     col.PenaltyCol.Number.color = InactiveNumberColor;
