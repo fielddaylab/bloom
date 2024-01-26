@@ -103,7 +103,7 @@ A Grain Subsidy costs $6 per unit to offset the shipping cost of importing grain
 Fertilizer
 
 :: ImportTaxPolicy.alt.hint
-A Fertilizer Subsidy costs $6 per unit to offset the shipping cost of importing manure and digested fertilizer from other counties.
+A Fertilizer Subsidy costs $6 per unit to offset the shipping cost of importing manure and processed fertilizer from other counties.
 
 // SALES
 :: SalesTaxPolicy.category
@@ -132,4 +132,4 @@ With high sales tax, you'll gain $3 with every purchase of any good.
 Subsidy
 
 :: SalesTaxPolicy.alt.hint
-The subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourages buyers by lowering their costs.
+The subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourage buyers by lowering their costs.

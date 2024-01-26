@@ -202,12 +202,12 @@ $call ForcePolicyInstant("Ecology")
 // @forcePolicy    Ecology
 @cutscene
 @once
-{local @advisorEcol}    More algae blooms...
+{local @urbanite}    I'm worried about these algae blooms.
 $if global:skimmersUnlocked == false // band-aid solution for queued "once" alert nodes
     $set global:skimmersUnlocked = true
-    {@advisorEcolWetland}   Well, we have all these trawlers... What if we used them to skim algae off the lakes?
-    {@advisorEconWetland}   Well, it could be costly... And it won't remove the underlying phosphorus.
-    {@advisorEconWetland}   For that, we'd need expensive dredgers.
+    {@advisorEcolWetland}   Well, we have all these wetland boats... What if we used them to skim algae off the lakes?
+    {@advisorEconWetland}   That could be costly... And it won't remove the underlying phosphorus.
+    {@advisorEconWetland}   For that, we'd need even pricier <i>dredgers.</i>
     {@advisorEcolWetland}   But skimmers could help mitigate the worst effects for now. 
     {viewpoliciesnext}
     {local @advisorEcol}    It's up to you, Director.

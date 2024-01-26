@@ -58,17 +58,7 @@ namespace Zavala.World {
         [SharedStateReference] static public SimWorldCamera Cam { get; private set; }
 
         [LeafMember("PanToBuilding")]
-        public static void PanCameraToActor(StringHash32 id) {
-            if (!ScriptUtility.ActorExists(id))
-            {
-                Log.Error("[WorldCameraUtility] Error: tried to pan to nonexistent actor.");
-                return;
-            }
-            PanCameraToPoint(Cam, ScriptUtility.LookupActor(id).transform.position);
-        }
-
-        [LeafMember("PanToBuildingOffset")]
-        public static void PanCameraToActor(StringHash32 id, int xzoffset) {
+        public static void PanCameraToActor(StringHash32 id, float xzoffset = -1.5f) {
             if (!ScriptUtility.ActorExists(id)) {
                 Log.Error("[WorldCameraUtility] Error: tried to pan to nonexistent actor.");
                 return;
@@ -79,7 +69,7 @@ namespace Zavala.World {
         [LeafMember("PanToRegionCity")]
         public static void PanCameraToRegionCity(int regionOneIndexed) {
             string cityId = "region" + regionOneIndexed.ToStringLookup() + "_city1";
-            PanCameraToActor(cityId, -1);
+            PanCameraToActor(cityId);
         }
 
         public static void PanCameraToTransform(Transform t) {

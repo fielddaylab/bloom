@@ -641,7 +641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5009163468971833369, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_text
-      value: Digester
+      value: Processor
       objectReference: {fileID: 0}
     - target: {fileID: 5009163469407239877, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_Sprite

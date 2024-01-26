@@ -42,7 +42,7 @@ namespace Zavala.UI.Info {
         static private readonly int SmallWidth = 220;
         static private readonly int SmallHeight =  150;
         static private readonly int DefaultHeaderRightPadding = 8;
-        static private readonly int ResourceHeaderRightPadding = 75;
+        static private readonly int ResourceHeaderRightPadding = 70;
 
         static private readonly int WideNumRows = 3;
 

@@ -53,8 +53,8 @@ $call Unpause()
 {@advisorEconHill}      Each road segment costs $5. 
 {@advisorEconHill}      You will see a running total of your costs as you build.
 {@advisorEcolHill}      You can't build over any of our protected forests or deep water.
-{@advisorEconHill}      Select your <i>Road</i> tool and build a road between the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
-$call PanToBuildingOffset("region1_grain1", -1)
+{@advisorEconHill}      Select your <i>Road</i> tool and build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
+$call PanToBuilding("region1_grain1", -1)
 $call ShowAnimatedTutorial("ClickDragTutorial")
 
 
@@ -79,10 +79,10 @@ $if intro:citiesConnected
 $else
     // Step 4: Connect city and dairy
     // {@advisorEconHill}   Now the Grain Farm can buy <i>manure</i> from the Dairy Farm.
-    {@advisorEconHill}      Now Bertram can buy Henreitta's <i>grain</i> for his cows...
+    {@advisorEconHill}      Now Bertram can buy <i>grain</i> for his cows...
     {@advisorEconHill}      and the fine people of Pendleton Hills buy the <i>milk</i>.
     $if !intro:citiesConnected 
-        $call PanToBuilding("region1_city1")
+        $call PanToBuilding("region1_city1", -1)
         {@advisorEconHill}      We need a <i>Road</i> to connect the Dairy Farm to the City.
     $endif
 $endif
@@ -105,7 +105,7 @@ $else
     {@advisorEconHill}      With this road, the City can purchase Bertram's <i>milk</i>.
     {@advisorEconHill}      But cows need <i>grain</i> to make milk...
     $call PanToBuilding("region1_grain1")
-    {@advisorEconHill}      Build another road between the Dairy Farm and the Grain Farm.
+    {@advisorEconHill}      Build another road, now between the Dairy Farm and the Grain Farm.
 $endif
 
 // $call Unpause()
@@ -117,8 +117,9 @@ $endif
 $set intro:farmsAndCities = true
 $call HideAnimatedTutorial()
 {@advisorEconHill}      Everything in the county is connected.
-{@advisorEconHill}      The city income taxes give SAGA a budget. 
-{@advisorEconHill}      But SAGA may need more funding.
+{@advisorEconHill}      SAGA will gain <b>$5 for every shipment of milk</b> the City consumes.
+{@advisorEconHill}      That milk fuels taxable work, and gives us a budget!
+{@advisorEconHill}      But we may need more funding.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
 {@advisorEconHill}      See me again from your <b>Economic Advisor</b> button.

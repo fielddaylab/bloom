@@ -39,6 +39,7 @@ namespace Zavala.Scripting {
         public string NodeReached;
         public TargetRatio DFertilizerRatio;
         public TargetRatio MFertilizerRatio;
+        public bool CheckCitiesConnected;
     }
 
     [Serializable]
@@ -61,7 +62,7 @@ namespace Zavala.Scripting {
         public SceneReference SceneOnFail;
         public bool IgnoreFailure = false;
         public ConditionsPerRegion[] EndConditionsPerRegion;
-        [NonSerialized] public bool[] FarmsConnectedInRegion;
+        // [NonSerialized] public bool[] FarmsConnectedInRegion;
         [NonSerialized] public int[] CityFallingTimersPerRegion;
         [NonSerialized] public bool CheckTimer;
 
@@ -72,7 +73,7 @@ namespace Zavala.Scripting {
         }
 
         public void OnRegister() {
-            FarmsConnectedInRegion = new bool[RegionInfo.MaxRegions];
+            // FarmsConnectedInRegion = new bool[RegionInfo.MaxRegions];
             CityFallingTimersPerRegion = new int[RegionInfo.MaxRegions];
 
         }

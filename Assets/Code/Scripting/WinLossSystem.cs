@@ -5,13 +5,14 @@ using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using System;
+using Zavala.Building;
 using Zavala.Data;
 using Zavala.Economy;
 using Zavala.Sim;
 using Zavala.World;
 
 namespace Zavala.Scripting {
-    public class WinLossSystem : SharedStateSystemBehaviour<WinLossState, SimGridState, RegionUnlockState> {
+    public class WinLossSystem : SharedStateSystemBehaviour<WinLossState, SimGridState, RegionUnlockState, BuildToolState> {
         public override bool HasWork() {
             if (base.HasWork()) {
                 return Game.SharedState.Get<TutorialState>().CurrState >= TutorialState.State.ActiveSim;
@@ -62,6 +63,9 @@ namespace Zavala.Scripting {
             EvaluateRegionAgeAbove(ref endPending, cond.RegionAgeAbove, region);
             EvaluateNodeReached(ref endPending, cond.NodeReached);
             EvaluateFertilizerProportions(ref endPending, cond.MFertilizerRatio, cond.DFertilizerRatio);
+            if (cond.CheckCitiesConnected) {
+                EvaluateCityConnected(ref endPending, region);
+            }
             return endPending;
         }
 
@@ -97,7 +101,13 @@ namespace Zavala.Scripting {
             };
         }
         private void EvaluateFarmsUnconnected(ref bool triggered, uint region) {
-            if (m_StateA.FarmsConnectedInRegion[region]) {
+            if (m_StateD.FarmsConnectedInRegion[(int)region]) {
+                triggered = false;
+            }
+        }
+
+        private void EvaluateCityConnected(ref bool triggered, uint region) {
+            if (!m_StateD.CityConnectedInRegion[(int)region]) {
                 triggered = false;
             }
         }

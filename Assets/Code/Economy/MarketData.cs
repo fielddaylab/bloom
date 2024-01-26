@@ -5,6 +5,7 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
+using Zavala.Building;
 using Zavala.Data;
 using Zavala.Roads;
 using Zavala.Scripting;
@@ -603,11 +604,12 @@ namespace Zavala.Economy
                         if (dairyFarmSupplier && grainFarmRequester && difTiles)
                         {
                             ScriptUtility.Trigger(GameTriggers.FarmConnection);
-                            Game.SharedState.Get<WinLossState>().FarmsConnectedInRegion[requester.Position.RegionIndex] = true;
+                            Game.SharedState.Get<BuildToolState>().FarmsConnectedInRegion[requester.Position.RegionIndex] = true;
                         }
                         if (dairyFarmSupplier && cityRequester && difTiles)
                         {
                             ScriptUtility.Trigger(GameTriggers.CityConnection);
+                            Game.SharedState.Get<BuildToolState>().CityConnectedInRegion[requester.Position.RegionIndex] = true;
                         }
                         if (storageRequester) {
 

@@ -105,6 +105,7 @@ $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
 {@advisorEconPrairie}   I was inspired by Winston's PIP system...
 {@advisorEconPrairie}   So I whipped up something of an economic equivalent!
 $call UnlockAdvisorModule("Economy")
-{@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph and a <b>Funding Target</b> bar chart.
-{@advisorEconPrairie}   Those should give you some targets for a healthy economy.
+{@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph.
+$call ForceAdvisorModule("Economy")
+{@advisorEconPrairie}   We'll want to replace red Phos4Us to keep extra nutrients out!
 // $call Unpause()

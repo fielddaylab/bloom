@@ -1,7 +1,7 @@
 # basePath location
 
 :: region1_city1.name
-Pendleton City
+Pendleton Hills
 
 :: region1_cafo1.name
 Bertram's Dairy Farm
@@ -74,7 +74,7 @@ West Smokestack
 Central Smokestack
 
 :: desc.digester
-Digesters buy raw manure and turn it into fertilizer that can be shipped for cheap.
+Manure Processors buy raw manure and turn it into fertilizer that can be shipped for cheap.
 
 # basePath location.shared
 
@@ -94,13 +94,13 @@ Let it sit
 Storage Unit
 
 :: digester
-Manure Digester
+Manure Processor
 
 :: digesterInfo
 <i><u>buys</u> raw manure, <u>sells</u> fertilizer</i>
 
 :: digesterDesc
-Digesters buy raw manure and turn it into fertilizer that can be shipped for cheap.
+Manure Processors buy raw manure and turn it into fertilizer that can be shipped for cheap.
 
 :: toll
 Border Gate
@@ -112,16 +112,16 @@ Gates connect roads from neighboring counties, allowing sales between them.
 <i><u>buys</u> and <u>sells</u> raw manure</i>
 
 :: storageDesc
-Storage Units buy fertilizer from dairy farms and sell it for a very minor profit.
+Storage Units buy manure from dairy farms and sell it for a very minor profit.
 
 :: depot
 Export Depot
 
 :: depotInfo
-<i><u>buys</u> and <u>sells</u> digested fertilizer</i>
+<i><u>buys</u> and <u>sells</u> processed fertilizer</i>
 
 :: depotDesc
-Export Depots can ship and sell processed manure long distances cheaply.
+Export Depots can ship and sell processed manure fertilizer long distances cheaply.
 
 :: grain
 Fertilizer Suppliers

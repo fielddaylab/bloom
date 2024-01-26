@@ -21,7 +21,8 @@ namespace Zavala.Sim {
         AccrueWealth,
         WaterHealth,
         RegionAge,
-        NodeReached
+        NodeReached,
+        Connected
     }
 
     [Serializable]
@@ -63,6 +64,10 @@ namespace Zavala.Sim {
         public string NodeTitle;
         [NonSerialized]
         public StringHash32 NodeHash;
+
+        [Header("Connection")]
+        public bool CheckCitiesConnected;
+        public bool CheckFarmsConnected;
 
         /* TODO
         [Space(5)]

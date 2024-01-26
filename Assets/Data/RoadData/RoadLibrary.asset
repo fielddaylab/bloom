@@ -18,7 +18,7 @@ MonoBehaviour:
   m_SteepRampMesh: {fileID: 740791061461220447, guid: 11ac513c2fcaeec4fb8bdde7eff66070, type: 3}
   m_RampOffset: {x: 0, y: 0, z: -0.34}
   m_RampScale: {x: 1, y: 1, z: 1}
-  BridgeOffset: {x: 0, y: 0, z: 0}
+  BridgeOffset: {x: 0, y: 0, z: 0.005}
   m_RotationEntries:
   - TileIndex: 13
     Rotation: 0
