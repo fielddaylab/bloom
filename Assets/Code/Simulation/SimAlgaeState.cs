@@ -7,7 +7,6 @@ using Leaf.Runtime;
 using System;
 using UnityEngine;
 using Zavala.Data;
-using static UnityEditor.Experimental.GraphView.Port;
 
 namespace Zavala.Sim {
     public sealed class SimAlgaeState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
