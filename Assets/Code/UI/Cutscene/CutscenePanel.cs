@@ -232,7 +232,7 @@ namespace Zavala.UI {
                     obj.gameObject.SetActive(false);
                 }
 
-                if (!Game.IsShuttingDown) {
+                if (!Game.IsShuttingDown && Frame.IsLoadingOrLoaded(this)) {
                     SimTimeUtility.Resume(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime);
                 }
             }

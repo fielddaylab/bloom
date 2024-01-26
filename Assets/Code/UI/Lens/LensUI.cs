@@ -10,10 +10,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Advisor;
+using Zavala.Data;
 using Zavala.World;
 
 namespace Zavala.UI {
-    public class LensUI : SharedPanel, IScenePreload {
+    public class LensUI : SharedPanel, IScenePreload, ISaveStateChunkObject {
         #region Inspector
 
         [Header("Buttons")]
@@ -66,8 +67,20 @@ namespace Zavala.UI {
             return null;
         }
 
+        protected override void Awake() {
+            base.Awake();
+
+            ZavalaGame.SaveBuffer.RegisterHandler("Lenses", this);
+        }
+
         private void OnDisable() {
             Game.Events?.DeregisterAllForContext(this);
+        }
+
+        protected override void OnDestroy() {
+            base.OnDestroy();
+
+            ZavalaGame.SaveBuffer.DeregisterHandler("Lenses");
         }
 
         #region Handlers
@@ -318,5 +331,18 @@ namespace Zavala.UI {
         }
 
         #endregion // IGuiPanel
+
+        void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            writer.Write(m_HasEco);
+            writer.Write(m_HasEcon);
+        }
+
+        void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            reader.Read(ref m_HasEco);
+            reader.Read(ref m_HasEcon);
+
+            m_EcoButton.gameObject.SetActive(m_HasEco);
+            m_EconButton.gameObject.SetActive(m_HasEcon);
+        }
     }
 }

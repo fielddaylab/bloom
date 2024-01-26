@@ -58,6 +58,8 @@ namespace Zavala.UI {
         protected override void OnDisable() {
             Pointer.onClick.RemoveListener(HandleButtonClicked);
             SimTimeUtility.OnPauseUpdated.Deregister(OnPauseUpdated);
+            FadeRoutine.Stop();
+            BannerRoutine.Stop();
 
             base.OnDisable();
         }

@@ -260,12 +260,17 @@ namespace FieldDay.Scenes {
 
         public void LoadMainScene(string scenePath) {
             Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
-            QueueMainLoadInternal(scenePath, true);
+            QueueMainLoadInternal(scenePath, true, false);
         }
 
         public void LoadMainScene(SceneReference scene) {
             Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
-            QueueMainLoadInternal(scene.Path, true);
+            QueueMainLoadInternal(scene.Path, true, false);
+        }
+
+        public void ReloadMainScene() {
+            Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
+            QueueMainLoadInternal(m_MainScene.Scene.path, true, true);
         }
 
         #endregion // Main Load
@@ -413,13 +418,89 @@ namespace FieldDay.Scenes {
 
         #endregion // Unload
 
+        #region Callbacks
+
+        /// <summary>
+        /// Queues a callback for when the main scene is loaded.
+        /// </summary>
+        public void QueueOnLoad(Action action) {
+            SceneDataExt data = m_MainScene;
+            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
+            data.LoadedCallbackQueue.PushBack(action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the given scene is loaded.
+        /// </summary>
+        public void QueueOnLoad(Scene scene, Action action) {
+            SceneDataExt data = SceneDataExt.Get(scene);
+            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
+            data.LoadedCallbackQueue.PushBack(action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the scene for the given object is loaded.
+        /// </summary>
+        public void QueueOnLoad(GameObject gameObject, Action action) {
+            SceneDataExt data = SceneDataExt.Get(gameObject.scene);
+            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
+            data.LoadedCallbackQueue.PushBack(action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the scene for the given object is loaded.
+        /// </summary>
+        public void QueueOnLoad(Component component, Action action) {
+            SceneDataExt data = SceneDataExt.Get(component.gameObject.scene);
+            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
+            data.LoadedCallbackQueue.PushBack(action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the main scene is unloaded.
+        /// </summary>
+        public void QueueOnUnload(Action action) {
+            SceneDataExt data = m_MainScene;
+            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
+            data.UnloadingCallbackQueue.PushBack(action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the given scene is unloaded.
+        /// </summary>
+        public void QueueOnUnload(Scene scene, Action action) {
+            SceneDataExt data = SceneDataExt.Get(scene);
+            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
+            data.UnloadingCallbackQueue.PushBack(action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the scene for the given object is unloaded.
+        /// </summary>
+        public void QueueOnUnload(GameObject gameObject, Action action) {
+            SceneDataExt data = SceneDataExt.Get(gameObject.scene);
+            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
+            data.UnloadingCallbackQueue.PushBack(action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the scene for the given object is unloaded.
+        /// </summary>
+        public void QueueOnUnload(Component component, Action action) {
+            SceneDataExt data = SceneDataExt.Get(component.gameObject.scene);
+            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
+            data.UnloadingCallbackQueue.PushBack(action);
+        }
+
+        #endregion // Callbacks
+
         #endregion // Public API
 
         #region Events
 
         internal void Prepare() {
             if (m_MainScene == null && !m_MainSceneLoadProcess) {
-                QueueMainLoadInternal(SceneManager.GetActiveScene().path, false);
+                QueueMainLoadInternal(SceneManager.GetActiveScene().path, false, true);
             }
 
             // need to ensure we still have a scene reamining when unloading,
@@ -526,17 +607,17 @@ namespace FieldDay.Scenes {
             }
         }
 
-        private void QueueMainLoadInternal(string path, bool killNonPersistentLoads) {
+        private void QueueMainLoadInternal(string path, bool killNonPersistentLoads, bool force) {
             SceneDataExt data = SceneDataExt.GetByPath(path);
 
-            if (data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
+            if (!force && data != null && data.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
                 return;
             }
 
             LoadProcessArgs args = new LoadProcessArgs() {
                 Path = path,
                 Type = SceneType.Main,
-                Flags = 0,
+                Flags = force ? SceneImportFlags.ForceReload : 0,
                 Tag = default,
                 Transform = null
             };
@@ -570,11 +651,10 @@ namespace FieldDay.Scenes {
             }
         }
 
-
         #endregion // Internal
 
         #region Operations
-
+        
         private void ProcessLoadProcessQueue() {
             if (m_LoadProcessQueue.TryPeekFront(out var args)) {
                 if (args.Type == SceneType.Main) {
@@ -736,6 +816,7 @@ namespace FieldDay.Scenes {
                     } else if (args.Data.TryVisit(SceneDataExt.VisitFlags.Unloaded)) { // otherwise, if it hasn't already been unloaded
                         m_CurrentUnloadOperation.Fill(args);
                         var scene = args.Data.Scene;
+                        FlushCallbacks(args.Data.UnloadingCallbackQueue);
                         SceneHelper.OnUnload(scene);
                         if (!OnSceneUnload.IsEmpty) {
                             OnSceneUnload.Invoke(new SceneEventArgs() {
@@ -885,6 +966,12 @@ namespace FieldDay.Scenes {
             return false;
         }
 
+        private void FlushCallbacks(RingBuffer<Action> callbacks) {
+            while(callbacks.TryPopFront(out Action act)) {
+                act();
+            }
+        }
+
         #endregion // Operations
 
         #region Routines
@@ -902,7 +989,7 @@ namespace FieldDay.Scenes {
 
                 // validate
                 SceneDataExt existing = SceneDataExt.GetByPath(args.Path);
-                if (existing != null && existing.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
+                if ((args.Flags & SceneImportFlags.ForceReload) == 0 && existing != null && existing.IsVisited(SceneDataExt.VisitFlags.Loaded)) {
                     yield break;
                 }
 
@@ -1016,6 +1103,7 @@ namespace FieldDay.Scenes {
                         Scene = data.Scene,
                         LoadType = data.SceneType
                     });
+                    FlushCallbacks(data.LoadedCallbackQueue);
                 }
 
                 if (args.Type == SceneType.Main) {

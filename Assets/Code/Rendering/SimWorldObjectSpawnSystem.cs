@@ -9,12 +9,10 @@ using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.UI.Info;
 
-namespace Zavala.World
-{
+namespace Zavala.World {
 
     [SysUpdate(GameLoopPhase.LateUpdate, 0)]
-    public sealed class SimWorldObjectSpawnSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, BuildingPools, ExportRevealState>
-    {
+    public sealed class SimWorldObjectSpawnSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, BuildingPools, ExportRevealState> {
         public override bool HasWork() {
             if (base.HasWork()) {
                 return m_StateA.NewRegions != 0;
@@ -26,7 +24,7 @@ namespace Zavala.World
             PseudoRandom random = new PseudoRandom(m_StateB.WorldData.name);
 
             SimWorldSpawnBuffer buff = m_StateA.Spawns;
-            while(buff.QueuedBuildings.TryPopFront(out var spawn)) {
+            while (buff.QueuedBuildings.TryPopFront(out var spawn)) {
                 HexVector pos = m_StateB.HexSize.FastIndexToPos(spawn.TileIndex);
                 Vector3 worldPos = HexVector.ToWorld(pos, m_StateB.Terrain.Info[spawn.TileIndex].Height, m_StateA.WorldSpace);
                 RegionPrefabPalette palette = m_StateA.Palettes[spawn.RegionIndex];
@@ -34,35 +32,47 @@ namespace Zavala.World
                 PhosphorusSkimmerState skimState = Game.SharedState.Get<PhosphorusSkimmerState>();
                 switch (spawn.Data.Type) {
                     case BuildingType.City: {
-                            building = GameObject.Instantiate(palette.City, worldPos, Quaternion.identity);
-                            break;
-                        }
+                        building = GameObject.Instantiate(palette.City, worldPos, Quaternion.identity);
+                        break;
+                    }
                     case BuildingType.DairyFarm: {
-                            building = GameObject.Instantiate(palette.DairyFarm, worldPos, Quaternion.identity);
-                            break;
-                        }
+                        building = GameObject.Instantiate(palette.DairyFarm, worldPos, Quaternion.identity);
+                        break;
+                    }
                     case BuildingType.GrainFarm: {
-                            building = GameObject.Instantiate(palette.GrainFarm, worldPos, Quaternion.identity);
-                            break;
-                        }
+                        building = GameObject.Instantiate(palette.GrainFarm, worldPos, Quaternion.identity);
+                        break;
+                    }
                     case BuildingType.ExportDepot: {
-                            building = GameObject.Instantiate(palette.Obstruction[random.Int(palette.Obstruction.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
-                            var actor = building.AddComponent<EventActor>();
-                            m_StateD.DepotsPerRegion[spawn.RegionIndex] = building;
-                            break;
-                        }
-                    case BuildingType.TempObstruction:
-                        {
-                            building = GameObject.Instantiate(palette.Obstruction[random.Int(palette.Obstruction.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
-                            m_StateD.ObstructionsPerRegion[spawn.RegionIndex].Add(building);
-                            break;
-                        }
-                    case BuildingType.SkimmerLocation: 
-                        {
-                            building = Game.SharedState.Get<BuildingPools>().Skimmers.Prefab.gameObject;
-                            PhosphorusSkimmerUtility.AddSkimmerLocation(skimState, spawn.RegionIndex, spawn.TileIndex);
-                            break;
-                        }
+                        building = GameObject.Instantiate(palette.Obstruction[random.Int(palette.Obstruction.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
+                        var actor = building.AddComponent<EventActor>();
+                        m_StateD.DepotsPerRegion[spawn.RegionIndex] = building;
+                        break;
+                    }
+                    case BuildingType.TempObstruction: {
+                        building = GameObject.Instantiate(palette.Obstruction[random.Int(palette.Obstruction.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
+                        m_StateD.ObstructionsPerRegion[spawn.RegionIndex].Add(building);
+                        break;
+                    }
+                    case BuildingType.SkimmerLocation: {
+                        building = m_StateC.Skimmers.Prefab.gameObject;
+                        PhosphorusSkimmerUtility.AddSkimmerLocation(skimState, spawn.RegionIndex, spawn.TileIndex);
+                        break;
+                    }
+                    case BuildingType.Storage: {
+                        m_StateB.Terrain.Info[spawn.TileIndex].Flags |= TerrainFlags.IsOccupied;
+                        building = m_StateC.Storages.Alloc(worldPos, true).gameObject;
+                        building.SetActive(true);
+                        building.GetComponent<BuildingPreview>().Apply();
+                        break;
+                    }
+                    case BuildingType.Digester: {
+                        m_StateB.Terrain.Info[spawn.TileIndex].Flags |= TerrainFlags.IsOccupied;
+                        building = m_StateC.Digesters.Alloc(worldPos, true).gameObject;
+                        building.SetActive(true);
+                        building.GetComponent<BuildingPreview>().Apply();
+                        break;
+                    }
                 }
                 Assert.NotNull(building);
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
@@ -81,13 +91,13 @@ namespace Zavala.World
                 GameObject building = null;
                 switch (spawn.Data) {
                     case RegionAsset.TerrainModifier.Tree: {
-                            building = GameObject.Instantiate(palette.Tree[random.Int(palette.Tree.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
-                            break;
-                        }
+                        building = GameObject.Instantiate(palette.Tree[random.Int(palette.Tree.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
+                        break;
+                    }
                     case RegionAsset.TerrainModifier.Rock: {
-                            building = GameObject.Instantiate(palette.Rock[random.Int(palette.Rock.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
-                            break;
-                        }
+                        building = GameObject.Instantiate(palette.Rock[random.Int(palette.Rock.Length, spawn.RegionIndex)], worldPos, Quaternion.identity);
+                        break;
+                    }
                 }
                 Assert.NotNull(building);
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);
@@ -104,19 +114,19 @@ namespace Zavala.World
                 GameObject spanner = null;
                 switch (spawn.Data) {
                     case BuildingType.TollBooth: {
-                            spanner = GameObject.Instantiate(m_StateA.TollBoothPrefab, worldPos, Quaternion.identity);
-                            spanner.SetActive(false);
-                            spanner.transform.LookAt(worldPosB);
-                            TollBooth tb = spanner.GetComponent<TollBooth>();
-                            Transform tileA = tb.TileA.transform;
-                            Transform tileB = tb.TileB.transform;
-                            tileA.position = worldPosA;
-                            tileB.position = worldPosB;
-                            tileA.gameObject.SetActive(true);
-                            tileB.gameObject.SetActive(true);
-                            spanner.SetActive(true);
-                            break;
-                        }
+                        spanner = GameObject.Instantiate(m_StateA.TollBoothPrefab, worldPos, Quaternion.identity);
+                        spanner.SetActive(false);
+                        spanner.transform.LookAt(worldPosB);
+                        TollBooth tb = spanner.GetComponent<TollBooth>();
+                        Transform tileA = tb.TileA.transform;
+                        Transform tileB = tb.TileB.transform;
+                        tileA.position = worldPosA;
+                        tileB.position = worldPosB;
+                        tileA.gameObject.SetActive(true);
+                        tileB.gameObject.SetActive(true);
+                        spanner.SetActive(true);
+                        break;
+                    }
                 }
                 Assert.NotNull(spanner);
                 EventActorUtility.RegisterActor(spanner.GetComponent<EventActor>(), spawn.Id);

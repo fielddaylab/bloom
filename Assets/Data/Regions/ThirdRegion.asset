@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ThirdRegion
   m_EditorClassIdentifier: 
   Width: 12
-  Height: 11
+  Height: 9
   Tiles:
   - RegionIndex: 65535
     Category: 0
@@ -555,126 +555,6 @@ MonoBehaviour:
     SubCategory: 0
     Flags: 1
     Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
-  - RegionIndex: 65535
-    Category: 0
-    SubCategory: 0
-    Flags: 1
-    Height: 65535
   Buildings:
   - LocalTileIndex: 54
     ScriptName:
@@ -945,6 +825,11 @@ MonoBehaviour:
       m_HashValue: 0
     Modifier: 0
   Borders:
+  - LocalTileIndex: 59
+    Borders:
+      Value: 24
+    SharedCornerCCW: 1
+    SharedCornerCW: 3
   - LocalTileIndex: 71
     Borders:
       Value: 56
@@ -1106,11 +991,6 @@ MonoBehaviour:
     SharedCornerCCW: 1
     SharedCornerCW: 3
   - LocalTileIndex: 47
-    Borders:
-      Value: 24
-    SharedCornerCCW: 1
-    SharedCornerCW: 3
-  - LocalTileIndex: 59
     Borders:
       Value: 24
     SharedCornerCCW: 1

@@ -84,17 +84,7 @@ namespace FieldDay.Scripting {
             StringHash32 nodeId = inNode.Id();
             persistence.RecentViewedNodeIds.PushFront(nodeId);
             if ((inNode.Flags & ScriptNodeFlags.Once) != 0) {
-                switch (inNode.PersistenceType) {
-                    case ScriptNodeMemoryTarget.Persistent: {
-                        persistence.SessionViewedNodeIds.Add(nodeId);
-                        persistence.SavedViewedNodeIds.Add(nodeId);
-                        break;
-                    }
-                    case ScriptNodeMemoryTarget.Session: {
-                        persistence.SessionViewedNodeIds.Add(nodeId);
-                        break;
-                    }
-                }
+                persistence.SessionViewedNodeIds.Add(nodeId);
             }
 
             if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {

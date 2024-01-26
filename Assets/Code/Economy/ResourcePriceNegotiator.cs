@@ -71,7 +71,9 @@ namespace Zavala.Economy {
 
         protected override void OnDisable()
         {
-            MarketUtility.DeregisterNegotiator(this);
+            if (Frame.IsLoadingOrLoaded(this)) {
+                MarketUtility.DeregisterNegotiator(this);
+            }
 
             base.OnDisable();
         }

@@ -1,26 +1,25 @@
 using BeauPools;
+using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
-using FieldDay.Systems;
 using Leaf.Runtime;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Zavala.Audio;
 using Zavala.Building;
+using Zavala.Data;
 using Zavala.Economy;
-using Zavala.Rendering;
 using Zavala.Roads;
-using Zavala.Scripting;
 using Zavala.World;
 
 namespace Zavala.Sim {
     [SharedStateInitOrder(-1)]
-    public sealed class SimGridState : SharedStateComponent, IRegistrationCallbacks {
+    public sealed class SimGridState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
         static public readonly StringHash32 Event_RegionUpdated = "SimGridState::TerrainUpdated";
 
         #region Inspector
@@ -43,6 +42,7 @@ namespace Zavala.Sim {
         [NonSerialized] public ushort CurrRegionIndex;
 
         [NonSerialized] public HashSet<ushort> UpdatedRegions = new HashSet<ushort>();
+        [NonSerialized] public HexGridSubregion SimulationRegion;
 
         [NonSerialized] public int GlobalMaxHeight; // the highest tile height across all regions
 
@@ -51,6 +51,7 @@ namespace Zavala.Sim {
         [NonSerialized] public System.Random Random;
 
         void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("Grid");
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -68,19 +69,66 @@ namespace Zavala.Sim {
 
             GlobalMaxHeight = 0;
 
-            GameLoop.QueuePreUpdate(() => SimDataUtility.LateInitializeData(this, WorldData));
+            ZavalaGame.SaveBuffer.RegisterHandler("Grid", this, -100);
+
+            Game.Scenes.QueueOnLoad(() => SimDataUtility.LateInitializeData(this, WorldData));
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            CurrRegionIndex = reader.Read<byte>();
+
+            byte regionCount = reader.Read<byte>();
+            SimDataUtility.LoadRegionsFromSaveData(this, WorldData, ZavalaGame.SimWorld, regionCount);
+
+            for(int i = 0; i < regionCount; i++) {
+                Regions[i].Age = reader.Read<int>();
+            }
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            writer.Write((byte) CurrRegionIndex);
+            writer.Write((byte) RegionCount);
+            for(int i = 0; i < RegionCount; i++) {
+                writer.Write(Regions[i].Age);
+            }
         }
     }
 
     static public class SimDataUtility {
         static public void LateInitializeData(SimGridState grid, WorldAsset world) {
+            SimTimeUtility.Pause(SimPauseFlags.Loading, ZavalaGame.SimTime);
+            Routine.Start(LateInitializeProcess(grid, world));
+        }
+
+        static private IEnumerator LateInitializeProcess(SimGridState grid, WorldAsset world) {
             SimPhosphorusState phosphorus = Game.SharedState.Get<SimPhosphorusState>();
             SimWorldState worldState = Game.SharedState.Get<SimWorldState>();
-            LoadRegionDataFromWorld(grid, world, 0, worldState);
+
+            if (ZavalaGame.SaveBuffer.HasSave) {
+                ZavalaGame.SaveBuffer.HandleChunks();
+            } else {
+                LoadRegionDataFromWorld(grid, world, 0, worldState);
+            }
+
             RegenTerrainDependentInfo(grid, phosphorus);
-            // GenerateRandomPhosphorus(grid, phosphorus);
+            yield return null;
 
             ZavalaGame.Events.Dispatch(SimGridState.Event_RegionUpdated, 0);
+
+            if (ZavalaGame.SaveBuffer.HasSave) {
+                ZavalaGame.SaveBuffer.HandlePostLoad();
+                yield return null;
+            }
+
+            Game.Events.Dispatch(GameEvents.GameLoaded);
+            SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
+            ScriptUtility.Trigger(GameTriggers.GameBooted);
+        }
+
+        static public void LoadRegionsFromSaveData(SimGridState gridState, WorldAsset world, SimWorldState worldState, int regionCount) {
+            for(int i = 0; i < regionCount; i++) {
+                LoadRegionDataFromWorld(gridState, world, i, worldState);
+            }
         }
 
         static public void LoadAndRegenRegionDataFromWorld(SimGridState grid, WorldAsset world, int regionIndex, SimWorldState worldState) {
@@ -247,6 +295,12 @@ namespace Zavala.Sim {
 
             RegenRegionInfo(grid, regionIndex, subRegion);
             worldState.MaxHeight = HexVector.ToWorld(new HexVector(), grid.GlobalMaxHeight, worldState.WorldSpace).y;
+
+            if (regionIndex == 0) {
+                grid.SimulationRegion = subRegion;
+            } else {
+                HexGridSubregion.Merge(ref grid.SimulationRegion, subRegion);
+            }
         }
 
         /// <summary>

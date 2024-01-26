@@ -1,15 +1,10 @@
 using BeauUtil;
 using FieldDay;
 using FieldDay.SharedState;
-using FieldDay.Systems;
 using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
-using UnityEngine.UIElements;
 using BeauPools;
-using UnityEngine.UI;
-using BeauUtil.Debugger;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -44,7 +39,8 @@ namespace Zavala.Sim {
         Blueprints = 0x08,
         DialogBox = 0x10,
         FullscreenCutscene = 0x20,
-        PendingGlobalAlert = 0x40
+        PendingGlobalAlert = 0x40,
+        Loading = 0x80
     }
 
     /// <summary>

@@ -12,7 +12,6 @@ namespace Zavala.Sim {
     /// </summary>
     public struct AlgaeTileState {
         public float PercentAlgae; // growth level of algae for this tile
-        public bool isWater;
         public bool IsPeaked;
     }
 

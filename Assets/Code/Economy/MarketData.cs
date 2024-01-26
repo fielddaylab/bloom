@@ -14,7 +14,7 @@ using Zavala.UI;
 namespace Zavala.Economy
 {
     [SharedStateInitOrder(10)]
-    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks
+    public sealed class MarketData : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject, ISaveStatePostLoad
     {
         public SimTimer MarketTimer;
         public bool UpdatePrioritiesNow;
@@ -48,6 +48,7 @@ namespace Zavala.Economy
         public DataHistory[] MilkRevenueHistory;
 
         void IRegistrationCallbacks.OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("MarketData");
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -73,6 +74,37 @@ namespace Zavala.Economy
             DataHistoryUtil.InitializeDataHistory(ref SkimmerCostHistory, RegionInfo.MaxRegions, miscHistoryDepth);
             DataHistoryUtil.InitializeDataHistory(ref MilkRevenueHistory, RegionInfo.MaxRegions, miscHistoryDepth);
 
+            ZavalaGame.SaveBuffer.RegisterHandler("MarketData", this);
+        }
+
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            UpdatePrioritiesNow = true;
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            reader.Read(ref TickIndex);
+
+            DataHistoryUtil.Read(ref CFertilizerSaleHistory, ref reader);
+            DataHistoryUtil.Read(ref ManureSaleHistory, ref reader);
+            DataHistoryUtil.Read(ref DFertilizerSaleHistory, ref reader);
+            DataHistoryUtil.Read(ref SalesTaxHistory, ref reader);
+            DataHistoryUtil.Read(ref ImportTaxHistory, ref reader);
+            DataHistoryUtil.Read(ref PenaltiesHistory, ref reader);
+            DataHistoryUtil.Read(ref SkimmerCostHistory, ref reader);
+            DataHistoryUtil.Read(ref MilkRevenueHistory, ref reader);
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            writer.Write(TickIndex);
+
+            DataHistoryUtil.Write(CFertilizerSaleHistory, ref writer);
+            DataHistoryUtil.Write(ManureSaleHistory, ref writer);
+            DataHistoryUtil.Write(DFertilizerSaleHistory, ref writer);
+            DataHistoryUtil.Write(SalesTaxHistory, ref writer);
+            DataHistoryUtil.Write(ImportTaxHistory, ref writer);
+            DataHistoryUtil.Write(PenaltiesHistory, ref writer);
+            DataHistoryUtil.Write(SkimmerCostHistory, ref writer);
+            DataHistoryUtil.Write(MilkRevenueHistory, ref writer);
         }
     }
 

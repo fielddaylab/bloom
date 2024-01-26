@@ -9,6 +9,7 @@ using Zavala.World;
 using Zavala.Roads;
 using Leaf.Runtime;
 using BeauUtil.Debugger;
+using Zavala.Data;
 
 namespace Zavala.Building {
     public struct RoadToolState {
@@ -37,9 +38,7 @@ namespace Zavala.Building {
     }
 
     [SharedStateInitOrder(10)]
-    public class BuildToolState : SharedStateComponent, IRegistrationCallbacks {
-        public const int UserBuildingIdStart = 1024;
-
+    public class BuildToolState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
         [NonSerialized] public UserBuildTool ActiveTool = UserBuildTool.None;
         [NonSerialized] public RoadToolState RoadToolState;
 
@@ -48,10 +47,10 @@ namespace Zavala.Building {
 
         [NonSerialized] public int TotalBuildingsBuilt;
         [NonSerialized] public int NumStoragesBuilt;
-        [NonSerialized] public bool[] StorageBuiltInRegion;
+        [NonSerialized] public BitSet32 StorageBuiltInRegion;
 
         [NonSerialized] public int NumDigestersBuilt;
-        [NonSerialized] public bool[] DigesterBuiltInRegion;
+        [NonSerialized] public BitSet32 DigesterBuiltInRegion;
 
         [NonSerialized] public bool ToolUpdated;
 
@@ -61,6 +60,7 @@ namespace Zavala.Building {
         [NonSerialized] public SimBuffer<byte> BlockedTileBuffer;
 
         public void OnDeregister() {
+            ZavalaGame.SaveBuffer.DeregisterHandler("BuildTool");
         }
 
         public void OnRegister() {
@@ -69,8 +69,10 @@ namespace Zavala.Building {
             BlockedIdxs = new HashSet<int>(64);
             BlockedAdjIdxs = new RingBuffer<int>(32, RingBufferMode.Expand);
             BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
-            StorageBuiltInRegion = new bool[RegionInfo.MaxRegions];
-            DigesterBuiltInRegion = new bool[RegionInfo.MaxRegions];
+            StorageBuiltInRegion = default;
+            DigesterBuiltInRegion = default;
+
+            ZavalaGame.SaveBuffer.RegisterHandler("BuildTool", this);
         }
 
         /// <summary>
@@ -78,6 +80,27 @@ namespace Zavala.Building {
         /// </summary>
         public void ClearRoadTool() {
             RoadToolState.ClearState();
+        }
+
+        unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            writer.Write(TotalBuildingsBuilt);
+            writer.Write(NumStoragesBuilt);
+            writer.Write(NumDigestersBuilt);
+
+            StorageBuiltInRegion.Unpack(out uint storageRegionBits);
+            writer.Write((byte) storageRegionBits);
+
+            DigesterBuiltInRegion.Unpack(out uint digesterRegionBits);
+            writer.Write((byte) digesterRegionBits);
+        }
+
+        unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            reader.Read(ref TotalBuildingsBuilt);
+            reader.Read(ref NumStoragesBuilt);
+            reader.Read(ref NumDigestersBuilt);
+
+            StorageBuiltInRegion = new BitSet32(reader.Read<byte>());
+            DigesterBuiltInRegion = new BitSet32(reader.Read<byte>());
         }
     }
 
@@ -101,10 +124,10 @@ namespace Zavala.Building {
             BuildToolState bts = Game.SharedState.Get<BuildToolState>();
             switch (type) {
                 case BuildingType.Digester: {
-                    return bts.DigesterBuiltInRegion[region];
+                    return bts.DigesterBuiltInRegion[(int) region];
                 }
                 case BuildingType.Storage: {
-                    return bts.StorageBuiltInRegion[region];
+                    return bts.StorageBuiltInRegion[(int) region];
                 }
                 default: {
                     Log.Warn("[BuildToolUtility] Tried to check if {0} built in region {1}: building {0} not set up!", type, region);

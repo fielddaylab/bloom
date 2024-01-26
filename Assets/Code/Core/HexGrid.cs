@@ -1046,6 +1046,19 @@ namespace Zavala {
         }
 
         #endregion // Enumerators
+
+        #region Merge
+
+        static public void Merge(ref HexGridSubregion dst, HexGridSubregion src) {
+            Assert.True(dst.m_SrcWidth == src.m_SrcWidth);
+            int left = Math.Min(dst.X, src.X);
+            int bottom = Math.Min(dst.Y, src.Y);
+            int right = Math.Max(dst.X + dst.Width, src.X + src.Width);
+            int top = Math.Max(dst.Y + dst.Height, src.Y + src.Height);
+            dst = new HexGridSubregion((ushort) left, (ushort) bottom, (ushort) (right - left), (ushort) (top - bottom), dst.m_SrcWidth);
+        }
+
+        #endregion // Merge
     }
 
     /// <summary>

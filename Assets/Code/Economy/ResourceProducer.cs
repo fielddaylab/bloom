@@ -1,6 +1,7 @@
 using System;
 using BeauPools;
 using BeauUtil;
+using FieldDay;
 using FieldDay.Components;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
@@ -35,10 +36,12 @@ namespace Zavala.Economy {
         }
 
         protected override void OnDisable() {
-            ProducedLastTick = false;
+            if (Frame.IsLoadingOrLoaded(this)) {
+                ProducedLastTick = false;
 
-            if (Request && Request.InfiniteRequests) {
-                MarketUtility.DeregisterInfiniteProducer(this);
+                if (Request && Request.InfiniteRequests) {
+                    MarketUtility.DeregisterInfiniteProducer(this);
+                }
             }
 
             base.OnDisable();

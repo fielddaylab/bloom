@@ -271,7 +271,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: 0
+  Position: {fileID: 947691686583835044}
+  PersistentComponents:
+  - {fileID: 947691686583835038}
+  - {fileID: 947691686583835032}
+  - {fileID: 546599153688107881}
+  - {fileID: 588242308725563145}
+  - {fileID: 4686119823849650553}
+  - {fileID: 947691686583835035}
 --- !u!114 &2200816394217941716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,9 +342,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StressCap: 8
-  m_LowThreshold: 8
-  m_MediumThreshold: 4
-  m_HighThreshold: 0
+  m_BadThreshold: 8
+  m_OkayThreshold: 4
+  m_GreatThreshold: 0
   m_StartingState: 1
   StressDelta: 1
 --- !u!1 &5417570481552996235

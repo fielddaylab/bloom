@@ -10,11 +10,12 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Data;
 using Zavala.Scripting;
 using Zavala.Sim;
 
 namespace Zavala.UI {
-    public class GlobalAlertButton : SharedPanel {
+    public class GlobalAlertButton : SharedPanel, ISaveStateChunkObject, ISaveStatePostLoad {
 
         //public SpriteMaskGroup Masking;
         //public TMP_Text EventText;
@@ -35,10 +36,19 @@ namespace Zavala.UI {
 
             m_Routine.Replace(GlobalAlertUtility.DisappearRoutine(this));
             m_Button.onClick.AddListener(HandleButtonClicked);
+
+            ZavalaGame.SaveBuffer.RegisterHandler("GlobalAlert", this);
+            ZavalaGame.SaveBuffer.RegisterPostLoad(this);
         }
 
         protected override void OnDestroy() {
+            m_Routine.Stop();
             m_Button.onClick.RemoveListener(HandleButtonClicked);
+
+            ZavalaGame.SaveBuffer.DeregisterHandler("GlobalAlert");
+            ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
+
+            base.OnDestroy();
         }
 
         #region Handlers
@@ -72,6 +82,34 @@ namespace Zavala.UI {
             }
         }
 
+        void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            writer.Write(TicksSinceFired);
+
+            writer.Write((byte) QueuedActors.Count);
+            for(int i = 0; i < QueuedActors.Count; i++) {
+                writer.Write(QueuedActors[i].Id.Hash());
+            }
+        }
+
+        void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            reader.Read(ref TicksSinceFired);
+
+            QueuedActors.Clear();
+
+            int queuedActorCount = reader.Read<byte>();
+            var alertIds = scratch.CreateBlock<StringHash32>("GlobalAlertIds", queuedActorCount);
+            for(int i = 0; i < queuedActorCount; i++) {
+                alertIds[i] = reader.Read<StringHash32>();
+            }
+        }
+
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
+            var alertIds = scratch.GetBlock<StringHash32>("GlobalAlertIds");
+            for(int i = 0; i < alertIds.Length; i++) {
+                QueuedActors.PushBack(ScriptUtility.LookupActor(alertIds[i]));
+            }
+        }
+
         #endregion // Handlers
     }
 
@@ -89,6 +127,8 @@ namespace Zavala.UI {
 
         // static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
         public static void PushEventOfActorToGlobal(GlobalAlertButton button, EventActor actor) {
+            Assert.NotNull(actor, "Cannot create event for null actor");
+            Log.Msg("[GlobalAlertUtility] Pushing actor '{0}'", actor.gameObject.FullPath());
             button.QueuedActors.PushBack(actor);
             if (actor.DisplayingEvent) {
                 actor.DisplayingEvent.KeepFaded = true;

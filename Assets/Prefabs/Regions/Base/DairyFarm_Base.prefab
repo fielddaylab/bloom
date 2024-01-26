@@ -124,6 +124,7 @@ MonoBehaviour:
   AmountProducedLastTick: 0
   RunoffParticleOrigin: {fileID: 3341510548927435195}
   ConsumeFertilizerForRunoff: 1
+  RunoffImproving: 0
 --- !u!114 &5602663514362957504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -517,7 +518,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: 0
+  Position: {fileID: 7291294420475072053}
+  PersistentComponents:
+  - {fileID: 7291294420475072056}
+  - {fileID: 6065373712702326176}
+  - {fileID: 4762982661983815291}
+  - {fileID: 4506906798799843398}
+  - {fileID: 695890203303957643}
 --- !u!114 &4321501763131140057
 MonoBehaviour:
   m_ObjectHideFlags: 0

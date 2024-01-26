@@ -292,19 +292,19 @@ namespace Zavala.Economy
                             VfxUtility.PlayEffect(commitAction.BuiltObj.transform.position, EffectType.Poof);
                             SfxUtility.PlaySfx("build-poof");
 
-                            int buildingId = BuildToolState.UserBuildingIdStart + toolState.TotalBuildingsBuilt++;
+                            toolState.TotalBuildingsBuilt++;
 
                             UserBuilding ub = commitAction.BuiltObj.GetComponent<UserBuilding>();
                             if (ub != null) {
                                 switch (builtType) {
                                     case BuildingType.Storage: {
                                         ub.IndexWithinType = toolState.NumStoragesBuilt++;
-                                        toolState.StorageBuiltInRegion[currRegion] = true;
+                                        toolState.StorageBuiltInRegion[(int) currRegion] = true;
                                         break;
                                     }
                                     case BuildingType.Digester: {
                                         ub.IndexWithinType = toolState.NumDigestersBuilt++;
-                                        toolState.DigesterBuiltInRegion[currRegion] = true;
+                                        toolState.DigesterBuiltInRegion[(int) currRegion] = true;
                                         break;
                                     }
                                 }

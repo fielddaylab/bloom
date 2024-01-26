@@ -9,13 +9,15 @@ using FieldDay.Scripting;
 using Leaf.Runtime;
 using UnityEngine;
 using Zavala.Alerts;
+using Zavala.Building;
+using Zavala.Data;
 using Zavala.Sim;
 using Zavala.UI;
 using Zavala.World;
 
 namespace Zavala.Scripting {
     [DisallowMultipleComponent]
-    public sealed class EventActor : BatchedComponent, ILeafActor {
+    public sealed class EventActor : BatchedComponent, ILeafActor, IPersistBuildingComponent {
         public int MaxQueuedEvents = 3;
         public SerializedHash32 Id;
         public SerializedHash32 Class;
@@ -54,6 +56,33 @@ namespace Zavala.Scripting {
         }
 
         #endregion // Unity Events
+
+        void IPersistBuildingComponent.Write(PersistBuilding building, ref ByteWriter writer) {
+            writer.Write((byte) QueuedTriggers.Count);
+            for(int i = 0; i < QueuedTriggers.Count; i++) {
+                writer.Write(QueuedTriggers[i]);
+            }
+
+            writer.Write((byte) QueuedEvents.Count);
+            for (int i = 0; i < QueuedEvents.Count; i++) {
+                writer.Write(QueuedEvents[i]);
+            }
+        }
+
+        void IPersistBuildingComponent.Read(PersistBuilding building, ref ByteReader reader) {
+            QueuedTriggers.Clear();
+            QueuedEvents.Clear();
+
+            int triggerCount = reader.Read<byte>();
+            for (int i = 0; i < triggerCount; i++) {
+                QueuedTriggers.PushBack(reader.Read<EventActorTrigger>());
+            }
+
+            int eventCount = reader.Read<byte>();
+            for (int i = 0; i < eventCount; i++) {
+                QueuedEvents.PushBack(reader.Read<EventActorQueuedEvent>());
+            }
+        }
     }
 
     public struct EventActorTrigger {

@@ -30,13 +30,9 @@ namespace Zavala.Sim
             else {
                 m_StateA.SimPhosphorusAdvanced = false;
             }
-            bool triggerExists = m_StateA.AgeTriggers.Count > 0;
-
             for (int i = 0; i < m_StateB.RegionCount; i++) {
                 int age = ++m_StateB.Regions[i].Age;
-                if (triggerExists) {
-                    CheckTrigger((RegionId)i, age);
-                }
+                CheckTrigger((RegionId) i, age);
             }
 
             // TODO: Find a better place for this? Could create a system, but GlobalAlertButton isn't a SharedState
@@ -44,15 +40,16 @@ namespace Zavala.Sim
         }
 
         private void CheckTrigger(RegionId region, int age) {
-            Debug.Log("[RegionAgeSystem] Checking... "+age);
-            if (m_StateA.AgeTriggers.TryGetValue(region, out int targetAge) && age >= targetAge) {
+            //Debug.Log("[RegionAgeSystem] Checking... "+age);
+            int triggerAge = m_StateA.AgeTriggers[region];
+            if (triggerAge > 0 && age >= triggerAge) {
                 Debug.Log("[RegionAgeSystem] Sending Trigger: "+region+" aged "+age);
                 using (TempVarTable varTable = TempVarTable.Alloc()) {
                     varTable.Set("regionId", (int)region + 1); //0-indexed to 1-indexed
                     varTable.Set("age", age);
                     ScriptUtility.Trigger(GameTriggers.RegionReachedAge, varTable);
                 }
-                m_StateA.AgeTriggers.Remove(region);
+                m_StateA.AgeTriggers[region] = 0;
             }
         }
 

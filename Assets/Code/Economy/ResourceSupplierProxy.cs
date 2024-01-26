@@ -1,4 +1,5 @@
 using BeauUtil;
+using FieldDay;
 using FieldDay.Components;
 using System;
 using UnityEngine;
@@ -23,7 +24,9 @@ namespace Zavala.Economy
         }
 
         protected override void OnDisable() {
-            RoadUtility.DeregisterExportDepot(this);
+            if (Frame.IsLoadingOrLoaded(this)) {
+                RoadUtility.DeregisterExportDepot(this);
+            }
 
             base.OnDisable();
         }

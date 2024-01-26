@@ -76,6 +76,7 @@ namespace Zavala.UI
             Game.Events.Register(GameEvents.BlueprintModeEnded, HandleEndBlueprintMode);
             Game.Events.Register(GameEvents.RegionSwitched, HandleRegionSwitched);
             Game.Events.Register(GameEvents.PolicyTypeUnlocked, HandlePolicyTypeUnlocked);
+            Game.Events.Register(GameEvents.GameLoaded, HandleGameLoaded);
 
             m_ReceiptGroup.alpha = 0;
             m_BuildingModeText.SetAlpha(0);
@@ -273,8 +274,8 @@ namespace Zavala.UI
 
         public void OnDestroyModeClicked()
         {
-            m_BuildCommandLayoutRoutine.Replace(BuildCommandAppearanceTransition(false));
-            m_DestroyCommandLayoutRoutine.Replace(DestroyCommandAppearanceTransition(true));
+            m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(false));
+            m_DestroyCommandLayoutRoutine.Replace(this, DestroyCommandAppearanceTransition(true));
             m_ShopToggle.gameObject.SetActive(false);
             m_BuildButtonRoutine.Replace(this, BuildConfirmAppearanceTransition(false));
 
@@ -360,6 +361,15 @@ namespace Zavala.UI
                 {
                     PolicyBoxUtility.PlayPopupRoutine(box);
                 }
+            }
+        }
+
+        private void HandleGameLoaded() {
+            CardsState cards = Game.SharedState.Get<CardsState>();
+
+            foreach (var box in m_PolicyBoxes) {
+                bool visible = CardsUtility.GetUnlockedOptions(cards, box.PolicyType).Count > 0;
+                box.gameObject.SetActive(visible);
             }
         }
 

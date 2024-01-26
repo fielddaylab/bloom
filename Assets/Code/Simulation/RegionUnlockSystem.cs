@@ -5,6 +5,7 @@ using FieldDay.Systems;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.World;
 
@@ -89,6 +90,7 @@ namespace Zavala.Sim
                 }
 
                 m_StateA.UnlockCount++;
+                SaveUtility.Save();
             }
         }
 

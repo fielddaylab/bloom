@@ -302,7 +302,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2329f839b8c4de6469e8a7a12ec8c392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: 0
+  Position: {fileID: 4665823543789613532}
+  PersistentComponents:
+  - {fileID: 4665823543789613504}
+  - {fileID: 6129802998970184723}
+  - {fileID: 8416123257062139303}
 --- !u!114 &764168936872465502
 MonoBehaviour:
   m_ObjectHideFlags: 0

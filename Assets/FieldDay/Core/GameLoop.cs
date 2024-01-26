@@ -233,12 +233,15 @@ namespace FieldDay {
             useGUILayout = false;
             StartCoroutine(DelayedBoot());
 
+            Game.Components.Lock();
+
             Async.InvokeAsync(PotentiallyExpensiveSystemResourceRetrieval);
         }
 
         private void Start() {
             Log.Msg("[GameLoop] Boot finished");
             SetCurrentPhase(GameLoopPhase.Booted);
+            Game.Components.Unlock();
             Game.Input.Initialize();
             Game.Gui.Initialize();
 			Game.Scenes.Prepare();
