@@ -218,7 +218,7 @@ namespace Zavala.Scripting {
                 }
 
                 // TODD: shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
-                WorldCameraUtility.PanCameraToActor(actor.Id);
+                WorldCameraUtility.PanCameraToTransform(actor.transform, -1.5f);
 
                 // Use region index as a condition for alerts
                 // SimGridState grid = Game.SharedState.Get<SimGridState>();
