@@ -123,6 +123,10 @@ namespace Zavala.Sim {
             Game.Events.Dispatch(GameEvents.GameLoaded);
             SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
             ScriptUtility.Trigger(GameTriggers.GameBooted);
+
+            if (!ZavalaGame.SaveBuffer.HasSave) {
+                SaveUtility.Save();
+            }
         }
 
         static public void LoadRegionsFromSaveData(SimGridState gridState, WorldAsset world, SimWorldState worldState, int regionCount) {

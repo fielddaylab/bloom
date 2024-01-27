@@ -46,7 +46,10 @@ namespace Zavala {
             Events = new EventDispatcher<object>();
             Game.SetEventDispatcher(Events);
             SaveBuffer = new SaveMgr();
-            Game.SharedState.Register(new UserSettings());
+
+            UserSettings settings = new UserSettings();
+            Game.SharedState.Register(settings);
+            settings.PlayerCode = PlayerPrefs.GetString("LatestPlayerCode", null);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;

@@ -1633,6 +1633,7 @@ GameObject:
   - component: {fileID: 6679652020560074214}
   - component: {fileID: 6679652020560074213}
   - component: {fileID: 880307345726718726}
+  - component: {fileID: 8887166297473241737}
   m_Layer: 5
   m_Name: TitleCanvas
   m_TagString: Untagged
@@ -1736,6 +1737,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PanelBackground: {fileID: 4157895409409958520}
+  m_Raycaster: {fileID: 8887166297473241737}
   m_StartGroup: {fileID: 5461092245654841880}
   m_StartButton: {fileID: 7484506008911203530}
   m_LoadButton: {fileID: 1683712550396419000}
@@ -1751,6 +1753,18 @@ MonoBehaviour:
   m_MainScene:
     m_ScenePath: Assets/Scenes/MainScene.unity
     m_GUID: 9fc0d4010bbf28b4594072e72b8655ab
+--- !u!225 &8887166297473241737
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6679652020560074212}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6701987228245806701
 GameObject:
   m_ObjectHideFlags: 0

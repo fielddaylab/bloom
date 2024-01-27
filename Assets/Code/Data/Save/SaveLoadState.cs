@@ -8,10 +8,16 @@ using FieldDay;
 using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
+using UnityEngine;
 
 namespace Zavala.Data {
     public class SaveLoadState : SharedStateComponent {
+        public string ServerURL;
         public Routine Operation;
+
+        private void Awake() {
+            OGD.Core.Configure(ServerURL, "ZAVALA");
+        }
     }
 
     static public class SaveUtility {
@@ -35,25 +41,35 @@ namespace Zavala.Data {
             save.Operation = Routine.Start(save, ReloadRoutine(true));
         }
 
-        static public void LoadFromServer(string inUserId) {
+        static public Future LoadFromServer(string inUserId) {
             var save = Game.SharedState.Get<SaveLoadState>();
             if (save.Operation) {
                 Log.Error("[SaveUtility] Save/load operation is ongoing");
-                return;
+                return Future.Failed();
             }
 
-            save.Operation = Routine.Start(save, LoadFromServerRoutine(inUserId));
+            Future future = new Future();
+            save.Operation = Routine.Start(save, LoadFromServerRoutine(inUserId, future));
+            return future;
         }
 
         static private IEnumerator SaveRoutine() {
             yield return null;
-            yield return null;
+            var scriptRuntime = ScriptUtility.Runtime;
+            while (scriptRuntime.Cutscene.IsRunning()) {
+                yield return null;
+            }
+
             ZavalaGame.SaveBuffer.Write();
             ZavalaGame.SaveBuffer.EncodeToBase64();
 
 #if UNITY_EDITOR
             WriteToFileSystem();
 #endif // UNITY_EDITOR
+
+            if (!string.IsNullOrEmpty(ZavalaGame.SaveBuffer.SaveCode)) {
+                yield return WriteToRemoteSave();
+            }
         }
 
 #if UNITY_EDITOR
@@ -69,41 +85,36 @@ namespace Zavala.Data {
         }
 #endif // UNITY_EDITOR
 
-        static private void WriteToRemoteSave() {
+        static private IEnumerator WriteToRemoteSave() {
             // get save data
-            var chars = ZavalaGame.SaveBuffer.GetCurrentBase64();
-
-            // write save data to string
+            var saveData = ZavalaGame.SaveBuffer.GetCurrentBase64AsString();
 
             // try to send save data to server - just copied from aqualab
 
-            /*
-            int attempts = (int)(m_SaveRetryCount + 1);
+            string profileName = ZavalaGame.SaveBuffer.SaveCode;
+            int attempts = (int)(8 + 1);
             int retryCount = 0;
             while (attempts > 0) {
                 using (var future = Future.Create())
-                using (var saveRequest = OGD.GameState.PushState(m_ProfileName, saveData, future.Complete, (r) => future.Fail(r), retryCount)) {
+                using (var saveRequest = OGD.GameState.PushState(profileName, saveData, future.Complete, (r) => future.Fail(r), retryCount)) {
                     yield return future;
 
                     if (future.IsComplete()) {
-                        // DebugService.Log(LogMask.DataService, "[DataService] Saved to server!");
+                         Log.Msg("[SaveUtility] Saved to server!");
                         break;
                     } else {
                         attempts--;
-                        Log.Warn("[DataService] Failed to save to server: {0}", future.GetFailure().Object);
+                        Log.Warn("[SaveUtility] Failed to save to server: {0}", future.GetFailure().Object);
                         if (attempts > 0) {
-                            Log.Warn("[DataService] Retrying server save...", attempts);
-                            // Services.Events.Dispatch(GameEvents.ProfileSaveError);
-                            yield return m_SaveRetryDelay;
+                            Log.Warn("[SaveUtility] Retrying server save...", attempts);
+                            yield return 1;
                             ++retryCount;
                         } else {
-                            Log.Error("[DataService] Server save failed after {0} attempts", m_SaveRetryCount + 1);
+                            Log.Error("[SaveUtility] Server save failed after {0} attempts", 8 + 1);
                         }
                     }
                 }
             }
-            */
-
         }
 
         static private IEnumerator ReloadRoutine(bool waitForCutsceneClose) {
@@ -120,35 +131,31 @@ namespace Zavala.Data {
             Game.Scenes.ReloadMainScene();
         }
 
-        static private IEnumerator LoadFromServerRoutine(string inUserCode) {
+        static private IEnumerator LoadFromServerRoutine(string inUserCode, Future response) {
 
             using (var future = Future.Create<string>())
             using (var request = OGD.GameState.RequestLatestState(inUserCode, future.Complete, (r) => future.Fail(r), 0)) {
-                // stub
-                yield return null;
-                /*
                 yield return future;
 
                 if (future.IsComplete()) {
-                    // DebugService.Log(LogMask.DataService, "[DataService] Save with profile name {0} found on server!", inUserCode);
-                    // save data here in terms of an ISerialiedObject
-                    SaveData serverData = null;
                     bool bSuccess;
                     using (Profiling.Time("reading save data from server")) {
-                        bSuccess = Serializer.Read(ref serverData, future.Get());
+                        bSuccess = ZavalaGame.SaveBuffer.DecodeFromBase64(future.Get());
+                        if (bSuccess) {
+                            bSuccess = ZavalaGame.SaveBuffer.Read();
+                        }
                     }
 
                     if (!bSuccess) {
-                        UnityEngine.Debug.LogErrorFormat("[DataService] Server profile '{0}' could not be read...", inUserCode);
-                        ioFuture.Fail(DeserializeError);
+                        UnityEngine.Debug.LogErrorFormat("[SaveUtility] Server profile '{0}' could not be read...", inUserCode);
+                        response.Fail();
                     } else {
-                        ioFuture.Complete(serverData);
+                        response.Complete();
                     }
                 } else {
-                    UnityEngine.Debug.LogErrorFormat("[DataService] Failed to find profile on server: {0}", future.GetFailure());
-                    ioFuture.Fail(future.GetFailure());
+                    UnityEngine.Debug.LogErrorFormat("[SaveUtility] Failed to find profile on server: {0}", future.GetFailure());
+                    response.Fail(future.GetFailure());
                 }
-                */
             }
         }
 

@@ -4,6 +4,7 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
+using UnityEngine;
 using Zavala.Sim;
 
 namespace Zavala.Data {
@@ -124,7 +125,7 @@ namespace Zavala.Data {
 
         public void Write() {
             SaveStateHeader header;
-            header.PlayerCode = "DEBUG";
+            header.PlayerCode = Game.SharedState.Get<UserSettings>().PlayerCode;
             header.LastSaveTS = DateTime.UtcNow.ToFileTimeUtc();
             header.Playtime = 0;
 
@@ -163,14 +164,22 @@ namespace Zavala.Data {
             writer.Write((byte) consts.DataRegion.Height);
             writer.Skip(1); // padding
 
+            m_CurrentHeader = header;
+
             byte* manifestWriteMarker = writer.Head;
 
             SaveStateManifest manifest;
             manifest.ChunkCount = (uint) m_ChunkWriters.Count;
             manifest.Checksum = 0;
             manifest.Length = 0;
+            int padding = 8 - (int) (((ulong) writer.Head + (ulong) sizeof(SaveStateManifest)) % 8);
+            manifest.Padding = (byte) padding;
 
             writer.Write(manifest);
+            
+            while(padding-- > 0) {
+                writer.Write((byte) 0);
+            }
 
             m_ScratchBuffer.Reset();
 
@@ -227,11 +236,24 @@ namespace Zavala.Data {
             manifest.Length = (uint) (writer.Written - manifestLengthCalcMarker);
             manifest.Checksum = Unsafe.Hash64(manifestLengthChecksumMarker, (int) manifest.Length);
 
+            Log.Msg("[SaveMgr] Calculated checksum from <{0},{1}> = {2}", manifestLengthChecksumMarker - m_Buffer, manifest.Length, manifest.Checksum); ;
+
             Unsafe.Copy(&manifest, sizeof(SaveStateManifest), manifestWriteMarker);
 
             m_UsedSize = writer.Written;
 
             Log.Msg("[SaveMgr] Wrote save data ({0} chunks, {1})", manifest.ChunkCount, Unsafe.FormatBytes(m_UsedSize));
+
+            if (!string.IsNullOrEmpty(header.PlayerCode)) {
+                PlayerPrefs.SetString("LatestPlayerCode", header.PlayerCode);
+                PlayerPrefs.Save();
+            }
+        }
+
+        public void Clear() {
+            m_CurrentHeader = default;
+            m_UsedSize = 0;
+            m_CurrentConsts = default;
         }
 
         #endregion // Write
@@ -246,11 +268,15 @@ namespace Zavala.Data {
             return new UnsafeSpan<byte>(m_Buffer, MainBufferSize);
         }
 
-        public unsafe void Read() {
-            Read(new UnsafeSpan<byte>(m_Buffer, (uint) m_UsedSize));
+        public string SaveCode {
+            get { return m_CurrentHeader.PlayerCode; }
         }
 
-        public unsafe void Read(UnsafeSpan<byte> bytes) {
+        public unsafe bool Read() {
+            return Read(new UnsafeSpan<byte>(m_Buffer, (uint) m_UsedSize));
+        }
+
+        public unsafe bool Read(UnsafeSpan<byte> bytes) {
             if (bytes.Ptr != m_Buffer) {
                 Unsafe.Copy(bytes.Ptr, bytes.Length, m_Buffer, MainBufferSize);
             }
@@ -293,13 +319,19 @@ namespace Zavala.Data {
             m_CurrentScratch = scratch;
 
             SaveStateManifest manifest = reader.Read<SaveStateManifest>();
+            reader.Skip(manifest.Padding);
+
             if (manifest.Length != reader.Remaining) {
                 Log.Error("[SaveMgr] Mismatch between read bytes ({0}) and manifest bytes ({1})", reader.Remaining, manifest.Length);
+                return false;
             }
 
             ulong calculatedChecksum = Unsafe.Hash64(reader.Head, reader.Remaining);
+            Log.Msg("[SaveMgr] Calculated checksum from <{0},{1}> = {2}", reader.Head - m_Buffer, reader.Remaining, calculatedChecksum);
+            ;
             if (calculatedChecksum != manifest.Checksum) {
-                Log.Error("[SaveMgr] Checksum failed - calculated {0} but expected {1}", calculatedChecksum, manifest.Checksum);
+                Log.Warn("[SaveMgr] Checksum failed - calculated {0} but expected {1}", calculatedChecksum, manifest.Checksum);
+                //return false;
             }
 
             Log.Msg("[SaveMgr] Reading save data ({0} chunks, {1})", manifest.ChunkCount, Unsafe.FormatBytes(m_UsedSize));
@@ -320,6 +352,13 @@ namespace Zavala.Data {
             }
 
             Assert.True(reader.Remaining == 0);
+
+            if (!string.IsNullOrEmpty(header.PlayerCode)) {
+                PlayerPrefs.SetString("LatestPlayerCode", header.PlayerCode);
+                PlayerPrefs.Save();
+            }
+
+            return true;
         }
 
         public void HandleChunks() {
@@ -327,6 +366,7 @@ namespace Zavala.Data {
                 if (m_ChunkReaders.TryGetValue(chunk.Id, out ChunkReader reader)) {
                     ByteReader bytes = UnpackChunkRecord(chunk);
                     reader.Reader(reader.Context, ref bytes, m_CurrentConsts, ref m_CurrentScratch);
+                    Assert.True(bytes.Remaining == 0);
                     ReleaseChunk(bytes);
                 }
             }
@@ -383,12 +423,22 @@ namespace Zavala.Data {
             return new UnsafeSpan<char>(m_CharBuffer, (uint) m_CharsWritten);
         }
 
+        public unsafe string GetCurrentBase64AsString() {
+            return new string(m_CharBuffer, 0, m_CharsWritten);
+        }
+
         public unsafe UnsafeSpan<char> EncodeToBase64() {
             var asSysSpan = new ReadOnlySpan<byte>(m_Buffer, m_UsedSize);
             bool converted = Convert.TryToBase64Chars(asSysSpan, new Span<char>(m_CharBuffer, CharBufferSize), out int charsWritten);
             Assert.True(converted);
             m_CharsWritten = charsWritten;
             return new UnsafeSpan<char>(m_CharBuffer, (uint) charsWritten);
+        }
+
+        public unsafe bool DecodeFromBase64(string str) {
+            bool converted = Convert.TryFromBase64String(str, new Span<byte>(m_Buffer, MainBufferSize), out m_UsedSize);
+            //Assert.True(converted);
+            return converted;
         }
 
         #endregion // Chars

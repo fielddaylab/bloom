@@ -12,6 +12,7 @@ namespace Zavala.Data {
         public uint Length;
         public uint ChunkCount;
         public ulong Checksum;
+        public byte Padding;
     }
 
     public struct SaveStateChunkHeader {

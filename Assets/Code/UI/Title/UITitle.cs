@@ -24,6 +24,7 @@ namespace Zavala.UI {
         #region Inspector
 
         [SerializeField] private RectTransform m_PanelBackground;
+        [SerializeField] private CanvasGroup m_Raycaster;
 
         [Header("Main Panel")]
         [SerializeField] private CanvasGroup m_StartGroup;
@@ -64,6 +65,8 @@ namespace Zavala.UI {
             m_HighQualityToggle.onValueChanged.AddListener(HandleQualityToggle);
             m_PlayGameButton.onClick.AddListener(HandlePlayButton);
             m_BackButton.onClick.AddListener(HandleBackButton);
+
+            m_PlayerCodeInput.onValueChanged.AddListener(HandlePlayerCodeUpdated);
         }
 
         private void LateUpdate() {
@@ -80,7 +83,9 @@ namespace Zavala.UI {
         private void HandleStartClicked()
         {
             m_CurrentPanel = Panel.NewGame;
-            //Game.Scenes.LoadMainScene(m_MainScene);
+            m_PlayerCodeInput.SetTextWithoutNotify(string.Empty);
+            m_PlayerCodeInput.readOnly = true;
+            m_PlayGameButton.interactable = false;
 
             m_StartGroup.blocksRaycasts = false;
             m_StartGroupRoutine.Replace(this, HidePanelRoutine(m_StartGroup));
@@ -89,12 +94,16 @@ namespace Zavala.UI {
             m_GameGroupRoutine.Replace(this, ShowPanelRoutine(m_GameGroup));
 
             m_PanelBGRoutine.Replace(this, AlignPanelRoutine(m_GameGroup, 0.2f));
+
+            OGD.Player.NewId(HandleNewPlayerId, HandleNewPlayerIdError);
         }
 
         private void HandleLoadClicked()
         {
             m_CurrentPanel = Panel.LoadGame;
-            //Game.Scenes.LoadMainScene(m_MainScene);
+            m_PlayerCodeInput.SetTextWithoutNotify(Game.SharedState.Get<UserSettings>().PlayerCode);
+            m_PlayerCodeInput.readOnly = false;
+            m_PlayGameButton.interactable = true;
 
             m_StartGroup.blocksRaycasts = false;
             m_StartGroupRoutine.Replace(this, HidePanelRoutine(m_StartGroup));
@@ -119,7 +128,15 @@ namespace Zavala.UI {
         }
 
         private void HandlePlayButton() {
-
+            m_Raycaster.blocksRaycasts = false;
+            if (m_CurrentPanel == Panel.NewGame) {
+                ZavalaGame.SaveBuffer.Clear();
+                OGD.Player.ClaimId(m_PlayerCodeInput.text, null, HandlePlayAccepted, HandleClaimNewIdError);
+            } else {
+                Future f = SaveUtility.LoadFromServer(m_PlayerCodeInput.text);
+                f.OnComplete(HandlePlayAccepted);
+                f.OnFail(HandleLoadError);
+            }
         }
 
         private void HandleBackButton() {
@@ -132,6 +149,39 @@ namespace Zavala.UI {
             m_GameGroupRoutine.Replace(this, HidePanelRoutine(m_GameGroup));
 
             m_PanelBGRoutine.Replace(this, AlignPanelRoutine(m_StartGroup, 0.2f));
+        }
+
+        private void HandleNewPlayerId(string id) {
+            if (m_CurrentPanel == Panel.NewGame) {
+                m_PlayerCodeInput.SetTextWithoutNotify(id);
+                m_PlayGameButton.interactable = true;
+                HandlePlayerCodeUpdated(id);
+            }
+        }
+
+        private void HandleNewPlayerIdError(OGD.Core.Error err) {
+            if (m_CurrentPanel == Panel.NewGame) {
+                OGD.Player.NewId(HandleNewPlayerId, HandleNewPlayerIdError);
+            }
+        }
+
+        private void HandlePlayAccepted() {
+            Game.SharedState.Get<UserSettings>().PlayerCode = m_PlayerCodeInput.text;
+            Game.Scenes.LoadMainScene(m_MainScene);
+        }
+
+        private void HandleClaimNewIdError(OGD.Core.Error err) {
+            m_Raycaster.blocksRaycasts = true;
+            Debug.LogError(err.ToString());
+        }
+
+        private void HandleLoadError() {
+            m_Raycaster.blocksRaycasts = true;
+            Debug.LogError("load from server failed");
+        }
+
+        private void HandlePlayerCodeUpdated(string text) {
+            m_PlayGameButton.interactable = text.Length > 1;
         }
 
         IEnumerator<WorkSlicer.Result?> IScenePreload.Preload() {
