@@ -14,7 +14,8 @@
         "Unity.RenderPipelines.Universal.Runtime",
         "ScriptableBake",
         "UWTStream",
-        "EasyAssetStreaming"
+        "EasyAssetStreaming",
+        "NativeInput"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

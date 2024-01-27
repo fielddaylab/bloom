@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using BeauUtil;
 using BeauUtil.Debugger;
+using NativeUtils;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -21,9 +22,11 @@ namespace FieldDay.HID {
         }
 
         private EventSystem m_EventSystem;
+        private BaseInputModule m_DefaultInputModule;
         private ExposedPointerInputModule m_ExposedInputModule;
         private uint m_ForceClickRecursion;
         private RingBuffer<InputTimestamp> m_ClickTimestampBuffer = new RingBuffer<InputTimestamp>(2, RingBufferMode.Overwrite);
+        private uint m_EventPauseCounter;
 
         internal InputMgr() { }
 
@@ -122,11 +125,18 @@ namespace FieldDay.HID {
 
         internal void Initialize() {
             m_EventSystem = EventSystem.current;
-            m_ExposedInputModule = m_EventSystem.currentInputModule as ExposedPointerInputModule;
+            m_DefaultInputModule = m_EventSystem.currentInputModule;
+            m_ExposedInputModule = m_DefaultInputModule as ExposedPointerInputModule;
 
             if (!m_ExposedInputModule) {
                 Log.Warn("[InputMgr] Could not find ExposedInputInputModule");
             }
+
+            NativeInput.Initialize();
+            NativeInput.SetEventSystem(m_EventSystem);
+
+            NativeInput.OnMouseDown += OnNativeMouseDown;
+            NativeInput.OnMouseUp += OnNativeMouseUp;
         }
 
         internal void UpdateDoubleClickBuffer() {
@@ -136,10 +146,51 @@ namespace FieldDay.HID {
         }
 
         internal void Shutdown() {
+            NativeInput.OnMouseDown -= OnNativeMouseDown;
+            NativeInput.OnMouseUp -= OnNativeMouseUp;
+
+            NativeInput.SetEventSystem(null);
+            NativeInput.Shutdown();
+
             m_EventSystem = null;
             m_ExposedInputModule = null;
         }
 
         #endregion // Events
+
+        #region Native Input
+
+        private void OnNativeMouseDown(float x, float y) {
+
+        }
+
+        private void OnNativeMouseUp(float x, float y) {
+
+        }
+
+        #endregion // Native Input
+
+        #region Pausing
+
+        /// <summary>
+        /// Pauses all raycasting.
+        /// </summary>
+        public void PauseRaycasts() {
+            if (m_EventPauseCounter++ == 0) {
+                m_EventSystem.SetSelectedGameObject(null);
+                m_DefaultInputModule.DeactivateModule();
+            }
+        }
+
+        /// <summary>
+        /// Resumes all raycasting.
+        /// </summary>
+        public void ResumeRaycasts() {
+            if (m_EventPauseCounter > 0 && m_EventPauseCounter-- == 1) {
+                m_DefaultInputModule.ActivateModule();
+            }
+        }
+
+        #endregion // Pausing
     }
 }

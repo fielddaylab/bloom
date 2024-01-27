@@ -27,8 +27,8 @@ SpriteAtlas:
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
       m_TextureCompression: 2
-      m_CompressionQuality: 50
-      m_CrunchedCompression: 0
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
       m_AllowsAlphaSplitting: 0
       m_Overridden: 0
       m_AndroidETC2FallbackOverride: 0
@@ -55,7 +55,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ff2dd5229d6166b4a88bf4da5c58f5ea, type: 3}
   - {fileID: 21300000, guid: 5f89e5f25f8c7cb4089c002e59ff6529, type: 3}
   - {fileID: 21300000, guid: 22721463e41d055488b0925d5c029c7a, type: 3}
-  - {fileID: 21300000, guid: 734ecff3c5ff694408be171d2338a713, type: 3}
   - {fileID: 21300000, guid: f7c9c8346839ee947aa798fa8bc6ce79, type: 3}
   - {fileID: 21300000, guid: c3bc70a48e2cc1c418891b694a27e88e, type: 3}
   - {fileID: 21300000, guid: 901af485fc54e614ba9314e2d9d1181b, type: 3}
@@ -78,10 +77,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e39f42aab065b7641a33851700b992c7, type: 3}
   - {fileID: 21300000, guid: c90324ba8f6d6084aaffdd2c3c0f017b, type: 3}
   - {fileID: 21300000, guid: 5003940beef422d4693a43a7aaf83470, type: 3}
-  - {fileID: 21300000, guid: a00cd84bdab17764fa00e8d8c3cc95b2, type: 3}
   - {fileID: 21300000, guid: 575feb5b6c84f1345b78c0122c23f4db, type: 3}
   - {fileID: 21300000, guid: b5856c6b79034744a908a20f8f16be45, type: 3}
-  - {fileID: 21300000, guid: 0e9fbc6bbb326b0438c4c1082ef6e508, type: 3}
   - {fileID: 21300000, guid: 3899347b9b69eff41ae0e4ca9a5260ad, type: 3}
   - {fileID: 21300000, guid: 96437d7bec135c4479fcbb447c680ab3, type: 3}
   - {fileID: 21300000, guid: 7aa04a8b3557e8048a329c267d750156, type: 3}
@@ -93,7 +90,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 614482ad74b34e74dae5a14482079394, type: 3}
   - {fileID: 21300000, guid: 49ab58adde7fc8e4abbfef3225a18e79, type: 3}
   - {fileID: 21300000, guid: 909308ed35b381b4a8123baee3f75a4c, type: 3}
-  - {fileID: 21300000, guid: 98bf592e9435dd74fb7add32f6a182b2, type: 3}
   - {fileID: 21300000, guid: 21f3e17fb04c1584daa1d0a07f204984, type: 3}
   - {fileID: 21300000, guid: eb5d687ff34744f4c99ad627148ce14f, type: 3}
   - {fileID: 21300000, guid: 93a0faff47d02034fa7bdfa072c21e7f, type: 3}
@@ -102,7 +98,6 @@ SpriteAtlas:
   - cafo_urban
   - policy-sales_1
   - advisor-ecol_hills
-  - urgent-flag
   - grain_urban
   - cafo_forest
   - policy-sales_2
@@ -125,10 +120,8 @@ SpriteAtlas:
   - policy-skim_2
   - policy-import_3
   - city_hills
-  - manure-resource
   - city_urban
   - cafo_prairie
-  - milk-resource
   - policy-import_1
   - grain_forest
   - policy-runoff_0
@@ -140,7 +133,6 @@ SpriteAtlas:
   - advisor-econ_urban
   - policy-sales_3
   - grain_prairie
-  - grain-resource
   - cafo_hills
   - policy-skim_1
   - city_wetland

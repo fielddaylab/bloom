@@ -5,6 +5,7 @@ using EasyAssetStreaming;
 using FieldDay;
 using FieldDay.SharedState;
 using UnityEngine;
+using Zavala.Data;
 
 namespace Zavala.Audio {
     public sealed class MusicState : SharedStateComponent, IRegistrationCallbacks {
@@ -27,6 +28,9 @@ namespace Zavala.Audio {
             foreach(var element in AllSongs) {
                 Playlist.Add(element);
             }
+
+            UserSettings settings = Game.SharedState.Get<UserSettings>();
+            Volume *= settings.MusicVolume;
         }
     }
 

@@ -147,7 +147,6 @@ namespace FieldDay.Scenes {
 
         private readonly WorkSlicer.StepOperation CachedUpdateStep;
         private float m_UpdateStepTimeSlice = 2;
-        private Camera m_DummyCamera = null;
 
         // operation slots
         private OperationSlot<LoadSceneArgs> m_CurrentLoadOperation;
@@ -157,6 +156,11 @@ namespace FieldDay.Scenes {
         // ongoing loads
         private Routine m_MainSceneLoadProcess;
         private Routine m_AdditionalSceneLoadProcess;
+        private Routine m_MainSceneTransition;
+
+        // handlers
+        private SceneTransitionHandler m_MainTransitionUnload;
+        private SceneTransitionHandler m_MainTransitionLoad;
 
         #endregion // State
 
@@ -189,13 +193,6 @@ namespace FieldDay.Scenes {
                 }
                 m_UpdateStepTimeSlice = value;
             }
-        }
-
-        /// <summary>
-        /// Fallback camera for rendering.
-        /// </summary>
-        public Camera FallbackCamera {
-            get { return m_DummyCamera; }
         }
 
         #region Checks
@@ -492,6 +489,14 @@ namespace FieldDay.Scenes {
             data.UnloadingCallbackQueue.PushBack(action);
         }
 
+        /// <summary>
+        /// Registers handlers for dealing with transitions.
+        /// </summary>
+        public void RegisterTransitionHandlers(SceneTransitionHandler unload, SceneTransitionHandler load) {
+            m_MainTransitionUnload = unload;
+            m_MainTransitionLoad = load;
+        }
+
         #endregion // Callbacks
 
         #endregion // Public API
@@ -506,10 +511,6 @@ namespace FieldDay.Scenes {
             // need to ensure we still have a scene reamining when unloading,
             // even if it's just an empty dummy scene
             Scene dummyScene = SceneManager.CreateScene("__DummyScene");
-
-            m_DummyCamera = new GameObject("__DummyCamera").AddComponent<Camera>();
-            SceneManager.MoveGameObjectToScene(m_DummyCamera.gameObject, dummyScene);
-            m_DummyCamera.enabled = false;
         }
 
         internal void Update() {
@@ -998,6 +999,18 @@ namespace FieldDay.Scenes {
                 // unloading
 
                 if (args.Type == SceneType.Main) {
+                    m_MainSceneTransition.Stop();
+
+                    if (m_MainTransitionUnload != null) {
+                        if (m_MainScene != null || m_AuxScenes.Count > 0) {
+                            Scene targetScene = SceneManager.GetSceneByPath(args.Path);
+                            IEnumerator wait = m_MainTransitionUnload(targetScene, args.Tag);
+                            if (wait != null) {
+                                yield return wait;
+                            }
+                        }
+                    }
+
                     if (m_MainScene != null) {
                         m_UnloadQueue.PushBack(new UnloadSceneArgs() {
                             Data = m_MainScene,
@@ -1108,6 +1121,12 @@ namespace FieldDay.Scenes {
 
                 if (args.Type == SceneType.Main) {
                     OnMainSceneReady.Invoke();
+
+                    if (m_MainTransitionLoad != null) {
+                        Scene targetScene = SceneManager.GetSceneByPath(args.Path);
+                        IEnumerator wait = m_MainTransitionLoad(targetScene, args.Tag);
+                        m_MainSceneTransition.Replace(wait);
+                    }
                 }
 
                 Game.Events.Dispatch(SceneUtility.Events.Ready);
@@ -1141,4 +1160,9 @@ namespace FieldDay.Scenes {
             static public readonly StringHash32 Ready = "SceneMgr::Ready";
         }
     }
+
+    /// <summary>
+    /// Delegate for handling scene transitions.
+    /// </summary>
+    public delegate IEnumerator SceneTransitionHandler(Scene scene, StringHash32 tag);
 }

@@ -3,6 +3,713 @@
         "__buildInfo.txt": {
             "Type": "Unknown",
             "Size": 40
+        },
+        "credits/concept-truck.png": {
+            "Type": "Texture",
+            "Size": 185716,
+            "Texture": {
+                "Width": 404,
+                "Height": 301,
+                "Alpha": false
+            }
+        },
+        "music/Bird feeder cloud.mp3": {
+            "Type": "Audio",
+            "Size": 3441602
+        },
+        "music/farmland dance.mp3": {
+            "Type": "Audio",
+            "Size": 3643476
+        },
+        "music/land o plent.mp3": {
+            "Type": "Audio",
+            "Size": 1229135
+        },
+        "music/prosperity (with intro).mp3": {
+            "Type": "Audio",
+            "Size": 5436521
+        },
+        "music/spring dingaling.mp3": {
+            "Type": "Audio",
+            "Size": 2770150
+        },
+        "title/TitleBG.png": {
+            "Type": "Texture",
+            "Size": 446178,
+            "Texture": {
+                "Width": 1024,
+                "Height": 660,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-1-1.png": {
+            "Type": "Texture",
+            "Size": 127345,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-1-2.png": {
+            "Type": "Texture",
+            "Size": 183165,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-1-3.png": {
+            "Type": "Texture",
+            "Size": 196475,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-2-1.png": {
+            "Type": "Texture",
+            "Size": 177360,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-2-2.png": {
+            "Type": "Texture",
+            "Size": 129610,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-2-3.png": {
+            "Type": "Texture",
+            "Size": 163448,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-3-1.png": {
+            "Type": "Texture",
+            "Size": 142118,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-3-2.png": {
+            "Type": "Texture",
+            "Size": 160386,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-3-3.png": {
+            "Type": "Texture",
+            "Size": 142817,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-4-1.png": {
+            "Type": "Texture",
+            "Size": 116866,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-4-2.png": {
+            "Type": "Texture",
+            "Size": 106118,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-4-3.png": {
+            "Type": "Texture",
+            "Size": 125940,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-5-1.png": {
+            "Type": "Texture",
+            "Size": 185963,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-5-2.png": {
+            "Type": "Texture",
+            "Size": 193338,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act2/2-5-3.png": {
+            "Type": "Texture",
+            "Size": 139961,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-1-1.png": {
+            "Type": "Texture",
+            "Size": 183548,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-1-2.png": {
+            "Type": "Texture",
+            "Size": 215052,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-1-3.png": {
+            "Type": "Texture",
+            "Size": 238019,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-2-1.png": {
+            "Type": "Texture",
+            "Size": 243614,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-2-2.png": {
+            "Type": "Texture",
+            "Size": 233430,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-2-3.png": {
+            "Type": "Texture",
+            "Size": 277511,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-3-1.png": {
+            "Type": "Texture",
+            "Size": 289397,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-3-2.png": {
+            "Type": "Texture",
+            "Size": 182574,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-3-3.png": {
+            "Type": "Texture",
+            "Size": 199901,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-4-1.png": {
+            "Type": "Texture",
+            "Size": 193625,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-4-2.png": {
+            "Type": "Texture",
+            "Size": 169809,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act3/3-4-3.png": {
+            "Type": "Texture",
+            "Size": 198659,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-1-1.png": {
+            "Type": "Texture",
+            "Size": 156184,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-1-2.png": {
+            "Type": "Texture",
+            "Size": 180631,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-1-3.png": {
+            "Type": "Texture",
+            "Size": 182492,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-2-1.png": {
+            "Type": "Texture",
+            "Size": 161291,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-2-2.png": {
+            "Type": "Texture",
+            "Size": 170397,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-2-3.png": {
+            "Type": "Texture",
+            "Size": 131250,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-3-1.png": {
+            "Type": "Texture",
+            "Size": 201988,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-3-2.png": {
+            "Type": "Texture",
+            "Size": 186103,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-3-3.png": {
+            "Type": "Texture",
+            "Size": 166424,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-4-1.png": {
+            "Type": "Texture",
+            "Size": 133011,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-4-2.png": {
+            "Type": "Texture",
+            "Size": 100476,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-4-3.png": {
+            "Type": "Texture",
+            "Size": 111034,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-5-1.png": {
+            "Type": "Texture",
+            "Size": 202280,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-5-2.png": {
+            "Type": "Texture",
+            "Size": 130069,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act4/4-5-3.png": {
+            "Type": "Texture",
+            "Size": 206186,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-1-1.png": {
+            "Type": "Texture",
+            "Size": 88220,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-1-2.png": {
+            "Type": "Texture",
+            "Size": 233857,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-1-3.png": {
+            "Type": "Texture",
+            "Size": 96318,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-2-1.png": {
+            "Type": "Texture",
+            "Size": 130118,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-2-2.png": {
+            "Type": "Texture",
+            "Size": 111059,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-2-3.png": {
+            "Type": "Texture",
+            "Size": 139954,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-3-1.png": {
+            "Type": "Texture",
+            "Size": 141052,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-3-2.png": {
+            "Type": "Texture",
+            "Size": 86949,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-3-3.png": {
+            "Type": "Texture",
+            "Size": 118520,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-4-1.png": {
+            "Type": "Texture",
+            "Size": 108239,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-4-2.png": {
+            "Type": "Texture",
+            "Size": 78993,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-4-3.png": {
+            "Type": "Texture",
+            "Size": 199272,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-5-1.png": {
+            "Type": "Texture",
+            "Size": 98446,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-5-2.png": {
+            "Type": "Texture",
+            "Size": 102707,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/act5/5-5-3.png": {
+            "Type": "Texture",
+            "Size": 98122,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/cutscene 1-1.png": {
+            "Type": "Texture",
+            "Size": 962773,
+            "Texture": {
+                "Width": 2048,
+                "Height": 1320,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/cutscene 1-2.png": {
+            "Type": "Texture",
+            "Size": 880587,
+            "Texture": {
+                "Width": 2048,
+                "Height": 1320,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/cutscene 1-3.png": {
+            "Type": "Texture",
+            "Size": 1067587,
+            "Texture": {
+                "Width": 2048,
+                "Height": 1320,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/cutscene 1-4.png": {
+            "Type": "Texture",
+            "Size": 1043618,
+            "Texture": {
+                "Width": 2048,
+                "Height": 1320,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame1-1.png": {
+            "Type": "Texture",
+            "Size": 184236,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame1-1.png~": {
+            "Type": "Unknown",
+            "Size": 190149
+        },
+        "cutscene/intro/frame1-2.png": {
+            "Type": "Texture",
+            "Size": 166833,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame1-2.png~": {
+            "Type": "Unknown",
+            "Size": 200776
+        },
+        "cutscene/intro/frame1-3.png": {
+            "Type": "Texture",
+            "Size": 118120,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame1-3.png~": {
+            "Type": "Unknown",
+            "Size": 201235
+        },
+        "cutscene/intro/frame2-1.png": {
+            "Type": "Texture",
+            "Size": 162906,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame2-2.png": {
+            "Type": "Texture",
+            "Size": 199729,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame2-3.png": {
+            "Type": "Texture",
+            "Size": 240107,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame3-1.png": {
+            "Type": "Texture",
+            "Size": 122180,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame3-2.png": {
+            "Type": "Texture",
+            "Size": 119472,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame3-3.png": {
+            "Type": "Texture",
+            "Size": 146689,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame4-1.png": {
+            "Type": "Texture",
+            "Size": 117325,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame4-2.png": {
+            "Type": "Texture",
+            "Size": 177233,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
+        },
+        "cutscene/intro/frame4-3.png": {
+            "Type": "Texture",
+            "Size": 108493,
+            "Texture": {
+                "Width": 552,
+                "Height": 698,
+                "Alpha": false
+            }
         }
     },
     "TextureDefaults": {

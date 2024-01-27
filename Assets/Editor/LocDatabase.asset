@@ -377,6 +377,30 @@ MonoBehaviour:
       Content: 'Total
 
         Profit'
+    - Id: ui.title.new
+      Content: New Game
+    - Id: ui.title.resume
+      Content: Resume Game
+    - Id: ui.title.name
+      Content: 'Highways
+
+        & Green Water'
+    - Id: ui.title.play
+      Content: Play Game
+    - Id: ui.title.musicVolume
+      Content: 'Music Volume:'
+    - Id: ui.title.playerCode
+      Content: 'Player Code:'
+    - Id: ui.title.enterPlayerCode
+      Content: Enter Player Code
+    - Id: ui.title.fullscreen
+      Content: 'Fullscreen:'
+    - Id: ui.title.quality
+      Content: 'High Quality Mode:'
+    - Id: ui.title.attr
+      Content: '<size=20>Created by</size>
+
+        Field Day Lab'
     BasePath: ui
     AllBasePaths:
     - Path: ui

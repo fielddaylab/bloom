@@ -18,6 +18,7 @@ namespace FieldDay.HID {
         private PointerEventData m_MousePointerData;
         private PointerEventData m_TouchPointerData;
         private PointerInputMode m_Mode;
+        private bool m_Paused = true;
 
         /// <summary>
         /// Invoked when the input mode is changed.
@@ -85,7 +86,7 @@ namespace FieldDay.HID {
         /// </summary>
         public bool IsPointerOverCanvas() {
             PointerEventData evtData = GetPointerEventData();
-
+            
             if (evtData != null) {
                 var baseRaycaster = evtData.pointerCurrentRaycast.module;
                 return baseRaycaster && baseRaycaster is GraphicRaycaster;
@@ -112,6 +113,10 @@ namespace FieldDay.HID {
         #region Overrides
 
         public override void Process() {
+            if (m_Paused) {
+                return;
+            }
+
             GameObject prevOver = CurrentPointerOver();
 
             base.Process();
@@ -161,11 +166,23 @@ namespace FieldDay.HID {
             }
         }
 
+        public override void ActivateModule() {
+            base.ActivateModule();
+
+            m_Paused = false;
+        }
+
         public override void DeactivateModule() {
             base.DeactivateModule();
 
+            if (m_EditingText != null) {
+                m_EditingText = null;
+                OnTextEditFocusChanged?.Invoke(null);
+            }
+
             m_TouchPointerData = null;
             m_MousePointerData = null;
+            m_Paused = true;
         }
 
         #endregion // Overrides

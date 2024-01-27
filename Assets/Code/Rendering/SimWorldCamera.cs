@@ -28,7 +28,6 @@ namespace Zavala.World {
         public float CameraMinZoomDist;
         public int ZoomFactor;
 
-
         [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
         [NonSerialized] public Vector3 PanTargetPoint;
@@ -39,6 +38,15 @@ namespace Zavala.World {
 
         void IRegistrationCallbacks.OnRegister() {
             ZavalaGame.SaveBuffer.RegisterHandler("Camera", this);
+
+            var renderScale = Camera.GetComponent<CameraRenderScale>();
+            UserSettings settings = Game.SharedState.Get<UserSettings>();
+            if (!settings.HighQualityMode) {
+                renderScale.PixelHeight = 660;
+                renderScale.Mode = CameraRenderScale.ScaleMode.PixelHeight;
+            } else {
+                renderScale.enabled = false;
+            }
         }
 
         #endregion // Inspector

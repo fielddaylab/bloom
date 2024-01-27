@@ -21,7 +21,7 @@ namespace FieldDay.Rendering {
     /// </summary>
     [RequireComponent(typeof(Camera)), ExecuteAlways]
     public sealed class AutoAttachOverlayCameras : MonoBehaviour {
-        [SerializeField, UnityTag] private string[] m_Tags;
+        [SerializeField, UnityTag] private string[] m_Tags = Array.Empty<string>();
         [NonSerialized] private readonly RingBuffer<Camera> m_CachedAddedCameras = new RingBuffer<Camera>();
 
         private void OnEnable() {

@@ -198,6 +198,10 @@ namespace Zavala.UI {
             Canvas.enabled = true;
             ScriptUtility.MountDisplayer(this);
             SimTimeUtility.Pause(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime);
+
+            if (Frame.IsLoadingOrLoaded(this)) {
+                Game.Gui.GetShared<LoadFader>().Show();
+            }
         }
 
         protected override void OnShowComplete(bool inbInstant) {
@@ -217,6 +221,10 @@ namespace Zavala.UI {
             m_PrepareRoutine.Stop();
             m_NextRoutine.Stop();
             //Game.SharedState.Get<SimWorldCamera>().Camera.enabled = true;
+
+            if (Frame.IsLoadingOrLoaded(this)) {
+                Game.Gui.GetShared<LoadFader>().Hide();
+            }
         }
 
         protected override void OnHideComplete(bool inbInstant) {

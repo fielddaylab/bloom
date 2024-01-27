@@ -46,6 +46,11 @@ namespace Zavala {
             Events = new EventDispatcher<object>();
             Game.SetEventDispatcher(Events);
             SaveBuffer = new SaveMgr();
+            Game.SharedState.Register(new UserSettings());
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
+#endif // UNITY_EDITOR || DEVELOPMENT_BUILD
 
             GameLoop.OnShutdown.Register(OnShutdown);
             Game.Scenes.OnSceneUnload.Register(OnSceneUnload);

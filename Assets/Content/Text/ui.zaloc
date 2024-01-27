@@ -122,3 +122,36 @@ Cost
 :: popup.info.header.totalProfit
 Total
 Profit
+
+:: title.new
+New Game
+
+:: title.resume
+Resume Game
+
+:: title.name
+Highways
+& Green Water
+
+:: title.play
+Play Game
+
+:: title.musicVolume
+Music Volume:
+
+:: title.playerCode
+Player Code:
+
+:: title.enterPlayerCode
+Enter Player Code
+
+:: title.fullscreen
+Fullscreen:
+
+:: title.quality
+High Quality Mode:
+
+:: title.attr
+<size=20>Created by</size>
+Field Day Lab
+

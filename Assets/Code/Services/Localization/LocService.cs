@@ -189,7 +189,11 @@ namespace Zavala
             m_UsageAudit.Remove(inKey);
 #endif // DEVELOPMENT
 
-            ScriptUtility.ParseToTag(ref ioTagString, content, inContext);
+            if (m_LanguagePackage.HasEvents(inKey)) {
+                ScriptUtility.ParseToTag(ref ioTagString, content, inContext);
+            } else {
+                ioTagString.RichText = ioTagString.VisibleText = content;
+            }
 
             return true;
         }

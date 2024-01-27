@@ -52,11 +52,19 @@ MonoBehaviour:
     LookupInherit: 0
     Assemblies:
     - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 4
+      TypeCount: 7
     Types:
     - TypeName: Zavala.Economy.MarketParams
       Self: 0
       MemberCount: 5
+      OverloadCount: 0
+    - TypeName: Zavala.Economy.ShopUtility
+      Self: 0
+      MemberCount: 3
+      OverloadCount: 0
+    - TypeName: Zavala.UI.GlobalAlertParams
+      Self: 0
+      MemberCount: 1
       OverloadCount: 0
     - TypeName: Zavala.Sim.AlgaeSim
       Self: 0
@@ -68,7 +76,11 @@ MonoBehaviour:
       OverloadCount: 0
     - TypeName: Zavala.Sim.RunoffParams
       Self: 0
-      MemberCount: 6
+      MemberCount: 7
+      OverloadCount: 0
+    - TypeName: Zavala.Sim.SkimmerParams
+      Self: 0
+      MemberCount: 4
       OverloadCount: 0
     Members:
     - MemberName: TruckSpeed
@@ -80,6 +92,14 @@ MonoBehaviour:
     - MemberName: TicksPerNegotiation
       Type: 4
     - MemberName: NegotiationStep
+      Type: 4
+    - MemberName: RoadCost
+      Type: 4
+    - MemberName: StorageCost
+      Type: 4
+    - MemberName: DigesterCost
+      Type: 4
+    - MemberName: GlobalAlertDelay
       Type: 4
     - MemberName: MinPForAlgaeGrowthDefault
       Type: 4
@@ -101,15 +121,25 @@ MonoBehaviour:
       Type: 4
     - MemberName: SittingManureRunoffProportion
       Type: 4
+    - MemberName: RunoffConsumeFertilizerThreshold
+      Type: 4
+    - MemberName: PassiveManureRunoff
+      Type: 4
     - MemberName: AppliedManureRunoffProportion
       Type: 4
     - MemberName: MFertilizerRunoffProportion
       Type: 4
     - MemberName: DFertilizerRunoffProportion
       Type: 4
-    - MemberName: RunoffConsumeFertilizerThreshold
-      Type: 4
     - MemberName: ExcessRunoffThreshold
+      Type: 4
+    - MemberName: AlgaeSkimCost
+      Type: 4
+    - MemberName: PhosDredgeCost
+      Type: 4
+    - MemberName: AlgaeSkimAmt
+      Type: 4
+    - MemberName: PhosDredgeAmt
       Type: 4
     OverloadedMethods: []
     TypeReferences: []
@@ -119,7 +149,7 @@ MonoBehaviour:
     LookupInherit: 0
     Assemblies:
     - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 9
+      TypeCount: 11
     Types:
     - TypeName: Zavala.Debugging.SimGridDebugger
       Self: 0
@@ -130,6 +160,10 @@ MonoBehaviour:
       MemberCount: 1
       OverloadCount: 0
     - TypeName: Zavala.Economy.ShopState
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.Data.SaveUtility
       Self: 0
       MemberCount: 1
       OverloadCount: 0
@@ -153,6 +187,10 @@ MonoBehaviour:
       Self: 0
       MemberCount: 1
       OverloadCount: 0
+    - TypeName: Zavala.Scripting.WinLossUtility
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
     - TypeName: Zavala.Advisor.AdvisorUtility
       Self: 0
       MemberCount: 1
@@ -164,6 +202,8 @@ MonoBehaviour:
       Type: 8
     - MemberName: ShopItemUnlockDebugMenu
       Type: 8
+    - MemberName: SaveDebugMenu
+      Type: 8
     - MemberName: PolicyUnlockDebugMenu
       Type: 8
     - MemberName: DebugMenu
@@ -173,6 +213,8 @@ MonoBehaviour:
     - MemberName: RegionUnlockDebugMenu
       Type: 8
     - MemberName: SkipTutorialMenu
+      Type: 8
+    - MemberName: WinLossMenu
       Type: 8
     - MemberName: AdvisorModuleUnlockUtility
       Type: 8
