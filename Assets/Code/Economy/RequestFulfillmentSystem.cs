@@ -52,7 +52,7 @@ namespace Zavala.Economy {
 
                         // differentiate between external and internal blimp prefabs
                         request.Fulfiller = pools.ExternalAirships.Alloc();
-                        FulfillerUtility.InitializeFulfiller(request.Fulfiller, request, externalSrcPos);
+                        FulfillerUtility.InitializeFulfiller(request.Fulfiller, request, externalSrcPos, true);
 
                         OrientAirship(ref request.Fulfiller);
 

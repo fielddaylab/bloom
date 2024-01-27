@@ -5,7 +5,6 @@ using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.Systems;
-using Zavala.Actors;
 using Zavala.Advisor;
 using Zavala.Roads;
 using Zavala.Sim;
@@ -53,7 +52,7 @@ namespace Zavala.Economy
             // INITIAL SETUP
 
             // Prior: PRIORITIZE BUYERS
-            // Prior: PRIORITIZE SELLERS (Test)
+            // Prior: PRIORITIZE SELLERS
 
             m_StateA.RequestQueue.CopyTo(m_RequestWorkList);
             m_StateA.RequestQueue.Clear();
@@ -85,10 +84,9 @@ namespace Zavala.Economy
                 // sold milk this tick
                 supplier.MatchedThisTickWasMilk = false;
 
-                // reset priority indices
-                for (int i = 0; i < supplier.BestPriorityIndex.Length; i++)
+                for (int marketIndex = 0; marketIndex < MarketUtility.NumMarkets; marketIndex++)
                 {
-                    supplier.BestPriorityIndex[i] = 0;
+                    supplier.BestPriorityIndex[marketIndex] = 0;
                 }
             }
 
@@ -103,10 +101,9 @@ namespace Zavala.Economy
                 // subsidy applied this tick, relieves stress
                 requester.SubsidyAppliedThisTick = false;
 
-                // reset priority indices for all resources
-                for (int i = 0; i < requester.BestPriorityIndex.Length; i++)
+                for (int marketIndex = 0; marketIndex < MarketUtility.NumMarkets; marketIndex++)
                 {
-                    requester.BestPriorityIndex[i] = 0;
+                    requester.BestPriorityIndex[marketIndex] = 0;
                 }
             }
 
@@ -117,59 +114,44 @@ namespace Zavala.Economy
 
             #endregion // MarketCycle_InitialSetup
 
-            #region MarketCycle_SupplierFirstChoice
-
-            // FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER
-            // TODO: FOR EACH MARKET
-            foreach (var supplier in m_SupplierWorkList)
+            for (int marketIndex = 0; marketIndex < MarketUtility.NumMarkets; marketIndex++)
             {
-                for (int i = 0; i < MarketUtility.NumMarkets; i++)
+                ResourceMask marketMask = MarketUtility.MarketIndexToResourceMask(marketIndex);
+
+                #region MarketCycle_SupplierFirstChoice
+
+                // FIND EACH SUPPLIER'S FIRST CHOICE OF BUYER FOR THIS MARKET
+                foreach (var supplier in m_SupplierWorkList)
                 {
-                    ResourceMask marketMask = MarketUtility.MarketIndexToResourceMask(i);
-                    ReassignSellerHighestPriorityBuyer(supplier, marketMask);
+                      ReassignSellerHighestPriorityBuyer(supplier, marketMask);
                 }
-            }
 
-            #endregion // MarketCycle_SUpplierFirstChoice
+                #endregion // MarketCycle_SupplierFirstChoice
 
-            #region MarketCycle_BuyerSupplierIteration
+                #region MarketCycle_BuyerSupplierIteration
 
-            // TODO: ITERATE THROUGH THE BUYERS, ONE PRIORITY LEVEL AT A TIME.
-            // FIND THE MOST OPTIMAL CHOICE STILL AVAILABLE FOR BOTH BUYERS AND SELLERS.
-            while (m_RequesterWorkList.Count > 0)
-            {
-                var requester = m_RequesterWorkList.PopFront();
-
-                // LOAD SUPPLIER OFFERS FOR PROCESSING
-                m_SupplierOfferWorkList.Clear();
-                m_SupplierOfferMap[requester].CopyTo(m_SupplierOfferWorkList);
-
-                // SORT SELLER LISTS BY FAMILIARITY
-                m_SupplierOfferWorkList.Sort((a, b) =>
+                // ITERATE THROUGH THE BUYERS, ONE PRIORITY LEVEL AT A TIME.
+                // FIND THE MOST OPTIMAL CHOICE STILL AVAILABLE FOR BOTH BUYERS AND SELLERS.
+                while (m_RequesterWorkList.Count > 0)
                 {
-                    return b.FamiliarityScore - a.FamiliarityScore;
-                });
+                    var requester = m_RequesterWorkList.PopFront();
 
-                // IF ANY SELLER MATCHES THE BEST PRIORITY INDEX...
-                bool matchFound = false;
+                    // LOAD SUPPLIER OFFERS FOR PROCESSING
+                    m_SupplierOfferWorkList.Clear();
+                    m_SupplierOfferMap[requester].CopyTo(m_SupplierOfferWorkList);
 
-                // Skip this requester if they couldn't hold what they are requesting.
-                if (requester.InfiniteRequests && !MarketUtility.CanHoldRequest(requester))
-                {
-                    Log.Msg("[MarketSystem] Requester {0} cannot hold their request! Skipping...", requester.name);
-                    continue;
-                }
-                // TODO: only iterate through resources that match buyer's buy mask
-                for (int i = 0; i < MarketUtility.NumMarkets; i++)
-                {
-                    int marketIndex = i;
-                    bool offerInMarket = false;
+                    // SORT SELLER LISTS BY FAMILIARITY
+                    m_SupplierOfferWorkList.Sort((a, b) =>
+                    {
+                        return b.FamiliarityScore - a.FamiliarityScore;
+                    });
+
+                    // IF ANY SELLER MATCHES THE BEST PRIORITY INDEX...
+                    bool matchFound = false;
+
+                    // bool offerInMarket = false;
                     foreach (var supplierOffer in m_SupplierOfferWorkList)
                     {
-                        if ((supplierOffer.ResourceMask & MarketUtility.MarketIndexToResourceMask(marketIndex)) != 0)
-                        {
-                            offerInMarket = true;
-                        }
                         if (supplierOffer.Supplier == requester.Priorities.PrioritizedSuppliers[requester.BestPriorityIndex[marketIndex]].Target)
                         {
                             matchFound = true;
@@ -177,7 +159,7 @@ namespace Zavala.Economy
                             // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
                             FinalizeSale(marketData, tutorial, config, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer, marketIndex);
                             m_RequestWorkList.Remove(supplierOffer.FoundRequest);
-                            m_SupplierOfferWorkList.Remove(supplierOffer); // TODO: does this removal during iteration cause errors?
+                            m_SupplierOfferWorkList.Remove(supplierOffer);
 
                             break;
                         }
@@ -187,27 +169,25 @@ namespace Zavala.Economy
                         foreach (var supplierOffer in m_SupplierOfferWorkList)
                         {
                             // REASSIGN REMAINING SUPPLIERS TO THEIR NEXT HIGHEST PRIORITY INDEX
-                            ResourceMask marketMask = MarketUtility.MarketIndexToResourceMask(i);
                             ReassignSellerHighestPriorityBuyer(supplierOffer.Supplier, marketMask);
                         }
                     }
                     // ELSE MOVE TO BUYER'S NEXT BEST PRIORITY AND CONTINUE
-                    else if (offerInMarket)
+                    else
                     {
                         requester.BestPriorityIndex[marketIndex]++;
                         m_RequesterWorkList.PushBack(requester);
                     }
+                    m_SupplierOfferWorkList.CopyTo(m_SupplierOfferMap[requester]);
                 }
-                m_SupplierOfferWorkList.CopyTo(m_SupplierOfferMap[requester]);
+
+                #endregion // MarketCycle_BuyerSupplierIteration
             }
-
-
-            #endregion // MarketCycle_BuyerSupplierIteration
 
             #region MarketCycle_Negotiations
 
             // NEGOTIATION PHASE
-            ProcessNegotiations(tutorial);
+            // ProcessNegotiations(tutorial);
 
             #endregion // MarketCycle_Negotations
 
@@ -287,9 +267,13 @@ namespace Zavala.Economy
                 {
                     continue;
                 }
+                // Skip this requester if they couldn't hold what they are requesting.
+                if (requests[i].Requester.InfiniteRequests && !MarketUtility.CanHoldRequest(requests[i].Requester))
+                {
+                    continue;
+                }
                 if (!supplier.Storage.InfiniteSupply)
                 {
-
                     if (supplier.Storage.StorageExtensionStore == null)
                     {
                         current = supplier.Storage.Current;
@@ -922,7 +906,6 @@ namespace Zavala.Economy
                 }
             }
 
-            // TODO: Check if supplied is non-zero
             int regionPurchasedIn = ZavalaGame.SimGrid.Terrain.Regions[adjustedFound.Value.Requester.Position.TileIndex];
             int quantity = adjustedValueRequested.Count; // TODO: may be buggy if we ever have requests that cover multiple resources
             GeneratedTaxRevenue netTaxRevenue = new GeneratedTaxRevenue(
@@ -985,9 +968,8 @@ namespace Zavala.Economy
 
                 }
             }
-            // TODO: MARKETS ARE NOT YET FILTERED BY RESOURCE! using this helper temporarily
-            int dummyMarketIndex = GetMarketIndexOfResourceBlock(activeRequest.Supplied);
-            int stressThreshold = config.StressedPurchaseThresholds[dummyMarketIndex];
+
+            int stressThreshold = config.StressedPurchaseThresholds[currMarketIndex];
             if (stressThreshold != 0 && supplierOffer.TotalCost > stressThreshold)
             {
                 /*Log.Msg("[MarketSystem] {0} purchased {1} at {2}, which is over {3}!",
@@ -995,13 +977,13 @@ namespace Zavala.Economy
                     activeRequest.Supplied,
                     supplierOffer.TotalCost,
                     config.StressedPurchaseThresholds[dummyMarketIndex]);
-                activeRequest.Requester.PurchasedAtStressedPrice = true;
                 */
+                activeRequest.Requester.PurchasedAtStressedPrice = true;
             }
 
             // MarketUtility.RecordRevenueToHistory(marketData, netTaxRevenue, regionPurchasedIn);
 
-            // TODO: mark this request as EnRoute
+            // mark this request as EnRoute
             m_StateA.FulfillQueue.PushBack(activeRequest); // picked up by fulfillment system
 
             // Log.Msg("[MarketSystem] Shipping {0} from '{1}' to '{2}'", activeRequest.Supplied, supplier.name, adjustedFound.Value.Requester.name);

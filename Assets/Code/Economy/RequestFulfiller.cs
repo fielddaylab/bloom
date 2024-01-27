@@ -48,10 +48,11 @@ namespace Zavala.Economy {
 
         [NonSerialized] public bool IsIntermediary; // true if this fulfiller confers responsibility along a chain (e.g. export depot)
         [NonSerialized] public bool AtTransitionPoint; // true if this fulfiller is ready to change (i.e. from truck to blimp, or when completing delivery)
+        [NonSerialized] public bool ExternalSrc; 
     }
 
     static public class FulfillerUtility {
-        static public void InitializeFulfiller(RequestFulfiller unit, MarketActiveRequestInfo request, RoadPathSummary path) {
+        static public void InitializeFulfiller(RequestFulfiller unit, MarketActiveRequestInfo request, RoadPathSummary path, bool isExternal = false) {
             unit.Source = request.Supplier;
             unit.Carrying = request.Supplied;
             unit.Target = request.Requester;
@@ -66,6 +67,8 @@ namespace Zavala.Economy {
 
             unit.SourceTileIndex = unit.Source.Position.TileIndex;
             unit.TargetTileIndex = unit.Target.Position.TileIndex;
+
+            unit.ExternalSrc = isExternal;
 
             unit.NodeQueue.Clear();
 
@@ -93,7 +96,7 @@ namespace Zavala.Economy {
             unit.IsIntermediary = false;
         }
 
-        static public void InitializeFulfiller(RequestFulfiller unit, MarketActiveRequestInfo request, Vector3 sourceWorldPos) {
+        static public void InitializeFulfiller(RequestFulfiller unit, MarketActiveRequestInfo request, Vector3 sourceWorldPos, bool isExternal = false) {
             unit.Source = request.Supplier;
             unit.Carrying = request.Supplied;
             unit.Target = request.Requester;
@@ -111,6 +114,8 @@ namespace Zavala.Economy {
             unit.NodeQueue.Clear();
 
             unit.IsIntermediary = false;
+
+            unit.ExternalSrc = isExternal;
         }
     }
 }

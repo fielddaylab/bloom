@@ -27,7 +27,7 @@ MonoBehaviour:
     - Id: alerts.crit-imbalance
       Content: Critical Imbalance
     - Id: alerts.unused-digester
-      Content: Unused Digester
+      Content: Unused Processor
     - Id: alerts.declining-pop
       Content: Declining Population
     - Id: alerts.selling-loss
@@ -125,7 +125,7 @@ MonoBehaviour:
       Content: Fertilizer
     - Id: cards.ImportTaxPolicy.alt.hint
       Content: A Fertilizer Subsidy costs $6 per unit to offset the shipping cost
-        of importing manure and digested fertilizer from other counties.
+        of importing manure and processed fertilizer from other counties.
     - Id: cards.SalesTaxPolicy.category
       Content: Sales Policy
     - Id: cards.SalesTaxPolicy.none
@@ -145,7 +145,7 @@ MonoBehaviour:
       Content: Subsidy
     - Id: cards.SalesTaxPolicy.alt.hint
       Content: The subsidy costs you $2 for every purchase except for fertilzer from
-        Phos4Us. Subsidies encourages buyers by lowering their costs.
+        Phos4Us. Subsidies encourage buyers by lowering their costs.
     BasePath: cards
     AllBasePaths:
     - Path: cards
@@ -157,7 +157,7 @@ MonoBehaviour:
     LastLine: 0
     Records:
     - Id: location.region1_city1.name
-      Content: Pendleton City
+      Content: Pendleton Hills
     - Id: location.region1_cafo1.name
       Content: Bertram's Dairy Farm
     - Id: location.region1_grain1.name
@@ -205,8 +205,8 @@ MonoBehaviour:
     - Id: location.region5_city3.name
       Content: Central Smokestack
     - Id: location.desc.digester
-      Content: Digesters buy raw manure and turn it into fertilizer that can be shipped
-        for cheap.
+      Content: Manure Processors buy raw manure and turn it into fertilizer that
+        can be shipped for cheap.
     - Id: location.shared.cafoInfo
       Content: <i>buys <u>corn</u> / sells <u>milk</u></i>
     - Id: location.shared.cityInfo
@@ -218,12 +218,12 @@ MonoBehaviour:
     - Id: location.shared.storage
       Content: Storage Unit
     - Id: location.shared.digester
-      Content: Manure Digester
+      Content: Manure Processor
     - Id: location.shared.digesterInfo
       Content: <i><u>buys</u> raw manure, <u>sells</u> fertilizer</i>
     - Id: location.shared.digesterDesc
-      Content: Digesters buy raw manure and turn it into fertilizer that can be shipped
-        for cheap.
+      Content: Manure Processors buy raw manure and turn it into fertilizer that
+        can be shipped for cheap.
     - Id: location.shared.toll
       Content: Border Gate
     - Id: location.shared.tollDesc
@@ -232,14 +232,15 @@ MonoBehaviour:
     - Id: location.shared.storageInfo
       Content: <i><u>buys</u> and <u>sells</u> raw manure</i>
     - Id: location.shared.storageDesc
-      Content: Storage Units buy fertilizer from dairy farms and sell it for a very
-        minor profit.
+      Content: Storage Units buy manure from dairy farms and sell it for a very minor
+        profit.
     - Id: location.shared.depot
       Content: Export Depot
     - Id: location.shared.depotInfo
-      Content: <i><u>buys</u> and <u>sells</u> digested fertilizer</i>
+      Content: <i><u>buys</u> and <u>sells</u> processed fertilizer</i>
     - Id: location.shared.depotDesc
-      Content: Export Depots can ship and sell processed manure long distances cheaply.
+      Content: Export Depots can ship and sell processed manure fertilizer long distances
+        cheaply.
     - Id: location.shared.grain
       Content: Fertilizer Suppliers
     - Id: location.shared.dairy
@@ -303,15 +304,15 @@ MonoBehaviour:
     - Id: ui.lens.market.targets.header
       Content: Local Market Targets
     - Id: ui.popup.info.buying
-      Content: 'Which is the
+      Content: 'Wants to
 
-        cheapest?'
+        buy from:'
     - Id: ui.popup.info.buyingArrow
       Content: 'Buy:'
     - Id: ui.popup.info.selling
-      Content: 'Which is the most
+      Content: 'Wants to
 
-        profitable?'
+        sell to:'
     - Id: ui.popup.info.sellingArrow
       Content: 'Sell:'
     - Id: ui.popup.info.buyingResource

@@ -80,7 +80,9 @@ namespace Zavala.Movement
             // fade in
             // yield return airship.Mesh.material.FadeTo(0, 0);
 
-            Vector3 descendPos = fulfiller.SourceWorldPos - new Vector3(0, 0.5f, 0) + airship.transform.forward * 0.3f;
+            // descend if external, rise if from export depot
+            Vector3 descendAmt = fulfiller.ExternalSrc ? new Vector3(0, -0.5f, 0) : new Vector3(0, 0.5f, 0);
+            Vector3 descendPos = fulfiller.SourceWorldPos + descendAmt + airship.transform.forward * 0.3f;
 
             // descend
             yield return Routine.Combine(

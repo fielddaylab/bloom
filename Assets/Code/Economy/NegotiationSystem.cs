@@ -18,6 +18,10 @@ namespace Zavala.Economy
 
         public override void ProcessWork(float deltaTime)
         {
+            // Remove this check if we end up using negotiations again
+            bool usingNegotiations = false;
+            if (!usingNegotiations) { return; }
+
             if (!m_State.MarketTimer.HasAdvanced())
             {
                 return;
@@ -40,7 +44,6 @@ namespace Zavala.Economy
                 negotiator.BuyPriceChange.SetAll(0);
             }
 
-            int marketIndex;
             // For each negotation forcing a price change, stage it
             for (int i = 0; i < m_QueuedNegotiations.Count; i++)
             {
