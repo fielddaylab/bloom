@@ -72,8 +72,8 @@ namespace Zavala.World {
             PanCameraToActor(cityId);
         }
 
-        public static void PanCameraToTransform(Transform t) {
-            PanCameraToPoint(Cam, t.position);
+        public static void PanCameraToTransform(Transform t, float xzoffset = 0) {
+            PanCameraToPoint(Cam, t.position + new Vector3(xzoffset, 0f, xzoffset));
         }
 
         public static void PanCameraToPoint(Vector3 pt) {
