@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10885,6 +10885,10 @@ PrefabInstance:
       propertyPath: Scale.y
       value: 0.0035
       objectReference: {fileID: 0}
+    - target: {fileID: 2517140938799783748, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
+      propertyPath: PhosphorusMesh
+      value: 
+      objectReference: {fileID: 6110288801094830825, guid: b6d15e963e6756a479f1cd18f8057798, type: 3}
     - target: {fileID: 2517140938799783801, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
       propertyPath: m_HoloMaterial
       value: 
