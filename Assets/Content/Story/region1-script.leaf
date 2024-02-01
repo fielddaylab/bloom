@@ -11,10 +11,10 @@ $call PauseAlertType("ExcessRunoff")
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.5)
-    You have become the Director of the region's Sustainable Agricultural Growth Administration: SAGA.
+    You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.5)
-	This region is young. It's your job as SAGA director to help them grow...
+	This county is young. It's your job as SAGA director to help them grow...
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
 	$call CutsceneAllImages(0.5)
 	If you fail, they will succumb to ruin. Cities will empty; people will starve; the land and the waterways will be become desolate.
