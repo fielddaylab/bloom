@@ -883,7 +883,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
   m_PrefabInstance: {fileID: 6112154565167516681}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1249365799534284951}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac15aa9b65bf545438f942bb8f6623ee, type: 3}
@@ -894,6 +894,26 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5009163469523836063, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
   m_PrefabInstance: {fileID: 6112154565167516681}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1249365799534284951 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5009163469523836062, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+  m_PrefabInstance: {fileID: 6112154565167516681}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9070617531513717271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1249365799534284951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86b943a7c8da07428c17dd96a7e18c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Id:
+    m_Source: ShopButton1
+    m_HashValue: 1169775268
 --- !u!1001 &7136206956594481537
 PrefabInstance:
   m_ObjectHideFlags: 0

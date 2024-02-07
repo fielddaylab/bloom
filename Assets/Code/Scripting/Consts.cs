@@ -53,6 +53,8 @@ namespace Zavala
         static public readonly StringHash32 RegionUnlocked = "RegionUnlocked";
         static public readonly StringHash32 RegionReachedAge = "RegionReachedAge";
         static public readonly StringHash32 LetSat = "LetSat";
+        static public readonly StringHash32 BlueprintModeEntered = "BlueprintModeEntered";
+        static public readonly StringHash32 BlueprintModeExited = "BlueprintModeExited";
         static public readonly StringHash32 BuildButtonPressed = "BuildButtonPressed";
         static public readonly StringHash32 PlayerBuiltBuilding = "PlayerBuiltBuilding";
         static public readonly StringHash32 FarmConnection = "FarmConnection";

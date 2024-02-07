@@ -20,7 +20,7 @@ $call CutsceneBegin()
 	If you fail, they will succumb to ruin. Cities will empty; people will starve; the land and the waterways will be become desolate.
 	$call CutscenePrepareImages("intro/frame4-1.png", "intro/frame4-2.png", "intro/frame4-3.png")
 	$call CutsceneAllImages(0.5)
-	Your first assignment is <i>Knoll County</i>. You will meet two guides...
+	Your first assignment is <i>Knoll County</i>. You will meet two Advisors to help you on your way...
 $call CutsceneEnd()
 
 {@advisorEconHill}      Greetings! Welcome to Knoll County.
@@ -30,30 +30,47 @@ $call ForceDialogueInteraction()
 {@advisorEconHill}      ...but these farms and businesses aren't connected.
 $call PanToBuilding("region1_city1")
 {@advisorEconHill}      There's the <i>City</i> of Pendleton Hills...
+{@advisorEconHill}      They consume <b>Milk</b> and generate <b>Money</b>.
 $call PanToBuilding("region1_grain1")
-{@advisorEconHill}      Henrietta's <i>Grain Farm</i>...
+{@advisorEconHill}      Then Henrietta's <i>Grain Farm</i>...
+{@advisorEconHill}      She uses <b>Fertilizer</b> to grow <b>Grain</b>.
 $call PanToBuilding("region1_cafo1")
-{@advisorEconHill}      And Bertram's <i>Dairy Farm</i>.
-{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm;" it's a huge operation.
+{@advisorEconHill}      And finally Bertram's <i>Dairy Farm</i>!
+{@advisorEconHill}      His cows consume <b>Grain</b> to produce <b>Milk</b> and <b>Manure</b>.
+{@advisorEcolHill}      Well, it's a bit more than just a "dairy farm." It's a huge operation!
 {@advisorEcolHill}      I'll be informing you on environmental concerns, by the way.
 {@advisorEconHill}      Yes, thank you. But back to <i>important</i> things. Like establishing trade routes!
 $call ReleaseDialogueInteraction()
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEconHill}      Open <b>Build Mode</b>.
-$call FocusClear()
-$call Unpause()
 
+:: startedBlueprintMode
+@trigger BlueprintModeEntered
+@conditions     intro:tutorialComplete = false, intro:roadBuilt = false
+@cutscene
+$call FocusClear()
+{@advisorEconHill}      Splendid!
+{@advisorEconHill}      Here you can use SAGA funds to build in <b>this county.</b>
+{@advisorEconHill}      Let's use a <b>Road</b> to create a trade route.
+$call FocusHighlightOn("ShopButton1")
+
+:: prematureExitBuild
+@trigger BlueprintModeExited
+@conditions     intro:tutorialComplete = false, intro:roadBuilt = false
+@cutscene
+$call FocusHighlightOn("BuildModeButton")
+{@advisorEconHill}      Open <b>Build Mode</b>.
 
 // Step 2: Road drawing tutorial
 :: roadSelected
 @trigger BuildButtonPressed
-@conditions     intro:tutorialComplete = false
+@conditions     intro:tutorialComplete = false, intro:roadBuilt = false
 @cutscene
-@once
+$call FocusClear()
 {@advisorEconHill}      Each road segment costs $5. 
 {@advisorEconHill}      You will see a running total of your costs as you build.
-{@advisorEcolHill}      You can't build over any of our protected forests or deep water.
-{@advisorEconHill}      Select your <i>Road</i> tool and build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
+{@advisorEcolHill}      You can't build over any <b>red tiles</b>. Those are protected areas!
+{@advisorEconHill}      Build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
 $call PanToBuilding("region1_grain1", -1)
 $call ShowAnimatedTutorial("ClickDragTutorial")
 
@@ -65,28 +82,39 @@ $call ShowAnimatedTutorial("ClickDragTutorial")
 @cutscene
 @once
 // $call Pause()
+$call FocusClear()
+$set intro:roadBuilt = true
 $set intro:farmsConnected = true
 $if intro:citiesConnected
     $call HideAnimatedTutorial()
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Now the Dairy Farm can buy <i>grain</i> from the Grain Farm.
-    {@advisorEconHill}      And the Grain Farm can buy <i>manure</i> for fertilizer.
-    {@advisorEconHill}      Its the beginning of our local <i>Fertilizer Economy</i>.
-    {local @grainFarmer}    Pippin, will this help us save some money? 
-    {local @cafoFarmer}     Yeah, I'm going broke here. It would be great to turn manure into money. 
+    {local @cafoFarmer}    Heck yeah! Now I can buy <b>Grain</b> for my cows.
+    {local @grainFarmer}   I'm happy to provide!
+    // Commenting out, there's no fertilizer economy until the runoff fine is in place
+    // {@advisorEconHill}     It's the beginning of our local <i>Fertilizer Economy</i>.
+    // {local @cafoFarmer}    Yeah, I'm going broke here. It would be great to turn manure into money. 
 
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect city and dairy
     // {@advisorEconHill}   Now the Grain Farm can buy <i>manure</i> from the Dairy Farm.
-    {@advisorEconHill}      Now Bertram can buy <i>grain</i> for his cows...
-    {@advisorEconHill}      and the fine people of Pendleton Hills buy the <i>milk</i>.
+    {local @cafoFarmer}    Heck yeah! Now I can buy <b>Grain</b> for my cows.
+    {local @grainFarmer}   I'm happy to provide!
+    {local @cafoFarmer}    But I still need to sell my <b>Milk.</b>
     $if !intro:citiesConnected 
-        $call PanToBuilding("region1_city1", -1)
-        {@advisorEconHill}      We need a <i>Road</i> to connect the Dairy Farm to the City.
+        $call PanToBuilding("region1_city1", -0.5)
+        {local @urbanite}       Hey, we'll buy that <b>Milk!</b>
+        {@advisorEconHill}      Hear that? We just need a <i>Road</i> to connect the Dairy Farm to the City.
+        $call FocusHighlightOn("BuildModeButton")
     $endif
 $endif
 // $call Unpause()
+
+:: clearBlueprintHighlight
+@trigger BlueprintModeEntered
+@conditions     intro:tutorialComplete = false, intro:roadBuilt = true
+@cutscene
+$call FocusClear()
 
 :: cityConnected
 @trigger    CityConnection
@@ -94,18 +122,21 @@ $endif
 @cutscene
 @once
 // $call Pause()
+$set intro:roadBuilt = true
 $set intro:citiesConnected = true
 $if intro:farmsConnected
     $call HideAnimatedTutorial()
     $call ForceDialogueInteraction()
-    {@advisorEconHill}      Excellent! The the City has a source of <i>milk</i>!
+    {@advisorEconHill}      Pendleton Hills has a source of <b>Milk</b>!
+    {local @urbanite}       Woohoo! I'm gonna eat <i>so much</i> cereal now.
     $branch .farmsAndCitiesConnected
 $else
     // Step 4: Connect dairy and grain
-    {@advisorEconHill}      With this road, the City can purchase Bertram's <i>milk</i>.
-    {@advisorEconHill}      But cows need <i>grain</i> to make milk...
+    {local @cafoFarmer}     Great, I have a buyer for <b>Milk</b>!
+    {local @cafoFarmer}     But my cows gotta eat <b>Grain</b> to make <b>Milk</b>.
+    {@advisorEconHill}      Good point.
     $call PanToBuilding("region1_grain1")
-    {@advisorEconHill}      Build another road, now between the Dairy Farm and the Grain Farm.
+    {@advisorEconHill}      Build another road, now between the <b>Dairy Farm</b> and the <b>Grain Farm.</b>
 $endif
 
 // $call Unpause()
@@ -117,7 +148,7 @@ $endif
 $set intro:farmsAndCities = true
 $call HideAnimatedTutorial()
 {@advisorEconHill}      Everything in the county is connected.
-{@advisorEconHill}      SAGA will gain <b>$5 for every shipment of milk</b> the City consumes.
+{@advisorEconHill}      SAGA will gain <b>$5</b> for every <b>shipment of milk</b> the City consumes.
 {@advisorEconHill}      That milk fuels taxable work, and gives us a budget!
 {@advisorEconHill}      But we may need more funding.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
@@ -141,27 +172,28 @@ $call FocusHighlightOn("EconomyAdvisor")
 :: letsGetStarted
 @trigger AdvisorOpened
 @conditions     advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete == false
-// @forcePolicy    Economy
+@forcePolicy    Economy
 @cutscene
 @once
 $call FocusClear()
 $set intro:pendingPolicy = true
-{@advisorEconHill}     You can adjust Knoll County's policies here.
-{@advisorEconHill}     Sales Policy can provide additional revenue.
+{@advisorEconHill}     Hello again!
+{@advisorEconHill}     You can see me here to adjust Knoll County's policies.
+{@advisorEconHill}     As for that <b>Sales Policy</b>: it can provide additional revenue.
 {viewpoliciesnext}
-{@advisorEconHill}     But set it too high, and trade may be hindered.
-$call ForcePolicyInstant("Economy")
+{@advisorEconHill}     But set it too high, and farms may <b>slow down production.</b>
+// $call ForcePolicyInstant("Economy")
 
 :: closedWithoutSettingPolicy
 @trigger    AdvisorClosed
 @conditions intro:pendingPolicy == true, intro:tutorialComplete == false
-// @forcePolicy    Economy
+@forcePolicy    Economy
 @cutscene
 {@advisorEconHill}      Hold on there!
 {@advisorEconHill}      Make sure to set a Sales Policy before you leave.
 {viewpoliciesnext}
 {@advisorEconHill}      You can set it to None if you like, but we ought to decide.
-$call ForcePolicyInstant("Economy")
+// $call ForcePolicyInstant("Economy")
 
 // :: setPolicyReminder
 // @trigger AdvisorOpened
@@ -193,24 +225,27 @@ $call ForcePolicyInstant("Economy")
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
 {@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
-{local @grainFarmer}    I love <b>Phos4Us</b>! My crops need phosphorus to grow...
-{local @grainFarmer}    ...and it's cheap to ship to my farm.
-{@advisorEcolHill}      Hold on! We are adding MORE nutrients to our county?
-{@advisorEcolHill}      This could disrupt the phosphorus cycle!
+{local @grainFarmer}    My crops need <b>phosphorus</b> to grow...
+{local @grainFarmer}    There's some <b>phosphorus</b> in the soil, but it's not enough!
+{local @grainFarmer}    <b>Phos4Us</b> ships mineral phosphorus to my farm for cheap.
+{@advisorEcolHill}      Woah there! We're adding MORE nutrients to our soil?
+{@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle!
 $call AddAutoAlertCondition("Bloom", 1)
-{@advisorEconHill}      I'm sure Henrietta has a good reason. Let's have a look...
+{@advisorEconHill}      I'm sure Henrietta has a good reason. Let's take a look...
 $call OpenInfoPopup("region1_grain1")
-{local @grainFarmer}    Phos4Us is the only game in town!
+{@advisorEconHill}      This <b>Inspector</b> shows where a farm could <b>buy from</b> or <b>sell to</b>.
+{local @grainFarmer}    See, Phos4Us is the only seller around!
 {@advisorEcolHill}      What about manure? That has phosphorus.
 $call CloseInfoPopup()
 {@advisorEconHill}      Shall we ask Bertram?
 $call OpenInfoPopup("region1_cafo1")
 $call Wait(0.5)
 {local @cafoFarmer}     I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
-{local @cafoFarmer}     Better to just let it sit.
+{@advisorEconHill}      And a longer road means a higher <b>shipping cost</b>.
+{local @cafoFarmer}     Right. Better to just let the manure sit.
 $call CloseInfoPopup()
 {@advisorEconHill}      I see.
-{@advisorEconHill}      You can always check a farm's <b>Fertilizer decisions</b> by <b>clicking</b> it.
+{@advisorEconHill}      You can always check the <b>Inspector</b> again by clicking on a farm.
 
 // $call Unpause()
 

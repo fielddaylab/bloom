@@ -30,25 +30,9 @@ $endif
 @trigger        PolicySet
 @conditions     policyForced == false
 @cutscene
-$set intro:pendingPolicy = false
-$branch .policyDescriptions
-$if intro:tutorialComplete = false
-    $branch .choseFirstPolicy
+$if into:pendingPolicy = true
+    $set intro:pendingPolicy = false
 $endif
-
-:: choseFirstPolicy
-// @cutscene
-$set intro:tutorialComplete = true
-{@advisorEconHill}  A fine choice. 
-{@advisorEconHill}  Let's get this economy started, shall we?
-$call PauseUser()
-{@advisorEconHill}  Use the <b>spacebar</b> to toggle pause.
-$call ShowAnimatedTutorial("PauseTutorial")
-$call OffsetAlgaeGrowthThreshold(0)
-$call ActivateSim()
-
-:: policyDescriptions
-// TODO: lookup policy costs
 $if local:policyType == "RunoffPolicy"
     $if     local:policyIndex == 0
         {local @advisorEcol}    With no runoff fine, Dairy Farms will only sell manure if it earns a profit.
@@ -80,8 +64,8 @@ $elseif local:policyType == "SalesTaxPolicy"
     $elseif local:policyIndex == 2
         {local @advisorEcon}    With high Sales Tax, you'll gain $3 with every purchase on top of city revenue.
     $elseif local:policyIndex == 3
-        {local @advisorEcon}    Sales Subsidy costs you $2 for every internal purchase. Subsidies encourage buyers.
-        {local @advisorEcon}    But that money comes from the SAGA county budget!
+        {local @advisorEcon}    Sales Subsidy will make farmers happy, but it costs $2 for every purchase.
+        {local @advisorEcon}    That money comes from our county budget!
     $endif
 $elseif local:policyType == "ImportTaxPolicy"
     $if     local:policyIndex == 0
@@ -93,6 +77,17 @@ $elseif local:policyType == "ImportTaxPolicy"
     $elseif local:policyIndex == 3
         {local @advisorEcon}    With a Fertilizer Subsidy, we'll pay $6 for each manure or digester fertilizer imported to offset shipping costs.
     $endif
+$endif
+$if intro:tutorialComplete = false
+// ::setFirstPolicy
+    $set intro:tutorialComplete = true
+    $call ActivateSim()
+    {@advisorEconHill}  A fine choice. 
+    {@advisorEconHill}  Let's get this economy started, shall we?
+    $call PauseUser()
+    {@advisorEconHill}  Use the <b>spacebar</b> to toggle <b>Pause.</b>
+    $call ShowAnimatedTutorial("PauseTutorial")
+    $call OffsetAlgaeGrowthThreshold(0)
 $endif
 
 :: runoffCafoGeneric
@@ -193,7 +188,7 @@ $call FocusClear()
 // $call SendGlobalAlertForNode("region1_city1", region1.testGlobalAlert)
 $call HideAnimatedTutorial()
 $set intro:tutorialComplete = true
-$set intro:pendingPolicy = true
+$set intro:pendingPolicy = false
 $call UnlockCards(SalesTaxPolicy)
 $call AddAutoAlertCondition("Bloom", 1)
 $call OffsetAlgaeGrowthThreshold(0)

@@ -83,10 +83,10 @@ MonoBehaviour:
     Grain: 8
     Milk: 0
   Current:
-    Manure: 2
+    Manure: 1
     MFertilizer: 0
     DFertilizer: 0
-    Grain: 0
+    Grain: 1
     Milk: 0
   Displays:
   - {fileID: 4054101505793053327}
@@ -341,9 +341,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StressCap: 8
-  m_BadThreshold: 8
-  m_OkayThreshold: 4
-  m_GreatThreshold: 0
+  BadThreshold: 8
+  OkayThreshold: 4
+  GreatThreshold: 0
   m_StartingState: 2
   StressDelta: 4
 --- !u!1001 &3743880648583490365

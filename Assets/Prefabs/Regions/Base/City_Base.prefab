@@ -164,7 +164,7 @@ MonoBehaviour:
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0
-    Milk: 1
+    Milk: 0
   Displays: []
   StorageExtensionReq: {fileID: 0}
   StorageExtensionStore: {fileID: 0}

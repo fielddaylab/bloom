@@ -4,6 +4,7 @@ using BeauUtil;
 using BeauUtil.UI;
 using FieldDay;
 using FieldDay.Scenes;
+using FieldDay.Scripting;
 using FieldDay.UI;
 using System;
 using System.Collections;
@@ -155,12 +156,14 @@ namespace Zavala.UI
         {
             var blueprintState = Game.SharedState.Get<BlueprintState>();
             blueprintState.StartBlueprintMode = true;
+            ScriptUtility.Trigger(GameTriggers.BlueprintModeEntered);
         }
 
         private void HandleEndBlueprintMode()
         {
             BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
             bpState.ExitedBlueprintMode = true;
+            ScriptUtility.Trigger(GameTriggers.BlueprintModeExited);
         }
 
         private void HandlePolicyTypeUnlocked()
