@@ -30,7 +30,7 @@ $endif
 @trigger        PolicySet
 @conditions     policyForced == false
 @cutscene
-$if into:pendingPolicy = true
+$if intro:pendingPolicy = true
     $set intro:pendingPolicy = false
 $endif
 $if local:policyType == "RunoffPolicy"
@@ -224,7 +224,9 @@ $call CutsceneBegin()
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
 	$call CutsceneAllImages(0.5)
 	Your efforts were not enough. You have been replaced as SAGA director. Perhaps your replacement will fare better...
-    Proper shutdown is not implemented. Reload the page to start again.
+    $call CutsceneClearImages()
+    Game over!
+    Loading most recent save...
     // $call EndGame()
 // {@advisorEconUrban}      Heh heh, you would've failed here, but failure was disabled. Right on.
 // {@advisorEconUrban}      {$local:endType} in region {$local:alertRegion}
@@ -240,5 +242,7 @@ $call CutsceneBegin()
 	$call CutsceneAllImages(0.5)
 	With your help, these regions are blooming into a thriving interconnected economy.
     Perhaps we couldn't stop the blooms entirely, but by activating a fertilizer market, we've kept them managed.
-    Proper shutdown is not implemented. Reload the page to start again.
+    $call CutsceneClearImages()
+    Game over!
+    Thank you for playing!
     // $call EndGame()

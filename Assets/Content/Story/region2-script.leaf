@@ -17,7 +17,7 @@ $endif
 :: forestUnlocked
 @cutscene
 @queued
-@forcePolicy
+@forcePolicy    Economy
 // $call Pause()
 $set intro:openedForestAlert = true
 $call FocusClear()
@@ -160,11 +160,12 @@ $call CutsceneBegin()
 $call CutsceneEnd()
 {@cityPrairie}      ...I call it PIP! Persistent Imaging of Phosphorus.
 {@cityPrairie}      Let's try it out here in Cypress County.
+$set global:pipsUnlocked = true
 $call UnlockAdvisorModule("Ecology")
 $call PanToBuilding("region2_cafo2")
 $call ForceAdvisorModule("Ecology")
-{@advisorEconForest}   Good heavens!
-{@advisorEcolForest}   There is phosphorus in the water even where we don't see the blooms! Our poor lakes...
+{@advisorEconForest}   Good heavens! There's excess phosphorus all over...
+{@advisorEcolForest}   Hmm... Maybe this can help us find where <b>new phosphorus</b> is appearing.
 $call AddRegionAgeDeltaTrigger(3, 20) // for unlocking MARKET GRAPHS.
 
 $call OffsetAlgaeGrowthThreshold(1)
@@ -205,24 +206,24 @@ $endif
 $call ForcePolicyInstant("Ecology")
 
 :: unlockSkimmers
-@trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 2, AgeOfRegion(4) > 0, global:readyForSkimmers
-// @forcePolicy    Ecology
+@trigger        AlertExamined // unlocked by first bloom appearance after region 4 opens up
+@conditions     alertType == "bloom", AgeOfRegion(4) > 0, global:readyForSkimmers
+@forcePolicy    Ecology
 @cutscene
 @once
-{local @urbanite}    I'm worried about these algae blooms.
+{local @urbanite}    I'm starting to worry about these algae blooms...
 $if global:skimmersUnlocked == false // band-aid solution for queued "once" alert nodes
     $set global:skimmersUnlocked = true
-    {@advisorEcolWetland}   Well, we have all these wetland boats... What if we used them to skim algae off the lakes?
+    {@advisorEcolWetland}   Well, we have all these boats over in the wetland... What if we used them to skim algae off the lakes?
     {@advisorEconWetland}   That could be costly... And it won't remove the underlying phosphorus.
     {@advisorEconWetland}   For that, we'd need even pricier <i>dredgers.</i>
     {@advisorEcolWetland}   But skimmers could help mitigate the worst effects for now. 
     {viewpoliciesnext}
     {local @advisorEcol}    It's up to you, Director.
     $call UnlockCards(SkimmingPolicy)
-    $call AddAutoAlertCondition("Bloom", 4)
+    $call AddAutoAlertCondition("Bloom", 4) // prepare for digester cutscene
 $else
     {viewpoliciesnext}
     {local @advisorEcon}    Maybe those newfangled skimmers can help?
 $endif
-$call ForcePolicyInstant("Ecology")
+// $call ForcePolicyInstant("Ecology")

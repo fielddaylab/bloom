@@ -118,6 +118,11 @@ namespace Zavala.UI
             m_BuildButton.gameObject.SetActive(false);
         }
 
+        protected override void OnDestroy() {
+            m_TopBarRoutine.Stop();
+            base.OnDestroy();
+        }
+
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds, int numCommits)
         {
             // Change total to new total
@@ -374,6 +379,7 @@ namespace Zavala.UI
                 bool visible = CardsUtility.GetUnlockedOptions(cards, box.PolicyType).Count > 0;
                 box.gameObject.SetActive(visible);
             }
+            UpdatePolicyBoxTexts();
         }
 
         #endregion // System Handlers
@@ -465,6 +471,7 @@ namespace Zavala.UI
                     );
                 */
             }
+            UpdatePolicyBoxTexts();
         }
 
         private IEnumerator ReceiptAppearanceTransition(bool appearing)
