@@ -4,6 +4,7 @@ using BeauUtil;
 using BeauUtil.UI;
 using FieldDay;
 using FieldDay.Scenes;
+using FieldDay.Scripting;
 using FieldDay.UI;
 using System;
 using System.Collections;
@@ -117,6 +118,11 @@ namespace Zavala.UI
             m_BuildButton.gameObject.SetActive(false);
         }
 
+        protected override void OnDestroy() {
+            m_TopBarRoutine.Stop();
+            base.OnDestroy();
+        }
+
         public void UpdateTotalCost(int totalCost, int deltaCost, long playerFunds, int numCommits)
         {
             // Change total to new total
@@ -155,12 +161,14 @@ namespace Zavala.UI
         {
             var blueprintState = Game.SharedState.Get<BlueprintState>();
             blueprintState.StartBlueprintMode = true;
+            ScriptUtility.Trigger(GameTriggers.BlueprintModeEntered);
         }
 
         private void HandleEndBlueprintMode()
         {
             BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
             bpState.ExitedBlueprintMode = true;
+            ScriptUtility.Trigger(GameTriggers.BlueprintModeExited);
         }
 
         private void HandlePolicyTypeUnlocked()
@@ -371,6 +379,7 @@ namespace Zavala.UI
                 bool visible = CardsUtility.GetUnlockedOptions(cards, box.PolicyType).Count > 0;
                 box.gameObject.SetActive(visible);
             }
+            UpdatePolicyBoxTexts();
         }
 
         #endregion // System Handlers
@@ -462,6 +471,7 @@ namespace Zavala.UI
                     );
                 */
             }
+            UpdatePolicyBoxTexts();
         }
 
         private IEnumerator ReceiptAppearanceTransition(bool appearing)

@@ -126,10 +126,10 @@ With low sales tax, you'll gain $1 with every purchase of any good.
 High Tax
 
 :: SalesTaxPolicy.high.hint
-With high sales tax, you'll gain $3 with every purchase of any good.
+With high sales tax, you'll gain $3 with every purchase of any good. But it can upset farmers and slow production!
 
 :: SalesTaxPolicy.alt
 Subsidy
 
 :: SalesTaxPolicy.alt.hint
-The subsidy costs you $2 for every purchase except for fertilzer from Phos4Us. Subsidies encourage buyers by lowering their costs.
+A sales subsidy makes farmers happy by lowering their costs. But it costs SAGA $2 for every purchase!

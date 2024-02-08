@@ -165,7 +165,7 @@ MonoBehaviour:
     MFertilizer: 0
     DFertilizer: 0
     Grain: 0
-    Milk: 1
+    Milk: 0
   Displays: []
   StorageExtensionReq: {fileID: 0}
   StorageExtensionStore: {fileID: 0}
@@ -343,9 +343,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StressCap: 8
-  m_BadThreshold: 8
-  m_OkayThreshold: 4
-  m_GreatThreshold: 0
+  BadThreshold: 8
+  OkayThreshold: 4
+  GreatThreshold: 0
   m_StartingState: 1
   StressDelta: 1
 --- !u!1 &5417570481552996235

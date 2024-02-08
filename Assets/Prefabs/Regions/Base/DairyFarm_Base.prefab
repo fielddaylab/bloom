@@ -332,11 +332,11 @@ MonoBehaviour:
     Grain: 8
     Milk: 8
   Current:
-    Manure: 0
+    Manure: 1
     MFertilizer: 0
     DFertilizer: 0
-    Grain: 1
-    Milk: 0
+    Grain: 0
+    Milk: 1
   Displays:
   - {fileID: 1421884348082835421}
   - {fileID: 2224641303006806999}

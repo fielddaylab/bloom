@@ -12,7 +12,7 @@ namespace Zavala {
         }
 
         public ref TValue this[TKey key] {
-            get { return ref Values[Unsafe.FastReinterpret<TKey, int>(key)]; } 
+            get { return ref Values[Enums.ToInt(key)]; } 
         }
 
         public ref TValue this[int index] {

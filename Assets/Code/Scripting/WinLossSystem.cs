@@ -15,7 +15,8 @@ namespace Zavala.Scripting {
     public class WinLossSystem : SharedStateSystemBehaviour<WinLossState, SimGridState, RegionUnlockState, BuildToolState> {
         public override bool HasWork() {
             if (base.HasWork()) {
-                return Game.SharedState.Get<TutorialState>().CurrState >= TutorialState.State.ActiveSim;
+                //return Game.SharedState.Get<TutorialState>().CurrState >= TutorialState.State.ActiveSim;
+                return true; 
             }
             return false;
         }
