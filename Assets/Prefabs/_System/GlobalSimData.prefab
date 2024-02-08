@@ -988,7 +988,7 @@ MonoBehaviour:
   - Region: 0
     IndependentEndConditions:
     - Type: 0
-      BudgetBelow: 15
+      BudgetBelow: 20
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
@@ -1035,7 +1035,7 @@ MonoBehaviour:
   - Region: 1
     IndependentEndConditions:
     - Type: 0
-      BudgetBelow: 20
+      BudgetBelow: 25
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
@@ -1082,7 +1082,7 @@ MonoBehaviour:
   - Region: 2
     IndependentEndConditions:
     - Type: 0
-      BudgetBelow: 15
+      BudgetBelow: 20
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
@@ -1129,7 +1129,7 @@ MonoBehaviour:
   - Region: 3
     IndependentEndConditions:
     - Type: 0
-      BudgetBelow: 20
+      BudgetBelow: 25
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
@@ -1176,7 +1176,7 @@ MonoBehaviour:
   - Region: 4
     IndependentEndConditions:
     - Type: 0
-      BudgetBelow: 15
+      BudgetBelow: 25
       CheckFarmsUnconnected: 1
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0

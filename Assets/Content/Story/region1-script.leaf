@@ -10,16 +10,18 @@ $call PauseAlertType("ExcessRunoff")
 
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
-    $call CutsceneAllImages(0.5)
+    $call CutsceneAllImages(0.3)
     You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
-	$call CutsceneAllImages(0.5)
+	$call CutsceneAllImages(0.3)
 	This county is young. It's your job as SAGA director to help them grow...
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
-	$call CutsceneAllImages(0.5)
-	If you fail, they will succumb to ruin. Cities will empty; people will starve; the land and the waterways will be become desolate.
+	$call CutsceneNextImage()
+	And protect them from threats. 
+    $call CutsceneAllImages(0.3)
+    Some speak of a terrible <b>green tide</b> that brings ruin in its wake...
 	$call CutscenePrepareImages("intro/frame4-1.png", "intro/frame4-2.png", "intro/frame4-3.png")
-	$call CutsceneAllImages(0.5)
+	$call CutsceneAllImages(0.3)
 	Your first assignment is <i>Knoll County</i>. You will meet two Advisors to help you on your way...
 $call CutsceneEnd()
 
@@ -58,6 +60,8 @@ $call FocusHighlightOn("ShopButton1")
 @trigger BlueprintModeExited
 @conditions     intro:tutorialComplete = false, intro:roadBuilt = false
 @cutscene
+$call FocusClear()
+$call Wait(3)
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEconHill}      Open <b>Build Mode</b>.
 
@@ -70,7 +74,8 @@ $call FocusClear()
 {@advisorEconHill}      Each road segment costs $5. 
 {@advisorEconHill}      You will see a running total of your costs as you build.
 {@advisorEcolHill}      You can't build over any <b>red tiles</b>. Those are protected areas!
-{@advisorEconHill}      Build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
+{@advisorEconHill}      The trade of <b>Grain</b> and <b>Milk</b> will form the core of our economy.
+{@advisorEconHill}      First, build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
 $call PanToBuilding("region1_grain1", -1)
 $call ShowAnimatedTutorial("ClickDragTutorial")
 
@@ -131,7 +136,8 @@ $if intro:farmsConnected
     {local @urbanite}       Woohoo! I'm gonna eat <i>so much</i> cereal now.
     $branch .farmsAndCitiesConnected
 $else
-    // Step 4: Connect dairy and grain
+    // connected city and dairy before dairy and grain
+    {@advisorEconHill}      Erm, sure! We can start here.
     {local @cafoFarmer}     Great, I have a buyer for <b>Milk</b>!
     {local @cafoFarmer}     But my cows gotta eat <b>Grain</b> to make <b>Milk</b>.
     {@advisorEconHill}      Good point.
@@ -338,6 +344,27 @@ $call UnlockCards(RunoffPolicy)
 {@advisorEcolHill}      What do you think, boss?
 $call ForcePolicyInstant("Ecology")
 
+
+:: firstManureSold
+@trigger        ManureSold
+@conditions     alertRegion == 1
+@cutscene
+@once
+$call PanToBuilding("region1_cafo1", -0.5)
+{@advisorEcolHill}      Aha!
+{@advisorEcolHill}      Look, Bertram just sold manure! The Runoff Fine is working!
+{@advisorEconHill}      Could this be activating a <i>Fertilizer Market?</i> How exhilirating!
+{@cafoHill}             Uh... not to be a downer, but..
+$call OpenInfoPopup("region1_cafo1")
+{@cafoHill}             I'm only selling this stuff to avoid your <b>Runoff Fine.</b>
+{@cafoHill}             I'm still losing money on the <b>shipping costs!</b>
+{@cafoHill}             I might have to <b>slow down production</b> if this keeps up.
+{@advisorEconHill}      Ah...
+{@advisorEcolHill}      Well, we still gotta prevent runoff.
+{@advisorEcolHill}      Maybe there's a way of <b>lowering</b> shipping costs?
+$call CloseInfoPopup()
+{@advisorEconHill}      Hmm... I'll think on it.
+
 :: genericRunoff
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered, isFromGrainFarm == false
@@ -384,7 +411,8 @@ $call CutsceneBegin()
 	Whoever is to blame, our cities need milk and clean water. You - and SAGA - will need to take action.
 $call CutsceneEnd()
 {@advisorEcolHill}    When there's enough <b>phosphorus</b> in the water, <b>Algae</b> begins to take over.
-{@advisorEcolHill}    It can take up the nutrients that other organisms need, and even produce toxins.
+{@advisorEcolHill}    It takes up the nutrients that other organisms need, and can even produce toxins.
+{@advisorEcolHill}    Our <b>City</b> will become stressed if there are blooms nearby!
 {@advisorEcolHill}    Some algae blooms are <b>unavoidable...</b>
 {@advisorEcolHill}    But we can limit them if we <b>prevent phosphorus runoff!</b>
 {@advisorEcolHill}    I'll keep an eye out for any excess runoff...

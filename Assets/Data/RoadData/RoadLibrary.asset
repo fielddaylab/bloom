@@ -228,7 +228,7 @@ MonoBehaviour:
     Scale: 1.0290698
     FlipX: 0
   - Mesh: {fileID: -9021107288864181710, guid: 10062f6b1a26696409de55f713bbd5cc, type: 3}
-    Rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
     BridgeRotation: {x: 0, y: 0, z: 0}
     BridgeMesh: {fileID: 0}
     Scale: 1.0290698

@@ -61,7 +61,8 @@ namespace Zavala.Scripting {
                             foreach (AutoAlertCondition autoTrig in conditions) {
                                 Log.Msg("[EventActorUtility] Checking for AutoTriggerAlert...");
                                 if ((autoTrig.Alert == EventActorAlertType.None || autoTrig.Alert == queuedEvent.Alert) &&
-                                    (autoTrig.RegionIndex == -1 || autoTrig.RegionIndex == queuedEvent.RegionIndex.Value)) {
+                                    (autoTrig.RegionIndex == -1 || autoTrig.RegionIndex == queuedEvent.RegionIndex.Value) &&
+                                    (autoTrig.CafosOnly == false || (queuedEvent.SecondArg.Id == "isFromGrainFarm" && queuedEvent.SecondArg.Value == false))) {
                                     // node.QueuedToAlert = true;
                                     Log.Msg("[EventActorUtility] AutoTriggerAlert ACTIVATED");
                                     //EventActorUtility.TriggerActorAlert(component);

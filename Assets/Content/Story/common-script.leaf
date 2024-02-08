@@ -9,21 +9,21 @@
 @trigger        PolicySet
 @conditions     policyIndex == 0, policyForced == true
 @cutscene
-$Wait(2.0)
+$call Wait(1.0)
 $if local:policyType == "SalesTaxPolicy"
     {local @advisorEcon}    Oh dear.
-    {local @advisorEcon}    The sales subsidy here is costing too much. The county is out of money. 
+    {local @advisorEcon}    The <b>Sales Subsidy</b> in {alertRegionName} is costing too much. The county is out of money. 
     {local @advisorEcon}    I must set it to none for now.
 $elseif local:policyType == "ImportTaxPolicy"
     {local @advisorEcon}    Oh dear.
-    {local @advisorEcon}    The import subsidy here is costing too much. The county is broke. 
+    {local @advisorEcon}    The <b>Import Subsidy</b> in {alertRegionName} is costing too much. The county is broke. 
     {local @advisorEcon}    I must set it to none for now.
 $elseif local:policyType == "SkimmingPolicy"
     {local @advisorEcol}    Jeepers!
-    {local @advisorEcol}    Our lake cleanup policy is costing too much. The county budget has run dry!
+    {local @advisorEcol}    The lake cleanup policy in {alertRegionName} costing too much. The county budget has run dry!
     {local @advisorEcol}    I'll have to set it to none for now.
 $endif
-{local @advisorEcon}    I recommend you implement a tax so we can get some funding.
+{local @advisorEcon}    I recommend you implement a <b>Sales Tax</b> so SAGA can get some funding.
 
 
 :: policySet
@@ -117,11 +117,11 @@ $endif
 @conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == true
 {local @advisorEcol}    Runoff from a grain farm...
 {local @advisorEcol}    All fertilizer causes <i>some</i> runoff... 
-{local @advisorEcol}    But mineral fertilizer from Phos4Us tends to be overapplied.
+{local @advisorEcol}    But <b>mineral fertilizer</b> from Phos4Us tends to be overapplied.
 {local @grainFarmer}    It's the cheapest option I've got!
 {local @advisorEcol}    Maybe we can find a manure seller nearby.
 $if global:builtDigester
-    {local @advisorEcol}Or better yet, some digested fertilizer!
+    {local @advisorEcol} Or better yet, some digested fertilizer!
 $endif
 
 :: sellAtLossCafoGeneric
@@ -203,34 +203,41 @@ $call ActivateSim()
 @trigger        GameFailed
 @conditions     FailureIsEnabled()
 @cutscene
-$if FailureIsEnabled()
-// $set local:regionName = GetRegionName($local:alertRegion)
-{local @advisorEcon}    I have bad news... you've failed.
+//$if FailureIsEnabled()
+{local @advisorEcon}    I have bad news... 
+{local @advisorEcon}    We have failed {alertRegionName}.
+$call CutsceneBegin()
 $if local:endType == "CityFailed"
-    {local @urbanite}       The city here was stressed too long...
-    {local @urbanite}       They succumbed to the milk riots and demanded your resignation.
+	$call CutscenePrepareImages("fail/city-1.png", "fail/city-2.png", "fail/city-3.png")
+	$call CutsceneNextImage()
+    The city in {alertRegionName} was stressed too long...
+    $call CutsceneNextImage()
+    The algae blooms and milk shortages were too much.
 $elseif local:endType == "TooManyBlooms"
-    {local @advisorEcol}    The waterways here have become choked with algae.
-    {local @advisorEcol}    Our ecosystem couldn't recover...
+	$call CutscenePrepareImages("fail/algae-1.png", "fail/algae-2.png", "fail/algae-3.png")
+	$call CutsceneNextImage()
+    The waterways in {alertRegionName} have become choked with algae.
+    $call CutsceneNextImage()
+    The local ecosystem is heavily disrupted...
 $elseif local:endType == "OutOfMoney"
-    {local @advisorEcon}    SAGA is low on funds here with no way to earn them back...
-    {local @advisorEcon}    Make sure to connect Dairy Farms to the Grain Farms immediately!
-    {local @advisorEcon}    Their trade forms the core of every county's economy.
-
+	$call CutscenePrepareImages("fail/algae-1.png", "fail/algae-2.png", "fail/algae-3.png")
+	$call CutsceneNextImage()
+    SAGA is low on funds in {alertRegionName} with no way to earn them back...
+    $call CutsceneNextImage()
+    Farms were left disconnected and unable to trade.
 $elseif local:endType == "Succeeded"
     ERROR! "Succeeded" should not be the endType of a failed game.
 $endif
-$call CutsceneBegin()
-	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
-	$call CutsceneAllImages(0.5)
-	Your efforts were not enough. You have been replaced as SAGA director. Perhaps your replacement will fare better...
+    $call CutsceneNextImage()
+	Your efforts were not enough. You have been replaced as SAGA director. 
+    Perhaps your replacement will fare better...
     $call CutsceneClearImages()
     Game over!
     Loading most recent save...
     // $call EndGame()
 // {@advisorEconUrban}      Heh heh, you would've failed here, but failure was disabled. Right on.
 // {@advisorEconUrban}      {$local:endType} in region {$local:alertRegion}
-$endif
+// $endif
 
 :: GameCompleted
 @trigger       GameCompleted

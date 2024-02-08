@@ -6,7 +6,8 @@
 @queued
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region2_city1", region2.forestUnlocked)
-{wait 5}  // TODO: don't open dialogue box when the line is just {wait}
+$call AddAutoAlertCondition("ExcessRunoff", 2, true)
+$call Wait(5)  // TODO: don't open dialogue box when the line is just {wait}
 $if intro:openedForestAlert == false
     $call FocusHighlightOn("GlobalAlert")
     {@advisorEconHill}      It would appear something needs your attention!
@@ -68,7 +69,6 @@ $endif
 {@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
 {@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
 // $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
-$call AddAutoAlertCondition("ExcessRunoff", 2)
 
 
 :: runoffBranch
@@ -84,6 +84,7 @@ $endif
 
 :: unlockStorage
 @conditions     global:runoffDiscovered
+@cutscene
 @once
 $call Wait(0.5)
 {@cafoForest}     Hmm... This sitting manure leaches into the water table faster than it's used.

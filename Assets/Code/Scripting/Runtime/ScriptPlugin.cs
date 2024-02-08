@@ -29,6 +29,7 @@ namespace FieldDay.Scripting {
 
             LeafUtils.ConfigureDefaultParsers(m_TagParseConfig, this, null);
             m_TagParseConfig.AddReplace("local", ReplaceLocalIdOf);
+            m_TagParseConfig.AddReplace("alertRegionName", AlertRegionToName);
             // TODO: add replace "alert" to use local:alertRegion?
             m_TagParseConfig.AddEvent("viewpoliciesnext", "ViewPolicies");
 
@@ -179,6 +180,16 @@ namespace FieldDay.Scripting {
 
             Debug.LogError("[ScriptPlugin] No local id could be found for " + inTag.Data.Substring(1));
             return inTag.Data.ToString();
+        }
+
+        static private string AlertRegionToName(TagData inTag, object inContext) {
+            int regionIdx = -1;
+            if (LeafEvalContext.FromObject(inContext).Table.TryLookup("alertRegion", out Variant region)) {
+                regionIdx = region.AsInt() - 1; // 1-indexed to 0-indexed
+            } else {
+                regionIdx = int.Parse(inTag.ToString());
+            }
+            return RegionUtility.GetNameString(regionIdx);
         }
     }
 }
