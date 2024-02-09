@@ -140,26 +140,27 @@ namespace Zavala.Economy
                     m_SupplierOfferWorkList.Clear();
                     m_SupplierOfferMap[requester].CopyTo(m_SupplierOfferWorkList);
 
-                    // SORT SELLER LISTS BY FAMILIARITY
-                    m_SupplierOfferWorkList.Sort((a, b) =>
-                    {
-                        return b.FamiliarityScore - a.FamiliarityScore;
-                    });
+                    //// SORT SELLER LISTS BY FAMILIARITY
+                    //m_SupplierOfferWorkList.Sort((a, b) =>
+                    //{
+                    //    return b.FamiliarityScore - a.FamiliarityScore;
+                    //});
 
                     // IF ANY SELLER MATCHES THE BEST PRIORITY INDEX...
                     bool matchFound = false;
 
                     // bool offerInMarket = false;
-                    foreach (var supplierOffer in m_SupplierOfferWorkList)
+                    for(int supplierOfferIdx = 0; supplierOfferIdx < m_SupplierOfferWorkList.Count; supplierOfferIdx++)
                     {
+                        var supplierOffer = m_SupplierOfferWorkList[supplierOfferIdx];
                         if (supplierOffer.Supplier == requester.Priorities.PrioritizedSuppliers[requester.BestPriorityIndex[marketIndex]].Target)
                         {
                             matchFound = true;
 
                             // ...FINALIZE SALE AND FIND NEW HIGHEST PRIORITY BUYERS FOR OTHER SELLERS
                             FinalizeSale(marketData, tutorial, config, supplierOffer.Supplier, supplierOffer.FoundRequest, supplierOffer, marketIndex);
-                            m_RequestWorkList.Remove(supplierOffer.FoundRequest);
-                            m_SupplierOfferWorkList.Remove(supplierOffer);
+                            m_RequestWorkList.FastRemove(supplierOffer.FoundRequest);
+                            m_SupplierOfferWorkList.FastRemoveAt(supplierOfferIdx);
 
                             break;
                         }
@@ -478,7 +479,7 @@ namespace Zavala.Economy
                 var adjustments = config.UserAdjustmentsPerRegion[requester.Position.RegionIndex];
 
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
-                List<ResourceId> allResources = ResourceUtility.AllResources(overlap);
+                var allResources = ResourceUtility.AllResources(overlap);
 
                 // Only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.
@@ -535,8 +536,9 @@ namespace Zavala.Economy
                 // TODO: price block should reflect market prices, not individual resource prices
                 if (!requester.PriceNegotiator.AcceptsAnyPrice && (requester.PriceNegotiator.BuyPriceBlock[MarketUtility.ResourceIdToMarketIndex(primary)] < costToBuyer))
                 {
-                    foreach (var currResource in allResources)
+                    foreach(var currResource in allResources)
                     {
+                        //Log.Msg(requester.name + currResource);
                         // Mark that the sellers/buyers would have had a match here if there prices were more reasonable
                         requester.PriceNegotiator.OfferedRecord[MarketUtility.ResourceIdToMarketIndex(currResource)] = supplier.PriceNegotiator.FixedSellOffer ? (int)NegotiableCode.NON_NEGOTIABLE : (int)NegotiableCode.NEGOTIABLE;
 
@@ -697,7 +699,7 @@ namespace Zavala.Economy
                 var adjustments = config.UserAdjustmentsPerRegion[requester.Position.RegionIndex]; // NOTE: not 1:1 conversion from UpdateSellerPriority
 
                 ResourceId primary = ResourceUtility.FirstResource(overlap);
-                List<ResourceId> allResources = ResourceUtility.AllResources(overlap);
+                //List<ResourceId> allResources = ResourceUtility.AllResources(overlap);
 
                 // Only apply import tax if shipping across regions. Then use import tax of purchaser
                 // NOTE: the profit and tax revenues calculated below are on a per-unit basis. Needs to be multiplied by quantity when the actually sale takes place.

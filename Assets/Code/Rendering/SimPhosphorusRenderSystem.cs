@@ -12,15 +12,17 @@ using Zavala.Sim;
 namespace Zavala.World {
 
     [SysUpdate(GameLoopPhase.LateUpdate)]
-    public sealed class SimPhosphorusRenderSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, SimPhosphorusState> {
+    public sealed class SimPhosphorusRenderSystem : SharedStateSystemBehaviour<SimWorldState, SimGridState, SimPhosphorusState, SimWorldCamera> {
         #region Inspector
 
         public Mesh PhosphorusMesh;
+        public Mesh PhosphorusMeshLow;
         public Material PhosphorusMaterial;
 
         public float PhosphorusLerpSpeed = 7;
         public float PhosphorusSnapRange = 0.08f;
         public float PhospohorusRenderSize = 0.1f;
+        public float PhosphorusLODSwapZ = -22;
 
         #endregion // Inspector
 
@@ -37,13 +39,13 @@ namespace Zavala.World {
             float scaledTime = SimTimeUtility.AdjustedDeltaTime(deltaTime, ZavalaGame.SimTime);
             if (scaledTime > 0) {
                 if (!shouldRender) {
-                    scaledTime *= 2;
+                    scaledTime *= 4;
                 }
                 PerformMovement(m_StateA, scaledTime);
             }
 
             if (shouldRender) {
-                PerformRendering(m_StateA);
+                PerformRendering(m_StateA, m_StateD.Camera);
             }
         }
 
@@ -81,15 +83,18 @@ namespace Zavala.World {
 
         #region Rendering
 
-        private unsafe void PerformRendering(SimWorldState component) {
+        private unsafe void PerformRendering(SimWorldState component, Camera camera) {
             DefaultInstancingParams* paramBuffer = stackalloc DefaultInstancingParams[512];
             RenderParams renderParams = new RenderParams(PhosphorusMaterial);
-            var instanceHelper = new InstancingHelper<DefaultInstancingParams>(paramBuffer, 512, renderParams, PhosphorusMesh);
+            Transform cameraTransform = camera.transform;
+            Mesh mesh = cameraTransform.localPosition.z < PhosphorusLODSwapZ ? PhosphorusMeshLow : PhosphorusMesh;
+            var instanceHelper = new InstancingHelper<DefaultInstancingParams>(paramBuffer, 512, renderParams, mesh);
+            Matrix4x4 baseMatrix = Matrix4x4.TRS(default, Quaternion.LookRotation(-cameraTransform.forward, Vector3.up), PhospohorusRenderSize * Vector3.one);
 
             for (int i = 0; i < component.RegionCount; i++) {
                 bool isVisible = CullingHelper.IsRegionVisible(component.RegionCullingMask, i);
                 if (isVisible) {
-                    RenderPhosphorusForRegion(component.Phosphorus[i], ref instanceHelper);
+                    RenderPhosphorusForRegion(component.Phosphorus[i], baseMatrix, ref instanceHelper);
                 }
             }
 
@@ -97,18 +102,22 @@ namespace Zavala.World {
             instanceHelper.Dispose();
         }
 
-        private void RenderPhosphorusForRegion(PhosphorusRenderState renderState, ref InstancingHelper<DefaultInstancingParams> instancing) {
-            Vector3 size = PhospohorusRenderSize * Vector3.one;
-
+        private void RenderPhosphorusForRegion(PhosphorusRenderState renderState, Matrix4x4 mat, ref InstancingHelper<DefaultInstancingParams> instancing) {
             DefaultInstancingParams instParams = default;
             foreach (var inst in renderState.StationaryInstances) {
-                instParams.objectToWorld = Matrix4x4.TRS(inst.Position, Quaternion.identity, size);
-                instancing.Queue(instParams);
+                mat.m03 = inst.Position.x;
+                mat.m13 = inst.Position.y;
+                mat.m23 = inst.Position.z;
+                instParams.objectToWorld = mat;
+                instancing.Queue(ref instParams);
             }
 
             foreach (var inst in renderState.AnimatingInstances) {
-                instParams.objectToWorld = Matrix4x4.TRS(inst.Position, Quaternion.identity, size);
-                instancing.Queue(instParams);
+                mat.m03 = inst.Position.x;
+                mat.m13 = inst.Position.y;
+                mat.m23 = inst.Position.z;
+                instParams.objectToWorld = mat;
+                instancing.Queue(ref instParams);
             }
         }
 

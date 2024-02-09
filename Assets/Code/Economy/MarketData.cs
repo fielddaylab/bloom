@@ -141,8 +141,6 @@ namespace Zavala.Economy
         public ResourceMask ResourceMask;
         public MarketRequestInfo FoundRequest;
 
-        public ushort FamiliarityScore;
-
         public MarketSupplierOffer(ResourceSupplier supplier, int totalCost, int baseProfit, int relativeGain, GeneratedTaxRevenue baseRevenue, ushort proxyIdx, RoadPathSummary path, MarketRequestInfo found, ResourceMask resourceMask, ushort familiarity)
         {
             Supplier = supplier;
@@ -156,8 +154,6 @@ namespace Zavala.Economy
 
             FoundRequest = found;
             ResourceMask = resourceMask;
-
-            FamiliarityScore = familiarity;
         }
     }
 
@@ -190,8 +186,9 @@ namespace Zavala.Economy
         public bool ExternalSupplier;
     }
 
-    public struct MarketRequestInfo
+    public struct MarketRequestInfo : IEquatable<MarketRequestInfo>
     {
+        public uint Id;
         public ResourceRequester Requester;
         public ResourceBlock Requested;
         public int Age;
@@ -200,6 +197,12 @@ namespace Zavala.Economy
             Requester = requester;
             Requested = request;
             Age = 0;
+            Id = Unsafe.CombineHash32(Unsafe.CombineHash32(Unsafe.Hash32(request), requester.GetInstanceID()), Frame.Timestamp());
+        }
+
+        public bool Equals(MarketRequestInfo other)
+        {
+            return Id == other.Id;
         }
     }
 

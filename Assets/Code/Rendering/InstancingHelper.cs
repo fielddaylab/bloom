@@ -39,6 +39,16 @@ namespace Zavala {
             m_QueuedElements++;
         }
 
+        public void Queue(ref T data) {
+            if (IsFull()) {
+                Submit();
+            }
+
+            Assert.True(m_QueuedElements < m_MaxElements);
+            *m_WriteHead++ = data;
+            m_QueuedElements++;
+        }
+
         public void Submit() {
             if (m_QueuedElements > 0) {
                 Graphics.RenderMeshInstanced<T>(m_RenderParams, m_Mesh, m_SubmeshIndex, Unsafe.NativeArray(m_DataHead, m_QueuedElements), m_QueuedElements);

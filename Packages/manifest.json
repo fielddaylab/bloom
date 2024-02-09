@@ -5,8 +5,9 @@
     "com.beauprime.beauroutine": "0.11.1",
     "com.beauprime.beauroutine-extensions": "0.1.2",
     "com.beauprime.beauroutine-spline": "0.1.1",
-    "com.beauprime.beauutil": "0.9.9",
+    "com.beauprime.beauutil": "0.10.0",
     "com.beauprime.leaf": "0.3.12",
+    "com.beauprime.tinyil-mono": "0.1.1",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.feature.development": "1.0.1",
     "com.unity.ide.visualstudio": "2.0.22",
@@ -59,6 +60,7 @@
         "com.beauprime.beauroutine-spline",
         "com.beauprime.beauutil",
         "com.beauprime.leaf",
+        "com.beauprime.tinyil-mono",
         "com.openupm"
       ]
     }

@@ -12,6 +12,6 @@ public class DialoguePortrait : MonoBehaviour {
         Outline.gameObject.SetActive(show);
         Outline.color = outlineColor;
         Shadow.gameObject.SetActive(show);
-        transform.SetRotation(show ? DegreeTilt : 0, Axis.Z);
+        transform.SetRotation(show ? DegreeTilt : 0, Axis.Z, Space.Self);
     }
 }

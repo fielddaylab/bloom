@@ -140,7 +140,7 @@ namespace FieldDay.Scripting {
             return actor;
         }
 
-        static public void ParseToTag(ref TagString tagString, StringSlice content, object context = null) {
+        static public void ParseToTag(ref TagString tagString, StringSlice content, LeafEvalContext context = default) {
             TagStringParser parser = Runtime.ParserPool.Alloc();
             parser.Parse(ref tagString, content, context);
             Runtime.ParserPool.Free(parser);

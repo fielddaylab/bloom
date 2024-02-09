@@ -328,7 +328,7 @@ namespace Zavala.Economy {
                 && source.DFertilizer + production.DFertilizer <= capacity.DFertilizer
                 && source.Grain + production.Grain <= capacity.Grain
                 && source.Milk + production.Milk <= capacity.Milk;
-            Log.Msg("[ResourceUtility] CanAddFull {0} + {1} < {2}? {3}", source, production, capacity, eval);
+            //Log.Msg("[ResourceUtility] CanAddFull {0} + {1} < {2}? {3}", source, production, capacity, eval);
             return eval;
         }
 
@@ -626,20 +626,9 @@ namespace Zavala.Economy {
         /// <summary>
         /// Returns all ResourceIds for the given mask.
         /// </summary
-        static public List<ResourceId> AllResources(ResourceMask mask)
+        static public EnumBitEnumerator<ResourceId> AllResources(ResourceMask mask)
         {
-            List<ResourceId> resources = new List<ResourceId>();
-
-            uint maskCasted = (uint)mask;
-            for (int i = 0; i < Count; i++)
-            {
-                if ((maskCasted & (1u << i)) != 0)
-                {
-                    resources.Add((ResourceId)i);
-                }
-            }
-
-            return resources;
+            return Bits.Enumerate<ResourceMask, ResourceId>(mask);
         }
     }
 }

@@ -79,9 +79,9 @@ namespace Zavala {
         public delegate Vector3 RandomTilePositionDelegate(int index, ushort height, in HexGridWorldSpace worldSpace);
 
         static public void PrepareChangeBuffer(PhosphorusChangeBuffer changeBuffer) {
-            changeBuffer.Remove.Sort(PhosphorusTileAddRemove.Sorter.Instance);
-            changeBuffer.Add.Sort(PhosphorusTileAddRemove.Sorter.Instance);
-            changeBuffer.Transfers.Sort(PhosphorusTileTransfer.Sorter.Instance);
+            changeBuffer.Remove.Quicksort(PhosphorusTileAddRemove.Sorter.Instance);
+            changeBuffer.Add.Quicksort(PhosphorusTileAddRemove.Sorter.Instance);
+            changeBuffer.Transfers.Quicksort(PhosphorusTileTransfer.Sorter.Instance);
         }
 
         static public void ProcessChanges(PhosphorusRenderState[] renderStates, int numRenderStates, PhosphorusChangeBuffer changeBuffer, SimBuffer<PhosphorusTileState> currentState, SimBuffer<TerrainTileInfo> terrainInfo, SimBuffer<ushort> heightmap, in HexGridWorldSpace worldSpace, RandomTilePositionDelegate getRandomPos, System.Random randomizer, byte updateIndex) {
@@ -91,8 +91,8 @@ namespace Zavala {
 
             if (hasRemove || hasTransfer) {
                 for(int i = 0; i < numRenderStates; i++) {
-                    renderStates[i].StationaryInstances.Sort(PhosphorusRenderInstanceStatic.SortByIndex.Instance);
-                    renderStates[i].AnimatingInstances.Sort(PhosphorusRenderInstanceAnimated.SortByIndex.Instance);
+                    renderStates[i].StationaryInstances.Quicksort(PhosphorusRenderInstanceStatic.SortByIndex.Instance);
+                    renderStates[i].AnimatingInstances.Quicksort(PhosphorusRenderInstanceAnimated.SortByIndex.Instance);
                 }
 
                 unsafe {

@@ -9,7 +9,7 @@
 @trigger        PolicySet
 @conditions     policyIndex == 0, policyForced == true
 @cutscene
-$Wait(2.0)
+$call Wait(2.0)
 $if local:policyType == "SalesTaxPolicy"
     {local @advisorEcon}    Oh dear.
     {local @advisorEcon}    The sales subsidy here is costing too much. The county is out of money. 
@@ -30,7 +30,7 @@ $endif
 @trigger        PolicySet
 @conditions     policyForced == false
 @cutscene
-$if into:pendingPolicy = true
+$if intro:pendingPolicy = true
     $set intro:pendingPolicy = false
 $endif
 $if local:policyType == "RunoffPolicy"

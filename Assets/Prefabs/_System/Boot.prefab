@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 3575173300138732486}
   - component: {fileID: 3575173300138732487}
   - component: {fileID: 2456052860518681336}
+  - component: {fileID: 101335625714291675}
   m_Layer: 0
   m_Name: Boot
   m_TagString: Untagged
@@ -235,6 +236,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UniqueID: 07b27182-4fb2-465e-a912-e93ebed0a550
   m_WakeUpChildren: 1
+--- !u!114 &101335625714291675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3575173300138732491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f9f75e296baa5498bf192cbf09c503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Capacity: 32
+  m_TweenPool: 32
+  m_DebugMode: 1
+  m_Profiling: 0
+  m_Snapshots: 0
+  m_HandleExceptions: 0
+  m_DefaultPhase: 0
+  m_ThinkUpdateInterval: 0.1
+  m_CustomUpdateInterval: 0.125
+  m_FrameBudget: -1
+  m_AsyncBudgetMin: -1
+  m_AsyncBudgetMax: -1
+  m_ForceSingleThreaded: 1
 --- !u!1 &3575173300628751680
 GameObject:
   m_ObjectHideFlags: 0

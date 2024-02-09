@@ -20,6 +20,7 @@ using EasyAssetStreaming;
 using ScriptableBake;
 using UnityEngine;
 using FieldDay.Scripting;
+using Leaf.Runtime;
 
 namespace Zavala
 {
@@ -190,7 +191,7 @@ namespace Zavala
 #endif // DEVELOPMENT
 
             if (m_LanguagePackage.HasEvents(inKey)) {
-                ScriptUtility.ParseToTag(ref ioTagString, content, inContext);
+                ScriptUtility.ParseToTag(ref ioTagString, content, LeafEvalContext.FromObject(inContext));
             } else {
                 ioTagString.RichText = ioTagString.VisibleText = content;
             }

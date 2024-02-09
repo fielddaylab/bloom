@@ -17,7 +17,7 @@ $endif
 :: forestUnlocked
 @cutscene
 @queued
-@forcePolicy
+@forcePolicy Economy
 // $call Pause()
 $set intro:openedForestAlert = true
 $call FocusClear()

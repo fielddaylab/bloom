@@ -141,11 +141,12 @@ MonoBehaviour:
       Content: High Tax
     - Id: cards.SalesTaxPolicy.high.hint
       Content: With high sales tax, you'll gain $3 with every purchase of any good.
+        But it can upset farmers and slow production!
     - Id: cards.SalesTaxPolicy.alt
       Content: Subsidy
     - Id: cards.SalesTaxPolicy.alt.hint
-      Content: The subsidy costs you $2 for every purchase except for fertilzer from
-        Phos4Us. Subsidies encourage buyers by lowering their costs.
+      Content: A sales subsidy makes farmers happy by lowering their costs. But it
+        costs SAGA $2 for every purchase!
     BasePath: cards
     AllBasePaths:
     - Path: cards
@@ -266,7 +267,7 @@ MonoBehaviour:
     - Id: region.urban.name.long
       Content: Smokestack City
     - Id: region.external.name
-      Content: The Northlands
+      Content: From Afar
     BasePath: region
     AllBasePaths:
     - Path: location

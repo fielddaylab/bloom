@@ -1,16 +1,12 @@
 using FieldDay.Systems;
 using FieldDay;
-using System.Collections.Generic;
 using Zavala.Economy;
 using Zavala.Sim;
 using BeauUtil.Debugger;
 using BeauUtil;
-using System;
-using UnityEngine;
-using JetBrains.Annotations;
-using Zavala.Rendering;
 
-namespace Zavala.Roads {
+namespace Zavala.Roads
+{
     [SysUpdate(GameLoopPhase.Update, 0)]
     public class RoadSystem : SharedStateSystemBehaviour<RoadNetwork, SimGridState>
     {

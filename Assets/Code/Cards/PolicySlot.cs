@@ -142,7 +142,7 @@ namespace Zavala.Cards
 
             for (int i = 0; i < m_DisplayCards.Count; i++) {
                 m_DisplayCards[i].transform.position = this.transform.position;
-                m_DisplayCards[i].transform.SetRotation(0, Axis.Z);
+                m_DisplayCards[i].transform.SetRotation(0, Axis.Z, Space.Self);
             }
             m_HandState = HandState.Hidden;
 

@@ -169,8 +169,10 @@ namespace FieldDay.Scripting {
                 StringHash32 characterId = inTag.Data.Substring(1);
                 ScriptCharacterDB db = Game.SharedState.Get<ScriptCharacterDB>();
 
+                LeafEvalContext context = LeafEvalContext.FromObject(inContext);
+
                 int regionOverride = -1;
-                if (LeafEvalContext.FromObject(inContext).Table.TryLookup("alertRegion", out Variant region)) {
+                if (context.Table.TryLookup("alertRegion", out Variant region)) {
                     regionOverride = region.AsInt() - 1; // 1-indexed to 0-indexed
                 }
                 // TODO: refactor into emitting the character event directly
