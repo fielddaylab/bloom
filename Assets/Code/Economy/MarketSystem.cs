@@ -188,7 +188,7 @@ namespace Zavala.Economy
             #region MarketCycle_Negotiations
 
             // NEGOTIATION PHASE
-            // ProcessNegotiations(tutorial);
+             ProcessNegotiations(tutorial);
 
             #endregion // MarketCycle_Negotations
 
@@ -1044,32 +1044,32 @@ namespace Zavala.Economy
 
         private void ProcessNegotiations(TutorialState tutorial)
         {
-            // NEGOTIATIONS FOR SUPPLIERS
-            foreach (var supplier in m_SupplierWorkList)
-            {
-                if (tutorial.CurrState >= TutorialState.State.ActiveSim)
-                {
-                    if (!supplier.PriceNegotiator.FixedSellOffer)
-                    {
-                        supplier.PostSaleSnapshot = MarketUtility.GetCompleteStorage(supplier);
-                        for (int i = 0; i < (int)ResourceId.COUNT; i++)
-                        {
-                            ResourceId resource = (ResourceId)i;
-                            int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
-                            if (supplier.PreSaleSnapshot[resource] == supplier.PostSaleSnapshot[resource] && (supplier.PreSaleSnapshot[resource] != 0))
-                            {
-                                // None of this resource was sold; add stress price if there were any valid connections to negotiate with
-                                if (supplier.PriceNegotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER)
-                                {
-                                    // Push negotiator and resource type for negotiation system
-                                    PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false, true);
-                                    MarketUtility.QueueNegotiation(neg);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            //// NEGOTIATIONS FOR SUPPLIERS
+            //foreach (var supplier in m_SupplierWorkList)
+            //{
+            //    if (tutorial.CurrState >= TutorialState.State.ActiveSim)
+            //    {
+            //        if (!supplier.PriceNegotiator.FixedSellOffer)
+            //        {
+            //            supplier.PostSaleSnapshot = MarketUtility.GetCompleteStorage(supplier);
+            //            for (int i = 0; i < (int)ResourceId.COUNT; i++)
+            //            {
+            //                ResourceId resource = (ResourceId)i;
+            //                int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
+            //                if (supplier.PreSaleSnapshot[resource] == supplier.PostSaleSnapshot[resource] && (supplier.PreSaleSnapshot[resource] != 0))
+            //                {
+            //                    // None of this resource was sold; add stress price if there were any valid connections to negotiate with
+            //                    if (supplier.PriceNegotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER)
+            //                    {
+            //                        // Push negotiator and resource type for negotiation system
+            //                        PriceNegotiation neg = new PriceNegotiation(supplier.PriceNegotiator, resource, false, true);
+            //                        MarketUtility.QueueNegotiation(neg);
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
 
             // NEGOTIATIONS FOR REQUESTERS
             if (tutorial.CurrState >= TutorialState.State.ActiveSim)
@@ -1084,23 +1084,23 @@ namespace Zavala.Economy
                         ZavalaGame.Events.Dispatch(ResourcePurchaser.Event_PurchaseUnfulfilled, m_RequestWorkList[i].Requester.Position.TileIndex);
                     }
 
-                    // for each actor with one or more requests not fulfilled, add price stress if there were any valid sellers that refused
-                    // only look for better deal if offerer is not a fixed sell offer
-                    if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
-                    {
-                        ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
-                        for (int rIdx = 0; rIdx < (int)ResourceId.COUNT; rIdx++)
-                        {
-                            ResourceId resource = (ResourceId)rIdx;
-                            int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
-                            if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[marketIndex] != 0) && (negotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER))
-                            {
-                                // Push negotiator and resource type for negotiation system
-                                PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true, false);
-                                MarketUtility.QueueNegotiation(neg);
-                            }
-                        }
-                    }
+                    //// for each actor with one or more requests not fulfilled, add price stress if there were any valid sellers that refused
+                    //// only look for better deal if offerer is not a fixed sell offer
+                    //if (!m_RequestWorkList[i].Requester.PriceNegotiator.FixedBuyOffer)
+                    //{
+                    //    ref ResourcePriceNegotiator negotiator = ref m_RequestWorkList[i].Requester.PriceNegotiator;
+                    //    for (int rIdx = 0; rIdx < (int)ResourceId.COUNT; rIdx++)
+                    //    {
+                    //        ResourceId resource = (ResourceId)rIdx;
+                    //        int marketIndex = MarketUtility.ResourceIdToMarketIndex(resource);
+                    //        if (((negotiator.OfferedRecord & m_RequestWorkList[i].Requester.RequestMask)[marketIndex] != 0) && (negotiator.OfferedRecord[marketIndex] > (int)NegotiableCode.NO_OFFER))
+                    //        {
+                    //            // Push negotiator and resource type for negotiation system
+                    //            PriceNegotiation neg = new PriceNegotiation(negotiator, resource, true, false);
+                    //            MarketUtility.QueueNegotiation(neg);
+                    //        }
+                    //    }
+                    //}
                 }
             }
         }
