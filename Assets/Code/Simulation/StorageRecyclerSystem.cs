@@ -26,7 +26,7 @@ namespace Zavala.Sim {
                 storage.Current = default;
                 ResourceStorageUtility.RefreshStorageDisplays(storage);
                 ResourceStorageUtility.RefreshStorageDisplays(recycler.ReturnTo);
-                Log.Msg("[Sitting] Sitting storage returned! Left in SITTING: {0}", storage.Current.Manure);
+                // Log.Msg("[Sitting] Sitting storage returned! Left in SITTING: {0}", storage.Current.Manure);
             }
             else {
                 // TODO: Handle too much letting run off to return

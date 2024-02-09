@@ -1,4 +1,5 @@
 using BeauUtil;
+using BeauUtil.Variants;
 using FieldDay;
 using FieldDay.SharedState;
 using System;
@@ -12,6 +13,7 @@ namespace Zavala.Alerts {
     public struct AutoAlertCondition {
         public EventActorAlertType Alert;
         public int RegionIndex;
+        public bool CafosOnly; // for the specific case of auto-triggering CAFO runoff but not grain farm
     }
     public class AlertState : SharedStateComponent, IRegistrationCallbacks {
         // would this fit inside another shared state component?

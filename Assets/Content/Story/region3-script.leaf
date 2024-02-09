@@ -17,6 +17,9 @@ $call PanToBuilding("region3_city1")
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom", 2) // for unlocking PIPS
 $call AddRegionAgeTrigger(3, 20) // for unlocking IMPORT TAX
+$if global:storageUnlocked = false
+    $call SendGlobalAlertForNode("region2_cafo1", region2.unlockStorage)
+$endif
 // $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -41,7 +44,7 @@ $else
     {local @advisorEcon}    Once we have some economic policies you can see me here.
 $endif
 
-:: bloomGeneric
+:: bloomGeneric 
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 3, global:bloomDiscovered
 // @forcePolicy    Ecology
@@ -61,13 +64,11 @@ $call ForcePolicyInstant("Ecology")
 // $call Unpause()
 
 :: queueUnlockImportTax
-@trigger        RegionReachedAge
+@trigger        RegionReachedAge // RegionAge 20 after region opens
 @conditions     regionId == 3
 @once
 $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
 
-// triggered by opening runoff in region 2 after region 3 has been opened
-// feedback: use a farmer instead
 :: unlockImportTax
 @cutscene 
 @queued     
@@ -91,21 +92,24 @@ $call ForcePolicyInstant("Economy")
 // $call Unpause()
 
 :: queueUnlockMarketView
-@trigger        RegionReachedAge
-@conditions     regionId == 3, global:importUnlocked, AdvisorModuleIsUnlocked("Ecology")
+@trigger        RegionReachedAge // RegionAgeDelta 20 after PIPS unlocked
+@conditions     regionId == 3, global:importUnlocked, global:pipsUnlocked
 @cutscene
 @once
 $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
 
 :: unlockTradeGraphs
-@cutscene
+@cutscene // RegionAgeDelta 20 after PIPS unlocked
 @queued
 @once
+$set global:tradeGraphsUnlocked = true
 {@advisorEconPrairie}   Howdy! Hope I'm not interrupting anything important.
 {@advisorEconPrairie}   I was inspired by Winston's PIP system...
 {@advisorEconPrairie}   So I whipped up something of an economic equivalent!
 $call UnlockAdvisorModule("Economy")
 {@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph.
+{@advisorEconPrairie}   It shows which types of phosphorus fertilizer are being used.
 $call ForceAdvisorModule("Economy")
-{@advisorEconPrairie}   We'll want to replace red Phos4Us to keep extra nutrients out!
+{@advisorEconPrairie}   We'll want to replace red Phos4Us to keep those extra nutrients out!
+{@advisorEconPrairie}   You can click <b>Economy View</b> to check it any time.
 // $call Unpause()

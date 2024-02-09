@@ -328,7 +328,7 @@ namespace Zavala.Economy {
                 && source.DFertilizer + production.DFertilizer <= capacity.DFertilizer
                 && source.Grain + production.Grain <= capacity.Grain
                 && source.Milk + production.Milk <= capacity.Milk;
-            //Log.Msg("[ResourceUtility] CanAddFull {0} + {1} < {2}? {3}", source, production, capacity, eval);
+            // Log.Msg("[ResourceUtility] CanAddFull {0} + {1} < {2}? {3}", source, production, capacity, eval);
             return eval;
         }
 

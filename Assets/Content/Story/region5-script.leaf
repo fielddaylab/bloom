@@ -17,7 +17,7 @@ $call CutsceneBegin()
     Smokestack City has heard of the approaching blooms, and SAGA's efforts to stop them.
     $call CutscenePrepareImages("act5/5-2-1.png", "act5/5-2-2.png", "act5/5-2-3.png")
 	$call CutsceneAllImages(0.5)
-    Phos4Us continues to pump phosphorus into their ecosystem. They must be cut off!
+    Phos4Us continues to pump phosphorus into our ecosystem. They must be cut off!
 	$call CutscenePrepareImages("act5/5-3-1.png", "act5/5-3-2.png", "act5/5-3-3.png")
 	$call CutsceneAllImages(0.5)
     Now we have the tools and policies to recycle and ship our own fertilizer. Could we outcompete Phos4Us? 
@@ -26,7 +26,7 @@ $call CutsceneBegin()
     It's a race to the end... We must stem the flow of phosphorus before algae overtakes our cities!
     $call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
 	$call CutsceneAllImages(0.5)
-    The stakes are high... Are you up to the task?
+    The stakes are high... Can we prevent disaster?
 $call CutsceneEnd()
 // $call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()

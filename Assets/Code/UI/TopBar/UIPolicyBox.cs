@@ -28,6 +28,7 @@ namespace Zavala.UI {
         public PolicyType PolicyType;
 
         public Routine PopupRoutine;
+        public Routine FlashRoutine;
 
         private void Start() {
             AdvisorType advisorType = AdvisorType.None;
@@ -48,6 +49,7 @@ namespace Zavala.UI {
         }
 
         private void OnDestroy() {
+            FlashRoutine.Stop();
             PopupRoutine.Stop();
         }
 
@@ -97,13 +99,17 @@ namespace Zavala.UI {
 
         static public void UpdateLevelText(PolicyState policyState, SimGridState grid, UIPolicyBox box)
         {
+            if (!box.gameObject.activeSelf) return;
+
             if (policyState.Policies[grid.CurrRegionIndex].EverSet[(int) box.PolicyType]) {
                 PolicyLevel level = policyState.Policies[grid.CurrRegionIndex].Map[(int) box.PolicyType];
                 box.LevelText.text = Loc.Find("cards." + box.PolicyType.ToString() + "." + level.ToString().ToLower());
+                box.FlashRoutine.Stop();
                 box.NotSetHighlight.gameObject.SetActive(false);
             } else {
                 box.LevelText.text = Loc.Find("cards.severity.notset");
                 box.NotSetHighlight.gameObject.SetActive(true);
+                box.FlashRoutine.Replace(FlashNotSetRoutine(box));
             }
         }
 
@@ -126,6 +132,13 @@ namespace Zavala.UI {
             }
 
             popup.Layout.ForceRebuild(true);
+        }
+
+        static public IEnumerator FlashNotSetRoutine(UIPolicyBox box) {
+            while (box != null) {
+                yield return box.NotSetHighlight.FadeTo(0.1f, 0.4f).Ease(Curve.CubeInOut);
+                yield return box.NotSetHighlight.FadeTo(0.7f, 0.4f).Ease(Curve.CubeInOut);
+            }
         }
     }
 }

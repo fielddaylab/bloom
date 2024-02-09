@@ -165,10 +165,11 @@ namespace Zavala.Scripting {
         }
 
         [LeafMember("AddAutoAlertCondition")]
-        static public void AddAutoAlertConditionLeaf(EventActorAlertType alertType = default, int regionIndex = -1) {
+        static public void AddAutoAlertConditionLeaf(EventActorAlertType alertType = default, int regionIndex = -1, bool cafosOnly = false) {
             AddAutoAlertCondition(new AutoAlertCondition() {
                 Alert = alertType,
-                RegionIndex = regionIndex
+                RegionIndex = regionIndex,
+                CafosOnly = cafosOnly, // for the specific case of auto-triggering CAFO runoff but not grain farm
             });
         }
 

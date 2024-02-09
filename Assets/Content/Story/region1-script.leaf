@@ -10,16 +10,18 @@ $call PauseAlertType("ExcessRunoff")
 
 $call CutsceneBegin()
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
-    $call CutsceneAllImages(0.5)
+    $call CutsceneAllImages(0.3)
     You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
-	$call CutsceneAllImages(0.5)
+	$call CutsceneAllImages(0.3)
 	This county is young. It's your job as SAGA director to help them grow...
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
-	$call CutsceneAllImages(0.5)
-	If you fail, they will succumb to ruin. Cities will empty; people will starve; the land and the waterways will be become desolate.
+	$call CutsceneNextImage()
+	And protect them from threats. 
+    $call CutsceneAllImages(0.3)
+    Some speak of a terrible <b>green tide</b> that brings ruin in its wake...
 	$call CutscenePrepareImages("intro/frame4-1.png", "intro/frame4-2.png", "intro/frame4-3.png")
-	$call CutsceneAllImages(0.5)
+	$call CutsceneAllImages(0.3)
 	Your first assignment is <i>Knoll County</i>. You will meet two Advisors to help you on your way...
 $call CutsceneEnd()
 
@@ -58,6 +60,8 @@ $call FocusHighlightOn("ShopButton1")
 @trigger BlueprintModeExited
 @conditions     intro:tutorialComplete = false, intro:roadBuilt = false
 @cutscene
+$call FocusClear()
+$call Wait(3)
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEconHill}      Open <b>Build Mode</b>.
 
@@ -70,7 +74,8 @@ $call FocusClear()
 {@advisorEconHill}      Each road segment costs $5. 
 {@advisorEconHill}      You will see a running total of your costs as you build.
 {@advisorEcolHill}      You can't build over any <b>red tiles</b>. Those are protected areas!
-{@advisorEconHill}      Build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
+{@advisorEconHill}      The trade of <b>Grain</b> and <b>Milk</b> will form the core of our economy.
+{@advisorEconHill}      First, build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
 $call PanToBuilding("region1_grain1", -1)
 $call ShowAnimatedTutorial("ClickDragTutorial")
 
@@ -131,7 +136,8 @@ $if intro:farmsConnected
     {local @urbanite}       Woohoo! I'm gonna eat <i>so much</i> cereal now.
     $branch .farmsAndCitiesConnected
 $else
-    // Step 4: Connect dairy and grain
+    // connected city and dairy before dairy and grain
+    {@advisorEconHill}      Erm, sure! We can start here.
     {local @cafoFarmer}     Great, I have a buyer for <b>Milk</b>!
     {local @cafoFarmer}     But my cows gotta eat <b>Grain</b> to make <b>Milk</b>.
     {@advisorEconHill}      Good point.
@@ -180,8 +186,9 @@ $set intro:pendingPolicy = true
 {@advisorEconHill}     Hello again!
 {@advisorEconHill}     You can see me here to adjust Knoll County's policies.
 {@advisorEconHill}     As for that <b>Sales Policy</b>: it can provide additional revenue.
-{viewpoliciesnext}
 {@advisorEconHill}     But set it too high, and farms may <b>slow down production.</b>
+{viewpoliciesnext}
+{@advisorEconHill}     What do you think? Don't worry too much, we can change it at any time.
 // $call ForcePolicyInstant("Economy")
 
 :: closedWithoutSettingPolicy
@@ -232,14 +239,21 @@ $call PanToBuilding("region1_grain1")
 {@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle!
 $call AddAutoAlertCondition("Bloom", 1)
 {@advisorEconHill}      I'm sure Henrietta has a good reason. Let's take a look...
+$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
 $call OpenInfoPopup("region1_grain1")
-{@advisorEconHill}      This <b>Inspector</b> shows where a farm could <b>buy from</b> or <b>sell to</b>.
+{@advisorEconHill}      The <b>Inspector</b> shows where she could <b>buy from</b>.
 {local @grainFarmer}    See, Phos4Us is the only seller around!
+$if local:taxLevel > 0, local:taxLevel < 3
+    {local @grainFarmer}    And that <b>Sales Tax</b> of yours is increasing the price...
+$elseif local:taxLevel = 3
+    {local @grainFarmer}    Thank goodness your <b>Subsidy</b> is lowering the price!
+$endif
 {@advisorEcolHill}      What about manure? That has phosphorus.
 $call CloseInfoPopup()
 {@advisorEconHill}      Shall we ask Bertram?
 $call OpenInfoPopup("region1_cafo1")
 $call Wait(0.5)
+{@advisorEconHill}      Here, the <b>Inspector</b> shows where he could <b>sell to</b>.
 {local @cafoFarmer}     I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
 {@advisorEconHill}      And a longer road means a higher <b>shipping cost</b>.
 {local @cafoFarmer}     Right. Better to just let the manure sit.
@@ -330,6 +344,27 @@ $call UnlockCards(RunoffPolicy)
 {@advisorEcolHill}      What do you think, boss?
 $call ForcePolicyInstant("Ecology")
 
+
+:: firstManureSold
+@trigger        ManureSold
+@conditions     alertRegion == 1
+@cutscene
+@once
+$call PanToBuilding("region1_cafo1", -0.5)
+{@advisorEcolHill}      Aha!
+{@advisorEcolHill}      Look, Bertram just sold manure! The Runoff Fine is working!
+{@advisorEconHill}      Could this be activating a <i>Fertilizer Market?</i> How exhilirating!
+{@cafoHill}             Uh... not to be a downer, but..
+$call OpenInfoPopup("region1_cafo1")
+{@cafoHill}             I'm only selling this stuff to avoid your <b>Runoff Fine.</b>
+{@cafoHill}             I'm still losing money on the <b>shipping costs!</b>
+{@cafoHill}             I might have to <b>slow down production</b> if this keeps up.
+{@advisorEconHill}      Ah...
+{@advisorEcolHill}      Well, we still gotta prevent runoff.
+{@advisorEcolHill}      Maybe there's a way of <b>lowering</b> shipping costs?
+$call CloseInfoPopup()
+{@advisorEconHill}      Hmm... I'll think on it.
+
 :: genericRunoff
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered, isFromGrainFarm == false
@@ -364,10 +399,10 @@ $call CutsceneBegin()
     Something is wrong with the lakes. They are filled with revolting green algae! It's depleting lake oxygen and killing fish...
     $call CutscenePrepareImages("act2/2-2-1.png", "act2/2-2-2.png", "act2/2-2-3.png")
 	$call CutsceneAllImages(0.5)
-	Could the grain farmers be to blame? Algae loves phosphorus, and they import phosphorus and overapply it!
+	Algae loves phosphorus... Could the grain farmers be to blame? They import and apply lots of mineral <b>phosphorus!</b>
     $call CutscenePrepareImages("act2/2-3-1.png", "act2/2-3-2.png", "act2/2-3-3.png")
 	$call CutsceneAllImages(0.5)
-	Or are the dairy farmers at fault? Their cows' phosphorus-filled manure runs off into the lakes too!
+	Or are the dairy farmers at fault? Their cows' <b>phosphorus</b>-filled manure runs off into the lakes too!
     $call CutscenePrepareImages("act2/2-4-1.png", "act2/2-4-2.png", "act2/2-4-3.png")
 	$call CutsceneAllImages(0.5)
     Nearby farms might be able to afford manure fertilizer... But long-distance shipping is just too costly!
@@ -375,7 +410,12 @@ $call CutsceneBegin()
 	$call CutsceneAllImages(0.5)
 	Whoever is to blame, our cities need milk and clean water. You - and SAGA - will need to take action.
 $call CutsceneEnd()
-{@advisorEcolHill}    Something must be done! I'll keep an eye out for any phosphorus runoff.
+{@advisorEcolHill}    When there's enough <b>phosphorus</b> in the water, <b>Algae</b> begins to take over.
+{@advisorEcolHill}    It takes up the nutrients that other organisms need, and can even produce toxins.
+{@advisorEcolHill}    Our <b>City</b> will become stressed if there are blooms nearby!
+{@advisorEcolHill}    Some algae blooms are <b>unavoidable...</b>
+{@advisorEcolHill}    But we can limit them if we <b>prevent phosphorus runoff!</b>
+{@advisorEcolHill}    I'll keep an eye out for any excess runoff...
 $call OffsetAlgaeGrowthThreshold(1)
 $call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)
@@ -417,7 +457,7 @@ $if local:runoffLevel > 0
     $call ForcePolicyInstant("Ecology")
 $elseif local:taxLevel > 0, local:taxLevel < 3
     {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
-    {@advisorEconHill}      A Subsidy might help
+    {@advisorEconHill}      A <b>Subsidy</b> could relieve his issues, but it would cost us.
     $call ForcePolicyInstant("Economy")
 $else
     $call ForcePolicyInstant("Economy")
