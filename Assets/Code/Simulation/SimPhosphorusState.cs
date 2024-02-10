@@ -12,7 +12,7 @@ using static FieldDay.Scenes.PreloadManifest;
 
 namespace Zavala.Sim
 {
-    public sealed class SimPhosphorusState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
+    public sealed class SimPhosphorusState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject, ISaveStatePostLoad {
         public SimTimer Timer;
 
         [NonSerialized] public PhosphorusBuffers Phosphorus;
@@ -24,6 +24,7 @@ namespace Zavala.Sim
 
         void IRegistrationCallbacks.OnDeregister() {
             ZavalaGame.SaveBuffer.DeregisterHandler("Phosphorus");
+            ZavalaGame.SaveBuffer.DeregisterPostLoad(this);
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -34,6 +35,31 @@ namespace Zavala.Sim
             DataHistoryUtil.InitializeDataHistory(ref HistoryPerRegion, RegionInfo.MaxRegions, 20);
 
             ZavalaGame.SaveBuffer.RegisterHandler("Phosphorus", this, 100);
+            ZavalaGame.SaveBuffer.RegisterPostLoad(this);
+        }
+
+        void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch)
+        {
+            GameLoop.QueuePreUpdate(() => ReinstantiatePhosphorusPips(consts.DataRegion));
+            
+        }
+
+        private void ReinstantiatePhosphorusPips(HexGridSubregion dataRegion) {
+            var grid = ZavalaGame.SimGrid;
+            var currentBuffer = Phosphorus.CurrentState();
+            for (int i = 0; i < dataRegion.Size; i++) {
+                int idx = dataRegion.FastIndexToGridIndex(i);
+                ushort count = currentBuffer[idx].Count;
+                if (count > 0) {
+                    Phosphorus.Changes.PushAdd(new PhosphorusTileAddRemove() {
+                        Amount = count,
+                        TileIdx = idx,
+                        RegionIndex = grid.Terrain.Regions[idx]
+                    });
+                    Phosphorus.Changes.AffectedTiles.Add(idx);
+                    Phosphorus.Changes.AffectedRegions.Add(grid.Terrain.Regions[idx]);
+                }
+            }
         }
 
         unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
@@ -41,16 +67,7 @@ namespace Zavala.Sim
             var currentBuffer = Phosphorus.CurrentState();
             for (int i = 0; i < consts.DataRegion.Size; i++) {
                 int idx = consts.DataRegion.FastIndexToGridIndex(i);
-                ushort count = reader.Read<ushort>();
-                currentBuffer[idx].Count = count;
-
-                if (count > 0) {
-                    Phosphorus.Changes.PushAdd(new PhosphorusTileAddRemove() {
-                        Amount = count,
-                        TileIdx = idx,
-                        RegionIndex = grid.Terrain.Regions[idx]
-                    });
-                }
+                currentBuffer[idx].Count = reader.Read<ushort>();
             }
 
             ArrayUtils.EnsureCapacity(ref TotalPPerRegion, consts.MaxRegions);
