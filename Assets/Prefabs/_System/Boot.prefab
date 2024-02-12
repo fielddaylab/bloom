@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3575173300138732489}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &49855547215680739
 MonoBehaviour:
@@ -174,6 +174,7 @@ Transform:
   m_Children:
   - {fileID: 3575173299602382573}
   - {fileID: 3575173300628751710}
+  - {fileID: 3982528661941399492}
   - {fileID: 2191109643755160637}
   - {fileID: 8159169011444544349}
   - {fileID: 3841975912652007693}
@@ -370,7 +371,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3575173300138732489}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &6886050690588055670
 Camera:
@@ -460,6 +461,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeccedd0e11e97043870a6e0127d7de8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7045890445170681987
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3982528661941399492}
+  - component: {fileID: 1439248957510760085}
+  m_Layer: 0
+  m_Name: LoggingService
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3982528661941399492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7045890445170681987}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3575173300138732489}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1439248957510760085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7045890445170681987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f3707fc31bc4a4ab0ffdd62051ebc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AppId: ZAVALA
+  m_AppVersion: 1.0
+  m_Firebase:
+    ApiKey: 
+    ProjectId: 
+    StorageBucket: 
+    MessagingSenderId: 
+    AppId: 
+    MeasurementId: 
 --- !u!1001 &1254169883870357413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -469,7 +523,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3115370831389111855, guid: 37da48678a93bec438a1ea121f73f2d7, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3115370831389111855, guid: 37da48678a93bec438a1ea121f73f2d7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -539,7 +593,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 331370914256793247, guid: d55cad5853fbd2a4091f340934ac000f, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 331370914256793247, guid: d55cad5853fbd2a4091f340934ac000f, type: 3}
       propertyPath: m_AnchorMax.x
@@ -645,7 +699,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7655787635128613953, guid: f17e538492668114e877fde8eb111229, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7655787635128613953, guid: f17e538492668114e877fde8eb111229, type: 3}
       propertyPath: m_AnchorMax.x

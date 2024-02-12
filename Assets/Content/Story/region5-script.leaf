@@ -2,7 +2,7 @@
 
 :: queueCityUnlocked
 @trigger        RegionUnlocked
-@conditions     regionId == "City"
+@conditions     regionId == "Urban"
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region5_city1", region5.regionUnlocked)
 

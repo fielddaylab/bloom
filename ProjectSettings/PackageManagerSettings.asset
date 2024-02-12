@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnablePreReleasePackages: 0
-  m_EnablePackageDependencies: 1
+  m_EnablePackageDependencies: 0
   m_AdvancedSettingsExpanded: 1
   m_ScopedRegistriesSettingsExpanded: 1
   m_SeeAllPackageVersions: 0
@@ -38,6 +38,7 @@ MonoBehaviour:
     - com.beauprime.beauutil
     - com.beauprime.leaf
     - com.beauprime.tinyil-mono
+    - com.fieldday.opengamedata-unity
     - com.openupm
     m_IsDefault: 0
     m_Capabilities: 0

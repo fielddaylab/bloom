@@ -13,7 +13,7 @@ namespace Zavala {
         Forest,
         Prairie,
         Wetland,
-        City
+        Urban
     }
 
     public enum BuildingType : byte {
