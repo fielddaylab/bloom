@@ -116,14 +116,17 @@ namespace Zavala.UI {
 
         private void HandleCreditsClicked()
         {
+            Game.Events.Dispatch(GameEvents.CreditsButtonClicked);
             m_CreditsPanel.OpenPanel();
         }
 
         private void HandleFullscreenToggle(bool toggle) {
+            ZavalaGame.Events.Dispatch(GameEvents.FullscreenToggled, toggle);
             ScreenUtility.SetFullscreen(toggle);
         }
 
         private void HandleQualityToggle(bool toggle) {
+            ZavalaGame.Events.Dispatch(GameEvents.QualityToggled, toggle);
             Game.SharedState.Get<UserSettings>().HighQualityMode = toggle;
         }
 
@@ -167,6 +170,7 @@ namespace Zavala.UI {
 
         private void HandlePlayAccepted() {
             Game.SharedState.Get<UserSettings>().PlayerCode = m_PlayerCodeInput.text;
+            ZavalaGame.Events.Dispatch(GameEvents.ProfileStarting, m_PlayerCodeInput.text);
             Game.Scenes.LoadMainScene(m_MainScene);
         }
 

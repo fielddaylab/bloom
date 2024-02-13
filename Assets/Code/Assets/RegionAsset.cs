@@ -106,13 +106,13 @@ namespace Zavala {
         public int Height;
 
         [Header("Tile Information")]
-        public TerrainTileInfo[] Tiles = Array.Empty<TerrainTileInfo>();
-        public BuildingData[] Buildings = Array.Empty<BuildingData>();
+        public TerrainTileInfo[] Tiles = Array.Empty<TerrainTileInfo>(); // type, elevation, region index
+        public BuildingData[] Buildings = Array.Empty<BuildingData>(); // cities, farms, 
         public PointData[] Points = Array.Empty<PointData>();
         public RoadData[] Roads = Array.Empty<RoadData>();
-        public ModifierData[] Modifiers = Array.Empty<ModifierData>();
+        public ModifierData[] Modifiers = Array.Empty<ModifierData>(); // obstacles
         public BorderPoint[] Borders = Array.Empty<BorderPoint>();
-        public SpannerData[] Spanners = Array.Empty<SpannerData>();
+        public SpannerData[] Spanners = Array.Empty<SpannerData>(); // tollbooth
         public ushort[] EdgeVisualUpdateSet = Array.Empty<ushort>();
         public WaterSoundEmitter[] WaterEmitters = Array.Empty<WaterSoundEmitter>();
 

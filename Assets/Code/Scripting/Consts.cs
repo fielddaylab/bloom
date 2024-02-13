@@ -15,6 +15,18 @@ namespace Zavala
 
     static public class GameEvents
     {
+
+        static public readonly StringHash32 CreditsButtonClicked = "menu:credits-clicked";
+        static public readonly StringHash32 CreditsExited = "menu:credits-exited";
+        static public readonly StringHash32 NewGameClicked = "menu:new-clicked";
+        static public readonly StringHash32 ResumeGameClicked = "menu:resume-clicked";
+        static public readonly StringHash32 FullscreenToggled = "menu:fullscreen-clicked";
+        static public readonly StringHash32 QualityToggled = "menu:hq-toggled";
+        static public readonly StringHash32 ReturnedToMainMenu = "menu:back";
+        static public readonly StringHash32 ProfileStarting = "menu:starting";
+
+
+
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";
         static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
@@ -25,6 +37,8 @@ namespace Zavala
 
         static public readonly StringHash32 SimPaused = "sim:paused";
         static public readonly StringHash32 SimResumed = "sim:resumed";
+        static public readonly StringHash32 SimUserPaused = "sim:user-paused";
+        static public readonly StringHash32 SimUserResumed = "sim:user-resumed";
 
         static public readonly StringHash32 BlueprintModeStarted = "blueprint:started";
         static public readonly StringHash32 BlueprintModeEnded = "blueprint:ended";
@@ -82,6 +96,7 @@ namespace Zavala
         private const string DecliningPop = "declining-pop";
         private const string SellingLoss = "selling-loss";
         private const string Disconnected = "disconnected";
+        private const string DialogueBubble = "dialogue-bubble";
 
         // Localization Ids
         private const string BaseLocPath = "alerts.";
@@ -93,13 +108,15 @@ namespace Zavala
         private const string DecliningPopLocId = BaseLocPath + DecliningPop;
         private const string SellingLossLocId = BaseLocPath + SellingLoss;
         private const string DisconnectedLocId = BaseLocPath + Disconnected;
+        private const string DialogueBubbleLocId = BaseLocPath + DialogueBubble;
+
 
         static private readonly string[] AlertTypeToString = new string[] {
-            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss, Disconnected
+            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss, Disconnected, DialogueBubble
         };
 
         static private readonly StringHash32[] AlertTypeToHash = new StringHash32[] {
-            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss, Disconnected
+            null, Bloom, ExcessRunoff, DieOff, CritImbalance, UnusedDigester, DecliningPop, SellingLoss, Disconnected, DialogueBubble
         };
 
         static public string GetAlertName(EventActorAlertType alert) {
@@ -140,6 +157,9 @@ namespace Zavala
                 }
                 case EventActorAlertType.Disconnected: {
                     lookup = DisconnectedLocId; break;
+                }
+                case EventActorAlertType.Dialogue: {
+                    lookup = DialogueBubbleLocId; break;
                 }
             }
             return Loc.Find(lookup);

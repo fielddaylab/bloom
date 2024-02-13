@@ -94,6 +94,7 @@ namespace Zavala.UI
 
         private void HandleReturnClicked()
         {
+            ZavalaGame.Events.Dispatch(GameEvents.CreditsExited);
             m_TransitionRoutine.Replace(this, ExitRoutine());
         }
 

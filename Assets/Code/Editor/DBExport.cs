@@ -24,6 +24,15 @@ namespace Zavala.Editor {
 
             private class Data : ISerializedObject {
                 public List<RegionData> Regions = new List<RegionData>(RegionInfo.MaxRegions);
+                // TODO: public MapData
+                //      width and height of total world
+                //      one big array of tile information (type, elevation, region)
+                //      iterate over all regions in WorldAsset
+                //      for each tile: if not void, local coords -> global coords, place in global array
+                //      implicitly stored as index in array -> can derive location from width and height, convert to x and y in worldspace
+                //          could encode that conversion into each tile
+                // public ObjectData
+                //      array of buildings, obstacles, etc
                 // TODO: policy values? market/budget config?
                 public void Serialize(Serializer ioSerializer) {
                     ioSerializer.ObjectArray("regions", ref Regions);
