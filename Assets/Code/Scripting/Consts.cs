@@ -22,6 +22,7 @@ namespace Zavala
         static public readonly StringHash32 ResumeGameClicked = "menu:resume-clicked";
         static public readonly StringHash32 FullscreenToggled = "menu:fullscreen-clicked";
         static public readonly StringHash32 QualityToggled = "menu:hq-toggled";
+        static public readonly StringHash32 PlayGameClicked = "menu:play-clicked";
         static public readonly StringHash32 ReturnedToMainMenu = "menu:back";
         static public readonly StringHash32 ProfileStarting = "menu:starting";
 
@@ -30,25 +31,39 @@ namespace Zavala
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";
         static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
+        static public readonly StringHash32 PolicyButtonClicked = "advisors:policy-clicked";
         static public readonly StringHash32 MarketCycleTickCompleted = "sim:market-cycle-completed";
         static public readonly StringHash32 ForceMarketPrioritiesRebuild = "sim:force-market-priorities-rebuild";
         static public readonly StringHash32 MarketPrioritiesRebuilt = "sim:market-priorities-rebuilt";
+        static public readonly StringHash32 ToggleEconomyView = "sim:toggle-economy-view";
+        static public readonly StringHash32 TogglePhosphorusView = "sim:toggle-phosphorus-view";
+
+
         static public readonly StringHash32 RegionSwitched = "sim:region-switched";
 
         static public readonly StringHash32 SimPaused = "sim:paused";
         static public readonly StringHash32 SimResumed = "sim:resumed";
         static public readonly StringHash32 SimUserPaused = "sim:user-paused";
         static public readonly StringHash32 SimUserResumed = "sim:user-resumed";
+        static public readonly StringHash32 SimZoomChanged = "sim:zoom";
 
         static public readonly StringHash32 BlueprintModeStarted = "blueprint:started";
         static public readonly StringHash32 BlueprintModeEnded = "blueprint:ended";
+        static public readonly StringHash32 BuildConfirmed = "blueprint:confirmed";
         static public readonly StringHash32 BuildToolSelected = "blueprint:build-tool-selected";
         static public readonly StringHash32 BuildToolDeselected = "blueprint:build-tool-deselected";
 
+        static public readonly StringHash32 DestroyModeClicked = "destroy:clicked";
         static public readonly StringHash32 DestroyModeStarted = "destroy:started";
+        static public readonly StringHash32 DestroyModeConfirmed = "destroy:clicked";
+        static public readonly StringHash32 DestroyModeExited = "destroy:cancel";
         static public readonly StringHash32 DestroyModeEnded = "destroy:ended";
 
-        static public readonly StringHash32 DialogueClosing = "dialog:closing";
+        static public readonly StringHash32 CutsceneStarted = "dialogue:cutscene-started";
+        static public readonly StringHash32 CutsceneEnded = "dialogue:cutscene-ended";
+        static public readonly StringHash32 DialogueStarted = "dialogue:started";
+        static public readonly StringHash32 DialogueAdvanced = "dialogue:advanced";
+        static public readonly StringHash32 DialogueClosing = "dialogue:closing";
 
         static public readonly StringHash32 GameLoaded = "game:loaded";
         static public readonly StringHash32 GameFailed = "game:failed";

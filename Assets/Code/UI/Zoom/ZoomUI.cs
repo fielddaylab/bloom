@@ -25,11 +25,11 @@ namespace Zavala.UI {
         }
 
         private void OnZoomInClicked() {
-            SetScrollWheelDelta(zoomPerClick);
+            WorldCameraUtility.ZoomCamera(zoomPerClick, false);
         }
 
         private void OnZoomOutClicked() {
-            SetScrollWheelDelta(-zoomPerClick);
+            WorldCameraUtility.ZoomCamera(-zoomPerClick, false);
         }
 
         private void SetScrollWheelDelta(float num) {

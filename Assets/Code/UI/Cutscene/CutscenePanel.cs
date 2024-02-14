@@ -253,7 +253,12 @@ namespace Zavala.UI {
         #region Leaf
 
         [LeafMember("CutsceneBegin")]
-        static public void Begin() {
+        static public void Begin(int loggingId = -1) {
+            if (loggingId < 0) {
+                Log.Warn("[CutscenePanel] Current cutscene not given Logging ID, will not log");
+            } else {
+                ZavalaGame.Events.Dispatch(GameEvents.CutsceneStarted, loggingId);
+            }
             Game.Gui.GetShared<CutscenePanel>().Show();
         }
 
@@ -284,7 +289,7 @@ namespace Zavala.UI {
 
         [LeafMember("CutsceneEnd")]
         static public void End() {
-            
+            ZavalaGame.Events.Dispatch(GameEvents.CutsceneEnded);
             Game.Gui.GetShared<CutscenePanel>().Hide();
         }
 

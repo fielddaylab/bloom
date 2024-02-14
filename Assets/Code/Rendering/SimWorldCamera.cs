@@ -11,6 +11,7 @@ using System;
 using BeauUtil.Debugger;
 using FieldDay;
 using Zavala.Data;
+using Zavala.Sim;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -94,11 +95,31 @@ namespace Zavala.World {
             cam.TransitionRoutine.Replace(cam, PanRoutine(cam)).SetPhase(RoutinePhase.Update);
         }
 
+        public static void ZoomCamera(float delta, bool usedWheel, CameraInputState camInput = null) {
+            if (delta == 0) return;
+            if (camInput == null) {
+                camInput = Game.SharedState.Get<CameraInputState>();
+            }
+
+            if (camInput.InputMode == CameraInputMode.Drag) {
+                camInput.InputMode = CameraInputMode.None;
+            }
+            Vector3 camPos = Cam.Camera.transform.localPosition;
+            if (delta > 0) {
+                camPos.z = Mathf.Min(Cam.CameraMaxZoomDist, camPos.z + delta);
+            } else {
+                camPos.z = Mathf.Max(Cam.CameraMinZoomDist - 1 * (ZavalaGame.SimGrid.RegionCount - 1), camPos.z + delta);
+            }
+            Cam.Camera.transform.localPosition = camPos;
+            ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, usedWheel);
+        }
+
         private static IEnumerator PanRoutine(SimWorldCamera cam) {
             // yield return cam.LookTarget.MoveTo(cam.PanTargetPoint, 0.5f, Axis.XZ).Ease(Curve.Smooth);
             yield return cam.LookTarget.MoveToWithSpeed(cam.PanTargetPoint, cam.CameraMoveSpeed, Axis.XZ).Ease(Curve.CubeOut);
             yield return null;
         }
+
 
         static public void ClampPositionToBounds(ref Vector3 position, Rect rect) {
             Vector2 min = rect.min, max = rect.max;

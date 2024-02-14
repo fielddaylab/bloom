@@ -23,10 +23,9 @@ namespace Zavala.Advisor
 
             m_Button.onClick.AddListener(HandleButtonClicked);
 
-            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
-
-            Game.Events.Register(GameEvents.DialogueClosing, OnDialogueClosing);
+            ZavalaGame.Events
+                .Register<AdvisorType>(GameEvents.AdvisorButtonClicked, HandleAdvisorButtonClicked)
+                .Register(GameEvents.DialogueClosing, OnDialogueClosing);
         }
 
         private void OnDestroy() {
@@ -38,7 +37,7 @@ namespace Zavala.Advisor
         #region Handlers
 
         private void HandleButtonClicked() {
-            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            // AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
 
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("advisorType", ButtonAdvisorType.ToString());
@@ -46,7 +45,8 @@ namespace Zavala.Advisor
             }
 
             // regardless of on or off, advisor was clicked
-            advisorState.AdvisorButtonClicked?.Invoke(ButtonAdvisorType);
+            ZavalaGame.Events.Dispatch(GameEvents.AdvisorButtonClicked, ButtonAdvisorType);
+            // advisorState.AdvisorButtonClicked?.Invoke(ButtonAdvisorType);
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) { 

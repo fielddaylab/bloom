@@ -55,8 +55,9 @@ namespace Zavala.Cards
             policyState.PolicyCardSelected.Register(HandlePolicyCardSelected);
             policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
 
-            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
+            ZavalaGame.Events.Register<AdvisorType>(GameEvents.AdvisorButtonClicked, HandleAdvisorButtonClicked);
+            // AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            // advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
 
             m_HandState = HandState.Hidden;
         }

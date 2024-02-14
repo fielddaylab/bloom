@@ -201,6 +201,7 @@ namespace Zavala.UI
 
         private void HandleBuildConfirmButtonClicked()
         {
+            Game.Events.Dispatch(GameEvents.BuildConfirmed);
             var blueprintState = Game.SharedState.Get<BlueprintState>();
             blueprintState.NewBuildConfirmed = true;
         }
@@ -219,18 +220,21 @@ namespace Zavala.UI
 
         private void HandleDestroyModeButtonClicked()
         {
+            Game.Events.Dispatch(GameEvents.DestroyModeClicked);
             var blueprintState = Game.SharedState.Get<BlueprintState>();
             blueprintState.DestroyModeClicked = true;
         }
 
         private void HandleDestroyConfirmButtonClicked()
         {
+            Game.Events.Dispatch(GameEvents.DestroyModeConfirmed);
             var blueprintState = Game.SharedState.Get<BlueprintState>();
             blueprintState.NewDestroyConfirmed = true;
         }
 
         private void HandleDestroyExitButtonClicked()
         {
+            Game.Events.Dispatch(GameEvents.DestroyModeExited);
             var blueprintState = Game.SharedState.Get<BlueprintState>();
             blueprintState.CanceledDestroyMode = true;
         }
@@ -293,6 +297,7 @@ namespace Zavala.UI
 
         public void OnDestroyConfirmClicked()
         {
+            Game.Events.Dispatch(GameEvents.DestroyModeConfirmed);
             OnExitedDestroyMode();
         }
 

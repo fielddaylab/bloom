@@ -63,8 +63,9 @@ namespace Zavala.UI {
                 ScriptUtility.Trigger(GameTriggers.AdvisorOpened, varTable);
             }
 
-            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked?.Invoke(type);
+            ZavalaGame.Events.Dispatch(GameEvents.AdvisorButtonClicked, type);
+            //AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            //advisorState.AdvisorButtonClicked?.Invoke(type);
 
         }
 

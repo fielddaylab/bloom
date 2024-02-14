@@ -72,9 +72,10 @@ namespace Zavala.UI {
         private void Start() {
             m_PolicyExpansionContainer.gameObject.SetActive(false);
 
-            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
-
+            //AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            //advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
+            ZavalaGame.Events.Register<AdvisorType>(GameEvents.AdvisorButtonClicked, HandleAdvisorButtonClicked);
+            
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
             m_CloseButton.onClick.AddListener(() => { 
