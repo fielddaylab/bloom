@@ -105,13 +105,14 @@ namespace Zavala.World {
                 camInput.InputMode = CameraInputMode.None;
             }
             Vector3 camPos = Cam.Camera.transform.localPosition;
+            float start = camPos.z;
             if (delta > 0) {
-                camPos.z = Mathf.Min(Cam.CameraMaxZoomDist, camPos.z + delta);
+                camPos.z = Mathf.Min(Cam.CameraMaxZoomDist, start + delta);
             } else {
-                camPos.z = Mathf.Max(Cam.CameraMinZoomDist - 1 * (ZavalaGame.SimGrid.RegionCount - 1), camPos.z + delta);
+                camPos.z = Mathf.Max(Cam.CameraMinZoomDist - 1 * (ZavalaGame.SimGrid.RegionCount - 1), start + delta);
             }
             Cam.Camera.transform.localPosition = camPos;
-            ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, usedWheel);
+            ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomData(start, camPos.z, usedWheel));
         }
 
         private static IEnumerator PanRoutine(SimWorldCamera cam) {

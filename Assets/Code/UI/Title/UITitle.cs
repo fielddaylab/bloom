@@ -82,6 +82,7 @@ namespace Zavala.UI {
 
         private void HandleStartClicked()
         {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.NewGameClicked);
             m_CurrentPanel = Panel.NewGame;
             m_PlayerCodeInput.SetTextWithoutNotify(string.Empty);
             m_PlayerCodeInput.readOnly = true;
@@ -100,6 +101,7 @@ namespace Zavala.UI {
 
         private void HandleLoadClicked()
         {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.ResumeGameClicked);
             m_CurrentPanel = Panel.LoadGame;
             m_PlayerCodeInput.SetTextWithoutNotify(Game.SharedState.Get<UserSettings>().PlayerCode);
             m_PlayerCodeInput.readOnly = false;
@@ -116,7 +118,7 @@ namespace Zavala.UI {
 
         private void HandleCreditsClicked()
         {
-            Game.Events.Dispatch(GameEvents.CreditsButtonClicked);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.CreditsButtonClicked);
             m_CreditsPanel.OpenPanel();
         }
 
@@ -131,6 +133,7 @@ namespace Zavala.UI {
         }
 
         private void HandlePlayButton() {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.PlayGameClicked);
             m_Raycaster.blocksRaycasts = false;
             if (m_CurrentPanel == Panel.NewGame) {
                 ZavalaGame.SaveBuffer.Clear();
@@ -143,6 +146,7 @@ namespace Zavala.UI {
         }
 
         private void HandleBackButton() {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.ReturnedToMainMenu);
             m_CurrentPanel = Panel.Start;
             
             m_StartGroup.blocksRaycasts = false;

@@ -294,7 +294,7 @@ namespace Zavala.World {
             if (eReveal.DepotRevealMask[regionIndex]) {
                 yield break;
             }
-
+            ZavalaGame.Events.Dispatch(GameEvents.ExportDepotUnlocked);
             eReveal.DepotRevealMask[regionIndex] = true;
 
             // Disable player input

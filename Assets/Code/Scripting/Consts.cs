@@ -16,30 +16,27 @@ namespace Zavala
     static public class GameEvents
     {
 
-        static public readonly StringHash32 CreditsButtonClicked = "menu:credits-clicked";
-        static public readonly StringHash32 CreditsExited = "menu:credits-exited";
-        static public readonly StringHash32 NewGameClicked = "menu:new-clicked";
-        static public readonly StringHash32 ResumeGameClicked = "menu:resume-clicked";
+       static public readonly StringHash32 MainMenuInteraction = "menu:interact";
+
         static public readonly StringHash32 FullscreenToggled = "menu:fullscreen-clicked";
         static public readonly StringHash32 QualityToggled = "menu:hq-toggled";
-        static public readonly StringHash32 PlayGameClicked = "menu:play-clicked";
-        static public readonly StringHash32 ReturnedToMainMenu = "menu:back";
         static public readonly StringHash32 ProfileStarting = "menu:starting";
-
-
 
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";
         static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
         static public readonly StringHash32 PolicyButtonClicked = "advisors:policy-clicked";
+        static public readonly StringHash32 AdvisorLensUnlocked = "advisors:lens-unlocked";
+
         static public readonly StringHash32 MarketCycleTickCompleted = "sim:market-cycle-completed";
         static public readonly StringHash32 ForceMarketPrioritiesRebuild = "sim:force-market-priorities-rebuild";
         static public readonly StringHash32 MarketPrioritiesRebuilt = "sim:market-priorities-rebuilt";
         static public readonly StringHash32 ToggleEconomyView = "sim:toggle-economy-view";
         static public readonly StringHash32 TogglePhosphorusView = "sim:toggle-phosphorus-view";
 
-
         static public readonly StringHash32 RegionSwitched = "sim:region-switched";
+        static public readonly StringHash32 RegionUnlocked = "sim:region-unlocked";
+        static public readonly StringHash32 ExportDepotUnlocked = "sim:export-unlocked";
 
         static public readonly StringHash32 SimPaused = "sim:paused";
         static public readonly StringHash32 SimResumed = "sim:resumed";
@@ -52,12 +49,17 @@ namespace Zavala
         static public readonly StringHash32 BuildConfirmed = "blueprint:confirmed";
         static public readonly StringHash32 BuildToolSelected = "blueprint:build-tool-selected";
         static public readonly StringHash32 BuildToolDeselected = "blueprint:build-tool-deselected";
+        static public readonly StringHash32 HoverTile = "blueprint:hover-tile";
 
         static public readonly StringHash32 DestroyModeClicked = "destroy:clicked";
         static public readonly StringHash32 DestroyModeStarted = "destroy:started";
         static public readonly StringHash32 DestroyModeConfirmed = "destroy:clicked";
         static public readonly StringHash32 DestroyModeExited = "destroy:cancel";
         static public readonly StringHash32 DestroyModeEnded = "destroy:ended";
+
+        static public readonly StringHash32 InspectorOpened = "inspector:opened";
+        static public readonly StringHash32 InspectorClosed = "inspector:closed";
+        static public readonly StringHash32 InspectorTabClicked = "inspector:tab";
 
         static public readonly StringHash32 CutsceneStarted = "dialogue:cutscene-started";
         static public readonly StringHash32 CutsceneEnded = "dialogue:cutscene-ended";

@@ -11,6 +11,7 @@ using BeauUtil;
 using System.Text;
 using System;
 using BeauUtil.Debugger;
+using Zavala.Data;
 
 namespace Zavala.UI
 {
@@ -94,7 +95,7 @@ namespace Zavala.UI
 
         private void HandleReturnClicked()
         {
-            ZavalaGame.Events.Dispatch(GameEvents.CreditsExited);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.CreditsExited);
             m_TransitionRoutine.Replace(this, ExitRoutine());
         }
 

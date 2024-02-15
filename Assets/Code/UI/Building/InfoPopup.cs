@@ -153,15 +153,20 @@ namespace Zavala.UI.Info {
             }
 
             m_SelectedThing = thing;
+            int idx = -1;
             if (thing.Position)
             {
                 m_Mode = thing.Position.Type;
+                idx = thing.Position.TileIndex;
             }
             else
             {
                 m_Mode = thing.OverrideType;
             }
             m_SelectedLocation = thing.GetComponent<LocationDescription>();
+            if (thing.TryGetComponent(out EventActor actor)) {
+                string id = actor.Id.Source();
+            }
 
             m_SelectedPurchaser = null;
             m_SelectedRequester = null;
@@ -175,11 +180,11 @@ namespace Zavala.UI.Info {
             m_StorageGroup.gameObject.SetActive(false);
             m_ResourceIcon.gameObject.SetActive(false);
             m_HeaderLayout.padding.right = DefaultHeaderRightPadding;
-
+            string title = Loc.Find(m_SelectedLocation.TitleLabel);
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
                     //m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
-                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/);
+                    m_SubheaderLabel.SetText(title)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/;
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
@@ -194,7 +199,7 @@ namespace Zavala.UI.Info {
 
                 case BuildingType.DairyFarm: {
                     //m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
-                    m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/);
+                    m_SubheaderLabel.SetText(title)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/;
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
@@ -208,7 +213,7 @@ namespace Zavala.UI.Info {
                     }
 
                 case BuildingType.City: {
-                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
                     m_PurchaseContents.gameObject.SetActive(true);
@@ -217,7 +222,7 @@ namespace Zavala.UI.Info {
                 }
 
                 case BuildingType.Digester: {
-                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_HeaderBG.color = DigesterColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
@@ -228,7 +233,7 @@ namespace Zavala.UI.Info {
 
                 case BuildingType.Storage:
                 {
-                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_HeaderBG.color = StorageColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
@@ -240,7 +245,7 @@ namespace Zavala.UI.Info {
 
                 case BuildingType.TollBooth:
                 {
-                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText("");
                     m_HeaderBG.color = TollColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
@@ -251,7 +256,7 @@ namespace Zavala.UI.Info {
 
                 case BuildingType.ExportDepot:
                 {
-                    m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
+                    m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_HeaderBG.color = DepotColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
@@ -266,6 +271,7 @@ namespace Zavala.UI.Info {
             m_ConnectionsDirty = true;
             Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
 
+            ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, new Data.BuildingData(m_Mode, title, idx));
             Show();
         }
 

@@ -3,23 +3,78 @@
 #endif
 
 using BeauUtil;
-using BeauUtil.Services;
 using FieldDay;
 using UnityEngine;
 using System;
 using BeauUtil.Debugger;
 using FieldDay.Rendering;
-using UnityEngine.Networking.Types;
 using Zavala.Advisor;
+using Zavala.Economy;
+using Zavala.Building;
+using EasyAssetStreaming;
 
 namespace Zavala.Data {
+
+    /*
+    "SUB-TYPES"
+    BuildTile : List[enum(// all the types of object)]
+    CountyBuildMap { List[BuildTiles] }
+    BuildMap : { List[CountyBuildMap] }
+    Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
+
+     */
+    public enum MenuInteractionType : byte {
+        CreditsButtonClicked,
+        CreditsExited,
+        NewGameClicked,
+        ResumeGameClicked,
+        PlayGameClicked,
+        ReturnedToMainMenu,
+    }
+
+    public enum ModeInteraction : byte {
+        Clicked, // clicked button to start
+        Started, // started
+        Confirmed, // clicked button to finish
+        Exited, // clicked button to cancel
+        Ended // ended mode
+    }
+
+    public struct ZoomData {
+        public float Start;
+        public float End;
+        public bool UsedWheel;
+        public ZoomData(float start, float end, bool usedWheel) {
+            Start = start;
+            End = end;
+            UsedWheel = usedWheel;
+        }
+    }
+
+    public struct BuildingData {
+        public BuildingType Type;
+        public string Id;
+        public int TileIndex;
+        public BuildingData(BuildingType type, string id, int tileIndex) {
+            Type = type;
+            Id = id;
+            TileIndex = tileIndex;
+        }
+    }
+
     public class AnalyticsService : MonoBehaviour {
         private const ushort CLIENT_LOG_VERSION = 1;
+
+        private static class Mode {
+            public static readonly string View = "VIEW";
+            public static readonly string Build = "BUILD";
+            public static readonly string Destroy = "DESTROY";
+        }
 
         #region Inspector
         [SerializeField, Required] private string m_AppId = "ZAVALA";
         [SerializeField, Required] private string m_AppVersion = "1.0";
-        // FirebaseConsts is present in other AnalyticsServices but isn't in FieldDay here?
+        // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
 
         #endregion // Inspector
@@ -39,15 +94,14 @@ namespace Zavala.Data {
         private struct PoliciesLog {
             
         }
-
-        private struct PolicyLevelLog {
-            int Level;
-            bool IsLocked;
-        }
-
         private enum AdvisorType : byte {
             ECONOMY,
             ECOLOGY
+        }
+
+        private struct PolicyLevelLog {
+            public int Level;
+            public bool IsLocked;
         }
 
         #region Logging Variables
@@ -56,11 +110,14 @@ namespace Zavala.Data {
         [NonSerialized] private bool m_Debug;
 
         [NonSerialized] private float m_MusicVolume;
+        [NonSerialized] private bool m_IsFullscreen;
+        [NonSerialized] private bool m_IsQuality;
 
-        
         [NonSerialized] private string m_CurrentRegionId;
         [NonSerialized] private int m_CurrentBudget;
-        [NonSerialized] private ViewMode m_CurrentMode;
+        [NonSerialized] private string m_CurrentMode;
+        [NonSerialized] private string m_CurrentTool;
+        [NonSerialized] private BuildingData m_InspectingBuilding;
 
         [NonSerialized] private ushort m_CurrentCutscene;
         [NonSerialized] private ushort m_CurrentCutscenePage;
@@ -79,12 +136,7 @@ namespace Zavala.Data {
             // TODO: register the events for data logging
             ZavalaGame.Events
                 // Main Menu
-                .Register(GameEvents.CreditsButtonClicked, LogClickedCredits)
-                .Register(GameEvents.CreditsExited, LogExitedCredits)
-                .Register(GameEvents.NewGameClicked, LogNewGameClicked)
-                .Register(GameEvents.ResumeGameClicked, LogResumeGameClicked)
-                .Register(GameEvents.ReturnedToMainMenu, LogReturnToMainMenu)
-                .Register(GameEvents.PlayGameClicked, LogPlayClicked)
+                .Register<MenuInteractionType>(GameEvents.MainMenuInteraction, HandleMenuInteraction)
                 .Register<string>(GameEvents.ProfileStarting, SetUserCode)
                 .Register<bool>(GameEvents.FullscreenToggled, LogFullscreenToggled)
                 .Register<bool>(GameEvents.QualityToggled, LogQualityToggled)
@@ -94,6 +146,7 @@ namespace Zavala.Data {
                 .Register<bool>(GameEvents.TogglePhosphorusView, LogPhosToggled)
                 .Register(GameEvents.SimPaused, LogGamePaused)
                 .Register(GameEvents.SimResumed, LogGameResumed)
+                // TODO: Condense blueprint events with BlueprintInteractionType?
                 .Register(GameEvents.BlueprintModeStarted, LogStartBuildMode)
                 .Register(GameEvents.DestroyModeClicked, LogClickedDestroy)
                 .Register(GameEvents.DestroyModeStarted, LogStartDestroy)
@@ -101,8 +154,18 @@ namespace Zavala.Data {
                 .Register(GameEvents.DestroyModeExited, LogClickedExitDestroy)
                 .Register(GameEvents.DestroyModeEnded, LogEndDestroy)
                 .Register(GameEvents.BlueprintModeEnded, LogEndBuildMode)
+                .Register<UserBuildTool>(GameEvents.BuildToolSelected, LogSelectedBuildTool)
+
+                .Register<PolicyType>(GameEvents.PolicyTypeUnlocked, LogPolicyUnlocked)
+                .Register<PolicyType>(GameEvents.PolicySlotClicked, (PolicyType type) => LogPolicyOpened(type, false))
+                .Register<PolicyType>(GameEvents.PolicyButtonClicked, (PolicyType type) => LogPolicyOpened(type, true))
+                .Register<bool>(GameEvents.AdvisorLensUnlocked, LogUnlockView)
+                // ADD?                
                 .Register<ushort>(GameEvents.RegionSwitched, LogRegionChanged)
-                // TODO: .Register<bool>(GameEvents.SimZoomChanged, LogZoom)
+                // TODO: county state .Register<string>(GameEvents.RegionUnlocked, LogRegionUnlocked)
+                .Register<ZoomData>(GameEvents.SimZoomChanged, LogZoom)
+                // Inspect
+                .Register<BuildingData>(GameEvents.InspectorOpened, LogInspectBuilding)
                 // Dialogue
                 .Register<int>(GameEvents.CutsceneStarted, LogStartCutscene)
                 .Register(GameEvents.CutsceneEnded, LogEndCutscene)
@@ -112,7 +175,7 @@ namespace Zavala.Data {
             // check Penguins: example of StringBuilder as the entire event package (don't pull the whole project, just find PenguinAnalytics or etc)
 
 
-#if DEVELOPMENT
+            #if DEVELOPMENT
             m_Debug = true;
             #endif // DEVELOPMENT
 
@@ -145,25 +208,46 @@ namespace Zavala.Data {
         #region Game State
         /*
         Game State (across all events)
-        current_county : str
-        current_money : int
-        map_mode : enum(VIEW, BUILD, DESTROY)
         county_policies : {
 	        “sales“ : { policy_choice : int | null, is_locked : bool },
 	        “import_subsidy“ : { policy_choice : int | null, is_locked : bool },
 	        “runoff” : { policy_choice : int | null, is_locked : bool },
 	        “cleanup” : { policy_choice : int | null, is_locked : bool },
         }
-        phosphorus_view_enabled : bool
         // ADD?: avg_framerate : float
         */
 
         private void ResetGameState() {
 
         }
+        private void UpdateRegionState(string county) {
+            //         current_county : str
+            m_CurrentRegionId = county;
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("current_county", county);
+            }
+        }
 
-        private void UpdateMoneyState() {
+        public void UpdateMoneyState(int budget) {
+            //         current_money : int
+            m_CurrentBudget = budget;
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("current_money", budget);
+            }
+        }
 
+        private void UpdateBuildState(string mode) {
+            //         map_mode : enum(VIEW, BUILD, DESTROY)
+            m_CurrentMode = mode;
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("map_mode", mode.ToString());
+            }
+        }
+
+        private void UpdatePhosState(bool toggle) {
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("phosphorus_view_enabled", toggle);
+            }
         }
 
         #endregion // Game State
@@ -172,6 +256,30 @@ namespace Zavala.Data {
 
 
         #region Menu
+
+        private void HandleMenuInteraction(MenuInteractionType type) {
+            switch (type) {
+                case MenuInteractionType.CreditsButtonClicked:
+                    LogClickedCredits();
+                    break;
+                case MenuInteractionType.CreditsExited:
+                    LogExitedCredits();
+                    break;
+                case MenuInteractionType.NewGameClicked:
+                    LogNewGameClicked();
+                    break;
+                case MenuInteractionType.ResumeGameClicked:
+                    LogResumeGameClicked();
+                    break;
+                case MenuInteractionType.PlayGameClicked:
+                    LogPlayClicked();
+                    break;
+                case MenuInteractionType.ReturnedToMainMenu:
+                    LogReturnToMainMenu();
+                    break;
+                default: break;
+            }
+        }
 
         private void LogClickedCredits() {
             // click_credits { }
@@ -224,12 +332,16 @@ namespace Zavala.Data {
                 e.Param("fullscreen_enabled", ScreenUtility.GetFullscreen());
                 e.Param("hq_graphics_enabled", Game.SharedState.Get<UserSettings>().HighQualityMode);
                 // TODO: e.Param("map_state",);
-
             }
         }
         #endregion // Menu
 
         #region Sim
+
+        private void HandleTogglePause(bool paused) {
+            if (paused) LogGamePaused();
+            else LogGameResumed();
+        }
 
         private void LogGamePaused() {
             m_Log.Log("pause_game");
@@ -243,9 +355,9 @@ namespace Zavala.Data {
         private void LogStartBuildMode() {
             // toggle_map_mode { new_mode : enum(VIEW, BUILD)
             using (var e = m_Log.NewEvent("toggle_map_mode")) {
-                e.Param("new_mode", "BUILD");
+                e.Param("new_mode", Mode.Build);
             }
-            m_CurrentMode = ViewMode.BUILD;
+            UpdateBuildState(Mode.Build);
         }
 
         private void LogDisplayBuildMenu() {
@@ -255,27 +367,38 @@ namespace Zavala.Data {
             }
         }
 
-        private void LogSelectedBuilding() {
+        private void LogSelectedBuildTool(UserBuildTool tool) {
             // select_building_type { building_type, cost }
+            string toolName = tool.ToString();
             using (var e = m_Log.NewEvent("select_building_type")) {
-                // TODO: e.Param("building_type", type);
-                // TODO: e.Param("cost", int);
+                e.Param("building_type", toolName);
+                e.Param("cost", ShopUtility.PriceLookup(tool));
+            }
+            m_CurrentTool = toolName;
+
+        }
+
+        private void HandleHover(int idx) {
+            if (m_CurrentMode == Mode.Destroy) {
+                LogHoverDestroy(idx);
+            } else {
+                LogHoverBuild(idx);
             }
         }
 
-        private void LogHoverBuild() {
+        private void LogHoverBuild(int idx) {
             // hover_build_tile { tile_id, is_valid }
             using (var e = m_Log.NewEvent("hover_build_tile")) {
-                // TODO: e.Param("tile_id", int);
+                e.Param("tile_id", idx);
                 // TODO: e.Param("is_valid", bool);
             }
         }
 
-        private void LogBuildInvalid() {
+        private void LogBuildInvalid(int idx) {
             // click_build_invalid { tile_id, building_type }
             using (var e = m_Log.NewEvent("click_build_invalid")) {
-                // TODO: e.Param("tile_id", int);
-                // TODO: e.Param("building_type", type);
+                e.Param("tile_id", idx);
+                e.Param("building_type", m_CurrentTool);
             }
         }
 
@@ -288,13 +411,16 @@ namespace Zavala.Data {
         private void LogStartDestroy() {
             // enter_destroy_mode { }
             m_Log.Log("enter_destroy_mode");
-            m_CurrentMode = ViewMode.DESTROY;
+            m_CurrentMode = Mode.Destroy;
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("map_mode", Mode.Destroy);
+            }
         }
 
-        private void LogHoverDestroy() {
+        private void LogHoverDestroy(int idx) {
             // hover_destroy_tile { tile_id, building_type : enum(building types) | null }
             using (var e = m_Log.NewEvent("hover_destroy_tile")) {
-                // TODO: e.Param("tile_id", int);
+                e.Param("tile_id", idx);
                 // TODO: e.Param("building_type", type | null);
             }
         }
@@ -322,7 +448,10 @@ namespace Zavala.Data {
         private void LogEndDestroy() {
             // exit_destroy_mode { }
             m_Log.Log("exit_destroy_mode");
-            m_CurrentMode = ViewMode.BUILD;
+            m_CurrentMode = Mode.Build;
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("map_mode", Mode.Build);
+            }
         }
 
         #endregion Destroy
@@ -334,7 +463,7 @@ namespace Zavala.Data {
             //      queue_building { Building, total_cost, funds_remaining }
             using (var e = m_Log.NewEvent("queue_building")) {
                 // TODO: e.Param("Building", ???);
-                //      building type and/or tile index?
+                //          Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
                 // TODO: e.Param("total_cost", int);
                 // TODO: e.Param("funds_remaining", int);
             }
@@ -344,7 +473,7 @@ namespace Zavala.Data {
             //      unqueue_building { Building, total_cost, funds_remaining }
             using (var e = m_Log.NewEvent("unqueue_building")) {
                 // TODO: e.Param("Building", ???);
-                //      should include building type and tile index?
+                //          Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
                 // TODO: e.Param("total_cost", int);
                 // TODO: e.Param("funds_remaining", int);
             }
@@ -364,9 +493,9 @@ namespace Zavala.Data {
         private void LogEndBuildMode() {
             // toggle_map_mode { new_mode : enum(VIEW, BUILD)
             using (var e = m_Log.NewEvent("toggle_map_mode")) {
-                e.Param("new_mode", "VIEW");
+                e.Param("new_mode", Mode.View);
             }
-            m_CurrentMode = ViewMode.VIEW;
+            m_CurrentMode = Mode.View;
         }
 
 
@@ -380,25 +509,22 @@ namespace Zavala.Data {
             using (var e = m_Log.NewEvent("county_changed")) {
                 e.Param("county_name", county);
             }
-
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("current_county", county);
-            }
+            UpdateRegionState(county);
         }
 
-        private void LogZoom(bool wheel) {
+        private void LogZoom(ZoomData info) {
             // change_zoom { start_zoom: float, end_zoom : float, with_mousewheel : bool }
             using (var e = m_Log.NewEvent("change_zoom")) {
-                // TODO: e.Param("start_zoom", float)
-                // TODO: e.Param("end_zoom", float)
-                e.Param("with_mousewheel", wheel);
+                e.Param("start_zoom", info.Start);
+                e.Param("end_zoom", info.End);
+                e.Param("with_mousewheel", info.UsedWheel);
             }
         }
 
-        private void LogRegionUnlocked(ushort newRegion) {
+        private void LogRegionUnlocked(string newRegion) {
             // county_unlock { county_name, county_state : CountyBuildMap }
             using (var e = m_Log.NewEvent("county_unlock")) {
-                e.Param("county_name", ((RegionId)newRegion).ToString());
+                e.Param("county_name", newRegion);
                 // TODO: e.Param("county_state", );
             }
         }
@@ -419,11 +545,11 @@ namespace Zavala.Data {
             }
         }
 
-        private void LogPolicyOpened(PolicyType type) {
+        private void LogPolicyOpened(PolicyType type, bool fromTaskbar) {
             // click_open_policy { policy: enum(...), from_taskbar : bool }
             using (var e = m_Log.NewEvent("click_open_policy")) {
                 e.Param("policy", type.ToString());
-                // TODO: e.Param("from_taskbar", false);
+                e.Param("from_taskbar", fromTaskbar);
             }
 
         }
@@ -435,12 +561,12 @@ namespace Zavala.Data {
             }
         }
 
-        private void LogUnlockView(AdvisorType type) {
+        private void LogUnlockView(bool isEcon) {
             //unlock_view { view_type : enum(PHOSPHORUS_VIEW, ECONOMY_VIEW) }
             using (var e = m_Log.NewEvent("unlock_view")) {
-                if (type == AdvisorType.ECONOMY) {
+                if (isEcon) {
                     e.Param("view_type", "ECONOMY_VIEW");
-                } else if (type == AdvisorType.ECOLOGY) {
+                } else {
                     e.Param("view_type", "PHOSPHORUS_VIEW");
                 }
             }
@@ -464,6 +590,7 @@ namespace Zavala.Data {
             } else {
                 m_Log.Log("close_phosphorus_view");
             }
+            UpdatePhosState(toggle);
         }
 
         private void LogSkimmerAppear() {
@@ -531,80 +658,120 @@ namespace Zavala.Data {
         #endregion // Alert
 
         #region Inspector
-        private void LogInspectBuilding() {
+        private void LogInspectBuilding(BuildingData data) {
             // click_inspect_building { building_type : enum(GATE, CITY, DAIRY_FARM, GRAIN_FARM, STORAGE, PROCESSOR, EXPORT_DEPOT), building_id, tile_index : int // index in the county map }
+            using (var e = m_Log.NewEvent("click_inspect_building")) {
+                e.Param("building_type", data.Type.ToString());
+                e.Param("building_id", data.Id);
+                e.Param("tile_index", data.TileIndex);
+            }
+
         }
 
         private void LogDismissInspector() {
             // dismiss_building_inspector: { building_type, building_id, tile_index }
+            using (var e = m_Log.NewEvent("dismiss_building_inspector")) {
+                e.Param("building_type", m_InspectingBuilding.Type.ToString());
+                e.Param("building_id", m_InspectingBuilding.Id);
+                e.Param("tile_index", m_InspectingBuilding.TileIndex);
+            }
+            m_InspectingBuilding = new BuildingData() {
+                Type = BuildingType.None,
+                Id = "",
+                TileIndex = -1
+            };
         }
 
         private void LogInspectorDisplayed() {
             // building_inspector_displayed : { building_type, building_id, tile_index}
+            using (var e = m_Log.NewEvent("building_inspector_displayed")) {
+                e.Param("building_type", m_InspectingBuilding.Type.ToString());
+                e.Param("building_id", m_InspectingBuilding.Id);
+                e.Param("tile_index", m_InspectingBuilding.TileIndex);
+            }
 
-            /*
-            storage_inspector_displayed : { building_id, tile_index, units_filled : int }
-            city_inspector_displayed : {
-                building_id
-                tile_index
-                city_name : str
-                population : enum(RISING, FALLING, STABLE)
-                water : enum(GOOD, OK, BAD)
-                milk : enum(PLENTY, ENOUGH, NOT_ENOUGH)
+            switch (m_InspectingBuilding.Type) {
+                case BuildingType.City:
+                    /* TODO:
+                    city_inspector_displayed : {
+                        building_id
+                        tile_index
+                        city_name : str
+                        population : enum(RISING, FALLING, STABLE)
+                        water : enum(GOOD, OK, BAD)
+                        milk : enum(PLENTY, ENOUGH, NOT_ENOUGH)
+                    }
+                    */
+                    break;
+                case BuildingType.GrainFarm:
+                    /* TODO:
+                    grain_inspector_displayed {
+                        building_id
+                        tile_index
+                        “grain_tab” : [{
+                            is_active : bool
+                            farm_name : str
+                            farm_county : str
+                            base_price
+                            shipping_cost
+                            total_profit
+                        }],
+                        “fertilizer_tab” : [{
+                            is_active : bool
+                            farm_name : str
+                            farm_county : str
+                            base_price
+                            shipping_cost
+                            sales_policy : int$
+                            import_policy : int$
+                            total_profit
+                        }]
+                    }
+                     */
+                    break;
+                case BuildingType.DairyFarm:
+                    /* TODO:
+                    dairy_inspector_displayed {
+                        building_id
+                        tile_index
+                        “grain_tab” : [{
+                            is_active : bool
+                            farm_name : str
+                            farm_county : str
+                            base_price
+                            shipping_cost
+                            sales_policy : int$
+                            import_policy : int$
+                            total_profit
+                        }],
+                        “dairy_tab” : [{
+                            is_active : bool
+                            farm_name : str
+                            farm_county : str | null
+                            base_price
+                            total_profit
+                        }],
+                        “fertilizer_tab” : [{
+                            is_active : bool
+                            farm_name : str
+                            farm_county : str | null
+                            base_price
+                            shipping_cost
+                            runoff_fine : int$
+                            total_profit
+                        }]
+                    }
+                     */
+                    break;
+                case BuildingType.Storage:
+                    /* TODO:
+                    storage_inspector_displayed : { building_id, tile_index, units_filled : int }
+                    */
+                    break;
+                default:
+                    break;
             }
-            grain_inspector_displayed {
-                building_id
-                tile_index
-                “grain_tab” : [{
-                    is_active : bool
-                    farm_name : str
-                    farm_county : str
-                    base_price
-                    shipping_cost
-                    total_profit
-                }],
-            “fertilizer_tab” : [{
-                    is_active : bool
-                    farm_name : str
-                    farm_county : str
-                    base_price
-                    shipping_cost
-                    sales_policy : int$
-                    import_policy : int$
-                    total_profit
-                }]
-            }
-            dairy_inspector_displayed {
-                building_id
-                tile_index
-                “grain_tab” : [{
-                    is_active : bool
-                    farm_name : str
-                    farm_county : str
-                    base_price
-                    shipping_cost
-                    sales_policy : int$
-                    import_policy : int$
-                    total_profit
-                }],
-            “dairy_tab” : [{
-                    is_active : bool
-                    farm_name : str
-                    farm_county : str | null
-                    base_price
-                    total_profit
-                }],
-            “fertilizer_tab” : [{
-                    is_active : bool
-                    farm_name : str
-                    farm_county : str | null
-                    base_price
-                    shipping_cost
-                    runoff_fine : int$
-                    total_profit
-                }]
-            }
-            */
+
         }
 
         private void LogClickInspectorTab(string name) {
@@ -739,12 +906,13 @@ namespace Zavala.Data {
             // lose_game { lose_condition: enum(CITY_FAILED, TOO_MANY_BLOOMS, OUT_OF_MONEY), county_id, county_name
             using (var e = m_Log.NewEvent("lose_game")) {
                 // TODO: e.Param("lose_condition", cond);
+                // TODO: e.Param("county_id", name);
                 // TODO: e.Param("county_name", name);
             }
         }
-    #endregion // End
+        #endregion // End
 
-    #endregion // Log Events
+        #endregion // Log Events
 
     }
 

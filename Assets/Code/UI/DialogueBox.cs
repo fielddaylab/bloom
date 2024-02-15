@@ -75,7 +75,8 @@ namespace Zavala.UI {
             //AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
             //advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
             ZavalaGame.Events.Register<AdvisorType>(GameEvents.AdvisorButtonClicked, HandleAdvisorButtonClicked);
-            
+            ZavalaGame.Events.Register<PolicyType>(GameEvents.PolicyButtonClicked, HandlePolicyButtonClicked);
+
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
             m_CloseButton.onClick.AddListener(() => { 
@@ -411,6 +412,12 @@ namespace Zavala.UI {
             // TODO: should probably just disable advisor buttons when dialogue is showing
 
             // If dialogue has completed when advisor button is clicked, hide this
+            if (m_FullyExpanded) {
+                m_TransitionRoutine.Replace(HideRoutine());
+            }
+        }
+
+        private void HandlePolicyButtonClicked(PolicyType pType) {
             if (m_FullyExpanded) {
                 m_TransitionRoutine.Replace(HideRoutine());
             }

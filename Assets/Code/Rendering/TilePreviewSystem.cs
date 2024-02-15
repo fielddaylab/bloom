@@ -62,7 +62,7 @@ namespace Zavala.Rendering
                         ShowIcon();
                         m_StateD.Icon.transform.position = SimWorldUtility.GetTileCenter(idx);
                         m_StateD.TileIndex = idx;
-
+                        ZavalaGame.Events.Dispatch(GameEvents.HoverTile, idx);
                         if (btState.ActiveTool != UserBuildTool.Destroy) {
                             if (btState.BlockedIdxs.Contains(idx)) {
                                 m_StateD.Icon.MeshRenderer.sharedMaterial = m_StateD.BuildingMaterialInvalid;

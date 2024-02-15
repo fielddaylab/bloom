@@ -59,7 +59,8 @@ namespace Zavala.Economy {
 
         static public void RefreshShop(BudgetData budgetData, ShopState shopState, SimGridState gridState) {
             uint idx = gridState.CurrRegionIndex;
-            shopState.ShopUI.NetText.text = /*"Net: " +*/ budgetData.BudgetsPerRegion[idx].Net.ToString();
+            long amt = budgetData.BudgetsPerRegion[idx].Net;
+            shopState.ShopUI.NetText.text = /*"Net: " +*/ amt.ToString();
             shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[idx].Net);
         }
 
