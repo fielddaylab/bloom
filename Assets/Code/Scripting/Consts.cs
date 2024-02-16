@@ -26,11 +26,14 @@ namespace Zavala
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";
         static public readonly StringHash32 AdvisorButtonClicked = "advisors:advisor-clicked";
         static public readonly StringHash32 PolicyButtonClicked = "advisors:policy-clicked";
+        static public readonly StringHash32 PolicyHover = "advisors:policy-hover";
+        static public readonly StringHash32 PolicySet = "advisors:policy-set";
         static public readonly StringHash32 AdvisorLensUnlocked = "advisors:lens-unlocked";
 
         static public readonly StringHash32 MarketCycleTickCompleted = "sim:market-cycle-completed";
         static public readonly StringHash32 ForceMarketPrioritiesRebuild = "sim:force-market-priorities-rebuild";
         static public readonly StringHash32 MarketPrioritiesRebuilt = "sim:market-priorities-rebuilt";
+        static public readonly StringHash32 BudgetRefreshed = "sim:budget-refreshed";
         static public readonly StringHash32 ToggleEconomyView = "sim:toggle-economy-view";
         static public readonly StringHash32 TogglePhosphorusView = "sim:toggle-phosphorus-view";
 
@@ -43,6 +46,11 @@ namespace Zavala
         static public readonly StringHash32 SimUserPaused = "sim:user-paused";
         static public readonly StringHash32 SimUserResumed = "sim:user-resumed";
         static public readonly StringHash32 SimZoomChanged = "sim:zoom";
+
+        static public readonly StringHash32 GlobalAlertAppeared = "sim:global-appeared";
+        static public readonly StringHash32 GlobalAlertClicked = "sim:global-clicked";
+        static public readonly StringHash32 AlertAppeared = "sim:alert-appeared";
+        static public readonly StringHash32 AlertClicked = "sim:alert-clicked";
 
         static public readonly StringHash32 BlueprintModeStarted = "blueprint:started";
         static public readonly StringHash32 BlueprintModeEnded = "blueprint:ended";
@@ -70,6 +78,7 @@ namespace Zavala
         static public readonly StringHash32 CutsceneStarted = "dialogue:cutscene-started";
         static public readonly StringHash32 CutsceneEnded = "dialogue:cutscene-ended";
         static public readonly StringHash32 DialogueStarted = "dialogue:started";
+        static public readonly StringHash32 DialogueDisplayed = "dialogue:displayed";
         static public readonly StringHash32 DialogueAdvanced = "dialogue:advanced";
         static public readonly StringHash32 DialogueClosing = "dialogue:closing";
 

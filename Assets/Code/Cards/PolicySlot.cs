@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Advisor;
 using Zavala.Audio;
+using Zavala.Data;
 using Zavala.Input;
 using Zavala.Sim;
 
@@ -260,6 +261,7 @@ namespace Zavala.Cards
 
             CardUIUtility.ExtractLocText(args.Data, out locText);
             m_Text.SetText(locText);
+            ZavalaGame.Events.Dispatch(GameEvents.PolicyHover,  new PolicyData(args.Data.PolicyType, (int)args.Data.PolicyLevel, locText));
         }
 
         private void OnCardHoverExit(object sender, EventArgs args)

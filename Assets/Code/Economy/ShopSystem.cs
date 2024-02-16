@@ -62,6 +62,7 @@ namespace Zavala.Economy {
             long amt = budgetData.BudgetsPerRegion[idx].Net;
             shopState.ShopUI.NetText.text = /*"Net: " +*/ amt.ToString();
             shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[idx].Net);
+            ZavalaGame.Events.Dispatch(GameEvents.BudgetRefreshed, (int)amt);
         }
 
         public static int PriceLookup(UserBuildTool building) {

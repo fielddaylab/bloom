@@ -24,7 +24,7 @@ namespace Zavala.UI {
         //public RectTransform AlertBannerRect;
         //public PointerListener Pointer;
         public RectTransform m_Rect;
-        public int MaxQueuedEvents = 5; // there should really only ever be 1 but let's keep it to 5 for emergencies
+        public int MaxQueuedEvents = 5;
 
         public Button m_Button;
         public RingBuffer<EventActor> QueuedActors = new RingBuffer<EventActor>(5);

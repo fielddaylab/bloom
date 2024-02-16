@@ -14,6 +14,7 @@ using Zavala.Building;
 using EasyAssetStreaming;
 using Zavala.UI.Info;
 using System.Collections.Generic;
+using Zavala.Scripting;
 
 namespace Zavala.Data {
 
@@ -213,6 +214,51 @@ namespace Zavala.Data {
         }
     }
 
+
+    public struct ScriptNodeData {
+        public string NodeId;
+        public bool Skippable;
+        public ScriptNodeData(string nodeId, bool skippable) {
+            NodeId = nodeId;
+            Skippable = skippable;
+        }
+    }
+
+    public struct DialogueLineData {
+        public string CharName;
+        public string CharTitle;
+        public string Text;
+        public DialogueLineData(string name, string title, string text) {
+            CharName = name;
+            CharTitle = title;
+            Text = text;
+        }
+    }
+
+    public struct PolicyData {
+        public PolicyType Type;
+        public int Level;
+        // public int RegionIndex;
+        public string HintText;
+        public PolicyData(PolicyType type, int level, /*int region,*/ string hintText = "") {
+            Type = type;
+            Level = level;
+            // RegionIndex = region;
+            HintText = hintText;
+        }
+    }
+
+    public struct AlertData {
+        public EventActorAlertType Type;
+        public int TileIndex;
+        public string AttachedNode;
+        public AlertData(EventActorAlertType type, int idx, string node) {
+            Type = type;
+            TileIndex = idx;
+            AttachedNode = node;
+        }
+    }
+
     public class AnalyticsService : MonoBehaviour {
         private const ushort CLIENT_LOG_VERSION = 1;
 
@@ -270,8 +316,9 @@ namespace Zavala.Data {
         [NonSerialized] private string m_CurrentTool;
         [NonSerialized] private BuildingData m_InspectingBuilding;
 
-        [NonSerialized] private ushort m_CurrentCutscene;
-        [NonSerialized] private ushort m_CurrentCutscenePage;
+        [NonSerialized] private short m_CurrentCutscene;
+        [NonSerialized] private short m_CurrentCutscenePage;
+        [NonSerialized] private DialogueLineData m_CurrentLine;
         // current policies
         // dialogue character opened (or none)
         // dialogue phrase displaying (or none)
@@ -293,10 +340,14 @@ namespace Zavala.Data {
                 .Register<bool>(GameEvents.QualityToggled, LogQualityToggled)
                 // Sim Controls
                 .Register<AdvisorType>(GameEvents.AdvisorButtonClicked, LogAdvisorButtonClicked)
+                .Register<int>(GameEvents.BudgetRefreshed, UpdateMoneyState)
                 .Register<bool>(GameEvents.ToggleEconomyView, LogMarketToggled)
                 .Register<bool>(GameEvents.TogglePhosphorusView, LogPhosToggled)
+                .Register<AlertData>(GameEvents.AlertAppeared, LogAlertDisplayed)
+                // TODO: do we want to log every pause or just player pause?
                 .Register(GameEvents.SimPaused, LogGamePaused)
                 .Register(GameEvents.SimResumed, LogGameResumed)
+                // Build
                 // TODO: Condense blueprint events with BlueprintInteractionType?
                 .Register(GameEvents.BlueprintModeStarted, LogStartBuildMode)
                 .Register(GameEvents.DestroyModeClicked, LogClickedDestroy)
@@ -310,6 +361,8 @@ namespace Zavala.Data {
                 .Register<PolicyType>(GameEvents.PolicyTypeUnlocked, LogPolicyUnlocked)
                 .Register<PolicyType>(GameEvents.PolicySlotClicked, (PolicyType type) => LogPolicyOpened(type, false))
                 .Register<PolicyType>(GameEvents.PolicyButtonClicked, (PolicyType type) => LogPolicyOpened(type, true))
+                .Register<PolicyData>(GameEvents.PolicyHover, LogHoverPolicy)
+                .Register<PolicyData>(GameEvents.PolicySet, LogPolicySet)
                 .Register<bool>(GameEvents.AdvisorLensUnlocked, LogUnlockView)
                 // ADD?                
                 .Register<ushort>(GameEvents.RegionSwitched, LogRegionChanged)
@@ -325,6 +378,10 @@ namespace Zavala.Data {
                 // Dialogue
                 .Register<int>(GameEvents.CutsceneStarted, LogStartCutscene)
                 .Register(GameEvents.CutsceneEnded, LogEndCutscene)
+                .Register<ScriptNodeData>(GameEvents.DialogueStarted, LogStartDialogue)
+                .Register<DialogueLineData>(GameEvents.DialogueDisplayed, HandleDialogueDisplayed)
+                .Register(GameEvents.DialogueAdvanced, HandleDialogueAdvanced)
+                .Register<ScriptNodeData>(GameEvents.DialogueClosing, LogEndDialogue)
 
                 .Register(GameEvents.GameWon, LogWonGame)
                 .Register<LossData>(GameEvents.GameFailed, LogFailedGame)
@@ -368,10 +425,10 @@ namespace Zavala.Data {
         /*
         Game State (across all events)
         county_policies : {
-	        “sales“ : { policy_choice : int | null, is_locked : bool },
-	        “import_subsidy“ : { policy_choice : int | null, is_locked : bool },
-	        “runoff” : { policy_choice : int | null, is_locked : bool },
-	        “cleanup” : { policy_choice : int | null, is_locked : bool },
+	        ï¿½salesï¿½ : { policy_choice : int | null, is_locked : bool },
+	        ï¿½import_subsidyï¿½ : { policy_choice : int | null, is_locked : bool },
+	        ï¿½runoffï¿½ : { policy_choice : int | null, is_locked : bool },
+	        ï¿½cleanupï¿½ : { policy_choice : int | null, is_locked : bool },
         }
         // ADD?: avg_framerate : float
         */
@@ -387,7 +444,7 @@ namespace Zavala.Data {
             }
         }
 
-        public void UpdateMoneyState(int budget) {
+        private void UpdateMoneyState(int budget) {
             //         current_money : int
             m_CurrentBudget = budget;
             using (var s = m_Log.OpenGameState()) {
@@ -503,10 +560,12 @@ namespace Zavala.Data {
         }
 
         private void LogGamePaused() {
+            // TODO: do we want to log every pause or just player pauses?
             m_Log.Log("pause_game");
         }
 
         private void LogGameResumed() {
+            // TODO: do we want to log every pause or just player pauses?
             m_Log.Log("unpause_game");
         }
 
@@ -615,13 +674,10 @@ namespace Zavala.Data {
 
         #endregion Destroy
 
-        /*
-        unlock_building_type { building_type }
-         */
         private void LogQueuedBuilding() {
             //      queue_building { Building, total_cost, funds_remaining }
             using (var e = m_Log.NewEvent("queue_building")) {
-                // TODO: e.Param("Building", ???);
+                // TODO: e.Param(Building);
                 //          Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
                 // TODO: e.Param("total_cost", int);
                 // TODO: e.Param("funds_remaining", int);
@@ -631,7 +687,7 @@ namespace Zavala.Data {
         private void LogUnqueuedBuilding() {
             //      unqueue_building { Building, total_cost, funds_remaining }
             using (var e = m_Log.NewEvent("unqueue_building")) {
-                // TODO: e.Param("Building", ???);
+                // TODO: e.Param(Building);
                 //          Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
                 // TODO: e.Param("total_cost", int);
                 // TODO: e.Param("funds_remaining", int);
@@ -688,6 +744,13 @@ namespace Zavala.Data {
             }
         }
 
+        private void LogUnlockBuilding(string type) {
+            // unlock_building_type { building_type }
+            using (var e = m_Log.NewEvent("unlock_building_type")) {
+                e.Param("building_type", type);
+            }
+        }
+
         private void LogExportDepot() {
             // export_depot_spawned { depot_id, tile_id }
             using (var e = m_Log.NewEvent("export_depot_spawned")) {
@@ -712,6 +775,22 @@ namespace Zavala.Data {
             }
         }
 
+        private void LogHoverPolicy(PolicyData data) { // policy, level, hint text
+            // hover_policy_card { choice_number, choice_name, choice_text }
+            using (var e = m_Log.NewEvent("click_set_policy_choice")) {
+                e.Param("choice_name", data.Type.ToString());
+                e.Param("choice_number", data.Level);
+                e.Param("choice_text", data.HintText);
+            }
+        }
+
+        private void LogPolicySet(PolicyData data) { // policy and level
+            // click_set_policy_choice { choice_number, choice_name }
+            using (var e = m_Log.NewEvent("click_set_policy_choice")) {
+                e.Param("choice_name", data.Type.ToString());
+                e.Param("choice_number", data.Level);
+            }
+        }
         private void LogPolicyUnlocked(PolicyType type) {
             // unlock_policy { policy_name }
             using (var e = m_Log.NewEvent("unlock_policy")) {
@@ -771,20 +850,20 @@ namespace Zavala.Data {
 
         #region Alert
 
-        private void LogAlertDisplayed() {
+        private void LogAlertDisplayed(AlertData data) {
             // ADD? alert_displayed { alert_type, tile_id }
-            using (var e = m_Log.NewEvent("click_alert")) {
-                // TODO: e.Param("alert_type", EventActorAlertType)
-                // TODO: e.Param("tile_id", int)
+            using (var e = m_Log.NewEvent("alert_displayed")) {
+                e.Param("alert_id", data.Type.ToString());
+                e.Param("tile_id", data.TileIndex);
             }
         }
 
-        private void LogAlertClicked() {
+        private void LogAlertClicked(AlertData data) {
             // ADD? click_alert { alert_type, tile_id, node_id }
             using (var e = m_Log.NewEvent("click_alert")) {
-                // TODO: e.Param("alert_type", EventActorAlertType)
-                // TODO: e.Param("tile_id", int)
-                // TODO: e.Param("node_id", int)
+                e.Param("alert_id", data.Type.ToString());
+                e.Param("tile_id", data.TileIndex);
+                e.Param("node_id", data.AttachedNode);
             }
         }
 
@@ -796,19 +875,19 @@ namespace Zavala.Data {
             }
         }
 
-        private void LogGlobalAlertDisplayed() {
+        private void LogGlobalAlertDisplayed(AlertData data) {
             // global_alert_displayed { alert_id, node_id }
             using (var e = m_Log.NewEvent("global_alert_displayed")) {
-                // TODO: e.Param("actor_id", string)
-                // TODO: e.Param("node_id", int)
+                e.Param("alert_id", data.Type.ToString());
+                e.Param("node_id", data.AttachedNode);
             }
         }
 
-        private void LogGlobalAlertClicked() {
+        private void LogGlobalAlertClicked(AlertData data) {
             // click_global_alert  { alert_id, node_id }
             using (var e = m_Log.NewEvent("click_global_alert")) {
-                // TODO: e.Param("actor_id", string)
-                // TODO: e.Param("node_id", int)
+                e.Param("alert_id", data.Type.ToString());
+                e.Param("node_id", data.AttachedNode);
             }
         }
 
@@ -873,7 +952,7 @@ namespace Zavala.Data {
             grain_inspector_displayed {
                 building_id
                 tile_index
-                “grain_tab” : [{
+                ï¿½grain_tabï¿½ : [{
                     is_active : bool 
                     farm_name : str
                     farm_county : str
@@ -881,7 +960,7 @@ namespace Zavala.Data {
                     shipping_cost
                     total_profit
                 }],
-                “fertilizer_tab” : [{
+                ï¿½fertilizer_tabï¿½ : [{
                     is_active : bool
                     farm_name : str
                     farm_county : str
@@ -911,7 +990,7 @@ namespace Zavala.Data {
             dairy_inspector_displayed {
                 building_id
                 tile_index
-                “grain_tab” : [{
+                ï¿½grain_tabï¿½ : [{
                     is_active : bool
                     farm_name : str
                     farm_county : str
@@ -921,14 +1000,14 @@ namespace Zavala.Data {
                     import_policy : int$
                     total_profit
                 }],
-                “dairy_tab” : [{
+                ï¿½dairy_tabï¿½ : [{
                     is_active : bool
                     farm_name : str
                     farm_county : str | null
                     base_price
                     total_profit
                 }],
-                “fertilizer_tab” : [{
+                ï¿½fertilizer_tabï¿½ : [{
                     is_active : bool
                     farm_name : str
                     farm_county : str | null
@@ -1005,63 +1084,64 @@ namespace Zavala.Data {
         #endregion // Sim
 
         #region Dialogue
-        private void HandleDialogueAdvanced(bool isCutscene) {
-            // TODO:
-            if (isCutscene) {
-                LogCutscenePageAdvanced();
-            } else {
+        private void HandleDialogueAdvanced() {
+            if (m_CurrentCutscene < 0) {
                 LogDialogueAdvanced();
-            }
-        }
-
-        private void HandleDialogueDisplayed(bool isCutscene, string text) {
-            if (isCutscene) {
-                LogCutscenePageDisplayed(text);
             } else {
-                LogDialogueDisplayed(text);
+                LogCutscenePageAdvanced();
+            }
+        }
+
+        private void HandleDialogueDisplayed(DialogueLineData data) {
+            m_CurrentLine = data;
+            if (m_CurrentCutscene < 0) {
+                LogDialogueDisplayed();
+            } else {
+                LogCutscenePageDisplayed();
             }
         }
 
 
-        private void LogStartDialogue() {
+        private void LogStartDialogue(ScriptNodeData data) {
             //dialog_start { skippable: bool, node_id}
             using (var e = m_Log.NewEvent("dialogue_start")) {
-                // TODO: e.Param("skippable", bool);
-                // TODO: e.Param("node_id", string);
+                e.Param("skippable", data.Skippable);
+                e.Param("node_id", data.NodeId);
             }
         }
 
         private void LogDialogueAdvanced() {
             // click_next_character_line { character_name, character_type, line_text }
             using (var e = m_Log.NewEvent("click_next_character_line")) {
-                // TODO: e.Param("character_name", string);
-                // TODO: e.Param("character_type", string);
-                // TODO: e.Param("line_text", string);
+                // is it necessary to re-log the line we just logged?
+                e.Param("character_name", m_CurrentLine.CharName);
+                e.Param("character_type", m_CurrentLine.CharTitle);
+                e.Param("line_text", m_CurrentLine.Text);
             }
 
         }
 
-        private void LogDialogueDisplayed(string text) {
+        private void LogDialogueDisplayed() {
             //character_line_displayed { character_name, character_type, line_text }
             using (var e = m_Log.NewEvent("character_line_displayed")) {
-                // TODO: e.Param("character_name", string);
-                // TODO: e.Param("character_type", string);
-                // TODO: e.Param("line_text", string);
+                e.Param("character_name", m_CurrentLine.CharName);
+                e.Param("character_type", m_CurrentLine.CharTitle);
+                e.Param("line_text", m_CurrentLine.Text);
             }
         }
 
-        private void LogEndDialogue() {
+        private void LogEndDialogue(ScriptNodeData data) {
             //dialog_end { skippable, node_id }
             using (var e = m_Log.NewEvent("dialogue_end")) {
-                // TODO: e.Param("skippable", bool);
-                // TODO: e.Param("node_id", string);
+                e.Param("skippable", data.Skippable);
+                e.Param("node_id", data.NodeId);
             }
         }
 
         private void LogStartCutscene(int id) {
             // cutscene_started { cutscene_id }
-            m_CurrentCutscene = (ushort)id;
-            m_CurrentCutscenePage = 1;
+            m_CurrentCutscene = (short)id;
+            m_CurrentCutscenePage = 0;
             using (var e = m_Log.NewEvent("cutscene_started")) {
                 e.Param("cutscene_id", id);
             }
@@ -1077,13 +1157,13 @@ namespace Zavala.Data {
             m_CurrentCutscenePage++;
         }
 
-        private void LogCutscenePageDisplayed(string text) {
+        private void LogCutscenePageDisplayed() {
             // cutscene_page_displayed { cutscene_id, page_id, frame_ids : List[str], page_text }
             using (var e = m_Log.NewEvent("cutscene_page_displayed")) {
                 e.Param("cutscene_id", m_CurrentCutscene);
                 e.Param("page_id", m_CurrentCutscenePage);
                 // TODO: e.Param("frame_ids", [str]);
-                // TODO: e.Param("page_text");
+                e.Param("page_text", m_CurrentLine.Text);
             }
         }
 
@@ -1092,8 +1172,8 @@ namespace Zavala.Data {
             using (var e = m_Log.NewEvent("cutscene_end")) {
                 e.Param("cutscene_id", m_CurrentCutscene);
             }
-            m_CurrentCutscene = 0;
-            m_CurrentCutscenePage = 0;
+            m_CurrentCutscene = -1;
+            m_CurrentCutscenePage = -1;
         }
         #endregion // Dialogue
 
