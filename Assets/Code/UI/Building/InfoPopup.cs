@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BeauRoutine;
 using BeauRoutine.Extensions;
 using BeauUtil;
@@ -13,12 +14,38 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zavala.Actors;
 using Zavala.Advisor;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.Roads;
 using Zavala.Scripting;
 using Zavala.Sim;
 
-namespace Zavala.UI.Info {
+namespace Zavala.UI.Info
+{
+    [Serializable]
+    public struct InspectorTabProfitGroup {
+        public List<InspectorLocationQuery> Locations;
+        public List<InspectorProfitQuery> Profits;
+    }
+
+    public struct InspectorLocationQuery
+    {
+        public bool IsActive;
+        public string FarmName;
+        public string FarmCounty;
+    }
+
+    public struct InspectorProfitQuery
+    {
+        public int BasePrice;
+        public int ShippingCost;
+        public int ImportTax;
+        public int SalesTax;
+        public int Penalties;
+        public int TotalProfit;
+    }
+
+
     public class InfoPopup : SharedRoutinePanel, IScenePreload {
         static private readonly Color GrainFarmColor = Colors.Hex("#C8E295");
         static private readonly Color DairyFarmColor = Colors.Hex("#E2CD95");
@@ -105,10 +132,15 @@ namespace Zavala.UI.Info {
         [NonSerialized] private ResourceRequester m_SelectedRequester;
         [NonSerialized] private ResourcePurchaser m_SelectedPurchaser;
         [NonSerialized] private ResourceMask m_ActiveResource;
+        [NonSerialized] private ResourceMask m_AvailableTabsMask;
+        [NonSerialized] private InspectorTabProfitGroup m_ActiveTabProfitGroup = new InspectorTabProfitGroup();
+        [NonSerialized] private InspectorDisplayData m_InspectorDisplayData;
         [NonSerialized] private bool m_ConnectionsDirty;
+        [NonSerialized] private bool m_InitialOpen;
         [NonSerialized] public bool HoldOpen;
 
         private readonly RingBuffer<MarketQueryResultInfo> m_QueryResults = new RingBuffer<MarketQueryResultInfo>(16, RingBufferMode.Expand);
+        private readonly RingBuffer<MarketQueryResultInfo> m_TempQueryResults = new RingBuffer<MarketQueryResultInfo>(16, RingBufferMode.Expand);
 
         static public readonly Comparison<MarketQueryResultInfo> SortResultsDescending = (x, y) => {
             return y.Profit - x.Profit;
@@ -126,6 +158,8 @@ namespace Zavala.UI.Info {
             foreach (InfoPopupTab tab in m_Tabs) {
                 tab.TabButton.onClick.AddListener(() => HandleTabClicked(tab.Resource));
             }
+            m_InspectorDisplayData = new InspectorDisplayData();
+            m_InspectorDisplayData.AllAvailableTabs = new List<InspectorTabProfitGroup>();
             return null;
         }
 
@@ -192,7 +226,8 @@ namespace Zavala.UI.Info {
                     m_ResourceIcon.gameObject.SetActive(true);
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
-                    SetTabsVisible((ResourceMask)0b01110); // weird to hardcode this?
+                    m_AvailableTabsMask = (ResourceMask)0b01110;
+                    SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
                     PickTab(ResourceMask.Phosphorus);
                     break;
                 }
@@ -207,7 +242,8 @@ namespace Zavala.UI.Info {
                     m_ResourceIcon.gameObject.SetActive(true);
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
-                    SetTabsVisible((ResourceMask)0b11001); // weird to hardcode this?
+                    m_AvailableTabsMask = (ResourceMask)0b11001;
+                    SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
                     PickTab(ResourceMask.Manure);
                     break;
                     }
@@ -269,6 +305,7 @@ namespace Zavala.UI.Info {
             m_Pin.Pin(thing.transform);
             PopulateHeader();
             m_ConnectionsDirty = true;
+            m_InitialOpen = true;
             Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
 
             ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, new Data.BuildingData(m_Mode, title, idx));
@@ -285,10 +322,11 @@ namespace Zavala.UI.Info {
             }
         }
 
-        private void PopulateMarketDisplay(bool isShipping) {
+        private void PopulateMarketDisplay(bool isShipping, bool recordAllTabs) {
             if (isShipping) {
-                PopulateShippingWide();
+                PopulateShippingWide(recordAllTabs);
             } else {
+                // NOTE: obsolete implementation. If we start using it again, will need a similar recordAllTabs functionality
                 PopulatePurchasingWide();
             }
         }
@@ -296,11 +334,13 @@ namespace Zavala.UI.Info {
         /// <summary>
         /// Populate seller (CAFO) popup
         /// </summary>
-        private void PopulateShippingWide()
+        private void PopulateShippingWide(bool recordAllTabs)
         {
             bool showRunoff = (m_ActiveResource & ResourceMask.Manure) != 0;
             int shrinkShipping = showRunoff ? 70 : 120;
             Root.sizeDelta = new Vector2(WideWidth - shrinkShipping, WideHeight);
+
+            bool shipping = m_ActiveResource != ResourceMask.Grain;
 
             int queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
             ConfigureCols(WideNumRows);
@@ -309,6 +349,51 @@ namespace Zavala.UI.Info {
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
 
+            m_InspectorDisplayData.AllAvailableTabs.Clear();
+            if (recordAllTabs) {
+
+                foreach (var currResourceMask in MarketUtility.MarketMasks)
+                {
+                    // iterate through all relevant groups
+                    if ((m_AvailableTabsMask & currResourceMask) != 0)
+                    {
+                        shipping = currResourceMask != ResourceMask.Grain;
+                        m_TempQueryResults.Clear();
+                        if ((m_ActiveResource & currResourceMask) != 0)
+                        {
+                            m_QueryResults.CopyTo(m_TempQueryResults);
+                        }
+                        else
+                        {
+                            MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_TempQueryResults, currResourceMask, shipping, true);
+                            SortQueryResults(shipping);
+                        }
+                        queryCount = Math.Min(m_TempQueryResults.Count, WideNumRows);
+                        showRunoff = (currResourceMask & ResourceMask.Manure) != 0;
+
+                        InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
+                        newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherProfitGroupsForResourceTab(policyState, grid, config, currResourceMask, WideNumRows, queryCount, m_TempQueryResults, showRunoff);
+                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations);
+                        m_InspectorDisplayData.AllAvailableTabs.Add(newTabProfitGroup);
+
+                        if ((m_ActiveResource & currResourceMask) != 0)
+                        {
+                            m_ActiveTabProfitGroup = newTabProfitGroup;
+                        }
+                    }
+                }
+            }
+            else {
+                InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
+                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations);
+                newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherProfitGroupsForResourceTab(policyState, grid, config, m_ActiveResource, WideNumRows, queryCount, m_QueryResults, showRunoff);
+                m_ActiveTabProfitGroup = newTabProfitGroup;
+            }
+
+            shipping = m_ActiveResource != ResourceMask.Grain;
+            showRunoff = (m_ActiveResource & ResourceMask.Manure) != 0;
+            queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
+
             for (int i = 0; i < WideNumRows; i++)
             {
                 if (i < queryCount)
@@ -316,8 +401,8 @@ namespace Zavala.UI.Info {
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = results.TaxRevenue.Penalties > 0;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i);
-                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, showRunoff);
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i]);
+                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i]);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = SellArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = SellArrowTextColor;
                 }
@@ -365,7 +450,7 @@ namespace Zavala.UI.Info {
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = false;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i);
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, new InspectorLocationQuery());
                     InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = BuyArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = BuyArrowTextColor;
@@ -405,12 +490,17 @@ namespace Zavala.UI.Info {
             }
         }
 
-        private void PopulateStorageCapacity()
+        private void PopulateStorageCapacity(out int unitsFilled)
         {
             Root.sizeDelta = new Vector2(SmallWidth, SmallHeight + 15);
 
             var storage = m_SelectedLocation.GetComponent<ResourceStorage>();
-            if (!storage) { return; }
+            if (!storage) {
+                unitsFilled = -1;
+                return; 
+            }
+
+            unitsFilled = storage.Current.Manure;
 
             InfoPopupMarketUtility.LoadStorageCapacity(m_StorageGroup, storage.Current.Manure, storage.Capacity.Manure);
 
@@ -423,24 +513,18 @@ namespace Zavala.UI.Info {
             }
         }
 
-        private void PopulateCity() {
+        private void PopulateCity(out CityPopulationLog cityPop, out CityWaterStatusLog cityWater, out CityMilkStatusLog cityMilk) {
+            StressableActor actor = m_SelectedPurchaser.GetComponent<StressableActor>();
+
             Root.sizeDelta = new Vector2(NarrowWidth, NarrowHeight);
 
-            /*
-            int purchaseAmount = m_SelectedPurchaser.RequestAmount.Milk;
-            m_PurchaseContents.Number.SetText(purchaseAmount.ToStringLookup());
-
-            float average = 0;
-            foreach(var amt in m_SelectedPurchaser.RequestAmountHistory) {
-                average += amt.Milk;
-            }
-            average /= m_SelectedPurchaser.RequestAmountHistory.Count;
-            */
+            cityPop = StressUtility.OperationStateToCityPopulationLog(actor.OperationState);
+            cityWater = StressUtility.ExtractCityWaterStatusLog(actor);
+            cityMilk = StressUtility.ExtractCityMilkStatusLog(actor);
 
             // TODO: determine sources of stress (blooms, not enough milk, etc)
             m_PurchaseContents.WaterStatus.gameObject.SetActive(true);
             m_PurchaseContents.MilkStatus.gameObject.SetActive(true);
-            StressableActor actor = m_SelectedPurchaser.GetComponent<StressableActor>();
 
             if (actor.OperationState == OperationState.Great)
             {
@@ -572,7 +656,10 @@ namespace Zavala.UI.Info {
                     MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_QueryResults, m_ActiveResource, shipping, refresh);
 
                     SortQueryResults(shipping);
-                    PopulateMarketDisplay(shipping);
+                    PopulateMarketDisplay(shipping, m_InitialOpen);
+                    if (m_InitialOpen) {
+                        DispatchDairyFarmDisplayed();
+                    }
                     break;
                 }
 
@@ -584,37 +671,165 @@ namespace Zavala.UI.Info {
                     }
                     MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_QueryResults, m_ActiveResource, shipping, refresh);
                     SortQueryResults(shipping);
-                    PopulateMarketDisplay(shipping);
+                    PopulateMarketDisplay(shipping, m_InitialOpen);
+                    if (m_InitialOpen) {
+                        DispatchGrainFarmDisplayed();
+                    }
                     break;
                 }
 
                 case BuildingType.City: {
-                    PopulateCity();
+                    PopulateCity(out CityPopulationLog cityPop, out CityWaterStatusLog cityWater, out CityMilkStatusLog cityMilk);
+                    // tab initial open corresponds to forceRefresh
+                    if (m_InitialOpen) {
+                        ZavalaGame.Events.Dispatch(GameEvents.CityInspectorDisplayed,
+                            new Data.CityData(
+                                Loc.Find(m_SelectedLocation.TitleLabel),
+                                cityPop,
+                                cityWater,
+                                cityMilk
+                            )
+                        );
+                    }
                     break;
                 }
 
                 case BuildingType.Digester: {
                     PopulateDescriptionSmall();
+                    if (m_InitialOpen) {
+                        ZavalaGame.Events.Dispatch(GameEvents.GenericInspectorDisplayed);
+                    }
                     break;
                 }
 
                 case BuildingType.Storage: {
-                    PopulateStorageCapacity();
+                    PopulateStorageCapacity(out int unitsFilled);
+                    if (m_InitialOpen) {
+                        ZavalaGame.Events.Dispatch(GameEvents.StorageInspectorDisplayed, new Data.StorageData(unitsFilled));
+                    }
                     break;
                 }
 
                 case BuildingType.TollBooth: {
                     PopulateDescriptionSmall();
+                    if (m_InitialOpen) {
+                        ZavalaGame.Events.Dispatch(GameEvents.GenericInspectorDisplayed);
+                    }
                     break;
                 }
 
                 case BuildingType.ExportDepot: {
                     PopulateDescriptionSmall();
+                    if (m_InitialOpen) {
+                        ZavalaGame.Events.Dispatch(GameEvents.GenericInspectorDisplayed);
+                    }
                     break;
                 }
             }
 
             m_ConnectionsDirty = false;
+            m_InitialOpen = false;
+        }
+
+        private void DispatchGrainFarmDisplayed()
+        {
+            GrainFarmData newFarmData = new GrainFarmData();
+
+            for (int tabIdx = 0; tabIdx < m_ActiveTabProfitGroup.Profits.Count; tabIdx++)
+            {
+                if (tabIdx == 0)
+                {
+                    newFarmData.GrainTab = new List<GFarmGrainTabData>();
+                    for (int optionIdx = 0; optionIdx < m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations.Count; optionIdx++)
+                    {
+                        var newTabOption = new GFarmGrainTabData();
+                        newTabOption.IsActive = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].IsActive;
+                        newTabOption.FarmName = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmName;
+                        newTabOption.FarmCounty = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmCounty;
+                        newTabOption.BasePrice = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].BasePrice;
+                        newTabOption.ShippingCost = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].ShippingCost;
+                        newTabOption.TotalProfit = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].TotalProfit;
+                        newFarmData.GrainTab.Add(newTabOption);
+                    }
+                }
+                else
+                {
+                    newFarmData.FertilizerTab = new List<GFarmFertilizerTabData>();
+                    for (int optionIdx = 0; optionIdx < m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations.Count; optionIdx++)
+                    {
+                        var newTabOption = new GFarmFertilizerTabData();
+                        newTabOption.IsActive = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].IsActive;
+                        newTabOption.FarmName = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmName;
+                        newTabOption.FarmCounty = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmCounty;
+                        newTabOption.BasePrice = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].BasePrice;
+                        newTabOption.ShippingCost = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].ShippingCost;
+                        newTabOption.SalesPolicy = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].SalesTax;
+                        newTabOption.ImportPolicy = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].ImportTax;
+                        newTabOption.TotalProfit = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].TotalProfit;
+                        newFarmData.FertilizerTab.Add(newTabOption);
+                    }
+                }
+            }
+
+            ZavalaGame.Events.Dispatch(GameEvents.GrainFarmInspectorDisplayed, newFarmData);
+        }
+
+        private void DispatchDairyFarmDisplayed()
+        {
+            DairyFarmData newFarmData = new DairyFarmData();
+
+            for (int tabIdx = 0; tabIdx < m_InspectorDisplayData.AllAvailableTabs.Count; tabIdx++)
+            {
+                if (tabIdx == 0)
+                {
+                    newFarmData.GrainTab = new List<DFarmGrainTabData>();
+                    for (int optionIdx = 0; optionIdx < m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations.Count; optionIdx++)
+                    {
+                        var newTabOption = new DFarmGrainTabData();
+                        newTabOption.IsActive = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].IsActive;
+                        newTabOption.FarmName = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmName;
+                        newTabOption.FarmCounty = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmCounty;
+                        newTabOption.BasePrice = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].BasePrice;
+                        newTabOption.ShippingCost = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].ShippingCost;
+                        newTabOption.SalesPolicy = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].SalesTax;
+                        newTabOption.ImportPolicy = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].ImportTax;
+                        newTabOption.TotalProfit = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].TotalProfit;
+                        newFarmData.GrainTab.Add(newTabOption);
+                    }
+                }
+                else if (tabIdx == 1)
+                {
+                    newFarmData.DairyTab = new List<DFarmDairyTabData>();
+                    for (int optionIdx = 0; optionIdx < m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations.Count; optionIdx++)
+                    {
+                        var newTabOption = new DFarmDairyTabData();
+                        newTabOption.IsActive = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].IsActive;
+                        newTabOption.FarmName = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmName;
+                        newTabOption.FarmCounty = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmCounty;
+                        newTabOption.BasePrice = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].BasePrice;
+                        newTabOption.TotalProfit = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].TotalProfit;
+                        newFarmData.DairyTab.Add(newTabOption);
+                    }
+                }
+                else
+                {
+                    newFarmData.FertilizerTab = new List<DFarmFertilizerTabData>();
+                    for (int optionIdx = 0; optionIdx < m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations.Count; optionIdx++)
+                    {
+                        var newTabOption = new DFarmFertilizerTabData();
+                        newTabOption.IsActive = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].IsActive;
+                        newTabOption.FarmName = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmName;
+                        newTabOption.FarmCounty = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Locations[optionIdx].FarmCounty;
+                        newTabOption.BasePrice = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].BasePrice;
+                        newTabOption.ShippingCost = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].ShippingCost;
+                        newTabOption.Penalties = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].Penalties;
+                        newTabOption.TotalProfit = m_InspectorDisplayData.AllAvailableTabs[tabIdx].Profits[optionIdx].TotalProfit;
+                        newFarmData.FertilizerTab.Add(newTabOption);
+                    }
+                }
+            }
+
+            ZavalaGame.Events.Dispatch(GameEvents.DairyFarmInspectorDisplayed, newFarmData);
         }
 
         private void SortQueryResults(bool isShippingResource) {

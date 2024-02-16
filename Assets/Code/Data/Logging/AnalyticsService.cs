@@ -12,6 +12,8 @@ using Zavala.Advisor;
 using Zavala.Economy;
 using Zavala.Building;
 using EasyAssetStreaming;
+using Zavala.UI.Info;
+using System.Collections.Generic;
 
 namespace Zavala.Data {
 
@@ -40,6 +42,27 @@ namespace Zavala.Data {
         Ended // ended mode
     }
 
+    public enum CityPopulationLog : byte
+    {
+        RISING,
+        FALLING,
+        STABLE
+    }
+
+    public enum CityWaterStatusLog : byte
+    {
+        GOOD,
+        OKAY,
+        BAD
+    }
+
+    public enum CityMilkStatusLog : byte
+    {
+        PLENTY,
+        ENOUGH,
+        NOT_ENOUGH
+    }
+
     public struct ZoomData {
         public float Start;
         public float End;
@@ -64,6 +87,120 @@ namespace Zavala.Data {
             TileIndex = tileIndex;
             Id = "";
             Type = BuildingType.None;
+        }
+    }
+
+    public struct CityData {
+        public string Name;
+        public CityPopulationLog Population;
+        public CityWaterStatusLog Water;
+        public CityMilkStatusLog Milk;
+
+        public CityData(string name, CityPopulationLog population, CityWaterStatusLog water, CityMilkStatusLog milk)
+        {
+            Name = name;
+            Population = population;
+            Water = water;
+            Milk = milk;
+        }
+    }
+
+    public struct GrainFarmData {
+        public List<GFarmGrainTabData> GrainTab;
+        public List<GFarmFertilizerTabData> FertilizerTab;
+
+        public GrainFarmData(List<GFarmGrainTabData> grainTab, List<GFarmFertilizerTabData> fertilizerTab)
+        {
+            GrainTab = grainTab;
+            FertilizerTab = fertilizerTab;
+        }
+    }
+
+    [Serializable]
+    public struct GFarmGrainTabData
+    {
+        public bool IsActive;
+        public string FarmName;
+        public string FarmCounty;
+        public int BasePrice;
+        public int ShippingCost;
+        public int TotalProfit;
+    }
+
+    [Serializable]
+    public struct GFarmFertilizerTabData
+    {
+        public bool IsActive;
+        public string FarmName;
+        public string FarmCounty;
+        public int BasePrice;
+        public int ShippingCost;
+        public int SalesPolicy;
+        public int ImportPolicy;
+        public int TotalProfit;
+    }
+
+    [Serializable]
+    public struct DairyFarmData
+    {
+        public List<DFarmGrainTabData> GrainTab;
+        public List<DFarmDairyTabData> DairyTab;
+        public List<DFarmFertilizerTabData> FertilizerTab;
+
+        public DairyFarmData(List<DFarmGrainTabData> grainTab, List<DFarmDairyTabData> dairyTab, List<DFarmFertilizerTabData> fertilizerTab)
+        {
+            GrainTab = grainTab;
+            DairyTab = dairyTab;
+            FertilizerTab = fertilizerTab;
+        }
+    }
+
+    [Serializable]
+    public struct DFarmGrainTabData
+    {
+        public bool IsActive;
+        public string FarmName;
+        public string FarmCounty;
+        public int BasePrice;
+        public int ShippingCost;
+        public int SalesPolicy;
+        public int ImportPolicy;
+        public int TotalProfit;
+    }
+
+    [Serializable]
+    public struct DFarmDairyTabData
+    {
+        public bool IsActive;
+        public string FarmName;
+        public string FarmCounty;
+        public int BasePrice;
+        public int TotalProfit;
+    }
+
+    [Serializable]
+    public struct DFarmFertilizerTabData
+    {
+        public bool IsActive;
+        public string FarmName;
+        public string FarmCounty;
+        public int BasePrice;
+        public int ShippingCost;
+        public int Penalties;
+        public int TotalProfit;
+    }
+
+    [Serializable]
+    public struct InspectorDisplayData
+    {
+        public List<InspectorTabProfitGroup> AllAvailableTabs;
+    }
+
+    public struct StorageData {
+        public int UnitsFilled;
+
+        public StorageData(int filled) {
+            UnitsFilled = filled;
         }
     }
 
@@ -180,6 +317,11 @@ namespace Zavala.Data {
                 .Register<ZoomData>(GameEvents.SimZoomChanged, LogZoom)
                 // Inspect
                 .Register<BuildingData>(GameEvents.InspectorOpened, LogInspectBuilding)
+                .Register(GameEvents.GenericInspectorDisplayed, LogCommonInspectorDisplayed)
+                .Register<CityData>(GameEvents.CityInspectorDisplayed, LogCityInspectorDisplayed)
+                .Register<GrainFarmData>(GameEvents.GrainFarmInspectorDisplayed, LogGrainFarmInspectorDisplayed)
+                .Register<DairyFarmData>(GameEvents.DairyFarmInspectorDisplayed, LogDairyFarmInspectorDisplayed)
+                .Register<StorageData>(GameEvents.StorageInspectorDisplayed, LogStorageInspectorDisplayed)
                 // Dialogue
                 .Register<int>(GameEvents.CutsceneStarted, LogStartCutscene)
                 .Register(GameEvents.CutsceneEnded, LogEndCutscene)
@@ -681,6 +823,8 @@ namespace Zavala.Data {
                 e.Param("tile_index", data.TileIndex);
             }
 
+            // save this building for inspector dismiss and inspector displayed events
+            m_InspectingBuilding = data;
         }
 
         private void LogDismissInspector() {
@@ -697,96 +841,136 @@ namespace Zavala.Data {
             };
         }
 
-        private void LogInspectorDisplayed() {
+        private void LogCityInspectorDisplayed(CityData data) {
+            LogCommonInspectorDisplayed();
+
+            /*
+            city_inspector_displayed : {
+                building_id
+                tile_index
+                city_name : str
+                population : enum(RISING, FALLING, STABLE)
+                water : enum(GOOD, OK, BAD)
+                milk : enum(PLENTY, ENOUGH, NOT_ENOUGH)
+            }
+            */
+
+            using (var e = m_Log.NewEvent("city_inspector_displayed"))
+            {
+                e.Param("building_id", m_InspectingBuilding.Id);
+                e.Param("tile_index", m_InspectingBuilding.TileIndex);
+                e.Param("city_name", data.Name);
+                e.Param("population", data.Population.ToString());
+                e.Param("water", data.Water.ToString());
+                e.Param("milk", data.Milk.ToString());
+            }
+        }
+
+        private void LogGrainFarmInspectorDisplayed(GrainFarmData data) {
+            LogCommonInspectorDisplayed();
+
+            /*
+            grain_inspector_displayed {
+                building_id
+                tile_index
+                “grain_tab” : [{
+                    is_active : bool
+                    farm_name : str
+                    farm_county : str
+                    base_price
+                    shipping_cost
+                    total_profit
+                }],
+                “fertilizer_tab” : [{
+                    is_active : bool
+                    farm_name : str
+                    farm_county : str
+                    base_price
+                    shipping_cost
+                    sales_policy : int$
+                    import_policy : int$
+                    total_profit
+                }]
+            }
+             */
+
+            using (var e = m_Log.NewEvent("grain_inspector_displayed"))
+            {
+                e.Param("building_id", m_InspectingBuilding.Id);
+                e.Param("tile_index", m_InspectingBuilding.TileIndex);
+                e.Param("grain_tab", JsonUtility.ToJson(data.GrainTab));
+                e.Param("fertilizer_tab", JsonUtility.ToJson(data.FertilizerTab));
+            }
+        }
+
+        private void LogDairyFarmInspectorDisplayed(DairyFarmData data) {
+            LogCommonInspectorDisplayed();
+
+            /*
+            dairy_inspector_displayed {
+                building_id
+                tile_index
+                “grain_tab” : [{
+                    is_active : bool
+                    farm_name : str
+                    farm_county : str
+                    base_price
+                    shipping_cost
+                    sales_policy : int$
+                    import_policy : int$
+                    total_profit
+                }],
+                “dairy_tab” : [{
+                    is_active : bool
+                    farm_name : str
+                    farm_county : str | null
+                    base_price
+                    total_profit
+                }],
+                “fertilizer_tab” : [{
+                    is_active : bool
+                    farm_name : str
+                    farm_county : str | null
+                    base_price
+                    shipping_cost
+                    runoff_fine : int$
+                    total_profit
+                }]
+            }
+             */
+
+            using (var e = m_Log.NewEvent("dairy_inspector_displayed"))
+            {
+                e.Param("building_id", m_InspectingBuilding.Id);
+                e.Param("tile_index", m_InspectingBuilding.TileIndex);
+                e.Param("grain_tab", JsonUtility.ToJson(data.GrainTab));
+                e.Param("dairy_tab", JsonUtility.ToJson(data.DairyTab));
+                e.Param("fertilizer_tab", JsonUtility.ToJson(data.FertilizerTab));
+            }
+        }
+
+        private void LogStorageInspectorDisplayed(StorageData data) {
+            LogCommonInspectorDisplayed();
+
+            // storage_inspector_displayed : { building_id, tile_index, units_filled : int }
+            using (var e = m_Log.NewEvent("storage_inspector_displayed")) {
+                e.Param("building_id", m_InspectingBuilding.Id);
+                e.Param("tile_index", m_InspectingBuilding.TileIndex);
+                e.Param("units_filled", data.UnitsFilled);
+            }
+        }
+
+        /// <summary>
+        /// Logging event that either precedes the more specific InspectorDisplayed events (city, grain farm, dairy farm, storage),
+        /// or stands alone for the generic InspectorDisplayed event (digester, toll booth, export depot)
+        /// </summary>
+        private void LogCommonInspectorDisplayed() {
             // building_inspector_displayed : { building_type, building_id, tile_index}
             using (var e = m_Log.NewEvent("building_inspector_displayed")) {
                 e.Param("building_type", m_InspectingBuilding.Type.ToString());
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
             }
-
-            switch (m_InspectingBuilding.Type) {
-                case BuildingType.City:
-                    /* TODO:
-                    city_inspector_displayed : {
-                        building_id
-                        tile_index
-                        city_name : str
-                        population : enum(RISING, FALLING, STABLE)
-                        water : enum(GOOD, OK, BAD)
-                        milk : enum(PLENTY, ENOUGH, NOT_ENOUGH)
-                    }
-                    */
-                    break;
-                case BuildingType.GrainFarm:
-                    /* TODO:
-                    grain_inspector_displayed {
-                        building_id
-                        tile_index
-                        “grain_tab” : [{
-                            is_active : bool
-                            farm_name : str
-                            farm_county : str
-                            base_price
-                            shipping_cost
-                            total_profit
-                        }],
-                        “fertilizer_tab” : [{
-                            is_active : bool
-                            farm_name : str
-                            farm_county : str
-                            base_price
-                            shipping_cost
-                            sales_policy : int$
-                            import_policy : int$
-                            total_profit
-                        }]
-                    }
-                     */
-                    break;
-                case BuildingType.DairyFarm:
-                    /* TODO:
-                    dairy_inspector_displayed {
-                        building_id
-                        tile_index
-                        “grain_tab” : [{
-                            is_active : bool
-                            farm_name : str
-                            farm_county : str
-                            base_price
-                            shipping_cost
-                            sales_policy : int$
-                            import_policy : int$
-                            total_profit
-                        }],
-                        “dairy_tab” : [{
-                            is_active : bool
-                            farm_name : str
-                            farm_county : str | null
-                            base_price
-                            total_profit
-                        }],
-                        “fertilizer_tab” : [{
-                            is_active : bool
-                            farm_name : str
-                            farm_county : str | null
-                            base_price
-                            shipping_cost
-                            runoff_fine : int$
-                            total_profit
-                        }]
-                    }
-                     */
-                    break;
-                case BuildingType.Storage:
-                    /* TODO:
-                    storage_inspector_displayed : { building_id, tile_index, units_filled : int }
-                    */
-                    break;
-                default:
-                    break;
-            }
-
         }
 
         private void LogClickInspectorTab(string name) {

@@ -61,6 +61,12 @@ namespace Zavala
         static public readonly StringHash32 InspectorClosed = "inspector:closed";
         static public readonly StringHash32 InspectorTabClicked = "inspector:tab";
 
+        static public readonly StringHash32 GenericInspectorDisplayed = "inspector:generic-displayed";
+        static public readonly StringHash32 CityInspectorDisplayed = "inspector:city-displayed";
+        static public readonly StringHash32 GrainFarmInspectorDisplayed = "inspector:grain-displayed";
+        static public readonly StringHash32 DairyFarmInspectorDisplayed = "inspector:dairy-displayed";
+        static public readonly StringHash32 StorageInspectorDisplayed = "inspector:storage-displayed";
+
         static public readonly StringHash32 CutsceneStarted = "dialogue:cutscene-started";
         static public readonly StringHash32 CutsceneEnded = "dialogue:cutscene-ended";
         static public readonly StringHash32 DialogueStarted = "dialogue:started";
