@@ -78,6 +78,7 @@ namespace Zavala.Scripting {
                     varTable.Set("alertRegion", regionIndex + 1);
                     ScriptUtility.Trigger(GameTriggers.GameCompleted, varTable);
                 }
+                ZavalaGame.Events.Dispatch(GameEvents.GameWon);
                 return;
             } 
             Log.Warn("[WinLossSystem] TRIGGERED GAME FAIL {0} in Region {1}", cond.Type, regionIndex);
@@ -89,6 +90,7 @@ namespace Zavala.Scripting {
                 var handle = ScriptUtility.Trigger(GameTriggers.GameFailed, varTable);
                 SaveUtility.Reload();
             }
+            ZavalaGame.Events.Dispatch(GameEvents.GameFailed, new LossData(cond.Type.ToString(), (ushort)regionIndex));
         }
 
 

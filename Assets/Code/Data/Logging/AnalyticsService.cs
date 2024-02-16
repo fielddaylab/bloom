@@ -60,6 +60,20 @@ namespace Zavala.Data {
             Id = id;
             TileIndex = tileIndex;
         }
+        public BuildingData(int tileIndex) {
+            TileIndex = tileIndex;
+            Id = "";
+            Type = BuildingType.None;
+        }
+    }
+
+    public struct LossData {
+        public string EndType;
+        public ushort Region;
+        public LossData(string type, ushort region) {
+            EndType = type;
+            Region = region;
+        }
     }
 
     public class AnalyticsService : MonoBehaviour {
@@ -169,6 +183,9 @@ namespace Zavala.Data {
                 // Dialogue
                 .Register<int>(GameEvents.CutsceneStarted, LogStartCutscene)
                 .Register(GameEvents.CutsceneEnded, LogEndCutscene)
+
+                .Register(GameEvents.GameWon, LogWonGame)
+                .Register<LossData>(GameEvents.GameFailed, LogFailedGame)
             ;
 
             // roadnetwork: use a StringBuilder to consider every tile of road as a char, send StringBuilder as a parameter, reset to length zero to reuse
@@ -551,7 +568,6 @@ namespace Zavala.Data {
                 e.Param("policy", type.ToString());
                 e.Param("from_taskbar", fromTaskbar);
             }
-
         }
 
         private void LogPolicyUnlocked(PolicyType type) {
@@ -619,7 +635,6 @@ namespace Zavala.Data {
                 // TODO: e.Param("alert_type", EventActorAlertType)
                 // TODO: e.Param("tile_id", int)
             }
-
         }
 
         private void LogAlertClicked() {
@@ -813,11 +828,11 @@ namespace Zavala.Data {
             }
         }
 
-        private void HandleDialogueDisplayed(bool isCutscene) {
+        private void HandleDialogueDisplayed(bool isCutscene, string text) {
             if (isCutscene) {
-                LogCutscenePageDisplayed();
+                LogCutscenePageDisplayed(text);
             } else {
-                LogDialogueDisplayed();
+                LogDialogueDisplayed(text);
             }
         }
 
@@ -840,7 +855,7 @@ namespace Zavala.Data {
 
         }
 
-        private void LogDialogueDisplayed() {
+        private void LogDialogueDisplayed(string text) {
             //character_line_displayed { character_name, character_type, line_text }
             using (var e = m_Log.NewEvent("character_line_displayed")) {
                 // TODO: e.Param("character_name", string);
@@ -876,7 +891,7 @@ namespace Zavala.Data {
             m_CurrentCutscenePage++;
         }
 
-        private void LogCutscenePageDisplayed() {
+        private void LogCutscenePageDisplayed(string text) {
             // cutscene_page_displayed { cutscene_id, page_id, frame_ids : List[str], page_text }
             using (var e = m_Log.NewEvent("cutscene_page_displayed")) {
                 e.Param("cutscene_id", m_CurrentCutscene);
@@ -902,14 +917,16 @@ namespace Zavala.Data {
             m_Log.Log("win_game");
         }
         
-        private void LogLostGame() {
+        private void LogFailedGame(LossData data) {
             // lose_game { lose_condition: enum(CITY_FAILED, TOO_MANY_BLOOMS, OUT_OF_MONEY), county_id, county_name
             using (var e = m_Log.NewEvent("lose_game")) {
-                // TODO: e.Param("lose_condition", cond);
-                // TODO: e.Param("county_id", name);
-                // TODO: e.Param("county_name", name);
+                e.Param("lose_condition", data.EndType);
+                e.Param("county_id", data.Region); // 0-indexed
+                e.Param("county_name", ((RegionId)data.Region).ToString());
+
             }
         }
+
         #endregion // End
 
         #endregion // Log Events
