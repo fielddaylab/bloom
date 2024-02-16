@@ -874,7 +874,7 @@ namespace Zavala.Data {
                 building_id
                 tile_index
                 “grain_tab” : [{
-                    is_active : bool
+                    is_active : bool 
                     farm_name : str
                     farm_county : str
                     base_price
@@ -896,6 +896,7 @@ namespace Zavala.Data {
 
             using (var e = m_Log.NewEvent("grain_inspector_displayed"))
             {
+                // TODO: is active
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
                 e.Param("grain_tab", JsonUtility.ToJson(data.GrainTab));
@@ -941,6 +942,7 @@ namespace Zavala.Data {
 
             using (var e = m_Log.NewEvent("dairy_inspector_displayed"))
             {
+                // TODO: is active
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
                 e.Param("grain_tab", JsonUtility.ToJson(data.GrainTab));
