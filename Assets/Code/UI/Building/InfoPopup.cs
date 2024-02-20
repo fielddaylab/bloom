@@ -735,6 +735,7 @@ namespace Zavala.UI.Info
         {
             GrainFarmData newFarmData = new GrainFarmData();
 
+            // TODO: fix NULL exception here
             for (int tabIdx = 0; tabIdx < m_ActiveTabProfitGroup.Profits.Count; tabIdx++)
             {
                 if (tabIdx == 0)

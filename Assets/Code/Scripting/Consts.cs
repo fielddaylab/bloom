@@ -57,11 +57,16 @@ namespace Zavala
         static public readonly StringHash32 AlertClicked = "sim:alert-clicked";
 
         static public readonly StringHash32 BlueprintModeStarted = "blueprint:started";
+        static public readonly StringHash32 BuildMenuDisplayed = "blueprint:shop-displayed";
         static public readonly StringHash32 BlueprintModeEnded = "blueprint:ended";
+        static public readonly StringHash32 BuildInvalid = "blueprint:invalid-build";
+        static public readonly StringHash32 DestroyInvalid = "blueprint:invalid-destroy";
         static public readonly StringHash32 BuildConfirmed = "blueprint:confirmed";
         static public readonly StringHash32 BuildToolSelected = "blueprint:build-tool-selected";
-        static public readonly StringHash32 BuildToolDeselected = "blueprint:build-tool-deselected";
         static public readonly StringHash32 HoverTile = "blueprint:hover-tile";
+        static public readonly StringHash32 BuildingQueued = "blueprint:build-queued";
+        static public readonly StringHash32 BuildingUnqueued = "blueprint:build-unqueued";
+        static public readonly StringHash32 BuildToolDeselected = "blueprint:build-tool-deselected";
 
         static public readonly StringHash32 DestroyModeClicked = "destroy:clicked";
         static public readonly StringHash32 DestroyModeStarted = "destroy:started";

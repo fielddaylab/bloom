@@ -146,6 +146,7 @@ namespace Zavala.Economy
             newChain.Chain = new RingBuffer<ActionCommit>(1);
             newChain.Chain.PushBack(commit);
 
+            ZavalaGame.Events.Dispatch(GameEvents.BuildingQueued, commit);
             blueprintState.Commits.PushBack(newChain);
             blueprintState.NumBuildCommitsChanged = true;
         }
@@ -167,6 +168,9 @@ namespace Zavala.Economy
         /// <param name="blueprintState"></param>
         public static void CommitChain(BlueprintState blueprintState, CommitChain inChain)
         {
+            foreach(ActionCommit commit in inChain.Chain) {
+                ZavalaGame.Events.Dispatch(GameEvents.BuildingQueued, commit);
+            }
             blueprintState.Commits.PushBack(inChain);
             blueprintState.NumBuildCommitsChanged = true;
         }
@@ -182,6 +186,7 @@ namespace Zavala.Economy
             // undo in reverse order
             while(prevChain.Chain.TryPopBack(out ActionCommit commit))
             {
+                ZavalaGame.Events.Dispatch(GameEvents.BuildingUnqueued, commit);
                 // Process undo (unbuild, restore flags, modify funds, etc.)
                 switch (commit.ActionType)
                 {
@@ -275,7 +280,7 @@ namespace Zavala.Economy
                 // TODO: handle faulty accounting
                 return;
             }
-
+            ZavalaGame.Events.Dispatch(GameEvents.BuildConfirmed, blueprintState.Commits);
             ShopUtility.ResetRunningCost(shop);
 
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();

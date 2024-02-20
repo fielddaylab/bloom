@@ -42,6 +42,7 @@ namespace Zavala.UI {
         }
 
         public void Expand() {
+            ZavalaGame.Events.Dispatch(GameEvents.BuildMenuDisplayed);
             m_shopRoutine.Replace(this, ExpandShopRoutine()); 
         }
 

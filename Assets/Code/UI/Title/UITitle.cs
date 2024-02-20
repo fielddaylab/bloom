@@ -66,6 +66,8 @@ namespace Zavala.UI {
             m_PlayGameButton.onClick.AddListener(HandlePlayButton);
             m_BackButton.onClick.AddListener(HandleBackButton);
 
+            m_VolumeSlider.onValueChanged.AddListener(HandleSliderChanged);
+
             m_PlayerCodeInput.onValueChanged.AddListener(HandlePlayerCodeUpdated);
         }
 
@@ -145,6 +147,10 @@ namespace Zavala.UI {
             }
         }
 
+        private void HandleSliderChanged(float val) {
+            Game.SharedState.Get<UserSettings>().MusicVolume = val/10f;
+        }
+
         private void HandleBackButton() {
             ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.ReturnedToMainMenu);
             m_CurrentPanel = Panel.Start;
@@ -176,6 +182,7 @@ namespace Zavala.UI {
             Game.SharedState.Get<UserSettings>().PlayerCode = m_PlayerCodeInput.text;
             ZavalaGame.Events.Dispatch(GameEvents.ProfileStarting, m_PlayerCodeInput.text);
             Game.Scenes.LoadMainScene(m_MainScene);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.GameStarted);
         }
 
         private void HandleClaimNewIdError(OGD.Core.Error err) {

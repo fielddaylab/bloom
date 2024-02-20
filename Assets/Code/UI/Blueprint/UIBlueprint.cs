@@ -201,7 +201,6 @@ namespace Zavala.UI
 
         private void HandleBuildConfirmButtonClicked()
         {
-            Game.Events.Dispatch(GameEvents.BuildConfirmed);
             var blueprintState = Game.SharedState.Get<BlueprintState>();
             blueprintState.NewBuildConfirmed = true;
         }

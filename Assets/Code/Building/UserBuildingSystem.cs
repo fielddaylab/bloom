@@ -55,7 +55,7 @@ namespace Zavala.Building
             }
 
             if (toolInUse == UserBuildTool.Destroy) {
-                TryDestroyClickedBuilding(world, grid, bpState);
+                TryDestroyClickedBuilding(world, grid, bpState);                
             } else if (toolInUse != UserBuildTool.None) {
                 TryApplyTool(grid, network, toolInUse, RaycastTileIndex(world, grid));
             } else if (m_StateC.RoadToolState.PrevTileIndex != -1) {
@@ -209,7 +209,9 @@ namespace Zavala.Building
                 case UserBuildTool.Digester:
                 case UserBuildTool.Storage:
                 case UserBuildTool.Skimmer:
-                    TryBuildOnTile(grid, network, activeTool, tileIndex);
+                    if (!TryBuildOnTile(grid, network, activeTool, tileIndex)) {
+                        ZavalaGame.Events.Dispatch(GameEvents.BuildInvalid, tileIndex);
+                    }
                     break;
                 default:
                     break;
@@ -277,24 +279,24 @@ namespace Zavala.Building
         private bool TryDestroyClickedBuilding(SimWorldState world, SimGridState grid, BlueprintState blueprintState) {
             // TODO: streamline this?
             Collider hit = RaycastBuilding(world, grid);
-            if (hit != null && hit.gameObject.CompareTag(PLAYERPLACED_TAG)) {
-                OccupiesTile occupies = hit.gameObject.GetComponent<OccupiesTile>();
-                if (occupies.RegionIndex != grid.CurrRegionIndex) {
+
+            if (hit != null && hit.gameObject.TryGetComponent(out OccupiesTile ot)) {
+                // if not player placed, outside current region, or non-pending non-road
+                if (!hit.gameObject.CompareTag(PLAYERPLACED_TAG) || 
+                    ot.RegionIndex != grid.CurrRegionIndex || 
+                    (ot.Type != BuildingType.Road && !ot.Pending)) {
+                    ZavalaGame.Events.Dispatch(GameEvents.DestroyInvalid, ot.TileIndex);
                     return false;
                 }
 
-                // don't destroy buildings
-                if (occupies.Type != BuildingType.Road && !occupies.Pending) {
-                    return false;
-                }
-
-                SimDataUtility.DestroyBuildingFromHit(grid, blueprintState, hit.gameObject, occupies);
+                SimDataUtility.DestroyBuildingFromHit(grid, blueprintState, hit.gameObject, ot);
 
                 /*BuildingPopup.instance.ShowDestroyMenu(pos, "Destroy " + hit.transform.name, null, "Are you sure?", () => {
                     SimDataUtility.DestroyBuildingFromHit(grid, hit.gameObject);
                 }, null);*/
                 return true;
             }
+            ZavalaGame.Events.Dispatch(GameEvents.DestroyInvalid, -1);
             return false;
         }
 

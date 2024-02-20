@@ -11,12 +11,14 @@ using FieldDay.Rendering;
 using Zavala.Advisor;
 using Zavala.Economy;
 using Zavala.Building;
-using EasyAssetStreaming;
 using Zavala.UI.Info;
 using System.Collections.Generic;
 using Zavala.Scripting;
 using FieldDay.Scripting;
 using Zavala.Sim;
+using BeauPools;
+using Zavala.Cards;
+using System.Text;
 
 namespace Zavala.Data {
 
@@ -33,6 +35,7 @@ namespace Zavala.Data {
         ResumeGameClicked,
         PlayGameClicked,
         ReturnedToMainMenu,
+        GameStarted,
     }
 
     public enum ModeInteraction : byte {
@@ -78,8 +81,21 @@ namespace Zavala.Data {
     public struct BuildOrderData {
         //     Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
         public BuildingData Building;
+        public int Cost;
         public TileAdjacencyMask Connections;
-        public bool isDestroying;
+        public bool IsDestroying;
+        public BuildOrderData(BuildingType type, string id, int idx, int cost, TileAdjacencyMask mask, ActionType action) {
+            Building = new BuildingData(type, id, idx);
+            Cost = cost;
+            Connections = mask;
+            IsDestroying = (action == ActionType.Destroy);
+        }
+        public BuildOrderData(ActionCommit commit) {
+            Building = new BuildingData(commit.BuildType, "", commit.TileIndex);
+            Cost = commit.Cost;
+            Connections = commit.FlowMaskSnapshot;
+            IsDestroying = (commit.ActionType == ActionType.Destroy);
+        }
     }
 
     [Serializable]
@@ -315,8 +331,8 @@ namespace Zavala.Data {
         }
 
         #region Inspector
-        [SerializeField, Required] private string m_AppId = "ZAVALA";
-        [SerializeField, Required] private string m_AppVersion = "1.0";
+        [SerializeField, Required] private string m_AppId = "ALGAE";
+        [SerializeField, Required] private string m_AppVersion = "0.9";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
 
@@ -334,17 +350,23 @@ namespace Zavala.Data {
             BAD
         }
 
-        private struct PoliciesLog {
-            
-        }
         private enum AdvisorType : byte {
             ECONOMY,
             ECOLOGY
         }
 
-        private struct PolicyLevelLog {
-            public int Level;
-            public bool IsLocked;
+        [Serializable]
+        private struct PolicyStateData {
+            public PolicyLevelData sales;
+            public PolicyLevelData import_subsidy;
+            public PolicyLevelData runoff;
+            public PolicyLevelData cleanup;
+        }
+
+        [Serializable]
+        private struct PolicyLevelData {
+            public int policy_choice;
+            public bool is_locked;
         }
 
         #region Logging Variables
@@ -356,13 +378,12 @@ namespace Zavala.Data {
         [NonSerialized] private bool m_IsFullscreen;
         [NonSerialized] private bool m_IsQuality;
 
-        [NonSerialized] private string m_CurrentRegionId;
+        [NonSerialized] private ushort m_CurrentRegionIndex;
         [NonSerialized] private int m_CurrentBudget;
-        [NonSerialized] private uint m_RunningCost;
-        [NonSerialized] private int m_RemainingBudget;
         [NonSerialized] private string m_CurrentMode;
         [NonSerialized] private string m_CurrentTool;
         [NonSerialized] private BuildingData m_InspectingBuilding;
+        [NonSerialized] private PolicyStateData m_CountyPolicies;
 
         [NonSerialized] private short m_CurrentCutscene;
         [NonSerialized] private short m_CurrentCutscenePage;
@@ -402,15 +423,22 @@ namespace Zavala.Data {
                 // Build
                 // TODO: Condense blueprint events with BlueprintInteractionType?
                 .Register(GameEvents.BlueprintModeStarted, LogStartBuildMode)
+                .Register(GameEvents.BuildMenuDisplayed, LogDisplayBuildMenu)
                 .Register(GameEvents.DestroyModeClicked, LogClickedDestroy)
                 .Register(GameEvents.DestroyModeStarted, LogStartDestroy)
                 .Register(GameEvents.DestroyModeConfirmed, LogConfirmedDestroy)
                 .Register(GameEvents.DestroyModeExited, LogClickedExitDestroy)
                 .Register(GameEvents.DestroyModeEnded, LogEndDestroy)
                 .Register(GameEvents.BlueprintModeEnded, LogEndBuildMode)
+                .Register<RingBuffer<CommitChain>>(GameEvents.BuildConfirmed, LogConfirmedBuild)
                 .Register<UserBuildTool>(GameEvents.BuildToolSelected, LogSelectedBuildTool)
                 .Register<int>(GameEvents.HoverTile, HandleHover)
+                .Register<int>(GameEvents.BuildInvalid, LogBuildInvalid)
+                .Register<int>(GameEvents.DestroyInvalid, LogDestroyInvalid)
+                .Register<ActionCommit>(GameEvents.BuildingQueued, LogQueuedBuilding)
+                .Register<ActionCommit>(GameEvents.BuildingUnqueued, LogUnqueuedBuilding)
                 .Register<UserBuildTool>(GameEvents.BuildToolUnlocked, LogBuildingUnlocked)
+               
                 // Advisor/Policy
                 .Register<PolicyType>(GameEvents.PolicyTypeUnlocked, LogPolicyUnlocked)
                 .Register<PolicyType>(GameEvents.PolicySlotClicked, (PolicyType type) => LogPolicyOpened(type, false))
@@ -421,7 +449,7 @@ namespace Zavala.Data {
                 .Register<SkimmerData>(GameEvents.SkimmerChanged, HandleSkimmer)
                 // ADD?                
                 .Register<ushort>(GameEvents.RegionSwitched, LogRegionChanged)
-                // TODO: county state .Register<string>(GameEvents.RegionUnlocked, LogRegionUnlocked)
+                .Register<string>(GameEvents.RegionUnlocked, LogRegionUnlocked)
                 .Register<ZoomData>(GameEvents.SimZoomChanged, LogZoom)
                 // Inspect
                 .Register<BuildingData>(GameEvents.InspectorOpened, LogInspectBuilding)
@@ -454,10 +482,12 @@ namespace Zavala.Data {
             m_Log = new OGDLog(new OGDLogConsts() {
                 AppId = m_AppId,
                 AppVersion = m_AppVersion,
-                ClientLogVersion = CLIENT_LOG_VERSION
-            });
-            m_Log.UseFirebase(m_Firebase);
+                ClientLogVersion = CLIENT_LOG_VERSION,
+            }, new OGDLog.MemoryConfig(4096, 1024*1024*32, 256));
+            // m_Log.UseFirebase(m_Firebase);
             m_Log.SetDebug(m_Debug);
+
+            RefreshGameState();
         }
 
         private void SetUserCode(string userCode) {
@@ -489,15 +519,19 @@ namespace Zavala.Data {
         // ADD?: avg_framerate : float
         */
 
-        private void ResetGameState() {
-
-        }
-        private void UpdateRegionState(string county) {
-            //         current_county : str
-            m_CurrentRegionId = county;
+        private void RefreshGameState() {
             using (var s = m_Log.OpenGameState()) {
-                s.Param("current_county", county);
+                s.Param("current_county", -1);
             }
+        }
+
+        private void UpdateRegionState(ushort region) {
+            //         current_county : str
+            m_CurrentRegionIndex = region;
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("current_county", ((RegionId)region).ToString());
+            }
+            UpdatePolicyChoicesState();
         }
 
         private void UpdateMoneyState(int budget) {
@@ -514,6 +548,74 @@ namespace Zavala.Data {
             using (var s = m_Log.OpenGameState()) {
                 s.Param("map_mode", mode.ToString());
             }
+        }
+
+        private void SavePolicyState() {
+            using (var s = m_Log.OpenGameState()) {
+                s.Param("county_policies", JsonUtility.ToJson(m_CountyPolicies));
+            }
+        }
+
+        // -1 for "Not Set"
+        private void InitializePolicyChoiceState() {
+            m_CountyPolicies.sales.policy_choice = -1;
+            m_CountyPolicies.import_subsidy.policy_choice = -1;
+            m_CountyPolicies.runoff.policy_choice = -1;
+            m_CountyPolicies.cleanup.policy_choice = -1;
+
+            SavePolicyState();
+        }
+
+        private void UpdatePolicyChoicesState() {
+            PolicyBlock p = Game.SharedState.Get<PolicyState>().Policies[m_CurrentRegionIndex];
+            int s = (int)PolicyType.SalesTaxPolicy;
+            int i = (int)PolicyType.ImportTaxPolicy;
+            int r = (int)PolicyType.RunoffPolicy;
+            int c = (int)PolicyType.SkimmingPolicy;
+
+            m_CountyPolicies.sales.policy_choice =
+                p.EverSet[s] ? (int)p.Map[s] : -1;
+
+            m_CountyPolicies.import_subsidy.policy_choice = 
+                p.EverSet[i] ? (int)p.Map[i] : -1;
+
+            m_CountyPolicies.runoff.policy_choice = 
+                p.EverSet[r] ? (int)p.Map[r] : -1;
+
+            m_CountyPolicies.cleanup.policy_choice =
+                p.EverSet[c] ? (int)p.Map[c] : -1;
+
+            SavePolicyState();
+        }
+
+        private void UpdatePoliciesLockedState() {
+            CardsState cs = Game.SharedState.Get<CardsState>();
+            m_CountyPolicies.sales.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.SalesTaxPolicy);
+            m_CountyPolicies.import_subsidy.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.ImportTaxPolicy);
+            m_CountyPolicies.runoff.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.RunoffPolicy);
+            m_CountyPolicies.cleanup.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.SkimmingPolicy);
+
+            SavePolicyState();
+        }
+
+        private void UpdatePolicyLockedState(PolicyType type, bool isLocked) {
+            switch (type) {
+                case PolicyType.SalesTaxPolicy:
+                    m_CountyPolicies.sales.is_locked = isLocked;
+                    break;
+                case PolicyType.RunoffPolicy:
+                    m_CountyPolicies.runoff.is_locked = isLocked;
+                    break;
+                case PolicyType.SkimmingPolicy:
+                    m_CountyPolicies.cleanup.is_locked = isLocked;
+                    break;
+                case PolicyType.ImportTaxPolicy:
+                    m_CountyPolicies.import_subsidy.is_locked = isLocked;
+                    break;
+                default:
+                    break;
+            }
+            SavePolicyState();
         }
 
         private void UpdatePhosState(bool toggle) {
@@ -548,6 +650,9 @@ namespace Zavala.Data {
                     break;
                 case MenuInteractionType.ReturnedToMainMenu:
                     LogReturnToMainMenu();
+                    break;
+                case MenuInteractionType.GameStarted:
+                    LogGameStarted();
                     break;
                 default: break;
             }
@@ -600,9 +705,10 @@ namespace Zavala.Data {
         private void LogGameStarted() {
             // game_started { music_volume : float, fullscreen_enabled : bool, hq_graphics_enabled : bool, map_state : BuildMap }
             using (var e = m_Log.NewEvent("click_return_main_menu")) {
-                // TODO: e.Param("music_volume", );
+                UserSettings s = Game.SharedState.Get<UserSettings>();
+                e.Param("music_volume", s.MusicVolume);
                 e.Param("fullscreen_enabled", ScreenUtility.GetFullscreen());
-                e.Param("hq_graphics_enabled", Game.SharedState.Get<UserSettings>().HighQualityMode);
+                e.Param("hq_graphics_enabled", s.HighQualityMode);
                 // TODO: e.Param("map_state",);
             }
         }
@@ -636,8 +742,8 @@ namespace Zavala.Data {
 
         private void LogDisplayBuildMenu() {
             // build_menu_displayed { available_buildings : array[dict] // each item has name and price }
-            using (var e = m_Log.NewEvent("build_menu_displayed")) {
-                // TODO: e.Param("available_buildings", [building: Type, price: int]);
+            using (var e = m_Log.NewEvent("build_menu_displayed")) {  
+                e.Param("available_buildings", ShopUtility.GetShopUnlockData());
             }
         }
 
@@ -702,10 +808,10 @@ namespace Zavala.Data {
             }
         }
 
-        private void LogDestroyInvalid() {
+        private void LogDestroyInvalid(int idx) {
             // click_destroy_invalid { tile_id, terrain_type }
             using (var e = m_Log.NewEvent("click_destroy_invalid")) {
-                // TODO: e.Param("tile_id", int);
+                e.Param("tile_id", idx);
                 // TODO: e.Param("terrain_type", type);
                 //          water, deep, grass, tree, rock
             }
@@ -733,35 +839,69 @@ namespace Zavala.Data {
 
         #endregion Destroy
 
-        private void LogQueuedBuilding() {
+        private void LogQueuedBuilding(ActionCommit commit) {
             //      queue_building { Building, total_cost, funds_remaining }
             using (var e = m_Log.NewEvent("queue_building")) {
-                // TODO: e.Param(Building);
+                e.Param("building", PrintBuildingParam(commit));
                 //          Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
-                // TODO: e.Param("total_cost", int);
-                // TODO: e.Param("funds_remaining", int);
+                int tot = Game.SharedState.Get<ShopState>().RunningCost + commit.Cost;
+                e.Param("total_cost", tot);
+                e.Param("funds_remaining", m_CurrentBudget - tot);
             }
         }
 
-        private void LogUnqueuedBuilding() {
-            //      unqueue_building { Building, total_cost, funds_remaining }
+        private void LogUnqueuedBuilding(ActionCommit commit) {
+            //  unqueue_building { Building, total_cost, funds_remaining }
             using (var e = m_Log.NewEvent("unqueue_building")) {
-                // TODO: e.Param(Building);
-                //          Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
-                // TODO: e.Param("total_cost", int);
-                // TODO: e.Param("funds_remaining", int);
+                e.Param("building", PrintBuildingParam(commit));
+                //  Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
+                int tot = Game.SharedState.Get<ShopState>().RunningCost - commit.Cost;
+                e.Param("total_cost", tot);
+                e.Param("funds_remaining", m_CurrentBudget - tot);
+            }
+        }
+
+        private StringBuilder PrintBuildingParam(ActionCommit commit) {
+            using (var psb = PooledStringBuilder.Create()) {
+                psb.Builder.Append("{");
+                psb.Builder.Append("building_type:").Append(commit.BuildType.ToString());
+                psb.Builder.Append("tile_id:").Append(commit.TileIndex);
+                psb.Builder.Append("cost:").Append(commit.Cost);
+                psb.Builder.Append("connections:").Append(commit.FlowMaskSnapshot);
+                psb.Builder.Append("build_type:").Append(commit.ActionType.ToString());
+                psb.Builder.Append("}");
+                return psb.Builder;
             }
         }
 
 
-        private void LogConfirmBuild() {
-            //      click_execute_build { built_items : array[Building], total_cost, funds_remaining }
+        private void LogConfirmedBuild(RingBuffer<CommitChain> chains) {
+            // click_execute_build { built_items : array[Building], total_cost, funds_remaining }
+
+            ShopState s = Game.SharedState.Get<ShopState>();
             using (var e = m_Log.NewEvent("click_execute_build")) {
-                // TODO: e.Param("built_items", [BuildingType type, int tileIndex])
-                //      should include building type and tile index?
-                // TODO: e.Param("total_cost", int);
-                // TODO: e.Param("funds_remaining", int);
+                e.Param("built_items", GetCommitChainData(chains));
+                e.Param("total_cost", s.RunningCost);
+                e.Param("funds_remaining", m_CurrentBudget - s.RunningCost);
             }
+        }
+
+        private StringBuilder GetCommitChainData(RingBuffer<CommitChain> chains) {
+            if (chains == null) return null;
+            using (var psb = PooledStringBuilder.Create()) {
+                psb.Builder.Append("[");
+                foreach (CommitChain chain in chains) {
+                    foreach (ActionCommit commit in chain.Chain) {
+                        psb.Builder.Append('{');
+                        psb.Builder.Append("building_type:").Append(commit.BuildType.ToString());
+                        psb.Builder.Append("tile_id:").Append(commit.TileIndex);
+                        psb.Builder.Append('}');
+                    }
+                }
+                psb.Builder.Append("]");
+                return psb.Builder;
+            }
+
         }
 
         private void LogEndBuildMode() {
@@ -783,7 +923,7 @@ namespace Zavala.Data {
             using (var e = m_Log.NewEvent("county_changed")) {
                 e.Param("county_name", county);
             }
-            UpdateRegionState(county);
+            UpdateRegionState(newRegion);
         }
 
         private void LogZoom(ZoomData info) {
@@ -849,12 +989,14 @@ namespace Zavala.Data {
                 e.Param("choice_name", data.Type.ToString());
                 e.Param("choice_number", data.Level);
             }
+            UpdatePolicyChoicesState();
         }
         private void LogPolicyUnlocked(PolicyType type) {
             // unlock_policy { policy_name }
             using (var e = m_Log.NewEvent("unlock_policy")) {
                 e.Param("policy_name", type.ToString());
             }
+            UpdatePolicyLockedState(type, false);
         }
 
         private void LogUnlockView(bool isEcon) {
@@ -1023,7 +1165,7 @@ namespace Zavala.Data {
             grain_inspector_displayed {
                 building_id
                 tile_index
-                �grain_tab� : [{
+                grain_tab : [{
                     is_active : bool 
                     farm_name : str
                     farm_county : str
@@ -1031,7 +1173,7 @@ namespace Zavala.Data {
                     shipping_cost
                     total_profit
                 }],
-                �fertilizer_tab� : [{
+                fertilizer_tab : [{
                     is_active : bool
                     farm_name : str
                     farm_county : str

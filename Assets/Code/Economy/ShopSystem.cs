@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -91,6 +92,14 @@ namespace Zavala.Economy {
                 default:
                     return 0;
             }
+        }
+
+        /// <summary>
+        /// JSON string of each unlocked item and its price, used for analytics data
+        /// </summary>
+        /// <returns></returns>
+        public static StringBuilder GetShopUnlockData() {
+            return Game.SharedState.Get<ShopState>().ShopUI.GetBtnHub().GetUnlockedToolData();
         }
 
         [LeafMember("UnlockShopItem")]
