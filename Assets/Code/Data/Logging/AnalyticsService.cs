@@ -15,6 +15,9 @@ using EasyAssetStreaming;
 using Zavala.UI.Info;
 using System.Collections.Generic;
 using Zavala.Scripting;
+using FieldDay.Scripting;
+using UnityEditor.Experimental.GraphView;
+using Zavala.Sim;
 
 namespace Zavala.Data {
 
@@ -23,8 +26,6 @@ namespace Zavala.Data {
     BuildTile : List[enum(// all the types of object)]
     CountyBuildMap { List[BuildTiles] }
     BuildMap : { List[CountyBuildMap] }
-    Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
-
      */
     public enum MenuInteractionType : byte {
         CreditsButtonClicked,
@@ -75,6 +76,14 @@ namespace Zavala.Data {
         }
     }
 
+    public struct BuildOrderData {
+        //     Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
+        public BuildingData Building;
+        public TileAdjacencyMask Connections;
+        public bool isDestroying;
+    }
+
+    [Serializable]
     public struct BuildingData {
         public BuildingType Type;
         public string Id;
@@ -235,6 +244,15 @@ namespace Zavala.Data {
         }
     }
 
+    public struct ExportDepotData {
+        public string Id;
+        public int TileIndex;
+        public ExportDepotData(string id, int index) {
+            Id = id;
+            TileIndex = index;
+        }
+    }
+
     public struct PolicyData {
         public PolicyType Type;
         public int Level;
@@ -248,6 +266,17 @@ namespace Zavala.Data {
         }
     }
 
+    public struct SkimmerData {
+        public int TileIndex;
+        public bool IsAppearing;
+        public bool IsDredger;
+        public SkimmerData(int idx, bool appearing, bool dredger) {
+            TileIndex = idx;
+            IsAppearing = appearing;
+            IsDredger = dredger;
+        }
+    }
+
     public struct AlertData {
         public EventActorAlertType Type;
         public int TileIndex;
@@ -256,6 +285,24 @@ namespace Zavala.Data {
             Type = type;
             TileIndex = idx;
             AttachedNode = node;
+        }
+        public AlertData(EventActorQueuedEvent evt) {
+            Type = evt.Alert;
+            TileIndex = evt.TileIndex;
+            AttachedNode = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, evt.ScriptId).FullName;
+        }
+    }
+
+    public struct AlgaeData {
+        public bool IsGrowing;
+        public int TileIndex;
+        public int Phosphorus;
+        public float Algae;
+        public AlgaeData(bool growing, int index, int phos, float algae) {
+            IsGrowing = growing;
+            TileIndex = index;
+            Phosphorus = phos;
+            Algae = algae;
         }
     }
 
@@ -312,6 +359,8 @@ namespace Zavala.Data {
 
         [NonSerialized] private string m_CurrentRegionId;
         [NonSerialized] private int m_CurrentBudget;
+        [NonSerialized] private uint m_RunningCost;
+        [NonSerialized] private int m_RemainingBudget;
         [NonSerialized] private string m_CurrentMode;
         [NonSerialized] private string m_CurrentTool;
         [NonSerialized] private BuildingData m_InspectingBuilding;
@@ -344,6 +393,10 @@ namespace Zavala.Data {
                 .Register<bool>(GameEvents.ToggleEconomyView, LogMarketToggled)
                 .Register<bool>(GameEvents.TogglePhosphorusView, LogPhosToggled)
                 .Register<AlertData>(GameEvents.AlertAppeared, LogAlertDisplayed)
+                .Register<AlertData>(GameEvents.AlertClicked, LogAlertClicked)
+                .Register<AlertData>(GameEvents.GlobalAlertAppeared, LogGlobalAlertDisplayed)
+                .Register<AlertData>(GameEvents.GlobalAlertClicked, LogGlobalAlertClicked)
+                .Register<ExportDepotData>(GameEvents.ExportDepotUnlocked, LogExportDepot)
                 // TODO: do we want to log every pause or just player pause?
                 .Register(GameEvents.SimPaused, LogGamePaused)
                 .Register(GameEvents.SimResumed, LogGameResumed)
@@ -357,13 +410,16 @@ namespace Zavala.Data {
                 .Register(GameEvents.DestroyModeEnded, LogEndDestroy)
                 .Register(GameEvents.BlueprintModeEnded, LogEndBuildMode)
                 .Register<UserBuildTool>(GameEvents.BuildToolSelected, LogSelectedBuildTool)
-
+                .Register<int>(GameEvents.HoverTile, HandleHover)
+                .Register<UserBuildTool>(GameEvents.BuildToolUnlocked, LogBuildingUnlocked)
+                // Advisor/Policy
                 .Register<PolicyType>(GameEvents.PolicyTypeUnlocked, LogPolicyUnlocked)
                 .Register<PolicyType>(GameEvents.PolicySlotClicked, (PolicyType type) => LogPolicyOpened(type, false))
                 .Register<PolicyType>(GameEvents.PolicyButtonClicked, (PolicyType type) => LogPolicyOpened(type, true))
                 .Register<PolicyData>(GameEvents.PolicyHover, LogHoverPolicy)
                 .Register<PolicyData>(GameEvents.PolicySet, LogPolicySet)
                 .Register<bool>(GameEvents.AdvisorLensUnlocked, LogUnlockView)
+                .Register<SkimmerData>(GameEvents.SkimmerChanged, HandleSkimmer)
                 // ADD?                
                 .Register<ushort>(GameEvents.RegionSwitched, LogRegionChanged)
                 // TODO: county state .Register<string>(GameEvents.RegionUnlocked, LogRegionUnlocked)
@@ -375,6 +431,7 @@ namespace Zavala.Data {
                 .Register<GrainFarmData>(GameEvents.GrainFarmInspectorDisplayed, LogGrainFarmInspectorDisplayed)
                 .Register<DairyFarmData>(GameEvents.DairyFarmInspectorDisplayed, LogDairyFarmInspectorDisplayed)
                 .Register<StorageData>(GameEvents.StorageInspectorDisplayed, LogStorageInspectorDisplayed)
+                .Register(GameEvents.InspectorClosed, LogDismissInspector)
                 // Dialogue
                 .Register<int>(GameEvents.CutsceneStarted, LogStartCutscene)
                 .Register(GameEvents.CutsceneEnded, LogEndCutscene)
@@ -606,9 +663,11 @@ namespace Zavala.Data {
 
         private void LogHoverBuild(int idx) {
             // hover_build_tile { tile_id, is_valid }
+            bool valid = idx >= 0;
+            if (!valid) idx *= -1;
             using (var e = m_Log.NewEvent("hover_build_tile")) {
                 e.Param("tile_id", idx);
-                // TODO: e.Param("is_valid", bool);
+                e.Param("is_valid", valid);
             }
         }
 
@@ -640,6 +699,7 @@ namespace Zavala.Data {
             using (var e = m_Log.NewEvent("hover_destroy_tile")) {
                 e.Param("tile_id", idx);
                 // TODO: e.Param("building_type", type | null);
+                // How to get this data cheaply?
             }
         }
 
@@ -744,18 +804,18 @@ namespace Zavala.Data {
             }
         }
 
-        private void LogUnlockBuilding(string type) {
+        private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
             using (var e = m_Log.NewEvent("unlock_building_type")) {
-                e.Param("building_type", type);
+                e.Param("building_type", type.ToString());
             }
         }
 
-        private void LogExportDepot() {
+        private void LogExportDepot(ExportDepotData data) {
             // export_depot_spawned { depot_id, tile_id }
             using (var e = m_Log.NewEvent("export_depot_spawned")) {
-                // TODO: e.Param("depot_id", string)
-                // TODO: e.Param("tile_id", int)
+                e.Param("depot_id", data.Id);
+                e.Param("tile_id", data.TileIndex);
             }
         }
 
@@ -830,19 +890,27 @@ namespace Zavala.Data {
             UpdatePhosState(toggle);
         }
 
-        private void LogSkimmerAppear() {
-            // skimmer_appear { tile_id, is_dredger : bool }
-            using (var e = m_Log.NewEvent("skimmer_appear")) {
-                // TODO: e.Param("tile_id", int)
-                // TODO: e.Param("is_dredger", bool)
+        private void HandleSkimmer(SkimmerData data) {
+            if (data.IsAppearing) {
+                LogSkimmerAppear(data);
+            } else {
+                LogSkimmerDisappear(data);
             }
         }
 
-        private void LogSkimmerDisappear() {
+        private void LogSkimmerAppear(SkimmerData data) {
+            // skimmer_appear { tile_id, is_dredger : bool }
+            using (var e = m_Log.NewEvent("skimmer_appear")) {
+                e.Param("tile_id", data.TileIndex);
+                e.Param("is_dredger", data.IsDredger);
+            }
+        }
+
+        private void LogSkimmerDisappear(SkimmerData data) {
             // skimmer_disappear { tile_id, is_dredger : bool }
             using (var e = m_Log.NewEvent("skimmer_disappear")) {
-                // TODO: e.Param("tile_id", int)
-                // TODO: e.Param("is_dredger", bool)
+                e.Param("tile_id", data.TileIndex);
+                e.Param("is_dredger", data.IsDredger);
             }
         }
 
@@ -856,6 +924,9 @@ namespace Zavala.Data {
                 e.Param("alert_id", data.Type.ToString());
                 e.Param("tile_id", data.TileIndex);
             }
+            if (data.Type == EventActorAlertType.Bloom) {
+                LogBloomAlert(data.TileIndex);
+            }
         }
 
         private void LogAlertClicked(AlertData data) {
@@ -867,11 +938,12 @@ namespace Zavala.Data {
             }
         }
 
-        private void LogBloomAlert() {
+        private void LogBloomAlert(int idx) {
             // bloom_alert { tile_id, phosphorus_value }
+            int phos = Game.SharedState.Get<SimPhosphorusState>().Phosphorus.CurrentState()[idx].Count;
             using (var e = m_Log.NewEvent("bloom_alert")) {
-                // TODO: e.Param("tile_id", int)
-                // TODO: e.Param("phsophorus_value", int)
+                e.Param("tile_id", idx);
+                e.Param("phosphorus_value", phos);
             }
         }
 
@@ -1063,21 +1135,28 @@ namespace Zavala.Data {
 
         #endregion //Inspector
 
-        private void LogStartGrowAlgae() {
+        private void HandleAlgaeChanged(AlgaeData data) {
+            if (data.IsGrowing) {
+                LogStartGrowAlgae(data);
+            } else {
+                LogEndGrowAlgae(data);
+            }
+        }
+        private void LogStartGrowAlgae(AlgaeData data) {
             // algae_growth_begin { tile_id, phosphorus_value, algae_percent }
             using (var e = m_Log.NewEvent("algae_growth_begin")) {
-                // TODO: e.Param("tile_id", int)
-                // TODO: e.Param("phosphorus_value", int)
-                // TODO: e.Param("algae_percent", float)
+                e.Param("tile_id", data.TileIndex);
+                e.Param("phosphorus_value", data.Phosphorus);
+                e.Param("algae_percent", data.Algae);
             }
         }
 
-        private void LogEndGrowAlgae() {
+        private void LogEndGrowAlgae(AlgaeData data) {
             // algae_growth_end { tile_id, phosphorus_value, algae_percent }
             using (var e = m_Log.NewEvent("algae_growth_end")) {
-                // TODO: e.Param("tile_id", int)
-                // TODO: e.Param("phosphorus_value", int)
-                // TODO: e.Param("algae_percent", float)
+                e.Param("tile_id", data.TileIndex);
+                e.Param("phosphorus_value", data.Phosphorus);
+                e.Param("algae_percent", data.Algae);
             }
         }
 

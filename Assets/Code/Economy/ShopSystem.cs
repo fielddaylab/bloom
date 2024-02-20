@@ -99,6 +99,7 @@ namespace Zavala.Economy {
             ShopButtonHub hub = shop.ShopUI.GetBtnHub();
             ShopItemButton btn = hub.GetShopItemBtn(tool);
             hub.SetShopItemBtnUnlocked(btn, true);
+            ZavalaGame.Events.Dispatch(GameEvents.BuildToolUnlocked, tool);
         }
 
         /// <summary>

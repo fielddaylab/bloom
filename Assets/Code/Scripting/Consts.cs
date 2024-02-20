@@ -29,6 +29,7 @@ namespace Zavala
         static public readonly StringHash32 PolicyHover = "advisors:policy-hover";
         static public readonly StringHash32 PolicySet = "advisors:policy-set";
         static public readonly StringHash32 AdvisorLensUnlocked = "advisors:lens-unlocked";
+        static public readonly StringHash32 SkimmerChanged = "sim:skimmer-changed";
 
         static public readonly StringHash32 MarketCycleTickCompleted = "sim:market-cycle-completed";
         static public readonly StringHash32 ForceMarketPrioritiesRebuild = "sim:force-market-priorities-rebuild";
@@ -40,12 +41,15 @@ namespace Zavala
         static public readonly StringHash32 RegionSwitched = "sim:region-switched";
         static public readonly StringHash32 RegionUnlocked = "sim:region-unlocked";
         static public readonly StringHash32 ExportDepotUnlocked = "sim:export-unlocked";
+        static public readonly StringHash32 BuildToolUnlocked = "sim:building-unlocked";
 
         static public readonly StringHash32 SimPaused = "sim:paused";
         static public readonly StringHash32 SimResumed = "sim:resumed";
         static public readonly StringHash32 SimUserPaused = "sim:user-paused";
         static public readonly StringHash32 SimUserResumed = "sim:user-resumed";
         static public readonly StringHash32 SimZoomChanged = "sim:zoom";
+
+        static public readonly StringHash32 SimAlgaeChanged = "sim:algae-change";
 
         static public readonly StringHash32 GlobalAlertAppeared = "sim:global-appeared";
         static public readonly StringHash32 GlobalAlertClicked = "sim:global-clicked";

@@ -286,15 +286,16 @@ namespace Zavala.World {
             {
                 yield break;
             }
+            EventActor exportActor = ScriptUtility.LookupActor(inId);
 
-            Vector3 worldPos = ScriptUtility.LookupActor(inId).transform.position;
+            Vector3 worldPos = exportActor.transform.position;
             TryGetTileIndexFromWorld(worldPos, out int depotIndex);
             int regionIndex = grid.Terrain.Regions[depotIndex];
 
             if (eReveal.DepotRevealMask[regionIndex]) {
                 yield break;
             }
-            ZavalaGame.Events.Dispatch(GameEvents.ExportDepotUnlocked);
+            ZavalaGame.Events.Dispatch(GameEvents.ExportDepotUnlocked, new Data.ExportDepotData(exportActor.Id.ToString(), depotIndex));
             eReveal.DepotRevealMask[regionIndex] = true;
 
             // Disable player input

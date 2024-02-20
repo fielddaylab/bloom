@@ -61,6 +61,10 @@ namespace Zavala.UI {
             Assert.NotNull(actor);
 
             Log.Msg("[GlobalAlertButton] Popped actor {0}", actor.gameObject.name);
+            if (actor.QueuedEvents.TryPeekFront(out EventActorQueuedEvent evt)) {
+                ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertClicked, new AlertData(evt));
+            }
+
             EventActorUtility.TriggerActorAlert(actor);
             UIAlertUtility.ClearAlert(actor.DisplayingEvent);
             TicksSinceFired = 0;
@@ -76,11 +80,16 @@ namespace Zavala.UI {
             if (QueuedActors.Count > 0) {
                 m_Routine.Replace(GlobalAlertUtility.AppearRoutine(this));
                 SimTimeInput.SetPaused(true, SimPauseFlags.PendingGlobalAlert);
+                if (QueuedActors.TryPeekFront(out EventActor actor) && actor.QueuedEvents.TryPeekFront(out EventActorQueuedEvent evt)) {
+                    ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertAppeared, new AlertData(evt));
+                }
                 // UIAlertUtility.SetAlertFaded(QueuedActors.PeekFront().DisplayingEvent, true);
             } else {
                 // SimTimeInput.SetPaused(false, SimPauseFlags.PendingGlobalAlert);               
             }
         }
+        
+
 
         void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(TicksSinceFired);

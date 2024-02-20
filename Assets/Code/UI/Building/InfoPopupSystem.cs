@@ -32,6 +32,7 @@ namespace Zavala.UI.Info {
             if (m_StateA.ButtonPressed(InputButton.PrimaryMouse) && !SimWorldUtility.IsPointerOverUI()) {
 
                 if (popupUI.IsVisible() && !popupUI.HoldOpen) {
+                    ZavalaGame.Events.Dispatch(GameEvents.InspectorClosed);
                     popupUI.Hide();
                 } else {
                     HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);

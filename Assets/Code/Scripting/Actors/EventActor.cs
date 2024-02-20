@@ -217,6 +217,11 @@ namespace Zavala.Scripting {
                 if (!newEvent.Argument.Id.IsEmpty) {
                     varTable.Set(newEvent.Argument.Id, newEvent.Argument.Value);
                 }
+                if (!newEvent.SecondArg.Id.IsEmpty) {
+                    varTable.Set(newEvent.SecondArg.Id, newEvent.SecondArg.Value);
+                }
+
+                ZavalaGame.Events.Dispatch(GameEvents.AlertClicked, new AlertData(newEvent));
 
                 // TODD: shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
                 WorldCameraUtility.PanCameraToTransform(actor.transform, -1.5f);

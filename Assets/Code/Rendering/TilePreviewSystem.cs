@@ -62,16 +62,17 @@ namespace Zavala.Rendering
                         ShowIcon();
                         m_StateD.Icon.transform.position = SimWorldUtility.GetTileCenter(idx);
                         m_StateD.TileIndex = idx;
-                        ZavalaGame.Events.Dispatch(GameEvents.HoverTile, idx);
                         if (btState.ActiveTool != UserBuildTool.Destroy) {
                             if (btState.BlockedIdxs.Contains(idx)) {
                                 m_StateD.Icon.MeshRenderer.sharedMaterial = m_StateD.BuildingMaterialInvalid;
                                 SetPreviewColor(m_StateD.InvalidHexColor);
+                                idx *= -1; // set index to NEGATIVE to store invalid build data
                             } else {
                                 m_StateD.Icon.MeshRenderer.sharedMaterial = m_StateD.BuildingMaterialValid;
                                 SetPreviewColor(m_StateD.ValidHexColor);
                             }
                         }
+                        ZavalaGame.Events.Dispatch(GameEvents.HoverTile, idx);
                     }
                 }
             }
