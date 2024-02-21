@@ -735,8 +735,7 @@ namespace Zavala.UI.Info
         {
             GrainFarmData newFarmData = new GrainFarmData();
 
-            // TODO: fix NULL exception here
-            for (int tabIdx = 0; tabIdx < m_ActiveTabProfitGroup.Profits.Count; tabIdx++)
+            for (int tabIdx = 0; tabIdx < m_InspectorDisplayData.AllAvailableTabs.Count; tabIdx++)
             {
                 if (tabIdx == 0)
                 {
@@ -892,6 +891,7 @@ namespace Zavala.UI.Info
             PickTab(resource);
             // Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
             UpdateData(true);
+            ZavalaGame.Events.Dispatch(GameEvents.InspectorTabClicked, resource.ToString());
         }
 
         private string BuySellString(bool isShipping) {

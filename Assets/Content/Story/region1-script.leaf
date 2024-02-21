@@ -8,7 +8,7 @@
 // $call Pause()
 $call PauseAlertType("ExcessRunoff")
 
-$call CutsceneBegin()
+$call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)
     You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
@@ -393,7 +393,7 @@ $endif
 $set global:bloomDiscovered = true
 // TODO: trigger ACT 2 HERE.
 {@advisorEcolHill}    What's this...?
-$call CutsceneBegin()
+$call CutsceneBegin(2)
     $call CutscenePrepareImages("act2/2-1-1.png", "act2/2-1-2.png", "act2/2-1-3.png")
     $call CutsceneAllImages(0.5)
     Something is wrong with the lakes. They are filled with revolting green algae! It's depleting lake oxygen and killing fish...

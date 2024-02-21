@@ -67,23 +67,24 @@ namespace Zavala.World {
             SimGridState grid = Game.SharedState.Get<SimGridState>();
             List<SkimmerLocation> locs = Game.SharedState.Get<PhosphorusSkimmerState>().SkimmerLocsPerRegion[regionIndex];
             for (int i = 0; i < locs.Count; i++) {
-                if (locs[i].PlacedSkimmer != null) {
+                if (locs[i].PlacedSkimmer != null && i > numSkimmers-1) {
                     Debug.Log("[PhosphorusSkimmerUtility] Freeing " + locs[i].PlacedSkimmer);
                     skimmerPool.Free(locs[i].PlacedSkimmer);
                     locs[i] = new SkimmerLocation() {
                         TileIndex = locs[i].TileIndex,
                         PlacedSkimmer = null
                     };
+                    ZavalaGame.Events.Dispatch(GameEvents.SkimmerChanged, new SkimmerData(locs[i].TileIndex, false, i == 2));
+                } else if (locs[i].PlacedSkimmer == null && i < numSkimmers){
+                    PhosphorusSkimmer skim = PlaceSkimmer(grid, skimmerPool, locs[i], i == 2); // if i == 2: third skimmer, make it a dredger
+                    skim.gameObject.SetActive(true);
+                    Debug.Log("[PhosphorusSkimmerState] Set skimmer to " + skim);
+                    locs[i] = new SkimmerLocation() {
+                        TileIndex = locs[i].TileIndex,
+                        PlacedSkimmer = skim
+                    };
+                    ZavalaGame.Events.Dispatch(GameEvents.SkimmerChanged, new SkimmerData(locs[i].TileIndex, true, i == 2));
                 }
-            }
-            for (int i = 0; i < numSkimmers; i++) {
-                PhosphorusSkimmer skim = PlaceSkimmer(grid, skimmerPool, locs[i], i == 2); // if i == 2: third skimmer, make it a dredger
-                skim.gameObject.SetActive(true);
-                Debug.Log("[PhosphorusSkimmerState] Set skimmer to " + skim);
-                locs[i] = new SkimmerLocation() {
-                    TileIndex = locs[i].TileIndex,
-                    PlacedSkimmer = skim
-                };
             }
         }
 

@@ -52,6 +52,7 @@ namespace Zavala.UI {
             }
             input.ConsumedButtons |= InputButton.PrimaryMouse;
             NextHint.gameObject.SetActive(false);
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueAdvanced);
         }
 
         public TagStringEventHandler PrepareLine(TagString inString, TagStringEventHandler inBaseHandler) {
@@ -83,6 +84,7 @@ namespace Zavala.UI {
                     yield return null;
                 }
             }
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueDisplayed, new Data.DialogueLineData(inSourceString.VisibleText));
         }
 
         #endregion // ITextDisplayer
@@ -255,7 +257,7 @@ namespace Zavala.UI {
         [LeafMember("CutsceneBegin")]
         static public void Begin(int loggingId = -1) {
             if (loggingId < 0) {
-                Log.Warn("[CutscenePanel] Current cutscene not given Logging ID, will not log");
+                Log.Warn("[CutscenePanel, OGDLog] Current cutscene not given Logging ID, will not log");
             } else {
                 ZavalaGame.Events.Dispatch(GameEvents.CutsceneStarted, loggingId);
             }

@@ -19,6 +19,7 @@ using Zavala.Sim;
 using BeauPools;
 using Zavala.Cards;
 using System.Text;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace Zavala.Data {
 
@@ -257,6 +258,10 @@ namespace Zavala.Data {
             CharTitle = title;
             Text = text;
         }
+        public DialogueLineData(string text) {
+            CharName = CharTitle = "cutscene";
+            Text = text;
+        }
     }
 
     public struct ExportDepotData {
@@ -332,17 +337,11 @@ namespace Zavala.Data {
 
         #region Inspector
         [SerializeField, Required] private string m_AppId = "ALGAE";
-        [SerializeField, Required] private string m_AppVersion = "0.9";
+        [SerializeField, Required] private string m_AppVersion = "1.0";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
 
         #endregion // Inspector
-
-        private enum ViewMode : byte {
-            VIEW,
-            BUILD,
-            DESTROY
-        }
 
         private enum CityStatus : byte {
             GOOD,
@@ -379,12 +378,13 @@ namespace Zavala.Data {
         [NonSerialized] private bool m_IsQuality;
 
         [NonSerialized] private ushort m_CurrentRegionIndex;
-        [NonSerialized] private int m_CurrentBudget;
-        [NonSerialized] private string m_CurrentMode;
+        [NonSerialized] private int m_CurrentBudget = -1;
+        [NonSerialized] private string m_CurrentMode = Mode.View;
+        [NonSerialized] private PolicyStateData m_CountyPolicies;
+        [NonSerialized] private bool m_PhosView = false;
+
         [NonSerialized] private string m_CurrentTool;
         [NonSerialized] private BuildingData m_InspectingBuilding;
-        [NonSerialized] private PolicyStateData m_CountyPolicies;
-
         [NonSerialized] private short m_CurrentCutscene;
         [NonSerialized] private short m_CurrentCutscenePage;
         [NonSerialized] private DialogueLineData m_CurrentLine;
@@ -400,7 +400,6 @@ namespace Zavala.Data {
         private void Start() {
 
 
-            // TODO: register the events for data logging
             ZavalaGame.Events
                 // Main Menu
                 .Register<MenuInteractionType>(GameEvents.MainMenuInteraction, HandleMenuInteraction)
@@ -417,6 +416,7 @@ namespace Zavala.Data {
                 .Register<AlertData>(GameEvents.GlobalAlertAppeared, LogGlobalAlertDisplayed)
                 .Register<AlertData>(GameEvents.GlobalAlertClicked, LogGlobalAlertClicked)
                 .Register<ExportDepotData>(GameEvents.ExportDepotUnlocked, LogExportDepot)
+                .Register<AlgaeData>(GameEvents.SimAlgaeChanged, HandleAlgaeChanged)
                 // TODO: do we want to log every pause or just player pause?
                 .Register(GameEvents.SimPaused, LogGamePaused)
                 .Register(GameEvents.SimResumed, LogGameResumed)
@@ -458,6 +458,7 @@ namespace Zavala.Data {
                 .Register<GrainFarmData>(GameEvents.GrainFarmInspectorDisplayed, LogGrainFarmInspectorDisplayed)
                 .Register<DairyFarmData>(GameEvents.DairyFarmInspectorDisplayed, LogDairyFarmInspectorDisplayed)
                 .Register<StorageData>(GameEvents.StorageInspectorDisplayed, LogStorageInspectorDisplayed)
+                .Register<string>(GameEvents.InspectorTabClicked, LogClickInspectorTab)
                 .Register(GameEvents.InspectorClosed, LogDismissInspector)
                 // Dialogue
                 .Register<int>(GameEvents.CutsceneStarted, LogStartCutscene)
@@ -482,16 +483,17 @@ namespace Zavala.Data {
             m_Log = new OGDLog(new OGDLogConsts() {
                 AppId = m_AppId,
                 AppVersion = m_AppVersion,
+                AppBranch = BuildInfo.Branch(),
                 ClientLogVersion = CLIENT_LOG_VERSION,
             }, new OGDLog.MemoryConfig(4096, 1024*1024*32, 256));
             // m_Log.UseFirebase(m_Firebase);
-            m_Log.SetDebug(m_Debug);
+            m_Log.SetDebug(true);
 
-            RefreshGameState();
+            ResetGameState();
         }
 
         private void SetUserCode(string userCode) {
-            Log.Msg("[Analytics] Setting user code: " + userCode);
+            Log.Msg("[Analytics, OGDLog] Setting user code: " + userCode);
             m_Log.Initialize(new OGDLogConsts() {
                 AppId = m_AppId,
                 AppVersion = m_AppVersion,
@@ -502,7 +504,7 @@ namespace Zavala.Data {
         }
 
         private void OnDestroy() {
-            Game.Events?.DeregisterAllForContext(this);
+            ZavalaGame.Events?.DeregisterAllForContext(this);
             m_Log.Dispose();
         }
         #endregion // Register and Deregister
@@ -519,35 +521,41 @@ namespace Zavala.Data {
         // ADD?: avg_framerate : float
         */
 
-        private void RefreshGameState() {
+        private void ResetGameState() {
+            m_CurrentRegionIndex = 0;
+            m_CurrentBudget = -1;
+            m_CurrentMode = Mode.View;
+            m_PhosView = false;
+            InitializePolicyChoiceState();
+            UpdateAllState();
+        }
+
+        private void UpdateAllState() {
             using (var s = m_Log.OpenGameState()) {
-                s.Param("current_county", -1);
+                s.Param("current_county", ((RegionId)m_CurrentRegionIndex).ToString());
+                s.Param("current_money", m_CurrentBudget);
+                s.Param("map_mode", m_CurrentMode);
+                s.Param("county_policies", JsonUtility.ToJson(m_CountyPolicies));
+                s.Param("phosphorus_view_enabled", m_PhosView);
             }
         }
 
         private void UpdateRegionState(ushort region) {
             //         current_county : str
             m_CurrentRegionIndex = region;
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("current_county", ((RegionId)region).ToString());
-            }
-            UpdatePolicyChoicesState();
+            UpdateAllState();
         }
 
         private void UpdateMoneyState(int budget) {
             //         current_money : int
             m_CurrentBudget = budget;
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("current_money", budget);
-            }
+            UpdateAllState();
         }
 
         private void UpdateBuildState(string mode) {
             //         map_mode : enum(VIEW, BUILD, DESTROY)
             m_CurrentMode = mode;
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("map_mode", mode.ToString());
-            }
+            UpdateAllState();
         }
 
         private void SavePolicyState() {
@@ -559,11 +567,16 @@ namespace Zavala.Data {
         // -1 for "Not Set"
         private void InitializePolicyChoiceState() {
             m_CountyPolicies.sales.policy_choice = -1;
-            m_CountyPolicies.import_subsidy.policy_choice = -1;
-            m_CountyPolicies.runoff.policy_choice = -1;
-            m_CountyPolicies.cleanup.policy_choice = -1;
+            m_CountyPolicies.sales.is_locked = true;
 
-            SavePolicyState();
+            m_CountyPolicies.import_subsidy.policy_choice = -1;
+            m_CountyPolicies.import_subsidy.is_locked = true;
+
+            m_CountyPolicies.runoff.policy_choice = -1;
+            m_CountyPolicies.runoff.is_locked = true;
+
+            m_CountyPolicies.cleanup.policy_choice = -1;
+            m_CountyPolicies.cleanup.is_locked = true;
         }
 
         private void UpdatePolicyChoicesState() {
@@ -585,7 +598,7 @@ namespace Zavala.Data {
             m_CountyPolicies.cleanup.policy_choice =
                 p.EverSet[c] ? (int)p.Map[c] : -1;
 
-            SavePolicyState();
+            UpdateAllState();
         }
 
         private void UpdatePoliciesLockedState() {
@@ -595,7 +608,7 @@ namespace Zavala.Data {
             m_CountyPolicies.runoff.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.RunoffPolicy);
             m_CountyPolicies.cleanup.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.SkimmingPolicy);
 
-            SavePolicyState();
+            UpdateAllState();
         }
 
         private void UpdatePolicyLockedState(PolicyType type, bool isLocked) {
@@ -615,13 +628,12 @@ namespace Zavala.Data {
                 default:
                     break;
             }
-            SavePolicyState();
+            UpdateAllState();
         }
 
         private void UpdatePhosState(bool toggle) {
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("phosphorus_view_enabled", toggle);
-            }
+            m_PhosView = toggle;
+            UpdateAllState();
         }
 
         #endregion // Game State
