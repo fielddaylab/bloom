@@ -74,6 +74,7 @@ namespace Zavala.Scripting
                     UIAlertUtility.SetAlertFaded(alert, true);
                 }
 
+                ZavalaGame.Events.Dispatch(GameEvents.AlertAppeared, new Data.AlertData(peekEvent.Alert, peekEvent.TileIndex, node.FullName));
                 Debug.Log("[Alerts] Created new alert!");
                 component.DisplayingEvent = alert;
             }

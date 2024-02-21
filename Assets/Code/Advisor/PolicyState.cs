@@ -47,6 +47,7 @@ namespace Zavala.Advisor {
                 varTable.Set("policyForced", forced);
                 ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
             }
+            ZavalaGame.Events.Dispatch(GameTriggers.PolicySet, new PolicyData(policyType, policyIndex));
 
             Policies[region].Map[(int) policyType] = (PolicyLevel)policyIndex;
             Policies[region].EverSet[(int) policyType] = true; // this policy has now been set

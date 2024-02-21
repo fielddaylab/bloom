@@ -23,6 +23,7 @@ using Zavala.Input;
 using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.World;
+using Zavala.Data;
 
 namespace Zavala.UI {
     public class DialogueBox : MonoBehaviour, ITextDisplayer, IChoiceDisplayer, IScenePreload {
@@ -72,8 +73,10 @@ namespace Zavala.UI {
         private void Start() {
             m_PolicyExpansionContainer.gameObject.SetActive(false);
 
-            AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
-            advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
+            //AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
+            //advisorState.AdvisorButtonClicked.Register(HandleAdvisorButtonClicked);
+            ZavalaGame.Events.Register<AdvisorType>(GameEvents.AdvisorButtonClicked, HandleAdvisorButtonClicked);
+            ZavalaGame.Events.Register<PolicyType>(GameEvents.PolicyButtonClicked, HandlePolicyButtonClicked);
 
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             policyState.PolicyCloseButtonClicked.Register(HandlePolicyCloseClicked);
@@ -169,6 +172,7 @@ namespace Zavala.UI {
                     }
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
+                ZavalaGame.Events.Dispatch(GameEvents.DialogueDisplayed, new Data.DialogueLineData(charDef.NameId, charDef.TitleId, inString.VisibleText));
                 m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
             } else {
                 // no string to prepare...
@@ -295,7 +299,7 @@ namespace Zavala.UI {
             this.gameObject.SetActive(false);
             Pin.Unpin();
             SimTimeInput.UnpauseEvent();
-            Game.Events.Dispatch(GameEvents.DialogueClosing);
+            // Game.Events.Dispatch(GameEvents.DialogueClosing);
             if (m_CurrentDef != null && m_CurrentDef.IsAdvisor) {
                 ScriptUtility.Trigger(GameTriggers.AdvisorClosed);
             }
@@ -328,6 +332,7 @@ namespace Zavala.UI {
                 }
             }
             input.ConsumedButtons |= InputButton.PrimaryMouse;
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueAdvanced);
             //Log.Msg("[DialogueBox] BREAK!");
             yield break;
         }
@@ -410,6 +415,12 @@ namespace Zavala.UI {
             // TODO: should probably just disable advisor buttons when dialogue is showing
 
             // If dialogue has completed when advisor button is clicked, hide this
+            if (m_FullyExpanded) {
+                m_TransitionRoutine.Replace(HideRoutine());
+            }
+        }
+
+        private void HandlePolicyButtonClicked(PolicyType pType) {
             if (m_FullyExpanded) {
                 m_TransitionRoutine.Replace(HideRoutine());
             }

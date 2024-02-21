@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
@@ -59,8 +60,10 @@ namespace Zavala.Economy {
 
         static public void RefreshShop(BudgetData budgetData, ShopState shopState, SimGridState gridState) {
             uint idx = gridState.CurrRegionIndex;
-            shopState.ShopUI.NetText.text = /*"Net: " +*/ budgetData.BudgetsPerRegion[idx].Net.ToString();
+            long amt = budgetData.BudgetsPerRegion[idx].Net;
+            shopState.ShopUI.NetText.text = /*"Net: " +*/ amt.ToString();
             shopState.ShopUI.RefreshCostChecks((int)budgetData.BudgetsPerRegion[idx].Net);
+            ZavalaGame.Events.Dispatch(GameEvents.BudgetRefreshed, (int)amt);
         }
 
         public static int PriceLookup(UserBuildTool building) {
@@ -91,12 +94,21 @@ namespace Zavala.Economy {
             }
         }
 
+        /// <summary>
+        /// JSON string of each unlocked item and its price, used for analytics data
+        /// </summary>
+        /// <returns></returns>
+        public static StringBuilder GetShopUnlockData() {
+            return Game.SharedState.Get<ShopState>().ShopUI.GetBtnHub().GetUnlockedToolData();
+        }
+
         [LeafMember("UnlockShopItem")]
         public static void UnlockTool(UserBuildTool tool) {
             ShopState shop = Game.SharedState.Get<ShopState>();
             ShopButtonHub hub = shop.ShopUI.GetBtnHub();
             ShopItemButton btn = hub.GetShopItemBtn(tool);
             hub.SetShopItemBtnUnlocked(btn, true);
+            ZavalaGame.Events.Dispatch(GameEvents.BuildToolUnlocked, tool);
         }
 
         /// <summary>

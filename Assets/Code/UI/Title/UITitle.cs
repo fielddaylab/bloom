@@ -66,6 +66,8 @@ namespace Zavala.UI {
             m_PlayGameButton.onClick.AddListener(HandlePlayButton);
             m_BackButton.onClick.AddListener(HandleBackButton);
 
+            m_VolumeSlider.onValueChanged.AddListener(HandleSliderChanged);
+
             m_PlayerCodeInput.onValueChanged.AddListener(HandlePlayerCodeUpdated);
         }
 
@@ -82,6 +84,7 @@ namespace Zavala.UI {
 
         private void HandleStartClicked()
         {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.NewGameClicked);
             m_CurrentPanel = Panel.NewGame;
             m_PlayerCodeInput.SetTextWithoutNotify(string.Empty);
             m_PlayerCodeInput.readOnly = true;
@@ -100,6 +103,7 @@ namespace Zavala.UI {
 
         private void HandleLoadClicked()
         {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.ResumeGameClicked);
             m_CurrentPanel = Panel.LoadGame;
             m_PlayerCodeInput.SetTextWithoutNotify(Game.SharedState.Get<UserSettings>().PlayerCode);
             m_PlayerCodeInput.readOnly = false;
@@ -116,18 +120,22 @@ namespace Zavala.UI {
 
         private void HandleCreditsClicked()
         {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.CreditsButtonClicked);
             m_CreditsPanel.OpenPanel();
         }
 
         private void HandleFullscreenToggle(bool toggle) {
+            ZavalaGame.Events.Dispatch(GameEvents.FullscreenToggled, toggle);
             ScreenUtility.SetFullscreen(toggle);
         }
 
         private void HandleQualityToggle(bool toggle) {
+            ZavalaGame.Events.Dispatch(GameEvents.QualityToggled, toggle);
             Game.SharedState.Get<UserSettings>().HighQualityMode = toggle;
         }
 
         private void HandlePlayButton() {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.PlayGameClicked);
             m_Raycaster.blocksRaycasts = false;
             if (m_CurrentPanel == Panel.NewGame) {
                 ZavalaGame.SaveBuffer.Clear();
@@ -139,7 +147,12 @@ namespace Zavala.UI {
             }
         }
 
+        private void HandleSliderChanged(float val) {
+            Game.SharedState.Get<UserSettings>().MusicVolume = val/10f;
+        }
+
         private void HandleBackButton() {
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.ReturnedToMainMenu);
             m_CurrentPanel = Panel.Start;
             
             m_StartGroup.blocksRaycasts = false;
@@ -167,7 +180,9 @@ namespace Zavala.UI {
 
         private void HandlePlayAccepted() {
             Game.SharedState.Get<UserSettings>().PlayerCode = m_PlayerCodeInput.text;
+            ZavalaGame.Events.Dispatch(GameEvents.ProfileStarting, m_PlayerCodeInput.text);
             Game.Scenes.LoadMainScene(m_MainScene);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.GameStarted);
         }
 
         private void HandleClaimNewIdError(OGD.Core.Error err) {

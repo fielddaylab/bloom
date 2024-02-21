@@ -284,6 +284,7 @@ namespace Zavala.Economy
     static public class MarketUtility
     {
         static public readonly int NumMarkets = 3; // Grain, Milk, and Phosphorus
+        static public readonly ResourceMask[] MarketMasks = new ResourceMask[3] { ResourceMask.Grain, ResourceMask.Milk, ResourceMask.Phosphorus }; 
 
         #region Register
 

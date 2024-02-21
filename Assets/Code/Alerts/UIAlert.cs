@@ -10,10 +10,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Numerics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zavala.Data;
 using Zavala.Scripting;
 using Zavala.Sim;
 
@@ -92,6 +94,7 @@ namespace Zavala.UI {
                 alert.BannerRoutine.Replace(OpenRoutine(alert));
                 return;
             }
+
             EventActorUtility.TriggerActorAlert(alert.Actor);
             //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
         }

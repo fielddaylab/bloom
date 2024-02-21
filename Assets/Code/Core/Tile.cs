@@ -168,6 +168,10 @@ namespace Zavala
             return sb.Flush();
         }
 
+        public string ToBitString() {
+            return Convert.ToString(Value, 2).PadLeft(6,'0');
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static public TileAdjacencyMask operator |(TileAdjacencyMask a, TileAdjacencyMask b) {
             return new TileAdjacencyMask(a.Value | b.Value);

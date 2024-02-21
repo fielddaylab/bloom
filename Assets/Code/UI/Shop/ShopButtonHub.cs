@@ -1,3 +1,4 @@
+using BeauPools;
 using BeauUtil;
 using FieldDay;
 using FieldDay.Scenes;
@@ -5,6 +6,7 @@ using FieldDay.Scripting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Zavala.Building;
 using Zavala.Economy;
@@ -33,7 +35,7 @@ namespace Zavala.UI
             return null;
         }
 
-          public void Activate() {
+        public void Activate() {
             this.gameObject.SetActive(true);
 
             // Set Button images, text, and functionality according to underlying data
@@ -75,6 +77,23 @@ namespace Zavala.UI
 
     public ShopItemButton GetShopItemBtn(UserBuildTool tool) {
         return Array.Find(m_shopItemBtns, b => b.BuildTool == tool);
+    }
+
+    public StringBuilder GetUnlockedToolData() {
+            using (var psb = PooledStringBuilder.Create()) {
+                psb.Builder.Append('[');
+                foreach(ShopItemButton b in m_shopItemBtns) {
+                    if (b.Button.interactable) {
+                        psb.Builder.Append('{');
+                        psb.Builder.Append("building_type: ").Append(b.BuildTool);
+                        psb.Builder.Append("cost: ").Append(b.Cost);
+                        psb.Builder.Append("},");
+                    }
+                }
+                if (psb.Builder.Length > 0) psb.Builder.Length -= 1; // trim last comma
+                psb.Builder.Append(']');
+                return psb.Builder;
+            }
     }
 
     public void SetShopItemBtnUnlocked(ShopItemButton btn, bool unlocked) {

@@ -206,7 +206,7 @@ $call ActivateSim()
 //$if FailureIsEnabled()
 {local @advisorEcon}    I have bad news... 
 {local @advisorEcon}    We have failed {alertRegionName}.
-$call CutsceneBegin()
+$call CutsceneBegin(6)
 $if local:endType == "CityFailed"
 	$call CutscenePrepareImages("fail/city-1.png", "fail/city-2.png", "fail/city-3.png")
 	$call CutsceneNextImage()
@@ -244,7 +244,7 @@ $endif
 @conditions    FailureIsEnabled()
 @cutscene
 {local @advisorEcon}    You won :D Yippee!
-$call CutsceneBegin()
+$call CutsceneBegin(7)
 	$call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.5)
 	With your help, these regions are blooming into a thriving interconnected economy.

@@ -251,5 +251,53 @@ namespace Zavala.Actors {
         {
             return actor.CurrentStress[stressType] >= actor.BadThreshold;
         }
+
+        static public Data.CityPopulationLog OperationStateToCityPopulationLog(OperationState state)
+        {
+            if (state == OperationState.Bad)
+            {
+                return CityPopulationLog.FALLING;
+            }
+            else if (state == OperationState.Okay)
+            {
+                return CityPopulationLog.STABLE;
+            }
+            else
+            {
+                return CityPopulationLog.RISING;
+            }
+        }
+
+        static public Data.CityWaterStatusLog ExtractCityWaterStatusLog(StressableActor actor)
+        {
+            if (actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Bad])
+            {
+                return CityWaterStatusLog.BAD;
+            }
+            else if (actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Okay])
+            {
+                return CityWaterStatusLog.OKAY;
+            }
+            else
+            {
+                return CityWaterStatusLog.GOOD;
+            }
+        }
+
+        static public Data.CityMilkStatusLog ExtractCityMilkStatusLog(StressableActor actor)
+        {
+            if (actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Bad])
+            {
+                return CityMilkStatusLog.NOT_ENOUGH;
+            }
+            else if (actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Okay])
+            {
+                return CityMilkStatusLog.ENOUGH;
+            }
+            else
+            {
+                return CityMilkStatusLog.PLENTY;
+            }
+        }
     }
 }

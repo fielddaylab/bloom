@@ -87,16 +87,16 @@ namespace FieldDay.Scripting {
             if ((inNode.Flags & ScriptNodeFlags.Once) != 0) {
                 persistence.SessionViewedNodeIds.Add(nodeId);
             }
-
-            if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {
+            bool cutscene = (inNode.Flags & ScriptNodeFlags.Cutscene) != 0;
+            if (cutscene) {
                 m_RuntimeState.NestedCutscenePauseCount++;
                 SimTimeUtility.Pause(SimPauseFlags.Cutscene, ZavalaGame.SimTime);
             }
             if ((inNode.Flags & ScriptNodeFlags.ForcePolicyEarly) != 0) {
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
             }
-
             m_RuntimeState.DefaultDialogue.MarkNodeEntered();
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
         }
 
         public override void OnNodeExit(ScriptNode inNode, LeafThreadState<ScriptNode> inThreadState) {
@@ -112,9 +112,12 @@ namespace FieldDay.Scripting {
             }
             m_RuntimeState.DefaultDialogue.MarkNodeExited();
 
-            if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0) {
+            bool cutscene = (inNode.Flags & ScriptNodeFlags.Cutscene) != 0;
+            if (cutscene) {
                 GameLoop.QueueEndOfFrame(LateEndCutsceneDelegate);
             }
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
+            
         }
 
         private void LateDecrementNestedPauseCount() {

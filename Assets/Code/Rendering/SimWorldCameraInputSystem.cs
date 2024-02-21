@@ -85,18 +85,7 @@ namespace Zavala.World {
             }
 
             float zoomDelta = m_StateB.ScrollWheel.y * m_StateA.ZoomFactor;
-            if (zoomDelta != 0) {
-                if (camInput.InputMode == CameraInputMode.Drag) {
-                    camInput.InputMode = CameraInputMode.None;
-                }
-                Vector3 camPos = m_StateA.Camera.transform.localPosition;
-                if (zoomDelta > 0) {
-                    camPos.z = Mathf.Min(m_StateA.CameraMaxZoomDist, camPos.z + zoomDelta);
-                } else {
-                    camPos.z = Mathf.Max(m_StateA.CameraMinZoomDist - 1 * (m_StateC.RegionCount - 1), camPos.z + zoomDelta);
-                }
-                m_StateA.Camera.transform.localPosition = camPos;
-            }
+            WorldCameraUtility.ZoomCamera(zoomDelta, true);
             m_StateB.ScrollWheel.y = 0;
         }
 

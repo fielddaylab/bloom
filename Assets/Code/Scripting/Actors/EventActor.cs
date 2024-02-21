@@ -217,6 +217,11 @@ namespace Zavala.Scripting {
                 if (!newEvent.Argument.Id.IsEmpty) {
                     varTable.Set(newEvent.Argument.Id, newEvent.Argument.Value);
                 }
+                if (!newEvent.SecondArg.Id.IsEmpty) {
+                    varTable.Set(newEvent.SecondArg.Id, newEvent.SecondArg.Value);
+                }
+
+                ZavalaGame.Events.Dispatch(GameEvents.AlertClicked, new AlertData(newEvent));
 
                 // TODD: shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
                 WorldCameraUtility.PanCameraToTransform(actor.transform, -1.5f);
@@ -266,7 +271,7 @@ namespace Zavala.Scripting {
         /// <param name="actor">The actor to check.</param>
         /// <param name="alert">The alert type to check for.</param>
         /// <returns></returns>
-        static public bool IsAlertQueued(EventActor actor, EventActorAlertType alert, bool checkParent = false) {
+        static public bool IsAlertQueued(EventActor actor, EventActorAlertType alert) {
             if (actor == null) return false;
             foreach (var trigger in actor.QueuedTriggers) {
                 // in the case of alerts, "value" is the alertType
@@ -283,6 +288,16 @@ namespace Zavala.Scripting {
             }
 
             return false;
+        }
+
+        /// <summary>
+        ///  Returns whether the actor has QueuedTriggers to QueuedEvents of any type.
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <returns></returns>
+        static public bool IsAlertQueued(EventActor actor) {
+            if (actor == null) return false;
+            return actor.QueuedTriggers.Count > 0 || actor.QueuedEvents.Count > 0;
         }
 
         static public bool IsAlertEventQueued(EventActor actor, EventActorAlertType alert)

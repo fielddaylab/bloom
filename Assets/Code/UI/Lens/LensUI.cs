@@ -98,9 +98,9 @@ namespace Zavala.UI {
 
         private void OnEcoClicked() {
             HideMarket(false);
-
+            bool toggle = m_Mode != AdvisorType.Ecology;
             SimWorldState worldState = Game.SharedState.Get<SimWorldState>();
-            if (m_Mode != AdvisorType.Ecology) {
+            if (toggle) {
                 worldState.Overlays |= SimWorldOverlayMask.Phosphorus;
                 SetButtonActive(m_EcoButton);
                 m_Mode = AdvisorType.Ecology;
@@ -108,12 +108,13 @@ namespace Zavala.UI {
             } else {
                 HidePhosphorus(true);
             }
+            ZavalaGame.Events.Dispatch(GameEvents.TogglePhosphorusView, toggle);
         }
 
         private void OnEconClicked() {
             HidePhosphorus(false);
-
-            if (m_Mode != AdvisorType.Economy) {
+            bool toggle = m_Mode != AdvisorType.Economy;
+            if (toggle) {
                 SetButtonActive(m_EconButton);
                 m_Mode = AdvisorType.Economy;
                 ShowFoldout(m_EconButton);
@@ -122,6 +123,7 @@ namespace Zavala.UI {
             } else {
                 HideMarket(true);
             }
+            ZavalaGame.Events.Dispatch(GameEvents.ToggleEconomyView, toggle);
         }
 
         #endregion // Handlers
@@ -247,6 +249,7 @@ namespace Zavala.UI {
             switch (type) {
                 case AdvisorType.Ecology: {
                     if (!m_HasEco) {
+                        ZavalaGame.Events.Dispatch(GameEvents.AdvisorLensUnlocked, /*isEcon:*/false);
                         m_HasEco = true;
                         m_EcoButton.gameObject.SetActive(true);
                     }
@@ -255,10 +258,11 @@ namespace Zavala.UI {
 
                 case AdvisorType.Economy: {
                     if (!m_HasEcon) {
+                        ZavalaGame.Events.Dispatch(GameEvents.AdvisorLensUnlocked, /*isEcon:*/true);
                         m_HasEcon = true;
                         m_EconButton.gameObject.SetActive(true);
-                    }
-                    break;
+                }
+                break;
                 }
             }
         }
