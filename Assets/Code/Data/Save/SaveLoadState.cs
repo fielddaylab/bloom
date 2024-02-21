@@ -16,7 +16,7 @@ namespace Zavala.Data {
         public Routine Operation;
 
         private void Awake() {
-            OGD.Core.Configure(ServerURL, "ZAVALA");
+            OGD.Core.Configure(ServerURL, "ALGAE");
         }
     }
 
