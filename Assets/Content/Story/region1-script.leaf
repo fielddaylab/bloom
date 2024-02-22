@@ -222,6 +222,19 @@ $set intro:pendingPolicy = true
 // {@advisorEcolHill}      This could be bad for the future of the lakes...
 // $call Unpause()
 
+:: testDialogueBubble
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "GrainFarm"
+@once
+{local @grainFarmer} I've got something to say!
+$call QueueDialogueBubble(region1_city1, region1.testResponseDialogue)
+
+
+:: testResponseDialogue
+@once
+@queued
+{local @urbanite} Hey, I heard Henrietta had something to say?
+
 :: specialDelivery
 @trigger    ExternalImport
 // @conditions !intro:exporterFound

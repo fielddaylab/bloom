@@ -115,9 +115,9 @@ namespace Zavala.Scripting {
         DecliningPop,
         SellingLoss,
         Disconnected,
-        GlobalDummy,
         Dialogue, // Specific case with no banner
 
+        GlobalDummy,
         [Hidden]
         COUNT,
     }
@@ -199,8 +199,13 @@ namespace Zavala.Scripting {
                 Log.Warn("[EventActorUtility] Failed to queue dialogue for actor {0}: actor not found!", actor.ToDebugString());
                 return;
             }
+            OccupiesTile ot = target.GetComponent<OccupiesTile>();
+            int idx = ot.TileIndex;
+            int region = ot.RegionIndex;
             EventActorQueuedEvent fakeEvent = new() {
                 ScriptId = targetNode,
+                TileIndex = idx,
+                RegionIndex = new NamedVariant("alertRegion", region+1), //0-indexed to 1-indexed
                 Alert = EventActorAlertType.Dialogue
             };
             target.QueuedEvents.PushBack(fakeEvent);
@@ -239,7 +244,9 @@ namespace Zavala.Scripting {
                 ScriptUtility.Runtime.Plugin.Run(node, actor, varTable);
                 varTable.Clear();
 
-                //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
+                if (newEvent.Alert == EventActorAlertType.Dialogue) {
+                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                }
             }
         }
 

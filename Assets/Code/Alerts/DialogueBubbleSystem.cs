@@ -1,15 +1,17 @@
 
+using BeauUtil.Debugger;
 using BeauUtil.Variants;
 using FieldDay.Systems;
+using UnityEngine;
+using Zavala.Actors;
 using Zavala.Scripting;
 
 namespace Zavala.Sim {
 
-    public class DialogueBubbleSystem : ComponentSystemBehaviour<EventActor, OccupiesTile> {
+    public class DialogueBubbleSystem : ComponentSystemBehaviour<EventActor, ActorTimer, OccupiesTile> {
 
-        public override void ProcessWorkForComponent(EventActor actor, OccupiesTile tile, float deltaTime) {
-
-
+        public override void ProcessWorkForComponent(EventActor actor, ActorTimer timer, OccupiesTile tile, float deltaTime) {
+            if (tile.IsExternal || !timer.Timer.HasAdvanced()) return;
             //tile.BuildingType
             //tile.Region
 
@@ -17,7 +19,6 @@ namespace Zavala.Sim {
             if (EventActorUtility.IsAlertQueued(actor)) {
                 return;
             }
-
             NamedVariant type = new("buildingType", tile.Type.ToString());
             EventActorUtility.QueueAlert(actor, EventActorAlertType.Dialogue, tile.TileIndex, tile.RegionIndex, type);
 

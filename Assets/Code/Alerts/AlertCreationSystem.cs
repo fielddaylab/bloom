@@ -30,13 +30,13 @@ namespace Zavala.Scripting
             // if no active events, create alert
             if (component.QueuedEvents.Count > 0) { // only create if they have events and aren't displaying them
                 if (component.DisplayingEvent) {
-                    if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue) {
-                        // Clear the shown alert
-                        UIAlertUtility.ClearAlert(component.DisplayingEvent);
-                    } else {
+                    //if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue) {
+                    //    // Clear the shown alert
+                    //    UIAlertUtility.ClearAlert(component.DisplayingEvent);
+                    //} else {
                         // Skip queueing for this actor, it is already displaying an important (non-dialogue) event
                         return;
-                    }
+                    // }
                                      
                 }
                 
@@ -64,10 +64,12 @@ namespace Zavala.Scripting
                 alert.Actor = component;
                 alert.AlertType = peekEvent.Alert;
                 // assign localized banner text
-                alert.EventText.SetText(GameAlerts.GetLocalizedName(peekEvent.Alert));
 
                 alert.AlertBase.sprite = GetAlertBaseSprite(peekEvent.Alert, m_AlertAssets);
-                alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
+                if (alert.AlertType != EventActorAlertType.Dialogue) {
+                    alert.EventText.SetText(GameAlerts.GetLocalizedName(peekEvent.Alert));
+                    alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
+                }
 
                 if (Game.Gui.GetShared<GlobalAlertButton>().QueuedActors.Contains(component)) {
                     alert.KeepFaded = true;
@@ -75,7 +77,7 @@ namespace Zavala.Scripting
                 }
 
                 ZavalaGame.Events.Dispatch(GameEvents.AlertAppeared, new Data.AlertData(peekEvent.Alert, peekEvent.TileIndex, node.FullName));
-                Debug.Log("[Alerts] Created new alert!");
+                Debug.Log("[Alerts] Created new alert!" + node.FullName);
                 component.DisplayingEvent = alert;
             }
         }

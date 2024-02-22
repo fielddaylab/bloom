@@ -137,7 +137,7 @@ namespace Zavala
         private const string DecliningPop = "declining-pop";
         private const string SellingLoss = "selling-loss";
         private const string Disconnected = "disconnected";
-        private const string DialogueBubble = "dialogue-bubble";
+        private const string DialogueBubble = "dialogue";
 
         // Localization Ids
         private const string BaseLocPath = "alerts.";

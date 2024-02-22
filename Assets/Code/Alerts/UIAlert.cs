@@ -88,7 +88,7 @@ namespace Zavala.UI {
         // static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
 
         public static void ClickAlert(UIAlert alert) {
-            if (!alert.FullyOpened) {
+            if (alert.AlertType != EventActorAlertType.Dialogue && !alert.FullyOpened) {
                 alert.Pointer.enabled = false;
                 alert.Pointer.GetComponent<Collider>().enabled = false;
                 alert.BannerRoutine.Replace(OpenRoutine(alert));
@@ -152,11 +152,15 @@ namespace Zavala.UI {
         public static IEnumerator CloseRoutine(UIAlert alert, bool freeOnClose) {
             alert.FullyOpened = false;
             alert.Masking.SetState(true);
-            yield return Routine.Combine(
-                alert.AlertBannerRect.AnchorPosTo(-3f, 0.3f, Axis.X).Ease(Curve.QuadIn).DelayBy(0.15f),
-                alert.EventText.FadeTo(0, 0.2f),
-                alert.AlertBase.FadeTo(0, 0.2f).DelayBy(0.45f)
-            );
+            if (alert.AlertType == EventActorAlertType.Dialogue) {
+                yield return alert.AlertBase.FadeTo(0, 0.2f).DelayBy(0.45f);
+            } else {
+                yield return Routine.Combine(
+                    alert.AlertBannerRect.AnchorPosTo(-3f, 0.3f, Axis.X).Ease(Curve.QuadIn).DelayBy(0.15f),
+                    alert.EventText.FadeTo(0, 0.2f),
+                    alert.AlertBase.FadeTo(0, 0.2f).DelayBy(0.45f)
+                );
+            }
             if (freeOnClose) FreeAlert(alert);
             yield return null;
         }
