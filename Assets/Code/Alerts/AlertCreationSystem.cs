@@ -29,21 +29,23 @@ namespace Zavala.Scripting
 
             // if no active events, create alert
             if (component.QueuedEvents.Count > 0) { // only create if they have events and aren't displaying them
-                if (component.DisplayingEvent) {
-                    //if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue) {
-                    //    // Clear the shown alert
-                    //    UIAlertUtility.ClearAlert(component.DisplayingEvent);
-                    //} else {
-                        // Skip queueing for this actor, it is already displaying an important (non-dialogue) event
-                        return;
-                    // }
-                                     
-                }
+                
                 
                 component.QueuedEvents.TryPeekFront(out EventActorQueuedEvent peekEvent);
                 if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
                     // do not create UI banners for the fake global alerts
                     return;
+                }
+
+                if (component.DisplayingEvent) {
+                    if (peekEvent.Alert != EventActorAlertType.Dialogue && component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue) {
+                        // If dialogue: override the shown alert
+                        UIAlertUtility.ClearAlert(component.DisplayingEvent);
+                    } else {
+                        // Skip queueing for this actor, it is already displaying an important(non - dialogue) event
+                       return;
+                    }
+
                 }
 
                 ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, peekEvent.ScriptId);
