@@ -117,6 +117,7 @@ namespace Zavala
         static public readonly StringHash32 CityConnection = "CityConnection";
         static public readonly StringHash32 ExternalImport = "ExternalImport";
         static public readonly StringHash32 ResourceSent = "ResourceSent";
+        static public readonly StringHash32 UrgentRequest = "UrgentRequest";
         static public readonly StringHash32 ManureSold = "ManureSold";
         static public readonly StringHash32 InternalBlimpSent = "InternalBlimpSent";
         static public readonly StringHash32 InternalBlimpReceived = "InternalBlimpReceived";

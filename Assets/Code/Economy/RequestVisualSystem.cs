@@ -1,5 +1,6 @@
 using BeauUtil;
 using FieldDay;
+using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
 using Zavala.Sim;
@@ -30,6 +31,8 @@ namespace Zavala.Economy {
         private void GenerateNewVisuals() {
             // pop up only for alerts that are urgent
             foreach (var request in m_StateB.NewUrgents) {
+                if (request.Requester.Flagstaff.FlagVisuals.gameObject.activeSelf) return;
+
                 request.Requester.Flagstaff?.FlagVisuals.gameObject.SetActive(true);
 
                 // This process is simplified by the fact that a requester will only ever request one category of resource
@@ -38,6 +41,13 @@ namespace Zavala.Economy {
                 {
                     request.Requester.Flagstaff.FlagVisuals.Resources = request.Requested;
                     RequestVisualUtility.SetResourceGraphic(request.Requester.Flagstaff.FlagVisuals, request.Requester.Flagstaff.FlagVisuals.Resources);
+                }
+
+                int regionIndex = request.Requester.GetComponent<OccupiesTile>().RegionIndex;
+                using (TempVarTable varTable = TempVarTable.Alloc()) {
+                    varTable.Set("resource", ResourceUtility.FirstResource(request.Requested).ToString());
+                    varTable.Set("alertRegion", regionIndex+1); // 0-indexed to 1-indexed
+                    ScriptUtility.Trigger(GameTriggers.UrgentRequest, varTable);
                 }
 
                 if (!m_StateB.UrgentMap.ContainsKey(request.Requester)) {

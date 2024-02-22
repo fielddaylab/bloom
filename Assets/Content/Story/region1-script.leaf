@@ -222,12 +222,12 @@ $set intro:pendingPolicy = true
 // {@advisorEcolHill}      This could be bad for the future of the lakes...
 // $call Unpause()
 
-:: testDialogueBubble
-@trigger AlertExamined
-@conditions alertType == "dialogue", buildingType == "GrainFarm"
-@once
-{local @grainFarmer} I've got something to say!
-// $call QueueDialogueBubble(region1_city1, region1.testResponseDialogue)
+// :: testDialogueBubble
+// @trigger AlertExamined
+// @conditions alertType == "dialogue", buildingType == "GrainFarm"
+// @once
+// {local @grainFarmer} I've got something to say!
+// // $call QueueDialogueBubble(region1_city1, region1.testResponseDialogue)
 
 
 :: openedToForest
@@ -238,13 +238,30 @@ $set intro:pendingPolicy = true
 {@advisorEconHill}      Now you can be <i>condescended to</i> while surrounded by natural splendor.
 {@advisorEconHill}      Hope you like the smell of old mushrooms.
 
+:: bertramWantsStorage
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "DairyFarm", alertRegion == 1, global:storageUnlocked
+@once
+$if BuildingBuiltInRegion(1, "Storage")
+    {@cafoHill}         Hey, this newfangled <b>Storage</b> unit is great!
+    {@cafoHill}         I might actually be able to make a profit on all this manure.
+    {@advisorEconHill}  Delightful news!
+$else
+    {@cafoHill}         Hey, can we get one of those fancy <b>Storage</b> units?
+    {@cafoHill}         It would be nice to make some money on all this manure.
+    {@advisorEconHill}  Excellent idea! 
+    {@advisorEconHill}  That manure has value, but it's going to waste due to shipping costs.
+    {@advisorEconHill}  I suggest a <b>Storage</b> unit nearby... if we can afford it.
+$endif
+
+
 :: openedToPrairie
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, RegionUnlocked(3)
 @once
-{@advisorEcolHill}      Ugh... Those Heath County hayseeds always irked me.
-{@advisorEcolHill}      They think they're better than everyone because of that fancy college.
-{@advisorEcolHill}      Plus their straw hats are weird!
+{@cityHill}      Ugh... Those Heath County hayseeds always irked me.
+{@cityHill}      They think they're better than everyone because of that fancy college.
+{@cityHill}      Plus their straw hats are weird!
 
 :: specialDelivery
 @trigger    ExternalImport
@@ -343,16 +360,31 @@ $call UnlockCards(RunoffPolicy)
 {@advisorEcolHill}      What do you think, boss?
 $call ForcePolicyInstant("Ecology")
 
+:: urgentMilkRequest
+@trigger        UrgentRequest
+@conditions     resource == "Milk", alertRegion == 1
+@once
+$call QueueDialogueBubble(region1_city1, region1.cityNeedsMilk)
+
+:: cityNeedsMilk
+@queuedop
+@once
+{@cityHill}     Hey, we're running out of milk over here!
+{@cityHill}     Please... don't make me eat dry cereal...
 
 :: firstManureSold
 @trigger        ManureSold
 @conditions     alertRegion == 1
-@cutscene
 @once
+$call QueueDialogueBubble(region1_city1, region1.runoffFineWorking)
+
+:: runoffFineWorking
+@once
+@queued
 $call PanToBuilding("region1_cafo1", -0.5)
 {@advisorEcolHill}      Aha!
-{@advisorEcolHill}      Look, Bertram just sold manure! The Runoff Fine is working!
-{@advisorEconHill}      Could this be activating a <i>Fertilizer Market?</i> How exhilirating!
+{@advisorEcolHill}      Did you see? Bertram just sold manure! The Runoff Fine is working!
+{@advisorEconHill}      Could this be activating a <i>Fertilizer Market!?</i>
 {@cafoHill}             Uh... not to be a downer, but..
 $call OpenInfoPopup("region1_cafo1")
 {@cafoHill}             I'm only selling this stuff to avoid your <b>Runoff Fine.</b>

@@ -624,6 +624,30 @@ namespace Zavala.Economy {
         }
 
         /// <summary>
+        /// Return the first set ResourceId in the given ResourceBlock
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
+        static public ResourceId FirstResource(ResourceBlock block) {
+            if (block.Manure > 0) {
+                return ResourceId.Manure;
+            }
+            if (block.MFertilizer > 0) {
+                return ResourceId.MFertilizer;
+            }
+            if (block.DFertilizer > 0) {
+                return ResourceId.DFertilizer;
+            }
+            if (block.Grain > 0) {
+                return ResourceId.Grain;
+            }
+            if (block.Milk > 0) {
+                return ResourceId.Milk;
+            }
+            return ResourceId.COUNT;
+        }
+
+        /// <summary>
         /// Returns all ResourceIds for the given mask.
         /// </summary
         static public EnumBitEnumerator<ResourceId> AllResources(ResourceMask mask)
