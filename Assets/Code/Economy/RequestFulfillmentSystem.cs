@@ -66,7 +66,7 @@ namespace Zavala.Economy {
                             ActorPhosphorusGenerator gen = request.Supplier.GetComponentInChildren<ActorPhosphorusGenerator>();
                             // sold manure, runoff improving
                             using (TempVarTable varTable = TempVarTable.Alloc()) {
-                                varTable.Set("alertRegion", request.Supplier.Position.RegionIndex+1);
+                                varTable.Set("alertRegion", request.Supplier.Position.RegionIndex+1); //0-indexed to 1-indexed
                                 ScriptUtility.Trigger(GameTriggers.ManureSold, varTable);
                             }
                             if (gen != null) gen.RunoffImproving = true;

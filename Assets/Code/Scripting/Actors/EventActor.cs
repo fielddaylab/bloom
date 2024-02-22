@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using BeauUtil;
 using BeauUtil.Debugger;
 using BeauUtil.Variants;
@@ -200,15 +201,18 @@ namespace Zavala.Scripting {
                 return;
             }
             OccupiesTile ot = target.GetComponent<OccupiesTile>();
-            int idx = ot.TileIndex;
-            int region = ot.RegionIndex;
             EventActorQueuedEvent fakeEvent = new() {
                 ScriptId = targetNode,
-                TileIndex = idx,
-                RegionIndex = new NamedVariant("alertRegion", region+1), //0-indexed to 1-indexed
+                TileIndex = ot.TileIndex,
+                RegionIndex = new NamedVariant("alertRegion", ot.RegionIndex+1), //0-indexed to 1-indexed
                 Alert = EventActorAlertType.Dialogue
             };
             target.QueuedEvents.PushBack(fakeEvent);
+        }
+
+        [LeafMember("QueueDialogueBubbleGeneric")]
+        static public void QueueDialogueAlert(int regionOneIndexed, string type, StringHash32 targetNode) {
+            QueueDialogueAlert("region" + regionOneIndexed + "_" + type + "1", targetNode);
         }
 
         public static void TriggerActorAlert(EventActor actor) {

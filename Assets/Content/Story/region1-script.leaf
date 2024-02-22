@@ -227,13 +227,24 @@ $set intro:pendingPolicy = true
 @conditions alertType == "dialogue", buildingType == "GrainFarm"
 @once
 {local @grainFarmer} I've got something to say!
-$call QueueDialogueBubble(region1_city1, region1.testResponseDialogue)
+// $call QueueDialogueBubble(region1_city1, region1.testResponseDialogue)
 
 
-:: testResponseDialogue
+:: openedToForest
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, RegionUnlocked(2)
 @once
-@queued
-{local @urbanite} Hey, I heard Henrietta had something to say?
+{@advisorEconHill}      Ah, you've expanded into Cypress County. Lucky you.
+{@advisorEconHill}      Now you can be <i>condescended to</i> while surrounded by natural splendor.
+{@advisorEconHill}      Hope you like the smell of old mushrooms.
+
+:: openedToPrairie
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, RegionUnlocked(3)
+@once
+{@advisorEcolHill}      Ugh... Those Heath County hayseeds always irked me.
+{@advisorEcolHill}      They think they're better than everyone because of that fancy college.
+{@advisorEcolHill}      Plus their straw hats are weird!
 
 :: specialDelivery
 @trigger    ExternalImport
@@ -299,31 +310,6 @@ $if PolicyIsUnlocked(SalesTaxPolicy)
 $else
     {local @advisorEcon}    Greetings. Once we have economic policies to set, you can come see me.
 $endif
-
-:: openedToForest
-@trigger        AdvisorOpened
-@conditions     advisorType == "Economy", CameraInRegion(1), RegionUnlocked(2)
-@priority       High
-// @forcePolicy    Economy
-@once
-$call ForcePolicyInstant("Economy")
-{@advisorEconHill}      Ah, you've expanded into Cypress County. Lucky you.
-{@advisorEconHill}      Now you can be <i>condescended to</i> while surrounded by natural splendor.
-{@advisorEconHill}      Hope you like the smell of old mushrooms.
-
-:: openedToPrairie
-@trigger        AdvisorOpened
-@conditions     advisorType == "Ecology", CameraInRegion(1), RegionUnlocked(3)
-@priority       High
-// @forcePolicy    Ecology
-@once
-{@advisorEcolHill}      Ugh... Those Heath County hayseeds always irked me.
-{@advisorEcolHill}      They think they're better than everyone because of their fancy college.
-{@advisorEcolHill}      Plus their straw hats are weird!
-{viewpoliciesnext}
-{@advisorEcolHill}      Anyway, what can I help you with?
-$call ForcePolicyInstant("Ecology")
-
 
 // :: preBloomRunoff
 // @trigger        AlertExamined

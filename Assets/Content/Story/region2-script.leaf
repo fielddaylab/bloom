@@ -22,6 +22,7 @@ $endif
 // $call Pause()
 $set intro:openedForestAlert = true
 $call FocusClear()
+$call QueueDialogueBubble(region1_city1, region1.openedToForest)
 {@advisorEconForest}    Salutations, Director.
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
 $call PanToBuilding("region2_cafo1")
