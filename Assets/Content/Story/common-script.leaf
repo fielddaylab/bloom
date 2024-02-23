@@ -117,7 +117,7 @@ $endif
 @conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == true
 {local @advisorEcol}    Runoff from a grain farm...
 {local @advisorEcol}    All fertilizer causes <i>some</i> runoff... 
-{local @advisorEcol}    But <b>mineral fertilizer</b> from Phos4Us tends to be overapplied.
+{local @advisorEcol}    But <b>mineral fertilizer</b> from PHOS4US tends to be overapplied.
 {local @grainFarmer}    It's the cheapest option I've got!
 {local @advisorEcol}    Maybe we can find a manure seller nearby.
 $if global:builtDigester

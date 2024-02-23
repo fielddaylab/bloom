@@ -29,6 +29,8 @@ $call PanToBuilding("region2_cafo1")
 {@advisorEconForest}    We could use your help establishing trade and growing our economy.
 $call PanToBuilding("region2_cafo2")
 {@advisorEconForest}    We have more Dairy Farms than our <b>dear</b> neighbors in Knoll County.
+$call PanToBuilding("toll_booth2to1")
+{@advisorEconForest}    County roads can be connected by this <b>Border Gate.</b>
 $call PanToBuilding("region2_grain1")
 $call FocusHighlightOn("Budget")
 {@advisorEconForest}    Each county has its own <b>budget</b>.
@@ -65,12 +67,77 @@ $endif
 @trigger FarmConnection
 @conditions CameraInRegion(2) 
 @once
+$call QueueDialogueBubble(region2_city1, region2.enjoyingCypress)
+
+:: enjoyingCypress
+@once
+@queued
 {@advisorEcolForest}    Enjoying Cypress County?
 {@advisorEcolForest}    The finest forests in the state, if I do say so myself.
 {@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
 {@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
 // $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
 
+
+:: bloomRumors
+@once
+@queued
+{@grainForest}          Have you heard?
+{@grainForest}          They're getting <i>Algae Blooms</i> over in Knoll County.
+{@advisorEcolForest}    Is that so? Not surprising...
+{@advisorEconForest}    And not our problem! We have our own matters to worry about.
+
+
+:: urgentGrainForest
+@trigger        UrgentRequest
+@conditions     resource == "Grain", alertRegion == 2
+@once
+$call QueueDialogueBubble(region2_cafo1, region2.urgentGrainChat)
+
+:: urgentGrainChat
+@queued
+@once
+{@cafoForest}           Agh! I'm running so low on <b>Grain</b>, I tried feeding my cows mushrooms...
+{@cafoForest}           They are <i>not</i> happy with me.
+{@advisorEconForest}    What!? They didn't like our prized <i>boletus cupressus?</i>
+{@advisorEcolForest}    Natalie, I hate to say it... but your cows have bad taste.
+{@cafoForest}           Whatever, Sage. Just get me some <b>Grain</b> before I get stampeded!
+
+
+:: urgentGrainSubsidyTrigger
+@trigger        UrgentRequest
+@conditions     resource == "Grain", alertRegion == 2, global:importUnlocked
+@once
+$call QueueDialogueBubble(region2_cafo2, region2.urgentGrainSubsidy)
+
+:: urgentGrainSubsidy
+@queued
+@once
+$if PolicyLevelInRegion(2, "ImportTaxPolicy") == 2 // Grain Subsidy
+    {@cafoForest}       I hope that <b>Grain Subsidy</b> works...
+$else
+    {@cafoForest}       Hey, can we try out one of those <b>Import Subsidies</b> here?
+$endif
+{@cafoForest}           My cows could really use some <b>Grain.</b>
+{@advisorEconForest}    You'd feed them some other county's Grain before our own??
+{@advisorEconForest}    Whatever happened to <i>buy local?</i>
+{@cafoForest}           We don't have enough Grain here for both of my farms!
+{@cafoForest}           And I am <b>not</b> feeding my cows <i>mushrooms</i> again.
+
+:: explainAlgaeBloom
+@queued
+@once
+{@cityForest}           Hey... What even is this algae bloom stuff, anyway?
+{@advisorEcolPrairie}   Ooo, I can answer that one!
+{@advisorEcolPrairie}   Algae is an important part of any aquatic ecosystem.
+{@advisorEcolPrairie}   It's made of many tiny organisms that make their own food from the sun.
+{@cityForest}           Like little floating plants?
+{@advisorEcolPrairie}   Kinda! And all kinds of animals eat that algae.
+{@advisorEcolPrairie}   But when there's excess <b>Phosphorus</b> in the water...
+{@advisorEcolPrairie}   Algae can use it to rapidly multiply - <i>bloom.</i>
+{@advisorEcolPrairie}   All that algae takes the oxygen that other organisms need to survive.
+{@advisorEcolPrairie}   Plus, it smells <i>nasty.</i>
+{@cityForest}           Eugh. I hope SAGA can keep it away from here!
 
 :: runoffBranch
 @trigger        AlertExamined
@@ -88,10 +155,10 @@ $endif
 @cutscene
 @once
 $call Wait(0.5)
-{@cafoForest}     Hmm... This sitting manure leaches into the water table faster than it's used.
-{@cafoForest}     Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
+{@cafoForest}           Hmm... This sitting manure leaches into the water table faster than it's used.
+{@cafoForest}           Maybe we can use some reinforced containers to keep it... well, <i>contained?</i>
 {@advisorEconForest}    Why not build your own storage?
-{@cafoForest}     Seriously!? There's no way I could afford that at every farm.
+{@cafoForest}           Seriously!? There's no way I could afford that at every farm.
 {@advisorEcolForest}    Natalie's got a point.
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEcolForest}    I've added <b>Storage</b> to your Build Mode menu.

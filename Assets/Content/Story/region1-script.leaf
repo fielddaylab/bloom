@@ -236,22 +236,24 @@ $set intro:pendingPolicy = true
 @once
 {@advisorEconHill}      Ah, you've expanded into Cypress County. Lucky you.
 {@advisorEconHill}      Now you can be <i>condescended to</i> while surrounded by natural splendor.
-{@advisorEconHill}      Hope you like the smell of old mushrooms.
+{@advisorEcolHill}      I'm surprised you're not friends with Agatha! You're both economics weirdos.
+{@advisorEconHill}      Well, she smells like mushrooms.
+{@advisorEconHill}      And she looks like she's going to cast a hex on me...
 
 :: bertramWantsStorage
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "DairyFarm", alertRegion == 1, global:storageUnlocked
 @once
 $if BuildingBuiltInRegion(1, "Storage")
-    {@cafoHill}         Hey, this newfangled <b>Storage</b> unit is great!
+    {@cafoHill}         Hey, that newfangled <b>Storage</b> unit is great!
     {@cafoHill}         I might actually be able to make a profit on all this manure.
     {@advisorEconHill}  Delightful news!
 $else
     {@cafoHill}         Hey, can we get one of those fancy <b>Storage</b> units?
     {@cafoHill}         It would be nice to make some money on all this manure.
     {@advisorEconHill}  Excellent idea! 
-    {@advisorEconHill}  That manure has value, but it's going to waste due to shipping costs.
-    {@advisorEconHill}  I suggest a <b>Storage</b> unit nearby... if we can afford it.
+    {@advisorEconHill}  That manure has value, but it's going to waste due to shipping costs and runoff.
+    {@advisorEconHill}  I suggest building a <b>Storage</b> unit nearby... if we can afford it.
 $endif
 
 
@@ -259,9 +261,20 @@ $endif
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, RegionUnlocked(3)
 @once
-{@cityHill}      Ugh... Those Heath County hayseeds always irked me.
-{@cityHill}      They think they're better than everyone because of that fancy college.
-{@cityHill}      Plus their straw hats are weird!
+{@advisorEcolHill}      Ugh... Those Heath County people always irked me.
+{@advisorEcolHill}      They think they're better than everyone because of that fancy college.
+{@advisorEcolHill}      Plus their straw hats are weird!
+
+
+:: graphPrettyCool
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, global:tradeGraphsUnlocked
+{@advisorEcolHill}      Okay, I gotta admit... that Market Share graph thingy is pretty cool.
+{@advisorEcolHill}      You get all that information just from buying decisions?
+{@advisorEconPrairie}   Yes ma'am! And we can use it to help bring our Phosphorus in balance.
+{@advisorEcolHill}      I guess economics isn't <i>all</i> bad...
+{@advisorEconHill}      Like I've been saying!!
+
 
 :: specialDelivery
 @trigger    ExternalImport
@@ -275,7 +288,7 @@ $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
 {local @grainFarmer}    My crops need <b>phosphorus</b> to grow...
 {local @grainFarmer}    There's some <b>phosphorus</b> in the soil, but it's not enough!
-{local @grainFarmer}    <b>Phos4Us</b> ships mineral phosphorus to my farm for cheap.
+{local @grainFarmer}    <b>PHOS4US</b> ships mineral phosphorus to my farm for cheap.
 {@advisorEcolHill}      Woah there! We're adding MORE nutrients to our soil?
 {@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle!
 $call AddAutoAlertCondition("Bloom", 1)
@@ -283,7 +296,7 @@ $call AddAutoAlertCondition("Bloom", 1)
 $set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
 $call OpenInfoPopup("region1_grain1")
 {@advisorEconHill}      The <b>Inspector</b> shows where she could <b>buy from</b>.
-{local @grainFarmer}    See, Phos4Us is the only seller around!
+{local @grainFarmer}    See, PHOS4US is the only seller around!
 $if local:taxLevel > 0, local:taxLevel < 3
     {local @grainFarmer}    And that <b>Sales Tax</b> of yours is increasing the price...
 $elseif local:taxLevel = 3
@@ -360,28 +373,58 @@ $call UnlockCards(RunoffPolicy)
 {@advisorEcolHill}      What do you think, boss?
 $call ForcePolicyInstant("Ecology")
 
-:: urgentMilkRequest
+:: explainPhosphorus
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "GrainFarm", alertRegion == 1, global:runoffDiscovered
+@once
+{@grainHill}        Hey, what's so bad about <b>Phosphorus</b> anyway?
+{@advisorEcolHill}  <b>Phosphorus</b> itself isn't bad! It's an essential nutrient for life.
+{@advisorEcolHill}  It converts between various forms in a cycle, like water.
+{@advisorEcolHill}  But bringing in excess Phosphorus from elsewhere, like PHOS4US...
+{@advisorEcolHill}  That can unbalance our local cycle, and cause problems!
+{@grainHill}        Like that Algae Bloom!
+{@advisorEcolHill}  Exactly.
+
+:: urgentMilkRequestHill
 @trigger        UrgentRequest
 @conditions     resource == "Milk", alertRegion == 1
 @once
 $call QueueDialogueBubble(region1_city1, region1.cityNeedsMilk)
 
 :: cityNeedsMilk
-@queuedop
+@queued
 @once
 {@cityHill}     Hey, we're running out of milk over here!
-{@cityHill}     Please... don't make me eat dry cereal...
+{@cityHill}     Please... don't make me eat dry cereal!
+
+:: urgentMilkSubsidy
+@trigger        UrgentRequest
+@conditions     resource == "Milk", alertRegion == 1, global:importUnlocked
+@once
+$call QueueDialogueBubble(region1_city1, region1.suggestMilkSubsidy)
+
+:: suggestMilkSubsidy
+@queued
+@once
+{@cityHill}     Our milk supply is running low...
+$if PolicyLevelInRegion(1, "ImportTaxPolicy") == 1 // Milk Subsidy
+    {@cityHill}     Hopefully that <b>Milk Subsidy</b> will help...
+    {@cityHill}     That'll make it cheaper for us to buy milk from other counties!
+$else
+    {@cityHill}     Hey, why not use an <b>Import Subsidy</b>?
+    {@cityHill}     Bertram's farm might not be enough for our whole town...
+    {@cityHill}     But a subsidy will make milk from other counties cheaper!
+$endif
 
 :: firstManureSold
 @trigger        ManureSold
 @conditions     alertRegion == 1
 @once
-$call QueueDialogueBubble(region1_city1, region1.runoffFineWorking)
+$call QueueDialogueBubble(region1_cafo1, region1.runoffFineWorking)
 
 :: runoffFineWorking
 @once
 @queued
-$call PanToBuilding("region1_cafo1", -0.5)
 {@advisorEcolHill}      Aha!
 {@advisorEcolHill}      Did you see? Bertram just sold manure! The Runoff Fine is working!
 {@advisorEconHill}      Could this be activating a <i>Fertilizer Market!?</i>
@@ -390,8 +433,7 @@ $call OpenInfoPopup("region1_cafo1")
 {@cafoHill}             I'm only selling this stuff to avoid your <b>Runoff Fine.</b>
 {@cafoHill}             I'm still losing money on the <b>shipping costs!</b>
 {@cafoHill}             I might have to <b>slow down production</b> if this keeps up.
-{@advisorEconHill}      Ah...
-{@advisorEcolHill}      Well, we still gotta prevent runoff.
+{@advisorEcolHill}      Well, we still gotta prevent runoff...
 {@advisorEcolHill}      Maybe there's a way of <b>lowering</b> shipping costs?
 $call CloseInfoPopup()
 {@advisorEconHill}      Hmm... I'll think on it.
@@ -447,6 +489,7 @@ $call CutsceneEnd()
 {@advisorEcolHill}    Some algae blooms are <b>unavoidable...</b>
 {@advisorEcolHill}    But we can limit them if we <b>prevent phosphorus runoff!</b>
 {@advisorEcolHill}    I'll keep an eye out for any excess runoff...
+$call QueueDialogueBubble(region2_grain1, region2.bloomRumors)
 $call OffsetAlgaeGrowthThreshold(1)
 $call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)

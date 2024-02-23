@@ -164,7 +164,7 @@ MonoBehaviour:
     - Id: location.region1_grain1.name
       Content: Henrietta's Grain Farm
     - Id: location.externalSupplier.name
-      Content: Phos 4 Us
+      Content: PHOS4US
     - Id: location.region2_cafo1.name
       Content: Natalie's Dairy Farm
     - Id: location.region2_cafo2.name

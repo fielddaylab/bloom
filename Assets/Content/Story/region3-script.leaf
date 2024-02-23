@@ -14,6 +14,7 @@ $call PanToBuilding("region3_city1")
 {@advisorEconPrairie}    Heath County could use SAGA's help. 
 {@advisorEconPrairie}    We've got a whole <i>bushel</i> of Grain Farms... and of course Veldt University!
 {@advisorEconPrairie}    They'll be conducting research about this algae unpleasantness.
+$call QueueDialogueBubble(region2_city1, region2.explainAlgaeBloom)
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom", 2) // for unlocking PIPS
 $call AddRegionAgeTrigger(3, 20) // for unlocking IMPORT TAX
@@ -63,6 +64,31 @@ $call ForcePolicyInstant("Ecology")
 
 // $call Unpause()
 
+:: economicSolution
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "City", alertRegion == 3, global:pipsUnlocked
+@once
+{@advisorEconPrairie}    I've been crunching some numbers...
+{@advisorEconPrairie}    And it seems there's an economic solution to our problem!
+{@advisorEconPrairie}    I've written up a plan...
+{@cityPrairie}           Jamie... This plan says milk would cost $15 a gallon.
+{@advisorEconPrairie}    Precisely!
+{@advisorEconPrairie}    That should account for all the externalities...
+{@cityPrairie}           If milk is $15 a gallon, I will riot in the streets.
+{@advisorEconPrairie}    Ah. Hm.
+{@advisorEconPrairie}    Back to the drawing board then!
+
+// TODO: queue this dialogue
+:: veganSolution
+{@advisorEcolPrairie}   I think I've got a solution to this algae business!
+{@advisorEconPrairie}   Oh? Pray tell!
+{@advisorEcolPrairie}   It's easy: we just shut down the dairy farms!
+{@cafoPrairie}          Excuse me?
+{@advisorEcolPrairie}   We won't need milk anymore if everyone goes vegan!
+{@cityPrairie}          <i>Excuse me!?</i>
+{@advisorEconPrairie}   Well, I reckon you're <i>technically</i> correct...
+{@advisorEconPrairie}   But SAGA can't exactly write a policy for that.
+
 :: queueUnlockImportTax
 @trigger        RegionReachedAge // RegionAge 20 after region opens
 @conditions     regionId == 3
@@ -74,21 +100,20 @@ $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
 @queued     
 @once
 $set global:importUnlocked = true
-{@grainPrairie}   Howdy Director! I've been noticing...
+{@grainPrairie}         Howdy Director! I've been noticing...
 // $call Pause()
-{@grainPrairie}   We're growing more grain here than we can sell.
-{@grainPrairie}   Couldn't y'all cowherders in Cypress make use of this?
-{@cafoForest}   Erm... Maybe, but shipping it in from the boondocks costs a fortune.
-{@advisorEconPrairie}   Hmmm... Perhaps SAGA could help cover those costs.
-{@advisorEconPrairie}   I've unlocked a policy for setting <b>Import Subsidies.</b>
+{@grainPrairie}         We're growing more grain here than we can sell.
+{@grainPrairie}         Couldn't y'all cowherders in Cypress make use of this?
+{@cafoForest}           Erm... Maybe, but shipping it in from the boondocks costs a fortune.
+{@advisorEconPrairie}   Perhaps SAGA could help cover those costs?
+{@advisorEconPrairie}   I've added a policy for setting <b>Import Subsidies.</b>
 $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   <b>Subsidizing</b> a resource will encourage buying it from other counties.
-{@advisorEcolPrairie}   Wait a sec... Does that mean we could subsidize manure, and cut out Phos4Us?
-{@advisorEconPrairie}   Yes'm! But it'll have to come from our budget.
-{@advisorEconForest}    Hmph. Well I say everyone should just <i>buy local.</i>
+{@advisorEcolPrairie}   Wait a sec... Does that mean we could subsidize manure, and cut out PHOS4US?
+{@advisorEconPrairie}   Yes ma'am! But it'll have to come from our budget.
 $call ForcePolicyInstant("Economy")
 {viewpoliciesnext}
-{@advisorEconPrairie}    What do you think, Director?
+{@advisorEconPrairie}   What do you think, Director?
 // $call Unpause()
 
 :: queueUnlockMarketView
@@ -110,6 +135,6 @@ $call UnlockAdvisorModule("Economy")
 {@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph.
 {@advisorEconPrairie}   It shows which types of phosphorus fertilizer are being used.
 $call ForceAdvisorModule("Economy")
-{@advisorEconPrairie}   We'll want to replace red Phos4Us to keep those extra nutrients out!
+{@advisorEconPrairie}   We'll want to replace red PHOS4US to keep those extra nutrients out!
 {@advisorEconPrairie}   You can click <b>Economy View</b> to check it any time.
 // $call Unpause()

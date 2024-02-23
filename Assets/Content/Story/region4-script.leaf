@@ -57,7 +57,7 @@ $endif
 // // $call Pause()
 $set global:digestersUnlocked = true
 {@advisorEcolWetland}   It's just as we feared...
-$call CutsceneBegin()
+$call CutsceneBegin(4)
     $call CutscenePrepareImages("act4/4-1-1.png", "act4/4-1-2.png", "act4/4-1-3.png")
     $call CutsceneAllImages(0.5)
     The protected lands of Muskeg County have been a safe haven for local species... until now. Algae blooms are threatening their ecosystem!
@@ -66,7 +66,7 @@ $call CutsceneBegin()
     Our elite naval rangers are prepared to mitigate the algae with their Skimmers.
 	$call CutscenePrepareImages("act4/4-3-1.png", "act4/4-3-2.png", "act4/4-3-3.png")
 	$call CutsceneAllImages(0.5)
-    And this old manure processor... It used to turn manure into fertilizer, but it was too expensive to run. Could SAGA use it to beat Phos4Us?
+    And this old manure processor... It used to turn manure into fertilizer, but it was too expensive to run. Could SAGA use it to beat PHOS4US?
 	$call CutscenePrepareImages("act4/4-4-1.png", "act4/4-4-2.png", "act4/4-4-3.png")
 	$call CutsceneAllImages(0.5)
     That processed fertilizer could be shipped much more cheaply, all throughout the area!
@@ -112,7 +112,7 @@ $call AddRegionAgeDeltaTrigger(4, 10)
 @once
 {@advisorEconWetland}   Now that we have a manure processor up and running...
 {@advisorEconWetland}   What's stopping us from shipping out our own fertilizer?
-{@advisorEconWetland}   We'll be like Phos4Us! Only our phosphorus is from manure, not mineral deposits.
+{@advisorEconWetland}   We'll be like PHOS4US! Only our phosphorus is from manure, not mineral deposits.
 {@advisorEcolWetland}   Do we really want to be like them? All that extra phosphorus got us into this mess.
 {@advisorEconWetland}   Maybe so... But if we're efficient enough, we can outcompete them!
 {@advisorEcolWetland}   That could <i>close the loop</i>... and stop the import of phosphorus!
