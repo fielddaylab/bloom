@@ -96,6 +96,10 @@ namespace FieldDay.Scripting {
             if ((inNode.Flags & ScriptNodeFlags.ForcePolicyEarly) != 0) {
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
             }
+            if (Game.Gui.TryGetShared(out InfoPopup ip)) {
+                ip.HoldOpen = false;
+                ip.Hide();
+            }
             m_RuntimeState.DefaultDialogue.MarkNodeEntered();
             ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
         }

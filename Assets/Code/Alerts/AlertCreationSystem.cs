@@ -38,11 +38,12 @@ namespace Zavala.Scripting
                 }
 
                 if (component.DisplayingEvent) {
-                    if (peekEvent.Alert != EventActorAlertType.Dialogue && component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue) {
-                        // If dialogue: override the shown alert
+                    if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue && peekEvent.Alert != EventActorAlertType.Dialogue) {
+                        // If showing a dialogue event, clear it and move it to the back
                         UIAlertUtility.ClearAlert(component.DisplayingEvent);
+                        component.QueuedEvents.PushBack(component.QueuedEvents.PopFront());
                     } else {
-                        // Skip queueing for this actor, it is already displaying an important(non - dialogue) event
+                        // Skip queueing for this actor, it is already displaying an important (i.e. nondialogue) event
                        return;
                     }
 

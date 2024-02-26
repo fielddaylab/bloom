@@ -229,6 +229,57 @@ $set intro:pendingPolicy = true
 // {local @grainFarmer} I've got something to say!
 // // $call QueueDialogueBubble(region1_city1, region1.testResponseDialogue)
 
+:: specialDelivery
+@trigger    ExternalImport
+@conditions intro:externalFound = false
+@cutscene
+@once
+// $call Pause()
+$set intro:externalFound = true
+$call PanToBuilding("region1_grain1")
+{@advisorEconHill}      Ho! Special delivery!
+{@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
+{local @grainFarmer}    My crops need <b>phosphorus</b> to grow...
+{local @grainFarmer}    There's some <b>phosphorus</b> in the soil, but it's not enough!
+{local @grainFarmer}    <b>PHOS4US</b> ships mineral phosphorus to my farm for cheap.
+{@advisorEcolHill}      Woah there! We're adding MORE nutrients to our soil?
+{@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle!
+$call AddAutoAlertCondition("Bloom", 1)
+{@advisorEconHill}      I'm sure Henrietta has a good reason. Let's take a look...
+$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
+$call OpenInfoPopup("region1_grain1")
+{@advisorEconHill}      The <b>Inspector</b> shows where she could <b>buy from</b>.
+{local @grainFarmer}    See, PHOS4US is the only seller around!
+$if local:taxLevel > 0, local:taxLevel < 3
+    {local @grainFarmer}    And that <b>Sales Tax</b> of yours is increasing the price...
+$elseif local:taxLevel = 3
+    {local @grainFarmer}    Thank goodness your <b>Subsidy</b> is lowering the price!
+$endif
+{@advisorEcolHill}      What about manure? That has phosphorus.
+$call CloseInfoPopup()
+{@advisorEconHill}      Shall we ask Bertram?
+$call OpenInfoPopup("region1_cafo1")
+$call Wait(0.5)
+{@advisorEconHill}      Here, the <b>Inspector</b> shows where he could <b>sell to</b>.
+{local @cafoFarmer}     I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
+{@advisorEconHill}      And a longer road means a higher <b>shipping cost</b>.
+{local @cafoFarmer}     Right. Better to just let the manure sit.
+$call CloseInfoPopup()
+{@advisorEconHill}      I see.
+{@advisorEconHill}      You can always check the <b>Inspector</b> again by clicking on a farm.
+
+// $call Unpause()
+
+
+:: throughForests
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, intro:externalFound
+{@advisorEconHill}      Sigh. I don't see why we can't build trade routes through forests.
+{@advisorEcolHill}      Pippin, those are protected lands.
+{@advisorEcolHill}      We can't just pave through an Important Bird Area!
+{@advisorEconHill}      Bah! You environmentalists are always ruining the fun.
+{@advisorEcolHill}      As if saving Caldwell's White-Throated Warbler isn't fun!
+{@advisorEconHill}      Not as fun as a near 15% increase in operating efficiency!!
 
 :: openedToForest
 @trigger AlertExamined
@@ -274,49 +325,6 @@ $endif
 {@advisorEconPrairie}   Yes ma'am! And we can use it to help bring our Phosphorus in balance.
 {@advisorEcolHill}      I guess economics isn't <i>all</i> bad...
 {@advisorEconHill}      Like I've been saying!!
-
-
-:: specialDelivery
-@trigger    ExternalImport
-// @conditions !intro:exporterFound
-@cutscene
-@once
-// $call Pause()
-// $set intro:exporterFound = true
-$call PanToBuilding("region1_grain1")
-{@advisorEconHill}      Ho! Special delivery!
-{@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
-{local @grainFarmer}    My crops need <b>phosphorus</b> to grow...
-{local @grainFarmer}    There's some <b>phosphorus</b> in the soil, but it's not enough!
-{local @grainFarmer}    <b>PHOS4US</b> ships mineral phosphorus to my farm for cheap.
-{@advisorEcolHill}      Woah there! We're adding MORE nutrients to our soil?
-{@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle!
-$call AddAutoAlertCondition("Bloom", 1)
-{@advisorEconHill}      I'm sure Henrietta has a good reason. Let's take a look...
-$set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
-$call OpenInfoPopup("region1_grain1")
-{@advisorEconHill}      The <b>Inspector</b> shows where she could <b>buy from</b>.
-{local @grainFarmer}    See, PHOS4US is the only seller around!
-$if local:taxLevel > 0, local:taxLevel < 3
-    {local @grainFarmer}    And that <b>Sales Tax</b> of yours is increasing the price...
-$elseif local:taxLevel = 3
-    {local @grainFarmer}    Thank goodness your <b>Subsidy</b> is lowering the price!
-$endif
-{@advisorEcolHill}      What about manure? That has phosphorus.
-$call CloseInfoPopup()
-{@advisorEconHill}      Shall we ask Bertram?
-$call OpenInfoPopup("region1_cafo1")
-$call Wait(0.5)
-{@advisorEconHill}      Here, the <b>Inspector</b> shows where he could <b>sell to</b>.
-{local @cafoFarmer}     I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
-{@advisorEconHill}      And a longer road means a higher <b>shipping cost</b>.
-{local @cafoFarmer}     Right. Better to just let the manure sit.
-$call CloseInfoPopup()
-{@advisorEconHill}      I see.
-{@advisorEconHill}      You can always check the <b>Inspector</b> again by clicking on a farm.
-
-// $call Unpause()
-
 
 
 :: ecologyAdvisorOpen
@@ -394,8 +402,11 @@ $call QueueDialogueBubble(region1_city1, region1.cityNeedsMilk)
 :: cityNeedsMilk
 @queued
 @once
-{@cityHill}     Hey, we're running out of milk over here!
-{@cityHill}     Please... don't make me eat dry cereal!
+{@cityHill}         Hey, we're running out of milk over here!
+{@cityHill}         Please... don't make me eat dry cereal!
+{@advisorEconHill}  Dry cereal will be the least of SAGA's worries.
+{@advisorEconHill}  Without milk, this city's population will decline...
+{@advisorEconHill}  And SAGA's funding will dry up!
 
 :: urgentMilkSubsidy
 @trigger        UrgentRequest

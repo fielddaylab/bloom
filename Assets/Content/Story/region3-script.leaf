@@ -80,6 +80,9 @@ $call ForcePolicyInstant("Ecology")
 
 // TODO: queue this dialogue
 :: veganSolution
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "City", alertRegion == 3, global:pipsUnlocked
+@once
 {@advisorEcolPrairie}   I think I've got a solution to this algae business!
 {@advisorEconPrairie}   Oh? Pray tell!
 {@advisorEcolPrairie}   It's easy: we just shut down the dairy farms!
@@ -109,12 +112,20 @@ $set global:importUnlocked = true
 {@advisorEconPrairie}   I've added a policy for setting <b>Import Subsidies.</b>
 $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   <b>Subsidizing</b> a resource will encourage buying it from other counties.
-{@advisorEcolPrairie}   Wait a sec... Does that mean we could subsidize manure, and cut out PHOS4US?
+{@advisorEconPrairie}   That could help us balance one county's <b>excess</b> with another's <b>needs.</b>
+{@grainPrairie}         Hold up... does that mean you could <b>Subsidize fertilizer</b> 
 {@advisorEconPrairie}   Yes ma'am! But it'll have to come from our budget.
 $call ForcePolicyInstant("Economy")
 {viewpoliciesnext}
 {@advisorEconPrairie}   What do you think, Director?
 // $call Unpause()
+
+:: queueSuggestFert
+@trigger    ExternalImport
+@conditions 
+
+:: suggestFertSubsidy
+
 
 :: queueUnlockMarketView
 @trigger        RegionReachedAge // RegionAgeDelta 20 after PIPS unlocked

@@ -25,19 +25,18 @@ $call FocusClear()
 $call QueueDialogueBubble(region1_city1, region1.openedToForest)
 {@advisorEconForest}    Salutations, Director.
 {@advisorEconForest}    News of SAGA has spread to Cypress County.
-$call PanToBuilding("region2_cafo1")
 {@advisorEconForest}    We could use your help establishing trade and growing our economy.
-$call PanToBuilding("region2_cafo2")
+$call PanToBuilding("region2_cafo1")
 {@advisorEconForest}    We have more Dairy Farms than our <b>dear</b> neighbors in Knoll County.
-$call PanToBuilding("toll_booth2to1")
-{@advisorEconForest}    County roads can be connected by this <b>Border Gate.</b>
-$call PanToBuilding("region2_grain1")
+$call PanToBuilding("region2_cafo2")
 $call FocusHighlightOn("Budget")
-{@advisorEconForest}    Each county has its own <b>budget</b>.
-$call Unpause()
+{@advisorEconForest}    Each county has our own <b>budget</b>...
+{@advisorEconForest}    And our own roads.
+$call FocusClear()
+$call PanToBuilding("toll_booth2to1")
+{@advisorEconForest}    Routes between counties must pass through this <b>Border Gate.</b>
 {@advisorEconForest}    And you'll need to set our <b>policies</b> separately.
 {@advisorEconForest}    Shall we set a Sales Policy here?
-$call FocusClear()
 
 
 :: ecologyAdvisorOpen
@@ -67,6 +66,7 @@ $endif
 @trigger FarmConnection
 @conditions CameraInRegion(2) 
 @once
+// $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
 $call QueueDialogueBubble(region2_city1, region2.enjoyingCypress)
 
 :: enjoyingCypress
@@ -76,8 +76,6 @@ $call QueueDialogueBubble(region2_city1, region2.enjoyingCypress)
 {@advisorEcolForest}    The finest forests in the state, if I do say so myself.
 {@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
 {@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
-// $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
-
 
 :: bloomRumors
 @once
@@ -86,7 +84,6 @@ $call QueueDialogueBubble(region2_city1, region2.enjoyingCypress)
 {@grainForest}          They're getting <i>Algae Blooms</i> over in Knoll County.
 {@advisorEcolForest}    Is that so? Not surprising...
 {@advisorEconForest}    And not our problem! We have our own matters to worry about.
-
 
 :: urgentGrainForest
 @trigger        UrgentRequest

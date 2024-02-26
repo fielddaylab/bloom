@@ -48,6 +48,16 @@ $else
     {local @advisorEcon}    No policies yet? I'm afraid I can't help you.
 $endif
 
+:: suspiciousSaga
+@trigger        AlertExamined
+@conditions     alertType == "dialogue", buildingType == "DairyFarm", alertRegion == 4
+{@cafoWetland}          I'm not so sure about all this SAGA business...
+{@cafoWetland}          I don't want the dang government telling me what I can and can't do!
+{@advisorEconWetland}   Don't worry, me neither.
+{@cafoWetland}          Huh? Don't you work for SAGA?
+{@advisorEconWetland}   That's right. I'm your guy on the inside!
+{@cafoWetland}          Whatever, man.
+
 :: unlockDigesters
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked
