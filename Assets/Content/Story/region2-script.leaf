@@ -251,6 +251,12 @@ $call OffsetAlgaeGrowthThreshold(1)
 $call ForcePolicyInstant("Ecology")
 // $call Unpause()
 
+
+:: openedToWetland
+@once
+@queued
+// TODO: Agatha comments on Parker's ideology
+
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered
@@ -270,26 +276,3 @@ $endif
 {viewpoliciesnext}
 {@advisorEcolForest}    But you're the boss.
 $call ForcePolicyInstant("Ecology")
-
-:: unlockSkimmers
-@trigger        AlertExamined // unlocked by first bloom appearance after region 4 opens up
-@conditions     alertType == "bloom", AgeOfRegion(4) > 0, global:readyForSkimmers
-@forcePolicy    Ecology
-@cutscene
-@once
-{local @urbanite}    I'm starting to worry about these algae blooms...
-$if global:skimmersUnlocked == false // band-aid solution for queued "once" alert nodes
-    $set global:skimmersUnlocked = true
-    {@advisorEcolWetland}   Well, we have all these boats over in the wetland... What if we used them to skim algae off the lakes?
-    {@advisorEconWetland}   That could be costly... And it won't remove the underlying phosphorus.
-    {@advisorEconWetland}   For that, we'd need even pricier <i>dredgers.</i>
-    {@advisorEcolWetland}   But skimmers could help mitigate the worst effects for now. 
-    {viewpoliciesnext}
-    {local @advisorEcol}    It's up to you, Director.
-    $call UnlockCards(SkimmingPolicy)
-    $call AddAutoAlertCondition("Bloom", 4) // prepare for digester cutscene
-$else
-    {viewpoliciesnext}
-    {local @advisorEcon}    Maybe those newfangled skimmers can help?
-$endif
-// $call ForcePolicyInstant("Ecology")

@@ -6,6 +6,7 @@ using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Zavala.Actors;
 using Zavala.Advisor;
 using Zavala.Audio;
@@ -198,7 +199,10 @@ namespace Zavala.Economy {
             if (Mathf.Approximately(Vector3.Distance(newPos, component.TargetWorldPos), 0)) {
                 DeliverFulfillment(marketData, component, visualState);
                 if (component.Source.Position.IsExternal) {
-                    ScriptUtility.Trigger(GameTriggers.ExternalImport);
+                    using (TempVarTable varTable = TempVarTable.Alloc()) {
+                        varTable.Set("alertRegion", component.Target.Position.RegionIndex+1); // 0-indexed to 1-indexed
+                        ScriptUtility.Trigger(GameTriggers.ExternalImport, varTable);                    
+                    }
                 } else {
                     ScriptUtility.Trigger(GameTriggers.InternalBlimpReceived);
                 }

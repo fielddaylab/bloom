@@ -14,15 +14,17 @@ $call CutsceneBegin(1)
     You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.3)
-	This county is young. It's your job as SAGA director to help them grow...
+	These counties are young. It's your job as SAGA director to help them grow...
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
 	$call CutsceneNextImage()
 	And protect them from threats. 
     $call CutsceneAllImages(0.3)
     Some speak of a terrible <b>green tide</b> that brings ruin in its wake...
 	$call CutscenePrepareImages("intro/frame4-1.png", "intro/frame4-2.png", "intro/frame4-3.png")
-	$call CutsceneAllImages(0.3)
-	Your first assignment is <i>Knoll County</i>. You will meet two Advisors to help you on your way...
+    $call CutsceneAllImages(0.3)
+    You will meet Advisors to help you on your way...
+    They will have words of wisdom, as well as biases of their own.
+	Your first assignment is <i>Knoll County</i>. Good luck, Director.
 $call CutsceneEnd()
 
 {@advisorEconHill}      Greetings! Welcome to Knoll County.
@@ -324,8 +326,20 @@ $endif
 {@advisorEcolHill}      You get all that information just from buying decisions?
 {@advisorEconPrairie}   Yes ma'am! And we can use it to help bring our Phosphorus in balance.
 {@advisorEcolHill}      I guess economics isn't <i>all</i> bad...
-{@advisorEconHill}      Like I've been saying!!
+{@advisorEconHill}      See? Like I've been saying!!
 
+
+:: visitingBirds
+@queued
+@once
+{@cityWetland}      Hey, um... Can anyone point me to Caldwell Oaks?
+{@advisorEcolHill}  Wait... you mean the Important Bird Area?
+{@advisorEcolHill}  <i>You know about our Important Bird Area??</i>
+{@cityWetland}      Haha, yeah!
+{@cityWetland}      I'm hoping to spot a Caldwell's--
+{@advisorEcolHill}  --Caldwell's White-Throated Warbler! Yes!
+{@advisorEcolHill}  I'll take you there right now!!
+{@cityWetland}      Woah, okay!
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened

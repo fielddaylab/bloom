@@ -66,22 +66,21 @@ $call ForcePolicyInstant("Ecology")
 
 :: economicSolution
 @trigger AlertExamined
-@conditions alertType == "dialogue", buildingType == "City", alertRegion == 3, global:pipsUnlocked
+@conditions global:pipsUnlocked, alertRegion == 3, alertType == "dialogue", buildingType == "City"
 @once
 {@advisorEconPrairie}    I've been crunching some numbers...
 {@advisorEconPrairie}    And it seems there's an economic solution to our problem!
 {@advisorEconPrairie}    I've written up a plan...
-{@cityPrairie}           Jamie... This plan says milk would cost $15 a gallon.
+{@advisorEcolPrairie}    Jamie... This plan says milk would cost $15 a gallon.
 {@advisorEconPrairie}    Precisely!
 {@advisorEconPrairie}    That should account for all the externalities...
 {@cityPrairie}           If milk is $15 a gallon, I will riot in the streets.
 {@advisorEconPrairie}    Ah. Hm.
 {@advisorEconPrairie}    Back to the drawing board then!
 
-// TODO: queue this dialogue
 :: veganSolution
 @trigger AlertExamined
-@conditions alertType == "dialogue", buildingType == "City", alertRegion == 3, global:pipsUnlocked
+@conditions global:readyForSkimmers, alertRegion == 3, alertType == "dialogue", buildingType == "City"
 @once
 {@advisorEcolPrairie}   I think I've got a solution to this algae business!
 {@advisorEconPrairie}   Oh? Pray tell!
@@ -113,7 +112,7 @@ $set global:importUnlocked = true
 $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   <b>Subsidizing</b> a resource will encourage buying it from other counties.
 {@advisorEconPrairie}   That could help us balance one county's <b>excess</b> with another's <b>needs.</b>
-{@grainPrairie}         Hold up... does that mean you could <b>Subsidize fertilizer</b> 
+{@grainPrairie}         Hold up... does that mean you could <b>Subsidize fertilizer</b>?
 {@advisorEconPrairie}   Yes ma'am! But it'll have to come from our budget.
 $call ForcePolicyInstant("Economy")
 {viewpoliciesnext}
@@ -122,10 +121,33 @@ $call ForcePolicyInstant("Economy")
 
 :: queueSuggestFert
 @trigger    ExternalImport
-@conditions 
+@conditions global:importUnlocked, alertRegion == 3, !PolicyLevelInRegion(3, "ImportTaxPolicy") == 3
+$call QueueDialogueBubble(region3_grain2, region3.suggestFertSubsidy)
 
 :: suggestFertSubsidy
+@queued
+@once
+$if PolicyLevelInRegion(3, "ImportTaxPolicy") == 3
+    {@grainPrairie}     Thank goodness for that <b>Fertilizer Subsidy!</b>
+    {@grainPrairie}     That should make it cheaper to use Manure fertilizer.
+$else
+    {@grainPrairie}     Hey, my farms keep buying from PHOS4US!
+    {@grainPrairie}     But if y'all want to reduce mineral imports...
+    {@grainPrairie}     Wouldn't it make sense to use one of them <b>Fertilizer Subsidies?</b>
+    {@grainPrairie}     That way <b>Manure</b> would be cheaper for me.
+    {@advisorEconPrairie}   Right you are!
+$endif
 
+:: visitingVeldt // triggered by unlocking Region 4
+@queued
+@once
+{@advisorEcolForest}    What? Oh, hello Director.
+{@advisorEcolForest}    I was just visiting Veldt University for a seminar.
+{@cityPrairie}          Hey, cool! Which one?
+{@advisorEcolForest}    Erm, well... 
+{@advisorEcolForest}    It's called "Satellite Analysis of Photosynthetic Capacity by Photometric Leaf Reflectance."
+{@cityPrairie}          That sounds amazing! Mind if I tag along?
+{@advisorEcolForest}    ...Oh! I suppose, if you want to?
 
 :: queueUnlockMarketView
 @trigger        RegionReachedAge // RegionAgeDelta 20 after PIPS unlocked
