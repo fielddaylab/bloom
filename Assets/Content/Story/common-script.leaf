@@ -122,7 +122,7 @@ $endif
 {local @grainFarmer}    It's the cheapest option I've got!
 {local @advisorEcol}    Maybe we can find a manure seller nearby.
 $if global:builtDigester
-    {local @advisorEcol} Or better yet, some digested fertilizer!
+    {local @advisorEcol} Or better yet, some processed fertilizer!
 $endif
 
 :: sellAtLossCafoGeneric
@@ -142,7 +142,7 @@ $if local:taxLevel < 3
     {local @advisorEcon}    We could set a more favorable Sales Tax policy.
     {local @advisorEcon}    I'm sure our farmers would appreciate a Subsidy.
 $elseif global:digestersUnlocked, !BuildingBuiltInRegion($local:alertRegion, "Digester")
-    {local @advisorEcol}    I say we give them a digester. They'll pay lots for manure!
+    {local @advisorEcol}    I say we give them a Processor. They'll pay lots for manure!
 $endif
 {local @advisorEcon}    If we don't fix this, our cities won't get enough milk!
 
@@ -162,7 +162,7 @@ $if local:taxLevel > 0, local:taxLevel < 3
     {local @advisorEcon}    Or set a more favorable tax policy.
 $endif
 $if global:builtDigester
-    {local @advisorEcon}  Otherwise, that <i>Digested Fertilizer</i> is cheaper to ship...
+    {local @advisorEcon}  Otherwise, that <i>Processed Fertilizer</i> is cheaper to ship...
 $endif
 {viewpoliciesnext}
 {local @advisorEcon}    It's your choice, Director.

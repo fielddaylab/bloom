@@ -255,7 +255,24 @@ $call ForcePolicyInstant("Ecology")
 :: openedToWetland
 @once
 @queued
+{@advisorEcolForest}    Ah, Muskeg County. I can smell it from here.
+{@advisorEcolForest}    Though I hear Parker 
 // TODO: Agatha comments on Parker's ideology
+
+:: openedToCity
+@queued
+@once
+{@advisorEconForest}    I see you've visited Smokestack City.
+{@advisorEconForest}    They could be an excellent buyer for our dairy...
+{@cityForest}           Oh? Wouldn't you rather they <i>buy local?</i>
+{@advisorEconForest}    Well... They don't have much local dairy to buy!
+{@advisorEconForest}    They need our production to meet their demand.
+{@cafoForest}           Just like we need grain from other counties!
+{@cafoForest}           "Buying local" can't work when we don't have enough locally...
+{@cafoForest}           We need to cover each other's needs to thrive!
+{@advisorEconForest}    Hm... I suppose that's true...
+
+
 
 :: bloomGeneric
 @trigger        AlertExamined
