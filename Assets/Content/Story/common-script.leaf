@@ -120,7 +120,8 @@ $endif
 {local @advisorEcol}    All fertilizer causes <i>some</i> runoff... 
 {local @advisorEcol}    But <b>mineral fertilizer</b> from PHOS4US tends to be overapplied.
 {local @grainFarmer}    It's the cheapest option I've got!
-{local @advisorEcol}    Maybe we can find a manure seller nearby.
+{local @grainFarmer}    Even if I <i>could</i> buy manure, it's not always available.
+{local @advisorEcol}    Maybe we can find more manure suppliers nearby.
 $if global:builtDigester
     {local @advisorEcol} Or better yet, some processed fertilizer!
 $endif

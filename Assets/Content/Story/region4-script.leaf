@@ -267,7 +267,6 @@ $call OffsetAlgaeGrowthThreshold(1)
 {@advisorEcolWetland}   The resulting <i>digestate</i> is an easy-to-ship fertilizer!
 {@advisorEcolPrairie}   But that's not all!
 {@advisorEcolPrairie}   Processors also make <i>biogas:</i> a renewable (but still carbon-based) fuel.
-{@advisorEcolPrairie}   And even beauty products!
 {@advisorEconWetland}   Sounds profitable.      
 {@advisorEconWetland}   Why not let our farmers build their own?
 {@advisorEcolWetland}   Well...
@@ -279,6 +278,7 @@ $call OffsetAlgaeGrowthThreshold(1)
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked, global:digestersUnlocked
 // @forcePolicy    Ecology
+// TODO: add more detail here?
 {@advisorEcolWetland}     Uh-oh... Algae blooms. Nasty business.
 {@advisorEcolWetland}     Is there any way we can reduce Phosphorus runoff?
 {@advisorEcolWetland}     Otherwise, Skimmers could clean the algae.
@@ -317,3 +317,19 @@ $call QueueDialogueBubble(region1_city1, region1.pippinEcology)
 $call PanToBuilding("region2_export1")
 {@advisorEconWetland}   Our <b>Export Depot</b> has sent out Processed Manure...
 {@advisorEconWetland}   This could be the start of a brand new Fertilizer Economy!
+
+:: urbanVisit
+@queued
+@once
+$call QueueDialogueBubble(region1_city1, region1.urbanVisit)
+{@advisorEconWetland}   Yo, I drink this stuff every day!
+{@advisorEcolWetland}   Neil's Organic Dairy, hm?
+{@cafoWetland}          That's right, miss.
+{@cafoWetland}          Our cows have certified grazing room and organic feed.
+{@cafoWetland}          Because that's just the right way, I say!
+{@advisorEcolWetland}   Delightful!
+{@advisorEcolWetland}   I suppose all your farms are organic, then?
+{@cafoWetland}          Ah. Well, ehm...
+{@cafoWetland}          Look, there's no way I could keep up with demand if they all ran like this!
+{@cafoWetland}          People need the cheaper stuff too.
+{@advisorEconWetland}   Huh... I guess I can dig it.

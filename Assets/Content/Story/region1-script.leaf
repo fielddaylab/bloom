@@ -12,6 +12,7 @@ $call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)
     You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
+    Right now, SAGA is just a pilot project, an experiment... Can you prove it is feasible?
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.3)
 	These counties are young. It's your job as SAGA director to help them grow...
@@ -276,6 +277,7 @@ $call CloseInfoPopup()
 :: throughForests
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, intro:externalFound
+@once
 {@advisorEconHill}      Sigh. I don't see why we can't build trade routes through forests.
 {@advisorEcolHill}      Pippin, those are protected lands.
 {@advisorEcolHill}      We can't just pave through an Important Bird Area!
@@ -570,12 +572,25 @@ $set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
 $if local:runoffLevel > 0
     {@advisorEconHill}      I would suggest ditching that runoff fine.
     {@advisorEcolHill}      And let Bertram pollute? I'm not so sure...
-    $call ForcePolicyInstant("Ecology")
-$elseif local:taxLevel > 0, local:taxLevel < 3
-    {@advisorEconHill}      That sales tax may be squeezing him. Can we do without the revenue?
-    {@advisorEconHill}      A <b>Subsidy</b> could relieve his issues, but it would cost us.
+$endif
+$if local:taxLevel < 3
+    {@advisorEconHill}      A <b>Sales Subsidy</b> could relieve his issues, but it would cost us.
     $call ForcePolicyInstant("Economy")
 $else
-    $call ForcePolicyInstant("Economy")
+    $call ForcePolicyInstant("Ecology")
 $endif
 // $call Unpause()
+
+:: urbanVisit
+@once
+@queued
+$call QueueDialogueBubble(region5_city2, region5.finishUrban)
+{@advisorEcolUrban}     Ah, Knoll County.
+{@advisorEcolUrban}     Isn't this where those awful Algae Blooms started?
+{@advisorEconHill}      Hmph, well... yes and no.
+{@advisorEconHill}      This is where the SAGA program began!
+{@advisorEcolHill}      We were the first to detect blooms...
+{@advisorEcolHill}      But we soon realized, any runoff up here flows downriver!
+{@advisorEcolHill}      Which can contribute to blooms elsewhere.
+{@advisorEcolHill}      So we must be extra careful to limit runoff.
+{@advisorEconUrban}     Yeah... I can vibe with that.

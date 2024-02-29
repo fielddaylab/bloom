@@ -256,7 +256,9 @@ $call ForcePolicyInstant("Ecology")
 @once
 @queued
 {@advisorEcolForest}    Ah, Muskeg County. I can smell it from here.
-{@advisorEcolForest}    Though I hear Parker 
+{@advisorEcolForest}    Though you might get along with Parker!
+{@advisorEconForest}    Are you kidding!?
+{@advisorEconForest}    Protectionists and Non-Interventionists are natural enemies!
 // TODO: Agatha comments on Parker's ideology
 
 :: openedToCity

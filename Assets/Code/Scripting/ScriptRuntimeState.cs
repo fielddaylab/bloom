@@ -161,6 +161,10 @@ namespace FieldDay.Scripting {
             box.ShowHand = true;
         }
 
+        static public void UnpinDialogue() {
+            Runtime.DefaultDialogue.Pin.Unpin();
+        }
+
         [LeafMember("Visited")]
         static public bool Visited(StringHash32 nodeId) {
             return Persistence.SessionViewedNodeIds.Contains(nodeId);

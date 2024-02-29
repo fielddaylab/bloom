@@ -14,7 +14,6 @@ using System.Numerics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Zavala.Data;
 using Zavala.Scripting;
 using Zavala.Sim;
@@ -110,14 +109,15 @@ namespace Zavala.UI {
             alert.AlertBase.SetAlpha(faded ? 0.1f : 1.0f);
         }
 
-        public static void ClearAlert(UIAlert alert) {
+        public static bool ClearAlert(UIAlert alert) {
             if (alert == null) {
                 Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
-;                return; 
+;                return false; 
             }
             alert.KeepFaded = false;
             alert.AlertBase.SetAlpha(1.0f);
             alert.BannerRoutine.Replace(CloseRoutine(alert, true));
+            return true;
         }
 
         public static void FreeAlert(UIAlert alert) {

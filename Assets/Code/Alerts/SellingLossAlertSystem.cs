@@ -20,7 +20,8 @@ namespace Zavala.Sim
 
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.SellingLoss)) {
                 if (stressable.StressImproving[(int)StressCategory.Financial])
-                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    // UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    EventActorUtility.ClearAndPopAlert(actor);
                     // EventActorUtility.CancelEventType(actor, EventActorAlertType.SellingLoss);
                 return;
             }

@@ -35,13 +35,28 @@ $call CutsceneEnd()
 :: introduceUrban
 @queued
 @once
-$call QueueDialogueBubble(region5_city2, region5.needMilk)
 {@advisorEcolUrban}     Thank goodness SAGA is here.
 {@advisorEconUrban}     Yeah, we're mondo stoked.
 {@advisorEcolUrban}     Most of the farming is upriver, out in the country!
 {@advisorEcolUrban}     But their awful pollutants flow down to us...
 {@advisorEcolUrban}     And we're <i>forced</i> to deal with them!
 {@advisorEconUrban}     Major bummer, dude...
+{@grainUrban}           Hm. Maybe you city folk need some perspective.
+{@grainUrban}           Why not visit some farms and see?
+$call QueueDialogueBubble(region3_grain1, region3.urbanVisit)
+{@advisorEconUrban}     Sounds bodacious!
+
+:: finishUrban
+@queued
+@once
+{@advisorEconUrban}     It all makes sense now...
+{@advisorEcolUrban}     Hmm?
+{@advisorEconUrban}     We may not be producing much runoff here...
+{@advisorEconUrban}     But our cities need a lot of milk!
+{@advisorEconUrban}     And that demand indirectly led to runoff.
+{@advisorEconUrban}     We're one part of the system, so we need to do our part!
+{@advisorEcolUrban}     Very well put, Xavier.
+{@advisorEconUrban}     Thanks, homeslice.
 
 :: urgentMilkRequestUrban
 @trigger        UrgentRequest

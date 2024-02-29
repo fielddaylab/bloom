@@ -113,6 +113,7 @@ $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   <b>Subsidizing</b> a resource will encourage buying it from other counties.
 {@advisorEconPrairie}   That could help us balance one county's <b>excess</b> with another's <b>needs.</b>
 {@grainPrairie}         Hold up... does that mean you could <b>Subsidize fertilizer</b>?
+{@grainPrairie}         That might make <b>Manure</b> cheaper than PHOS4US.
 {@advisorEconPrairie}   Yes ma'am! But it'll have to come from our budget.
 $call ForcePolicyInstant("Economy")
 {viewpoliciesnext}
@@ -121,7 +122,7 @@ $call ForcePolicyInstant("Economy")
 
 :: queueSuggestFert
 @trigger    ExternalImport
-@conditions global:importUnlocked, alertRegion == 3, !PolicyLevelInRegion(3, "ImportTaxPolicy") == 3
+@conditions global:importUnlocked, alertRegion == 3, PolicyLevelInRegion(3, "ImportTaxPolicy") != 3
 $call QueueDialogueBubble(region3_grain2, region3.suggestFertSubsidy)
 
 :: suggestFertSubsidy
@@ -171,3 +172,14 @@ $call ForceAdvisorModule("Economy")
 {@advisorEconPrairie}   We'll want to replace red PHOS4US to keep those extra nutrients out!
 {@advisorEconPrairie}   You can click <b>Economy View</b> to check it any time.
 // $call Unpause()
+
+:: urbanVisit
+@queued
+@once
+$call QueueDialogueBubble(region4_cafo3, region4.urbanVisit)
+{@advisorEconUrban}     Woah! Get a load of these gnarly amber waves...
+{@grainPrairie}         Yesirree! We grow most of the sorghum in the state here.
+{@advisorEcolUrban}     Ah, lovely!
+{@advisorEcolUrban}     I simply <i>adore</i> sorghum syrup in my tea!
+{@grainPrairie}         Wait, really?
+{@grainPrairie}         I didn't think humans liked that stuff...

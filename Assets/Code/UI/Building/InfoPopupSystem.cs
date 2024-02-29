@@ -77,9 +77,13 @@ namespace Zavala.UI.Info {
 
             if (ScriptUtility.LookupActor(id).TryGetComponent(out HasInfoPopup target)) {
                 InfoPopup ip = Game.Gui.GetShared<InfoPopup>();
+                ScriptUtility.UnpinDialogue();
                 ip.LoadTarget(target);
                 ip.HoldOpen = holdOpen;
                 WorldCameraUtility.PanCameraToTransform(target.transform);
+            } else {
+                Log.Error("[InfoPopupSystem] Error: actor {0} exists, but has no InfoPopup", id);
+                return;
             }
         }
 
