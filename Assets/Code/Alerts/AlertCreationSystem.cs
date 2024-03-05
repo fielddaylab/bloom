@@ -29,21 +29,25 @@ namespace Zavala.Scripting
 
             // if no active events, create alert
             if (component.QueuedEvents.Count > 0) { // only create if they have events and aren't displaying them
-                if (component.DisplayingEvent) {
-                    if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue) {
-                        // Clear the shown alert
-                        UIAlertUtility.ClearAlert(component.DisplayingEvent);
-                    } else {
-                        // Skip queueing for this actor, it is already displaying an important (non-dialogue) event
-                        return;
-                    }
-                                     
-                }
+                
                 
                 component.QueuedEvents.TryPeekFront(out EventActorQueuedEvent peekEvent);
                 if (peekEvent.Alert == EventActorAlertType.GlobalDummy) {
                     // do not create UI banners for the fake global alerts
                     return;
+                }
+
+                if (component.DisplayingEvent) {
+                    if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue && peekEvent.Alert != EventActorAlertType.Dialogue) {
+                        // If showing a dialogue event, clear it and move it to the back
+                        // ClearAlert just removes the visual, does not pop the event
+                        UIAlertUtility.ClearAlert(component.DisplayingEvent);
+                        component.QueuedEvents.PushBack(component.QueuedEvents.PopFront());
+                    } else {
+                        // Skip queueing for this actor, it is already displaying an important (i.e. nondialogue) event
+                       return;
+                    }
+
                 }
 
                 ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, peekEvent.ScriptId);
@@ -64,10 +68,12 @@ namespace Zavala.Scripting
                 alert.Actor = component;
                 alert.AlertType = peekEvent.Alert;
                 // assign localized banner text
-                alert.EventText.SetText(GameAlerts.GetLocalizedName(peekEvent.Alert));
 
                 alert.AlertBase.sprite = GetAlertBaseSprite(peekEvent.Alert, m_AlertAssets);
-                alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
+                if (alert.AlertType != EventActorAlertType.Dialogue) {
+                    alert.EventText.SetText(GameAlerts.GetLocalizedName(peekEvent.Alert));
+                    alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
+                }
 
                 if (Game.Gui.GetShared<GlobalAlertButton>().QueuedActors.Contains(component)) {
                     alert.KeepFaded = true;
@@ -75,7 +81,7 @@ namespace Zavala.Scripting
                 }
 
                 ZavalaGame.Events.Dispatch(GameEvents.AlertAppeared, new Data.AlertData(peekEvent.Alert, peekEvent.TileIndex, node.FullName));
-                Debug.Log("[Alerts] Created new alert!");
+                Debug.Log("[Alerts] Created new alert!" + node.FullName);
                 component.DisplayingEvent = alert;
             }
         }

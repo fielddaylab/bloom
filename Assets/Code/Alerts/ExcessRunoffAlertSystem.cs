@@ -24,7 +24,8 @@ namespace Zavala.Sim
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.ExcessRunoff)) {
                 if (generator.RunoffImproving) {
                     // Sold manure recently - cancel any existing alert!
-                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    // UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    EventActorUtility.ClearAndPopAlert(actor);
                 } 
                 // only add this trigger once
                 return;

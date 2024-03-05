@@ -55,8 +55,11 @@ namespace Zavala.Scripting {
                                 TileIndex = trigger.TileIndex,
                                 Alert = trigger.Alert
                             };
-
-                            component.QueuedEvents.PushBack(queuedEvent);
+                            if (component.QueuedEvents.TryPeekFront(out EventActorQueuedEvent qEvent) && qEvent.Alert == EventActorAlertType.Dialogue) {
+                                component.QueuedEvents.PushFront(queuedEvent);
+                            } else {
+                                component.QueuedEvents.PushBack(queuedEvent);
+                            }
                             HashSet<AutoAlertCondition> conditions = ZavalaGame.SharedState.Get<AlertState>().AutoTriggerAlerts;
                             foreach (AutoAlertCondition autoTrig in conditions) {
                                 Log.Msg("[EventActorUtility] Checking for AutoTriggerAlert...");

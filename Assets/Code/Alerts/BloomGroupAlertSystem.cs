@@ -25,7 +25,8 @@ namespace Zavala.Sim
             if (EventActorUtility.IsAlertQueued(actor, EventActorAlertType.Bloom)) {
                 if (!AnyTilesBloomed(simAlgae, grid.WaterGroups[group.GroupIndex])) {
                     Log.Msg("[BloomGroupAlertSystem] Bloom receding, attempted to cancel alert");
-                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    // UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                    EventActorUtility.ClearAndPopAlert(actor);
                     //EventActorUtility.CancelEventType(actor, EventActorAlertType.Bloom);
                 }
                 return;

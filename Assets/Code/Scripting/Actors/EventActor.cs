@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using BeauUtil;
 using BeauUtil.Debugger;
 using BeauUtil.Variants;
@@ -115,9 +116,9 @@ namespace Zavala.Scripting {
         DecliningPop,
         SellingLoss,
         Disconnected,
-        GlobalDummy,
         Dialogue, // Specific case with no banner
 
+        GlobalDummy,
         [Hidden]
         COUNT,
     }
@@ -156,6 +157,12 @@ namespace Zavala.Scripting {
                 QueueAlert(actor, type, tile.TileIndex, tile.RegionIndex);
             } else {
                 Log.Msg("[EventActorUtility] Failed to queue alert: actor {0} has no OccupiesTile", actor);
+            }
+        }
+
+        static public void ClearAndPopAlert(EventActor actor) {
+            if (UIAlertUtility.ClearAlert(actor.DisplayingEvent)) {
+                actor.QueuedEvents.PopFront();
             }
         }
 
@@ -199,11 +206,19 @@ namespace Zavala.Scripting {
                 Log.Warn("[EventActorUtility] Failed to queue dialogue for actor {0}: actor not found!", actor.ToDebugString());
                 return;
             }
+            OccupiesTile ot = target.GetComponent<OccupiesTile>();
             EventActorQueuedEvent fakeEvent = new() {
                 ScriptId = targetNode,
+                TileIndex = ot.TileIndex,
+                RegionIndex = new NamedVariant("alertRegion", ot.RegionIndex+1), //0-indexed to 1-indexed
                 Alert = EventActorAlertType.Dialogue
             };
             target.QueuedEvents.PushBack(fakeEvent);
+        }
+
+        [LeafMember("QueueDialogueBubbleGeneric")]
+        static public void QueueDialogueAlert(int regionOneIndexed, string type, StringHash32 targetNode) {
+            QueueDialogueAlert("region" + regionOneIndexed + "_" + type + "1", targetNode);
         }
 
         public static void TriggerActorAlert(EventActor actor) {
@@ -239,7 +254,10 @@ namespace Zavala.Scripting {
                 ScriptUtility.Runtime.Plugin.Run(node, actor, varTable);
                 varTable.Clear();
 
-                //alert.BannerRoutine.Replace(CloseRoutine(alert, true));
+                // Dialogue has no animation, "manually" cleared over here
+                if (newEvent.Alert == EventActorAlertType.Dialogue) {
+                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
+                }
             }
         }
 

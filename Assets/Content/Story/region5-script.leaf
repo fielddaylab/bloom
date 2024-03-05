@@ -9,18 +9,19 @@ $call SendGlobalAlertForNode("region5_city1", region5.regionUnlocked)
 :: regionUnlocked
 @queued
 // $call Pause()
-{@advisorEconUrban}    Sup. Welcome to Smokestack City.
+{@advisorEconUrban}    'Sup. Welcome to Smokestack City.
+$call QueueDialogueBubble(region2_city1, region2.openedToCity)
 $call PanToBuilding("region5_city1")
-$call CutsceneBegin()
+$call CutsceneBegin(5)
     $call CutscenePrepareImages("act5/5-1-1.png", "act5/5-1-2.png", "act5/5-1-3.png")
     $call CutsceneAllImages(0.5)
     Smokestack City has heard of the approaching blooms, and SAGA's efforts to stop them.
     $call CutscenePrepareImages("act5/5-2-1.png", "act5/5-2-2.png", "act5/5-2-3.png")
 	$call CutsceneAllImages(0.5)
-    Phos4Us continues to pump phosphorus into our ecosystem. They must be cut off!
+    PHOS4US continues to pump phosphorus into our ecosystem. They must be cut off!
 	$call CutscenePrepareImages("act5/5-3-1.png", "act5/5-3-2.png", "act5/5-3-3.png")
 	$call CutsceneAllImages(0.5)
-    Now we have the tools and policies to recycle and ship our own fertilizer. Could we outcompete Phos4Us? 
+    Now we have the tools and policies to recycle and ship our own fertilizer. Could we outcompete PHOS4US? 
 	$call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
 	$call CutsceneAllImages(0.5)
     It's a race to the end... We must stem the flow of phosphorus before algae overtakes our cities!
@@ -31,14 +32,59 @@ $call CutsceneEnd()
 // $call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()
 
+:: introduceUrban
+@queued
+@once
+{@advisorEcolUrban}     Thank goodness SAGA is here.
+{@advisorEconUrban}     Yeah, we're mondo stoked.
+{@advisorEcolUrban}     Most of the farming is upriver, out in the country!
+{@advisorEcolUrban}     But their awful pollutants flow down to us...
+{@advisorEcolUrban}     And we're <i>forced</i> to deal with them!
+{@advisorEconUrban}     Major bummer, dude...
+{@grainUrban}           Hm. Maybe you city folk need some perspective.
+{@grainUrban}           Why not visit some farms and see?
+$call QueueDialogueBubble(region3_grain1, region3.urbanVisit)
+{@advisorEconUrban}     Sounds bodacious!
+
+:: finishUrban
+@queued
+@once
+{@advisorEconUrban}     It all makes sense now...
+{@advisorEcolUrban}     Hmm?
+{@advisorEconUrban}     We may not be producing much runoff here...
+{@advisorEconUrban}     But our cities need a lot of milk!
+{@advisorEconUrban}     And that demand indirectly led to runoff.
+{@advisorEconUrban}     We're one part of the system, so we need to do our part!
+{@advisorEcolUrban}     Very well put, Xavier.
+{@advisorEconUrban}     Thanks, homeslice.
+
+:: urgentMilkRequestUrban
+@trigger        UrgentRequest
+@conditions     resource == "Milk", alertRegion == 5
+@once
+$call QueueDialogueBubble(region5_city2, region5.needMilk)
+
+:: needMilk
+@queued
+@once
+{@cityUrban}            What the heck? Where's our dairy!
+{@advisorEconUrban}     Not groovy...
+{@advisorEconUrban}     Make sure there are plenty of routes to Dairy Farms, dude!
+$if PolicyLevelInRegion(5, "ImportTaxPolicy") == 1
+    {@advisorEconUrban}     That Milk Subsidy should help!
+$else
+    {viewpoliciesnext}
+    {@advisorEconUrban}     And a Milk Subsidy wouldn't be too shabby either...
+    $call ForcePolicyInstant("Ecology")
+$endif
+
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 5, global:bloomDiscovered
-// @forcePolicy    Ecology
+@forcePolicy    Ecology
 {@advisorEcolUrban}     Algae blooms... This doesn't bode well.
 {viewpoliciesnext}
 {@advisorEcolUrban}     We'd best handle these before they reach the city!
-$call ForcePolicyInstant("Ecology")
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
@@ -57,7 +103,7 @@ $endif
 // @forcePolicy    Economy
 $if PolicyIsUnlocked(SalesTaxPolicy)
     $call ForcePolicyInstant("Economy")
-    {local @advisorEcon}    Sup boss! We makin' big moves economy-style?
+    {local @advisorEcon}    'Sup boss! We makin' big moves economy-style?
 $else
     {local @advisorEcon}    Aww man, we're plumb outta economic policies.
 $endif

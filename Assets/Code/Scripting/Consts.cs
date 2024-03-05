@@ -117,7 +117,9 @@ namespace Zavala
         static public readonly StringHash32 CityConnection = "CityConnection";
         static public readonly StringHash32 ExternalImport = "ExternalImport";
         static public readonly StringHash32 ResourceSent = "ResourceSent";
+        static public readonly StringHash32 UrgentRequest = "UrgentRequest";
         static public readonly StringHash32 ManureSold = "ManureSold";
+        static public readonly StringHash32 BloomStress = "BloomStress";
         static public readonly StringHash32 InternalBlimpSent = "InternalBlimpSent";
         static public readonly StringHash32 InternalBlimpReceived = "InternalBlimpReceived";
 
@@ -137,7 +139,7 @@ namespace Zavala
         private const string DecliningPop = "declining-pop";
         private const string SellingLoss = "selling-loss";
         private const string Disconnected = "disconnected";
-        private const string DialogueBubble = "dialogue-bubble";
+        private const string DialogueBubble = "dialogue";
 
         // Localization Ids
         private const string BaseLocPath = "alerts.";

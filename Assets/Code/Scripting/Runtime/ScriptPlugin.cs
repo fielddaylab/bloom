@@ -12,6 +12,7 @@ using UnityEngine;
 using Zavala;
 using Zavala.Scripting;
 using Zavala.Sim;
+using Zavala.UI.Info;
 
 namespace FieldDay.Scripting {
     public class ScriptPlugin : DefaultLeafManager<ScriptNode> {
@@ -95,6 +96,10 @@ namespace FieldDay.Scripting {
             if ((inNode.Flags & ScriptNodeFlags.ForcePolicyEarly) != 0) {
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
             }
+            if (Game.Gui.TryGetShared(out InfoPopup ip)) {
+                ip.HoldOpen = false;
+                ip.Hide();
+            }
             m_RuntimeState.DefaultDialogue.MarkNodeEntered();
             ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
         }
@@ -115,6 +120,9 @@ namespace FieldDay.Scripting {
             bool cutscene = (inNode.Flags & ScriptNodeFlags.Cutscene) != 0;
             if (cutscene) {
                 GameLoop.QueueEndOfFrame(LateEndCutsceneDelegate);
+            }
+            if (Game.Gui.TryGetShared(out InfoPopup ip) && ip.HoldOpen) {
+                ip.HoldOpen = false;
             }
             ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
             

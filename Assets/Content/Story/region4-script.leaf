@@ -5,6 +5,7 @@
 @conditions     regionId == "Wetland"
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region4_city1", region4.regionUnlocked)
+$call QueueDialogueBubble(region2_city1, region2.openedToWetland)
 
 :: regionUnlocked
 @queued
@@ -13,10 +14,13 @@ $call SendGlobalAlertForNode("region4_city1", region4.regionUnlocked)
 {@advisorEcolWetland}    Welcome to Muskeg County, boss.
 $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We've dealt with these algae blooms here before...
-{@advisorEcolWetland}    The phosphorus flows down through waterways into our marshland.
+{@advisorEcolWetland}    The <b>Phosphorus</b> flows down through waterways into our marshland.
+$call PanToBuilding("region4_cafo1")
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
+$call PanToBuilding("region4_cafo3")
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom")
+$call QueueDialogueBubble(region3_city1, region3.visitingVeldt)
 $set global:readyForSkimmers = true
 $if global:importUnlocked = false
     $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
@@ -48,16 +52,175 @@ $else
     {local @advisorEcon}    No policies yet? I'm afraid I can't help you.
 $endif
 
+:: wetlandConnection
+@trigger FarmConnection
+@conditions CameraInRegion(4) 
+@once
+// $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
+$call QueueDialogueBubble(region4_city1, region4.characterIntro)
+
+:: characterIntro
+@once
+@queued
+{@advisorEconWetland}    Well met, Director.
+$call QueueDialogueBubble(region3_city1, region2.visitingVeldt)
+$call QueueDialogueBubble(region4_cafo2, region4.suspiciousSaga)
+{@advisorEconWetland}    We may have agreed to advise for SAGA...
+{@advisorEconWetland}    But don't think we'll let your <i>big government schemes</i> interfere!
+{@advisorEconWetland}    Right Ethan?
+{@advisorEcolWetland}    Huh? Oh, I don't know.
+{@advisorEcolWetland}    I don't get into politics much. I just like our wildlife.
+{@advisorEcolWetland}    Those <b>algae blooms</b> could threaten their ecosystem!
+{@advisorEconWetland}    Fine, just me then!
+
+:: suspiciousSaga
+@queued
+@once
+{@cafoWetland}          I'm not so sure about all this SAGA business...
+{@cafoWetland}          I don't want the dang government telling me what I can and can't do!
+{@advisorEconWetland}   Don't worry, me neither.
+{@cafoWetland}          Huh? Don't you work for SAGA?
+{@advisorEconWetland}   That's right. I'm your guy on the inside!
+{@cafoWetland}          Yeah right, <i>fed!</i>
+{@advisorEconWetland}   Ah... They never believe me...
+
+:: complainTax
+@trigger        AlertExamined
+@conditions     alertType == "dialogue", alertRegion == 4, buildingType == "GrainFarm", PolicyLevelInRegion(4, "SalesTaxPolicy") == 2
+@once
+$set local:salesTax = PolicyLevelInRegion(4, "SalesTaxPolicy")
+$if local:salesTax > 0, local:salesTax < 3
+    {@grainWetland}         Hey, what gives??
+    {@grainWetland}         SAGA comes around and suddenly we have a new <b>Sales Tax?</b>
+    {@grainWetland}         What are you using my money for anyway?
+    {@advisorEcolWetland}   Well, we're here to limit algae blooms.
+    {@advisorEcolWetland}   We need funds to get that done!
+    {@advisorEconWetland}   I still don't like it. 
+    {@advisorEconWetland}   Individual farmers in a free market would make the best choices!
+    {@advisorEcolWetland}   Isn't it the individual choices that caused runoff in the first place?
+    {@advisorEcolWetland}   I'd say we need to <b>coordinate</b> to solve this problem...
+$else
+    {@grainWetland}         Thank goodness you changed that <b>Sales Tax</b>.
+    {@grainWetland}         I might've had to <b>slow down operations</b> with those costs!
+$endif
+
+
+:: complainFine
+@trigger        AlertExamined
+@conditions     alertType == "dialogue", alertRegion == 4, buildingType == "GrainFarm", PolicyLevelInRegion(4, "RunoffPolicy") > 0
+@once
+// TODO: pushback against a Runoff Fine
+$if PolicyLevelInRegion(4, "RunoffPolicy") > 0
+    {@cafoWetland}          What's this now?
+    {@cafoWetland}          A <b>Fine</b> for what I do with this manure?
+$else
+    {@cafoWetland}          Thanks for getting rid of that <b>Fine</b>.
+    {@cafoWetland}          Now I can do as I please with this Manure!
+$endif
+    {@grainWetland}         Well... I could use that Manure, Neil.
+    {@grainWetland}         But you won't sell it if you can just leave it around.
+    {@advisorEconWetland}   As a free market demands!
+    {@advisorEcolWetland}   But why let it go to waste?
+    {@advisorEcolWetland}   SAGA is here to coordinate and make sure Manure is put to use.
+
+// TODO: introduce wetland city character
+
+:: suggestGrainSubsidy
+@trigger        UrgentRequest
+@conditions     resource == "Grain", alertRegion == 4, global:importUnlocked
+@once
+$call QueueDialogueBubble(region4_cafo1, region4.neilGrainSubsidy)
+
+:: neilGrainSubsidy
+@queued
+@once
+$if PolicyLevelInRegion(4, "ImportTaxPolicy") == 2 // Grain Subsidy
+    {@cafoWetland}          Good call on that Grain Subsidy!
+    {@cafoWetland}          My cows gotta eat!
+$else
+    {@cafoWetland}          Ah jeez. The ol' grain stocks are running low.
+    {@cafoWetland}          ...Did I hear somethin' about a <b>Grain Subsidy?</b>
+    {@advisorEconWetland}   What!? 
+    {@advisorEconWetland}   Neil, you would take a <i>government handout?</i>
+    {@cafoWetland}          Hey man, my cows gotta eat.
+    {@cafoWetland}          We just don't make enough grain around here!
+    {@cafoWetland}          No offense Cindy.
+    {@grainWetland}         None taken. The soil here is best described as, uh...
+    {@grainWetland}         Soupy.
+    {@cafoWetland}          Yeah. So... <b>Grain Subsidy?</b>
+    {viewpoliciesnext}
+    {@advisorEconWetland}   It's up to the Director.
+    $call ForcePolicyInstant("Economy")
+$endif
+
+
+:: policySet
+@trigger        PolicySet
+@conditions     policyForced == false, alertRegion == 4
+@cutscene
+$if local:policyType == "RunoffPolicy"
+    $if     local:policyIndex == 0
+        {local @advisorEcol}    With no runoff fine, Dairy Farms will only sell manure if it earns a profit.
+    $elseif local:policyIndex == 1
+        {local @advisorEcol}    With a low runoff fine, Dairy Farms will sell manure if the loss is less than $8 per unit.
+    $elseif local:policyIndex == 2
+        {local @advisorEcol}    With a high runoff fine, Dairy Farms will sell manure if the loss is less than $16 per unit.
+    $elseif local:policyIndex == 3
+        {local @advisorEcol}    With a very high runoff fine, Dairy Farms will try to sell manure, even if it loses money.
+    $endif
+$elseif local:policyType == "SkimmingPolicy"
+    $if     local:policyIndex == 0
+        {local @advisorEcol}    With no Lake Cleanup, you aren't doing anything to remove algae from the lakes. 
+    $elseif local:policyIndex == 1
+        {local @advisorEcol}    Low Lake Cleanup policy will clear algae from 1 water area for a recurring $1 cost.
+        {local @advisorEcol}    But this won't remove all the phosphorus!
+    $elseif local:policyIndex == 2
+        {local @advisorEcol}    High Lake Cleanup policy will clear algae from 2 water areas for a recurring $2 cost.
+        {local @advisorEcol}    But this won't remove all the phosphorus!
+    $elseif local:policyIndex == 3
+        {local @advisorEcol}    Dredging will clear algae from 3 water areas <b>and</b> remove some phosphorus.
+        {local @advisorEcol}    But it will cost a recurring $4!
+    $endif
+$elseif local:policyType == "SalesTaxPolicy"
+    $if     local:policyIndex == 0
+        {@advisorEconWetland}    No sales tax... As it should be!
+        {@advisorEconWetland}    We'll still get funding from milk consumption - can't change that.
+    $elseif local:policyIndex == 1
+        {@advisorEconWetland}    With low Sales Tax, SAGA gets $1 from every purchase.
+        {@advisorEconWetland}    Sounds to me like it'll stifle the market!
+    $elseif local:policyIndex == 2
+        {@advisorEconWetland}    With high Sales Tax, SAGA gets $3 from every purchase.
+        {@advisorEconWetland}    Absolute theft, I say! I don't recommend this one...
+    $elseif local:policyIndex == 3
+        {@advisorEconWetland}    A Subsidy doles out $2 to farmer's purchases, from our budget.
+        {@advisorEconWetland}    Government handouts! I don't approve...
+    $endif
+$elseif local:policyType == "ImportTaxPolicy"
+    $if     local:policyIndex == 0
+        {@advisorEconWetland}   With no Import Policy, we won't interfere in any shipping costs.
+        {@advisorEconWetland}   Free trade, that's the way to go!
+    $elseif local:policyIndex == 1
+        {@advisorEconWetland}   With a Milk Subsidy, SAGA pays for $6 of Milk shipping.
+        {@advisorEconWetland}   I wouldn't meddle with prices like that!!
+    $elseif local:policyIndex == 2
+        {@advisorEconWetland}   With a Grain Subsidy, SAGA pays for $6 of Grain shipping.
+        {@advisorEconWetland}   Ugh, government handouts...
+    $elseif local:policyIndex == 3
+        {@advisorEconWetland}   With a Fertilizer Subsidy, SAGA pays for $6 of each Manure shipment.
+        {@advisorEconWetland}   Seems unfair to me.
+    $endif
+$endif
+
 :: unlockDigesters
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked
 @cutscene
 @once
-// TODO: make this a die-off event  
+// TODO: make this a die-off event?
 // // $call Pause()
 $set global:digestersUnlocked = true
 {@advisorEcolWetland}   It's just as we feared...
-$call CutsceneBegin()
+$call CutsceneBegin(4)
     $call CutscenePrepareImages("act4/4-1-1.png", "act4/4-1-2.png", "act4/4-1-3.png")
     $call CutsceneAllImages(0.5)
     The protected lands of Muskeg County have been a safe haven for local species... until now. Algae blooms are threatening their ecosystem!
@@ -66,7 +229,7 @@ $call CutsceneBegin()
     Our elite naval rangers are prepared to mitigate the algae with their Skimmers.
 	$call CutscenePrepareImages("act4/4-3-1.png", "act4/4-3-2.png", "act4/4-3-3.png")
 	$call CutsceneAllImages(0.5)
-    And this old manure processor... It used to turn manure into fertilizer, but it was too expensive to run. Could SAGA use it to beat Phos4Us?
+    And this old Manure Processor... It used to turn manure into fertilizer, but it was too expensive to run. Could SAGA use it to beat PHOS4US?
 	$call CutscenePrepareImages("act4/4-4-1.png", "act4/4-4-2.png", "act4/4-4-3.png")
 	$call CutsceneAllImages(0.5)
     That processed fertilizer could be shipped much more cheaply, all throughout the area!
@@ -75,9 +238,11 @@ $call CutsceneBegin()
     Our counties have had their differences in the past. But now we must band together to fight this threat... united!
 $call CutsceneEnd()
 $call UnlockShopItem("Digester")
-{@advisorEcolWetland}   Here are the schematics for that <b>Digester</b>.
+{@advisorEcolWetland}   Here are the schematics for that <b>Manure Processor</b>.
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEconWetland}   They've been added to your Build Mode menu.
+$call QueueDialogueBubble(region1_city1, region1.visitingBirds)
+$call QueueDialogueBubble(region4_city1, region4.explainProcessors)
 $call FocusClear()
 $call OffsetAlgaeGrowthThreshold(1)
 // $call Unpause()
@@ -91,12 +256,32 @@ $call OffsetAlgaeGrowthThreshold(1)
 // {@advisorEconWetland}   We may need a new revenue stream. I've opened up Sales Tax.
 // $call UnlockCards(SalesTaxPolicy)
 
+:: explainProcessors
+@queued
+@once
+{@cityWetland}          Hey, what is that <b>Manure Processor</b> anyway?
+{@advisorEcolWetland}   Good question!
+{@advisorEcolWetland}   The Processor can chemically change Manure into useful forms.
+{@advisorEcolWetland}   One way is by letting micro-organisms digest it!
+{@advisorEcolWetland}   That gets rid of excess water and bulk.
+{@advisorEcolWetland}   The resulting <i>digestate</i> is an easy-to-ship fertilizer!
+{@advisorEcolPrairie}   But that's not all!
+{@advisorEcolPrairie}   Processors also make <i>biogas:</i> a renewable (but still carbon-based) fuel.
+{@advisorEconWetland}   Sounds profitable.      
+{@advisorEconWetland}   Why not let our farmers build their own?
+{@advisorEcolWetland}   Well...
+{@advisorEcolWetland}   Processors are expensive, and most efficient running continuously.
+{@advisorEcolWetland}   So SAGA will run these Manure Processors as a utility.
+
+
 :: bloomGeneric
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked, global:digestersUnlocked
 // @forcePolicy    Ecology
-{@advisorEcolWetland}     Hmph... Algae blooms. Nasty business.
-{@advisorEcolWetland}     Seems to me we should reduce phosphorus runoff.
+// TODO: add more detail here?
+{@advisorEcolWetland}     Uh-oh... Algae blooms. Nasty business.
+{@advisorEcolWetland}     Is there any way we can reduce Phosphorus runoff?
+{@advisorEcolWetland}     Otherwise, Skimmers could clean the algae.
 $call ForcePolicyInstant("Ecology")
 
 :: buildFirstDigester
@@ -106,22 +291,45 @@ $call ForcePolicyInstant("Ecology")
 $set global:builtDigester = true
 $call AddRegionAgeDeltaTrigger(4, 10)
 
+// TODO: work on this some more
 :: unlockExportDepots
 @trigger    RegionReachedAge 
 @conditions regionId == 4, global:builtDigester
 @once
-{@advisorEconWetland}   Now that we have a manure processor up and running...
-{@advisorEconWetland}   What's stopping us from shipping out our own fertilizer?
-{@advisorEconWetland}   We'll be like Phos4Us! Only our phosphorus is from manure, not mineral deposits.
-{@advisorEcolWetland}   Do we really want to be like them? All that extra phosphorus got us into this mess.
+{@advisorEconWetland}   Hmm... That <b>Processed Manure</b> really is easier to ship.
+{@advisorEconWetland}   I wonder... Could it be shipped <b>long-distance?</b>
+{@advisorEcolWetland}   You mean like PHOS4US?
+{@advisorEcolWetland}   It was all their extra phosphorus that got us into this mess...
 {@advisorEconWetland}   Maybe so... But if we're efficient enough, we can outcompete them!
-{@advisorEcolWetland}   That could <i>close the loop</i>... and stop the import of phosphorus!
+{@advisorEcolWetland}   Wait... That could stop the import of Phosphorus!
+{@advisorEcolWetland}   All of our counties would form a <b>closed loop!</b>
+{@advisorEconWetland}   Precisely!
+{@cityForest}           Hey, my uncle had an old warehouse here in Cypress County.
+{@cityForest}           SAGA could operate out of that!
+{@advisorEconWetland}   Let's try it!
 $call UnlockExportDepot("region2_export1")
 
 :: firstBlimpReceived
 @trigger InternalBlimpSent
 @once
+$call QueueDialogueBubble(region1_city1, region1.pippinEcology)
 {@advisorEconWetland}   Huzzah!
 $call PanToBuilding("region2_export1")
-{@advisorEconWetland}   Our export depot has sent out processed fertilizer...
-{@advisorEconWetland}   This could be the start of a brand new market!
+{@advisorEconWetland}   Our <b>Export Depot</b> has sent out Processed Manure...
+{@advisorEconWetland}   This could be the start of a brand new Fertilizer Economy!
+
+:: urbanVisit
+@queued
+@once
+$call QueueDialogueBubble(region1_city1, region1.urbanVisit)
+{@advisorEconWetland}   Yo, I drink this stuff every day!
+{@advisorEcolWetland}   Neil's Organic Dairy, hm?
+{@cafoWetland}          That's right, miss.
+{@cafoWetland}          Our cows have certified grazing room and organic feed.
+{@cafoWetland}          Because that's just the right way, I say!
+{@advisorEcolWetland}   Delightful!
+{@advisorEcolWetland}   I suppose all your farms are organic, then?
+{@cafoWetland}          Ah. Well, ehm...
+{@cafoWetland}          Look, there's no way I could keep up with demand if they all ran like this!
+{@cafoWetland}          People need the cheaper stuff too.
+{@advisorEconWetland}   Huh... I guess I can dig it.

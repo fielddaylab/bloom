@@ -24,6 +24,7 @@ using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.World;
 using Zavala.Data;
+using Zavala.UI.Info;
 
 namespace Zavala.UI {
     public class DialogueBox : MonoBehaviour, ITextDisplayer, IChoiceDisplayer, IScenePreload {

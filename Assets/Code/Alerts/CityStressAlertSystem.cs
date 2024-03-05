@@ -42,7 +42,8 @@ namespace Zavala.Sim
                     // remove it if the stress levels are improving
                     if (stressActor.StressImproving[(int)StressCategory.Resource])
                     {
-                        UIAlertUtility.ClearAlert(eventActor.DisplayingEvent);
+                        // UIAlertUtility.ClearAlert(eventActor.DisplayingEvent);
+                        EventActorUtility.ClearAndPopAlert(eventActor);
                     }
                     return;
                 }

@@ -5,8 +5,10 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
+using FieldDay.Scripting;
 using FieldDay.Systems;
 using UnityEngine;
+using Zavala.Advisor;
 using Zavala.Economy;
 using Zavala.Scripting;
 using Zavala.Sim;
@@ -36,6 +38,10 @@ namespace Zavala.Actors
                     {
                         StressUtility.IncrementStress(actor, StressCategory.Bloom);
                         bloomStress.TriggerCounter = 0;
+                        using (TempVarTable varTable = TempVarTable.Alloc()) {
+                            varTable.Set("alertRegion", actor.Position.RegionIndex+1);
+                            ScriptUtility.Trigger(GameTriggers.BloomStress, varTable);
+                        }
                     }
                 }
             }
