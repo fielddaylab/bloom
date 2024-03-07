@@ -233,7 +233,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 177
+    Flags: 128
     Height: 200
   - RegionIndex: 65535
     Category: 2
@@ -288,7 +288,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 0
+    Flags: 32
     Height: 200
   - RegionIndex: 65535
     Category: 2
@@ -796,6 +796,21 @@ MonoBehaviour:
       m_Type: 0
       m_RawValue: 0
       m_StringHashSource: 
+  - LocalTileIndex: 54
+    ScriptName:
+      m_Source: region2_digester1
+      m_HashValue: 1167550896
+    Type: 13
+    LocationName:
+      m_Source: 
+      m_HashValue: 0
+    CharacterId:
+      m_Source: 
+      m_HashValue: 0
+    AdditionalData:
+      m_Type: 0
+      m_RawValue: 0
+      m_StringHashSource: 
   Points: []
   Roads: []
   Modifiers:
@@ -809,17 +824,12 @@ MonoBehaviour:
       m_Source: 
       m_HashValue: 0
     Modifier: 0
-  - LocalTileIndex: 65
-    ScriptName:
-      m_Source: 
-      m_HashValue: 0
-    Modifier: 0
   - LocalTileIndex: 32
     ScriptName:
       m_Source: 
       m_HashValue: 0
     Modifier: 0
-  - LocalTileIndex: 43
+  - LocalTileIndex: 65
     ScriptName:
       m_Source: 
       m_HashValue: 0

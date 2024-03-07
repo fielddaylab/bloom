@@ -220,11 +220,15 @@ MonoBehaviour:
       Content: Storage Unit
     - Id: location.shared.digester
       Content: Manure Processor
+    - Id: location.shared.digesterBroken
+      Content: Abandoned Processor
     - Id: location.shared.digesterInfo
       Content: <i><u>buys</u> raw manure, <u>sells</u> fertilizer</i>
     - Id: location.shared.digesterDesc
       Content: Manure Processors buy raw manure and turn it into fertilizer that
         can be shipped for cheap.
+    - Id: location.shared.digesterBrokenDesc
+      Content: Manure Processors turn manure into fertilizer... But this one's ruined.
     - Id: location.shared.toll
       Content: Border Gate
     - Id: location.shared.tollDesc
@@ -275,7 +279,7 @@ MonoBehaviour:
     - Path: location.shared
       Start: 25
     - Path: region
-      Start: 42
+      Start: 44
     NeedsExport: 0
   - Name: ui
     FilePath: Assets/Content/Text/ui.zaloc

@@ -339,6 +339,17 @@ namespace Zavala.Editor {
                                 tiles[pos].Flags |= TerrainFlags.NonBuildable;
                                 break;
                             }
+                        case 14: { // broken digester
+                                buildingList.Add(new RegionAsset.BuildingData() {
+                                    LocalTileIndex = (ushort)pos,
+                                    Type = BuildingType.DigesterBroken,
+                                    ScriptName = scriptName
+                                });
+                                occupiedTileIndices.Add(pos);
+                                tiles[pos].Flags |= TerrainFlags.IsOccupied;
+                                tiles[pos].Flags |= TerrainFlags.NonBuildable;
+                                break;
+                            }
                         case 11:
                         case 12:
                         case 13:

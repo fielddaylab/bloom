@@ -96,11 +96,17 @@ Storage Unit
 :: digester
 Manure Processor
 
+:: digesterBroken
+Abandoned Processor
+
 :: digesterInfo
 <i><u>buys</u> raw manure, <u>sells</u> fertilizer</i>
 
 :: digesterDesc
 Manure Processors buy raw manure and turn it into fertilizer that can be shipped for cheap.
+
+:: digesterBrokenDesc
+Manure Processors turn manure into fertilizer... But this one's ruined.
 
 :: toll
 Border Gate

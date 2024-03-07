@@ -77,6 +77,18 @@ $call QueueDialogueBubble(region2_city1, region2.enjoyingCypress)
 {@advisorEcolForest}    All thanks to our <i>stellar</i> ecosystem management.
 {@advisorEcolForest}    Those <i>hill dwellers</i> over in Knoll County could learn a thing or two.
 
+:: oldDigester
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "DigesterBroken", alertRegion == 2
+@once
+{@advisorEconForest}    Ah, this old thing.
+{@advisorEconForest}    A farmer tried to build a Manure Processor here...
+{@advisorEconForest}    Thought he could turn Manure into Fertilizer.
+{@advisorEcolHill}      That sounds great! What happened?
+{@advisorEconForest}    The cost was too great. It bankrupted his farm!
+{@advisorEconForest}    Simply not economically feasible...
+{@advisorEcolHill}      Ugh. You economists are always saying that.
+
 :: bloomRumors
 @once
 @queued

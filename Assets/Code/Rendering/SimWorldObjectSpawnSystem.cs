@@ -73,6 +73,14 @@ namespace Zavala.World {
                         building.GetComponent<BuildingPreview>().Apply();
                         break;
                     }
+                    case BuildingType.DigesterBroken: {
+                        m_StateB.Terrain.Info[spawn.TileIndex].Flags |= TerrainFlags.IsOccupied;
+                        m_StateB.Terrain.Info[spawn.TileIndex].Flags |= TerrainFlags.NonBuildable;
+                            building = Instantiate(m_StateC.Digesters.BrokenDigesterPrefab, worldPos, Quaternion.identity);
+                        building.SetActive(true);
+                        // building.GetComponent<BuildingPreview>().Apply();
+                        break;
+                    }
                 }
                 Assert.NotNull(building);
                 EventActorUtility.RegisterActor(building.GetComponent<EventActor>(), spawn.Id);

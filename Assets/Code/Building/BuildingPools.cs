@@ -12,7 +12,10 @@ namespace Zavala.Building {
         #region Types
 
         [Serializable] public class RoadPool : SerializablePool<RoadInstanceController> { }
-        [Serializable] public class DigesterPool : SerializablePool<OccupiesTile> { }
+        [Serializable] public class DigesterPool : SerializablePool<OccupiesTile> {
+            [Space]
+            [SerializeField] public GameObject BrokenDigesterPrefab;
+        }
         [Serializable] public class StoragePool : SerializablePool<OccupiesTile> { }
         [Serializable] public class SkimmerPool : SerializablePool<PhosphorusSkimmer> { }
         [Serializable] public class VizAnchorPool : SerializablePool<ParticleSystem> { }

@@ -29,7 +29,8 @@ namespace Zavala {
         ExportDepot,
         TollBooth,
         TempObstruction,
-        SkimmerLocation
+        SkimmerLocation,
+        DigesterBroken
     }
 
     [CreateAssetMenu(menuName = "Zavala/Region Asset")]

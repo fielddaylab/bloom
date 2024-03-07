@@ -413,6 +413,7 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 0
+    BrokenDigesterPrefab: {fileID: 4665823543789613534, guid: 909983944c4d31845ac430571fef2a45, type: 3}
   Storages:
     m_Prefab: {fileID: 4665823543789613532, guid: 83cbad4e9bc632b45a85008072ee80e8, type: 3}
     m_Name: 

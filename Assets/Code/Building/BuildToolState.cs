@@ -228,6 +228,7 @@ namespace Zavala.Building {
                     // If non-buildable, add to list
                     if ((grid.Terrain.Info[index].Flags & TerrainFlags.NonBuildable) != 0)
                     {
+                        // TODO: add exception for broken digester
                         btState.BlockedIdxs.Add(index);
 
                     }
