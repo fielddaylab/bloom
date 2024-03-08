@@ -257,6 +257,7 @@ namespace Zavala.UI.Info
                     break;
                 }
 
+                case BuildingType.DigesterBroken:
                 case BuildingType.Digester: {
                     m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
@@ -693,7 +694,7 @@ namespace Zavala.UI.Info
                     }
                     break;
                 }
-
+                case BuildingType.DigesterBroken:
                 case BuildingType.Digester: {
                     PopulateDescriptionSmall();
                     if (m_InitialOpen) {

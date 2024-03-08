@@ -156,8 +156,15 @@ namespace Zavala.Economy
         /// </summary>
         /// <param name="blueprintState"></param>
         /// <param name="commit"></param>
-        public static void CommitDestroyAction(BlueprintState blueprintState, ActionCommit commit)
+        public static void CommitDestroyAction(BlueprintState blueprintState, bool instantConfirm, ActionCommit commit)
         {
+            if (instantConfirm) {
+                blueprintState.DestroyChain = new CommitChain();
+                blueprintState.DestroyChain.Chain = new RingBuffer<ActionCommit>(1);
+                blueprintState.DestroyChain.Chain.PushBack(commit);
+                CommitDestroyToBuild(blueprintState);
+
+            }
             blueprintState.DestroyChain.Chain.PushBack(commit);
             blueprintState.NumDestroyActionsChanged = true;
         }
@@ -172,6 +179,25 @@ namespace Zavala.Economy
                 ZavalaGame.Events.Dispatch(GameEvents.BuildingQueued, commit);
             }
             blueprintState.Commits.PushBack(inChain);
+            blueprintState.NumBuildCommitsChanged = true;
+        }
+
+        public static void MergeChains(BlueprintState blueprintState, int numChains) {
+            if (numChains < 2) {
+                throw new ArgumentOutOfRangeException("BlueprintUtility.MergeChains: Cannot merge "+numChains+" chains, < 2");
+            }
+            if (blueprintState.Commits.Count < numChains) {
+                throw new ArgumentOutOfRangeException("BlueprintUtility.MergeChains: There aren't "+numChains+" chains to merge");
+            }
+            CommitChain mergedChain = new CommitChain();
+            mergedChain.Chain = new RingBuffer<ActionCommit>(numChains, RingBufferMode.Expand);
+            for (int i = 0; i < numChains; i++) {
+                CommitChain nextChain = blueprintState.Commits.PopBack();
+                nextChain.Chain.Reverse();
+                nextChain.Chain.ForEach(a => mergedChain.Chain.PushFront(a));
+            }
+
+            blueprintState.Commits.PushBack(mergedChain);
             blueprintState.NumBuildCommitsChanged = true;
         }
 
@@ -234,6 +260,11 @@ namespace Zavala.Economy
                 case BuildingType.Storage:
                 case BuildingType.Digester:
                     SimDataUtility.BuildOnTileFromUndo(grid, prevCommit.BuildType, prevCommit.TileIndex, blueprintState.m_ValidHoloMaterial, prevCommit.WasPending);
+                    break;
+                case BuildingType.DigesterBroken:
+                    Vector3 worldPos = HexVector.ToWorld(prevCommit.TileIndex, grid.Terrain.Info[prevCommit.TileIndex].Height, ZavalaGame.SimWorld.WorldSpace);
+                    GameObject.Instantiate(Game.SharedState.Get<BuildingPools>().Digesters.BrokenDigesterPrefab, worldPos, Quaternion.identity);
+                    Game.SharedState.Get<BuildToolState>().DigesterOnlyTiles.Add(prevCommit.TileIndex);
                     break;
                 default:
                     break;
@@ -356,6 +387,16 @@ namespace Zavala.Economy
         /// <param name="blueprintState"></param>
         public static void ConfirmDestroy(BlueprintState blueprintState, ShopState shop, SimGridState grid, BuildToolState toolState, uint currRegion)
         {
+            CommitDestroyToBuild(blueprintState);
+
+            blueprintState.CommandState = ActionType.Build;
+            BuildToolUtility.SetTool(toolState, UserBuildTool.None);
+
+            // Exit Destroy state
+            blueprintState.UI.OnDestroyConfirmClicked();
+        }
+
+        public static void CommitDestroyToBuild(BlueprintState blueprintState) {
             // Add pending destroy commits to the overall build mode chain
             CommitChain newChain = new CommitChain();
             newChain.Chain = new RingBuffer<ActionCommit>(blueprintState.DestroyChain.Chain.Count);
@@ -364,12 +405,6 @@ namespace Zavala.Economy
             CommitChain(blueprintState, newChain);
 
             ClearDestroyCommits(blueprintState);
-
-            blueprintState.CommandState = ActionType.Build;
-            BuildToolUtility.SetTool(toolState, UserBuildTool.None);
-
-            // Exit Destroy state
-            blueprintState.UI.OnDestroyConfirmClicked();
         }
 
         public static void UpdateRunningCostDisplay(BlueprintState blueprintState, int runningCost, int deltaCost, long playerFunds)

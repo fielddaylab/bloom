@@ -1,15 +1,14 @@
-using System;
-using UnityEngine;
-using FieldDay.SharedState;
-using FieldDay;
-using System.Collections.Generic;
 using BeauUtil;
+using BeauUtil.Debugger;
+using FieldDay;
+using FieldDay.SharedState;
+using Leaf.Runtime;
+using System;
+using System.Collections.Generic;
+using Zavala.Data;
+using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
-using Zavala.Roads;
-using Leaf.Runtime;
-using BeauUtil.Debugger;
-using Zavala.Data;
 
 namespace Zavala.Building {
     public struct RoadToolState {
@@ -48,9 +47,11 @@ namespace Zavala.Building {
         [NonSerialized] public int TotalBuildingsBuilt;
         [NonSerialized] public int NumStoragesBuilt;
         [NonSerialized] public BitSet32 StorageBuiltInRegion;
+        // [NonSerialized] public HashSet<int> StorageOnlyTiles;
 
         [NonSerialized] public int NumDigestersBuilt;
         [NonSerialized] public BitSet32 DigesterBuiltInRegion;
+        [NonSerialized] public HashSet<int> DigesterOnlyTiles;
 
         [NonSerialized] public BitSet32 FarmsConnectedInRegion;
         [NonSerialized] public BitSet32 CityConnectedInRegion;
@@ -70,6 +71,7 @@ namespace Zavala.Building {
             ClearRoadTool();
 
             BlockedIdxs = new HashSet<int>(64);
+            DigesterOnlyTiles = new HashSet<int>(2);
             BlockedAdjIdxs = new RingBuffer<int>(32, RingBufferMode.Expand);
             BlockedTileBuffer = SimBuffer.Create<byte>(ZavalaGame.SimGrid.HexSize);
             StorageBuiltInRegion = default;
@@ -225,6 +227,23 @@ namespace Zavala.Building {
                         continue;
                     }
 
+                    if (btState.DigesterOnlyTiles.Contains(index)) {
+                        if (btState.ActiveTool == UserBuildTool.Digester) {
+                            continue;
+                        } else {
+                            btState.BlockedIdxs.Add(index);
+                        }
+                    }
+                    /*
+                    if (btState.StorageOnlyTiles.Contains(index)) {
+                        if (btState.ActiveTool == UserBuildTool.Storage) {
+                            continue;
+                        } else {
+                            btState.BlockedIdxs.Add(index);
+                        }
+                    }
+                    */
+
                     // If non-buildable, add to list
                     if ((grid.Terrain.Info[index].Flags & TerrainFlags.NonBuildable) != 0)
                     {
@@ -269,6 +288,11 @@ namespace Zavala.Building {
                 if (grid.HexSize.IsValidIndex(index)) {
                     if (!world.Tiles[index]) {
                         continue;
+                    }
+
+                    // broken digesters or storages
+                    if (btState.DigesterOnlyTiles.Contains(index) /*|| btState.StorageOnlyTiles.Contains(index)*/) {
+                        btState.BlockedIdxs.Add(index);
                     }
 
                     // If non-buildable, add to list

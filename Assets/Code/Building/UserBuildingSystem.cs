@@ -237,6 +237,14 @@ namespace Zavala.Building
             TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
             TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
 
+            bool brokenReplaced = false;
+            if (activeTool == UserBuildTool.Digester) {
+                BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+                if (bts.DigesterOnlyTiles.Contains(tileIndex)) {
+                    TryDestroyClickedBuilding(ZavalaGame.SimWorld, grid, Game.SharedState.Get<BlueprintState>());
+                    brokenReplaced = true;
+                }
+            }
             SimDataUtility.BuildOnTileFromHit(grid, activeTool, tileIndex, m_ValidHoloMaterial, out OccupiesTile occupies);
 
             Assert.NotNull(occupies);
@@ -255,7 +263,10 @@ namespace Zavala.Building
                 flowSnapshot,
                 occupies.Pending
                 ));
-
+            if (brokenReplaced) {
+                // merge the "destroy old" chain and the "build new" chain into one chain
+                BlueprintUtility.MergeChains(blueprintState, 2);
+            }
             // Add cost to receipt queue
             ShopUtility.EnqueueCost(m_StateD, price);
 
@@ -284,7 +295,7 @@ namespace Zavala.Building
                 // if not player placed, outside current region, or non-pending non-road
                 if (!hit.gameObject.CompareTag(PLAYERPLACED_TAG) || 
                     ot.RegionIndex != grid.CurrRegionIndex || 
-                    (ot.Type != BuildingType.Road && !ot.Pending)) {
+                    (ot.Type != BuildingType.Road && ot.Type != BuildingType.DigesterBroken && !ot.Pending)) {
                     ZavalaGame.Events.Dispatch(GameEvents.DestroyInvalid, ot.TileIndex);
                     return false;
                 }
@@ -381,6 +392,10 @@ namespace Zavala.Building
                             // cannot build a road through non-buildable tiles
                             Debug.Log("[UserBuildingSystem] Cannot build a road through non-buildable tiles");
                             // CancelRoad(grid, network);
+                            return;
+                        }
+                        else if ((m_StateC.DigesterOnlyTiles.Contains(tileIndex))) {
+                            Debug.Log("[UserBuildingSystem] Cannot build a road through digester-only tile");
                             return;
                         }
                         else {

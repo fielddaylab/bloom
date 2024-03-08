@@ -75,8 +75,8 @@ namespace Zavala.World {
                     }
                     case BuildingType.DigesterBroken: {
                         m_StateB.Terrain.Info[spawn.TileIndex].Flags |= TerrainFlags.IsOccupied;
-                        m_StateB.Terrain.Info[spawn.TileIndex].Flags |= TerrainFlags.NonBuildable;
-                            building = Instantiate(m_StateC.Digesters.BrokenDigesterPrefab, worldPos, Quaternion.identity);
+                        Game.SharedState.Get<BuildToolState>().DigesterOnlyTiles.Add(spawn.TileIndex);
+                        building = Instantiate(m_StateC.Digesters.BrokenDigesterPrefab, worldPos, Quaternion.identity);
                         building.SetActive(true);
                         // building.GetComponent<BuildingPreview>().Apply();
                         break;

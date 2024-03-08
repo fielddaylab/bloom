@@ -414,7 +414,8 @@ namespace Zavala.Sim {
             DestroyBuilding(grid, network, hitObj, tileIndex, ot.Type, true, out TileAdjacencyMask inleadingDirsRemoved);
 
             // Commit the destroy action
-            BlueprintUtility.CommitDestroyAction(bpState, new ActionCommit(
+            BlueprintUtility.CommitDestroyAction(bpState, ot.Type == BuildingType.DigesterBroken, // instant-commit destroyed broken chains to build queue
+                new ActionCommit(
                 ot.Type,
                 ActionType.Destroy,
                 costToRemove,
@@ -424,8 +425,7 @@ namespace Zavala.Sim {
                 rFlagSnapshot,
                 tFlagSnapshot,
                 flowSnapshot,
-                wasPending
-                ));
+                wasPending));
 
             // Add cost to receipt queue
             ShopState shop = Game.SharedState.Get<ShopState>();
@@ -486,6 +486,12 @@ namespace Zavala.Sim {
                         }
 
                         SimWorldUtility.QueueVisualUpdate((ushort) tileIndex, VisualUpdateType.Road);
+                    }
+                    break;
+                case BuildingType.DigesterBroken:
+                    if (buildingObj) {
+                        GameObject.Destroy(buildingObj.gameObject);
+                        Game.SharedState.Get<BuildToolState>().DigesterOnlyTiles.Remove(tileIndex);
                     }
                     break;
                 case BuildingType.Digester:
