@@ -64,6 +64,19 @@ $call ForcePolicyInstant("Ecology")
 
 // $call Unpause()
 
+:: wantDigester
+@trigger AlertExamined
+@conditions alertType == "dialogue", buildingType == "DairyFarm", alertRegion == 3, global:storageUnlocked
+{@cafoPrairie}             Hey, that old Manure Processor don't look half bad...
+$call PanToBuilding("region2_digester1")
+{@cafoPrairie}             If I could turn my <b>Manure</b> into <b>Fertilizer</b>, I wouldn't lose so much on shipping!
+$call PanToBuilding("region3_cafo1")
+{@advisorEconPrairie}      Maybe... But you can't expect to run one on your own!
+{@advisorEconPrairie}      That's how the old one was abandoned in the first place...
+{@cafoPrairie}             If SAGA can run a <b>Storage,</b> maybe y'all can run a <b>Processor?</b>
+{@advisorEconPrairie}      Hmm... 
+{@advisorEconPrairie}      We'll need to prove SAGA successful before we can get that authorization!
+
 :: economicSolution
 @trigger AlertExamined
 @conditions global:pipsUnlocked, alertRegion == 3, alertType == "dialogue", buildingType == "City"

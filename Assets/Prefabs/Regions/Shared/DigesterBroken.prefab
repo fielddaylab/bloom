@@ -146,8 +146,8 @@ MonoBehaviour:
     m_Source: location.shared.digesterBroken
     m_HashValue: 2089482851
   OverrideTitleLabel:
-    m_Source: 
-    m_HashValue: 0
+    m_Source: location.shared.digesterBroken
+    m_HashValue: 2089482851
   InfoLabel:
     m_Source: location.shared.digesterInfo
     m_HashValue: 3249712714

@@ -343,7 +343,8 @@ namespace Zavala.Editor {
                                 buildingList.Add(new RegionAsset.BuildingData() {
                                     LocalTileIndex = (ushort)pos,
                                     Type = BuildingType.DigesterBroken,
-                                    ScriptName = scriptName
+                                    ScriptName = scriptName,
+                                    LocationName = "location.digesterBroken",
                                 });
                                 occupiedTileIndices.Add(pos);
                                 tiles[pos].Flags |= TerrainFlags.IsOccupied;
