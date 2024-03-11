@@ -76,6 +76,9 @@ namespace Zavala.Building {
                 record.AuxComponentData = blockCopy;
 
                 if (record.Type == BuildingType.Storage || record.Type == BuildingType.Digester) {
+                    int currIdx = record.TileIndex;
+                    // remove any existing spawnrecord at this index
+                    world.Spawns.QueuedBuildings.RemoveWhere(p => p.TileIndex == currIdx);
                     world.Spawns.QueuedBuildings.PushBack(new SpawnRecord<BuildingSpawnData>() {
                         TileIndex = (ushort) record.TileIndex,
                         Data = new BuildingSpawnData() {
