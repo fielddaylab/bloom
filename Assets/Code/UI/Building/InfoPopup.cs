@@ -327,8 +327,7 @@ namespace Zavala.UI.Info
             if (isShipping) {
                 PopulateShippingWide(recordAllTabs);
             } else {
-                // NOTE: obsolete implementation. If we start using it again, will need a similar recordAllTabs functionality
-                PopulatePurchasingWide();
+                PopulatePurchasingWide(recordAllTabs);
             }
         }
 
@@ -374,7 +373,7 @@ namespace Zavala.UI.Info
 
                         InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
                         newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherProfitGroupsForResourceTab(policyState, grid, config, currResourceMask, WideNumRows, queryCount, m_TempQueryResults, showRunoff);
-                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations);
+                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
                         m_InspectorDisplayData.AllAvailableTabs.Add(newTabProfitGroup);
 
                         if ((m_ActiveResource & currResourceMask) != 0)
@@ -386,7 +385,7 @@ namespace Zavala.UI.Info
             }
             else {
                 InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
-                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations);
+                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
                 newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherProfitGroupsForResourceTab(policyState, grid, config, m_ActiveResource, WideNumRows, queryCount, m_QueryResults, showRunoff);
                 m_ActiveTabProfitGroup = newTabProfitGroup;
             }
@@ -433,8 +432,11 @@ namespace Zavala.UI.Info
         /// <summary>
         /// Populate buyer popup
         /// </summary>
-        private void PopulatePurchasingWide()
+        private void PopulatePurchasingWide(bool recordAllTabs)
         {
+            bool showRunoff = (m_ActiveResource & ResourceMask.Manure) != 0;
+            bool shipping = m_ActiveResource == ResourceMask.Grain;
+
             Root.sizeDelta = new Vector2(WideWidth, WideHeight);
 
             int queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
@@ -444,6 +446,48 @@ namespace Zavala.UI.Info
             PolicyState policyState = Game.SharedState.Get<PolicyState>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
 
+            m_InspectorDisplayData.AllAvailableTabs.Clear();
+            if (recordAllTabs)
+            {
+                foreach (var currResourceMask in MarketUtility.MarketMasks)
+                {
+                    // iterate through all relevant groups
+                    if ((m_AvailableTabsMask & currResourceMask) != 0)
+                    {
+                        shipping = currResourceMask == ResourceMask.Grain;
+                        m_TempQueryResults.Clear();
+                        if ((m_ActiveResource & currResourceMask) != 0)
+                        {
+                            m_QueryResults.CopyTo(m_TempQueryResults);
+                        }
+                        else
+                        {
+                            MarketUtility.GeneralMarketQuery(m_SelectedRequester, m_SelectedSupplier, m_TempQueryResults, currResourceMask, shipping, true);
+                            SortQueryResults(shipping);
+                        }
+                        queryCount = Math.Min(m_TempQueryResults.Count, WideNumRows);
+                        showRunoff = (currResourceMask & ResourceMask.Manure) != 0;
+
+                        InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
+                        newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherCostGroupsForResourceTab(policyState, grid, config, currResourceMask, WideNumRows, queryCount, m_TempQueryResults, showRunoff);
+                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
+                        m_InspectorDisplayData.AllAvailableTabs.Add(newTabProfitGroup);
+
+                        if ((m_ActiveResource & currResourceMask) != 0)
+                        {
+                            m_ActiveTabProfitGroup = newTabProfitGroup;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
+                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
+                newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherCostGroupsForResourceTab(policyState, grid, config, m_ActiveResource, WideNumRows, queryCount, m_QueryResults, showRunoff);
+                m_ActiveTabProfitGroup = newTabProfitGroup;
+            }
+
             for (int i = 0; i < WideNumRows; i++)
             {
                 if (i < queryCount)
@@ -451,8 +495,8 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = false;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, new InspectorLocationQuery());
-                    InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0);
+                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i]);
+                    InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, m_ActiveTabProfitGroup.Profits[i]);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = BuyArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = BuyArrowTextColor;
                 }
@@ -462,6 +506,7 @@ namespace Zavala.UI.Info
                     InfoPopupMarketUtility.LoadEmptyCostsCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOption.gameObject, i);
                 }
             }
+
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
             if (m_BestOption.gameObject.activeSelf)
             {
