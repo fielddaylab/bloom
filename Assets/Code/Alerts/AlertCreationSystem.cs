@@ -39,11 +39,31 @@ namespace Zavala.Scripting
 
                 if (component.DisplayingEvent) {
                     if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue && peekEvent.Alert != EventActorAlertType.Dialogue) {
+
+                        //int preCount = component.QueuedEvents.Count;
+                        // var displayString = component.DisplayingEvent.AlertType.ToString();
+
                         // If showing a dialogue event, clear it and move it to the back
                         // ClearAlert just removes the visual, does not pop the event
-                        UIAlertUtility.ClearAlert(component.DisplayingEvent);
+                        UIAlertUtility.ClearAlert(component.DisplayingEvent, true);
                         component.QueuedEvents.PushBack(component.QueuedEvents.PopFront());
-                    } else {
+
+                        /*
+                        Debug.Log("[DisplayBug] New event incoming, but already displaying event.\n"
+                             + "peekEvent alert type: " + peekEvent.Alert.ToString() + "\n"
+                        + "Displaying event: " + displayString + "\n"
+                        + "Queued events length before: " + preCount + "\n"
+                        + "Queued events length after: " + component.QueuedEvents.Count);
+                        */
+                        /*
+                        // the new event is at the front, but we want to push back the dialogue event which is at 2nd from the front
+                        var replacingEvent = component.QueuedEvents.PopFront();
+                        var dialogueEvent = component.QueuedEvents.PopFront();
+                        component.QueuedEvents.PushBack(dialogueEvent);
+                        component.QueuedEvents.PushFront(replacingEvent);
+                         */
+                    }
+                    else {
                         // Skip queueing for this actor, it is already displaying an important (i.e. nondialogue) event
                        return;
                     }

@@ -109,19 +109,21 @@ namespace Zavala.UI {
             alert.AlertBase.SetAlpha(faded ? 0.1f : 1.0f);
         }
 
-        public static bool ClearAlert(UIAlert alert) {
+        public static bool ClearAlert(UIAlert alert, bool recycleEvent = false) {
             if (alert == null) {
                 Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
 ;                return false; 
             }
             alert.KeepFaded = false;
             alert.AlertBase.SetAlpha(1.0f);
-            alert.BannerRoutine.Replace(CloseRoutine(alert, true));
+            alert.BannerRoutine.Replace(CloseRoutine(alert, true, recycleEvent));
             return true;
         }
 
-        public static void FreeAlert(UIAlert alert) {
-            EventActorUtility.CancelEventType(alert.Actor, alert.AlertType);
+        public static void FreeAlert(UIAlert alert, bool recycleEvent = false) {
+            if (!recycleEvent) { 
+                EventActorUtility.CancelEventType(alert.Actor, alert.AlertType);
+            }
             // free this alert
             UIPools pools = Game.SharedState.Get<UIPools>();
             pools.Alerts.Free(alert);
@@ -146,10 +148,10 @@ namespace Zavala.UI {
 
         public static IEnumerator HoldRoutine(UIAlert alert, float sec) {
             yield return Routine.WaitRealSeconds(sec);
-            alert.BannerRoutine.Replace(CloseRoutine(alert, true));
+            alert.BannerRoutine.Replace(CloseRoutine(alert, true, false));
             yield return null;
         }
-        public static IEnumerator CloseRoutine(UIAlert alert, bool freeOnClose) {
+        public static IEnumerator CloseRoutine(UIAlert alert, bool freeOnClose, bool recycleEvent) {
             alert.FullyOpened = false;
             alert.Masking.SetState(true);
             if (alert.AlertType == EventActorAlertType.Dialogue) {
@@ -161,7 +163,7 @@ namespace Zavala.UI {
                     alert.AlertBase.FadeTo(0, 0.2f).DelayBy(0.45f)
                 );
             }
-            if (freeOnClose) FreeAlert(alert);
+            if (freeOnClose) FreeAlert(alert, recycleEvent);
             yield return null;
         }
     }
