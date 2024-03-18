@@ -20,12 +20,15 @@ namespace Zavala.Cards {
         public Image CardArt;
         public Graphic Background;
         public CardData Data;
+        public Vector2 OriginAnchorRect;
 
         [NonSerialized] public int PolicyIndex; // Which severity index this card corresponds to (also index from left to right)
         [NonSerialized] private Vector2 OriginalAnchorPos;
 
         public event EventHandler<CardEventArgs> OnCardHover;
         public event EventHandler OnCardHoverExit;
+
+        public Routine DisplayRoutine;
 
         private void OnDisable() {
             Button.onClick.RemoveAllListeners();
