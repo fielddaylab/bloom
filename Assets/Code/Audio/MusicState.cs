@@ -50,6 +50,8 @@ namespace Zavala.Audio {
     }
 
     static public class MusicUtility {
-
+        public static void SetVolume(float vol) {
+            Game.SharedState.Get<MusicState>().Volume = vol;
+        }
     }
 }

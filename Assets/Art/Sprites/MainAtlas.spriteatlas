@@ -54,7 +54,6 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: 18e00d6017c89d345997603c598ae0cb, type: 3}
   - {fileID: 21300000, guid: 3ded4490e0801e04595585b7729c692c, type: 3}
-  - {fileID: 21300000, guid: ded1a211e751aff478011a8ee93274ad, type: 3}
   - {fileID: 21300000, guid: 71e8b7a1d6ae34847875b1f5bb100f6b, type: 3}
   - {fileID: 21300000, guid: 485233e1e34500c419e4648865a72492, type: 3}
   - {fileID: 21300000, guid: 66b8c5f1f4445a94faf44f5a77203956, type: 3}
@@ -82,7 +81,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 61db9685c1b7ea243a4c109811110530, type: 3}
   - {fileID: 21300000, guid: 7d969a85e13f8244e94998181ad9e743, type: 3}
   - {fileID: 21300000, guid: d648e195b001297419a09f0d590b6365, type: 3}
-  - {fileID: 21300000, guid: 73413ad55901971459d6b099aeed1138, type: 3}
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
   - {fileID: 21300000, guid: 50b6ad0648a956c4bbf7a51cb79ef1da, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
@@ -116,10 +114,11 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
   - {fileID: 21300000, guid: 76b2b02c1f99b324b82b1a82869a4100, type: 3}
   - {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
+  - {fileID: 21300000, guid: f92c6b3ca865ebe46a062551d83dba1e, type: 3}
   - {fileID: 21300000, guid: f91c4b5cb3de15a4eaac5e39d284e4f1, type: 3}
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: f1c1991d55fde1b44975cee1f7f527e0, type: 3}
-  - {fileID: 21300000, guid: 17a65e8d986ee9944b416e0bfa8a4c33, type: 3}
+  - {fileID: 21300000, guid: 6a7c80cdc0ea6db4490f49d084faa518, type: 3}
   - {fileID: 21300000, guid: fab52f1e1c3fcc448a0241831b299c14, type: 3}
   - {fileID: 21300000, guid: 98bf592e9435dd74fb7add32f6a182b2, type: 3}
   - {fileID: 21300000, guid: 5d813f3e537b05e40ba3cbe7825ade0b, type: 3}
@@ -139,7 +138,6 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - water-status-poor
   - MarketLensIcon
-  - controls_pan
   - base_selling-loss
   - UndoIcon
   - digester-popup
@@ -167,7 +165,6 @@ SpriteAtlas:
   - base_unused-digester
   - storage-empty
   - base_disconnected
-  - controls_zoom
   - advisor-dialogue-white
   - CloseX
   - ShopToggle
@@ -201,10 +198,11 @@ SpriteAtlas:
   - base_excess-runoff
   - ShopToggleBlank
   - urgentflag_manure
+  - controls_pan
   - policyicon_milk
   - BlueprintMode
   - resource_grain
-  - controls_pause
+  - controls_zoom
   - ToolImageStorage
   - grain-resource
   - Cursor-Normal
