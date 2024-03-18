@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73074f68918adc44485acffb758558dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Button: {fileID: 4531923724783311424}
+  Button: {fileID: 4531923724783311424}
   NotSetHighlight: {fileID: 5289333201966813904}
   Group: {fileID: 452859313317316039}
   LevelText: {fileID: 6057677351747910696}
