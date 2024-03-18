@@ -137,11 +137,13 @@ namespace Zavala.Scripting {
         }
 
         static public void QueueAlert(EventActor actor, EventActorAlertType alert, int tileIndex, int regionIndex, NamedVariant secondArg = default) {
+            /*
             // skip queuing any paused events
             if (Game.SharedState.Get<AlertState>().PausedAlertTypes.Contains(alert)) {
                 Log.Msg("[EventActorUtility] Skipping alert for {0}, event type {1} paused", actor.Id.ToDebugString(), alert);
                 return;
             }
+            */
             actor.QueuedTriggers.PushBack(new EventActorTrigger() {
                 EventId = GameTriggers.AlertExamined,
                 Argument = GameAlerts.GetAlertTypeArgument(alert),
@@ -180,6 +182,7 @@ namespace Zavala.Scripting {
             });
         }
 
+        /*
         [LeafMember("PauseAlertType")]
         static public bool PauseAlertType(EventActorAlertType alertType) {
             return Game.SharedState.Get<AlertState>().PausedAlertTypes.Add(alertType);
@@ -189,6 +192,7 @@ namespace Zavala.Scripting {
         static public bool UnpauseAlertType(EventActorAlertType alertType) {
             return Game.SharedState.Get<AlertState>().PausedAlertTypes.Remove(alertType);
         }
+        
 
         [LeafMember("ToggleAlertTypeActive")]
         static public void ToggleAlertTypeActive(EventActorAlertType alertType) {
@@ -198,6 +202,7 @@ namespace Zavala.Scripting {
                 UnpauseAlertType(alertType); 
             }
         }
+        */
 
         [LeafMember("QueueDialogueBubble")]
         static public void QueueDialogueAlert(StringHash32 actor, StringHash32 targetNode) {

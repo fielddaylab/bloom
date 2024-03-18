@@ -6,8 +6,6 @@
 @cutscene
 @once
 // $call Pause()
-$call PauseAlertType("ExcessRunoff")
-
 $call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)
@@ -396,7 +394,7 @@ $endif
 
 :: runoffTrigger
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1, isFromGrainFarm == false
+@conditions     alertType == "excess-runoff", alertRegion == 1, global:bloomDiscovered, isFromGrainFarm == false
 // @forcePolicy    Ecology
 @queued
 @cutscene
@@ -535,7 +533,6 @@ $call CutsceneEnd()
 {@advisorEcolHill}    I'll keep an eye out for any excess runoff...
 $call QueueDialogueBubble(region2_grain1, region2.bloomRumors)
 $call OffsetAlgaeGrowthThreshold(1)
-$call UnpauseAlertType("ExcessRunoff")
 $call AddAutoAlertCondition("ExcessRunoff", 1)
 // $call Unpause()
 
