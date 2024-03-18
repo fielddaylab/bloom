@@ -8,7 +8,7 @@ namespace FieldDay.Audio {
     /// <summary>
     /// Audio Event information.
     /// </summary>
-    [CreateAssetMenu(menuName = "Field Day/Audio/Audio Event")]
+    //[CreateAssetMenu(menuName = "Field Day/Audio/Audio Event")]
     public class AudioEvent : ScriptableObject {
         public AudioVoiceType VoiceType;
         public ushort BusIndex;

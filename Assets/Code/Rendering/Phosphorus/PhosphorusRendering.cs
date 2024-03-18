@@ -269,6 +269,7 @@ namespace Zavala {
                     default:
                         inst.Position = Vector3.Lerp(inst.Position, inst.TargetPosition, lerpAmount);
                         if (Vector3.SqrMagnitude(inst.Position - inst.TargetPosition) < sqrMinDistance) {
+                            done = true;
                         }
                         break;
                 }

@@ -28,7 +28,7 @@ namespace Zavala.Audio {
                 return;
             }
 
-            if (!Game.Input.IsForcingInput()) {
+            if (!Game.Input.IsForcingClick()) {
                 if (checkPrevState) {
                     if (!m_WasInteractable) {
                         return;

@@ -27,7 +27,7 @@ namespace FieldDay.Editor {
             settings.readable = false;
 
             if ((flags & Flags.Texture) != 0) {
-                settings.npotScale = TextureImporterNPOTScale.ToLarger;
+                settings.npotScale = TextureImporterNPOTScale.ToNearest;
                 if (settings.textureType == TextureImporterType.Sprite) {
                     settings.textureType = TextureImporterType.Default;
                 }

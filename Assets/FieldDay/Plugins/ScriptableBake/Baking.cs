@@ -553,7 +553,7 @@ namespace ScriptableBake {
         static public string GetAssetDirectory(UnityEngine.Object obj) {
             string path = AssetDatabase.GetAssetPath(obj);
             if (!string.IsNullOrEmpty(path)) {
-                return Path.GetDirectoryName(path);
+                return Path.GetDirectoryName(path).Replace('\\', '/');
             } else {
                 return string.Empty;
             }

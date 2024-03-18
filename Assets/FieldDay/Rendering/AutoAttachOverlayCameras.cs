@@ -1,14 +1,14 @@
-#if UNITY_2019_1_OR_NEWER
-#define USE_SRP
+#if UNITY_2019_1_OR_NEWER && HAS_URP
+#define USE_URP
 #endif // UNITY_2019_1_OR_NEWER
 
 using BeauUtil;
 using UnityEngine;
 using System;
 
-#if USE_SRP
+#if USE_URP
 using UnityEngine.Rendering.Universal;
-#endif // USE_SRP
+#endif // USE_URP
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -34,7 +34,7 @@ namespace FieldDay.Rendering {
             }
 #endif // UNITY_EDITOR
 
-#if USE_SRP
+#if USE_URP
             Camera c = GetComponent<Camera>();
             var data = c.GetUniversalAdditionalCameraData();
             var stack = data.cameraStack;
@@ -48,7 +48,7 @@ namespace FieldDay.Rendering {
                     m_CachedAddedCameras.PushBack(cam);
                 }
             }
-#endif // USE_SRP
+#endif // USE_URP
         }
 
         private void OnDisable() {
@@ -57,7 +57,7 @@ namespace FieldDay.Rendering {
                 return;
 #endif // UNITY_EDITOR
 
-#if USE_SRP
+#if USE_URP
             Camera c = GetComponent<Camera>();
             var data = c.GetUniversalAdditionalCameraData();
             var stack = data.cameraStack;
@@ -65,7 +65,7 @@ namespace FieldDay.Rendering {
             while (m_CachedAddedCameras.TryPopBack(out var overlay)) {
                 stack.Remove(overlay);
             }
-#endif // USE_SRP
+#endif // USE_URP
         }
     }
 }

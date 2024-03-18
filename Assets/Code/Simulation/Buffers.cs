@@ -10,6 +10,7 @@ namespace Zavala.Sim {
         public SimBuffer<TerrainTileInfo> Info;
         public SimBuffer<ushort> Height;
         public SimBuffer<ushort> Regions;
+        public SimBitSet NonVoidTiles;
 
         public void Create(in HexGridSize size) {
             Info = SimBuffer.Create<TerrainTileInfo>(size);
@@ -17,8 +18,10 @@ namespace Zavala.Sim {
 
             Height = SimBuffer.Create<ushort>(size);
             Regions = SimBuffer.Create<ushort>(size);
+            NonVoidTiles = SimBitSet.Create(size.Size);
 
             SimBuffer.Clear(Regions);
+            NonVoidTiles.Clear();
         }
     }
 

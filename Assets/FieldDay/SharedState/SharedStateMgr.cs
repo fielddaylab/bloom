@@ -70,6 +70,7 @@ namespace FieldDay.SharedState {
                 s_StaticInjector.Remove(state);
                 RegistrationCallbacks.InvokeDeregister(state);
             }
+            m_StateSet.Clear();
             Array.Clear(m_StateMap, 0, m_StateMap.Length);
         }
 

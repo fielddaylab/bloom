@@ -222,7 +222,7 @@ namespace FieldDay.Editor {
                     }
 
                     if ((settings.Flags & SceneImportFlags.ImportLightingSettings) != 0) {
-                        LightUtility.CopySettings(subsceneRef, scene);
+                        LightUtility.CopySettingsToScene(subsceneRef, scene, LightingImportFlags.All);
                     }
 
                     EditorSceneManager.CloseScene(subsceneRef, true);

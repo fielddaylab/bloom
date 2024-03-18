@@ -16,6 +16,10 @@ using FieldDay.Data;
 using BeauUtil.UI;
 using UnityEngine.EventSystems;
 using FieldDay.HID;
+using FieldDay.Scenes;
+using FieldDayDebugging;
+
+
 
 
 #if UNITY_EDITOR
@@ -72,6 +76,7 @@ namespace FieldDay.Debugging {
         [NonSerialized] private bool m_CursorWhenDebugMenuOpened;
         [NonSerialized] private bool m_MenuOpen;
         [NonSerialized] private bool m_MenuUIInitialized;
+        [NonSerialized] private bool m_FrameCounterWhenDebugMenuOpened;
 
         private void Awake() {
             GameLoop.OnDebugUpdate.Register(OnPreUpdate);
@@ -162,6 +167,10 @@ namespace FieldDay.Debugging {
                     m_DebugMenus.TryPreviousPage();
                 } else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
                     m_DebugMenus.TryNextPage();
+                }
+
+                if (Game.Scenes.IsMainLoading()) {
+                    SetMenuVisible(false);
                 }
             }
         }
@@ -280,6 +289,7 @@ namespace FieldDay.Debugging {
             if (visible) {
                 m_VisibilityWhenDebugMenuOpened = m_MinimalVisible;
                 m_CursorWhenDebugMenuOpened = CursorUtility.CursorIsShowing();
+                m_FrameCounterWhenDebugMenuOpened = FramerateDisplay.IsShowing();
                 SetMinimalVisible(true);
                 m_DebugMenus.gameObject.SetActive(true);
                 m_DebugMenuInput.interactable = true;
@@ -289,10 +299,14 @@ namespace FieldDay.Debugging {
                     m_MenuUIInitialized = true;
                 }
                 CursorUtility.ShowCursor();
+                FramerateDisplay.Hide();
                 SetPaused(true);
             } else {
                 if (!m_CursorWhenDebugMenuOpened) {
                     CursorUtility.HideCursor();
+                }
+                if (m_FrameCounterWhenDebugMenuOpened) {
+                    FramerateDisplay.Show();
                 }
                 m_DebugMenus.gameObject.SetActive(false);
                 m_DebugMenuInput.interactable = false;

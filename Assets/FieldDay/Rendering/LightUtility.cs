@@ -2,6 +2,8 @@ using BeauUtil;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using System;
+
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
@@ -25,6 +27,7 @@ namespace FieldDay.Rendering {
             public AmbientMode ambientMode;
             public float ambientIntensity;
             public Color ambientLight;
+            public Material skybox;
             public LightmapData[] lightmaps;
             public LightmapsMode lightmapsMode;
             public LightProbes lightProbes;
@@ -39,12 +42,13 @@ namespace FieldDay.Rendering {
                 ambientMode = RenderSettings.ambientMode;
                 ambientIntensity = RenderSettings.ambientIntensity;
                 ambientLight = RenderSettings.ambientLight;
+                skybox = RenderSettings.skybox;
                 lightmaps = ArrayUtils.CreateFrom(LightmapSettings.lightmaps);
                 lightmapsMode = LightmapSettings.lightmapsMode;
                 lightProbes = LightmapSettings.lightProbes;
             }
 
-            public void Write() {
+            public void Write(LightingImportFlags mask) {
                 RenderSettings.fog = fog;
                 RenderSettings.fogStartDistance = fogStartDistance;
                 RenderSettings.fogEndDistance = fogEndDistance;
@@ -54,30 +58,31 @@ namespace FieldDay.Rendering {
                 RenderSettings.ambientMode = ambientMode;
                 RenderSettings.ambientIntensity = ambientIntensity;
                 RenderSettings.ambientLight = ambientLight;
+                //RenderSettings.skybox = skybox;
                 LightmapSettings.lightmaps = lightmaps;
                 LightmapSettings.lightmapsMode = lightmapsMode;
-                LightmapSettings.lightProbes = lightProbes;
+                //LightmapSettings.lightProbes = lightProbes;
             }
         }
 
-        static public void CopySettingsToActive(Scene src) {
+        static public void CopySettingsToActive(Scene src, LightingImportFlags mask) {
             SceneBinding currentActive = SceneManager.GetActiveScene();
 
             SceneManager.SetActiveScene(src);
             SceneSettings settings = default;
             settings.Read();
             SceneManager.SetActiveScene(currentActive);
-            settings.Write();
+            settings.Write(mask);
         }
 
-        static public void CopySettings(Scene src, Scene dest) {
+        static public void CopySettingsToScene(Scene src, Scene dest, LightingImportFlags mask) {
             Scene currentActive = SceneManager.GetActiveScene();
             
             SceneManager.SetActiveScene(src);
             SceneSettings settings = default;
             settings.Read();
             SceneManager.SetActiveScene(dest);
-            settings.Write();
+            settings.Write(mask);
 
             if (dest != currentActive) {
                 SceneManager.SetActiveScene(currentActive);
@@ -98,7 +103,7 @@ namespace FieldDay.Rendering {
 
         [MenuItem("Field Day/Lighting/Paste Current Settings", false)]
         static private void PasteCurrentSettings() {
-            s_CopyBuffer.Value.Write();
+            s_CopyBuffer.Value.Write(LightingImportFlags.All);
             Debug.LogFormat("[LightUtility] Pasted lighting settings into current scene '{0}'", EditorSceneManager.GetActiveScene().path);
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
@@ -111,5 +116,17 @@ namespace FieldDay.Rendering {
 #endif // UNITY_EDITOR
 
         #endregion // Scene
+    }
+
+    [Flags]
+    public enum LightingImportFlags : uint
+    {
+        Fog = 0x01,
+        Ambient = 0x02,
+        LightMaps = 0x04,
+        LightProbes = 0x08,
+        Skybox = 0x10,
+
+        All = Fog | Ambient | LightMaps | LightProbes | Skybox
     }
 }

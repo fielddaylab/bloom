@@ -1,4 +1,5 @@
 using System;
+using BeauRoutine;
 using UnityEngine.Scripting;
 
 namespace UnityEngine.UI {
@@ -141,5 +142,93 @@ namespace UnityEngine.UI {
         }
 
         #endregion // ILayout
+
+        #region Tweens
+
+        private class Offset0Tween : ITweenData {
+            private LayoutOffset m_Offset;
+            private Vector2 m_Target;
+            private Vector2 m_Start;
+            private Vector2 m_Delta;
+
+            public Offset0Tween(LayoutOffset offset, Vector2 target) {
+                m_Offset = offset;
+                m_Target = target;
+            }
+
+            public void ApplyTween(float inPercent) {
+                m_Offset.Offset0 = m_Start + m_Delta * inPercent;
+            }
+
+            public void OnTweenEnd() {
+            }
+
+            public void OnTweenStart() {
+                m_Start = m_Offset.m_Offset0;
+                m_Delta = m_Target - m_Start;
+            }
+        }
+
+        private class Offset1Tween : ITweenData {
+            private LayoutOffset m_Offset;
+            private Vector2 m_Target;
+            private Vector2 m_Start;
+            private Vector2 m_Delta;
+
+            public Offset1Tween(LayoutOffset offset, Vector2 target) {
+                m_Offset = offset;
+                m_Target = target;
+            }
+
+            public void ApplyTween(float inPercent) {
+                m_Offset.Offset1 = m_Start + m_Delta * inPercent;
+            }
+
+            public void OnTweenEnd() {
+            }
+
+            public void OnTweenStart() {
+                m_Start = m_Offset.m_Offset1;
+                m_Delta = m_Target - m_Start;
+            }
+        }
+
+        private class Offset2Tween : ITweenData {
+            private LayoutOffset m_Offset;
+            private Vector2 m_Target;
+            private Vector2 m_Start;
+            private Vector2 m_Delta;
+
+            public Offset2Tween(LayoutOffset offset, Vector2 target) {
+                m_Offset = offset;
+                m_Target = target;
+            }
+
+            public void ApplyTween(float inPercent) {
+                m_Offset.Offset2 = m_Start + m_Delta * inPercent;
+            }
+
+            public void OnTweenEnd() {
+            }
+
+            public void OnTweenStart() {
+                m_Start = m_Offset.m_Offset2;
+                m_Delta = m_Target - m_Start;
+            }
+        }
+
+        public Tween Offset0To(Vector2 offset, float duration) {
+            return Tween.Create(new Offset0Tween(this, offset), duration);
+        }
+
+        public Tween Offset1To(Vector2 offset, float duration) {
+            return Tween.Create(new Offset1Tween(this, offset), duration);
+        }
+
+        public Tween Offset2To(Vector2 offset, float duration) {
+            return Tween.Create(new Offset2Tween(this, offset), duration);
+        }
+
+        #endregion // Tweens
     }
 }

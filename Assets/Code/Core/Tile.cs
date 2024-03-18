@@ -378,7 +378,7 @@ namespace Zavala
     {
         public delegate bool TileDataMaskPredicate<TTile>(in TTile centerTile, in TTile adjacentTile) where TTile : struct;
         public delegate bool TileDataMapDelegate<TTile, TMap>(in TTile centerTile, in TTile adjacentTile, out TMap adjMap);
-        public delegate bool TileDataMapWithIdxDelegate<TTile, TMap>(in TTile centerTile, in TTile adjacentTile, in int adjIdx, out TMap adjMap); // use if you want to preserve/access adjIdx in data map
+        public delegate bool TileDataMapWithIdxDelegate<TTile, TMap>(in int intCenterIdx, in TTile centerTile, in TTile adjacentTile, in int adjIdx, out TMap adjMap); // use if you want to preserve/access adjIdx in data map
 
         public const ushort InvalidIndex16 = ushort.MaxValue;
         public const uint InvalidIndex32 = uint.MaxValue;
@@ -468,7 +468,7 @@ namespace Zavala
                 }
 
                 int adjIndex = gridSize.FastPosToIndex(adjPos);
-                if (setMap(center, tileBuffer[adjIndex], adjIndex, out TMap mapped)) {
+                if (setMap(index, center, tileBuffer[adjIndex], adjIndex, out TMap mapped)) {
                     mapSet.Set(dir, mapped);
                 }
             }

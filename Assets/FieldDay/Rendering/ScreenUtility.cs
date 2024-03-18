@@ -2,6 +2,7 @@
 #define USE_JSLIB
 #endif // UNITY_WEBGL && !UNITY_EDITOR
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -31,8 +32,17 @@ namespace FieldDay.Rendering {
         /// <summary>
         /// Returns the fullscreen mode.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static public bool GetFullscreen() {
             return Screen.fullScreen;
+        }
+
+        /// <summary>
+        /// Returns the current resolution.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public Resolution GetResolution() {
+            return Screen.currentResolution;
         }
     }
 }

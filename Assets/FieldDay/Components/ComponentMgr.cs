@@ -75,15 +75,16 @@ namespace FieldDay.Components
         private void RegisterImpl(IComponentData component)
         {
             Type componentType = component.GetType();
-            int index = ComponentIndex.Get(componentType);
+            var indices = ComponentIndex.GetAll(componentType);
+            foreach (var index in indices) {
 
-            List<IComponentData> components = m_ComponentLists[index];
-            if (components == null)
-            {
-                m_ComponentLists[index] = components = new List<IComponentData>(32);
+                List<IComponentData> components = m_ComponentLists[index];
+                if (components == null) {
+                    m_ComponentLists[index] = components = new List<IComponentData>(32);
+                }
+                Assert.False(components.Contains(component), "Component of type '{0}' was registered more than once", componentType.Name);
+                components.Add(component);
             }
-            Assert.False(components.Contains(component), "Component of type '{0}' was registered more than once", componentType.Name);
-            components.Add(component);
 
             RegistrationCallbacks.InvokeRegister(component);
             m_SystemsMgr.AddComponent(component);
@@ -92,11 +93,16 @@ namespace FieldDay.Components
         private void DeregisterImpl(IComponentData component)
         {
             Type componentType = component.GetType();
-            int index = ComponentIndex.Get(componentType);
+            var indices = ComponentIndex.GetAll(componentType);
+            bool deregistered = false;
+            foreach (var index in indices) {
+                List<IComponentData> components = m_ComponentLists[index];
+                if (components != null && components.FastRemove(component)) {
+                    deregistered = true;
+                }
+            }
 
-            List<IComponentData> components = m_ComponentLists[index];
-            if (components != null && components.FastRemove(component))
-            {
+            if (deregistered) {
                 m_SystemsMgr.RemoveComponent(component);
                 RegistrationCallbacks.InvokeDeregister(component);
             }
@@ -188,22 +194,6 @@ namespace FieldDay.Components
         /// <summary>
         /// Enumerates all the components of the given type.
         /// </summary>
-        public ComponentIterator<IComponentData> ComponentsOfType(Type componentType, out int count)
-        {
-            int index = ComponentIndex.Get(componentType);
-            List<IComponentData> components = m_ComponentLists[index];
-            if (components != null)
-            {
-                count = components.Count;
-                return new ComponentIterator<IComponentData>(components);
-            }
-            count = 0;
-            return default;
-        }
-
-        /// <summary>
-        /// Enumerates all the components of the given type.
-        /// </summary>
         public ComponentIterator<T> ComponentsOfType<T>() where T : class, IComponentData
         {
             int index = ComponentIndex.Get<T>();
@@ -212,22 +202,6 @@ namespace FieldDay.Components
             {
                 return new ComponentIterator<T>(components);
             }
-            return default;
-        }
-
-        /// <summary>
-        /// Enumerates all the components of the given type.
-        /// </summary>
-        public ComponentIterator<T> ComponentsOfType<T>(out int count) where T : class, IComponentData
-        {
-            int index = ComponentIndex.Get<T>();
-            List<IComponentData> components = m_ComponentLists[index];
-            if (components != null)
-            {
-                count = components.Count;
-                return new ComponentIterator<T>(components);
-            }
-            count = 0;
             return default;
         }
 
@@ -269,13 +243,15 @@ namespace FieldDay.Components
     /// <summary>
     /// Component iterator.
     /// </summary>
-    public struct ComponentIterator<T> : IEnumerator<T>, IDisposable where T : class, IComponentData
+    public struct ComponentIterator<T> : IEnumerator<T>, IEnumerable<T>, IDisposable where T : class, IComponentData
     {
         private List<IComponentData>.Enumerator m_Source;
+        private int m_Count;
 
         internal ComponentIterator(List<IComponentData> source)
         {
             m_Source = source.GetEnumerator();
+            m_Count = source.Count;
         }
 
         public T Current
@@ -283,11 +259,17 @@ namespace FieldDay.Components
             get { return (T)m_Source.Current; }
         }
 
-        object IEnumerator.Current { get { return Current; } }
+        /// <summary>
+        /// Total number of components in this list.
+        /// </summary>
+        public int Count {
+            get { return m_Count; }
+        }
 
         public void Dispose()
         {
             m_Source = default;
+            m_Count = 0;
         }
 
         public bool MoveNext()
@@ -295,9 +277,26 @@ namespace FieldDay.Components
             return m_Source.MoveNext();
         }
 
-        void IEnumerator.Reset()
-        {
+        public ComponentIterator<T> GetEnumerator() {
+            return this;
+        }
+
+        #region Interface Implementations
+
+        object IEnumerator.Current { get { return Current; } }
+
+        void IEnumerator.Reset() {
             ((IEnumerator)m_Source).Reset();
         }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return this;
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() {
+            return this;
+        }
+
+        #endregion // Interface Implementations
     }
 }

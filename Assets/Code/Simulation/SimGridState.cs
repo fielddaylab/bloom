@@ -176,6 +176,8 @@ namespace Zavala.Sim {
 
                 fromRegion.RegionIndex = regionIndex;
                 currentTile = fromRegion;
+
+                grid.Terrain.NonVoidTiles.Set(mapIndex);
             }
 
             ref RegionInfo regionInfo = ref grid.Regions[regionIndex];

@@ -66,7 +66,7 @@ namespace FieldDay {
         /// <summary>
         /// Decrements the counter.
         /// </summary>
-        public void Decrement(int count = 1) {
+        public void Decrement(int count) {
             unsafe {
                 if (Value != null) {
                     Assert.True(*Value > count - 1);
@@ -78,7 +78,18 @@ namespace FieldDay {
         /// <summary>
         /// Increments the counter.
         /// </summary>
-        public void Increment(int count = 1) {
+        public void Increment() {
+            unsafe {
+                if (Value != null) {
+                    (*Value)++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Increments the counter.
+        /// </summary>
+        public void Increment(int count) {
             unsafe {
                 if (Value != null) {
                     *Value += count;

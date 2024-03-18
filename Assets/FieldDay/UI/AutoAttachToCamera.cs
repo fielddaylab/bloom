@@ -10,6 +10,7 @@ namespace FieldDay.UI {
     /// Automatically attaches the given canvas to the best ccamera that can render it.
     /// </summary>
     [RequireComponent(typeof(Canvas)), ExecuteAlways]
+    [AddComponentMenu("Field Day/Canvas/Auto Attach To Camera")]
     public class AutoAttachToCamera : MonoBehaviour {
         private void OnEnable() {
 #if UNITY_EDITOR

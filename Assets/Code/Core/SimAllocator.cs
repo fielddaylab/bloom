@@ -24,6 +24,10 @@ namespace Zavala {
             return Unsafe.AllocArray<T>(s_Allocator, count);
         }
 
+        static public unsafe UnsafeSpan<T> AllocSpan<T>(int count) where T : unmanaged {
+            return Unsafe.AllocSpan<T>(s_Allocator, count);
+        }
+
         static public unsafe Unsafe.ArenaHandle AllocArena(int size) {
             return Unsafe.CreateArena(s_Allocator, size);
         }

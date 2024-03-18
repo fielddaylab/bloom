@@ -6,6 +6,10 @@
 using UnityEditor;
 #endif // UNITY_EDITOR
 
+#if USING_VR && !UNITY_EDITOR
+#define SKIP_ONGUI
+#endif // USING_VR && !UNITY_EDITOR
+
 using System;
 using System.Collections;
 using System.Reflection;
@@ -29,10 +33,13 @@ using System.Globalization;
 using BeauRoutine;
 using FieldDay.UI;
 using FieldDay.Assets;
+using FieldDay.HID;
+using FieldDay.Rendering;
 
 #if USE_SRP
 using UnityEngine.Rendering;
-using FieldDay.HID;
+using FieldDay.Animation;
+using FieldDay.Memory;
 #endif // USE_SRP
 
 namespace FieldDay {
@@ -57,6 +64,12 @@ namespace FieldDay {
 
         [SerializeField]
         private AudioMgr.Config m_AudioConfig = new AudioMgr.Config();
+
+        [SerializeField]
+        private MemoryPoolConfiguration m_MemoryConfig = new MemoryPoolConfiguration() {
+            MaterialCapacity = 16,
+            MeshCapacity = 16
+        };
 
         #endregion // Inspector
 
@@ -188,6 +201,10 @@ namespace FieldDay {
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
             BuildInfo.Load();
 
+            Log.Msg("[GameLoop] Creating memory manager...");
+            Game.Memory = new MemoryMgr();
+            Game.Memory.Initialize(m_MemoryConfig);
+
             Log.Msg("[GameLoop] Creating systems manager...");
             Game.Systems = new SystemsMgr();
 
@@ -206,6 +223,9 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating scene manager...");
             Game.Scenes = new SceneMgr();
 
+            Log.Msg("[GameLoop] Creating rendering manager...");
+            Game.Rendering = new RenderMgr();
+
             Log.Msg("[GameLoop] Creating input manager...");
             Game.Input = new InputMgr();
 
@@ -215,9 +235,21 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Creating asset manager...");
             Game.Assets = new AssetMgr();
 
+            Log.Msg("[GameLoop] Creating animation manager...");
+            Game.Animation = new AnimationMgr();
+
             CursorUtility.PlatformInit();
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (m_TargetFramerate == 60) {
+                Application.targetFrameRate = -1;
+            } else {
+                Application.targetFrameRate = m_TargetFramerate;
+            }
+            QualitySettings.vSyncCount = 0;
+#else
             Application.targetFrameRate = m_TargetFramerate;
+#endif // UNITY_WEBGL
 
             Log.Msg("[GameLoop] Loading config vars...");
             ConfigVar.ReadAllFromResources();
@@ -244,6 +276,7 @@ namespace FieldDay {
             Game.Components.Unlock();
             Game.Input.Initialize();
             Game.Gui.Initialize();
+            Game.Animation.Initialize();
 			Game.Scenes.Prepare();
             Game.Systems.ProcessInitQueue();
             FlushQueue(s_OnBootQueue);
@@ -299,17 +332,15 @@ namespace FieldDay {
             SetCurrentPhase(GameLoopPhase.Shutdown);
             OnShutdown.Invoke();
 
-            if (Game.Events != null) {
-                Log.Msg("[GameLoop] Shutting down events...");
-                Game.Events.Clear();
-                Game.SetEventDispatcher(null);
-            }
-
             Application.onBeforeRender -= OnBeforeApplicationRender;
 
             CameraHelper.RemoveOnPreCull(this);
             CameraHelper.RemoveOnPreRender(this);
             CameraHelper.RemoveOnPostRender(this);
+
+            Log.Msg("[GameLoop] Shutting down animation manager...");
+            Game.Animation.Shutdown();
+            Game.Animation = null;
 
             Log.Msg("[GameLoop] Shutting down asset manager...");
             Game.Assets.Shutdown();
@@ -322,6 +353,10 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Shutting down input manager...");
             Game.Input.Shutdown();
             Game.Input = null;
+
+            Log.Msg("[GameLoop] Shutting down rendering manager...");
+            Game.Rendering.Shutdown();
+            Game.Rendering = null;
 
             Log.Msg("[GameLoop] Shutting down scene manager...");
             Game.Scenes.Shutdown();
@@ -346,6 +381,16 @@ namespace FieldDay {
             Log.Msg("[GameLoop] Shutting down component manager...");
             Game.Components.Shutdown();
             Game.Components = null;
+
+            if (Game.Events != null) {
+                Log.Msg("[GameLoop] Shutting down events...");
+                Game.Events.Clear();
+                Game.SetEventDispatcher(null);
+            }
+
+            Log.Msg("[GameLoop] Shutting down memory manager...");
+            Game.Memory.Shutdown();
+            Game.Memory = null;
 
             // clearing all callbacks
             OnCanvasPreRender.Clear();
@@ -410,6 +455,7 @@ namespace FieldDay {
                 Game.Components.Lock();
                 Game.Systems.Update(Frame.DeltaTime, s_UpdateMask);
                 Game.Processes.Update(Frame.DeltaTime, s_UpdateMask);
+                Game.Animation.UpdateLite(Frame.DeltaTime);
                 Game.Components.Unlock();
                 OnUpdate.Invoke(Frame.DeltaTime);
             }
@@ -420,6 +466,7 @@ namespace FieldDay {
                 Game.Components.Lock();
                 Game.Systems.UnscaledUpdate(Frame.UnscaledDeltaTime, s_UpdateMask);
                 Game.Processes.UnscaledUpdate(Frame.UnscaledDeltaTime, s_UpdateMask);
+                Game.Animation.UnscaledUpdateLite(Frame.UnscaledDeltaTime);
                 Game.Components.Unlock();
                 OnUnscaledUpdate.Invoke(Frame.UnscaledDeltaTime);
             }
@@ -457,6 +504,7 @@ namespace FieldDay {
 
             FlushQueue(s_AfterLateUpdateQueue);
             Game.Scenes.Update();
+            Game.Rendering.PollScreenSettings();
 
             m_ReadyForRender = true;
         }
@@ -540,7 +588,7 @@ namespace FieldDay {
             OnPauseStateChanged.Invoke(pause);
         }
 
-        #endregion // Unity Events
+#endregion // Unity Events
 
         #region Handlers
 

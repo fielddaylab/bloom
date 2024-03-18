@@ -8,6 +8,9 @@ using FieldDay.Scenes;
 using FieldDay.UI;
 using FieldDay.Assets;
 using FieldDay.HID;
+using FieldDay.Rendering;
+using FieldDay.Animation;
+using FieldDay.Memory;
 
 [assembly: InternalsVisibleTo("FieldDay.Core.Editor")]
 
@@ -47,6 +50,11 @@ namespace FieldDay {
         static public SceneMgr Scenes { get; internal set; }
 
         /// <summary>
+        /// Rendering manager. Handles render state callbacks.
+        /// </summary>
+        static public RenderMgr Rendering { get; internal set; }
+
+        /// <summary>
         /// Input manager. Maintains input state.
         /// </summary>
         static public InputMgr Input { get; internal set; }
@@ -60,6 +68,16 @@ namespace FieldDay {
         /// Asset lookup manager. Maintains asset lookup tables.
         /// </summary>
         static public AssetMgr Assets { get; internal set; }
+
+        /// <summary>
+        /// Animation manager. Maintains lite and procedural animations.
+        /// </summary>
+        static public AnimationMgr Animation { get; internal set; }
+
+        /// <summary>
+        /// Memory manager. Maintains memory pools.
+        /// </summary>
+        static public MemoryMgr Memory { get; internal set; }
 
         /// <summary>
         /// Event dispatcher. Maintains event dispatch.

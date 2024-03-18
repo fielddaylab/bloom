@@ -73,7 +73,7 @@ namespace FieldDay.Editor {
 
             List<IEditorOnlyData> toStrip = new List<IEditorOnlyData>(256);
             ScriptableObject[] assets = AssetDBUtils.FindAssets<ScriptableObject>();
-            foreach(var asset in assets) {
+            foreach (var asset in assets) {
                 IEditorOnlyData data;
                 if ((data = asset as IEditorOnlyData) != null) {
                     toStrip.Add(data);
@@ -91,7 +91,7 @@ namespace FieldDay.Editor {
                             EditorUtility.SetDirty(src);
                         }
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     throw new BuildFailedException(e);
                 }
             }

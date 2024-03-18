@@ -160,8 +160,6 @@ namespace Zavala {
         /// <summary>
         /// Returns an array of HexVectors of tiles adjacent to the given index.
         /// </summary>
-        /// <param name="idx"></param>
-        /// <returns></returns>
         public HexVector[] GetNeighbors(int idx) {
             if (IndexToPos(idx, out int x, out int y)) {
                 return GetNeighbors(new HexVector(x, y));

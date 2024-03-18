@@ -2,6 +2,10 @@
 #define DEVELOPMENT
 #endif // (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
 
+#if USING_VR && !UNITY_EDITOR
+#define SKIP_ONGUI
+#endif // USING_VR && !UNITY_EDITOR
+
 using System;
 using BeauUtil;
 using UnityEngine;
@@ -185,10 +189,18 @@ namespace FieldDay.Debugging {
             }
         }
 
+#if !SKIP_ONGUI
+
         private void OnGUI() {
             if (Event.current.type != EventType.Repaint) {
                 return;
             }
+
+#if UNITY_EDITOR
+            if (FrameDebugger.enabled) {
+                return;
+            }
+#endif // UNITY_EDITOR
 
             GUI.matrix = Matrix4x4.identity;
             float deltaTime = Math.Min(Time.unscaledDeltaTime, 0.1f);
@@ -198,13 +210,21 @@ namespace FieldDay.Debugging {
             Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Camera.main;
             if (mainCam) {
                 RenderText(deltaTime, mainCam, s_CategoryMask);
+            } else {
+                RenderText(deltaTime); 
             }
         }
 
+#endif // !SKIP_ONGUI
+
 #if UNITY_EDITOR
 
-        private void OnSceneGUI(SceneView view) {
+            private void OnSceneGUI(SceneView view) {
             if (!enabled) {
+                return;
+            }
+
+            if (FrameDebugger.enabled) {
                 return;
             }
 
@@ -412,9 +432,22 @@ namespace FieldDay.Debugging {
             }
         }
 
+        private void RenderText(float deltaTime) {
+            for (int i = s_ActiveTexts.Count - 1; i >= 0; i--) {
+                ref TextRenderState state = ref s_ActiveTexts[i];
+
+                if (deltaTime > 0) {
+                    state.State.Duration -= deltaTime;
+                    if (state.State.Duration <= 0) {
+                        s_ActiveTexts.FastRemoveAt(i);
+                    }
+                }
+            }
+        }
+
         #endregion // Rendering
 
-        #endif // DEVELOPMENT
+#endif // DEVELOPMENT
 
         #region Static API
 
@@ -423,7 +456,7 @@ namespace FieldDay.Debugging {
         /// </summary>
         [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         static public void AddWorldText(Vector3 point, string text, Color color, float duration = 0, TextAnchor alignment = TextAnchor.MiddleCenter, DebugTextStyle style = DebugTextStyle.Default, int category = -1) {
-#if DEVELOPMENT
+#if DEVELOPMENT && !SKIP_ONGUI
             TextRenderState renderState = new TextRenderState();
             renderState.Params.Color = color;
             renderState.Params.DepthTest = false;
@@ -435,7 +468,7 @@ namespace FieldDay.Debugging {
             renderState.Alignment = alignment;
             renderState.Style = style;
             s_ActiveTexts.PushBack(renderState);
-#endif // DEVELOPMENT
+#endif // DEVELOPMENT && !SKIP_ONGUI
         }
 
         /// <summary>
@@ -443,7 +476,7 @@ namespace FieldDay.Debugging {
         /// </summary>
         [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         static public void AddWorldText(Vector3 point, Vector2 offset, string text, Color color, float duration = 0, TextAnchor alignment = TextAnchor.MiddleCenter, DebugTextStyle style = DebugTextStyle.Default, int category = -1) {
-#if DEVELOPMENT
+#if DEVELOPMENT && !SKIP_ONGUI
             TextRenderState renderState = new TextRenderState();
             renderState.Params.Color = color;
             renderState.Params.DepthTest = false;
@@ -456,7 +489,7 @@ namespace FieldDay.Debugging {
             renderState.Alignment = alignment;
             renderState.Style = style;
             s_ActiveTexts.PushBack(renderState);
-#endif // DEVELOPMENT
+#endif // DEVELOPMENT && !SKIP_ONGUI
         }
 
         /// <summary>
@@ -464,7 +497,7 @@ namespace FieldDay.Debugging {
         /// </summary>
         [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         static public void AddViewportText(Vector2 viewport, string text, Color color, float duration = 0, TextAnchor alignment = TextAnchor.MiddleCenter, DebugTextStyle style = DebugTextStyle.Default, int category = -1) {
-#if DEVELOPMENT
+#if DEVELOPMENT && !SKIP_ONGUI
             TextRenderState renderState = new TextRenderState();
             renderState.Params.Color = color;
             renderState.Params.DepthTest = false;
@@ -476,7 +509,7 @@ namespace FieldDay.Debugging {
             renderState.Alignment = alignment;
             renderState.Style = style;
             s_ActiveTexts.PushBack(renderState);
-#endif // DEVELOPMENT
+#endif // DEVELOPMENT && !SKIP_ONGUI
         }
 
         /// <summary>
@@ -484,7 +517,7 @@ namespace FieldDay.Debugging {
         /// </summary>
         [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         static public void AddViewportText(Vector2 viewport, Vector2 offset, string text, Color color, float duration = 0, TextAnchor alignment = TextAnchor.MiddleCenter, DebugTextStyle style = DebugTextStyle.Default, int category = -1) {
-#if DEVELOPMENT
+#if DEVELOPMENT && !SKIP_ONGUI
             TextRenderState renderState = new TextRenderState();
             renderState.Params.Color = color;
             renderState.Params.DepthTest = false;
@@ -497,7 +530,7 @@ namespace FieldDay.Debugging {
             renderState.Alignment = alignment;
             renderState.Style = style;
             s_ActiveTexts.PushBack(renderState);
-#endif // DEVELOPMENT
+#endif // DEVELOPMENT && !SKIP_ONGUI
         }
 
         /// <summary>

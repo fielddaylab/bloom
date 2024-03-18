@@ -30,7 +30,8 @@ namespace Zavala.Building {
         }
 
         unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
-            var iter = Game.Components.ComponentsOfType<PersistBuilding>(out int persistCount);
+            var iter = Game.Components.ComponentsOfType<PersistBuilding>();
+            int persistCount = iter.Count;
             writer.Write(persistCount);
 
             while(iter.MoveNext()) {
@@ -92,7 +93,8 @@ namespace Zavala.Building {
         unsafe void ISaveStatePostLoad.PostLoad(SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             var data = scratch.GetBlock<PersistenceRecord>("BuildingPersistence");
 
-            var iter = Game.Components.ComponentsOfType<PersistBuilding>(out int persistCount);
+            var iter = Game.Components.ComponentsOfType<PersistBuilding>();
+            int persistCount = iter.Count;
             Assert.True(persistCount == data.Length);
 
             while (iter.MoveNext()) {

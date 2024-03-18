@@ -1,6 +1,7 @@
 using BeauRoutine.Extensions;
 using FieldDay.SharedState;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace FieldDay.UI {
     /// <summary>
@@ -8,6 +9,7 @@ namespace FieldDay.UI {
     /// </summary>
     [DefaultExecutionOrder(SharedPanel.DefaultExecutionOrder)]
     public class SharedRoutinePanel : BasePanel, ISharedGuiPanel {
+        [SerializeField] protected LayoutOffset m_LayoutOffset;
 
         protected override void Awake() {
             base.Awake();

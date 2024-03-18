@@ -294,7 +294,7 @@ namespace FieldDay.UI {
         /// <summary>
         /// Looks up a registered RectTransform by name.
         /// </summary>
-        public RectTransform LookupNamed(StringHash32 name) {
+        public RectTransform FindNamed(StringHash32 name) {
             m_NamedElementMap.TryGetValue(name, out RectTransform rect);
             return rect;
         }

@@ -27,6 +27,11 @@ namespace Zavala.Data {
             public object Context;
         }
 
+        private struct SaveRecord {
+            public long Timestamp;
+            public UnsafeSpan<byte> Data;
+        }
+
         public const int MainBufferSize = 80 * Unsafe.KiB; // 80k buffer
         public const int ChunkBufferSize = 64 * Unsafe.KiB; // 64k buffer
         public const int ScratchBufferSize = 32 * Unsafe.KiB; // 32k buffer
@@ -52,6 +57,8 @@ namespace Zavala.Data {
 
         private readonly Dictionary<StringHash32, ChunkReader> m_ChunkReaders;
         private readonly RingBuffer<ISaveStatePostLoad> m_PostLoadHandlers = new RingBuffer<ISaveStatePostLoad>(32, RingBufferMode.Expand);
+
+        private readonly RingBuffer<SaveRecord> m_SaveStack = new RingBuffer<SaveRecord>(4, RingBufferMode.Overwrite);
 
         public SaveMgr() {
             m_ChunkReaders = MapUtils.Create<StringHash32, ChunkReader>(32);
@@ -135,6 +142,8 @@ namespace Zavala.Data {
             consts.DataRegion = ZavalaGame.SimGrid.SimulationRegion;
 
             Write(header, consts);
+
+            // TODO: copy to save stack?
         }
 
         public unsafe void Write(SaveStateHeader header, SaveStateChunkConsts consts) {
@@ -253,6 +262,7 @@ namespace Zavala.Data {
         public void Clear() {
             m_CurrentHeader = default;
             m_UsedSize = 0;
+            m_SaveStack.Clear();
             m_CurrentConsts = default;
         }
 

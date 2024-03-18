@@ -1,16 +1,14 @@
-﻿using BeauUtil;
-using BeauUtil.Debugger;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 using TMPro;
 using UnityEngine;
 
-namespace FieldDay.Debugging {
+namespace FieldDayDebugging {
     /// <summary>
     /// Simple framerate counter.
     /// </summary>
-    [DefaultExecutionOrder(-32000)]
+    [DefaultExecutionOrder(32000)]
     [RequireComponent(typeof(RectTransform))]
     public class FramerateDisplay : MonoBehaviour {
         #region Inspector
@@ -26,6 +24,11 @@ namespace FieldDay.Debugging {
         [SerializeField] private int m_TargetFramerate = 60;
         [SerializeField] private int m_AveragingFrames = 8;
 
+        [Header("Framerate Drop Warning")]
+        [SerializeField] private GameObject m_FramerateDropWarning;
+        [SerializeField, Range(0, 3)] private float m_FramerateDropTolerance = 0;
+        [SerializeField] private float m_FramerateDropWarningDuration = 3;
+
         #endregion // Inspector
 
         private StringBuilder m_TextBuilder = new StringBuilder(8);
@@ -33,6 +36,10 @@ namespace FieldDay.Debugging {
         [NonSerialized] private Color m_DefaultTextColor;
         [NonSerialized] private int m_FrameCount;
         [NonSerialized] private long m_LastTimestamp;
+        [NonSerialized] private int m_FrameCooldown;
+
+        [NonSerialized] private long m_WarningThreshold;
+        [NonSerialized] private float m_WarningTimeLeft = 0;
 
         static private FramerateDisplay s_Instance;
         static private bool s_Initialized;
@@ -41,13 +48,17 @@ namespace FieldDay.Debugging {
 
         private void Awake() {
             if (s_Instance != null && s_Instance != this) {
-                Log.Warn("[FramerateDisplay] Multiple instances of FramerateDisplay detected!");
+                UnityEngine.Debug.LogWarning("[FramerateDisplay] Multiple instances of FramerateDisplay detected!");
             } else {
                 s_Instance = this;
             }
 
             if (transform.parent == null) {
                 DontDestroyOnLoad(gameObject);
+            }
+
+            if (m_FramerateDropWarning != null) {
+                m_FramerateDropWarning.SetActive(false);
             }
 
             m_DefaultTextColor = m_TextDisplay.color;
@@ -61,16 +72,24 @@ namespace FieldDay.Debugging {
             if (!Application.isEditor) {
                 GetComponent<RectTransform>().anchoredPosition += m_BuildOffset;
             }
+
+            m_WarningThreshold = (long) (Stopwatch.Frequency / (m_TargetFramerate - m_FramerateDropTolerance));
         }
 
         private void OnEnable() {
             m_TextDisplay.SetText("-.-");
             m_TextDisplay.color = m_DefaultTextColor;
+            m_FrameCooldown = 2;
         }
 
         private void OnDisable() {
             m_FrameAccumulation = 0;
             m_FrameCount = 0;
+            m_LastTimestamp = 0;
+            m_WarningTimeLeft = 0;
+            if (m_FramerateDropWarning != null) {
+                m_FramerateDropWarning.SetActive(false);
+            }
         }
 
         private void OnDestroy() {
@@ -79,17 +98,32 @@ namespace FieldDay.Debugging {
             }
         }
 
+        private void OnApplicationPause(bool pause) {
+            if (pause) {
+                m_FrameAccumulation = 0;
+                m_FrameCount = 0;
+                m_LastTimestamp = 0;
+            }
+        }
+
         private void LateUpdate() {
             long timestamp = Stopwatch.GetTimestamp();
+
+            if (m_FrameCooldown > 0) {
+                m_FrameCooldown--;
+                return;
+            }
+
             if (m_LastTimestamp != 0) {
-                m_FrameAccumulation += timestamp - m_LastTimestamp;
+                long amt = timestamp - m_LastTimestamp;
+                m_FrameAccumulation += amt;
                 m_FrameCount++;
                 if (m_FrameCount >= m_AveragingFrames) {
                     double framerate = m_FrameCount * (double)Stopwatch.Frequency / m_FrameAccumulation;
                     m_FrameAccumulation = 0;
                     m_FrameCount = 0;
 
-                    m_TextBuilder.Clear().AppendNoAlloc(framerate, 1);
+                    m_TextBuilder.Clear().Append(framerate);
                     m_TextDisplay.SetText(m_TextBuilder);
 
                     double framerateFraction = framerate / m_TargetFramerate;
@@ -99,6 +133,18 @@ namespace FieldDay.Debugging {
                         m_TextDisplay.color = m_WarningTextColor;
                     } else {
                         m_TextDisplay.color = m_DefaultTextColor;
+                    }
+                }
+
+                if (m_FramerateDropWarning != null) {
+                    if (amt > m_WarningThreshold) {
+                        m_FramerateDropWarning.SetActive(true);
+                        m_WarningTimeLeft = m_FramerateDropWarningDuration;
+                    } else if (m_WarningTimeLeft > 0) {
+                        m_WarningTimeLeft -= Time.unscaledDeltaTime;
+                        if (m_WarningTimeLeft <= 0) {
+                            m_FramerateDropWarning.gameObject.SetActive(false);
+                        }
                     }
                 }
             }
@@ -111,7 +157,7 @@ namespace FieldDay.Debugging {
 
         static private FramerateDisplay GetInstance() {
             if (!s_Instance) {
-                s_Instance = FindObjectOfType<FramerateDisplay>();
+                s_Instance = FindAnyObjectByType<FramerateDisplay>();
             }
             return s_Instance;
         }
@@ -135,6 +181,18 @@ namespace FieldDay.Debugging {
             FramerateDisplay inst = GetInstance();
             if (inst) {
                 inst.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Returns if the framerate counter is being displayed.
+        /// </summary>
+        static public bool IsShowing() {
+            FramerateDisplay inst = GetInstance();
+            if (inst) {
+                return inst.gameObject.activeSelf;
+            } else {
+                return false;
             }
         }
 

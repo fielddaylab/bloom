@@ -11,6 +11,7 @@ using BeauUtil.Debugger;
 using BeauRoutine;
 using FieldDay.Rendering;
 using FieldDay.Assets;
+using System.Runtime.CompilerServices;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
@@ -126,6 +127,16 @@ namespace FieldDay.Scenes {
             public Matrix4x4? Transform;
         }
 
+        private struct UninitializedSceneCallback {
+            public Scene Scene;
+            public Action Action;
+
+            public UninitializedSceneCallback(Scene scene, Action action) {
+                Scene = scene;
+                Action = action;
+            }
+        }
+
         #endregion // Types
 
         #region State
@@ -147,6 +158,7 @@ namespace FieldDay.Scenes {
 
         private readonly WorkSlicer.StepOperation CachedUpdateStep;
         private float m_UpdateStepTimeSlice = 2;
+        private LightingImportFlags m_LightImportFlags = LightingImportFlags.All;
 
         // operation slots
         private OperationSlot<LoadSceneArgs> m_CurrentLoadOperation;
@@ -161,6 +173,10 @@ namespace FieldDay.Scenes {
         // handlers
         private SceneTransitionHandler m_MainTransitionUnload;
         private SceneTransitionHandler m_MainTransitionLoad;
+
+        // temp queues
+        private RingBuffer<UninitializedSceneCallback> m_TempOnLoadQueue = new RingBuffer<UninitializedSceneCallback>(4, RingBufferMode.Expand);
+        private RingBuffer<UninitializedSceneCallback> m_TempOnUnloadQueue = new RingBuffer<UninitializedSceneCallback>(4, RingBufferMode.Expand);
 
         #endregion // State
 
@@ -195,13 +211,21 @@ namespace FieldDay.Scenes {
             }
         }
 
+        /// <summary>
+        /// Flags to apply for lighting import.
+        /// </summary>
+        public LightingImportFlags LightingImport {
+            get { return m_LightImportFlags; }
+            set { m_LightImportFlags = value; }
+        }
+
         #region Checks
 
         /// <summary>
         /// Returns if the main scene is currently loading.
         /// </summary>
         public bool IsMainLoading() {
-            return m_MainSceneLoadProcess;
+            return m_MainSceneLoadProcess || IsLoadQueued(SceneType.Main);
         }
 
         /// <summary>
@@ -251,6 +275,19 @@ namespace FieldDay.Scenes {
             return data && data.IsVisited(SceneDataExt.VisitFlags.Loaded);
         }
 
+        /// <summary>
+        /// Returns if a load of the given type is queued.
+        /// </summary>
+        public bool IsLoadQueued(SceneType sceneType) {
+            foreach(var process in m_LoadProcessQueue) {
+                if (process.Type == sceneType) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         #endregion // Checks
 
         #region Main Load
@@ -260,9 +297,19 @@ namespace FieldDay.Scenes {
             QueueMainLoadInternal(scenePath, true, false);
         }
 
+        public void LoadMainScene(string scenePath, bool forceReload) {
+            Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
+            QueueMainLoadInternal(scenePath, true, forceReload);
+        }
+
         public void LoadMainScene(SceneReference scene) {
             Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
             QueueMainLoadInternal(scene.Path, true, false);
+        }
+
+        public void LoadMainScene(SceneReference scene, bool forceReload) {
+            Assert.False(m_MainSceneLoadProcess.Exists(), "Cannot load main during main scene loading");
+            QueueMainLoadInternal(scene.Path, true, forceReload);
         }
 
         public void ReloadMainScene() {
@@ -273,6 +320,10 @@ namespace FieldDay.Scenes {
         #endregion // Main Load
 
         #region Aux Load
+
+        public void LoadAuxScene(string scenePath, StringHash32 tag, Matrix4x4? transformBy = null, SceneImportFlags flags = 0) {
+            QueueSceneLoadInternal(scenePath, tag, SceneType.Aux, flags, transformBy, SceneLoadPriority.Default);
+        }
 
         public void LoadAuxScene(string scenePath, StringHash32 tag, Matrix4x4? transformBy = null) {
             QueueSceneLoadInternal(scenePath, tag, SceneType.Aux, 0, transformBy, SceneLoadPriority.Default);
@@ -422,8 +473,15 @@ namespace FieldDay.Scenes {
         /// </summary>
         public void QueueOnLoad(Action action) {
             SceneDataExt data = m_MainScene;
-            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
-            data.LoadedCallbackQueue.PushBack(action);
+            if (data != null) {
+                if (data.IsVisited(SceneDataExt.VisitFlags.Readied)) {
+                    action();
+                } else {
+                    data.LoadedCallbackQueue.PushBack(action);
+                }
+            } else {
+                m_TempOnLoadQueue.PushBack(new UninitializedSceneCallback(default, action));
+            }
         }
 
         /// <summary>
@@ -431,26 +489,31 @@ namespace FieldDay.Scenes {
         /// </summary>
         public void QueueOnLoad(Scene scene, Action action) {
             SceneDataExt data = SceneDataExt.Get(scene);
-            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
-            data.LoadedCallbackQueue.PushBack(action);
+            if (data != null) {
+                if (data.IsVisited(SceneDataExt.VisitFlags.Readied)) {
+                    action();
+                } else {
+                    data.LoadedCallbackQueue.PushBack(action);
+                }
+            } else {
+                m_TempOnLoadQueue.PushBack(new UninitializedSceneCallback(scene, action));
+            }
         }
 
         /// <summary>
         /// Queues a callback for when the scene for the given object is loaded.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void QueueOnLoad(GameObject gameObject, Action action) {
-            SceneDataExt data = SceneDataExt.Get(gameObject.scene);
-            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
-            data.LoadedCallbackQueue.PushBack(action);
+            QueueOnLoad(gameObject.scene, action);
         }
 
         /// <summary>
         /// Queues a callback for when the scene for the given object is loaded.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void QueueOnLoad(Component component, Action action) {
-            SceneDataExt data = SceneDataExt.Get(component.gameObject.scene);
-            Assert.NotNull(data, "Cannot register callbacks to a not-loaded scene");
-            data.LoadedCallbackQueue.PushBack(action);
+            QueueOnLoad(component.gameObject.scene, action);
         }
 
         /// <summary>
@@ -458,8 +521,15 @@ namespace FieldDay.Scenes {
         /// </summary>
         public void QueueOnUnload(Action action) {
             SceneDataExt data = m_MainScene;
-            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
-            data.UnloadingCallbackQueue.PushBack(action);
+            if (data != null) {
+                if (data.IsVisited(SceneDataExt.VisitFlags.Unloading)) {
+                    action();
+                } else {
+                    data.UnloadingCallbackQueue.PushBack(action);
+                }
+            } else {
+                m_TempOnUnloadQueue.PushBack(new UninitializedSceneCallback(default, action));
+            }
         }
 
         /// <summary>
@@ -467,26 +537,31 @@ namespace FieldDay.Scenes {
         /// </summary>
         public void QueueOnUnload(Scene scene, Action action) {
             SceneDataExt data = SceneDataExt.Get(scene);
-            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
-            data.UnloadingCallbackQueue.PushBack(action);
+            if (data != null) {
+                if (data.IsVisited(SceneDataExt.VisitFlags.Unloading)) {
+                    action();
+                } else {
+                    data.UnloadingCallbackQueue.PushBack(action);
+                }
+            } else {
+                m_TempOnUnloadQueue.PushBack(new UninitializedSceneCallback(scene, action));
+            }
         }
 
         /// <summary>
         /// Queues a callback for when the scene for the given object is unloaded.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void QueueOnUnload(GameObject gameObject, Action action) {
-            SceneDataExt data = SceneDataExt.Get(gameObject.scene);
-            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
-            data.UnloadingCallbackQueue.PushBack(action);
+            QueueOnUnload(gameObject.scene, action);
         }
 
         /// <summary>
         /// Queues a callback for when the scene for the given object is unloaded.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void QueueOnUnload(Component component, Action action) {
-            SceneDataExt data = SceneDataExt.Get(component.gameObject.scene);
-            Assert.NotNull(data, "Cannot register callbacks to a not-unloaded scene");
-            data.UnloadingCallbackQueue.PushBack(action);
+            QueueOnUnload(component.gameObject.scene, action);
         }
 
         /// <summary>
@@ -652,12 +727,32 @@ namespace FieldDay.Scenes {
             }
         }
 
+        private void FlushSceneLoadCallbacks(SceneDataExt ext, Scene scene, bool isMain) {
+            FlushSceneLoadCallbacks(ext, scene, isMain, m_TempOnLoadQueue, ext.LoadedCallbackQueue);
+            FlushSceneLoadCallbacks(ext, scene, isMain, m_TempOnUnloadQueue, ext.UnloadingCallbackQueue);
+        }
+
+        static private void FlushSceneLoadCallbacks(SceneDataExt ext, Scene scene, bool isMain, RingBuffer<UninitializedSceneCallback> src, RingBuffer<Action> dest) {
+            int count = src.Count;
+            while (count-- > 0) {
+                var callback = src.PopFront();
+                if ((isMain && callback.Scene == default) || ext.Scene == scene) {
+                    dest.PushBack(callback.Action);
+                } else {
+                    src.PushBack(callback);
+                }
+            }
+        }
+
         #endregion // Internal
 
         #region Operations
-        
+
         private void ProcessLoadProcessQueue() {
             if (m_LoadProcessQueue.TryPeekFront(out var args)) {
+                Assert.True(!string.IsNullOrEmpty(args.Path), "Empty path provided to scene loader");
+                Assert.True(SceneHelper.FindSceneByPath(args.Path, SceneCategories.Build).IsValid(), "No scene with path '{0}' found", args.Path);
+
                 if (args.Type == SceneType.Main) {
                     if (m_MainSceneLoadProcess) {
                         Log.Error("Multiple main scene load processes at once.");
@@ -786,6 +881,8 @@ namespace FieldDay.Scenes {
                 }
             }
 
+            FlushSceneLoadCallbacks(data, scene, args.Type == SceneType.Main);
+
             args.Counter.Decrement();
 
             if (!OnPrepareScene.IsEmpty) {
@@ -857,7 +954,7 @@ namespace FieldDay.Scenes {
         private bool ProcessImportLightingQueue() {
             if (m_LightingCopyQueue.TryPopFront(out var args)) {
                 if (args.Data.TryVisit(SceneDataExt.VisitFlags.LightCopied)) {
-                    LightUtility.CopySettingsToActive(args.Data.Scene);
+                    LightUtility.CopySettingsToActive(args.Data.Scene, m_LightImportFlags);
                     Log.Msg("[SceneMgr] Copied lighting settings from '{0}'", args.Data.Scene.path);
                 }
                 args.Counter.Decrement();
@@ -1000,6 +1097,8 @@ namespace FieldDay.Scenes {
 
                 if (args.Type == SceneType.Main) {
                     m_MainSceneTransition.Stop();
+
+                    Game.Events.Dispatch(SceneUtility.Events.PreUnload);
 
                     if (m_MainTransitionUnload != null) {
                         if (m_MainScene != null || m_AuxScenes.Count > 0) {
@@ -1158,6 +1257,7 @@ namespace FieldDay.Scenes {
     static public class SceneUtility {
         static public class Events {
             static public readonly StringHash32 Ready = "SceneMgr::Ready";
+            static public readonly StringHash32 PreUnload = "SceneMgr::PreUnload";
         }
     }
 

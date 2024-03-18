@@ -107,7 +107,7 @@ namespace Zavala.Rendering {
         static private void LeafFocus(StringHash32 objId, float width = 0, float height = 0, float alpha = 0) {
             var panel = Game.Gui?.GetShared<SpotlightPanel>();
             if (panel != null) {
-                RectTransform transform = Game.Gui.LookupNamed(objId);
+                RectTransform transform = Game.Gui.FindNamed(objId);
                 if (transform != null) {
                     panel.FocusOn(transform, new Vector2(width, height), alpha);
                 } else {

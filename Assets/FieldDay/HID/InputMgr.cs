@@ -9,6 +9,8 @@ namespace FieldDay.HID {
     public sealed class InputMgr {
         public const float DefaultDoubleClickBuffer = 0.8f;
 
+        #region Types
+
         private struct InputTimestamp {
             public ushort FrameIndex;
             public long Ticks;
@@ -21,12 +23,18 @@ namespace FieldDay.HID {
             }
         }
 
+        #endregion // Types
+
+        #region State
+
         private EventSystem m_EventSystem;
         private BaseInputModule m_DefaultInputModule;
         private ExposedPointerInputModule m_ExposedInputModule;
-        private uint m_ForceClickRecursion;
+        private uint m_ForceClickRecurseCounter;
         private RingBuffer<InputTimestamp> m_ClickTimestampBuffer = new RingBuffer<InputTimestamp>(2, RingBufferMode.Overwrite);
         private uint m_EventPauseCounter;
+
+        #endregion // State
 
         internal InputMgr() { }
 
@@ -52,23 +60,23 @@ namespace FieldDay.HID {
         public bool ForceClick(GameObject root) {
             Assert.NotNull(m_ExposedInputModule);
 
-            m_ForceClickRecursion++;
+            m_ForceClickRecurseCounter++;
             bool success = ExecuteEvents.Execute(root, m_ExposedInputModule.GetPointerEventData(), ExecuteEvents.pointerClickHandler);
-            m_ForceClickRecursion--;
+            m_ForceClickRecurseCounter--;
             return success;
         }
 
         /// <summary>
         /// Returns if a forced input is being executed.
         /// </summary>
-        public bool IsForcingInput() {
-            return m_ForceClickRecursion > 0;
+        public bool IsForcingClick() {
+            return m_ForceClickRecurseCounter > 0;
         }
 
         /// <summary>
         /// Returns if a double click has occured recently.
         /// </summary>
-        public bool DoubleClick(float buffer = DefaultDoubleClickBuffer) {
+        public bool HasDoubleClicked(float buffer = DefaultDoubleClickBuffer) {
             if (m_ClickTimestampBuffer.Count < 2) {
                 return false;
             }
@@ -76,6 +84,19 @@ namespace FieldDay.HID {
             long timeSince = m_ClickTimestampBuffer[0].Ticks - m_ClickTimestampBuffer[1].Ticks;
             long bufferTicks = (long) (buffer * Stopwatch.Frequency);
             return m_ClickTimestampBuffer[0].FrameIndex == Frame.Index && timeSince <= bufferTicks;
+        }
+
+        /// <summary>
+        /// Returns if a double click has occured recently,
+        /// and clears the double click buffer.
+        /// </summary>
+        public bool ConsumeDoubleClick(float buffer = DefaultDoubleClickBuffer) {
+            if (HasDoubleClicked(buffer)) {
+                m_ClickTimestampBuffer.Clear();
+                return true;
+            }
+
+            return false;
         }
 
         #endregion // Clicks
@@ -125,18 +146,17 @@ namespace FieldDay.HID {
 
         internal void Initialize() {
             m_EventSystem = EventSystem.current;
-            m_DefaultInputModule = m_EventSystem.currentInputModule;
+            m_DefaultInputModule = m_EventSystem?.currentInputModule;
             m_ExposedInputModule = m_DefaultInputModule as ExposedPointerInputModule;
 
             if (!m_ExposedInputModule) {
                 Log.Warn("[InputMgr] Could not find ExposedInputInputModule");
             }
 
+            GameLoop.OnGuiEvent.Register(OnGui);
+
             NativeInput.Initialize();
             NativeInput.SetEventSystem(m_EventSystem);
-
-            NativeInput.OnMouseDown += OnNativeMouseDown;
-            NativeInput.OnMouseUp += OnNativeMouseUp;
         }
 
         internal void UpdateDoubleClickBuffer() {
@@ -145,12 +165,29 @@ namespace FieldDay.HID {
             }
         }
 
-        internal void Shutdown() {
-            NativeInput.OnMouseDown -= OnNativeMouseDown;
-            NativeInput.OnMouseUp -= OnNativeMouseUp;
+        internal void OnGui(Event evt) {
+            EventType type = evt.type;
+            if ((type != EventType.KeyDown && type != EventType.KeyUp) || evt.keyCode == KeyCode.None) {
+                return;
+            }
 
+            // TODO: block input if all is paused
+            if (m_ExposedInputModule != null && m_ExposedInputModule.IsEditingText) {
+                return;
+            }
+
+            if (type == EventType.KeyDown) {
+                KeyboardUtility.OnKeyPressed.Invoke(evt.keyCode);
+            } else {
+                KeyboardUtility.OnKeyReleased.Invoke(evt.keyCode);
+            }
+        }
+
+        internal void Shutdown() {
             NativeInput.SetEventSystem(null);
             NativeInput.Shutdown();
+
+            GameLoop.OnGuiEvent.Deregister(OnGui);
 
             m_EventSystem = null;
             m_ExposedInputModule = null;
@@ -158,19 +195,14 @@ namespace FieldDay.HID {
 
         #endregion // Events
 
-        #region Native Input
-
-        private void OnNativeMouseDown(float x, float y) {
-
-        }
-
-        private void OnNativeMouseUp(float x, float y) {
-
-        }
-
-        #endregion // Native Input
-
         #region Pausing
+
+        /// <summary>
+        /// Returns if all raycasting is paused.
+        /// </summary>
+        public bool AreRaycastsPaused() {
+            return m_EventPauseCounter > 0;
+        }
 
         /// <summary>
         /// Pauses all raycasting.

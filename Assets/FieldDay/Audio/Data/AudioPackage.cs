@@ -7,7 +7,7 @@ namespace FieldDay.Audio {
     /// <summary>
     /// Audio event package.
     /// </summary>
-    [CreateAssetMenu(menuName = "Field Day/Audio/Audio Package")]
+    //[CreateAssetMenu(menuName = "Field Day/Audio/Audio Package")]
     public sealed class AudioPackage : ScriptableObject, IBaked {
         #region Inspector
 
