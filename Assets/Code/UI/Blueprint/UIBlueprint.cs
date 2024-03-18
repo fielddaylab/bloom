@@ -78,6 +78,8 @@ namespace Zavala.UI
             Game.Events.Register(GameEvents.RegionSwitched, HandleRegionSwitched);
             Game.Events.Register(GameEvents.PolicyTypeUnlocked, HandlePolicyTypeUnlocked);
             Game.Events.Register(GameEvents.GameLoaded, HandleGameLoaded);
+            Game.Events.Register(GameEvents.LeafCutsceneStarted, HandleCutsceneStarted);
+            Game.Events.Register(GameEvents.LeafCutsceneEnded, HandleCutsceneEnded);
 
             m_ReceiptGroup.alpha = 0;
             m_BuildingModeText.SetAlpha(0);
@@ -384,6 +386,24 @@ namespace Zavala.UI
                 box.gameObject.SetActive(visible);
             }
             UpdatePolicyBoxTexts();
+        }
+
+        private void HandleCutsceneStarted()
+        {
+            foreach (var box in m_PolicyBoxes)
+            {
+                box.Button.interactable = false;
+            }
+            m_MilkRevenueBox.Button.interactable = false;
+        }
+
+        private void HandleCutsceneEnded()
+        {
+            foreach (var box in m_PolicyBoxes)
+            {
+                box.Button.interactable = true;
+            }
+            m_MilkRevenueBox.Button.interactable = true;
         }
 
         #endregion // System Handlers

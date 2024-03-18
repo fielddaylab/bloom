@@ -41,9 +41,10 @@ namespace Zavala.Scripting
                     if (component.DisplayingEvent.AlertType == EventActorAlertType.Dialogue && peekEvent.Alert != EventActorAlertType.Dialogue) {
                         // If showing a dialogue event, clear it and move it to the back
                         // ClearAlert just removes the visual, does not pop the event
-                        UIAlertUtility.ClearAlert(component.DisplayingEvent);
+                        UIAlertUtility.ClearAlert(component.DisplayingEvent, true);
                         component.QueuedEvents.PushBack(component.QueuedEvents.PopFront());
-                    } else {
+                    }
+                    else {
                         // Skip queueing for this actor, it is already displaying an important (i.e. nondialogue) event
                        return;
                     }

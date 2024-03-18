@@ -16,7 +16,7 @@ namespace Zavala.UI {
 
         #region Inspector
 
-        [SerializeField] private Button m_Button;
+        public Button Button;
         public Graphic NotSetHighlight;
 
         public CanvasGroup Group;
@@ -44,7 +44,7 @@ namespace Zavala.UI {
             default:
                 break;
             }
-            m_Button.onClick.AddListener(() => HandlePolicyBoxClicked(advisorType));
+            Button.onClick.AddListener(() => HandlePolicyBoxClicked(advisorType));
             
         }
 
@@ -141,6 +141,11 @@ namespace Zavala.UI {
                 yield return box.NotSetHighlight.FadeTo(0.1f, 0.4f).Ease(Curve.CubeInOut);
                 yield return box.NotSetHighlight.FadeTo(0.7f, 0.4f).Ease(Curve.CubeInOut);
             }
+        }
+
+        static public void SetInteractable(UIPolicyBox box, bool interactable)
+        {
+            box.Button.interactable = interactable;
         }
     }
 }

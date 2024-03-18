@@ -308,7 +308,16 @@ namespace Zavala.Data {
         public AlertData(EventActorQueuedEvent evt) {
             Type = evt.Alert;
             TileIndex = evt.TileIndex;
-            AttachedNode = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, evt.ScriptId).FullName;
+            ScriptNode foundNode = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, evt.ScriptId);
+            if (foundNode != null)
+            {
+                AttachedNode = foundNode.FullName;
+            }
+            else
+            {
+                Debug.LogWarning("[Analytics] No node found for script id " + evt.ScriptId.ToString());
+                AttachedNode = null;
+            }
         }
     }
 

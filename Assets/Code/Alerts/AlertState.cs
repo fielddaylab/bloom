@@ -17,11 +17,11 @@ namespace Zavala.Alerts {
     }
     public class AlertState : SharedStateComponent, IRegistrationCallbacks {
         // would this fit inside another shared state component?
-        [NonSerialized] public HashSet<EventActorAlertType> PausedAlertTypes;
+        // [NonSerialized] public HashSet<EventActorAlertType> PausedAlertTypes;
         [NonSerialized] public HashSet<AutoAlertCondition> AutoTriggerAlerts;
 
         void IRegistrationCallbacks.OnRegister() {
-            PausedAlertTypes = new HashSet<EventActorAlertType>((int) EventActorAlertType.COUNT);
+            // PausedAlertTypes = new HashSet<EventActorAlertType>((int) EventActorAlertType.COUNT);
             AutoTriggerAlerts = new HashSet<AutoAlertCondition>(5); 
         }
 

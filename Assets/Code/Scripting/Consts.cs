@@ -91,6 +91,9 @@ namespace Zavala
         static public readonly StringHash32 DialogueAdvanced = "dialogue:advanced";
         static public readonly StringHash32 DialogueClosing = "dialogue:closing";
 
+        static public readonly StringHash32 LeafCutsceneStarted = "dialogue:leaf-cutscene-started";
+        static public readonly StringHash32 LeafCutsceneEnded = "dialogue:leaf-cutscene-ended";
+
         static public readonly StringHash32 GameLoaded = "game:loaded";
         static public readonly StringHash32 GameFailed = "game:failed";
         static public readonly StringHash32 GameWon = "game:won";

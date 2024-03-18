@@ -92,6 +92,7 @@ namespace FieldDay.Scripting {
             if (cutscene) {
                 m_RuntimeState.NestedCutscenePauseCount++;
                 SimTimeUtility.Pause(SimPauseFlags.Cutscene, ZavalaGame.SimTime);
+                Game.Events.Dispatch(GameEvents.LeafCutsceneStarted);
             }
             if ((inNode.Flags & ScriptNodeFlags.ForcePolicyEarly) != 0) {
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
@@ -120,6 +121,7 @@ namespace FieldDay.Scripting {
             bool cutscene = (inNode.Flags & ScriptNodeFlags.Cutscene) != 0;
             if (cutscene) {
                 GameLoop.QueueEndOfFrame(LateEndCutsceneDelegate);
+                Game.Events.Dispatch(GameEvents.LeafCutsceneEnded);
             }
             if (Game.Gui.TryGetShared(out InfoPopup ip) && ip.HoldOpen) {
                 ip.HoldOpen = false;

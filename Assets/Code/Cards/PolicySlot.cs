@@ -194,6 +194,7 @@ namespace Zavala.Cards
 
                     card.transform.localPosition = this.transform.localPosition;
                     card.transform.SetAsFirstSibling();
+                    card.OriginAnchorRect = card.GetComponent<RectTransform>().anchoredPosition;
                     m_DisplayCards.Add(card);
                     card.Button.onClick.AddListener(() => { OnCardClicked(policyState, data, card); });
                     card.ClearHoverListeners();
@@ -289,11 +290,11 @@ namespace Zavala.Cards
             float topMost = 155;
             for (int i = 0; i < m_DisplayCards.Count; i++) {
                 RectTransform cardTransform = (RectTransform) m_DisplayCards[i].transform;
-                Routine.Start(this, 
+                m_DisplayCards[i].DisplayRoutine.Replace(this, 
                     Routine.Combine(
                         cardTransform.AnchorPosTo(new Vector2(
-                            cardTransform.anchoredPosition.x - leftMost + 120 * i,
-                            cardTransform.anchoredPosition.y + topMost - 30 * Mathf.Abs((i + offset) - (m_DisplayCards.Count / 2.0f))
+                            m_DisplayCards[i].OriginAnchorRect.x - leftMost + 120 * i,
+                            m_DisplayCards[i].OriginAnchorRect.y + topMost - 30 * Mathf.Abs((i + offset) - (m_DisplayCards.Count / 2.0f))
                         ), .3f, Axis.XY),
                         cardTransform.RotateTo(cardTransform.rotation.z + rotatedMost - 15f * i, .3f, Axis.Z)
                     )
@@ -317,7 +318,7 @@ namespace Zavala.Cards
 
             for (int i = 0; i < m_DisplayCards.Count; i++) {
                 Transform cardTransform = m_DisplayCards[i].transform;
-                Routine.Start(this, 
+                m_DisplayCards[i].DisplayRoutine.Replace(this, 
                     Routine.Combine(
                     cardTransform.MoveTo(this.transform.position, .3f, Axis.XY),
                     cardTransform.RotateTo(0, .3f, Axis.Z)
