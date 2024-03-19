@@ -5,7 +5,7 @@
 @conditions     regionId == "Forest"
 @queued
 $yield // wait 1 frame for region to unlock
-$call SendGlobalAlertForNode("region2_city1", region2.forestUnlocked)
+$call SendGlobalAlertForNode("region2_city1", region2.forestUnlocked, true)
 $call AddAutoAlertCondition("ExcessRunoff", 2, true)
 $call Wait(5)  // TODO: don't open dialogue box when the line is just {wait}
 $if intro:openedForestAlert == false

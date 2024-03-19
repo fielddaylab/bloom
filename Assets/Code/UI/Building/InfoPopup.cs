@@ -340,7 +340,7 @@ namespace Zavala.UI.Info
             int shrinkShipping = showRunoff ? 70 : 120;
             Root.sizeDelta = new Vector2(WideWidth - shrinkShipping, WideHeight);
 
-            bool shipping = m_ActiveResource != ResourceMask.Grain;
+            bool shipping = (m_ActiveResource & m_SelectedSupplier.ShippingMask) != 0;
 
             int queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
             ConfigureCols(WideNumRows);
@@ -357,7 +357,7 @@ namespace Zavala.UI.Info
                     // iterate through all relevant groups
                     if ((m_AvailableTabsMask & currResourceMask) != 0)
                     {
-                        shipping = currResourceMask != ResourceMask.Grain;
+                        shipping = (currResourceMask & m_SelectedSupplier.ShippingMask) != 0;
                         m_TempQueryResults.Clear();
                         if ((m_ActiveResource & currResourceMask) != 0)
                         {
@@ -435,7 +435,7 @@ namespace Zavala.UI.Info
         private void PopulatePurchasingWide(bool recordAllTabs)
         {
             bool showRunoff = (m_ActiveResource & ResourceMask.Manure) != 0;
-            bool shipping = m_ActiveResource == ResourceMask.Grain;
+            bool shipping = (m_ActiveResource & m_SelectedSupplier.ShippingMask) != 0;
 
             Root.sizeDelta = new Vector2(WideWidth, WideHeight);
 
@@ -454,7 +454,7 @@ namespace Zavala.UI.Info
                     // iterate through all relevant groups
                     if ((m_AvailableTabsMask & currResourceMask) != 0)
                     {
-                        shipping = currResourceMask == ResourceMask.Grain;
+                        shipping = (currResourceMask & m_SelectedSupplier.ShippingMask) != 0;
                         m_TempQueryResults.Clear();
                         if ((m_ActiveResource & currResourceMask) != 0)
                         {

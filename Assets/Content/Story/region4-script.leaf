@@ -4,7 +4,7 @@
 @trigger        RegionUnlocked
 @conditions     regionId == "Wetland"
 $yield // wait 1 frame for region to unlock
-$call SendGlobalAlertForNode("region4_city1", region4.regionUnlocked)
+$call SendGlobalAlertForNode("region4_city1", region4.regionUnlocked, true)
 $call QueueDialogueBubble(region2_city1, region2.openedToWetland)
 
 :: regionUnlocked

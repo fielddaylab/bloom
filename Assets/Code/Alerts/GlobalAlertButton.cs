@@ -76,11 +76,20 @@ namespace Zavala.UI {
         }
 
         public void UpdateButtonRoutine() {
-            if (TicksSinceFired < GlobalAlertParams.GlobalAlertDelay) return;
+            EventActor actor;
+            EventActorQueuedEvent evt;
+
+            // check if event overrides delay. If so, override the global alert delay
+            bool overrideDelay = QueuedActors.Count > 0
+                && QueuedActors.TryPeekFront(out actor)
+                && actor.QueuedEvents.TryPeekFront(out evt)
+                && evt.OverrideDelay;
+
+            if (!overrideDelay && TicksSinceFired < GlobalAlertParams.GlobalAlertDelay) return;
             if (QueuedActors.Count > 0) {
                 m_Routine.Replace(GlobalAlertUtility.AppearRoutine(this));
                 SimTimeInput.SetPaused(true, SimPauseFlags.PendingGlobalAlert);
-                if (QueuedActors.TryPeekFront(out EventActor actor) && actor.QueuedEvents.TryPeekFront(out EventActorQueuedEvent evt)) {
+                if (QueuedActors.TryPeekFront(out actor) && actor.QueuedEvents.TryPeekFront(out evt)) {
                     ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertAppeared, new AlertData(evt));
                 }
                 // UIAlertUtility.SetAlertFaded(QueuedActors.PeekFront().DisplayingEvent, true);
@@ -147,19 +156,20 @@ namespace Zavala.UI {
         }
 
         // TODO: add a special case for region unlock "alerts"
-        public static void CreateEventForGlobal(GlobalAlertButton button, EventActor actor, StringHash32 nodeId) {
+        public static void CreateEventForGlobal(GlobalAlertButton button, EventActor actor, StringHash32 nodeId, bool overrideDelay) {
             EventActorQueuedEvent fakeEvent = new() {
                 ScriptId = nodeId,
-                Alert = EventActorAlertType.GlobalDummy
+                Alert = EventActorAlertType.GlobalDummy,
+                OverrideDelay = overrideDelay
             };
             actor.QueuedEvents.PushBack(fakeEvent);
             PushEventOfActorToGlobal(button, actor);
         }
 
         [LeafMember("SendGlobalAlertForNode")]
-        public static void GlobalAlertLeaf(StringHash32 actorId, StringHash32 scriptId) {
+        public static void GlobalAlertLeaf(StringHash32 actorId, StringHash32 scriptId, bool overrideDelay = false) {
             EventActor actor = ScriptUtility.LookupActor(actorId);
-            CreateEventForGlobal(Game.Gui.GetShared<GlobalAlertButton>(), actor, scriptId);
+            CreateEventForGlobal(Game.Gui.GetShared<GlobalAlertButton>(), actor, scriptId, overrideDelay);
         }
 
         public static IEnumerator AppearRoutine(GlobalAlertButton button) {
