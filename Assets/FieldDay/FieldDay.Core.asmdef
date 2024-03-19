@@ -24,6 +24,17 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "0.0.1",
+            "define": "HAS_URP"
+        },
+        {
+            "name": "com.unity.modules.vr",
+            "expression": "0.0.1",
+            "define": "USING_VR"
+        }
+    ],
     "noEngineReferences": false
 }
