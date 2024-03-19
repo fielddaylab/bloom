@@ -103,6 +103,7 @@ namespace Zavala.Scripting {
         public NamedVariant RegionIndex;
         public EventActorAlertType Alert;
         public int TileIndex;
+        public bool OverrideDelay;
         // public bool WasSentToGlobal;
     }
 
