@@ -5,6 +5,7 @@
 using BeauUtil;
 using UnityEngine;
 using System;
+using BeauUtil.Debugger;
 
 #if USE_URP
 using UnityEngine.Rendering.Universal;
@@ -48,6 +49,8 @@ namespace FieldDay.Rendering {
                     m_CachedAddedCameras.PushBack(cam);
                 }
             }
+#else
+            Log.Warn("[AutoAttachOverlayCameras] URP not detected - overlay cameras cannot be attached");
 #endif // USE_URP
         }
 

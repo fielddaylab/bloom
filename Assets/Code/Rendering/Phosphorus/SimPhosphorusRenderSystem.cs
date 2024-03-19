@@ -17,9 +17,7 @@ namespace Zavala.World {
         public Mesh PhosphorusMeshLow;
         public Material PhosphorusMaterial;
 
-        public float PhosphorusLerpSpeed = 7;
         public float PhosphorusSnapRange = 0.08f;
-        public float PhospohorusRenderSize = 0.1f;
         public float PhosphorusLODSwapZ = -22;
 
         #endregion // Inspector
@@ -56,7 +54,7 @@ namespace Zavala.World {
         }
 
         private void PerformMovement(SimWorldState component, float deltaTime) {
-            float lerpAmount = TweenUtil.Lerp(PhosphorusLerpSpeed, 1, deltaTime);
+            float lerpAmount = TweenUtil.Lerp(PhosphorusRendering.ParticleLerp, 1, deltaTime);
             float minDistSq = PhosphorusSnapRange * PhosphorusSnapRange;
             for (int i = 0; i < component.RegionCount; i++) {
                 PhosphorusRendering.ProcessMovement(component.Phosphorus[i], deltaTime, lerpAmount, minDistSq);
@@ -112,6 +110,10 @@ namespace Zavala.World {
                 HeatMapUtility.PatchEdges(heatMap, gridState.HexSize, (ushort) start, gridState.Terrain.Regions, gridState.Regions[i].Edges, gridState.Terrain.NonVoidTiles);
             }
 
+            for(int i = start; i < gridState.RegionCount - 1; i++) {
+                HeatMapUtility.PatchEdges(heatMap, gridState.HexSize, (ushort) (i + 1), gridState.Terrain.Regions, gridState.Regions[i].Edges, gridState.Terrain.NonVoidTiles);
+            }
+
             HeatMapUtility.PushChanges(heatMap);
         }
 
@@ -125,7 +127,7 @@ namespace Zavala.World {
             Transform cameraTransform = camera.transform;
             Mesh mesh = cameraTransform.localPosition.z < PhosphorusLODSwapZ ? PhosphorusMeshLow : PhosphorusMesh;
             var instanceHelper = new InstancingHelper<DefaultInstancingParams>(paramBuffer, 512, renderParams, mesh);
-            Matrix4x4 baseMatrix = Matrix4x4.TRS(default, Quaternion.LookRotation(-cameraTransform.forward, Vector3.up), PhospohorusRenderSize * Vector3.one);
+            Matrix4x4 baseMatrix = Matrix4x4.TRS(default, Quaternion.LookRotation(-cameraTransform.forward, Vector3.up), PhosphorusRendering.ParticleSize * Vector3.one);
 
             for (int i = 0; i < component.RegionCount; i++) {
                 bool isVisible = CullingHelper.IsRegionVisible(component.RegionCullingMask, i);
@@ -140,16 +142,6 @@ namespace Zavala.World {
 
         private void RenderPhosphorusForRegion(PhosphorusRenderState renderState, Matrix4x4 mat, ref InstancingHelper<DefaultInstancingParams> instancing) {
             DefaultInstancingParams instParams = default;
-            
-            // Skip rendering stationary
-            //foreach (var inst in renderState.StationaryInstances) {
-            //    mat.m03 = inst.Position.x;
-            //    mat.m13 = inst.Position.y;
-            //    mat.m23 = inst.Position.z;
-            //    instParams.objectToWorld = mat;
-            //    instancing.Queue(ref instParams);
-            //}
-
             foreach (var inst in renderState.AnimatingInstances) {
                 mat.m03 = inst.Position.x;
                 mat.m13 = inst.Position.y;
