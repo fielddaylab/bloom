@@ -70,6 +70,7 @@ namespace Zavala.UI.Info {
                     if (isShipping)
                     {
                         newTabLocations.Add(InfoPopupMarketUtility.GatherLocationForQuery(results.Requester.Position, results.Supplier.Position, i));
+                        // newTabLocations.Add(InfoPopupMarketUtility.GatherLocationForQuery(results.Supplier.Position, results.Requester.Position, i));
                     }
                     else
                     {
