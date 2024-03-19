@@ -319,7 +319,43 @@ MonoBehaviour:
   m_ReturnButton: {fileID: 2450672439556971575}
   m_Rect: {fileID: 839244485496208310}
   m_ArtImg: {fileID: 6148471561807364834}
-  m_ArtPaths: []
+  m_ArtPaths:
+  - credits/3D_0.png
+  - credits/3D_1.png
+  - credits/3D_2.png
+  - credits/3D_3.png
+  - credits/3D_4.png
+  - credits/3D_5.png
+  - credits/3D_6.png
+  - credits/3D_7.png
+  - credits/3D_8.png
+  - credits/3D_9.png
+  - credits/3D_10.png
+  - credits/card bg 2.png
+  - credits/card bg 3.png
+  - credits/card bg.png
+  - credits/card concept.png
+  - credits/color concept 2.png
+  - credits/color concept 3.png
+  - credits/color concept 4.png
+  - credits/color concept 5.png
+  - credits/color concept 6.png
+  - credits/color concept 7.png
+  - credits/color concept 8.png
+  - credits/color concept 9.png
+  - credits/color concept 10.png
+  - credits/color concept 11.png
+  - credits/color concept.png
+  - credits/concept-truck.png
+  - credits/ink concept 2.png
+  - credits/ink concept 3.png
+  - credits/ink concept 4.png
+  - credits/ink concept 5.png
+  - credits/ink concept 6.png
+  - credits/ink concept 8.png
+  - credits/ink concept7.png
+  - credits/ink concept_.png
+  - credits/layout concept.png
   m_CreditsTextAsset: {fileID: 4900000, guid: bc0943da35a9a09448b4468667419b1a, type: 3}
   m_TextContainer: {fileID: 2273611052537286325}
   m_TextLayout: {fileID: 8009410953834569598}

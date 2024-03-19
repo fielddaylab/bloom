@@ -56,7 +56,6 @@ namespace Zavala.UI
 
         private float m_RecycleImgTime;
         private float m_RecycleImgTimer;
-        private int m_NumConceptImgs;
         private int m_CurrArtIndex;
         private int m_ArtDirLength = "Assets/StreamingAssets/".Length;
 
@@ -79,15 +78,13 @@ namespace Zavala.UI
             ParseCredits();
             CreditsBlocksToText();
 
-            ConceptImageSetup();
-
             // Calculate scroll speed based on scroll time and distance to travel
             Assert.True(m_ScrollTime > 0);
             if (m_CreditsBlocks.Count > 0) {
                 m_ScrollSpeed = (m_CreditsBlocks[0].transform.position.y - m_CreditsBlocks[m_CreditsBlocks.Count - 1].transform.position.y + m_TextContainer.rect.size.y) / (m_ScrollTime);
             }
 
-            m_RecycleImgTime = m_RecycleImgTimer = m_ScrollTime / m_NumConceptImgs;
+            m_RecycleImgTime = m_RecycleImgTimer = m_ScrollTime / m_ArtPaths.Length;
 
             ResetLayout();
         }
@@ -181,7 +178,7 @@ namespace Zavala.UI
         {
             m_RecycleImgTimer = m_RecycleImgTime;
 
-            if (m_CurrArtIndex == m_NumConceptImgs) { yield break; }
+            if (m_CurrArtIndex == m_ArtPaths.Length) { yield break; }
 
             m_ArtImg.Path = m_ArtPaths[m_CurrArtIndex];
             m_ArtImg.Preload();
@@ -208,21 +205,6 @@ namespace Zavala.UI
 
             // Image Sequence
 
-        }
-
-        private void ConceptImageSetup()
-        {
-            string[] assetGuids = AssetDatabase.FindAssets("*", new string[] { "Assets/StreamingAssets/credits" });
-            m_NumConceptImgs = assetGuids.Length;
-
-            m_ArtPaths = new string[m_NumConceptImgs];
-            int imgIndex = 0;
-            foreach (var guid in assetGuids)
-            {
-                string fullPath = AssetDatabase.GUIDToAssetPath(guid);
-                m_ArtPaths[imgIndex] = fullPath.Substring(m_ArtDirLength);
-                imgIndex++;
-            }
         }
 
         #region Credits Parsing
@@ -279,5 +261,28 @@ namespace Zavala.UI
         }
 
         #endregion // Credits Parsing
+
+#if UNITY_EDITOR
+
+        #region Editor
+
+        [ContextMenu("Refresh Concept Art Images")]
+        private void RefreshImages()
+        {
+            string[] assetGuids = AssetDatabase.FindAssets("*", new string[] { "Assets/StreamingAssets/credits" });
+
+            m_ArtPaths = new string[assetGuids.Length];
+            int imgIndex = 0;
+            foreach (var guid in assetGuids)
+            {
+                string fullPath = AssetDatabase.GUIDToAssetPath(guid);
+                m_ArtPaths[imgIndex] = fullPath.Substring(m_ArtDirLength);
+                imgIndex++;
+            }
+        }
+
+        #endregion // Editor
+
+#endif // UNITY_EDITOR
     }
 }
