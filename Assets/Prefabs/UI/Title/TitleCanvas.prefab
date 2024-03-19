@@ -2968,19 +2968,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4832532012571992296, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4832532012571992296, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4832532012571992296, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4832532012571992296, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4832532012571992296, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2988,7 +2988,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4832532012571992296, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 306
       objectReference: {fileID: 0}
     - target: {fileID: 5553256648770307469, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_SortingLayer
@@ -3004,7 +3004,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_UVRect.x
-      value: 0.03251794
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_UVRect.y
@@ -3012,7 +3012,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_UVRect.width
-      value: 0.9349641
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6591951245184901852, guid: 46aa38a3b9ab05546b03353baa12b791, type: 3}
       propertyPath: m_UVRect.height
