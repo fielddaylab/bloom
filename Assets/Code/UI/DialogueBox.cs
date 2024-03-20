@@ -92,7 +92,13 @@ namespace Zavala.UI {
                 if (evalContext.Thread.Actor == null || m_CurrentDef == null || m_CurrentDef.IsAdvisor) {
                     Pin.Unpin();
                 } else {
-                    Pin.PinTo(((EventActor) evalContext.Thread.Actor).transform);
+                    // only pin if inspector is not showing
+                    if (((EventActor)evalContext.Thread.Actor).DisplayingPopup == null) {
+                        Pin.PinTo(((EventActor)evalContext.Thread.Actor).transform);
+                    }
+                    else {
+                        Pin.Unpin();
+                    }
                 }
             });
             m_LocalHandler.Register("ViewPolicies", () => {
