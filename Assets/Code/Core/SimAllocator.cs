@@ -1,4 +1,5 @@
 using BeauUtil;
+using BeauUtil.Debugger;
 
 namespace Zavala {
     /// <summary>
@@ -42,6 +43,10 @@ namespace Zavala {
 
         static public void Destroy() {
             Unsafe.TryDestroyArena(ref s_Allocator);
+        }
+
+        static public void DumpStats() {
+            Log.Msg("[SimAllocator] Remaining: {0}", Unsafe.FormatBytes(s_Allocator.FreeBytes()));
         }
     }
 }

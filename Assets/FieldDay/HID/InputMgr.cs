@@ -33,6 +33,7 @@ namespace FieldDay.HID {
         private uint m_ForceClickRecurseCounter;
         private RingBuffer<InputTimestamp> m_ClickTimestampBuffer = new RingBuffer<InputTimestamp>(2, RingBufferMode.Overwrite);
         private uint m_EventPauseCounter;
+        private bool m_InputConsumed;
 
         #endregion // State
 
@@ -77,7 +78,7 @@ namespace FieldDay.HID {
         /// Returns if a double click has occured recently.
         /// </summary>
         public bool HasDoubleClicked(float buffer = DefaultDoubleClickBuffer) {
-            if (m_ClickTimestampBuffer.Count < 2) {
+            if (m_ClickTimestampBuffer.Count < 2 || m_InputConsumed) {
                 return false;
             }
 
@@ -99,7 +100,61 @@ namespace FieldDay.HID {
             return false;
         }
 
+        /// <summary>
+        /// Returns if a mouse button is down this frame.
+        /// </summary>
+        public bool IsMouseDown(MouseButton mouseButton) {
+            return !m_InputConsumed && Input.GetMouseButton((int) mouseButton);
+        }
+
+        /// <summary>
+        /// Returns if a mouse button is down this frame.
+        /// </summary>
+        public bool IsMouseDown(int mouseButton) {
+            return !m_InputConsumed && Input.GetMouseButton(mouseButton);
+        }
+
+        /// <summary>
+        /// Returns if a mouse button was pressed this frame.
+        /// </summary>
+        public bool IsMousePressed(MouseButton mouseButton) {
+            return !m_InputConsumed && Input.GetMouseButtonDown((int) mouseButton);
+        }
+
+        /// <summary>
+        /// Returns if a mouse button was pressed this frame.
+        /// </summary>
+        public bool IsMousePressed(int mouseButton) {
+            return !m_InputConsumed && Input.GetMouseButtonDown(mouseButton);
+        }
+
         #endregion // Clicks
+
+        #region Keys
+
+        /// <summary>
+        /// Returns if a keyboard key is down this frame.
+        /// </summary>
+        public bool IsKeyDown(KeyCode keyCode) {
+            return !m_InputConsumed && Input.GetKey(keyCode);
+        }
+
+        /// <summary>
+        /// Returns if a keyboard key was pressed this frame.
+        /// </summary>
+        public bool IsKeyPressed(KeyCode keyCode) {
+            return !m_InputConsumed && Input.GetKeyDown(keyCode);
+        }
+
+        /// <summary>
+        /// Returns if a combination of a keyboard modifier and keyboard key
+        /// were pressed this frame.
+        /// </summary>
+        public bool IsKeyComboPressed(ModifierKeyCode modifier, KeyCode keyCode) {
+            return !m_InputConsumed && Input.GetKey((KeyCode) modifier) && Input.GetKeyDown(keyCode);
+        }
+
+        #endregion // Keys
 
         #region Raycasts
 
@@ -159,10 +214,12 @@ namespace FieldDay.HID {
             NativeInput.SetEventSystem(m_EventSystem);
         }
 
-        internal void UpdateDoubleClickBuffer() {
+        internal void BeginFrame() {
             if (Input.GetMouseButtonDown(0)) {
                 m_ClickTimestampBuffer.PushFront(InputTimestamp.Now());
             }
+
+            m_InputConsumed = false;
         }
 
         internal void OnGui(Event evt) {
@@ -224,5 +281,44 @@ namespace FieldDay.HID {
         }
 
         #endregion // Pausing
+
+        #region Consume
+
+        /// <summary>
+        /// Consumes all input for this frame.
+        /// </summary>
+        public void ConsumeInputForFrame() {
+            m_InputConsumed = true;
+        }
+
+        #endregion // Consume
+    }
+
+    public enum ModifierKeyCode {
+        LeftControl = KeyCode.LeftControl,
+        LCtrl = KeyCode.LeftControl,
+        RightControl = KeyCode.RightControl,
+        RCtrl = KeyCode.RightControl,
+        
+        LeftShift = KeyCode.LeftShift,
+        LShfit = KeyCode.LeftShift,
+        RightShift = KeyCode.RightShift,
+        RShift = KeyCode.RightShift,
+        
+        LeftAlt = KeyCode.LeftAlt,
+        LAlt = KeyCode.LeftAlt,
+        RightAlt = KeyCode.RightAlt,
+        RAlt = KeyCode.RightAlt,
+        
+        LeftMeta = KeyCode.LeftMeta,
+        LMeta = KeyCode.LeftMeta,
+        RightMeta = KeyCode.RightMeta,
+        RMeta = KeyCode.RightMeta
+    }
+
+    public enum MouseButton {
+        Left,
+        Right,
+        Middle
     }
 }

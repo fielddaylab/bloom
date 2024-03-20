@@ -16,18 +16,18 @@ namespace Zavala.Sim {
             bool advanced = m_StateA.Timer.Advance(deltaTime, ZavalaGame.SimTime);
             if (advanced) {
                 using (Profiling.Time("phosphorus sim tick")) {
-                    PhosphorusSim.Tick(m_StateA.Phosphorus.Info, m_StateA.Phosphorus.CurrentState(), m_StateA.Phosphorus.NextState(), m_StateB.HexSize, m_StateB.Random, m_StateA.Phosphorus.Changes);
+                    PhosphorusSim.Tick(m_StateA.Phosphorus.Info, m_StateA.Phosphorus.CurrentState(), m_StateA.Phosphorus.NextState(), m_StateB.HexSize, m_StateB.SimulationRegion, m_StateB.Random, m_StateA.Phosphorus.Changes);
                     m_StateA.Phosphorus.StateIndex = 1 - m_StateA.Phosphorus.StateIndex;
                     PhosphorusSim.TickPhosphorusHistory(m_StateA.HistoryPerRegion, m_StateB.Regions, (int) m_StateB.RegionCount);
-
-                    RegionUnlockState unlockState = Game.SharedState.Get<RegionUnlockState>();
-                    RegionAgeState ageState = Game.SharedState.Get<RegionAgeState>();
-                    
-                    Game.SharedState.Get<WinLossState>().CheckTimer = true;
-
-                    RegionUnlockUtility.RegisterPTimerAdvanced(unlockState);
-                    RegionAgeUtility.RegisterPTimerAdvanced(ageState);
                 }
+
+                RegionUnlockState unlockState = Game.SharedState.Get<RegionUnlockState>();
+                RegionAgeState ageState = Game.SharedState.Get<RegionAgeState>();
+                    
+                Game.SharedState.Get<WinLossState>().CheckTimer = true;
+
+                RegionUnlockUtility.RegisterPTimerAdvanced(unlockState);
+                RegionAgeUtility.RegisterPTimerAdvanced(ageState);
             }
 
             if (m_StateA.Phosphorus.Changes.AffectedTiles.Count > 0) {
@@ -36,7 +36,7 @@ namespace Zavala.Sim {
                 }
             }
 
-            GameLoop.QueueEndOfFrame(m_ResetCallback);
+            GameLoop.QueuePreUpdate(m_ResetCallback);
         }
 
         private void ResetDirtyDataFlags() {

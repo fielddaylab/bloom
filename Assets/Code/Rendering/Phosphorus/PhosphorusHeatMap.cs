@@ -19,7 +19,8 @@ namespace Zavala.Rendering {
         [NonSerialized] public Texture2D GradientLUT;
         [NonSerialized] public MeshData16<HeatMapVertex> MeshData;
         [NonSerialized] public OffsetLengthU16[] TileToVertexRangeMap;
-        [NonSerialized] public BitSetN ConnectedTileMask;
+        [NonSerialized] public SimBuffer<ushort> TileRegions;
+        [NonSerialized] public SimBitSet NewTiles;
         [NonSerialized] public Mesh Mesh;
 
         [NonSerialized] public SimPhosphorusState Phosphorus;
@@ -39,7 +40,9 @@ namespace Zavala.Rendering {
             Phosphorus = Find.State<SimPhosphorusState>();
 
             TileToVertexRangeMap = new OffsetLengthU16[hexSize.Size];
-            ConnectedTileMask = new BitSetN((int) hexSize.Size);
+            NewTiles = SimBitSet.Create(hexSize.Size);
+            TileRegions = SimBuffer.Create<ushort>(hexSize.Size);
+            SimBuffer.Clear(TileRegions, Tile.InvalidIndex16);
 
             Texture2D lut = LUTUtility.CreateLUT(256, 1);
             lut.hideFlags = HideFlags.DontSave;
@@ -87,27 +90,48 @@ namespace Zavala.Rendering {
             }
         }
 
-        static public OffsetLengthU16 AddTile(PhosphorusHeatMap heatMap, HexGridWorldSpace world, int tileIndex, float height, int phosphorusCount) {
-            int nextVert = heatMap.MeshData.VertexCount;
-
+        static public OffsetLengthU16 AddTile(PhosphorusHeatMap heatMap, HexGridWorldSpace world, int tileIndex, ushort regionIndex, float height, int phosphorusCount) {
             Vector3 pos = HexVector.ToWorld(tileIndex, height, world);
             pos.y += 0.2f;
             float color = (float) phosphorusCount / PhosphorusSim.MaxPhosphorusPerTile;
 
-            ushort vertexCount = 1;
-            heatMap.MeshData.AddVertex(new HeatMapVertex() {
+            HeatMapVertex vert = new HeatMapVertex() {
                 Position = pos,
                 Color = color
-            });
+            };
 
-            OffsetLengthU16 range = new OffsetLengthU16((ushort) nextVert, vertexCount);
+            OffsetLengthU16 range = heatMap.TileToVertexRangeMap[tileIndex];
+            if (range.Length > 0) {
+                heatMap.MeshData.Vertex(range.Offset) = vert;
+                heatMap.TileRegions[tileIndex] = regionIndex;
+                return range;
+            }
+
+            int nextVert = heatMap.MeshData.VertexCount;
+
+            heatMap.MeshData.AddVertex(vert);
+
+            range = new OffsetLengthU16((ushort) nextVert, 1);
             heatMap.TileToVertexRangeMap[tileIndex] = range;
+            heatMap.NewTiles[tileIndex] = true;
+            heatMap.TileRegions[tileIndex] = regionIndex;
             return range;
+        }
+
+        static public void AddEdgeFalloff(PhosphorusHeatMap heatMap, HexGridWorldSpace world, HexGridSize grid, ushort targetRegion, UnsafeSpan<RegionEdgeInfo> edgeIndices, SimBuffer<ushort> heights, SimBitSet nonVoids) {
+            foreach(var edge in edgeIndices) {
+                int height = heights[edge.Index];
+                foreach(var dir in edge.Directions) {
+                    if (grid.IsValidIndexOffset(edge.Index, dir, out int neighbor) && !nonVoids[neighbor]) {
+                        AddTile(heatMap, world, neighbor, targetRegion, height, 0);
+                    }
+                }
+            }
         }
 
         static public void ConnectTilesInner(PhosphorusHeatMap heatMap, HexGridSize grid, ushort targetRegion, HexGridSubregion subregion, SimBuffer<ushort> regionInfo, SimBitSet nonVoids) {
             foreach(var idx in subregion) {
-                if (regionInfo[idx] != targetRegion || !nonVoids[idx]) {
+                if (regionInfo[idx] != targetRegion) {
                     continue;
                 }
 
@@ -116,40 +140,56 @@ namespace Zavala.Rendering {
                 int neighbor;
                 int lastTri = -1;
                 if (grid.IsValidIndexOffset(idx, TileDirection.NW, out neighbor) && neighbor < idx) {
-                    if (regionInfo[neighbor] == targetRegion && nonVoids[neighbor]) {
+                    if (regionInfo[neighbor] == targetRegion || heatMap.NewTiles[neighbor]) {
                         // cool we can connect this
                         lastTri = neighbor;
+                    } else {
+                        lastTri = -1;
                     }
+                } else {
+                    lastTri = -1;
                 }
 
                 if (grid.IsValidIndexOffset(idx, TileDirection.SW, out neighbor) && neighbor < idx) {
-                    if (regionInfo[neighbor] == targetRegion && nonVoids[neighbor]) {
+                    if (regionInfo[neighbor] == targetRegion || heatMap.NewTiles[neighbor]) {
                         // cool we can connect this
                         if (lastTri != -1) {
                             heatMap.MeshData.AddIndices(heatMap.TileToVertexRangeMap[neighbor].Offset, heatMap.TileToVertexRangeMap[lastTri].Offset, verts.Offset);
                         }
                         lastTri = neighbor;
+                    } else {
+                        lastTri = -1;
                     }
+                } else {
+                    lastTri = -1;
                 }
 
                 if (grid.IsValidIndexOffset(idx, TileDirection.S, out neighbor) && neighbor < idx) {
-                    if (regionInfo[neighbor] == targetRegion && nonVoids[neighbor]) {
+                    if (regionInfo[neighbor] == targetRegion || heatMap.NewTiles[neighbor]) {
                         // cool we can connect this
                         if (lastTri != -1) {
                             heatMap.MeshData.AddIndices(heatMap.TileToVertexRangeMap[neighbor].Offset, heatMap.TileToVertexRangeMap[lastTri].Offset, verts.Offset);
                         }
                         lastTri = neighbor;
+                    } else {
+                        lastTri = -1;
                     }
+                } else {
+                    lastTri = -1;
                 }
 
                 if (grid.IsValidIndexOffset(idx, TileDirection.SE, out neighbor) && neighbor < idx) {
-                    if (regionInfo[neighbor] == targetRegion && nonVoids[neighbor]) {
+                    if (regionInfo[neighbor] == targetRegion || heatMap.NewTiles[neighbor]) {
                         // cool we can connect this
                         if (lastTri != -1) {
                             heatMap.MeshData.AddIndices(heatMap.TileToVertexRangeMap[neighbor].Offset, heatMap.TileToVertexRangeMap[lastTri].Offset, verts.Offset);
                         }
                         lastTri = neighbor;
+                    } else {
+                        lastTri = -1;
                     }
+                } else {
+                    lastTri = -1;
                 }
             }
         }
@@ -162,7 +202,7 @@ namespace Zavala.Rendering {
                 for(int i = 0; i <= 6; i++) {
                     TileDirection dir = (TileDirection) (1 + i % 6);
                     if (grid.IsValidIndexOffset(edge.Index, dir, out int neighbor) && nonVoids[neighbor]) {
-                        if (regionInfo[neighbor] >= targetRegionStart) {
+                        if (regionInfo[neighbor] >= targetRegionStart && heatMap.NewTiles[neighbor]) {
                             // cool we can connect this
                             if (lastTri != -1) {
                                 heatMap.MeshData.AddIndices(heatMap.TileToVertexRangeMap[neighbor].Offset, heatMap.TileToVertexRangeMap[lastTri].Offset, verts.Offset);
@@ -176,6 +216,7 @@ namespace Zavala.Rendering {
 
         static public void PushChanges(PhosphorusHeatMap heatMap) {
             heatMap.MeshData.Upload(heatMap.Mesh);
+            heatMap.NewTiles.Clear();
         }
     }
 }

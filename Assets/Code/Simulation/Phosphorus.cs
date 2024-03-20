@@ -262,7 +262,23 @@ namespace Zavala.Sim {
         /// <summary>
         /// Runs phosphorus flow simulation.
         /// </summary>
-        static public unsafe void Tick(SimBuffer<PhosphorusTileInfo> infoBuffer, SimBuffer<PhosphorusTileState> stateBuffer, SimBuffer<PhosphorusTileState> targetStateBuffer, in HexGridSize gridSize, in HexGridSubregion subRegion, ushort regionIdx, ushort flagMask, System.Random random, PhosphorusChangeBuffer stateChangeBuffer) {
+        static public unsafe void Tick(SimBuffer<PhosphorusTileInfo> infoBuffer, SimBuffer<PhosphorusTileState> stateBuffer, SimBuffer<PhosphorusTileState> targetStateBuffer, in HexGridSize gridSize, in HexGridSubregion subRegion, System.Random random, PhosphorusChangeBuffer stateChangeBuffer) {
+            // copy current state over
+            SimBuffer.Copy(stateBuffer, targetStateBuffer);
+
+            TileDirection* directionOrder = stackalloc TileDirection[6];
+            foreach (var index in subRegion) {
+                Tick_Step(index, infoBuffer, stateBuffer, targetStateBuffer, gridSize, Tile.InvalidIndex16, 0, random, directionOrder, stateChangeBuffer);
+            }
+        }
+
+        /// <summary>
+        /// Runs phosphorus flow simulation.
+        /// </summary>
+        static public unsafe void TickForRegion(SimBuffer<PhosphorusTileInfo> infoBuffer, SimBuffer<PhosphorusTileState> stateBuffer, SimBuffer<PhosphorusTileState> targetStateBuffer, in HexGridSize gridSize, in HexGridSubregion subRegion, ushort regionIdx, ushort flagMask, System.Random random, PhosphorusChangeBuffer stateChangeBuffer) {
+            // copy current state over
+            SimBuffer.Copy(stateBuffer, targetStateBuffer);
+
             TileDirection* directionOrder = stackalloc TileDirection[6];
             foreach(var index in subRegion) {
                 Tick_Step(index, infoBuffer, stateBuffer, targetStateBuffer, gridSize, regionIdx, flagMask, random, directionOrder, stateChangeBuffer);

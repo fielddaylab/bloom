@@ -941,6 +941,16 @@ namespace Zavala {
             return new HexGridSubregion(subX, subY, width, height, m_SrcWidth);
         }
 
+        public HexGridSubregion Expand(ushort left, ushort bottom, ushort right, ushort top) {
+            int subX = X - left;
+            int subY = Y - bottom;
+            int newWidth = Width + left + right;
+            int newHeight = Height + bottom + top;
+            if (subX < 0 || subY < 0 || subX + newWidth > m_SrcWidth)
+                throw new ArgumentOutOfRangeException();
+            return new HexGridSubregion((ushort) subX, (ushort) subY, (ushort) newWidth, (ushort) newHeight, m_SrcWidth);
+        }
+
         #region Validation
 
         /// <summary>

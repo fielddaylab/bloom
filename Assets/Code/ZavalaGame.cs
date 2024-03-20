@@ -53,6 +53,14 @@ namespace Zavala {
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
+
+            GameLoop.OnDebugUpdate.Register(() => {
+                if (Input.IsKeyComboPressed(ModifierKeyCode.LCtrl, KeyCode.Space)) {
+                    Input.ConsumeInputForFrame();
+                    ScriptUtility.Trigger(GameTriggers.TutorialSkipped);
+                }
+            });
+
 #endif // UNITY_EDITOR || DEVELOPMENT_BUILD
 
             GameLoop.OnShutdown.Register(OnShutdown);

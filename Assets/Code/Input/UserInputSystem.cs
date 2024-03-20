@@ -80,13 +80,13 @@ namespace Zavala.Input {
         }
 
         static private void CheckKeyboard(ref InputButton buttonsDown, InputButton button, KeyCode key) {
-            if (UnityEngine.Input.GetKey(key)) {
+            if (Game.Input.IsKeyDown(key)) {
                 buttonsDown |= button;
             }
         }
 
         static private void CheckMouse(ref InputButton buttonsDown, InputButton button, int mouseButton) {
-            if (UnityEngine.Input.GetMouseButton(mouseButton)) {
+            if (Game.Input.IsMouseDown(mouseButton)) {
                 buttonsDown |= button;
             }
         }

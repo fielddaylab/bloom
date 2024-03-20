@@ -96,22 +96,23 @@ namespace Zavala.World {
         static private void AddNewRegionsToHeatMap(SimGridState gridState, SimWorldState worldState, SimPhosphorusState phosphorusState, PhosphorusHeatMap heatMap, int newRegionCount) {
             int start = (int) gridState.RegionCount - newRegionCount;
             var phosBuff = phosphorusState.Phosphorus.CurrentState();
-            for(int i = start; i < gridState.RegionCount; i++) {
-                HexGridSubregion region = gridState.Regions[i].GridArea;
+            for(int regionIdx = start; regionIdx < gridState.RegionCount; regionIdx++) {
+                HexGridSubregion region = gridState.Regions[regionIdx].GridArea;
                 foreach(var idx in region) {
-                    if (gridState.Terrain.Regions[idx] == i && gridState.Terrain.NonVoidTiles.IsSet(idx)) {
-                        HeatMapUtility.AddTile(heatMap, worldState.WorldSpace, idx, gridState.Terrain.Height[idx], phosBuff[idx].Count);
+                    if (gridState.Terrain.Regions[idx] == regionIdx && gridState.Terrain.NonVoidTiles.IsSet(idx)) {
+                        HeatMapUtility.AddTile(heatMap, worldState.WorldSpace, idx, (ushort) regionIdx, gridState.Terrain.Height[idx], phosBuff[idx].Count);
                     }
                 }
-                HeatMapUtility.ConnectTilesInner(heatMap, gridState.HexSize, (ushort) i, region, gridState.Terrain.Regions, gridState.Terrain.NonVoidTiles);
+                HeatMapUtility.AddEdgeFalloff(heatMap, worldState.WorldSpace, gridState.HexSize, (ushort) regionIdx, gridState.Regions[regionIdx].Edges, gridState.Terrain.Height, gridState.Terrain.NonVoidTiles);
+                HeatMapUtility.ConnectTilesInner(heatMap, gridState.HexSize, (ushort) regionIdx, region.Expand(1, 1, 1, 1), heatMap.TileRegions, gridState.Terrain.NonVoidTiles);
             }
 
-            for(int i = 0; i < start; i++) {
-                HeatMapUtility.PatchEdges(heatMap, gridState.HexSize, (ushort) start, gridState.Terrain.Regions, gridState.Regions[i].Edges, gridState.Terrain.NonVoidTiles);
+            for(int regionIdx = 0; regionIdx < start; regionIdx++) {
+                HeatMapUtility.PatchEdges(heatMap, gridState.HexSize, (ushort) start, heatMap.TileRegions, gridState.Regions[regionIdx].Edges, gridState.Terrain.NonVoidTiles);
             }
 
-            for(int i = start; i < gridState.RegionCount - 1; i++) {
-                HeatMapUtility.PatchEdges(heatMap, gridState.HexSize, (ushort) (i + 1), gridState.Terrain.Regions, gridState.Regions[i].Edges, gridState.Terrain.NonVoidTiles);
+            for(int regionIdx = start; regionIdx < gridState.RegionCount - 1; regionIdx++) {
+                HeatMapUtility.PatchEdges(heatMap, gridState.HexSize, (ushort) (regionIdx + 1), heatMap.TileRegions, gridState.Regions[regionIdx].Edges, gridState.Terrain.NonVoidTiles);
             }
 
             HeatMapUtility.PushChanges(heatMap);

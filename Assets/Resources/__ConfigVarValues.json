@@ -4,7 +4,7 @@
     "Zavala.UI.GlobalAlertParams::GlobalAlertDelay": 14,
     "Zavala.Economy.MarketParams::TruckSpeed": 1.79999995231628,
     "Zavala.Economy.MarketParams::TicksPerNegotiation": 2,
-    "Zavala.PhosphorusRendering::ParticlesPerPip": 10,
+    "Zavala.PhosphorusRendering::ParticlesPerPip": 4,
     "Zavala.PhosphorusRendering::ParticleLerp": 6,
     "Zavala.Sim.PhosphorusSim::SimilarHeightThreshold": 25,
     "Zavala.Sim.PhosphorusSim::SteepHeightThreshold": 100,

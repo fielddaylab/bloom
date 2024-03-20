@@ -605,7 +605,7 @@ namespace FieldDay {
 
                 FlushQueue(s_OnBootQueue);
 
-                Game.Input.UpdateDoubleClickBuffer();
+                Game.Input.BeginFrame();
 
                 // DEBUG UPDATE
                 Game.Components.Lock();
