@@ -87,6 +87,11 @@ namespace Zavala.UI {
         // static private readonly string[] RegionIndexToString = Enum.GetNames(typeof(RegionId));
 
         public static void ClickAlert(UIAlert alert) {
+            // Do not allow click during cutscene
+            if (ScriptUtility.Runtime.Cutscene.IsRunning()) {
+                return;
+            }
+
             if (alert.AlertType != EventActorAlertType.Dialogue && !alert.FullyOpened) {
                 alert.Pointer.enabled = false;
                 alert.Pointer.GetComponent<Collider>().enabled = false;
