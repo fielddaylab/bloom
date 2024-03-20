@@ -5,13 +5,16 @@ using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
 using FieldDay.Debugging;
+using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Data;
 using Zavala.Sim;
 using Zavala.UI;
+using Zavala.World;
 
 namespace Zavala.Scripting {
 
@@ -98,6 +101,32 @@ namespace Zavala.Scripting {
         public static bool FailureIsEnabled() {
             return !Game.SharedState.Get<WinLossState>().IgnoreFailure;
         }
+        public static void TriggerEnding(EndType eType, int regionIndex) {
+            if (eType == EndType.Succeeded) {
+                Log.Warn("[WinLossSystem] TRIGGERED GAME WIN {0} in Region {1}", eType.ToString(), regionIndex);
+                using (TempVarTable varTable = TempVarTable.Alloc()) {
+                    varTable.Set("endType", eType.ToString());
+                    varTable.Set("alertRegion", regionIndex + 1);
+                    ScriptUtility.Trigger(GameTriggers.GameCompleted, varTable);
+                }
+                ZavalaGame.Events.Dispatch(GameEvents.GameWon);
+                return;
+            }
+            Log.Warn("[WinLossSystem] TRIGGERED GAME FAIL {0} in Region {1}", eType, regionIndex);
+
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("endType", eType.ToString());
+                varTable.Set("alertRegion", regionIndex + 1);
+                WorldCameraUtility.PanCameraToRegionCity(regionIndex + 1);
+                var handle = ScriptUtility.Trigger(GameTriggers.GameFailed, varTable);
+                SaveUtility.Reload();
+            }
+            ZavalaGame.Events.Dispatch(GameEvents.GameFailed, new LossData(eType.ToString(), (ushort)regionIndex));
+        }
+
+        public static void TriggerWin() {
+            TriggerEnding(EndType.Succeeded, 1);
+        }
 
         [DebugMenuFactory]
         static private DMInfo WinLossMenu() {
@@ -105,6 +134,9 @@ namespace Zavala.Scripting {
             info.AddButton("Disable Failure", () => {
                 IgnoreFailure();
                 CutscenePanel.End();
+            });
+            info.AddButton("Trigger Win", () => {
+                TriggerWin();
             });
             info.AddButton("End Game", () => {
                 EndGame();

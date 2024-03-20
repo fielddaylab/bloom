@@ -498,6 +498,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Storage
       objectReference: {fileID: 0}
+    - target: {fileID: 5009163469407239877, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 03e35de789d715e4194911330de60100, type: 3}
     - target: {fileID: 5009163469407239879, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -646,7 +650,7 @@ PrefabInstance:
     - target: {fileID: 5009163469407239877, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
+      objectReference: {fileID: 21300000, guid: 85e94d8302ac7f843a7d22c07387b05e, type: 3}
     - target: {fileID: 5009163469523836060, guid: d39055f7474723742a3b269d6dda2ee7, type: 3}
       propertyPath: Cost
       value: 20

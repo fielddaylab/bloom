@@ -740,7 +740,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-      NodeTitle: region4.unlockExportDepots
+      NodeTitle: region4.afterBuiltDigester
       CheckCitiesConnected: 0
       CheckFarmsConnected: 0
     - Type: 8
@@ -1228,9 +1228,9 @@ MonoBehaviour:
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
       RegionAgeAbove: 90
-      NodeReached: region4.firstBlimpReceived
+      NodeReached: region5.firstBlimpReceived
       DFertilizerRatio:
-        Target: 0.2
+        Target: 0.5
         Above: 1
       MFertilizerRatio:
         Target: 0.2
