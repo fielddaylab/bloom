@@ -102,6 +102,10 @@ namespace FieldDay.Scripting {
                 ip.Hide();
             }
             m_RuntimeState.DefaultDialogue.MarkNodeEntered();
+            
+            // reset pin overrides at the start of a new node
+            m_RuntimeState.DefaultDialogue.ClearPinForces();
+
             ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
         }
 

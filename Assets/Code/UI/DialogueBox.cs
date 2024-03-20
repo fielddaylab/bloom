@@ -65,6 +65,8 @@ namespace Zavala.UI {
         [NonSerialized] private bool m_FullyExpanded = false;
         [NonSerialized] private bool m_IsActive;
         [NonSerialized] public AdvisorType ForceAdvisorPolicies = AdvisorType.None;
+        [NonSerialized] public bool ForcePin;
+        [NonSerialized] public bool ForceUnpin;
         [NonSerialized] public bool ShowHand = false;
         [NonSerialized] public PolicyType CardsToShow;
         [NonSerialized] private bool m_PoliciesActive;
@@ -89,9 +91,15 @@ namespace Zavala.UI {
             m_LocalHandler = new TagStringEventHandler();
             m_LocalHandler.Register(LeafUtils.Events.Character, (d, o) => {
                 LeafEvalContext evalContext = LeafEvalContext.FromObject(o);
-                if (evalContext.Thread.Actor == null || m_CurrentDef == null || m_CurrentDef.IsAdvisor) {
+                if (evalContext.Thread.Actor == null || m_CurrentDef == null || ForceUnpin) {
                     Pin.Unpin();
-                } else {
+                } else if (ForcePin) {
+                    Pin.PinTo(((EventActor)evalContext.Thread.Actor).transform);
+                }
+                else if (m_CurrentDef.IsAdvisor) {
+                    Pin.Unpin();
+                }
+                else {
                     // only pin if inspector is not showing
                     if (((EventActor)evalContext.Thread.Actor).DisplayingPopup == null) {
                         Pin.PinTo(((EventActor)evalContext.Thread.Actor).transform);
@@ -213,6 +221,23 @@ namespace Zavala.UI {
             ForceAdvisorPolicies = aType;
             // collapse any current, will force expand when closed
             CollapsePolicyUI();
+        }
+
+        public void ForcePinDialogue()
+        {
+            ForcePin = true;
+            ForceUnpin = false;
+        }
+
+        public void ForceUnpinDialogue()
+        {
+            ForceUnpin = true;
+            ForcePin = false;
+        }
+
+        public void ClearPinForces()
+        {
+            ForcePin = ForceUnpin = false;
         }
 
         public void ExpandPolicyUI(AdvisorType advisorType) {
@@ -419,8 +444,6 @@ namespace Zavala.UI {
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
-            // TODO: should probably just disable advisor buttons when dialogue is showing
-
             // If dialogue has completed when advisor button is clicked, hide this
             if (m_FullyExpanded) {
                 m_TransitionRoutine.Replace(HideRoutine());

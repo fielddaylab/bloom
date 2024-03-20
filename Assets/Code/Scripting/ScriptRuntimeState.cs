@@ -179,5 +179,32 @@ namespace FieldDay.Scripting {
         static public void ForceCloseDialogue() {
             Runtime.DefaultDialogue.HideDialogueUI();
         }
+
+        /// <summary>
+        /// Pins ALL following character dialogue if there is a location to pin to
+        /// </summary>
+        [LeafMember("ForcePinDialogue")]
+        static public void ForcePinDialogue()
+        {
+            Runtime.DefaultDialogue.ForcePinDialogue();
+        }
+
+        /// <summary>
+        /// Unpins ALL following character dialogue, even if there is a location to pin to
+        /// </summary>
+        [LeafMember("ForceUnpinDialogue")]
+        static public void ForceUnpinDialogue()
+        {
+            Runtime.DefaultDialogue.ForceUnpinDialogue();
+        }
+
+        /// <summary>
+        /// Restores default pin logic behavior
+        /// </summary>
+        [LeafMember("ClearPinForces")]
+        static public void ClearPinForces()
+        {
+            Runtime.DefaultDialogue.ClearPinForces();
+        }
     }
 }
