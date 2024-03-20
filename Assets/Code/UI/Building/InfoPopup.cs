@@ -131,6 +131,7 @@ namespace Zavala.UI.Info
         [NonSerialized] private ResourceSupplier m_SelectedSupplier;
         [NonSerialized] private ResourceRequester m_SelectedRequester;
         [NonSerialized] private ResourcePurchaser m_SelectedPurchaser;
+        [NonSerialized] private EventActor m_SelectedActor;
         [NonSerialized] private ResourceMask m_ActiveResource;
         [NonSerialized] private ResourceMask m_AvailableTabsMask;
         [NonSerialized] private InspectorTabProfitGroup m_ActiveTabProfitGroup = new InspectorTabProfitGroup();
@@ -200,6 +201,7 @@ namespace Zavala.UI.Info
             m_SelectedLocation = thing.GetComponent<LocationDescription>();
             if (thing.TryGetComponent(out EventActor actor)) {
                 string id = actor.Id.Source();
+                m_SelectedActor = actor;
             }
 
             m_SelectedPurchaser = null;
@@ -973,6 +975,12 @@ namespace Zavala.UI.Info
             base.OnHideComplete(inbInstant);
 
             m_Pin.Unpin();
+
+            // unmark actor as displaying popup inspector
+            if (m_SelectedActor) {
+                m_SelectedActor.DisplayingPopup = null;
+                m_SelectedActor = null;
+            }
         }
 
         protected override void OnShowComplete(bool inbInstant) {
@@ -980,6 +988,11 @@ namespace Zavala.UI.Info
 
             m_Layout.ForceRebuild(true);
             m_PinTransform.sizeDelta = m_LayoutTransform.sizeDelta;
+
+            // mark actor as displaying popup inspector
+            if (m_SelectedActor) {
+                m_SelectedActor.DisplayingPopup = this;
+            }
         }
 
         private void OnMarketPrioritiesUpdated() {

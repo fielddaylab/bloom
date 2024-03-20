@@ -48,10 +48,13 @@ namespace FieldDay.Scripting {
 
             ScriptThread thread = m_RuntimeState.ThreadPool.Alloc();
 
-            if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
+            //if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
                 m_RuntimeState.Cutscene.Kill();
-                // TODO: Kill lower priority threads
-            }
+                // Kill lower priority threads
+                foreach (var activeThread in m_RuntimeState.ActiveThreads) {
+                    activeThread.Kill();
+                }
+            // }
 
             TempAlloc<VariantTable> tempVars = m_RuntimeState.TablePool.TempAlloc();
             if (inLocals != null && inLocals.Count > 0) {
@@ -65,9 +68,13 @@ namespace FieldDay.Scripting {
             thread.AttachRoutine(Routine.Start(m_RoutineHost, LeafRuntime.Execute(thread, inNode)));
 
             m_RuntimeState.ActiveThreads.PushBack(handle);
-            if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
-                m_RuntimeState.Cutscene = handle;
-            }
+            // Why did we have this check? It prevents some nodes otherwise marked with cutscene from being cutscenes
+            //if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
+                if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0)
+                {
+                    m_RuntimeState.Cutscene = handle;
+                }
+            //}
 
             if (!inNode.TargetId.IsEmpty) {
                 m_RuntimeState.ThreadMap.Threads[inNode.TargetId] = handle;
@@ -102,6 +109,10 @@ namespace FieldDay.Scripting {
                 ip.Hide();
             }
             m_RuntimeState.DefaultDialogue.MarkNodeEntered();
+            
+            // reset pin overrides at the start of a new node
+            m_RuntimeState.DefaultDialogue.ClearPinForces();
+
             ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
         }
 

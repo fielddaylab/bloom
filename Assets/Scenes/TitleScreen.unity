@@ -11134,6 +11134,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7187505077506684931, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
+      propertyPath: m_AutoSize
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7314780442184180615, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_text
       value: "AaaaaaaaaaBdddd\u200B"
@@ -11196,7 +11200,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7896981944623437885, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_UVRect.x
-      value: 0.03251794
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7896981944623437885, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_UVRect.y
@@ -11204,7 +11208,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7896981944623437885, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_UVRect.width
-      value: 0.9349641
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7896981944623437885, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_UVRect.height

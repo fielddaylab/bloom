@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadowTexture:
-        m_Texture: {fileID: 2800000, guid: 17765797b65a17a44ab79e50426c969d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6fd28687ee967e44485f5ac160704064, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -129,7 +129,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadowStength: 0.56
+    - _ShadowStength: 0.82
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

@@ -14,6 +14,7 @@ using Zavala.Building;
 using Zavala.Data;
 using Zavala.Sim;
 using Zavala.UI;
+using Zavala.UI.Info;
 using Zavala.World;
 
 namespace Zavala.Scripting {
@@ -27,6 +28,7 @@ namespace Zavala.Scripting {
         public Vector3 EventDisplayOffset;
 
         [NonSerialized] public UIAlert DisplayingEvent;
+        [NonSerialized] public InfoPopup DisplayingPopup;
 
         // not serialized
 
