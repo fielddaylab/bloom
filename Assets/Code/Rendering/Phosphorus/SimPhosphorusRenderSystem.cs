@@ -89,7 +89,7 @@ namespace Zavala.World {
                 foreach (var tile in phosphorusState.Phosphorus.Changes.AffectedTiles) {
                     HeatMapUtility.UpdateTile(heatMap, tile, phosBuff[tile].Count);
                 }
-                HeatMapUtility.PushChanges(heatMap);
+                HeatMapUtility.PushChanges(heatMap, MeshDataUploadFlags.DontRecalculateBounds | MeshDataUploadFlags.SkipIndexBufferUpload);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Zavala.World {
                 HeatMapUtility.PatchEdges(heatMap, gridState.HexSize, (ushort) (regionIdx + 1), heatMap.TileRegions, gridState.Regions[regionIdx].Edges, gridState.Terrain.NonVoidTiles);
             }
 
-            HeatMapUtility.PushChanges(heatMap);
+            HeatMapUtility.PushChanges(heatMap, 0);
         }
 
         #endregion // Handling Changes

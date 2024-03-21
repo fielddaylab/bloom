@@ -38,6 +38,7 @@ namespace Zavala.Scripting {
                 foreach (EndGameConditions cond in m_StateA.EndConditionsPerRegion[region].IndependentEndConditions) {
                     if (EndConditionsMet(cond, (uint)currentRegion)) {
                         WinLossUtility.TriggerEnding(cond.Type, region);
+                        m_StateA.HasMetEnding = true;
                         break;
                     }
                 }

@@ -6,6 +6,7 @@ namespace Zavala.Data {
         public string PlayerCode;
         public long LastSaveTS;
         public double Playtime;
+        public int Version;
     }
 
     public struct SaveStateManifest {
@@ -25,6 +26,7 @@ namespace Zavala.Data {
         public int MaxRegions;
         public HexGridSize GridSize;
         public HexGridSubregion DataRegion;
+        public int Version;
     }
 
     public struct SaveScratchpad {

@@ -127,7 +127,7 @@ namespace Zavala.Sim {
             ScriptUtility.Trigger(GameTriggers.GameBooted);
 
             if (!ZavalaGame.SaveBuffer.HasSave) {
-                SaveUtility.Save();
+                SaveUtility.Save(SaveSlot.Main);
             }
         }
 

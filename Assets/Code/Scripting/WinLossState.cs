@@ -68,9 +68,7 @@ namespace Zavala.Scripting {
         // [NonSerialized] public bool[] FarmsConnectedInRegion;
         [NonSerialized] public int[] CityFallingTimersPerRegion;
         [NonSerialized] public bool CheckTimer;
-
-
-
+        [NonSerialized] public bool HasMetEnding;
 
         public void OnDeregister() {
         }

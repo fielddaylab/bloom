@@ -50,6 +50,7 @@ namespace Zavala
         static public readonly StringHash32 SimZoomChanged = "sim:zoom";
 
         static public readonly StringHash32 SimAlgaeChanged = "sim:algae-change";
+        static public readonly StringHash32 SimPhosphorusTick = "sim:phosphorus-tick";
 
         static public readonly StringHash32 GlobalAlertAppeared = "sim:global-appeared";
         static public readonly StringHash32 GlobalAlertClicked = "sim:global-clicked";
