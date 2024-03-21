@@ -95,6 +95,9 @@ namespace Zavala.UI.Info
         [SerializeField] private Sprite m_DigesterCapture;
         [SerializeField] private Sprite m_DepotCapture;
 
+        [Header("EfficiencyGroup")]
+        [SerializeField] private ProductionEfficiencyGroup m_EfficiencyGroup;
+
         [Header("Header")]
         [SerializeField] private Graphic m_HeaderBG;
         [SerializeField] private TMP_Text m_HeaderLabel;
@@ -216,6 +219,7 @@ namespace Zavala.UI.Info
             m_StorageGroup.gameObject.SetActive(false);
             m_ResourceIcon.gameObject.SetActive(false);
             m_HeaderLayout.padding.right = DefaultHeaderRightPadding;
+            m_EfficiencyGroup.gameObject.SetActive(false);
             string title = Loc.Find(m_SelectedLocation.TitleLabel);
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
@@ -229,6 +233,9 @@ namespace Zavala.UI.Info
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
                     m_AvailableTabsMask = (ResourceMask)0b01110;
+                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
+                    ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
                     SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
                     PickTab(ResourceMask.Phosphorus);
                     break;
@@ -245,6 +252,9 @@ namespace Zavala.UI.Info
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
                     m_AvailableTabsMask = (ResourceMask)0b11001;
+                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
+                    ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
                     SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
                     PickTab(ResourceMask.Manure);
                     break;
@@ -256,7 +266,10 @@ namespace Zavala.UI.Info
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
-                    break;
+                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, ResourceMask.Milk);
+                    ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, ResourceMask.Empty, m_SelectedPurchaser.MoneyProducer.ProducesAmt);
+                        break;
                 }
 
                 case BuildingType.DigesterBroken:
@@ -396,6 +409,7 @@ namespace Zavala.UI.Info
             showRunoff = (m_ActiveResource & ResourceMask.Manure) != 0;
             queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
 
+            bool anyPrev = false;
             for (int i = 0; i < WideNumRows; i++)
             {
                 if (i < queryCount)
@@ -407,11 +421,12 @@ namespace Zavala.UI.Info
                     InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i]);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = SellArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = SellArrowTextColor;
+                    anyPrev = true;
                 }
                 else
                 {
                     // load empty col group
-                    InfoPopupMarketUtility.LoadEmptyProfitCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOption.gameObject, i);
+                    InfoPopupMarketUtility.LoadEmptyProfitCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOption.gameObject, i, anyPrev);
                 }
                 m_MarketContentsColHeaders.PenaltyColHeader.gameObject.SetActive(showRunoff);
             }

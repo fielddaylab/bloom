@@ -41,11 +41,11 @@ namespace Zavala.UI.Info {
 
         static private readonly Color[] ColumnColors = new Color[5]
 {
-            Colors.Hex("#FFE9BD"),
-            Colors.Hex("#FFE2A7"),
-            Colors.Hex("#F8D99B"),
-            Colors.Hex("#F8D99B"),
-            Colors.Hex("#ECCD90")
+            Colors.Hex("#F4EECE"), // Colors.Hex("#FFE9BD"),
+            Colors.Hex("#F4EECE"), //Colors.Hex("#FFE2A7"),
+            Colors.Hex("#F4EECE"), //Colors.Hex("#F8D99B"),
+            Colors.Hex("#F4EECE"), //Colors.Hex("#F8D99B"),
+            Colors.Hex("#F4EECE") //Colors.Hex("#ECCD90")
         }
 ;
         static private readonly Color RowHighlightColor = Colors.Hex("#9CE978");
@@ -222,11 +222,16 @@ namespace Zavala.UI.Info {
             LoadEmptyCol(col, bestOptionBanner, colGroupIndex);
         }
 
-        static public void LoadEmptyProfitCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, GameObject bestOptionBanner, int colGroupIndex)
+        static public void LoadEmptyProfitCol(PolicyState policyState, SimGridState grid, InfoPopupLocationColumn col, InfoPopupColumnHeaders headers, GameObject bestOptionBanner, int colGroupIndex, bool anyPrev)
         {
             ActivateProfitHeaders(headers, policyState, grid);
 
             col.SalesTaxCol.gameObject.SetActive(false);
+            if (!anyPrev)
+            {
+                col.ImportTaxCol.gameObject.SetActive(false);
+                col.PenaltyCol.gameObject.SetActive(false);
+            }
             LoadEmptyCol(col, bestOptionBanner, colGroupIndex);
         }
 

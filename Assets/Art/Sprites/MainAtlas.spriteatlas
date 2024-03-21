@@ -121,6 +121,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: f1c1991d55fde1b44975cee1f7f527e0, type: 3}
   - {fileID: 21300000, guid: 6a7c80cdc0ea6db4490f49d084faa518, type: 3}
+  - {fileID: 21300000, guid: 6353d11e53a88f049bb1523cb18e34ae, type: 3}
   - {fileID: 21300000, guid: 98bf592e9435dd74fb7add32f6a182b2, type: 3}
   - {fileID: 21300000, guid: 5d813f3e537b05e40ba3cbe7825ade0b, type: 3}
   - {fileID: 21300000, guid: d708494e86461a14e98d820ffac30144, type: 3}
@@ -205,6 +206,7 @@ SpriteAtlas:
   - BlueprintMode
   - resource_grain
   - controls_zoom
+  - efficiency-arrow
   - grain-resource
   - Cursor-Normal
   - arrow_white

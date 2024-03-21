@@ -33,7 +33,8 @@ namespace Zavala.Economy {
         Grain = 1 << ResourceId.Grain,
         Milk = 1 << ResourceId.Milk,
 
-        [Hidden] Phosphorus = Manure | MFertilizer | DFertilizer
+        [Hidden] Phosphorus = Manure | MFertilizer | DFertilizer,
+        [Hidden] Empty = 0
     }
 
     [Serializable]
