@@ -234,6 +234,10 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1848189255657028006, guid: ce08d27a6c794ca4b964de58d80b4998, type: 3}
+      propertyPath: m_Name
+      value: Highlight BG
+      objectReference: {fileID: 0}
     - target: {fileID: 2922278956588211674, guid: ce08d27a6c794ca4b964de58d80b4998, type: 3}
       propertyPath: Detail
       value: 
@@ -242,6 +246,10 @@ PrefabInstance:
       propertyPath: Number
       value: 
       objectReference: {fileID: 4427277164298814247}
+    - target: {fileID: 2922278956588211674, guid: ce08d27a6c794ca4b964de58d80b4998, type: 3}
+      propertyPath: Background
+      value: 
+      objectReference: {fileID: 901025453095899044}
     - target: {fileID: 3350606948411771186, guid: ce08d27a6c794ca4b964de58d80b4998, type: 3}
       propertyPath: m_Name
       value: PriceCol Variant
@@ -330,6 +338,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce08d27a6c794ca4b964de58d80b4998, type: 3}
+--- !u!114 &901025453095899044 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8488197838088702530, guid: ce08d27a6c794ca4b964de58d80b4998, type: 3}
+  m_PrefabInstance: {fileID: 8740703020160501222}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4427277164298814247 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4917348094470981313, guid: ce08d27a6c794ca4b964de58d80b4998, type: 3}

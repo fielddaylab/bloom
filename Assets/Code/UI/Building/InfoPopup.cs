@@ -56,8 +56,8 @@ namespace Zavala.UI.Info
         static private readonly Color DepotColor = Colors.Hex("#FFC34E");
         static private readonly Color FrameColor = Colors.Hex("FFFBE3");
         static private readonly Color FrameShadedColor = Colors.Hex("EFE9C4");
-        static private readonly Color BuyArrowColor = Colors.Hex("9CE978");
-        static private readonly Color BuyArrowTextColor = Colors.Hex("3C9A10");
+        static private readonly Color BuyArrowColor = Colors.Hex("ABEAD5");
+        static private readonly Color BuyArrowTextColor = Colors.Hex("367A63");
         static private readonly Color SellArrowColor = Colors.Hex("FFDE67");
         static private readonly Color SellArrowTextColor = Colors.Hex("A68201");
 
@@ -410,6 +410,7 @@ namespace Zavala.UI.Info
             queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
 
             bool anyPrev = false;
+            int nextBestIndex = 0;
             for (int i = 0; i < WideNumRows; i++)
             {
                 if (i < queryCount)
@@ -417,8 +418,8 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = results.TaxRevenue.Penalties > 0;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i]);
-                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i]);
+                    bool sellChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, true);
+                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i], sellChoice);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = SellArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = SellArrowTextColor;
                     anyPrev = true;
@@ -505,6 +506,7 @@ namespace Zavala.UI.Info
                 m_ActiveTabProfitGroup = newTabProfitGroup;
             }
 
+            int nextBestIndex = 0;
             for (int i = 0; i < WideNumRows; i++)
             {
                 if (i < queryCount)
@@ -512,8 +514,8 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = false;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i]);
-                    InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, m_ActiveTabProfitGroup.Profits[i]);
+                    bool bestBuyChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, false);
+                    InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, m_ActiveTabProfitGroup.Profits[i], bestBuyChoice);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = BuyArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = BuyArrowTextColor;
                 }
