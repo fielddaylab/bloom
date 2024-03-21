@@ -1,3 +1,4 @@
+using BeauRoutine;
 using BeauUtil;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Windows;
+using Zavala.Actors;
 using Zavala.Economy;
 
 namespace Zavala.UI
@@ -18,6 +20,8 @@ namespace Zavala.UI
         public Image OutputIcon2;
         public Image OutputIconMoney;
         public TMP_Text OutputMoneyText;
+
+        public Image[] EfficiencyIcons;
 
         [Space(5)]
         public Sprite ManureSprite;
@@ -141,13 +145,25 @@ namespace Zavala.UI
         }
 
         /// <summary>
-        /// set the efficiecny to a level between 0 and 3, inclusive
+        /// set the efficiecny to a level between 0 and 2, inclusive
         /// </summary>
         /// <param name="group"></param>
         /// <param name="level"></param>
-        public static void SetEfficiencyLevel(ProductionEfficiencyGroup group, int level)
+        public static void SetEfficiencyLevel(ProductionEfficiencyGroup group, OperationState opState)
         {
-            
+            int level = (int)opState;
+            for (int i = 0; i < group.EfficiencyIcons.Length; i++)
+            {
+                if (i <= level)
+                {
+                    group.EfficiencyIcons[i].SetAlpha(1);
+                }
+                else
+                {
+                    group.EfficiencyIcons[i].SetAlpha(0.5f);
+
+                }
+            }
         }
     }
 }

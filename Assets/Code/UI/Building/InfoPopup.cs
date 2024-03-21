@@ -134,6 +134,7 @@ namespace Zavala.UI.Info
         [NonSerialized] private ResourceSupplier m_SelectedSupplier;
         [NonSerialized] private ResourceRequester m_SelectedRequester;
         [NonSerialized] private ResourcePurchaser m_SelectedPurchaser;
+        [NonSerialized] private StressableActor m_SelectedStressable;
         [NonSerialized] private EventActor m_SelectedActor;
         [NonSerialized] private ResourceMask m_ActiveResource;
         [NonSerialized] private ResourceMask m_AvailableTabsMask;
@@ -209,6 +210,7 @@ namespace Zavala.UI.Info
 
             m_SelectedPurchaser = null;
             m_SelectedRequester = null;
+            m_SelectedStressable = null;
             m_SelectedSupplier = null;
             m_TabGroup.SetActive(false);
             m_PurchaseContents.gameObject.SetActive(false);
@@ -227,6 +229,7 @@ namespace Zavala.UI.Info
                     m_SubheaderLabel.SetText(title)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/;
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
+                    m_SelectedStressable = thing.GetComponent<StressableActor>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = GrainFarmColor;
                     m_ResourceIcon.gameObject.SetActive(true);
@@ -246,6 +249,7 @@ namespace Zavala.UI.Info
                     m_SubheaderLabel.SetText(title)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/;
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
+                    m_SelectedStressable = thing.GetComponent<StressableActor>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = DairyFarmColor;
                     m_ResourceIcon.gameObject.SetActive(true);
@@ -264,6 +268,7 @@ namespace Zavala.UI.Info
                     m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
+                    m_SelectedStressable = thing.GetComponent<StressableActor>();
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
                     m_EfficiencyGroup.gameObject.SetActive(true);
@@ -274,12 +279,20 @@ namespace Zavala.UI.Info
 
                 case BuildingType.DigesterBroken:
                 case BuildingType.Digester: {
+                    m_SelectedRequester = thing.GetComponent<ResourceRequester>();
+                    m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_HeaderBG.color = DigesterColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
                     m_DescriptionImage.sprite = m_DigesterCapture;
+                    /*if (m_SelectedRequester)
+                    {
+                        m_EfficiencyGroup.gameObject.SetActive(true);
+                        ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
+                        ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
+                    }*/
                     break;
                 }
 
@@ -725,6 +738,8 @@ namespace Zavala.UI.Info
                     if (m_InitialOpen) {
                         DispatchDairyFarmDisplayed();
                     }
+
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
                     break;
                 }
 
@@ -740,6 +755,8 @@ namespace Zavala.UI.Info
                     if (m_InitialOpen) {
                         DispatchGrainFarmDisplayed();
                     }
+                    
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
                     break;
                 }
 
@@ -756,6 +773,8 @@ namespace Zavala.UI.Info
                             )
                         );
                     }
+
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
                     break;
                 }
                 case BuildingType.DigesterBroken:
@@ -764,6 +783,8 @@ namespace Zavala.UI.Info
                     if (m_InitialOpen) {
                         ZavalaGame.Events.Dispatch(GameEvents.GenericInspectorDisplayed);
                     }
+
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, OperationState.Great);
                     break;
                 }
 
