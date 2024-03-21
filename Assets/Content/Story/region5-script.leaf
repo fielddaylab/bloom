@@ -47,6 +47,17 @@ $call Wait(3)
 // {@grainUrban}       What if we could ship it like PHOS4US?
 //$call UnlockExportDepot("region2_export1")
 
+// :: triggerUranium
+// @trigger        ExternalImport
+// @conditions     alertRegion == 4
+// @once
+// $call QueueDialogueBubble(region5_grain2, region5.phosPlus)
+
+// :: phosUranium
+// @queued
+// @once
+// $call ForcePinDialogue()
+
 :: triggerFirstBlimp
 @trigger InternalBlimpSent
 @once

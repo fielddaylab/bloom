@@ -161,6 +161,7 @@ $call ForcePolicyInstant("Economy")
 :: queueSuggestFert
 @trigger    ExternalImport
 @conditions global:importUnlocked, alertRegion == 3, PolicyLevelInRegion(3, "ImportTaxPolicy") != 3
+@once
 $call QueueDialogueBubble(region3_grain3, region3.suggestFertSubsidy)
 
 :: suggestFertSubsidy

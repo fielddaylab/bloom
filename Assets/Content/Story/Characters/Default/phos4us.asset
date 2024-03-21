@@ -13,26 +13,26 @@ MonoBehaviour:
   m_Name: phos4us
   m_EditorClassIdentifier: 
   NameId: Rupert
-  TitleId: Sales Representative (Phos4Us)
+  TitleId: Sales Representative (PHOS4US)
   IsAdvisor: 1
   IsEcon: 1
   BackgroundColor:
     serializedVersion: 2
-    rgba: 4290893055
+    rgba: 4290310142
   PanelColor:
     serializedVersion: 2
-    rgba: 4290893055
+    rgba: 4290310142
   HighlightColor:
     serializedVersion: 2
-    rgba: 4284255486
+    rgba: 4280640481
   NameColor:
     serializedVersion: 2
-    rgba: 4278200454
+    rgba: 4293263322
   TitleColor:
     serializedVersion: 2
-    rgba: 4278200454
+    rgba: 4293263322
   TextColor:
     serializedVersion: 2
-    rgba: 4278200454
-  PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+    rgba: 4279244105
+  PortraitArt: {fileID: 21300000, guid: 5b66702076cbe7142b0606b2b3a874c5, type: 3}
   PanelBackground: {fileID: 2800000, guid: 0c59bbde34460954ab6a02324817b907, type: 3}

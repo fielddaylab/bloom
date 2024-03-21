@@ -114,6 +114,7 @@ $call QueueDialogueBubble(region4_grain1, region4.phosPlus)
 @queued
 @once
 $call ForcePinDialogue()
+$call QueueDialogueBubble(region4_city1, region4.aboutRupert)
 {@phos4us}      Valued customer!
 {@phos4us}      Can I interest you in PHOS4US Plus?
 {@grainWetland} What on earth is that?
@@ -122,6 +123,18 @@ $call ForcePinDialogue()
 {@grainWetland} Erm, no thank you.
 {@phos4us}      Your loss.
 {@phos4us}      "Nitrogen Fixers" Season 3 is a classic...
+
+:: aboutRupert
+@queued
+@once
+$call ForcePinDialogue()
+{@advisorEconWetland}   Say what you will about that Rupert fellow.
+{@advisorEconWetland}   But I like the cut of his jib!
+{@advisorEcolWetland}   He's defending PHOS4US!
+{@advisorEconWetland}   Maybe so, but that's just his job.
+{@advisorEcolWetland}   True... And he doesn't seem to like it much.
+{@advisorEconWetland}   But he's a hard-working young man!
+{@advisorEconWetland}   SAGA could use folks like that.
 
 :: complainFine
 @trigger        AlertExamined
@@ -308,6 +321,7 @@ $call ForcePolicyInstant("Ecology")
 @conditions     buildingType == "Digester"
 @once       
 $set global:builtDigester = true
+$call QueueDialogueBubble(region1_grain1, region1.phosShirt)
 $call AddRegionAgeDeltaTrigger(4, 10)
 
 // TODO: work on this some more
@@ -329,7 +343,11 @@ $call ForceAdvisorModule("Economy")
 @once
 {@cafoWetland}          I'm not so sure about those <b>Export Depots.</b>
 {@cafoWetland}          Blimps from PHOS4US got us into this mess in the first place!
-{@advisorEcolWetland}   Good point. But we can ship our fertilizer responsibly!
+{@phos4us}              What!?
+{@phos4us}              PHOS4US is committed to the environment!
+{@phos4us}              We donate a portion of annual profits to the PHOS4US Cares Initative.
+{@phos4us}              They're investigating forming a committee to consider researching an action plan!
+{@advisorEcolWetland}   Uh, sure. But SAGA can ship our fertilizer responsibly!
 // {@advisorEcolWetland}   SAGA's purpose is to foster our ecosystem.
 // {@advisorEconWetland}   And our economy!
 // {@advisorEcolWetland}   So our budget goes back to that mission.
