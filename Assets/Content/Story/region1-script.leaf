@@ -230,6 +230,17 @@ $set intro:pendingPolicy = true
 // {local @grainFarmer} I've got something to say!
 // // $call QueueDialogueBubble(region1_city1, region1.testResponseDialogue)
 
+:: throughForests
+@queued
+@once
+$call ForcePinDialogue()
+{@advisorEconHill}      Sigh. I don't see why we can't build trade routes through forests.
+{@advisorEcolHill}      Pippin, those are protected lands.
+{@advisorEcolHill}      We can't just pave through an <i>Important Bird Area!</i>
+{@advisorEconHill}      Bah! You environmentalists are always ruining the fun.
+{@advisorEcolHill}      As if saving Caldwell's White-Throated Warbler isn't fun!
+{@advisorEconHill}      Not as fun as a near 15% increase in operating efficiency!!
+
 :: specialDelivery
 @trigger    ExternalImport
 @conditions intro:externalFound = false
@@ -242,19 +253,19 @@ $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
 {@grainHill}            My crops need <b>phosphorus</b> to grow...
 {@grainHill}            There's some <b>phosphorus</b> in the soil, but it's not enough!
-{@grainHill}            <b>PHOS4US</b> ships mineral phosphorus to my farm for cheap.
-// {@phos4us}              We have the best prices in the area!
-{@advisorEcolHill}      Woah there! We're adding MORE nutrients to our soil?
-{@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle! // talk to phos4us - THEY dont consider the phos cycle??
+{@phos4us}              PHOS4US provides the nutrients plants need, at prices farmers deserve!
+$call QueueDialogueBubble(region1_cafo1, region1.dontTrustRupert)
+{@advisorEcolHill}      Woah there! They're adding MORE nutrients to our soil?
+{@advisorEcolHill}      Doesn't PHOS4US care about disrupting the phosphorus cycle!? // talk to phos4us - THEY dont consider the phos cycle??
 $call AddAutoAlertCondition("Bloom", 1)
 {@advisorEconHill}      I'm sure Henrietta has a good reason. Let's take a look...
 $set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
 $call OpenInfoPopup("region1_grain1")
 {@advisorEconHill}      The <b>Inspector</b> shows where she could <b>buy from</b>.
 {@grainHill}            See, PHOS4US is the only seller around!
-// {@phos4us}           And the best!
+{@phos4us}              And the best!
 $if local:taxLevel > 0, local:taxLevel < 3
-    {@grainHill}        Plus, that <b>Sales Tax</b> of yours is increasing the price...
+    {@grainHill}        But that <b>Sales Tax</b> of yours is increasing the price...
 $endif
 {@advisorEcolHill}      What about manure? That has phosphorus.
 $call CloseInfoPopup()
@@ -274,21 +285,23 @@ $call CloseInfoPopup()
 // $call Unpause()
 
 
-:: throughForests
-@trigger AlertExamined
-@conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, intro:externalFound
+:: dontTrustRupert
+@queued
 @once
-{@advisorEconHill}      Sigh. I don't see why we can't build trade routes through forests.
-{@advisorEcolHill}      Pippin, those are protected lands.
-{@advisorEcolHill}      We can't just pave through an <i>Important Bird Area!</i>
-{@advisorEconHill}      Bah! You environmentalists are always ruining the fun.
-{@advisorEcolHill}      As if saving Caldwell's White-Throated Warbler isn't fun!
-{@advisorEconHill}      Not as fun as a near 15% increase in operating efficiency!!
+{@cafoHill}             I don't trust that Rupert guy...
+{@advisorEconHill}      Oh? Why not?
+{@advisorEconHill}      PHOS4US is providing necessary nutrients at competitive prices!
+{@advisorEcolHill}      No, Bertram is right.
+{@advisorEcolHill}      PHOS4US cares more about profits than our environment!
+{@advisorEcolHill}      This Rupert guy is just holding the corporate line.
+{@cafoHill}             Oh, I dunno. I just think he's creepy.
+{@grainHill}            Whatever. He got me a great deal on fertilizer!
 
 :: openedToForest
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, RegionUnlocked(2)
 @once
+$call ForcePinDialogue()
 {@advisorEconHill}      Ah, you've expanded into Cypress County. Lucky you.
 {@advisorEconHill}      Now you can be <i>condescended to</i> while surrounded by natural splendor.
 {@advisorEcolHill}      I'm surprised you're not friends with Agatha! You're both economics weirdos.
@@ -316,6 +329,7 @@ $endif
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, RegionUnlocked(3)
 @once
+$call ForcePinDialogue()
 {@advisorEcolHill}      Ugh... Those Heath County people always irked me.
 {@advisorEcolHill}      They think they're better than everyone because of that fancy college.
 {@advisorEcolHill}      Plus their straw hats are weird!
@@ -324,6 +338,7 @@ $endif
 :: graphPrettyCool
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "City", alertRegion == 1, global:tradeGraphsUnlocked
+$call ForcePinDialogue()
 {@advisorEcolHill}      Okay, I gotta admit... that Market Share graph thingy is pretty cool.
 {@advisorEcolHill}      You get all that information just from buying decisions?
 {@advisorEconPrairie}   Yes ma'am! And we can use it to help bring our Phosphorus in balance.
@@ -334,7 +349,8 @@ $endif
 :: visitingBirds
 @queued
 @once
-{@cityWetland}      Hey, um... Can anyone point me to Caldwell Oaks?
+{@cityWetland}      Hey, um... Just passing through.
+{@cityWetland}      Can anyone point me to Caldwell Oaks?
 {@advisorEcolHill}  Wait... you mean the Important Bird Area?
 {@advisorEcolHill}  <i>You know about our Important Bird Area??</i>
 {@cityWetland}      Haha, yeah!
@@ -347,6 +363,7 @@ $endif
 :: pippinEcology
 @queued
 @once
+$call ForcePinDialogue()
 {@advisorEconHill}      Ah... It's all coming together now!
 {@advisorEcolHill}      Hm?
 {@advisorEconHill}      The Storage, the Processor, the Export Depot...
@@ -473,7 +490,7 @@ $call QueueDialogueBubble(region1_cafo1, region1.runoffFineWorking)
 {@advisorEcolHill}      Aha!
 {@advisorEcolHill}      Did you see? Bertram just sold manure! The Runoff Fine is working!
 {@advisorEconHill}      Ooo! Could it be making him some money?
-{@advisorEconHill}      Is this creating a poop-- er, Fertilizer Economy!?
+{@advisorEconHill}      Is this creating a new Fertilizer Economy!?
 $call OpenInfoPopup("region1_cafo1")
 {@cafoHill}             I'm still losing money on the <b>shipping costs!</b>
 {@cafoHill}             Even if I'm making profit from <b>Milk</b>...
@@ -486,7 +503,7 @@ $call CloseInfoPopup()
 @conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered, isFromGrainFarm == false
 @queued
 // $call Pause()
-{local @advisorEcol}    More runoff... 
+{local @advisorEcol}        More runoff... 
 $if PolicyLevelInRegion(1, "RunoffPolicy") < 3
     {@advisorEcolHill}      Maybe we ought to increase our runoff fine?
     {@advisorEconHill}      Careful now! We don't want to bankrupt our farmers.
@@ -518,6 +535,7 @@ $call CutsceneBegin(2)
     $call CutscenePrepareImages("act2/2-3-1.png", "act2/2-3-2.png", "act2/2-3-3.png")
 	$call CutsceneAllImages(0.5)
 	Or are the dairy farmers at fault? Their cows' <b>phosphorus</b>-filled manure runs off into the lakes too!
+    With the old Manure Processor broken down, manure is too heavy to ship effectively...
     $call CutscenePrepareImages("act2/2-4-1.png", "act2/2-4-2.png", "act2/2-4-3.png")
 	$call CutsceneAllImages(0.5)
     Nearby farms might be able to afford manure fertilizer... But long-distance shipping is just too costly!
@@ -581,6 +599,7 @@ $endif
 :: urbanVisit
 @once
 @queued
+$call ForcePinDialogue()
 $call QueueDialogueBubble(region5_city2, region5.finishUrban)
 {@advisorEcolUrban}     Ah, Knoll County.
 {@advisorEcolUrban}     Isn't this where those awful Algae Blooms started?

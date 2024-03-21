@@ -86,6 +86,7 @@ $if intro:tutorialComplete = false
     {@advisorEconHill}  A fine choice. 
     {@advisorEconHill}  Let's get this economy started, shall we?
     $call PauseUser()
+    $call QueueDialogueBubble(region1_city1, region1.throughForests)
     {@advisorEconHill}  Use the <b>spacebar</b> to toggle <b>Pause.</b>
     $call ShowAnimatedTutorial("PauseTutorial")
     $call OffsetAlgaeGrowthThreshold(0)
@@ -186,7 +187,7 @@ $call OpenInfoPopup("region1_city1", false)
 @trigger    TutorialSkipped
 $call CutsceneEnd()
 $call FocusClear()
-{@phos4us}    Heheh, you've skipped the tutorial! Far out.
+{@phos4us}    Thank you for using PHOS4US TutSkip technology!
 // $call SendGlobalAlertForNode("region1_city1", region1.testGlobalAlert)
 $call HideAnimatedTutorial()
 $set intro:tutorialComplete = true
@@ -272,11 +273,15 @@ $endif
 {local @advisorEcon}    Our Processed Fertilizer has beat out PHOS4US!
 $call ForceAdvisorModule("Ecology")
 {local @advisorEcon}    PHOS4US is no longer operating in our counties.
+{@phos4us}              Erm, about that... Is SAGA hiring?
+$call ForceAdvisorModule("Ecology")
+{local @advisorEcol}    We'll see about that, Rupert...
 {local @advisorEcol}    With the excess phosphorus cut off, our ecosystem can recover.
+{local @advisorEcol}    It will take time, but... SAGA is a success.
 $call CutsceneBegin(7)
 	$call CutscenePrepareImages("win/1-1.png")
 	$call CutsceneNextImage()
-	Great work, Director! You used policy and technology to activate the Fertilizer Economy.
+	Excellent work, Director! You used policy and technology to activate the Fertilizer Economy.
     $call CutscenePrepareImages("win/2-1.png", "win/2-2.png", "win/2-3.png")
     $call CutsceneNextImage()
     Of course, there is still much work to do.
