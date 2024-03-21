@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e118137871931614cb6b0c193d904adf, type: 3}
+  m_Name: phos4us
+  m_EditorClassIdentifier: 
+  NameId: Rupert
+  TitleId: Sales Representative (Phos4Us)
+  IsAdvisor: 1
+  IsEcon: 1
+  BackgroundColor:
+    serializedVersion: 2
+    rgba: 4290893055
+  PanelColor:
+    serializedVersion: 2
+    rgba: 4290893055
+  HighlightColor:
+    serializedVersion: 2
+    rgba: 4284255486
+  NameColor:
+    serializedVersion: 2
+    rgba: 4278200454
+  TitleColor:
+    serializedVersion: 2
+    rgba: 4278200454
+  TextColor:
+    serializedVersion: 2
+    rgba: 4278200454
+  PortraitArt: {fileID: 21300000, guid: ac8ce8fc43f767d4a932f3b972cc2c1b, type: 3}
+  PanelBackground: {fileID: 2800000, guid: 0c59bbde34460954ab6a02324817b907, type: 3}

@@ -95,7 +95,7 @@ $call QueueDialogueBubble(region2_city1, region2.enjoyingCypress)
 {@grainForest}          Have you heard?
 {@grainForest}          They're getting <i>Algae Blooms</i> over in Knoll County.
 {@advisorEcolForest}    Is that so? Not surprising...
-{@advisorEconForest}    And not our problem! We have our own matters to worry about.
+{@advisorEconForest}    And not our problem! We have forest management to do.
 
 :: urgentGrainForest
 @trigger        UrgentRequest
@@ -136,17 +136,15 @@ $endif
 :: explainAlgaeBloom
 @queued
 @once
-{@cityForest}           Hey... What even is this algae bloom stuff, anyway?
-{@advisorEcolPrairie}   Ooo, I can answer that one!
-{@advisorEcolPrairie}   Algae is an important part of any aquatic ecosystem.
-{@advisorEcolPrairie}   It's made of many tiny organisms that make their own food from the sun.
-{@cityForest}           Like little floating plants?
-{@advisorEcolPrairie}   Kinda! And all kinds of animals eat that algae.
+{@cityForest}           Eugh... This algae stuff is nasty.
+{@advisorEcolPrairie}   Hey, be nice!
+{@advisorEcolPrairie}   Algae is an important part of any aquatic ecosystem!
+{@advisorEcolPrairie}   It makes food from the sun which animals feed on.
 {@advisorEcolPrairie}   But when there's excess <b>Phosphorus</b> in the water...
-{@advisorEcolPrairie}   Algae can use it to rapidly multiply - <i>bloom.</i>
-{@advisorEcolPrairie}   All that algae takes the oxygen that other organisms need to survive.
-{@advisorEcolPrairie}   Plus, it smells <i>nasty.</i>
-{@cityForest}           Eugh. I hope SAGA can keep it away from here!
+{@advisorEcolPrairie}   Algae can rapidly multiply - <i>bloom.</i>
+{@advisorEcolPrairie}   And that can be toxic to other organisms!
+{@cityForest}           Plus it smells <i>gross</i>.
+{@cityForest}           I hope SAGA can keep it away from here!
 
 :: runoffBranch
 @trigger        AlertExamined
@@ -285,7 +283,6 @@ $call ForcePolicyInstant("Ecology")
 {@cafoForest}           "Buying local" can't work when we don't have enough locally...
 {@cafoForest}           We need to cover each other's needs to thrive!
 {@advisorEconForest}    Hm... I suppose that's true...
-
 
 
 :: bloomGeneric

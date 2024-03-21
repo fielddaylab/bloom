@@ -62,6 +62,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 628a196241e4e004aa8706fab08d657e, type: 3}
   - {fileID: 21300000, guid: 299e4bd26e2c86d43bcc3a16f14be6b2, type: 3}
   - {fileID: 21300000, guid: 7fc3b363ec4792048a67b070f7de4aba, type: 3}
+  - {fileID: 21300000, guid: 85e94d8302ac7f843a7d22c07387b05e, type: 3}
   - {fileID: 21300000, guid: a6a24693518ba3b4783babe51f300922, type: 3}
   - {fileID: 21300000, guid: 3551c6c3a79d08448ab6cc23bad7d937, type: 3}
   - {fileID: 21300000, guid: a2bd58e308068aa4aaf94eda9584f4e5, type: 3}
@@ -93,6 +94,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 654583471bf8a0e4b9d6fe8f5229fce7, type: 3}
   - {fileID: 21300000, guid: 6e980b87d98ae3442b2a5dd8ff5be0b7, type: 3}
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
+  - {fileID: 21300000, guid: 03e35de789d715e4194911330de60100, type: 3}
   - {fileID: 21300000, guid: 0acbcf2895103dc46bd2d52e01e2e3b3, type: 3}
   - {fileID: 21300000, guid: 82903488d77b16e46a06d4b7f18aeb81, type: 3}
   - {fileID: 21300000, guid: d8120c88b3a67124086628f192bafcc0, type: 3}
@@ -119,11 +121,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: f1c1991d55fde1b44975cee1f7f527e0, type: 3}
   - {fileID: 21300000, guid: 6a7c80cdc0ea6db4490f49d084faa518, type: 3}
-  - {fileID: 21300000, guid: fab52f1e1c3fcc448a0241831b299c14, type: 3}
   - {fileID: 21300000, guid: 98bf592e9435dd74fb7add32f6a182b2, type: 3}
   - {fileID: 21300000, guid: 5d813f3e537b05e40ba3cbe7825ade0b, type: 3}
   - {fileID: 21300000, guid: d708494e86461a14e98d820ffac30144, type: 3}
-  - {fileID: 21300000, guid: 6e04236e56b636e40a38e1d101dae91b, type: 3}
   - {fileID: 21300000, guid: 767dd87e72022f14a9a64358bca57712, type: 3}
   - {fileID: 21300000, guid: 5eba4e9e389da764f8119e6c4b47bb76, type: 3}
   - {fileID: 21300000, guid: 24ba8fce21db8d846a69f995fb37c59b, type: 3}
@@ -146,6 +146,7 @@ SpriteAtlas:
   - advisor-button_econ
   - ShopHubButtonLocked
   - CloseShop
+  - ToolImageDigester
   - water-status-great
   - banner_selling-loss
   - advisor-nameCard_white
@@ -177,6 +178,7 @@ SpriteAtlas:
   - PhosphorusLensIcon
   - base_declining-pop
   - banner_declining-pop
+  - ToolImageStorage
   - money
   - water-status-fair
   - ToolImageRoad
@@ -203,11 +205,9 @@ SpriteAtlas:
   - BlueprintMode
   - resource_grain
   - controls_zoom
-  - ToolImageStorage
   - grain-resource
   - Cursor-Normal
   - arrow_white
-  - ToolImageDigester
   - Square
   - BigDestroyBackground
   - dialog-arrow

@@ -186,7 +186,7 @@ $call OpenInfoPopup("region1_city1", false)
 @trigger    TutorialSkipped
 $call CutsceneEnd()
 $call FocusClear()
-{@advisorEconUrban}    Heheh, you've skipped the tutorial! Far out.
+{@phos4us}    Heheh, you've skipped the tutorial! Far out.
 // $call SendGlobalAlertForNode("region1_city1", region1.testGlobalAlert)
 $call HideAnimatedTutorial()
 $set intro:tutorialComplete = true
@@ -268,13 +268,44 @@ $endif
 @trigger       GameCompleted
 @conditions    FailureIsEnabled()
 @cutscene
-{local @advisorEcon}    You won :D Yippee!
+{local @advisorEcon}    Good news, Director!
+{local @advisorEcon}    Our Processed Fertilizer has beat out PHOS4US!
+$call ForceAdvisorModule("Ecology")
+{local @advisorEcon}    PHOS4US is no longer operating in our counties.
+{local @advisorEcol}    With the excess phosphorus cut off, our ecosystem can recover.
 $call CutsceneBegin(7)
-	$call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
-	$call CutsceneAllImages(0.5)
-	With your help, these regions are blooming into a thriving interconnected economy.
-    Perhaps we couldn't stop the blooms entirely, but by activating a fertilizer market, we've kept them managed.
-    $call CutsceneClearImages()
-    Game over!
-    Thank you for playing!
-    // $call EndGame()
+	$call CutscenePrepareImages("win/1-1.png")
+	$call CutsceneNextImage()
+	Great work, Director! You used policy and technology to activate the Fertilizer Economy.
+    $call CutscenePrepareImages("win/2-1.png", "win/2-2.png", "win/2-3.png")
+    $call CutsceneNextImage()
+    Of course, there is still much work to do.
+    $call CutsceneNextImage()
+    Residual phosphorus remains in the lakes. We need new research and technology to complete the cleanup.
+    $call CutsceneNextImage()
+    We will need people like you, taking on these problems by addressing the whole system.
+    $call CutscenePrepareImages("win/3-1.png", "win/3-2.png", "win/3-3.png")
+	$call CutsceneAllImages(0.3)
+    For now, the communities of SAGA flourish through inter-regional trade and cooperation.
+    They are in good hands.
+    $call Wait(3)
+    $call EndGame()
+
+
+// PRECISION
+
+// GOAL
+
+// PROGRESSION
+// Introduce export depots in Region 5
+//      Bring up market share graph periodically.
+//      
+
+
+// CHARACTERIZATION/PLOT
+
+
+// ADDITIONAL DIALOGUE (phos4us)
+// Introduce him traveling around the area, checking on crops?
+// Spreading slogans, flyers, selling corporate swag
+// Giving excuses for 

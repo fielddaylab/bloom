@@ -10,10 +10,10 @@ $call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)
     You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
-    Right now, SAGA is just a pilot project, an experiment... Can you prove it is feasible?
+    SAGA is just a new program, still unproven.  Can you make it work?
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.3)
-	These counties are young. It's your job as SAGA director to help them grow...
+	These counties are young. It's your job as SAGA director to help them bloom!
 	$call CutscenePrepareImages("intro/frame3-1.png", "intro/frame3-2.png", "intro/frame3-3.png")
 	$call CutsceneNextImage()
 	And protect them from threats. 
@@ -22,7 +22,7 @@ $call CutsceneBegin(1)
 	$call CutscenePrepareImages("intro/frame4-1.png", "intro/frame4-2.png", "intro/frame4-3.png")
     $call CutsceneAllImages(0.3)
     You will meet Advisors to help you on your way...
-    They will have words of wisdom, as well as biases of their own.
+    They will have words of wisdom, as well as blind spots of their own.
 	Your first assignment is <i>Knoll County</i>. Good luck, Director.
 $call CutsceneEnd()
 
@@ -189,7 +189,7 @@ $set intro:pendingPolicy = true
 {@advisorEconHill}     As for that <b>Sales Policy</b>: it can provide additional revenue.
 {@advisorEconHill}     But set it too high, and farms may <b>slow down production.</b>
 {viewpoliciesnext}
-{@advisorEconHill}     What do you think? Don't worry too much, we can change it at any time.
+{@advisorEconHill}     What do you think? Don't worry, you can change it at any time.
 // $call ForcePolicyInstant("Economy")
 
 :: closedWithoutSettingPolicy
@@ -240,21 +240,21 @@ $set intro:externalFound = true
 $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
 {@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
-{local @grainFarmer}    My crops need <b>phosphorus</b> to grow...
-{local @grainFarmer}    There's some <b>phosphorus</b> in the soil, but it's not enough!
-{local @grainFarmer}    <b>PHOS4US</b> ships mineral phosphorus to my farm for cheap.
+{@grainHill}            My crops need <b>phosphorus</b> to grow...
+{@grainHill}            There's some <b>phosphorus</b> in the soil, but it's not enough!
+{@grainHill}            <b>PHOS4US</b> ships mineral phosphorus to my farm for cheap.
+// {@phos4us}              We have the best prices in the area!
 {@advisorEcolHill}      Woah there! We're adding MORE nutrients to our soil?
-{@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle!
+{@advisorEcolHill}      This could disrupt the <b>phosphorus</b> cycle! // talk to phos4us - THEY dont consider the phos cycle??
 $call AddAutoAlertCondition("Bloom", 1)
 {@advisorEconHill}      I'm sure Henrietta has a good reason. Let's take a look...
 $set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
 $call OpenInfoPopup("region1_grain1")
 {@advisorEconHill}      The <b>Inspector</b> shows where she could <b>buy from</b>.
-{local @grainFarmer}    See, PHOS4US is the only seller around!
+{@grainHill}            See, PHOS4US is the only seller around!
+// {@phos4us}           And the best!
 $if local:taxLevel > 0, local:taxLevel < 3
-    {local @grainFarmer}    And that <b>Sales Tax</b> of yours is increasing the price...
-$elseif local:taxLevel = 3
-    {local @grainFarmer}    Thank goodness your <b>Subsidy</b> is lowering the price!
+    {@grainHill}        Plus, that <b>Sales Tax</b> of yours is increasing the price...
 $endif
 {@advisorEcolHill}      What about manure? That has phosphorus.
 $call CloseInfoPopup()
@@ -262,9 +262,11 @@ $call CloseInfoPopup()
 $call OpenInfoPopup("region1_cafo1")
 $call Wait(0.5)
 {@advisorEconHill}      Here, the <b>Inspector</b> shows where he could <b>sell to</b>.
-{local @cafoFarmer}     I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
-{@advisorEconHill}      And a longer road means a higher <b>shipping cost</b>.
-{local @cafoFarmer}     Right. Better to just let the manure sit.
+{@cafoHill}             I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
+{@advisorEconHill}      And shipping it further would cost even more!
+{@cafoHill}             Right. Better to just let the manure sit.
+{@cafoHill}             If I lost money on that, plus my <b>operating costs</b>...
+{@cafoHill}             I'd go broke!
 $call CloseInfoPopup()
 {@advisorEconHill}      I see.
 {@advisorEconHill}      You can always check the <b>Inspector</b> again by clicking on a farm.
@@ -278,7 +280,7 @@ $call CloseInfoPopup()
 @once
 {@advisorEconHill}      Sigh. I don't see why we can't build trade routes through forests.
 {@advisorEcolHill}      Pippin, those are protected lands.
-{@advisorEcolHill}      We can't just pave through an Important Bird Area!
+{@advisorEcolHill}      We can't just pave through an <i>Important Bird Area!</i>
 {@advisorEconHill}      Bah! You environmentalists are always ruining the fun.
 {@advisorEcolHill}      As if saving Caldwell's White-Throated Warbler isn't fun!
 {@advisorEconHill}      Not as fun as a near 15% increase in operating efficiency!!
@@ -417,9 +419,9 @@ $call ForcePolicyInstant("Ecology")
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "GrainFarm", alertRegion == 1, global:runoffDiscovered
 @once
-{@grainHill}        Hey, what's so bad about <b>Phosphorus</b> anyway?
-{@advisorEcolHill}  <b>Phosphorus</b> itself isn't bad! It's an essential nutrient for life.
-{@advisorEcolHill}  It converts between various forms in a cycle, like water.
+{@grainHill}        Hey, why don't you SAGA people like <b>Phosphorus?</b>
+{@grainHill}        It's good! It helps my crops grow!
+{@advisorEcolHill}  You're right!
 {@advisorEcolHill}  But bringing in excess Phosphorus from elsewhere, like PHOS4US...
 {@advisorEcolHill}  That can unbalance our local cycle, and cause problems!
 {@grainHill}        Like that Algae Bloom!
@@ -470,16 +472,14 @@ $call QueueDialogueBubble(region1_cafo1, region1.runoffFineWorking)
 @queued
 {@advisorEcolHill}      Aha!
 {@advisorEcolHill}      Did you see? Bertram just sold manure! The Runoff Fine is working!
-{@advisorEconHill}      Could this be activating a <i>Fertilizer Market!?</i>
-{@cafoHill}             Uh... not to be a downer, but..
+{@advisorEconHill}      Ooo! Could it be making him some money?
+{@advisorEconHill}      Is this creating a poop-- er, Fertilizer Economy!?
 $call OpenInfoPopup("region1_cafo1")
-{@cafoHill}             I'm only selling this stuff to avoid your <b>Runoff Fine.</b>
 {@cafoHill}             I'm still losing money on the <b>shipping costs!</b>
-{@cafoHill}             I might have to <b>slow down production</b> if this keeps up.
-{@advisorEcolHill}      Well, we still gotta prevent runoff...
-{@advisorEcolHill}      Maybe there's a way of <b>lowering</b> shipping costs?
+{@cafoHill}             Even if I'm making profit from <b>Milk</b>...
+{@cafoHill}             I still have <b>operating costs</b> to consider.
+{@cafoHill}             This dang <b>Runoff Fine</b> might force me to <b>slow down production</b>!
 $call CloseInfoPopup()
-{@advisorEconHill}      Hmm... I'll think on it.
 
 :: genericRunoff
 @trigger        AlertExamined

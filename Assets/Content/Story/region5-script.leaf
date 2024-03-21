@@ -8,6 +8,7 @@ $call SendGlobalAlertForNode("region5_city1", region5.regionUnlocked, true)
 
 :: regionUnlocked
 @queued
+@cutscene
 // $call Pause()
 {@advisorEconUrban}    'Sup. Welcome to Smokestack City.
 $call QueueDialogueBubble(region2_city1, region2.openedToCity)
@@ -18,10 +19,10 @@ $call CutsceneBegin(5)
     Smokestack City has heard of the approaching blooms, and SAGA's efforts to stop them.
     $call CutscenePrepareImages("act5/5-2-1.png", "act5/5-2-2.png", "act5/5-2-3.png")
 	$call CutsceneAllImages(0.5)
-    PHOS4US continues to pump phosphorus into our ecosystem. They must be cut off!
+    PHOS4US imports continue adding phosphorus to our ecosystem. They must be cut off!
 	$call CutscenePrepareImages("act5/5-3-1.png", "act5/5-3-2.png", "act5/5-3-3.png")
 	$call CutsceneAllImages(0.5)
-    Now we have the tools and policies to recycle and ship our own fertilizer. Could we outcompete PHOS4US? 
+    These digesters have enabled a new option: long-distance shipping! Could we use it to outcompete PHOS4US? 
 	$call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
 	$call CutsceneAllImages(0.5)
     It's a race to the end... We must stem the flow of phosphorus before algae overtakes our cities!
@@ -29,8 +30,40 @@ $call CutsceneBegin(5)
 	$call CutsceneAllImages(0.5)
     The stakes are high... Can we prevent disaster?
 $call CutsceneEnd()
+{@advisorEconUrban}     That Manure Processor is radical...
+{@advisorEconUrban}     But <b>long-distance shipping</b> would be even <i>radder!</i>
+{@advisorEconUrban}     I've contacted Blimp Bros Shipping to open an Export Depot...
+$call UnlockExportDepot("region2_export1")
+$call Wait(3)
+{@advisorEconUrban}     We can send Processed Fertilizer there to be shipped anywhere!
+{@advisorEcolUrban}     Good thinking, Xavier.
+{@advisorEconUrban}     Yeah, I'm kind of a <i>logistical wizard.</i>
+
 // $call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()
+
+// :: unlockExportDepot
+// {@grainUrban}       But even the Processed Fertilizer is so far away...
+// {@grainUrban}       What if we could ship it like PHOS4US?
+//$call UnlockExportDepot("region2_export1")
+
+:: triggerFirstBlimp
+@trigger InternalBlimpSent
+@once
+$call QueueDialogueBubble(region1_city1, region1.pippinEcology)
+$call QueueDialogueBubble(region3_city1, region3.blimpConcerns)
+$call SendGlobalAlertForNode("region5_city1", region5.firstBlimpReceived, true)
+
+:: firstBlimpReceived
+{@advisorEconUrban}   Woah, righteous!
+$call PanToBuilding("region2_export1")
+{@advisorEconUrban}   Our <b>Export Depot</b> has sent out Processed Manure...
+{@advisorEconUrban}   This could be what we need to kick out PHOS4US!
+$call ForceAdvisorModule("Economy") // toggle on
+{@advisorEcolUrban}   If we get rid of PHOS4US, the ecosystem will stabilize!
+{@advisorEcolUrban}   That's how we can <b>win!</b>
+{@advisorEconUrban}   Right on. Keep an eye on that <b>Fertilizer Market Share</b>!
+$call ForceAdvisorModule("Economy") // toggle off
 
 :: introduceUrban
 @queued
@@ -67,7 +100,7 @@ $call QueueDialogueBubble(region5_city2, region5.needMilk)
 :: needMilk
 @queued
 @once
-{@cityUrban}            What the heck? Where's our dairy!
+{@cityUrban}            What the heck? Where's our darn dairy!
 {@advisorEconUrban}     Not groovy...
 {@advisorEconUrban}     Make sure there are plenty of routes to Dairy Farms, dude!
 $if PolicyLevelInRegion(5, "ImportTaxPolicy") == 1

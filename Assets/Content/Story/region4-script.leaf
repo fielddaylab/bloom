@@ -112,7 +112,7 @@ $endif
 // TODO: pushback against a Runoff Fine
 $if PolicyLevelInRegion(4, "RunoffPolicy") > 0
     {@cafoWetland}          What's this now?
-    {@cafoWetland}          A <b>Fine</b> for what I do with this manure?
+    {@cafoWetland}          A <b>Fine</b> for what I do with my own cows' manure!?
 $else
     {@cafoWetland}          Thanks for getting rid of that <b>Fine</b>.
     {@cafoWetland}          Now I can do as I please with this Manure!
@@ -229,20 +229,21 @@ $call CutsceneBegin(4)
     Our elite naval rangers are prepared to mitigate the algae with their Skimmers.
 	$call CutscenePrepareImages("act4/4-3-1.png", "act4/4-3-2.png", "act4/4-3-3.png")
 	$call CutsceneAllImages(0.5)
-    And this old Manure Processor... It used to turn manure into fertilizer, but it was too expensive to run. Could SAGA use it to beat PHOS4US?
+    In this time of crisis, SAGA has been authorized to repair and run the <b>Manure Processors.</b>
 	$call CutscenePrepareImages("act4/4-4-1.png", "act4/4-4-2.png", "act4/4-4-3.png")
 	$call CutsceneAllImages(0.5)
-    That processed fertilizer could be shipped much more cheaply, all throughout the area!
+    Their processed fertilizer could be shipped cheaply, all throughout the area! Could SAGA use it to beat PHOS4US?
     $call CutscenePrepareImages("act4/4-5-1.png", "act4/4-5-2.png", "act4/4-5-3.png")
 	$call CutsceneAllImages(0.5)
     Our counties have had their differences in the past. But now we must band together to fight this threat... united!
 $call CutsceneEnd()
 $call UnlockShopItem("Digester")
-{@advisorEcolWetland}   Here are the schematics for that <b>Manure Processor</b>.
+{@advisorEcolWetland}   SAGA is now authorized to build Manure Processors!
 $call FocusHighlightOn("BuildModeButton")
 {@advisorEconWetland}   They've been added to your Build Mode menu.
+{@advisorEconWetland}   Try to build them near Dairy Farms!
 $call QueueDialogueBubble(region1_city1, region1.visitingBirds)
-$call QueueDialogueBubble(region4_city1, region4.explainProcessors)
+// $call QueueDialogueBubble(region4_city1, region4.explainProcessors)
 $call FocusClear()
 $call OffsetAlgaeGrowthThreshold(1)
 // $call Unpause()
@@ -256,22 +257,22 @@ $call OffsetAlgaeGrowthThreshold(1)
 // {@advisorEconWetland}   We may need a new revenue stream. I've opened up Sales Tax.
 // $call UnlockCards(SalesTaxPolicy)
 
-:: explainProcessors
-@queued
-@once
-{@cityWetland}          Hey, what is that <b>Manure Processor</b> anyway?
-{@advisorEcolWetland}   Good question!
-{@advisorEcolWetland}   The Processor can chemically change Manure into useful forms.
-{@advisorEcolWetland}   One way is by letting micro-organisms digest it!
-{@advisorEcolWetland}   That gets rid of excess water and bulk.
-{@advisorEcolWetland}   The resulting <i>digestate</i> is an easy-to-ship fertilizer!
-{@advisorEcolPrairie}   But that's not all!
-{@advisorEcolPrairie}   Processors also make <i>biogas:</i> a renewable (but still carbon-based) fuel.
-{@advisorEconWetland}   Sounds profitable.      
-{@advisorEconWetland}   Why not let our farmers build their own?
-{@advisorEcolWetland}   Well...
-{@advisorEcolWetland}   Processors are expensive, and most efficient running continuously.
-{@advisorEcolWetland}   So SAGA will run these Manure Processors as a utility.
+// :: explainProcessors
+// @queued
+// @once
+// {@cityWetland}          Hey, what is that <b>Manure Processor</b> anyway?
+// {@advisorEcolWetland}   Good question!
+// {@advisorEcolWetland}   The Processor can chemically change Manure into useful forms.
+// {@advisorEcolWetland}   One way is by letting micro-organisms digest it!
+// {@advisorEcolWetland}   That gets rid of excess water and bulk.
+// {@advisorEcolWetland}   The resulting <i>digestate</i> is an easy-to-ship fertilizer!
+// {@advisorEcolPrairie}   But that's not all!
+// {@advisorEcolPrairie}   Processors also make <i>biogas:</i> a renewable (but still carbon-based) fuel.
+// {@advisorEconWetland}   Sounds profitable.      
+// {@advisorEconWetland}   Why not let our farmers build their own?
+// {@advisorEcolWetland}   Well...
+// {@advisorEcolWetland}   Processors are expensive, and most efficient running continuously.
+// {@advisorEcolWetland}   But SAGA can run the Manure Processors as a public utility!
 
 
 :: bloomGeneric
@@ -292,44 +293,45 @@ $set global:builtDigester = true
 $call AddRegionAgeDeltaTrigger(4, 10)
 
 // TODO: work on this some more
-:: unlockExportDepots
+:: afterBuiltDigester
 @trigger    RegionReachedAge 
 @conditions regionId == 4, global:builtDigester
 @once
-{@advisorEconWetland}   Hmm... That <b>Processed Manure</b> really is easier to ship.
-{@advisorEconWetland}   I wonder... Could it be shipped <b>long-distance?</b>
-{@advisorEcolWetland}   You mean like PHOS4US?
-{@advisorEcolWetland}   It was all their extra phosphorus that got us into this mess...
-{@advisorEconWetland}   Maybe so... But if we're efficient enough, we can outcompete them!
-{@advisorEcolWetland}   Wait... That could stop the import of Phosphorus!
-{@advisorEcolWetland}   All of our counties would form a <b>closed loop!</b>
-{@advisorEconWetland}   Precisely!
-{@cityForest}           Hey, my uncle had an old warehouse here in Cypress County.
-{@cityForest}           SAGA could operate out of that!
-{@advisorEconWetland}   Let's try it!
-$call UnlockExportDepot("region2_export1")
+{@advisorEcolWetland}   Nice job, boss! SAGA has a <b>Manure Processor</b> up and running!
+{@advisorEconWetland}   That <b>processed fertilizer</b> is much easier to ship to farms.
+{@advisorEcolWetland}   That solves the main problem with manure...
+{@advisorEcolWetland}   This could help us cut off PHOS4US!
+$call ForceAdvisorModule("Economy")
+{@advisorEconWetland}   We can always check the Fertilizer Market Share.
+{@advisorEcolWetland}   Let's increase that Processed Manure!
+$call ForceAdvisorModule("Economy")
 
-:: firstBlimpReceived
-@trigger InternalBlimpSent
+:: blimpConcerns
+@queued
 @once
-$call QueueDialogueBubble(region1_city1, region1.pippinEcology)
-{@advisorEconWetland}   Huzzah!
-$call PanToBuilding("region2_export1")
-{@advisorEconWetland}   Our <b>Export Depot</b> has sent out Processed Manure...
-{@advisorEconWetland}   This could be the start of a brand new Fertilizer Economy!
+{@cafoWetland}          I'm not so sure about those <b>Export Depots.</b>
+{@cafoWetland}          Blimps from PHOS4US got us into this mess in the first place!
+{@advisorEcolWetland}   Good point. But we can ship our fertilizer responsibly!
+// {@advisorEcolWetland}   SAGA's purpose is to foster our ecosystem.
+// {@advisorEconWetland}   And our economy!
+// {@advisorEcolWetland}   So our budget goes back to that mission.
+// {@phos4us} Well, PHOS4US donates 0.1% of annual profits to organizations investigating forming a committee to consider research!
+{@advisorEconWetland}   We're keeping our phosphorus within the local area.
+{@advisorEcolWetland}   Plus, the Processed Fertilizer is tuned for our soil conditions!
+{@cafoWetland}          I see!
 
 :: urbanVisit
 @queued
 @once
 $call QueueDialogueBubble(region1_city1, region1.urbanVisit)
-{@advisorEconWetland}   Yo, I drink this stuff every day!
-{@advisorEcolWetland}   Neil's Organic Dairy, hm?
+{@advisorEconUrban}     Yo, I drink this stuff every day!
+{@advisorEcolUrban}     Neil's Organic Dairy, hm?
 {@cafoWetland}          That's right, miss.
 {@cafoWetland}          Our cows have certified grazing room and organic feed.
 {@cafoWetland}          Because that's just the right way, I say!
-{@advisorEcolWetland}   Delightful!
-{@advisorEcolWetland}   I suppose all your farms are organic, then?
+{@advisorEcolUrban}     Delightful!
+{@advisorEcolUrban}     I suppose all your farms are organic, then?
 {@cafoWetland}          Ah. Well, ehm...
 {@cafoWetland}          Look, there's no way I could keep up with demand if they all ran like this!
 {@cafoWetland}          People need the cheaper stuff too.
-{@advisorEconWetland}   Huh... I guess I can dig it.
+{@advisorEconUrban}     Huh... I guess I can dig it.

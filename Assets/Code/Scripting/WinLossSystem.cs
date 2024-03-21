@@ -37,7 +37,7 @@ namespace Zavala.Scripting {
                 RegionId currentRegion = m_StateA.EndConditionsPerRegion[region].Region;
                 foreach (EndGameConditions cond in m_StateA.EndConditionsPerRegion[region].IndependentEndConditions) {
                     if (EndConditionsMet(cond, (uint)currentRegion)) {
-                        TriggerEnding(cond, region);
+                        WinLossUtility.TriggerEnding(cond.Type, region);
                         break;
                     }
                 }
@@ -69,30 +69,6 @@ namespace Zavala.Scripting {
             }
             return endPending;
         }
-
-        private void TriggerEnding(EndGameConditions cond, int regionIndex) {
-            if (cond.Type == EndType.Succeeded) {
-                Log.Warn("[WinLossSystem] TRIGGERED GAME WIN {0} in Region {1}", cond.Type, regionIndex);
-                using (TempVarTable varTable = TempVarTable.Alloc()) {
-                    varTable.Set("endType", cond.Type.ToString());
-                    varTable.Set("alertRegion", regionIndex + 1);
-                    ScriptUtility.Trigger(GameTriggers.GameCompleted, varTable);
-                }
-                ZavalaGame.Events.Dispatch(GameEvents.GameWon);
-                return;
-            } 
-            Log.Warn("[WinLossSystem] TRIGGERED GAME FAIL {0} in Region {1}", cond.Type, regionIndex);
-
-            using (TempVarTable varTable = TempVarTable.Alloc()) {
-                varTable.Set("endType", cond.Type.ToString());
-                varTable.Set("alertRegion", regionIndex + 1);
-                WorldCameraUtility.PanCameraToRegionCity(regionIndex + 1);
-                var handle = ScriptUtility.Trigger(GameTriggers.GameFailed, varTable);
-                SaveUtility.Reload();
-            }
-            ZavalaGame.Events.Dispatch(GameEvents.GameFailed, new LossData(cond.Type.ToString(), (ushort)regionIndex));
-        }
-
 
         #region Conditions
 
