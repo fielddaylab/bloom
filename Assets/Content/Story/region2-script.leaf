@@ -97,7 +97,7 @@ $call ForcePinDialogue()
 {@grainForest}          Have you heard?
 {@grainForest}          They're getting <i>Algae Blooms</i> over in Knoll County.
 {@advisorEcolForest}    Is that so? Not surprising...
-{@advisorEconForest}    And not our problem! We have forest management to do.
+{@advisorEconForest}    And not our problem! We have forests to manage.
 
 :: urgentGrainForest
 @trigger        UrgentRequest

@@ -11,6 +11,14 @@ $call QueueDialogueBubble(region2_city1, region2.openedToWetland)
 @queued
 @cutscene
 // // $call Pause()
+$call QueueDialogueBubble(region3_city1, region3.visitingVeldt)
+$set global:readyForSkimmers = true
+$if global:importUnlocked = false
+    $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
+$endif
+$if global:tradeGraphsUnlocked = false
+    $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
+$endif
 {@advisorEcolWetland}    Welcome to Muskeg County, boss.
 $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We've dealt with these algae blooms here before...
@@ -20,14 +28,6 @@ $call PanToBuilding("region4_cafo1")
 $call PanToBuilding("region4_cafo3")
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom")
-$call QueueDialogueBubble(region3_city1, region3.visitingVeldt)
-$set global:readyForSkimmers = true
-$if global:importUnlocked = false
-    $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
-$endif
-$if global:tradeGraphsUnlocked = false
-    $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
-$endif
 // $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -324,10 +324,14 @@ $set global:builtDigester = true
 $call QueueDialogueBubble(region1_grain1, region1.phosShirt)
 $call AddRegionAgeDeltaTrigger(4, 10)
 
-// TODO: work on this some more
-:: afterBuiltDigester
+:: digesterDelay
 @trigger    RegionReachedAge 
 @conditions regionId == 4, global:builtDigester
+$call SendGlobalAlertForNode(region4_city1, region4.afterBuiltDigester)
+
+:: afterBuiltDigester
+@cutscene
+@queued
 @once
 {@advisorEcolWetland}   Nice job, boss! SAGA has a <b>Manure Processor</b> up and running!
 {@advisorEconWetland}   That <b>processed fertilizer</b> is much easier to ship to farms.
@@ -337,6 +341,12 @@ $call ForceAdvisorModule("Economy")
 {@advisorEconWetland}   We can always check the Fertilizer Market Share.
 {@advisorEcolWetland}   Let's increase that Processed Manure!
 $call ForceAdvisorModule("Economy")
+
+:: builtAdditionalDigesters
+@trigger        PlayerBuiltBuilding
+@conditions     buildingType == "Digester", global:builtDigester
+{@advisorEcolWetland}   Another Manure Processor up and running!
+{@advisorEcolWetland}   This will help us increase the <b>Processed Manure</b> market share.
 
 :: blimpConcerns
 @queued
