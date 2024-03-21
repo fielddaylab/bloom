@@ -341,6 +341,10 @@ namespace EasyAssetStreaming {
             }
         }
 
+        private void OnRectTransformDimensionsChange() {
+            Resize(m_AutoSize);
+        }
+
         #endregion // Unity Events
 
         #region Resources
