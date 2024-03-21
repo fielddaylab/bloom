@@ -739,7 +739,7 @@ namespace Zavala.UI.Info
                         DispatchDairyFarmDisplayed();
                     }
 
-                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
+                    ProductionEfficiencyUtility.SetEfficiencyLevelAndText(m_EfficiencyGroup, m_SelectedStressable.OperationState, m_SelectedLocation);
                     break;
                 }
 
@@ -756,7 +756,7 @@ namespace Zavala.UI.Info
                         DispatchGrainFarmDisplayed();
                     }
                     
-                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
+                    ProductionEfficiencyUtility.SetEfficiencyLevelAndText(m_EfficiencyGroup, m_SelectedStressable.OperationState, m_SelectedLocation);
                     break;
                 }
 

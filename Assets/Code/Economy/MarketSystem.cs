@@ -7,7 +7,9 @@ using FieldDay.Scripting;
 using FieldDay.Systems;
 using Zavala.Advisor;
 using Zavala.Roads;
+using Zavala.Scripting;
 using Zavala.Sim;
+using Zavala.UI.Info;
 
 namespace Zavala.Economy
 {
@@ -951,6 +953,17 @@ namespace Zavala.Economy
                 return;
             }
 
+            // Determine if this transaction sold out inventory of supplier
+            bool soldOut = DidTransactionSellOut(activeRequest.Supplied, supplier.Storage.Current, supplier.Storage.StorageExtensionStore);
+            if (soldOut) {
+                // TODO: use this information in generating sold out entry in inspector
+                // var lastPurchaserId = activeRequest.Requester.GetComponent<LocationDescription>().TitleLabel;
+
+                // Check if purchaser requested given resource last tick
+                // If so, check the best option index they bought from.
+                // For all buyers on the list at a higher priority (who were not purchased from), mark as sold out
+            }
+
             ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
             if (supplierOffer.BaseProfit - supplierOffer.RelativeGain < 0)
             {
@@ -1104,6 +1117,38 @@ namespace Zavala.Economy
                     //}
                 }
             }
+        }
+
+        private bool DidTransactionSellOut(ResourceBlock supplied, ResourceBlock storage, ResourceStorage extensionStorage)
+        {
+            ResourceBlock totalStorage = storage;
+            if (extensionStorage != null)
+            {
+               totalStorage += extensionStorage.Current;
+            }
+
+            if (supplied.Manure != 0 && totalStorage.Manure == 0)
+            {
+                return true;
+            }
+            else if (supplied.MFertilizer != 0 && totalStorage.MFertilizer == 0)
+            {
+                return true;
+            }
+            else if (supplied.DFertilizer != 0 && totalStorage.DFertilizer == 0)
+            {
+                return true;
+            }
+            else if (supplied.Grain != 0 && totalStorage.Grain == 0)
+            {
+                return true;
+            }
+            else if (supplied.Milk != 0 && totalStorage.Milk == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void ProcessSkimmerCosts(SimGridState grid, MarketData marketData, BudgetData budget)

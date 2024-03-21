@@ -1,19 +1,25 @@
 using BeauRoutine;
 using BeauUtil;
+using FieldDay;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using Zavala.Actors;
 using Zavala.Economy;
+using Zavala.Scripting;
+using Zavala.UI.Info;
 
 namespace Zavala.UI
 {
     public class ProductionEfficiencyGroup : MonoBehaviour
     {
         public GameObject Root;
+        public TMP_Text EfficiencyText;
         public Image InputIcon;
         public Image OutputIcon1;
         public GameObject AndIcon;
@@ -164,6 +170,22 @@ namespace Zavala.UI
 
                 }
             }
+        }
+
+        public static void SetEfficiencyLevelAndText(ProductionEfficiencyGroup group, OperationState opState, LocationDescription location)
+        {
+            StringBuilder builder = new StringBuilder();
+            ScriptCharacterDB charDB = Game.SharedState.Get<ScriptCharacterDB>();
+            ScriptCharacterDef charDef = ScriptCharacterDBUtility.Get(charDB, location.CharacterId);
+            builder.Append(charDef.NameId);
+            builder.Append(" is producing <i>");
+            if (opState == OperationState.Bad) { builder.Append("slowly"); }
+            if (opState == OperationState.Okay) { builder.Append("decently"); }
+            if (opState == OperationState.Great) { builder.Append("quickly"); }
+            builder.Append("</i>");
+
+            group.EfficiencyText.SetText(builder.ToString());
+            SetEfficiencyLevel(group, opState);
         }
     }
 }
