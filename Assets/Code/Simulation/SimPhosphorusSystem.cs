@@ -28,6 +28,7 @@ namespace Zavala.Sim {
 
                 RegionUnlockUtility.RegisterPTimerAdvanced(unlockState);
                 RegionAgeUtility.RegisterPTimerAdvanced(ageState);
+                Game.Events.Queue(GameEvents.SimPhosphorusTick);
             }
 
             if (m_StateA.Phosphorus.Changes.AffectedTiles.Count > 0) {

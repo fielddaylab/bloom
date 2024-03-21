@@ -49,7 +49,16 @@ namespace Zavala {
 
             UserSettings settings = new UserSettings();
             Game.SharedState.Register(settings);
+
+#if UNITY_EDITOR
+            if (SceneHelper.ActiveScene().BuildIndex == 0) {
+                settings.PlayerCode = PlayerPrefs.GetString("LatestPlayerCode", null);
+            } else {
+                settings.PlayerCode = null;
+            }
+#else
             settings.PlayerCode = PlayerPrefs.GetString("LatestPlayerCode", null);
+#endif // UNITY_EDITOR
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;

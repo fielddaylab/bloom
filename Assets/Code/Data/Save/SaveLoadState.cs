@@ -5,6 +5,7 @@ using BeauData;
 using BeauRoutine;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Data;
 using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
@@ -15,20 +16,34 @@ namespace Zavala.Data {
         public string ServerURL;
         public Routine Operation;
 
+        [NonSerialized] public int TicksToCommit;
+
         private void Awake() {
             OGD.Core.Configure(ServerURL, "ALGAE");
         }
     }
 
     static public class SaveUtility {
-        static public void Save() {
+        [ConfigVar("Ticks Before Committing Save", 1, 50)] static public int TicksBeforeCommittingSave = 20;
+
+        static public void Save(SaveSlot slot) {
             var save = Game.SharedState.Get<SaveLoadState>();
             if (save.Operation) {
                 Log.Error("[SaveUtility] Save/load operation is ongoing");
                 return;
             }
 
-            save.Operation = Routine.Start(save, SaveRoutine());
+            save.Operation = Routine.Start(save, SaveRoutine(slot));
+        }
+
+        static public void Commit() {
+            var save = Game.SharedState.Get<SaveLoadState>();
+            if (save.Operation) {
+                Log.Error("[SaveUtility] Save/load operation is ongoing");
+                return;
+            }
+
+            save.Operation = Routine.Start(save, CommitSaveRoutine());
         }
 
         static public void Reload() {
@@ -53,22 +68,42 @@ namespace Zavala.Data {
             return future;
         }
 
-        static private IEnumerator SaveRoutine() {
+        static private IEnumerator SaveRoutine(SaveSlot slot) {
             yield return null;
             var scriptRuntime = ScriptUtility.Runtime;
             while (scriptRuntime.Cutscene.IsRunning()) {
                 yield return null;
             }
 
-            ZavalaGame.SaveBuffer.Write();
-            ZavalaGame.SaveBuffer.EncodeToBase64();
+            ZavalaGame.SaveBuffer.Write(slot);
+            if (slot == SaveSlot.Main) {
+                ZavalaGame.SaveBuffer.EncodeToBase64();
 
 #if UNITY_EDITOR
-            WriteToFileSystem();
+                WriteToFileSystem();
 #endif // UNITY_EDITOR
 
-            if (!string.IsNullOrEmpty(ZavalaGame.SaveBuffer.SaveCode)) {
-                yield return WriteToRemoteSave();
+                if (!string.IsNullOrEmpty(ZavalaGame.SaveBuffer.SaveCode)) {
+                    yield return WriteToRemoteSave();
+                }
+            } else {
+                Find.State<SaveLoadState>().TicksToCommit = TicksBeforeCommittingSave;
+            }
+        }
+
+        static private IEnumerator CommitSaveRoutine() {
+            yield return null;
+
+            if (ZavalaGame.SaveBuffer.TryCommitSave()) {
+                ZavalaGame.SaveBuffer.EncodeToBase64();
+
+#if UNITY_EDITOR
+                WriteToFileSystem();
+#endif // UNITY_EDITOR
+
+                if (!string.IsNullOrEmpty(ZavalaGame.SaveBuffer.SaveCode)) {
+                    yield return WriteToRemoteSave();
+                }
             }
         }
 
@@ -76,10 +111,12 @@ namespace Zavala.Data {
         static unsafe private void WriteToFileSystem() {
             var chars = ZavalaGame.SaveBuffer.GetCurrentBase64();
             Directory.CreateDirectory("Saves");
-            using (var str = File.Open("Saves/" + DateTime.Now.ToFileTime().ToString() + ".bin", FileMode.Create)) {
+            string fileName = "Saves/" + DateTime.Now.ToFileTime().ToString() + ".bin";
+            using (var str = File.Open(fileName, FileMode.Create)) {
                 using (var stream = new StreamWriter(str)) {
                     var charsAsSys = new ReadOnlySpan<char>(chars.Ptr, chars.Length);
                     stream.Write(charsAsSys);
+                    Log.Msg("[SaveUtility] Wrote save to local file '{0}'", fileName);
                 }
             }
         }
@@ -162,7 +199,7 @@ namespace Zavala.Data {
         [DebugMenuFactory]
         static private DMInfo SaveDebugMenu() {
             DMInfo info = new DMInfo("Save", 4);
-            info.AddButton("Write Current to Memory", () => SaveUtility.Save());
+            info.AddButton("Write Current to Memory", () => SaveUtility.Save(SaveSlot.Main));
             info.AddButton("Read Current from Memory", () => {
                 SaveUtility.Reload();
             }, () => ZavalaGame.SaveBuffer.HasSave);

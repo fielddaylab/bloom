@@ -22,6 +22,7 @@ namespace Zavala.Rendering {
         [NonSerialized] public SimBuffer<ushort> TileRegions;
         [NonSerialized] public SimBitSet NewTiles;
         [NonSerialized] public Mesh Mesh;
+        [NonSerialized] public MeshDataTarget MeshTarget;
 
         [NonSerialized] public SimPhosphorusState Phosphorus;
         [NonSerialized] public HexGridSize GridSize;
@@ -29,6 +30,8 @@ namespace Zavala.Rendering {
         void IRegistrationCallbacks.OnDeregister() {
             UnityHelper.SafeDestroy(ref GradientLUT);
             UnityHelper.SafeDestroy(ref Mesh);
+
+            MeshTarget = default;
 
             Shader.SetGlobalTexture("_HeatMapTexture", null);
         }
@@ -55,6 +58,8 @@ namespace Zavala.Rendering {
             Mesh = new Mesh();
             Mesh.hideFlags = HideFlags.DontSave;
             Mesh.name = "HeatMapTarget";
+
+            MeshTarget = MeshDataTarget.CreateFromMesh(Mesh);
 
             TargetFilter.sharedMesh = Mesh;
         }
@@ -214,8 +219,8 @@ namespace Zavala.Rendering {
             }
         }
 
-        static public void PushChanges(PhosphorusHeatMap heatMap) {
-            heatMap.MeshData.Upload(heatMap.Mesh);
+        static public void PushChanges(PhosphorusHeatMap heatMap, MeshDataUploadFlags flags) {
+            heatMap.MeshData.Upload(ref heatMap.MeshTarget, flags);
             heatMap.NewTiles.Clear();
         }
     }

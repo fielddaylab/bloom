@@ -9,6 +9,8 @@ using Zavala.Sim;
 
 namespace Zavala.Data {
     public class SaveMgr {
+        public const int SaveVersion = 1;
+
         private struct ChunkRecord {
             public StringHash32 Id;
             public uint UncompressedSize;
@@ -36,15 +38,18 @@ namespace Zavala.Data {
         public const int ChunkBufferSize = 64 * Unsafe.KiB; // 64k buffer
         public const int ScratchBufferSize = 32 * Unsafe.KiB; // 32k buffer
         public const int CharBufferSize = 256 * Unsafe.KiB; // 256k for chars
-        public const int TotalBufferSize = MainBufferSize + ChunkBufferSize + ScratchBufferSize + CharBufferSize;
+        public const int TotalBufferSize = (MainBufferSize * 2) + ChunkBufferSize + ScratchBufferSize + CharBufferSize;
 
-        private unsafe byte* m_Buffer;
+        private Unsafe.ArenaHandle m_BufferArena;
+        private unsafe byte* m_MainBuffer;
+        private unsafe byte* m_UncommittedBuffer;
         private unsafe byte* m_ChunkBuffer;
         private unsafe char* m_CharBuffer;
         private unsafe Unsafe.ArenaHandle m_ScratchBuffer;
 
         private int m_UsedSize;
         private int m_CharsWritten;
+        private int m_UncommittedSize;
 
         private SaveStateHeader m_CurrentHeader;
         private SaveStateChunkConsts m_CurrentConsts;
@@ -58,8 +63,6 @@ namespace Zavala.Data {
         private readonly Dictionary<StringHash32, ChunkReader> m_ChunkReaders;
         private readonly RingBuffer<ISaveStatePostLoad> m_PostLoadHandlers = new RingBuffer<ISaveStatePostLoad>(32, RingBufferMode.Expand);
 
-        private readonly RingBuffer<SaveRecord> m_SaveStack = new RingBuffer<SaveRecord>(4, RingBufferMode.Overwrite);
-
         public SaveMgr() {
             m_ChunkReaders = MapUtils.Create<StringHash32, ChunkReader>(32);
             Allocate();
@@ -67,16 +70,18 @@ namespace Zavala.Data {
 
         public unsafe void Allocate() {
             Free();
-            m_Buffer = (byte*) Unsafe.Alloc(TotalBufferSize);
-            m_ChunkBuffer = m_Buffer + MainBufferSize;
-            m_CharBuffer = (char*) (m_ChunkBuffer + ChunkBufferSize);
-            m_ScratchBuffer = Unsafe.CreateArena((byte*) m_CharBuffer + CharBufferSize, ScratchBufferSize);
+            m_BufferArena = Unsafe.CreateArena(TotalBufferSize + 128, "Save");
+            m_MainBuffer = (byte*) m_BufferArena.AllocAligned(MainBufferSize, 8);
+            m_UncommittedBuffer = (byte*) m_BufferArena.AllocAligned(MainBufferSize, 8);
+            m_ChunkBuffer = (byte*) m_BufferArena.AllocAligned(ChunkBufferSize, 8);
+            m_CharBuffer = m_BufferArena.AllocArray<char>(CharBufferSize / 2);
+            m_ScratchBuffer = Unsafe.CreateArena(m_BufferArena, ScratchBufferSize);
         }
 
         public unsafe void Free() {
-            if (m_Buffer != null) {
-                Unsafe.Free(m_Buffer);
-                m_Buffer = null;
+            if (Unsafe.TryDestroyArena(ref m_BufferArena)) {
+                m_MainBuffer = null;
+                m_UncommittedBuffer = null;
                 m_ChunkBuffer = null;
                 m_CharBuffer = null;
                 m_ScratchBuffer = default;
@@ -127,28 +132,30 @@ namespace Zavala.Data {
         #region Write
 
         public unsafe UnsafeSpan<byte> GetRawBytes() {
-            return new UnsafeSpan<byte>(m_Buffer, (uint) m_UsedSize);
+            return new UnsafeSpan<byte>(m_MainBuffer, (uint) m_UsedSize);
         }
 
-        public void Write() {
+        public void Write(SaveSlot slot) {
             SaveStateHeader header;
             header.PlayerCode = Game.SharedState.Get<UserSettings>().PlayerCode;
             header.LastSaveTS = DateTime.UtcNow.ToFileTimeUtc();
             header.Playtime = 0;
+            header.Version = SaveVersion;
 
             SaveStateChunkConsts consts;
             consts.GridSize = ZavalaGame.SimGrid.HexSize;
             consts.MaxRegions = RegionInfo.MaxRegions;
             consts.DataRegion = ZavalaGame.SimGrid.SimulationRegion;
+            consts.Version = SaveVersion;
 
-            Write(header, consts);
-
-            // TODO: copy to save stack?
+            Write(header, consts, slot);
         }
 
-        public unsafe void Write(SaveStateHeader header, SaveStateChunkConsts consts) {
+        public unsafe void Write(SaveStateHeader header, SaveStateChunkConsts consts, SaveSlot slot) {
+            byte* head = slot == SaveSlot.Uncommitted ? m_UncommittedBuffer : m_MainBuffer;
+
             ByteWriter writer;
-            writer.Head = m_Buffer;
+            writer.Head = head;
             writer.Capacity = MainBufferSize;
             writer.Written = 0;
             writer.Tag = default;
@@ -163,6 +170,7 @@ namespace Zavala.Data {
             writer.WriteUTF8(header.PlayerCode);
             writer.Write(header.LastSaveTS);
             writer.Write(header.Playtime);
+            writer.Write(header.Version);
 
             writer.Write((byte) consts.MaxRegions);
             writer.Write((byte) consts.GridSize.Width);
@@ -245,13 +253,18 @@ namespace Zavala.Data {
             manifest.Length = (uint) (writer.Written - manifestLengthCalcMarker);
             manifest.Checksum = Unsafe.Hash64(manifestLengthChecksumMarker, (int) manifest.Length);
 
-            Log.Msg("[SaveMgr] Calculated checksum from <{0},{1}> = {2}", manifestLengthChecksumMarker - m_Buffer, manifest.Length, manifest.Checksum); ;
+            Log.Msg("[SaveMgr] Calculated checksum from <{0},{1}> = {2}", manifestLengthChecksumMarker - head, manifest.Length, manifest.Checksum); ;
 
             Unsafe.Copy(&manifest, sizeof(SaveStateManifest), manifestWriteMarker);
 
-            m_UsedSize = writer.Written;
+            if (slot == SaveSlot.Uncommitted) {
+                m_UncommittedSize = writer.Written;
+            } else {
+                m_UsedSize = writer.Written;
+                m_UncommittedSize = 0; // clear uncommitted if we do a main save
+            }
 
-            Log.Msg("[SaveMgr] Wrote save data ({0} chunks, {1})", manifest.ChunkCount, Unsafe.FormatBytes(m_UsedSize));
+            Log.Msg("[SaveMgr] Wrote save data ({0} chunks, {1}) to slot {2}", manifest.ChunkCount, Unsafe.FormatBytes(m_UsedSize), slot);
 
             if (!string.IsNullOrEmpty(header.PlayerCode)) {
                 PlayerPrefs.SetString("LatestPlayerCode", header.PlayerCode);
@@ -262,8 +275,23 @@ namespace Zavala.Data {
         public void Clear() {
             m_CurrentHeader = default;
             m_UsedSize = 0;
-            m_SaveStack.Clear();
+            m_UncommittedSize = 0;
             m_CurrentConsts = default;
+        }
+
+        public bool HasUncommittedSave {
+            get { return m_UncommittedSize > 0; }
+        }
+
+        public unsafe bool TryCommitSave() {
+            if (m_UncommittedSize > 0) {
+                Unsafe.Copy(m_UncommittedBuffer, m_UncommittedSize, m_MainBuffer, MainBufferSize);
+                m_UsedSize = m_UncommittedSize;
+                m_UncommittedSize = 0;
+                Log.Msg("[SaveMgr] Moved uncommitted save data to main save data");
+                return true;
+            }
+            return false;
         }
 
         #endregion // Write
@@ -275,7 +303,7 @@ namespace Zavala.Data {
         }
 
         public unsafe UnsafeSpan<byte> GetRawCopyDest() {
-            return new UnsafeSpan<byte>(m_Buffer, MainBufferSize);
+            return new UnsafeSpan<byte>(m_MainBuffer, MainBufferSize);
         }
 
         public string SaveCode {
@@ -283,18 +311,18 @@ namespace Zavala.Data {
         }
 
         public unsafe bool Read() {
-            return Read(new UnsafeSpan<byte>(m_Buffer, (uint) m_UsedSize));
+            return Read(new UnsafeSpan<byte>(m_MainBuffer, (uint) m_UsedSize));
         }
 
         public unsafe bool Read(UnsafeSpan<byte> bytes) {
-            if (bytes.Ptr != m_Buffer) {
-                Unsafe.Copy(bytes.Ptr, bytes.Length, m_Buffer, MainBufferSize);
+            if (bytes.Ptr != m_MainBuffer) {
+                Unsafe.Copy(bytes.Ptr, bytes.Length, m_MainBuffer, MainBufferSize);
             }
 
             m_UsedSize = bytes.Length;
 
             ByteReader reader;
-            reader.Head = m_Buffer;
+            reader.Head = m_MainBuffer;
             reader.Remaining = bytes.Length;
             reader.Tag = default;
 
@@ -302,6 +330,7 @@ namespace Zavala.Data {
             header.PlayerCode = reader.ReadUTF8();
             header.LastSaveTS = reader.Read<long>();
             header.Playtime = reader.Read<double>();
+            header.Version = reader.Read<int>();
             m_CurrentHeader = header;
 
             SaveStateChunkConsts consts;
@@ -319,6 +348,7 @@ namespace Zavala.Data {
             reader.Skip(1);
 
             consts.DataRegion = new HexGridSubregion(consts.GridSize).Subregion(dataX, dataY, dataW, dataH);
+            consts.Version = header.Version;
             m_CurrentConsts = consts;
 
             SaveScratchpad scratch;
@@ -337,7 +367,7 @@ namespace Zavala.Data {
             }
 
             ulong calculatedChecksum = Unsafe.Hash64(reader.Head, reader.Remaining);
-            Log.Msg("[SaveMgr] Calculated checksum from <{0},{1}> = {2}", reader.Head - m_Buffer, reader.Remaining, calculatedChecksum);
+            Log.Msg("[SaveMgr] Calculated checksum from <{0},{1}> = {2}", reader.Head - m_MainBuffer, reader.Remaining, calculatedChecksum);
             ;
             if (calculatedChecksum != manifest.Checksum) {
                 Log.Warn("[SaveMgr] Checksum failed - calculated {0} but expected {1}", calculatedChecksum, manifest.Checksum);
@@ -438,7 +468,7 @@ namespace Zavala.Data {
         }
 
         public unsafe UnsafeSpan<char> EncodeToBase64() {
-            var asSysSpan = new ReadOnlySpan<byte>(m_Buffer, m_UsedSize);
+            var asSysSpan = new ReadOnlySpan<byte>(m_MainBuffer, m_UsedSize);
             bool converted = Convert.TryToBase64Chars(asSysSpan, new Span<char>(m_CharBuffer, CharBufferSize), out int charsWritten);
             Assert.True(converted);
             m_CharsWritten = charsWritten;
@@ -446,11 +476,16 @@ namespace Zavala.Data {
         }
 
         public unsafe bool DecodeFromBase64(string str) {
-            bool converted = Convert.TryFromBase64String(str, new Span<byte>(m_Buffer, MainBufferSize), out m_UsedSize);
+            bool converted = Convert.TryFromBase64String(str, new Span<byte>(m_MainBuffer, MainBufferSize), out m_UsedSize);
             //Assert.True(converted);
             return converted;
         }
 
         #endregion // Chars
+    }
+
+    public enum SaveSlot {
+        Main,
+        Uncommitted
     }
 }

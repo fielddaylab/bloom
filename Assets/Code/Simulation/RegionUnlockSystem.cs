@@ -94,7 +94,7 @@ namespace Zavala.Sim
                 }
 
                 m_StateA.UnlockCount++;
-                SaveUtility.Save();
+                SaveUtility.Save(SaveSlot.Uncommitted);
             }
         }
 
