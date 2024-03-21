@@ -652,9 +652,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Highways
-
-    & Green Water'
+  m_text: BLOOM
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b065a828061270b418d4b380866a7b5a, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 54acb34b16ffe064098406a75f9e488d, type: 2}
@@ -681,8 +679,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 144
+  m_fontSizeBase: 144
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1738,6 +1736,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelBackground: {fileID: 4157895409409958520}
   m_Raycaster: {fileID: 8887166297473241737}
+  m_BackgroundVideoPath: 
+  m_BackgroundRenderer: {fileID: 0}
   m_StartGroup: {fileID: 5461092245654841880}
   m_StartButton: {fileID: 7484506008911203530}
   m_LoadButton: {fileID: 1683712550396419000}

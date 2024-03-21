@@ -155,8 +155,9 @@ namespace EasyAssetStreaming {
                     var player = s_UpdateHookGO.AddComponent<VideoPlayer>();
                     player.renderMode = VideoRenderMode.APIOnly;
                     player.playOnAwake = false;
-                    player.skipOnDrop = false;
+                    player.skipOnDrop = true;
                     player.isLooping = true;
+                    player.waitForFirstFrame = false;
                     player.audioOutputMode = VideoAudioOutputMode.None;
                     player.prepareCompleted += HandleVideoPrepareFinished;
                     player.errorReceived += HandleVideoError;

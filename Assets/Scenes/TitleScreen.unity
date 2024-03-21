@@ -5013,7 +5013,7 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   m_Visible: 1
-  m_Size: {x: 9, y: 5.8007812}
+  m_Size: {x: 9.309091, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
   m_UVRect:
     serializedVersion: 2
@@ -5021,7 +5021,7 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
-  m_AutoSize: 2
+  m_AutoSize: 1
   m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &671709480
@@ -10705,6 +10705,14 @@ PrefabInstance:
     - target: {fileID: 588739027656696092, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 880307345726718726, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
+      propertyPath: m_BackgroundRenderer
+      value: 
+      objectReference: {fileID: 671709479}
+    - target: {fileID: 880307345726718726, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
+      propertyPath: m_BackgroundVideoPath
+      value: Zavala_TitleScreenVid_00.mp4
       objectReference: {fileID: 0}
     - target: {fileID: 1572932321366830289, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_AnchorMax.x

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BeauRoutine;
 using BeauUtil;
+using EasyAssetStreaming;
 using FieldDay;
 using FieldDay.Rendering;
 using FieldDay.Scenes;
@@ -25,6 +26,8 @@ namespace Zavala.UI {
 
         [SerializeField] private RectTransform m_PanelBackground;
         [SerializeField] private CanvasGroup m_Raycaster;
+        [SerializeField, StreamingVideoPath] private string m_BackgroundVideoPath;
+        [SerializeField] private StreamingQuadTexture m_BackgroundRenderer;
 
         [Header("Main Panel")]
         [SerializeField] private CanvasGroup m_StartGroup;
@@ -200,6 +203,8 @@ namespace Zavala.UI {
         }
 
         IEnumerator<WorkSlicer.Result?> IScenePreload.Preload() {
+            m_BackgroundRenderer.Path = m_BackgroundVideoPath;
+
             m_GameGroup.gameObject.SetActive(false);
             m_GameGroup.alpha = 0;
             yield return null;
@@ -207,6 +212,10 @@ namespace Zavala.UI {
             m_StartGroup.alpha = 1;
             yield return null;
             AlignPanel(m_StartGroup);
+
+            while(m_BackgroundRenderer.IsLoading()) {
+                yield return WorkSlicer.Result.HaltForFrame;
+            }
         }
 
         private void AlignPanel(CanvasGroup group) {

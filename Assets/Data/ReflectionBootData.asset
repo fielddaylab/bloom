@@ -52,8 +52,12 @@ MonoBehaviour:
     LookupInherit: 0
     Assemblies:
     - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 7
+      TypeCount: 8
     Types:
+    - TypeName: Zavala.PhosphorusRendering
+      Self: 0
+      MemberCount: 3
+      OverloadCount: 0
     - TypeName: Zavala.Economy.MarketParams
       Self: 0
       MemberCount: 5
@@ -83,6 +87,12 @@ MonoBehaviour:
       MemberCount: 4
       OverloadCount: 0
     Members:
+    - MemberName: ParticlesPerPip
+      Type: 4
+    - MemberName: ParticleSize
+      Type: 4
+    - MemberName: ParticleLerp
+      Type: 4
     - MemberName: TruckSpeed
       Type: 4
     - MemberName: AirshipSpeed

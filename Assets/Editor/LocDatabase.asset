@@ -387,9 +387,7 @@ MonoBehaviour:
     - Id: ui.title.resume
       Content: Resume Game
     - Id: ui.title.name
-      Content: 'Highways
-
-        & Green Water'
+      Content: BLOOM
     - Id: ui.title.play
       Content: Play Game
     - Id: ui.title.musicVolume

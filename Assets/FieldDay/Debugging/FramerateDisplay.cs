@@ -123,7 +123,7 @@ namespace FieldDayDebugging {
                     m_FrameAccumulation = 0;
                     m_FrameCount = 0;
 
-                    m_TextBuilder.Clear().Append(framerate);
+                    BuildFramerateStringNoGC(m_TextBuilder, framerate);
                     m_TextDisplay.SetText(m_TextBuilder);
 
                     double framerateFraction = framerate / m_TargetFramerate;
@@ -149,6 +149,26 @@ namespace FieldDayDebugging {
                 }
             }
             m_LastTimestamp = timestamp;
+        }
+
+        static private void BuildFramerateStringNoGC(StringBuilder builder, double framerate) {
+            builder.Clear();
+            if (framerate > 999.9f) {
+                framerate = 999.9f;
+            }
+
+            int integral = (int) framerate;
+            int fractional = (int) (framerate * 10) % 10;
+
+            if (integral >= 100) {
+                builder.Append((char) ('0' + (integral / 100)));
+            }
+            if (integral >= 10) {
+                builder.Append((char) ('0' + (integral % 100) / 10));
+            }
+            builder.Append((char) ('0' + (integral % 10)));
+
+            builder.Append('.').Append((char) ('0' + fractional));
         }
 
         #endregion // Unity Events
