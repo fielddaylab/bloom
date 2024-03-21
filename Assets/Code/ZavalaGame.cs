@@ -79,7 +79,9 @@ namespace Zavala {
         [InvokeOnBoot]
         static private void OnBoot() {
             CursorUtility.HideCursor();
+#if UNITY_EDITOR
             Profiler.enabled = false;
+#endif // UNITY_EDITOR
         }
 
         static private void OnSceneUnload() {

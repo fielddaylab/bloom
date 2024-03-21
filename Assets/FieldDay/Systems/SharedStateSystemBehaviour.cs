@@ -1,4 +1,5 @@
 using System;
+using BeauUtil;
 using FieldDay.SharedState;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace FieldDay.Systems {
     /// <summary>
     /// System operating on a shared state instance.
     /// </summary>
+    [NonIndexed]
     public abstract class SharedStateSystemBehaviour<TState> : MonoBehaviour, ISystem
         where TState : class, ISharedState {
 
@@ -37,6 +39,7 @@ namespace FieldDay.Systems {
     /// <summary>
     /// System operating on two shared state instance.
     /// </summary>
+    [NonIndexed]
     public abstract class SharedStateSystemBehaviour<TStateA, TStateB> : MonoBehaviour, ISystem
         where TStateA : class, ISharedState
         where TStateB : class, ISharedState {
@@ -71,6 +74,7 @@ namespace FieldDay.Systems {
     /// <summary>
     /// System operating on three shared state instances.
     /// </summary>
+    [NonIndexed]
     public abstract class SharedStateSystemBehaviour<TStateA, TStateB, TStateC> : MonoBehaviour, ISystem
         where TStateA : class, ISharedState
         where TStateB : class, ISharedState
@@ -108,6 +112,7 @@ namespace FieldDay.Systems {
     /// <summary>
     /// System operating on four shared state instances.
     /// </summary>
+    [NonIndexed]
     public abstract class SharedStateSystemBehaviour<TStateA, TStateB, TStateC, TStateD> : MonoBehaviour, ISystem
         where TStateA : class, ISharedState
         where TStateB : class, ISharedState

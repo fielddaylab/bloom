@@ -5,6 +5,7 @@ namespace FieldDay.Assets {
     /// <summary>
     /// Base class for a ScriptableObject global asset.
     /// </summary>
+    [NonIndexed]
     public abstract class GlobalAsset : ScriptableObject, IGlobalAsset {
 
         #region IGlobalAsset

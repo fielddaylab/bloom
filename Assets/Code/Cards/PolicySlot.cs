@@ -78,12 +78,14 @@ namespace Zavala.Cards
                 m_OverlayImage.sprite = m_UnlockedSprite;
                 m_OverlayImage.color = m_LockedColor; // 
                 m_SlotBackground.color = m_UnlockedColor;
+                m_OverlayImage.type = Image.Type.Simple;
                 m_Button.enabled = true;
                 m_Text.SetText(Loc.Find("cards." + m_Type.ToString() + ".category"));
             }
             else {
                 m_OverlayImage.enabled = true; // set to locked slot image
                 m_OverlayImage.sprite = m_LockedSprite;
+                m_OverlayImage.type = Image.Type.Simple;
                 m_OverlayImage.color = m_SlotColor;
                 m_SlotBackground.color = m_LockedColor; // same color is used for locked background as locked foreground
                 m_Button.enabled = false;
@@ -245,6 +247,7 @@ namespace Zavala.Cards
             CardUIUtility.ExtractLocText(data, out string locText);
             // TODO: extract font effects
             m_OverlayImage.sprite = sprite;
+            m_OverlayImage.type = Image.Type.Simple;
             m_OverlayImage.color = Color.white;
             m_Text.SetText(locText);
             m_OverlayImage.enabled = true;
@@ -256,6 +259,7 @@ namespace Zavala.Cards
             m_HintText.gameObject.SetActive(true);
             m_OverlayImage.sprite = m_BlankSprite;
             m_OverlayImage.color = m_LockedColor;
+            m_OverlayImage.type = Image.Type.Sliced;
 
             CardUIUtility.ExtractLocHintText(args.Data, out string locText);
             m_HintText.SetText(locText);
@@ -269,6 +273,7 @@ namespace Zavala.Cards
         {
             m_HintText.gameObject.SetActive(false);
             m_OverlayImage.sprite = m_UnlockedSprite;
+            m_OverlayImage.type = Image.Type.Simple;
 
             m_HintText.SetText("");
             m_Text.SetText(Loc.Find("cards." + m_Type.ToString() + ".category"));

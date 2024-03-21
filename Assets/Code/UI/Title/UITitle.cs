@@ -212,10 +212,6 @@ namespace Zavala.UI {
             m_StartGroup.alpha = 1;
             yield return null;
             AlignPanel(m_StartGroup);
-
-            while(m_BackgroundRenderer.IsLoading()) {
-                yield return WorkSlicer.Result.HaltForFrame;
-            }
         }
 
         private void AlignPanel(CanvasGroup group) {

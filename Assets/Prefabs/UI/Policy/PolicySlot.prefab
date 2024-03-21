@@ -341,7 +341,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -350,7 +350,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!1001 &6542853701195290127
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -451,9 +451,21 @@ PrefabInstance:
       value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a13c82d5f5f6b03408510bcdcfe0218d, type: 2}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_fontSizeBase
       value: 13
       objectReference: {fileID: 0}
+    - target: {fileID: 2328110227937422997, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5240949436505612639, guid: a13c82d5f5f6b03408510bcdcfe0218d, type: 2}
     - target: {fileID: 5779379559460817192, guid: 8fbe5cd85ff0cec4993b4e34c2a4747a, type: 3}
       propertyPath: m_Name
       value: CardDisplayText

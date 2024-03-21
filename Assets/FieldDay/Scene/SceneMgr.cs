@@ -12,6 +12,7 @@ using BeauRoutine;
 using FieldDay.Rendering;
 using FieldDay.Assets;
 using System.Runtime.CompilerServices;
+using EasyAssetStreaming;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
@@ -173,6 +174,9 @@ namespace FieldDay.Scenes {
         // handlers
         private SceneTransitionHandler m_MainTransitionUnload;
         private SceneTransitionHandler m_MainTransitionLoad;
+
+        // dependencies
+        private RingBuffer<ISceneLoadDependency> m_Dependencies = new RingBuffer<ISceneLoadDependency>(8, RingBufferMode.Expand);
 
         // temp queues
         private RingBuffer<UninitializedSceneCallback> m_TempOnLoadQueue = new RingBuffer<UninitializedSceneCallback>(4, RingBufferMode.Expand);
@@ -1181,9 +1185,26 @@ namespace FieldDay.Scenes {
                     yield return null;
                 }
 
+                // dependencies
+
+                while(!AreDependenciesLoaded()) {
+                    yield return null;
+                }
+
                 // unload unused assets
 
                 yield return AssetUtility.UnloadUnused();
+                Streaming.UnloadUnusedAsync();
+
+                if (args.Type == SceneType.Main) {
+                    using (Profiling.Time("gc collect", ProfileTimeUnits.Microseconds)) {
+                        GC.Collect();
+                    }
+                    
+                    while(Streaming.IsUnloading()) {
+                        yield return null;
+                    }
+                }
 
                 // late enable
 
@@ -1233,6 +1254,45 @@ namespace FieldDay.Scenes {
         }
 
         #endregion // Routines
+
+        #region Dependencies
+
+        private bool AreDependenciesLoaded() {
+            for(int i = 0; i < m_Dependencies.Count; i++) {
+                if (!m_Dependencies[i].IsLoaded()) {
+                    return false;
+                }
+            }
+
+            if (Streaming.IsLoading()) {
+                return false;
+            }
+
+            return true;
+        }
+        
+        /// <summary>
+        /// Registers a dependency, which must be completed before scenes can be late-enabled and readied.
+        /// </summary>
+        public void RegisterLoadDependency(ISceneLoadDependency loadDependency) {
+            Assert.NotNull(loadDependency);
+            if (!m_Dependencies.Contains(loadDependency)) {
+                m_Dependencies.PushBack(loadDependency);
+                Log.Msg("[SceneMgr] Registered scene load dependency '{0}'", AssetUtility.NameOf(loadDependency));
+            }
+        }
+
+        /// <summary>
+        /// Deregisters a load dependency.
+        /// </summary>
+        public void DeregisterLoadDependency(ISceneLoadDependency loadDependency) {
+            Assert.NotNull(loadDependency);
+            if (m_Dependencies.FastRemove(loadDependency)) {
+                Log.Msg("[SceneMgr] Deregistered scene load dependency '{0}'", AssetUtility.NameOf(loadDependency));
+            }
+        }
+
+        #endregion // Dependencies
     }
 
     /// <summary>
@@ -1265,4 +1325,11 @@ namespace FieldDay.Scenes {
     /// Delegate for handling scene transitions.
     /// </summary>
     public delegate IEnumerator SceneTransitionHandler(Scene scene, StringHash32 tag);
+
+    /// <summary>
+    /// Scene loading dependency.
+    /// </summary>
+    public interface ISceneLoadDependency {
+        bool IsLoaded();
+    }
 }

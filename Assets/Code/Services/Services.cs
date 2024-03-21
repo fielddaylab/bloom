@@ -68,24 +68,5 @@ namespace Zavala
         }
 
         #endregion // Setup
-
-        #region All
-
-        static public IEnumerable<IService> All()
-        {
-            return s_ServiceCache.All<IService>();
-        }
-
-        static public IEnumerable<T> All<T>()
-        {
-            return s_ServiceCache.All<T>();
-        }
-
-        static public IEnumerable<ILoadable> AllLoadable()
-        {
-            return s_ServiceCache.All<ILoadable>();
-        }
-
-        #endregion // All
     }
 }

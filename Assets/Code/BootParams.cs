@@ -5,7 +5,7 @@
 using UnityEngine;
 
 namespace Zavala {
-    [DefaultExecutionOrder(-23500)]
+    [DefaultExecutionOrder(-22900)]
     public class BootParams : MonoBehaviour
     {
         private bool m_HasPersisted = false;

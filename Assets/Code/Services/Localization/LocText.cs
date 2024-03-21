@@ -158,7 +158,7 @@ namespace Zavala
             m_Text.tintAllSprites = m_TintSprites;
             Services.Loc.RegisterText(this);
 
-            if (!m_Initialized && !Services.Loc.IsLoading()) {
+            if (!m_Initialized && Services.Loc.IsLoaded()) {
                 OnLocalizationRefresh();
             }
         }

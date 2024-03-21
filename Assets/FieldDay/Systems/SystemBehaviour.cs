@@ -1,9 +1,11 @@
+using BeauUtil;
 using UnityEngine;
 
 namespace FieldDay.Systems {
     /// <summary>
     /// System derived from a MonoBehaviour.
     /// </summary>
+    [NonIndexed]
     public abstract class SystemBehaviour : MonoBehaviour, ISystem {
 
         #region Work

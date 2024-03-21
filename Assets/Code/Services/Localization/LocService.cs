@@ -21,10 +21,12 @@ using ScriptableBake;
 using UnityEngine;
 using FieldDay.Scripting;
 using Leaf.Runtime;
+using FieldDay;
+using FieldDay.Scenes;
 
 namespace Zavala
 {
-    public partial class LocService : ServiceBehaviour, ILoadable
+    public partial class LocService : ServiceBehaviour, ISceneLoadDependency
     {
         static private readonly FourCC DefaultLanguage = FourCC.Parse("EN");
 
@@ -224,13 +226,15 @@ namespace Zavala
 
         #region IService
 
-        public bool IsLoading()
+        public bool IsLoaded()
         {
-            return m_LoadRoutine;
+            return !m_LoadRoutine;
         }
 
         protected override void Initialize()
         {
+            Game.Scenes.RegisterLoadDependency(this);
+
             m_LoadRoutine.Replace(this, InitialLoad()).TryManuallyUpdate(0);
 
             m_TagStringPool = new DynamicPool<TagString>(4, Pool.DefaultConstructor<TagString>());
@@ -239,6 +243,7 @@ namespace Zavala
 
         protected override void Shutdown()
         {
+            Game.Scenes?.DeregisterLoadDependency(this);
             UnityHelper.SafeDestroy(ref m_LanguagePackage);
 
             base.Shutdown();

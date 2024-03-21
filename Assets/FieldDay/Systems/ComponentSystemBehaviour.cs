@@ -9,6 +9,7 @@ namespace FieldDay.Systems {
     /// System operating on all instances of a given component.
     /// Systems should possess no state.
     /// </summary>
+    [NonIndexed]
     public abstract class ComponentSystemBehaviour<TComponent> : MonoBehaviour, IComponentSystem<TComponent>
         where TComponent : class, IComponentData {
         #region Inspector
@@ -91,6 +92,7 @@ namespace FieldDay.Systems {
     /// System operating on all instances of a given component paired with another component type.
     /// Systems should possess no state.
     /// </summary>
+    [NonIndexed]
     public abstract class ComponentSystemBehaviour<TPrimary, TSecondary> : MonoBehaviour, IComponentSystem<TPrimary>
         where TPrimary : class, IComponentData
         where TSecondary : class, IComponentData {
@@ -181,6 +183,7 @@ namespace FieldDay.Systems {
     /// System operating on all instances of a given component paired with two component types.
     /// Systems should possess no state.
     /// </summary>
+    [NonIndexed]
     public abstract class ComponentSystemBehaviour<TPrimary, TComponentA, TComponentB> : MonoBehaviour, IComponentSystem<TPrimary>
         where TPrimary : class, IComponentData
         where TComponentA : class, IComponentData
@@ -272,6 +275,7 @@ namespace FieldDay.Systems {
     /// System operating on all instances of a given component paired with three component types.
     /// Systems should possess no state.
     /// </summary>
+    [NonIndexed]
     public abstract class ComponentSystemBehaviour<TPrimary, TComponentA, TComponentB, TComponentC> : MonoBehaviour, IComponentSystem<TPrimary>
         where TPrimary : class, IComponentData
         where TComponentA : class, IComponentData

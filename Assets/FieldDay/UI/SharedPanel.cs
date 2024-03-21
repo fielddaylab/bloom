@@ -1,4 +1,5 @@
 using BeauRoutine.Extensions;
+using BeauUtil;
 using UnityEngine;
 
 namespace FieldDay.UI {
@@ -6,7 +7,8 @@ namespace FieldDay.UI {
     /// Shared panel.
     /// </summary>
     [DefaultExecutionOrder(SharedPanel.DefaultExecutionOrder)]
-    public class SharedPanel : MonoBehaviour, ISharedGuiPanel {
+    [NonIndexed]
+    public abstract class SharedPanel : MonoBehaviour, ISharedGuiPanel {
         public const int DefaultExecutionOrder = -100;
 
         protected virtual void Awake() {

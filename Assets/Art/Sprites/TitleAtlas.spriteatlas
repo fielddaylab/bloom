@@ -43,8 +43,7 @@ SpriteAtlas:
       enableAlphaDilation: 1
     secondaryTextureSettings: {}
     variantMultiplier: 1
-    packables:
-    - {fileID: 102900000, guid: 5b24e700c2d50b64283eecedb0e10796, type: 3}
+    packables: []
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}

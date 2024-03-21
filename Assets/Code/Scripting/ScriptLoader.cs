@@ -17,9 +17,11 @@ namespace FieldDay.Scripting {
                 return;
             }
 
-            ScriptDatabase db = Game.SharedState.Get<ScriptDatabase>();
-            foreach (var script in Scripts) {
-                ScriptDatabaseUtility.Unload(db, script);
+            Game.SharedState.TryGet<ScriptDatabase>(out ScriptDatabase db);
+            if (db) {
+                foreach (var script in Scripts) {
+                    ScriptDatabaseUtility.Unload(db, script);
+                }
             }
         }
     }

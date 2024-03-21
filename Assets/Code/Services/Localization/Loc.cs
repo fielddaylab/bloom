@@ -118,7 +118,7 @@ namespace Zavala
         #endif // UNITY_EDITOR
 
         static public bool IsServiceLoading() {
-            return Service.IsLoading();
+            return !Service.IsLoaded();
         }
     }
 }
