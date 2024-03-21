@@ -56,8 +56,8 @@ namespace Zavala.UI.Info
         static private readonly Color DepotColor = Colors.Hex("#FFC34E");
         static private readonly Color FrameColor = Colors.Hex("FFFBE3");
         static private readonly Color FrameShadedColor = Colors.Hex("EFE9C4");
-        static private readonly Color BuyArrowColor = Colors.Hex("9CE978");
-        static private readonly Color BuyArrowTextColor = Colors.Hex("3C9A10");
+        static private readonly Color BuyArrowColor = Colors.Hex("ABEAD5");
+        static private readonly Color BuyArrowTextColor = Colors.Hex("367A63");
         static private readonly Color SellArrowColor = Colors.Hex("FFDE67");
         static private readonly Color SellArrowTextColor = Colors.Hex("A68201");
 
@@ -95,6 +95,9 @@ namespace Zavala.UI.Info
         [SerializeField] private Sprite m_DigesterCapture;
         [SerializeField] private Sprite m_DepotCapture;
 
+        [Header("EfficiencyGroup")]
+        [SerializeField] private ProductionEfficiencyGroup m_EfficiencyGroup;
+
         [Header("Header")]
         [SerializeField] private Graphic m_HeaderBG;
         [SerializeField] private TMP_Text m_HeaderLabel;
@@ -131,6 +134,7 @@ namespace Zavala.UI.Info
         [NonSerialized] private ResourceSupplier m_SelectedSupplier;
         [NonSerialized] private ResourceRequester m_SelectedRequester;
         [NonSerialized] private ResourcePurchaser m_SelectedPurchaser;
+        [NonSerialized] private StressableActor m_SelectedStressable;
         [NonSerialized] private EventActor m_SelectedActor;
         [NonSerialized] private ResourceMask m_ActiveResource;
         [NonSerialized] private ResourceMask m_AvailableTabsMask;
@@ -206,6 +210,7 @@ namespace Zavala.UI.Info
 
             m_SelectedPurchaser = null;
             m_SelectedRequester = null;
+            m_SelectedStressable = null;
             m_SelectedSupplier = null;
             m_TabGroup.SetActive(false);
             m_PurchaseContents.gameObject.SetActive(false);
@@ -216,6 +221,7 @@ namespace Zavala.UI.Info
             m_StorageGroup.gameObject.SetActive(false);
             m_ResourceIcon.gameObject.SetActive(false);
             m_HeaderLayout.padding.right = DefaultHeaderRightPadding;
+            m_EfficiencyGroup.gameObject.SetActive(false);
             string title = Loc.Find(m_SelectedLocation.TitleLabel);
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
@@ -223,12 +229,16 @@ namespace Zavala.UI.Info
                     m_SubheaderLabel.SetText(title)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/;
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
+                    m_SelectedStressable = thing.GetComponent<StressableActor>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = GrainFarmColor;
                     m_ResourceIcon.gameObject.SetActive(true);
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
                     m_AvailableTabsMask = (ResourceMask)0b01110;
+                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
+                    ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
                     SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
                     PickTab(ResourceMask.Phosphorus);
                     break;
@@ -239,12 +249,16 @@ namespace Zavala.UI.Info
                     m_SubheaderLabel.SetText(title)/* + " (" + Loc.Find(m_SelectedLocation.RegionId) + ")"*/;
                     m_SelectedRequester = thing.GetComponent<ResourceRequester>();
                     m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
+                    m_SelectedStressable = thing.GetComponent<StressableActor>();
                     m_MarketContentsColsGroup.gameObject.SetActive(true);
                     m_HeaderBG.color = DairyFarmColor;
                     m_ResourceIcon.gameObject.SetActive(true);
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
                     m_AvailableTabsMask = (ResourceMask)0b11001;
+                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
+                    ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
                     SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
                     PickTab(ResourceMask.Manure);
                     break;
@@ -254,19 +268,31 @@ namespace Zavala.UI.Info
                     m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_SelectedPurchaser = thing.GetComponent<ResourcePurchaser>();
+                    m_SelectedStressable = thing.GetComponent<StressableActor>();
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
-                    break;
+                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, ResourceMask.Milk);
+                    ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, ResourceMask.Empty, m_SelectedPurchaser.MoneyProducer.ProducesAmt);
+                        break;
                 }
 
                 case BuildingType.DigesterBroken:
                 case BuildingType.Digester: {
+                    m_SelectedRequester = thing.GetComponent<ResourceRequester>();
+                    m_SelectedSupplier = thing.GetComponent<ResourceSupplier>();
                     m_HeaderLabel.SetText(title);
                     m_SubheaderLabel.SetText(Loc.Find(m_SelectedLocation.InfoLabel));
                     m_HeaderBG.color = DigesterColor;
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
                     m_DescriptionImage.sprite = m_DigesterCapture;
+                    /*if (m_SelectedRequester)
+                    {
+                        m_EfficiencyGroup.gameObject.SetActive(true);
+                        ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
+                        ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
+                    }*/
                     break;
                 }
 
@@ -396,6 +422,8 @@ namespace Zavala.UI.Info
             showRunoff = (m_ActiveResource & ResourceMask.Manure) != 0;
             queryCount = Math.Min(m_QueryResults.Count, WideNumRows);
 
+            bool anyPrev = false;
+            int nextBestIndex = 0;
             for (int i = 0; i < WideNumRows; i++)
             {
                 if (i < queryCount)
@@ -403,15 +431,16 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = results.TaxRevenue.Penalties > 0;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i]);
-                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i]);
+                    bool sellChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, true);
+                    InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i], sellChoice);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = SellArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = SellArrowTextColor;
+                    anyPrev = true;
                 }
                 else
                 {
                     // load empty col group
-                    InfoPopupMarketUtility.LoadEmptyProfitCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOption.gameObject, i);
+                    InfoPopupMarketUtility.LoadEmptyProfitCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOption.gameObject, i, anyPrev);
                 }
                 m_MarketContentsColHeaders.PenaltyColHeader.gameObject.SetActive(showRunoff);
             }
@@ -490,6 +519,7 @@ namespace Zavala.UI.Info
                 m_ActiveTabProfitGroup = newTabProfitGroup;
             }
 
+            int nextBestIndex = 0;
             for (int i = 0; i < WideNumRows; i++)
             {
                 if (i < queryCount)
@@ -497,8 +527,8 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = false;
-                    InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i]);
-                    InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, m_ActiveTabProfitGroup.Profits[i]);
+                    bool bestBuyChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, false);
+                    InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, m_ActiveTabProfitGroup.Profits[i], bestBuyChoice);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = BuyArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = BuyArrowTextColor;
                 }
@@ -708,6 +738,8 @@ namespace Zavala.UI.Info
                     if (m_InitialOpen) {
                         DispatchDairyFarmDisplayed();
                     }
+
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
                     break;
                 }
 
@@ -723,6 +755,8 @@ namespace Zavala.UI.Info
                     if (m_InitialOpen) {
                         DispatchGrainFarmDisplayed();
                     }
+                    
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
                     break;
                 }
 
@@ -739,6 +773,8 @@ namespace Zavala.UI.Info
                             )
                         );
                     }
+
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
                     break;
                 }
                 case BuildingType.DigesterBroken:
@@ -747,6 +783,8 @@ namespace Zavala.UI.Info
                     if (m_InitialOpen) {
                         ZavalaGame.Events.Dispatch(GameEvents.GenericInspectorDisplayed);
                     }
+
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, OperationState.Great);
                     break;
                 }
 

@@ -111,6 +111,7 @@ MonoBehaviour:
     DFertilizer: 0
     Grain: 0
     Milk: 10
+  MoneyProducer: {fileID: 947691686583835033}
 --- !u!114 &947691686583835044
 MonoBehaviour:
   m_ObjectHideFlags: 0

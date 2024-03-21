@@ -20,6 +20,8 @@ namespace Zavala.Economy {
         [Inline(InlineAttribute.DisplayType.HeaderLabel)]
         public ResourceBlock PurchasePrice;
 
+        public MoneyProducer MoneyProducer;
+
         [NonSerialized] public ResourceRequester Request;
         [NonSerialized] public ResourceStorage Storage;
 
