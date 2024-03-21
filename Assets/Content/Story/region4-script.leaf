@@ -104,6 +104,24 @@ $else
     {@grainWetland}         I might've had to <b>slow down operations</b> with those costs!
 $endif
 
+:: triggerPlus
+@trigger        ExternalImport
+@conditions     alertRegion == 4
+@once
+$call QueueDialogueBubble(region4_grain1, region4.phosPlus)
+
+:: phosPlus
+@queued
+@once
+$call ForcePinDialogue()
+{@phos4us}      Valued customer!
+{@phos4us}      Can I interest you in PHOS4US Plus?
+{@grainWetland} What on earth is that?
+{@phos4us}      PHOS4US Plus is our exclusive membership!
+{@phos4us}      Subscribe now to access our fertilizer-themed streaming service!
+{@grainWetland} Erm, no thank you.
+{@phos4us}      Your loss.
+{@phos4us}      "Nitrogen Fixers" Season 3 is a classic...
 
 :: complainFine
 @trigger        AlertExamined
@@ -229,10 +247,10 @@ $call CutsceneBegin(4)
     Our elite naval rangers are prepared to mitigate the algae with their Skimmers.
 	$call CutscenePrepareImages("act4/4-3-1.png", "act4/4-3-2.png", "act4/4-3-3.png")
 	$call CutsceneAllImages(0.5)
-    In this time of crisis, SAGA has been authorized to repair and run the <b>Manure Processors.</b>
+    In this time of crisis, SAGA has been authorized to repair and run <b>Manure Processors.</b> Could SAGA use them to beat PHOS4US?
 	$call CutscenePrepareImages("act4/4-4-1.png", "act4/4-4-2.png", "act4/4-4-3.png")
 	$call CutsceneAllImages(0.5)
-    Their processed fertilizer could be shipped cheaply, all throughout the area! Could SAGA use it to beat PHOS4US?
+    <b>Manure Processors</b> turn manure into fertilizer which can be shipped cheaply and easily.
     $call CutscenePrepareImages("act4/4-5-1.png", "act4/4-5-2.png", "act4/4-5-3.png")
 	$call CutsceneAllImages(0.5)
     Our counties have had their differences in the past. But now we must band together to fight this threat... united!
@@ -243,7 +261,7 @@ $call FocusHighlightOn("BuildModeButton")
 {@advisorEconWetland}   They've been added to your Build Mode menu.
 {@advisorEconWetland}   Try to build them near Dairy Farms!
 $call QueueDialogueBubble(region1_city1, region1.visitingBirds)
-// $call QueueDialogueBubble(region4_city1, region4.explainProcessors)
+$call QueueDialogueBubble(region4_city1, region4.explainProcessors)
 $call FocusClear()
 $call OffsetAlgaeGrowthThreshold(1)
 // $call Unpause()
@@ -257,22 +275,22 @@ $call OffsetAlgaeGrowthThreshold(1)
 // {@advisorEconWetland}   We may need a new revenue stream. I've opened up Sales Tax.
 // $call UnlockCards(SalesTaxPolicy)
 
-// :: explainProcessors
-// @queued
-// @once
-// {@cityWetland}          Hey, what is that <b>Manure Processor</b> anyway?
-// {@advisorEcolWetland}   Good question!
-// {@advisorEcolWetland}   The Processor can chemically change Manure into useful forms.
-// {@advisorEcolWetland}   One way is by letting micro-organisms digest it!
-// {@advisorEcolWetland}   That gets rid of excess water and bulk.
-// {@advisorEcolWetland}   The resulting <i>digestate</i> is an easy-to-ship fertilizer!
-// {@advisorEcolPrairie}   But that's not all!
-// {@advisorEcolPrairie}   Processors also make <i>biogas:</i> a renewable (but still carbon-based) fuel.
-// {@advisorEconWetland}   Sounds profitable.      
-// {@advisorEconWetland}   Why not let our farmers build their own?
-// {@advisorEcolWetland}   Well...
-// {@advisorEcolWetland}   Processors are expensive, and most efficient running continuously.
-// {@advisorEcolWetland}   But SAGA can run the Manure Processors as a public utility!
+// TODO: punch up
+:: explainProcessors
+@queued
+@once
+{@cityWetland}          Hey, what is that <b>Manure Processor</b> anyway?
+{@advisorEcolWetland}   Good question!
+{@advisorEcolWetland}   It works by letting micro-organisms digest manure.
+{@advisorEcolWetland}   The resulting <i>digestate</i> is an easy-to-ship fertilizer!
+{@cityWetland}          Gross! But cool.
+{@advisorEcolPrairie}   But that's not all!
+{@advisorEcolPrairie}   Processors can also make <i>biogas:</i> a renewable carbon-based fuel.
+{@advisorEconWetland}   Sounds profitable.      
+{@advisorEconWetland}   Why not let our farmers build their own?
+{@advisorEcolWetland}   Well...
+{@advisorEcolWetland}   Processors are expensive, and most efficient running continuously.
+{@advisorEcolWetland}   But SAGA can run the Manure Processors as a public utility!
 
 
 :: bloomGeneric
@@ -323,6 +341,7 @@ $call ForceAdvisorModule("Economy")
 :: urbanVisit
 @queued
 @once
+$call ForcePinDialogue()
 $call QueueDialogueBubble(region1_city1, region1.urbanVisit)
 {@advisorEconUrban}     Yo, I drink this stuff every day!
 {@advisorEcolUrban}     Neil's Organic Dairy, hm?

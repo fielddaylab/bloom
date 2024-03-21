@@ -68,6 +68,7 @@ $call ForceAdvisorModule("Economy") // toggle off
 :: introduceUrban
 @queued
 @once
+$call ForcePinDialogue()
 {@advisorEcolUrban}     Thank goodness SAGA is here.
 {@advisorEconUrban}     Yeah, we're mondo stoked.
 {@advisorEcolUrban}     Most of the farming is upriver, out in the country!
@@ -82,6 +83,7 @@ $call QueueDialogueBubble(region3_grain1, region3.urbanVisit)
 :: finishUrban
 @queued
 @once
+$call ForcePinDialogue()
 {@advisorEconUrban}     It all makes sense now...
 {@advisorEcolUrban}     Hmm?
 {@advisorEconUrban}     We may not be producing much runoff here...

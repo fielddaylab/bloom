@@ -68,20 +68,24 @@ $call ForcePolicyInstant("Ecology")
 @trigger AlertExamined
 @conditions alertType == "dialogue", buildingType == "DairyFarm", alertRegion == 3, global:storageUnlocked
 @once
-{@cafoPrairie}             Hey, that old Manure Processor don't look half bad...
-$call PanToBuilding("region2_digester1")
-{@cafoPrairie}             If I could turn my <b>manure</b> into <b>fertilizer</b>, I wouldn't lose so much on shipping!
-$call PanToBuilding("region3_cafo1")
-{@advisorEconPrairie}      Maybe... But you can't expect to run one on your own!
-{@advisorEconPrairie}      That's how the old one was abandoned in the first place...
-{@cafoPrairie}             If SAGA can run a <b>Storage,</b> maybe y'all can run a <b>Processor?</b>
-{@advisorEconPrairie}      Hmm... Good idea!
-{@advisorEconPrairie}      But SAGA has to grow before we can get that authorization!
+{@cafoPrairie}          Hey, that old Manure Processor in Cypress County don't look half bad...
+// $call PanToBuilding("region2_digester1")
+{@cafoPrairie}          If I could turn my <b>manure</b> into <b>fertilizer</b>, I wouldn't lose so much on shipping!
+// $call PanToBuilding("region3_cafo1")
+{@advisorEconPrairie}   Maybe... But you can't expect to run one on your own!
+{@advisorEconPrairie}   That's how the old one was abandoned in the first place...
+{@cafoPrairie}          If SAGA can run a <b>Storage,</b> maybe y'all can run a <b>Processor?</b>
+{@advisorEconPrairie}   Hmm... Good idea!
+{@advisorEconPrairie}   But SAGA has to grow before we can get that authorization!
+{@phos4us}              Ah, why go to all that trouble?
+{@phos4us}              At PHOS4US we extract perfectly good phosphorus from underground!    
+{@cafoPrairie}          Uh, sure. But I want to stop losing money on this manure!
 
 :: economicSolution
 @trigger AlertExamined
 @conditions global:pipsUnlocked, alertRegion == 3, alertType == "dialogue", buildingType == "City"
 @once
+$call ForcePinDialogue()
 {@advisorEconPrairie}    I've been crunching some numbers...
 {@advisorEconPrairie}    And it seems there's an economic solution to our problem!
 {@advisorEconPrairie}    I've written up a plan...
@@ -96,6 +100,7 @@ $call PanToBuilding("region3_cafo1")
 @trigger AlertExamined
 @conditions global:readyForSkimmers, alertRegion == 3, alertType == "dialogue", buildingType == "City"
 @once
+$call ForcePinDialogue()
 {@advisorEcolPrairie}   I think I've got a solution to this algae business!
 {@advisorEconPrairie}   Oh? Pray tell!
 {@advisorEcolPrairie}   It's easy: we just shut down the dairy farms!
@@ -104,6 +109,23 @@ $call PanToBuilding("region3_cafo1")
 {@cityPrairie}          <i>Excuse me!?</i>
 {@advisorEconPrairie}   Well, I reckon you're <i>technically</i> correct...
 {@advisorEconPrairie}   But SAGA can't exactly write a policy for that.
+
+:: triggerSale
+@trigger        ExternalImport
+@conditions     alertRegion == 3
+@once
+$call QueueDialogueBubble(region3_grain1, region3.phosSale)
+
+:: phosSale
+@queued
+@once
+$call ForcePinDialogue()
+{@phos4us}       Congratulations!
+{@grainPrairie}  Huh?
+{@phos4us}       You're eligible for our SuperSaver program.
+{@phos4us}       Buy 50 bags of PHOS4US Advanced Formula, and the 51st is free!
+{@grainPrairie}  Uh, I'm not sure...
+{@phos4us}       Please? I have to meet sales quota this month.
 
 :: queueUnlockImportTax
 @trigger        RegionReachedAge // RegionAge 20 after region opens
@@ -128,7 +150,7 @@ $call UnlockCards(ImportTaxPolicy)
 {@advisorEconPrairie}   That could help us balance one county's <b>excess</b> with another's <b>needs.</b>
 $call OpenInfoPopup("region3_grain2")
 {@grainPrairie}         Hold up... does that mean you could <b>Subsidize fertilizer</b>?
-{@grainPrairie}         That might make <b>Manure</b> cheaper than PHOS4US.
+{@grainPrairie}         That might make <b>manure</b> cheaper than PHOS4US.
 {@advisorEconPrairie}   Yes ma'am! But it'll have to come from our budget.
 $call CloseInfoPopup()
 {viewpoliciesnext}
@@ -139,7 +161,7 @@ $call ForcePolicyInstant("Economy")
 :: queueSuggestFert
 @trigger    ExternalImport
 @conditions global:importUnlocked, alertRegion == 3, PolicyLevelInRegion(3, "ImportTaxPolicy") != 3
-$call QueueDialogueBubble(region3_grain2, region3.suggestFertSubsidy)
+$call QueueDialogueBubble(region3_grain3, region3.suggestFertSubsidy)
 
 :: suggestFertSubsidy
 @queued
@@ -150,7 +172,7 @@ $if PolicyLevelInRegion(3, "ImportTaxPolicy") == 3
     {@grainPrairie}     That should make it cheaper to use Manure fertilizer.
 $else
     {@grainPrairie}     Hey, my farms keep buying from PHOS4US!
-    $call OpenInfoPopup("region3_grain2")
+    $call OpenInfoPopup("region3_grain3")
     {@grainPrairie}     But if y'all want to reduce mineral imports...
     {@grainPrairie}     Wouldn't it make sense to use one of them <b>Fertilizer Subsidies?</b>
     {@grainPrairie}     That could make <b>Manure</b> from Cypress County cheaper for me.
@@ -162,6 +184,7 @@ $endif
 :: visitingVeldt // triggered by unlocking Region 4
 @queued
 @once
+$call ForcePinDialogue()
 {@advisorEcolForest}    What? Oh, hello Director.
 {@advisorEcolForest}    I was just visiting Veldt University for a seminar.
 {@cityPrairie}          Hey, cool! Which one?
@@ -196,6 +219,7 @@ $call ForceAdvisorModule("Economy")
 :: urbanVisit
 @queued
 @once
+$call ForcePinDialogue()
 $call QueueDialogueBubble(region4_cafo3, region4.urbanVisit)
 {@advisorEconUrban}     Woah! Get a load of these gnarly amber waves...
 {@grainPrairie}         Yesirree! We grow most of the sorghum in the state here.
