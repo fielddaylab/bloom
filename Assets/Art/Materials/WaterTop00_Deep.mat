@@ -14,7 +14,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 1999
+  m_CustomRenderQueue: 2999
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -42,6 +42,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamNoise:
+        m_Texture: {fileID: 2800000, guid: c8a5e654957804c2cb7ebce0df5d80c2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamNoiseTexture:
+        m_Texture: {fileID: 2800000, guid: c8a5e654957804c2cb7ebce0df5d80c2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -84,8 +92,8 @@ Material:
     - Vector1_6D9DC178: 87.4
     - Vector1_93DCFAA9: 0.5
     - Vector1_95BBCBE0: 34.84
-    - Vector1_C5543ECF: 2.82
-    - Vector1_E23798DE: 0.23
+    - Vector1_C5543ECF: 1.37
+    - Vector1_E23798DE: 0.05
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -120,7 +128,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamSize: {r: 35.25, g: 103.69, b: 0, a: 0}
+    - _FoamSize: {r: 4, g: 8, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5032931187970120539
