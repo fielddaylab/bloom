@@ -9,6 +9,7 @@ namespace Zavala.UI.Info
         public Image Icon;
         public Image PolicyIcon;
         public Graphic Background;
+        public RectTransform BackgroundRect;
         public TMP_Text NameLabel;
         public TMP_Text RegionLabel;
         public Image Arrow;

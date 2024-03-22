@@ -472,6 +472,7 @@ MonoBehaviour:
   Icon: {fileID: 6441123958713841685}
   PolicyIcon: {fileID: 1313723848658031439}
   Background: {fileID: 767681112672134774}
+  BackgroundRect: {fileID: 237226276557215907}
   NameLabel: {fileID: 255466456258285580}
   RegionLabel: {fileID: 7169908300617803081}
   Arrow: {fileID: 3650927436475929429}
@@ -666,8 +667,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -756,10 +757,10 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 12.502502, y: 0}
-  m_SizeDelta: {x: -25.005005, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 140.1715, y: 0.0000038146973}
+  m_SizeDelta: {x: 114.84, y: 0}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &1088742975820695081
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -788,7 +789,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_CornerRadius: 3
+  m_CornerRadius: 0
   m_Resolution: 0
   m_Outline: 0
   m_Thickness: 1

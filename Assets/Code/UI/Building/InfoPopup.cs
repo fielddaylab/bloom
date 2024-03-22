@@ -347,6 +347,8 @@ namespace Zavala.UI.Info
 
             ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, new Data.BuildingData(m_Mode, title, idx));
             Show();
+
+            UpdateData(false);
         }
 
         private void PopulateHeader() {
@@ -453,12 +455,14 @@ namespace Zavala.UI.Info
             int nextBestIndex = 0;
             for (int i = 0; i < WideNumRows; i++)
             {
+                Debug.Log("[delay] entering empty cols rows");
+
                 if (i < queryCount)
                 {
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = results.TaxRevenue.Penalties > 0;
-                    bool sellChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, true);
+                    bool sellChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, true, m_MarketContentsColHeaders);
                     InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i], sellChoice);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = SellArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = SellArrowTextColor;
@@ -471,6 +475,7 @@ namespace Zavala.UI.Info
                 }
                 m_MarketContentsColHeaders.PenaltyColHeader.gameObject.SetActive(showRunoff);
             }
+
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
             if (m_BestOption.gameObject.activeSelf)
             {
@@ -554,7 +559,7 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = false;
-                    bool bestBuyChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, false);
+                    bool bestBuyChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, false, m_MarketContentsColHeaders);
                     InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, m_ActiveTabProfitGroup.Profits[i], bestBuyChoice);
                     m_MarketContentsCols.LocationCols[i].Arrow.color = BuyArrowColor;
                     m_MarketContentsCols.LocationCols[i].ArrowText.color = BuyArrowTextColor;
@@ -565,6 +570,9 @@ namespace Zavala.UI.Info
                     InfoPopupMarketUtility.LoadEmptyCostsCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, m_BestOption.gameObject, i);
                 }
             }
+
+            Debug.Log("[delay] Loaded empty cols");
+
 
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
             if (m_BestOption.gameObject.activeSelf)

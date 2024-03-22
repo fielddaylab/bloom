@@ -373,6 +373,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae304d17cc23b9479c1f8b1212cae1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Root: {fileID: 9216784070121299220}
+  Layout: {fileID: 8702554949859275437}
+  LayoutRect: {fileID: 3469819023366611465}
   BasePriceColHeader: {fileID: 2173240797799001879}
   ShippingColHeader: {fileID: 1955946563267330889}
   SalesTaxColHeader: {fileID: 5458500070594969172}
