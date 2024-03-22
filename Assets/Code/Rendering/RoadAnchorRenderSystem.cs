@@ -14,11 +14,11 @@ namespace Zavala.Rendering
     [SysUpdate(GameLoopPhase.Update, 450)]
     public class RoadAnchorRenderSystem : SharedStateSystemBehaviour<BuildToolState, RoadNetwork, BuildingPools, RoadAnchorRenderState>
     {
-        private BlueprintState m_StateE;
-
         public override void ProcessWork(float deltaTime)
         {
-            if (m_StateA.ToolUpdated)
+            BlueprintState bpState = Game.SharedState.Get<BlueprintState>();
+
+            if (bpState.IsActive && (m_StateA.ToolUpdated || m_StateA.RegionSwitched))
             {
                 // On select road tool
                 if (m_StateA.ActiveTool == UserBuildTool.Road)
@@ -67,11 +67,7 @@ namespace Zavala.Rendering
                 }
             }
 
-            if (!m_StateE) {
-                m_StateE = Game.SharedState.Get<BlueprintState>(); 
-            }
-
-            if (m_StateE.ExitedBlueprintMode)
+            if (bpState.ExitedBlueprintMode)
             {
                 ClearVisualizations();
             }

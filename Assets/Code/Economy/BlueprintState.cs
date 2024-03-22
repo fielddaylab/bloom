@@ -495,6 +495,7 @@ namespace Zavala.Economy
             bpState.OverlayRenderer.enabled = true;
             bpState.OverlayData.Clear();
 
+            Debug.Log("[Swap] Generating for region " + grid.CurrRegionIndex);
             // Render the mesh for all blocked tiles in the current region
             foreach(int index in grid.Regions[(int) grid.CurrRegionIndex].GridArea)
             {

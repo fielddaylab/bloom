@@ -18,6 +18,10 @@ namespace Zavala.Building
             {
                 m_State.ToolUpdated = false;
             }
+            if (m_State.RegionSwitched)
+            {
+                m_State.RegionSwitched = false;
+            }
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Zavala.Building
 
             UserBuildTool toolPreview = ToolInPreview();
 
-            if (m_StateC.ToolUpdated && m_StateC.ActiveTool != UserBuildTool.None)
+            if (bpState.IsActive && (m_StateC.ToolUpdated || m_StateC.RegionSwitched))
             {
                 if (m_StateC.ActiveTool != UserBuildTool.Road) {
                     // Regenerate BlockedTiles

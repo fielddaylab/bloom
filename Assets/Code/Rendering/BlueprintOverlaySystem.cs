@@ -19,6 +19,13 @@ namespace Zavala.Rendering
     {
         private BuildToolState m_StateE;
 
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            Game.Events.Register(GameEvents.RegionSwitched, OnRegionSwitched);
+        }
+
         public override void ProcessWork(float deltaTime)
         {
             if (!m_StateE)
@@ -38,8 +45,42 @@ namespace Zavala.Rendering
                     // Remove the old mesh
                     BlueprintUtility.HideOverlayMesh(m_StateA);
                 }
-                return;
             }
+
+            if (m_StateE.RegionSwitched && m_StateA.OverlayRenderer.enabled)
+            {
+                // handle commits being modified
+                if (m_StateA.Commits.Count == 0)
+                {
+                    BlueprintUtility.RegenerateOverlayMesh(m_StateA, m_StateB, m_StateC, m_StateD, m_StateE);
+                }
+            }
+
+            if (m_StateA.NumBuildCommitsChanged)
+            {
+                CameraInputState camState = Game.SharedState.Get<CameraInputState>();
+
+                if (m_StateA.Commits.Count > 0 && camState.LockRegion == Tile.InvalidIndex16)
+                {
+                    camState.LockRegion = m_StateB.CurrRegionIndex;
+
+                    SimWorldState world = Game.SharedState.Get<SimWorldState>();
+                    Bounds b = world.RegionBounds[camState.LockRegion];
+                    b.Expand(0.25f);
+
+                    Vector3 bMin = b.min, bMax = b.max;
+                    camState.LockedBounds = Rect.MinMaxRect(bMin.x, bMin.z, bMax.x, bMax.z);
+                }
+                else if (m_StateA.Commits.Count == 0)
+                {
+                    camState.LockRegion = Tile.InvalidIndex16;
+                }
+            }
+        }
+
+        private void OnRegionSwitched()
+        {
+            m_StateE.RegionSwitched = true;
         }
     }
 }

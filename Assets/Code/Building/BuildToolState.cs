@@ -57,6 +57,7 @@ namespace Zavala.Building {
         [NonSerialized] public BitSet32 CityConnectedInRegion;
 
         [NonSerialized] public bool ToolUpdated;
+        [NonSerialized] public bool RegionSwitched;
 
         // Blocked Tiles (for non-road buildings)
         [NonSerialized] public HashSet<int> BlockedIdxs; // tile indices of non-buildables

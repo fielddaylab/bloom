@@ -111,7 +111,7 @@ namespace Zavala.Economy
                     BlueprintUtility.OnBuildToolSelected(m_StateA);
 
                     // handle commits being modified
-                    if (m_StateA.Commits.Count == 0) {
+                    /*if (m_StateA.Commits.Count == 0) {
                         CameraInputState camState = Game.SharedState.Get<CameraInputState>();
                         camState.LockRegion = m_StateC.CurrRegionIndex;
 
@@ -121,7 +121,7 @@ namespace Zavala.Economy
 
                         Vector3 bMin = b.min, bMax = b.max;
                         camState.LockedBounds = Rect.MinMaxRect(bMin.x, bMin.z, bMax.x, bMax.z);
-                    }
+                    }*/
                 }
             }
 
