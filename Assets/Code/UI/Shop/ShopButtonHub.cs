@@ -1,6 +1,7 @@
 using BeauPools;
 using BeauUtil;
 using FieldDay;
+using FieldDay.Animation;
 using FieldDay.Scenes;
 using FieldDay.Scripting;
 using System;
@@ -8,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 using Zavala.Building;
 using Zavala.Economy;
 
@@ -106,19 +108,20 @@ namespace Zavala.UI
 
         private void HandleButtonSelected(int selectedIndex) {
             BuildToolState bts = Game.SharedState.Get<BuildToolState>();
+            ShopItemButton button = m_shopItemBtns[selectedIndex];
 
             if (selectedIndex == m_selectedIndex) {
                 // selected current button; should unselect it and return
                 ClearSelected();
 
                 BuildToolUtility.SetTool(bts, UserBuildTool.None);
+                Game.Animation.AddLiteAnimator(button, 0.15f);
                 return;
             }
 
             // unselect current button
             ClearSelected();
 
-            ShopItemButton button = m_shopItemBtns[selectedIndex];
             using (TempVarTable varTable = TempVarTable.Alloc()) {
                 varTable.Set("toolType", button.BuildTool.ToString());
                 ScriptUtility.Trigger(GameTriggers.BuildButtonPressed, varTable);
@@ -132,9 +135,11 @@ namespace Zavala.UI
                 m_shopItemBtns[selectedIndex].Button.image.color = ZavalaColors.ShopItemSelected;
 
                 m_selectedIndex = selectedIndex;
+                Game.Animation.AddLiteAnimator(button, 0.15f);
             }
             else {
                 // some disallow routine? error sound, red flash, queue Balthazar, etc.
+                Game.Animation.AddLiteAnimator(button, 0.3f);
             }
         }
 

@@ -242,6 +242,7 @@ GameObject:
   - component: {fileID: 4666853801625648822}
   - component: {fileID: 1472241625969571873}
   - component: {fileID: 5319063997591176681}
+  - component: {fileID: 4710872489910880898}
   m_Layer: 5
   m_Name: CommandButton
   m_TagString: Untagged
@@ -425,6 +426,20 @@ MonoBehaviour:
   ClickId:
     m_Source: ui-click
     m_HashValue: 2094747682
+--- !u!114 &4710872489910880898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035655570329005036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7d6f75513ad5e4691220017e408cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LayoutOffset: {fileID: 6825247406446255497}
+  m_Selectable: {fileID: 5542873064247455406}
 --- !u!1 &2959847944057837601
 GameObject:
   m_ObjectHideFlags: 0
