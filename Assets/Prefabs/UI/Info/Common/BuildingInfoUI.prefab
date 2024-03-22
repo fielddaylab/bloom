@@ -299,8 +299,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 7.5, y: 0}
+  m_SizeDelta: {x: -25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3375196292707291686
 MonoBehaviour:
@@ -940,8 +940,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -10, y: -7.5}
-  m_SizeDelta: {x: -101.4056, y: 70}
+  m_AnchoredPosition: {x: -15, y: -7.5}
+  m_SizeDelta: {x: -106.4056, y: 70}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7034998536549403830
 CanvasRenderer:
@@ -999,7 +999,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 17.75
   m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2597,6 +2597,9 @@ MonoBehaviour:
   m_MarketContentsCols: {fileID: 7011878632674613170}
   m_MarketContentsColsGroup: {fileID: 7527480145767218257}
   m_MarketContentsColHeaders: {fileID: 5355238784547068815}
+  m_BGRect: {fileID: 842891857316909269}
+  m_BGShadowRect: {fileID: 6231145414965838473}
+  m_TitleBGRect: {fileID: 313903680225830941}
   m_DescriptionGroup: {fileID: 4761962570548264459}
   m_DescriptionText: {fileID: 7972409254298938465}
   m_DescriptionImage: {fileID: 4222790395472155585}

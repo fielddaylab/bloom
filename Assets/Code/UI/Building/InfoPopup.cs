@@ -116,6 +116,10 @@ namespace Zavala.UI.Info
         [SerializeField] private GameObject m_MarketContentsColsGroup;
         [SerializeField] private InfoPopupColumnHeaders m_MarketContentsColHeaders;
 
+        [SerializeField] private RectTransform m_BGRect;
+        [SerializeField] private RectTransform m_BGShadowRect;
+        [SerializeField] private RectTransform m_TitleBGRect;
+
         [SerializeField] private GameObject m_DescriptionGroup;
         [SerializeField] private TMP_Text m_DescriptionText;
         [SerializeField] private Image m_DescriptionImage;
@@ -221,7 +225,7 @@ namespace Zavala.UI.Info
             m_StorageGroup.gameObject.SetActive(false);
             m_ResourceIcon.gameObject.SetActive(false);
             m_HeaderLayout.padding.right = DefaultHeaderRightPadding;
-            m_EfficiencyGroup.gameObject.SetActive(false);
+            SetEfficiencyGroupActive(false);
             string title = Loc.Find(m_SelectedLocation.TitleLabel);
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
@@ -236,7 +240,7 @@ namespace Zavala.UI.Info
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
                     m_AvailableTabsMask = (ResourceMask)0b01110;
-                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    SetEfficiencyGroupActive(true);
                     ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
                     ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
                     SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
@@ -256,7 +260,7 @@ namespace Zavala.UI.Info
                     m_HeaderLayout.padding.right = ResourceHeaderRightPadding;
                     m_TabGroup.SetActive(true);
                     m_AvailableTabsMask = (ResourceMask)0b11001;
-                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    SetEfficiencyGroupActive(true);
                     ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
                     ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
                     SetTabsVisible(m_AvailableTabsMask); // weird to hardcode this?
@@ -271,7 +275,7 @@ namespace Zavala.UI.Info
                     m_SelectedStressable = thing.GetComponent<StressableActor>();
                     m_PurchaseContents.gameObject.SetActive(true);
                     m_HeaderBG.color = CityColor;
-                    m_EfficiencyGroup.gameObject.SetActive(true);
+                    SetEfficiencyGroupActive(true);
                     ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, ResourceMask.Milk);
                     ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, ResourceMask.Empty, m_SelectedPurchaser.MoneyProducer.ProducesAmt);
                         break;
@@ -348,6 +352,25 @@ namespace Zavala.UI.Info
             m_PortraitGroup.SetActive(charDef != null);
             if (charDef != null) {
                 m_CharacterPortrait.sprite = charDef.PortraitArt;
+            }
+        }
+
+        private void SetEfficiencyGroupActive(bool active)
+        {
+            m_EfficiencyGroup.gameObject.SetActive(active);
+            if (active)
+            {
+                m_BGRect.offsetMax = new Vector2(m_BGRect.offsetMax.x, -29);
+                m_BGRect.offsetMin = new Vector2(m_BGRect.offsetMin.x, -34);
+                m_BGShadowRect.offsetMax = new Vector2(m_BGShadowRect.offsetMax.x, -33);
+                m_BGShadowRect.offsetMin = new Vector2(m_BGShadowRect.offsetMin.x, -38);
+            }
+            else
+            {
+                m_BGRect.offsetMax = new Vector2(m_BGRect.offsetMax.x, 5);
+                m_BGRect.offsetMin = new Vector2(m_BGRect.offsetMin.x, 0);
+                m_BGShadowRect.offsetMax = new Vector2(m_BGShadowRect.offsetMax.x, 1);
+                m_BGShadowRect.offsetMin = new Vector2(m_BGShadowRect.offsetMin.x, -4);
             }
         }
 
