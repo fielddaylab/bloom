@@ -52,6 +52,7 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: ca10ff5045736794ab053f2595acd42a, type: 3}
   - {fileID: 21300000, guid: 18e00d6017c89d345997603c598ae0cb, type: 3}
   - {fileID: 21300000, guid: 3ded4490e0801e04595585b7729c692c, type: 3}
   - {fileID: 21300000, guid: 684de8716ea9f8d40a8cf93906d15b50, type: 3}
@@ -72,6 +73,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 57a996141414f1543822837147d4bf12, type: 3}
   - {fileID: 21300000, guid: 4e403914c71570a4297712e0dbaa3886, type: 3}
   - {fileID: 21300000, guid: 1eab422451ce05d4399be013e243bec2, type: 3}
+  - {fileID: 21300000, guid: b7d8e7249b6edf64aa6b6043d61fabc9, type: 3}
   - {fileID: 21300000, guid: 42f2aa24953b643469146dddc1b95237, type: 3}
   - {fileID: 21300000, guid: a1879e24680c1ba48a492b6cee354375, type: 3}
   - {fileID: 21300000, guid: 08913f24993ad8c44a614a3b70ef019b, type: 3}
@@ -86,6 +88,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: cb43e6e54be9ae043b7928abf6f1dc13, type: 3}
   - {fileID: 21300000, guid: 50b6ad0648a956c4bbf7a51cb79ef1da, type: 3}
   - {fileID: 21300000, guid: b95a50262486b12498b2ae34d6232889, type: 3}
+  - {fileID: 21300000, guid: c6e651965983fc842bf83726df41555d, type: 3}
   - {fileID: 21300000, guid: 0a49d7a676c7e7a41938c7fad1f49f83, type: 3}
   - {fileID: 21300000, guid: 4e924ea66dfed87478eda11d6f63cd7e, type: 3}
   - {fileID: 21300000, guid: 318f8ad60aa17074cafbbadc8d84a163, type: 3}
@@ -123,6 +126,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: f1c1991d55fde1b44975cee1f7f527e0, type: 3}
   - {fileID: 21300000, guid: 6a7c80cdc0ea6db4490f49d084faa518, type: 3}
+  - {fileID: 21300000, guid: 6faf280eb78f32546a29b8c60bffd739, type: 3}
   - {fileID: 21300000, guid: 6353d11e53a88f049bb1523cb18e34ae, type: 3}
   - {fileID: 21300000, guid: 98bf592e9435dd74fb7add32f6a182b2, type: 3}
   - {fileID: 21300000, guid: 5d813f3e537b05e40ba3cbe7825ade0b, type: 3}
@@ -131,6 +135,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5eba4e9e389da764f8119e6c4b47bb76, type: 3}
   - {fileID: 21300000, guid: 24ba8fce21db8d846a69f995fb37c59b, type: 3}
   - {fileID: 21300000, guid: 54cfc3fe99abf0c4086d8577ee156cf5, type: 3}
+  - {fileID: 21300000, guid: 3b31882f37e512944b3481d436f902fa, type: 3}
   - {fileID: 21300000, guid: 82b59a2f0c34e2b47b10eda9bf8b5b96, type: 3}
   - {fileID: 21300000, guid: 198b113fc46f2cd4287d013e53169f07, type: 3}
   - {fileID: 21300000, guid: 02284e4f0c1a06a439dc8c3971065fd7, type: 3}
@@ -139,6 +144,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1341e9af6cc32cd4c90c6902052dc310, type: 3}
   - {fileID: 21300000, guid: ed9a64ff8bf249b469c9ffa0397bc16a, type: 3}
   m_PackedSpriteNamesToIndex:
+  - query-mark
   - water-status-poor
   - MarketLensIcon
   - efficiency-bolt
@@ -159,6 +165,7 @@ SpriteAtlas:
   - BlueprintModeToggle
   - CircleGradient75-Invert
   - toll-popup
+  - resource-manure-yellow
   - DestroyIcon
   - CloseRound
   - BarGraphClamp
@@ -173,6 +180,7 @@ SpriteAtlas:
   - advisor-dialogue-white
   - CloseX
   - ShopToggle
+  - kinda-urgent-flag
   - policyicon_import
   - cutscene_next
   - card-slot-white
@@ -210,6 +218,7 @@ SpriteAtlas:
   - BlueprintMode
   - resource_grain
   - controls_zoom
+  - resource-milk-yellow
   - efficiency-arrow
   - grain-resource
   - Cursor-Normal
@@ -218,6 +227,7 @@ SpriteAtlas:
   - BigDestroyBackground
   - dialog-arrow
   - PurchaseReceipt
+  - resource-grain-yellow
   - close-button
   - storage-popup
   - urgentflag_grain
