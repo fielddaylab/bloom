@@ -2,21 +2,18 @@ using BeauRoutine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using BeauRoutine.Extensions;
-using Zavala.Cards;
-using TMPro;
 using BeauUtil;
-using System.Text;
 using System;
 using BeauUtil.Debugger;
 using Zavala.Data;
 using EasyAssetStreaming;
-using UnityEditor;
 
-namespace Zavala.UI
-{
+#if UNITY_EDITOR
+using UnityEditor;
+#endif // UNITY_EDITOR
+
+namespace Zavala.UI {
     public struct CreditsBlockData
     {
         public string Header;
