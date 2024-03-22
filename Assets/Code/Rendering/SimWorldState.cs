@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 using Zavala.Audio;
+using Zavala.Data;
 using Zavala.Economy;
 using Zavala.Input;
 using Zavala.Rendering;
@@ -124,6 +125,9 @@ namespace Zavala.World {
             ThickOutlineMeshes = new Mesh[RegionInfo.MaxRegions]; 
 
             TileRendering.SetTileRadius(TileRadius);
+
+            bool isHighQuality = Find.State<UserSettings>().HighQualityMode;
+            Find.State<WaterMaterialData>().SetShaderMode(isHighQuality);
         }
 
 #if UNITY_EDITOR

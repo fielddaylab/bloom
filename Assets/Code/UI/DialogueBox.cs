@@ -360,17 +360,17 @@ namespace Zavala.UI {
                 yield return null;
             } 
             if (m_PoliciesActive) {
-                while (!input.ButtonPressed(InputButton.PrimaryMouse) || Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
+                while (!input.ButtonPressed(InputButton.DialogAdvance) || Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
                     //Log.Msg("   > Pointer over hierarchy: {0}", Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer));
                     yield return null;
                 }
                 //Log.Msg("   > Policies active, but clicked!");
             } else {
-                while (!input.ButtonPressed(InputButton.PrimaryMouse)) {
+                while (!input.ButtonPressed(InputButton.DialogAdvance)) {
                     yield return null;
                 }
             }
-            input.ConsumedButtons |= InputButton.PrimaryMouse;
+            input.ConsumedButtons |= InputButton.PrimaryMouse | InputButton.DialogAdvance;
             ZavalaGame.Events.Dispatch(GameEvents.DialogueAdvanced);
             //Log.Msg("[DialogueBox] BREAK!");
             yield break;

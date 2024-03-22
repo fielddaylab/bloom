@@ -17,9 +17,9 @@ MonoBehaviour:
   TileTopEmptyMesh:
     Mesh: {fileID: 2810960467159843297, guid: 4277ba694297c8c4fb8d69d395bd2bb2, type: 3}
     Material: {fileID: 2100000, guid: c03543a3bf914334486d0a7f247f177a, type: 2}
-  City: {fileID: 947691686583835045, guid: 82ca17fb1eac303469b053becc57eaea, type: 3}
-  DairyFarm: {fileID: 7291294420475072060, guid: 561901347b4df5044aae97067e480283, type: 3}
-  GrainFarm: {fileID: 5421243799934890597, guid: a6ebd0864cdbed04998ff1e19a259455, type: 3}
+  City: {fileID: 596954265147574906, guid: 210f2ca5105eb4e4e81747aa6d02c754, type: 3}
+  DairyFarm: {fileID: 145780260416865577, guid: 1d2532cbb3e3fd6498812c176d80ba04, type: 3}
+  GrainFarm: {fileID: 8368637535293244367, guid: 730b1585f11ff0848bfec2112f749b06, type: 3}
   ExportDepot: {fileID: 7291294420475072060, guid: 201bdaeea4b86894797bc4502d768471, type: 3}
   Rock:
   - {fileID: 947691686583835045, guid: bef67078d89cd764ab2b93937d4835e8, type: 3}

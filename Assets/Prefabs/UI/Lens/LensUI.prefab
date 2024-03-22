@@ -1195,6 +1195,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Market
       objectReference: {fileID: 0}
+    - target: {fileID: 9020737072926728439, guid: 2cf77007ea9107344ad238dc68c6c7c5, type: 3}
+      propertyPath: Key
+      value: 109
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2cf77007ea9107344ad238dc68c6c7c5, type: 3}
 --- !u!224 &6247398403113994092 stripped
@@ -1515,6 +1519,10 @@ PrefabInstance:
     - target: {fileID: 8630666985728764361, guid: 2cf77007ea9107344ad238dc68c6c7c5, type: 3}
       propertyPath: m_Name
       value: Phosphorus
+      objectReference: {fileID: 0}
+    - target: {fileID: 9020737072926728439, guid: 2cf77007ea9107344ad238dc68c6c7c5, type: 3}
+      propertyPath: Key
+      value: 118
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2cf77007ea9107344ad238dc68c6c7c5, type: 3}

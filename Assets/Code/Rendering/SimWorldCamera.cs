@@ -12,6 +12,8 @@ using BeauUtil.Debugger;
 using FieldDay;
 using Zavala.Data;
 using Zavala.Sim;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -28,10 +30,12 @@ namespace Zavala.World {
         public float CameraMaxZoomDist;
         public float CameraMinZoomDist;
         public int ZoomFactor;
+        public float AdditionalZoomPerRegion = 1;
 
         [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
         [NonSerialized] public Vector3 PanTargetPoint;
+        [NonSerialized] public UniversalAdditionalCameraData CameraAux;
 
         void IRegistrationCallbacks.OnDeregister() {
             ZavalaGame.SaveBuffer.DeregisterHandler("Camera");
@@ -40,11 +44,16 @@ namespace Zavala.World {
         void IRegistrationCallbacks.OnRegister() {
             ZavalaGame.SaveBuffer.RegisterHandler("Camera", this);
 
+            CameraAux = Camera.GetUniversalAdditionalCameraData();
+
             var renderScale = Camera.GetComponent<CameraRenderScale>();
             UserSettings settings = Game.SharedState.Get<UserSettings>();
             if (!settings.HighQualityMode) {
                 renderScale.PixelHeight = 660;
                 renderScale.Mode = CameraRenderScale.ScaleMode.PixelHeight;
+                //CameraAux.requiresDepthTexture = false;
+                //CameraAux.requiresDepthOption = CameraOverrideOption.Off;
+                //CameraAux.renderPostProcessing = false;
             } else {
                 renderScale.enabled = false;
             }
@@ -109,7 +118,7 @@ namespace Zavala.World {
             if (delta > 0) {
                 camPos.z = Mathf.Min(Cam.CameraMaxZoomDist, start + delta);
             } else {
-                camPos.z = Mathf.Max(Cam.CameraMinZoomDist - 1 * (ZavalaGame.SimGrid.RegionCount - 1), start + delta);
+                camPos.z = Mathf.Max(Cam.CameraMinZoomDist - Cam.AdditionalZoomPerRegion * (ZavalaGame.SimGrid.RegionCount - 1), start + delta);
             }
             Cam.Camera.transform.localPosition = camPos;
             ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomData(start, camPos.z, usedWheel));

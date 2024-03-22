@@ -38,6 +38,14 @@ namespace Zavala.Input {
             CheckKeyboard(ref buttons, InputButton.Down, KeyCode.DownArrow);
             CheckKeyboard(ref buttons, InputButton.Down, KeyCode.S);
 
+            CheckKeyboard(ref buttons, InputButton.ZoomIn, KeyCode.Equals);
+            CheckKeyboard(ref buttons, InputButton.ZoomOut, KeyCode.Minus);
+
+            CheckKeyboard(ref buttons, InputButton.DialogAdvance, KeyCode.X);
+            CheckKeyboard(ref buttons, InputButton.DialogAdvance, KeyCode.F);
+            CheckKeyboard(ref buttons, InputButton.DialogAdvance, KeyCode.LeftControl);
+            CheckMouse(ref buttons, InputButton.DialogAdvance, 0);
+
             m_State.ButtonsDown = buttons;
 
             GetMousePosition(ref m_State.ScreenMousePos, ref m_State.ViewportMousePos);

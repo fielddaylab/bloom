@@ -11,7 +11,8 @@ $call QueueDialogueBubble(region2_city1, region2.openedToWetland)
 @queued
 @cutscene
 // // $call Pause()
-$call QueueDialogueBubble(region3_city1, region3.visitingVeldt)
+$call OffsetAlgaeGrowthThreshold(0)
+$call AddAutoAlertCondition("Bloom")
 $set global:readyForSkimmers = true
 $if global:importUnlocked = false
     $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
@@ -19,6 +20,7 @@ $endif
 $if global:tradeGraphsUnlocked = false
     $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
 $endif
+$call QueueDialogueBubble(region3_city1, region3.visitingVeldt)
 {@advisorEcolWetland}    Welcome to Muskeg County, boss.
 $call PanToBuilding("region4_city1")
 {@advisorEcolWetland}    We've dealt with these algae blooms here before...
@@ -26,8 +28,6 @@ $call PanToBuilding("region4_city1")
 $call PanToBuilding("region4_cafo1")
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
 $call PanToBuilding("region4_cafo3")
-$call OffsetAlgaeGrowthThreshold(0)
-$call AddAutoAlertCondition("Bloom")
 // $call Unpause()
 
 :: ecologyAdvisorOpen
@@ -154,7 +154,28 @@ $endif
     {@advisorEcolWetland}   But why let it go to waste?
     {@advisorEcolWetland}   SAGA is here to coordinate and make sure Manure is put to use.
 
-// TODO: introduce wetland city character
+:: unlockSkimmers
+@trigger        AlertExamined // unlocked by first bloom appearance after region 4 opens up
+@conditions     alertType == "bloom", global:readyForSkimmers, !global:skimmersUnlocked
+@forcePolicy    Ecology
+@cutscene
+@once
+$call AddAutoAlertCondition("Bloom", 4) // prepare for digester cutscene
+{local @urbanite}    I'm starting to worry about these algae blooms...
+$if global:skimmersUnlocked == false // band-aid solution for queued "once" alert nodes
+    $set global:skimmersUnlocked = true
+    {@advisorEcolWetland}   Well, we have all these boats over in Muskeg... What if we used them to skim algae off the lakes?
+    {@advisorEconWetland}   That could be costly... And it won't remove the underlying phosphorus.
+    {@advisorEconWetland}   For that, we'd need even pricier <i>dredgers.</i>
+    {@advisorEcolWetland}   But skimmers could help mitigate the worst effects for now. 
+    $call UnlockCards(SkimmingPolicy)
+    {viewpoliciesnext}
+    {local @advisorEcol}    Hmm... It's up to you, Director.
+$else
+    {viewpoliciesnext}
+    {local @advisorEcol}    Maybe those newfangled skimmers can help?
+$endif
+// $call ForcePolicyInstant("Ecology")
 
 :: suggestGrainSubsidy
 @trigger        UrgentRequest
@@ -244,10 +265,9 @@ $endif
 
 :: unlockDigesters
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked
+@conditions     alertType == "bloom", alertRegion == 4
 @cutscene
 @once
-// TODO: make this a die-off event?
 // // $call Pause()
 $set global:digestersUnlocked = true
 {@advisorEcolWetland}   It's just as we feared...
@@ -268,6 +288,15 @@ $call CutsceneBegin(4)
 	$call CutsceneAllImages(0.5)
     Our counties have had their differences in the past. But now we must band together to fight this threat... united!
 $call CutsceneEnd()
+$if global:skimmersUnlocked == false
+    $set global:skimmersUnlocked = true
+    $call UnlockCards(SkimmingPolicy)
+    {@advisorEcolWetland}   We can now send our Skimmers to clear algae off the lakes near cities.
+    {@advisorEconWetland}   That could be costly... And it won't remove the underlying phosphorus.
+    {@advisorEconWetland}   For that, we'd need even pricier <i>dredgers.</i>
+    {@advisorEcolWetland}   But skimmers could help mitigate the worst effects for now. 
+    {@advisorEcolWetland}   Additionally...
+$endif
 $call UnlockShopItem("Digester")
 {@advisorEcolWetland}   SAGA is now authorized to build Manure Processors!
 $call FocusHighlightOn("BuildModeButton")

@@ -58,7 +58,14 @@ Shader "Universal Render Pipeline/Particles/Unlit - Overlay"
 
     SubShader
     {
-        Tags{"RenderType" = "Opaque" "IgnoreProjector" = "True" "PreviewType" = "Plane" "PerformanceChecks" = "False" "RenderPipeline" = "UniversalPipeline"}
+        Tags {
+			"RenderType" = "Transparent"
+			"IgnoreProjector" = "True"
+			"PreviewType" = "Plane"
+			"PerformanceChecks" = "False"
+			"RenderPipeline" = "UniversalPipeline"
+			"RenderQueue"="Overlay"
+		}
 
         // ------------------------------------------------------------------
         //  Forward pass.
@@ -68,7 +75,7 @@ Shader "Universal Render Pipeline/Particles/Unlit - Overlay"
 
             BlendOp[_BlendOp]
             Blend[_SrcBlend][_DstBlend]
-            ZWrite[_ZWrite]
+            ZWrite Off
 			ZTest Always
             Cull[_Cull]
 
@@ -105,76 +112,6 @@ Shader "Universal Render Pipeline/Particles/Unlit - Overlay"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitForwardPass.hlsl"
 
-            ENDHLSL
-        }
-
-        // ------------------------------------------------------------------
-        //  Depth Only pass.
-        Pass
-        {
-            Name "DepthOnly"
-            Tags{"LightMode" = "DepthOnly"}
-
-            ZWrite On
-			ZTest Always
-            ColorMask 0
-            Cull[_Cull]
-
-            HLSLPROGRAM
-            #pragma target 2.0
-
-            // -------------------------------------
-            // Material Keywords
-            #pragma shader_feature_local _ _ALPHATEST_ON
-            #pragma shader_feature_local _ _FLIPBOOKBLENDING_ON
-            #pragma shader_feature_local_fragment _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON
-
-            // -------------------------------------
-            // Unity defined keywords
-            #pragma multi_compile_instancing
-            #pragma instancing_options procedural:ParticleInstancingSetup
-
-            #pragma vertex DepthOnlyVertex
-            #pragma fragment DepthOnlyFragment
-
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesDepthOnlyPass.hlsl"
-            ENDHLSL
-        }
-        // This pass is used when drawing to a _CameraNormalsTexture texture with the forward renderer or the depthNormal prepass with the deferred renderer.
-        Pass
-        {
-            Name "DepthNormalsOnly"
-            Tags{"LightMode" = "DepthNormalsOnly"}
-
-            ZWrite On
-			ZTest Always
-            Cull[_Cull]
-
-            HLSLPROGRAM
-            #pragma exclude_renderers gles gles3 glcore
-            #pragma target 4.5
-
-            #pragma vertex DepthNormalsVertex
-            #pragma fragment DepthNormalsFragment
-
-            // -------------------------------------
-            // Material Keywords
-            #pragma shader_feature_local _ _NORMALMAP
-            #pragma shader_feature_local _ _ALPHATEST_ON
-            #pragma shader_feature_local_fragment _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON
-
-            // -------------------------------------
-            // Unity defined keywords
-            #pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT // forward-only variant
-
-            //--------------------------------------
-            // GPU Instancing
-            #pragma multi_compile_instancing
-            #pragma multi_compile _ DOTS_INSTANCING_ON
-
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesDepthNormalsPass.hlsl"
             ENDHLSL
         }
         // ------------------------------------------------------------------

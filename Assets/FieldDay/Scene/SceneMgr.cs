@@ -1226,6 +1226,12 @@ namespace FieldDay.Scenes {
                     yield return null;
                 }
 
+                // one more check for dependencies
+
+                while (!AreDependenciesLoaded()) {
+                    yield return null;
+                }
+
                 // broadcast ready
 
                 Log.Msg("[SceneMgr] Scene is ready");

@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 3390929152225095434}
   - component: {fileID: 7310159028650111912}
   - component: {fileID: 9008318585835205798}
+  - component: {fileID: 387312033582926167}
+  - component: {fileID: 1740640785044388805}
+  - component: {fileID: 4228240960268938789}
   m_Layer: 5
   m_Name: AdvisorButton
   m_TagString: Untagged
@@ -127,6 +130,49 @@ MonoBehaviour:
   ClickId:
     m_Source: advisor-open
     m_HashValue: 1794687474
+--- !u!114 &387312033582926167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310159028650111915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 586337a6f67611c429e0dd56e995f474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: 0
+  KeyAlt: 0
+--- !u!114 &1740640785044388805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310159028650111915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd60b9a67a0443343b479b094c836759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Offset0: {x: 0, y: 0}
+  m_Offset1: {x: 0, y: 0}
+  m_Offset2: {x: 0, y: 0}
+--- !u!114 &4228240960268938789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310159028650111915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7d6f75513ad5e4691220017e408cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LayoutOffset: {fileID: 1740640785044388805}
+  m_Selectable: {fileID: 3390929152225095434}
 --- !u!1 &7310159028860247824
 GameObject:
   m_ObjectHideFlags: 0

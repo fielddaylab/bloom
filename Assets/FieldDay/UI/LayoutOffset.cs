@@ -6,7 +6,7 @@ namespace UnityEngine.UI {
     /// <summary>
     /// Offset for a RectTransform's anchoredPosition.
     /// </summary>
-    [ExecuteAlways, RequireComponent(typeof(RectTransform))]
+    [ExecuteAlways, RequireComponent(typeof(RectTransform)), DisallowMultipleComponent]
     public sealed class LayoutOffset : MonoBehaviour, ILayoutElement, ILayoutSelfController {
         #region Inspector
 

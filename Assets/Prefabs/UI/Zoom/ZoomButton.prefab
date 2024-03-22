@@ -218,6 +218,8 @@ GameObject:
   - component: {fileID: 8127142572589415388}
   - component: {fileID: 3065722470192707129}
   - component: {fileID: 5998657710160063205}
+  - component: {fileID: 8174391500842697867}
+  - component: {fileID: 2214045765811801073}
   m_Layer: 5
   m_Name: ZoomButton
   m_TagString: Untagged
@@ -316,3 +318,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8630666985728764361}
   m_CullTransparentMesh: 1
+--- !u!114 &8174391500842697867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8630666985728764361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd60b9a67a0443343b479b094c836759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Offset0: {x: 0, y: 0}
+  m_Offset1: {x: 0, y: 0}
+  m_Offset2: {x: 0, y: 0}
+--- !u!114 &2214045765811801073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8630666985728764361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7d6f75513ad5e4691220017e408cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LayoutOffset: {fileID: 8174391500842697867}
+  m_Selectable: {fileID: 8127142572589415388}

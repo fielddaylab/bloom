@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6077f8951d683da4483f3bead0540aad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxQueuedEvents: 3
+  MaxQueuedEvents: 5
   Id:
     m_Source: 
     m_HashValue: 0
