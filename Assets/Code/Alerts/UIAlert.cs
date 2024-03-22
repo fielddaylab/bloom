@@ -125,6 +125,18 @@ namespace Zavala.UI {
             return true;
         }
 
+        public static bool ClearAlertImmediate(UIAlert alert, bool recycleEvent = false) {
+            if (alert == null) {
+                Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
+                return false;
+            }
+            alert.KeepFaded = false;
+            alert.AlertBase.SetAlpha(1.0f);
+            alert.FullyOpened = false;
+            FreeAlert(alert, recycleEvent);
+            return true;
+        }
+
         public static void FreeAlert(UIAlert alert, bool recycleEvent = false) {
             if (!recycleEvent) { 
                 EventActorUtility.CancelEventType(alert.Actor, alert.AlertType);

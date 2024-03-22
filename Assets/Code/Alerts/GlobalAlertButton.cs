@@ -63,6 +63,7 @@ namespace Zavala.UI {
             Log.Msg("[GlobalAlertButton] Popped actor {0}", actor.gameObject.name);
             if (actor.QueuedEvents.TryPeekFront(out EventActorQueuedEvent evt)) {
                 ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertClicked, new AlertData(evt));
+                actor.QueuedEvents.MoveFrontToBackWhere(e => e.Alert == EventActorAlertType.Dialogue);
             }
 
             EventActorUtility.TriggerActorAlert(actor);

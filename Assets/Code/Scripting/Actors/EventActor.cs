@@ -171,7 +171,7 @@ namespace Zavala.Scripting {
             }
         }
 
-        static public void AddAutoAlertCondition(AutoAlertCondition cond) {
+         static public void AddAutoAlertCondition(AutoAlertCondition cond) {
             Log.Msg("[EventActorUtility] Adding AutoTriggerAlert condition: {0} in Region {1}", cond.Alert, cond.RegionIndex);
             Game.SharedState.Get<AlertState>().AutoTriggerAlerts.Add(cond);
         }
@@ -263,9 +263,7 @@ namespace Zavala.Scripting {
                 varTable.Clear();
 
                 // Dialogue has no animation, "manually" cleared over here
-                if (newEvent.Alert == EventActorAlertType.Dialogue) {
-                    UIAlertUtility.ClearAlert(actor.DisplayingEvent);
-                }
+                UIAlertUtility.ClearAlert(actor.DisplayingEvent);
             }
         }
 
