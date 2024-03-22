@@ -148,7 +148,7 @@ namespace Zavala.UI {
             Assert.NotNull(actor, "Cannot create event for null actor");
             Log.Msg("[GlobalAlertUtility] Pushing actor '{0}'", actor.gameObject.FullPath());
             button.QueuedActors.PushBack(actor);
-            if (actor.DisplayingEvent) {
+            if (actor.DisplayingEvent && actor.DisplayingEvent.AlertType != EventActorAlertType.Dialogue) {
                 actor.DisplayingEvent.KeepFaded = true;
                 UIAlertUtility.SetAlertFaded(actor.DisplayingEvent, true);
             }
