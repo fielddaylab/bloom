@@ -19,6 +19,7 @@ namespace Zavala.UI
     public class ProductionEfficiencyGroup : MonoBehaviour
     {
         public GameObject Root;
+        public RectTransform BGRect;
         public TMP_Text EfficiencyText;
         public Image InputIcon;
         public Image OutputIcon1;
@@ -155,7 +156,7 @@ namespace Zavala.UI
         /// </summary>
         /// <param name="group"></param>
         /// <param name="level"></param>
-        public static void SetEfficiencyLevel(ProductionEfficiencyGroup group, OperationState opState)
+        public static void SetEfficiencyLevel(ProductionEfficiencyGroup group, OperationState opState, bool pairedWithText)
         {
             int level = (int)opState;
             for (int i = 0; i < group.EfficiencyIcons.Length; i++)
@@ -169,6 +170,16 @@ namespace Zavala.UI
                     group.EfficiencyIcons[i].SetAlpha(0.5f);
 
                 }
+            }
+
+            group.EfficiencyText.gameObject.SetActive(pairedWithText);
+            if (pairedWithText)
+            {
+                group.BGRect.sizeDelta = new Vector2(290, group.BGRect.sizeDelta.y);
+            }
+            else
+            {
+                group.BGRect.sizeDelta = new Vector2(112, group.BGRect.sizeDelta.y);
             }
         }
 
@@ -185,7 +196,7 @@ namespace Zavala.UI
             builder.Append("</i>");
 
             group.EfficiencyText.SetText(builder.ToString());
-            SetEfficiencyLevel(group, opState);
+            SetEfficiencyLevel(group, opState, true);
         }
     }
 }

@@ -291,12 +291,12 @@ namespace Zavala.UI.Info
                     m_DescriptionGroup.gameObject.SetActive(true);
                     m_DescriptionText.gameObject.SetActive(true);
                     m_DescriptionImage.sprite = m_DigesterCapture;
-                    /*if (m_SelectedRequester)
+                    if (m_SelectedRequester)
                     {
-                        m_EfficiencyGroup.gameObject.SetActive(true);
+                        SetEfficiencyGroupActive(true);
                         ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
                         ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
-                    }*/
+                    }
                     break;
                 }
 
@@ -797,7 +797,7 @@ namespace Zavala.UI.Info
                         );
                     }
 
-                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState);
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, m_SelectedStressable.OperationState, false);
                     break;
                 }
                 case BuildingType.DigesterBroken:
@@ -807,7 +807,7 @@ namespace Zavala.UI.Info
                         ZavalaGame.Events.Dispatch(GameEvents.GenericInspectorDisplayed);
                     }
 
-                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, OperationState.Great);
+                    ProductionEfficiencyUtility.SetEfficiencyLevel(m_EfficiencyGroup, OperationState.Great, false);
                     break;
                 }
 

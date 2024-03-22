@@ -93,6 +93,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 94bb47f60026b934b86cc4302f2fdf39, type: 3}
   - {fileID: 21300000, guid: 89194bf60d4b2af4c8a261aa564d0611, type: 3}
   - {fileID: 21300000, guid: 654583471bf8a0e4b9d6fe8f5229fce7, type: 3}
+  - {fileID: 21300000, guid: f79fcf671d4107945a15ee4b2bed88bb, type: 3}
   - {fileID: 21300000, guid: 6e980b87d98ae3442b2a5dd8ff5be0b7, type: 3}
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
   - {fileID: 21300000, guid: 03e35de789d715e4194911330de60100, type: 3}
@@ -179,6 +180,7 @@ SpriteAtlas:
   - banner_bloom
   - policyicon_sales
   - PhosphorusLensIcon
+  - resource-digested-manure
   - base_declining-pop
   - banner_declining-pop
   - ToolImageStorage
