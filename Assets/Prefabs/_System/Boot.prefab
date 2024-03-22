@@ -211,6 +211,9 @@ MonoBehaviour:
   m_TargetFramerate: 60
   m_DefaultPixelSprite: {fileID: 21300000, guid: 767dd87e72022f14a9a64358bca57712, type: 3}
   m_AllowMultiTouchInput: 0
+  m_MemoryConfig:
+    MeshCapacity: 16
+    MaterialCapacity: 16
 --- !u!114 &3575173300138732487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,6 +329,8 @@ MonoBehaviour:
   WaterfallMaterial: {fileID: 11400000, guid: f89baba2d595fa34db52df1088109dff, type: 2}
   TopDeepMaterial: {fileID: 11400000, guid: 65367a65ace84be45917d8f00fe6afee, type: 2}
   WaterfallOffset: {x: 0, y: 0, z: -0.3}
+  FancyShader: {fileID: -6465566751694194690, guid: 27b042674da390c46a1ff4cc2317d5f2, type: 3}
+  SimpleShader: {fileID: -6465566751694194690, guid: b17b7869b28f03942862bc170d7f3a98, type: 3}
 --- !u!114 &1539644123676633215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,6 +356,7 @@ GameObject:
   - component: {fileID: 6886050690588055670}
   - component: {fileID: 6373850018556134797}
   - component: {fileID: 7241340875902165443}
+  - component: {fileID: 7984283997466576007}
   m_Layer: 0
   m_Name: UICamera
   m_TagString: UICamera
@@ -413,7 +419,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!114 &6373850018556134797
@@ -429,7 +435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RenderShadows: 0
-  m_RequiresDepthTextureOption: 2
+  m_RequiresDepthTextureOption: 0
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 1
   m_Cameras: []
@@ -444,7 +450,7 @@ MonoBehaviour:
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
-  m_ClearDepth: 1
+  m_ClearDepth: 0
   m_AllowXRRendering: 1
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
@@ -461,6 +467,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeccedd0e11e97043870a6e0127d7de8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7984283997466576007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4613536460739364412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f698e6266b8d04047b7d570f27dbc047, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InitialCapacity: 64
 --- !u!1 &7045890445170681987
 GameObject:
   m_ObjectHideFlags: 0

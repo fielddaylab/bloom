@@ -84,7 +84,15 @@ namespace Zavala.World {
                 m_StateA.TransitionRoutine.Stop();
             }
 
-            float zoomDelta = m_StateB.ScrollWheel.y * m_StateA.ZoomFactor;
+            float zoomDelta = m_StateB.ScrollWheel.y;
+            if (m_StateB.ButtonPressed(InputButton.ZoomIn)) {
+                zoomDelta += 1;
+            }
+            if (m_StateB.ButtonPressed(InputButton.ZoomOut)) {
+                zoomDelta -= 1;
+            }
+
+            zoomDelta *= m_StateA.ZoomFactor;
             WorldCameraUtility.ZoomCamera(zoomDelta, true);
             m_StateB.ScrollWheel.y = 0;
         }
