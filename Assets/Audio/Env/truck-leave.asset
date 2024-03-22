@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: truck-leave
   m_EditorClassIdentifier: 
   Clips:
-  - {fileID: 8300000, guid: 3d4b3fd70c49fce42996ab94d566d1c9, type: 3}
+  - {fileID: 8300000, guid: 3ab47d35a9457c242893e3fb1806c478, type: 3}
   Volume:
     Base: 0.2
     ModifierMin: 0

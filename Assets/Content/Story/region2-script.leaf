@@ -97,7 +97,7 @@ $call ForcePinDialogue()
 {@grainForest}          Have you heard?
 {@grainForest}          They're getting <i>Algae Blooms</i> over in Knoll County.
 {@advisorEcolForest}    Is that so? Not surprising...
-{@advisorEconForest}    And not our problem! We have forest management to do.
+{@advisorEconForest}    And not our problem! We have forests to manage.
 
 :: urgentGrainForest
 @trigger        UrgentRequest
@@ -305,6 +305,20 @@ $call ForcePinDialogue()
 {@grainForest}  Wow! What does that do?
 {@phos4us}      Advanced Formula is proven to make crops up to 50% more Advanced!
 {@grainForest}  Uh... Cool?
+
+:: firstManureSold
+@trigger        ManureSold
+@conditions     alertRegion == 2
+@once
+$call QueueDialogueBubble(region2_grain1, region2.phosManure)
+
+:: phosManure
+{@advisorEcolForest}    Ah, looks like Emmett has started using manure fertilizer.
+{@phos4us}              Manure! What a mess! And smelly too.
+{@phos4us}              Why not keep clean with PHOS4US ProPebbles?
+{@grainForest}          That sounds great, Rupert. But manure is cheaper now!
+{@phos4us}              Oh. Well, um. 
+{@phos4us}              That just means PHOS4US is the <i>Premium</i> option!!
 
 :: bloomGeneric
 @trigger        AlertExamined

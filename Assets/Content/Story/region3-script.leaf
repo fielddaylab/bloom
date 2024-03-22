@@ -127,6 +127,17 @@ $call ForcePinDialogue()
 {@grainPrairie}  Uh, I'm not sure...
 {@phos4us}       Please? I have to meet sales quota this month.
 
+// :: phosCrops
+// @queued
+// @once
+// $call ForcePinDialogue()
+// {@phos4us}      Valued Customer!
+// {@grainPrairie} Howdy, Rupert.
+// {@phos4us}      Just wanted to check on your crops.
+// {@phos4us}      Oh boy! They sure are growing! 
+// {@phos4us}      All kinds of, uh... Grains. Happening.
+// {@grainPrairie} I suppose so!
+
 :: queueUnlockImportTax
 @trigger        RegionReachedAge // RegionAge 20 after region opens
 @conditions     regionId == 3
@@ -161,12 +172,12 @@ $call ForcePolicyInstant("Economy")
 :: queueSuggestFert
 @trigger    ExternalImport
 @conditions global:importUnlocked, alertRegion == 3, PolicyLevelInRegion(3, "ImportTaxPolicy") != 3
+@once
 $call QueueDialogueBubble(region3_grain3, region3.suggestFertSubsidy)
 
 :: suggestFertSubsidy
 @queued
 @once
-@forcePolicy Economy
 $if PolicyLevelInRegion(3, "ImportTaxPolicy") == 3
     {@grainPrairie}     Thank goodness for that <b>Fertilizer Subsidy!</b>
     {@grainPrairie}     That should make it cheaper to use Manure fertilizer.
@@ -205,10 +216,10 @@ $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
 @queued
 @once
 $set global:tradeGraphsUnlocked = true
+$call UnlockAdvisorModule("Economy")
 {@advisorEconPrairie}   Howdy! Hope I'm not interrupting anything important.
 {@advisorEconPrairie}   I was inspired by Winston's PIP system...
 {@advisorEconPrairie}   So I whipped up something of an economic equivalent!
-$call UnlockAdvisorModule("Economy")
 {@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph.
 {@advisorEconPrairie}   It shows which types of phosphorus fertilizer are being used.
 $call ForceAdvisorModule("Economy")

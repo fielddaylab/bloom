@@ -47,6 +47,25 @@ $call Wait(3)
 // {@grainUrban}       What if we could ship it like PHOS4US?
 //$call UnlockExportDepot("region2_export1")
 
+:: triggerUranium
+@trigger        ExternalImport
+@conditions     alertRegion == 5
+@once
+$call QueueDialogueBubble(region5_grain2, region5.phosUranium)
+
+:: phosUranium
+@queued
+@once
+$call ForcePinDialogue()
+{@phos4us}      Thank you for purchasing PHOS4US!
+{@grainUrban}   Sure thing.
+{@phos4us}      You can rest easy knowing our Advanced Formula is 100% Uranium Free!
+{@grainUrban}   What? Does it normally have uranium?
+{@phos4us}      No. It's been certified Uranium Free!
+{@grainUrban}   Should I be worried about uranium in my fertilizer!?
+{@phos4us}      Not with PHOS4US! It's Uranium Free!
+
+
 :: triggerFirstBlimp
 @trigger InternalBlimpSent
 @once
@@ -55,6 +74,8 @@ $call QueueDialogueBubble(region3_city1, region3.blimpConcerns)
 $call SendGlobalAlertForNode("region5_city1", region5.firstBlimpReceived, true)
 
 :: firstBlimpReceived
+@once
+@queued
 {@advisorEconUrban}   Woah, righteous!
 $call PanToBuilding("region2_export1")
 {@advisorEconUrban}   Our <b>Export Depot</b> has sent out Processed Manure...

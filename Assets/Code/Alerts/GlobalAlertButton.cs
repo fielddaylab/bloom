@@ -162,7 +162,7 @@ namespace Zavala.UI {
                 Alert = EventActorAlertType.GlobalDummy,
                 OverrideDelay = overrideDelay
             };
-            actor.QueuedEvents.PushBack(fakeEvent);
+            actor.QueuedEvents.PushFront(fakeEvent);
             PushEventOfActorToGlobal(button, actor);
         }
 

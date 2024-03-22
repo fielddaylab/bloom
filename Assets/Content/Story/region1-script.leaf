@@ -10,7 +10,7 @@ $call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)
     You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
-    SAGA is just a new program, still unproven.  Can you make it work?
+    SAGA is just a new program, still unproven.  Can you lead it to success?
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.3)
 	These counties are young. It's your job as SAGA director to help them bloom!
@@ -294,7 +294,8 @@ $call CloseInfoPopup()
 {@advisorEcolHill}      No, Bertram is right.
 {@advisorEcolHill}      PHOS4US cares more about profits than our environment!
 {@advisorEcolHill}      This Rupert guy is just holding the corporate line.
-{@cafoHill}             Oh, I dunno. I just think he's creepy.
+{@cafoHill}             Oh, I dunno. I just think he's a city slicker.
+{@cafoHill}             Who wears a suit to a farm!?
 {@grainHill}            Whatever. He got me a great deal on fertilizer!
 
 :: openedToForest
@@ -595,6 +596,16 @@ $else
     $call ForcePolicyInstant("Ecology")
 $endif
 // $call Unpause()
+
+:: phosShirt
+@once
+@queued
+$call ForcePinDialogue()
+{@phos4us}      Limited time only!
+{@phos4us}      Get a PHOS4US T-Shirt free with purchase!
+{@phos4us}      You won't get this kind of deal from a <i>Manure Processor!</i>
+{@grainHill}    Agh, these shirts feel pretty scratchy.
+{@phos4us}      Well, c'mon, it's <i>free,</i> what do you expect?
 
 :: urbanVisit
 @once
