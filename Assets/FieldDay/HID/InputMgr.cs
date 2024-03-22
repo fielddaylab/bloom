@@ -136,14 +136,14 @@ namespace FieldDay.HID {
         /// Returns if a keyboard key is down this frame.
         /// </summary>
         public bool IsKeyDown(KeyCode keyCode) {
-            return !m_InputConsumed && Input.GetKey(keyCode);
+            return !m_InputConsumed && keyCode > 0 && Input.GetKey(keyCode);
         }
 
         /// <summary>
         /// Returns if a keyboard key was pressed this frame.
         /// </summary>
         public bool IsKeyPressed(KeyCode keyCode) {
-            return !m_InputConsumed && Input.GetKeyDown(keyCode);
+            return !m_InputConsumed && keyCode > 0 && Input.GetKeyDown(keyCode);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace FieldDay.HID {
         /// were pressed this frame.
         /// </summary>
         public bool IsKeyComboPressed(ModifierKeyCode modifier, KeyCode keyCode) {
-            return !m_InputConsumed && Input.GetKey((KeyCode) modifier) && Input.GetKeyDown(keyCode);
+            return !m_InputConsumed && keyCode > 0 && Input.GetKeyDown(keyCode) && (modifier == 0 || Input.GetKey((KeyCode) modifier));
         }
 
         #endregion // Keys

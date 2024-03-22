@@ -12,6 +12,8 @@ using BeauUtil.Debugger;
 using FieldDay;
 using Zavala.Data;
 using Zavala.Sim;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -32,6 +34,7 @@ namespace Zavala.World {
         [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
         [NonSerialized] public Vector3 PanTargetPoint;
+        [NonSerialized] public UniversalAdditionalCameraData CameraAux;
 
         void IRegistrationCallbacks.OnDeregister() {
             ZavalaGame.SaveBuffer.DeregisterHandler("Camera");
@@ -40,11 +43,16 @@ namespace Zavala.World {
         void IRegistrationCallbacks.OnRegister() {
             ZavalaGame.SaveBuffer.RegisterHandler("Camera", this);
 
+            CameraAux = Camera.GetUniversalAdditionalCameraData();
+
             var renderScale = Camera.GetComponent<CameraRenderScale>();
             UserSettings settings = Game.SharedState.Get<UserSettings>();
             if (!settings.HighQualityMode) {
                 renderScale.PixelHeight = 660;
                 renderScale.Mode = CameraRenderScale.ScaleMode.PixelHeight;
+                CameraAux.requiresDepthTexture = false;
+                CameraAux.requiresDepthOption = CameraOverrideOption.Off;
+                CameraAux.renderPostProcessing = false;
             } else {
                 renderScale.enabled = false;
             }

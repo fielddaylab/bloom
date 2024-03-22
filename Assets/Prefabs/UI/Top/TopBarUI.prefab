@@ -2793,6 +2793,7 @@ GameObject:
   - component: {fileID: 8241216000688339893}
   - component: {fileID: 9094156720637204697}
   - component: {fileID: 5275700003536383401}
+  - component: {fileID: 2160876721927937864}
   m_Layer: 5
   m_Name: BuildButton
   m_TagString: Untagged
@@ -2907,6 +2908,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8820798044799984523}
   m_CullTransparentMesh: 1
+--- !u!114 &2160876721927937864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8820798044799984523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 586337a6f67611c429e0dd56e995f474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: 13
+  KeyAlt: 0
 --- !u!1001 &1193888481504237535
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 1698911735125107934}
   - component: {fileID: 5428795122837775846}
   - component: {fileID: 8498922031099620120}
+  - component: {fileID: 3610772708177350474}
   m_Layer: 5
   m_Name: ModeToggle
   m_TagString: Untagged
@@ -307,6 +308,20 @@ MonoBehaviour:
   ClickId:
     m_Source: ui-click
     m_HashValue: 2094747682
+--- !u!114 &3610772708177350474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102391088813556078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 586337a6f67611c429e0dd56e995f474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: 9
+  KeyAlt: 0
 --- !u!1 &1794728933754631810
 GameObject:
   m_ObjectHideFlags: 0

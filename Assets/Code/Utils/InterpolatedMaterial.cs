@@ -66,6 +66,14 @@ namespace Zavala {
             }
         }
 
+        public void ReplaceShader(Shader shader) {
+            if (m_Range != null) {
+                for (int i = 1; i < m_Range.Length - 1; i++) {
+                    m_Range[i].shader = shader;
+                }
+            }
+        }
+
 #if UNITY_EDITOR
 
         [ContextMenu("Force Reload")]
