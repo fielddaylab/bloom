@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using BeauRoutine;
 using BeauRoutine.Extensions;
 using BeauUtil;
@@ -10,12 +9,12 @@ using FieldDay.Scenes;
 using FieldDay.UI;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zavala.Actors;
 using Zavala.Advisor;
 using Zavala.Data;
 using Zavala.Economy;
+using Zavala.Rendering;
 using Zavala.Roads;
 using Zavala.Scripting;
 using Zavala.Sim;
@@ -63,7 +62,7 @@ namespace Zavala.UI.Info
 
 
         static private readonly int NarrowWidth = 270;
-        static private readonly int NarrowHeight = 300;
+        static private readonly int NarrowHeight = 230;
         static private readonly int WideWidth = 460;
         static private readonly int WideHeight = 273;
         static private readonly int SmallWidth = 220;
@@ -278,7 +277,7 @@ namespace Zavala.UI.Info
                     SetEfficiencyGroupActive(true);
                     ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, ResourceMask.Milk);
                     ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, ResourceMask.Empty, m_SelectedPurchaser.MoneyProducer.ProducesAmt);
-                        break;
+                    break;
                 }
 
                 case BuildingType.DigesterBroken:
@@ -296,6 +295,11 @@ namespace Zavala.UI.Info
                         SetEfficiencyGroupActive(true);
                         ProductionEfficiencyUtility.SetInput(m_EfficiencyGroup, m_SelectedRequester.RequestMask);
                         ProductionEfficiencyUtility.SetOutput(m_EfficiencyGroup, m_SelectedSupplier.ShippingMask, 0);
+                    }
+                    if (m_Mode == BuildingType.DigesterBroken) { 
+                       // particle poof
+                       var particles = thing.GetComponent<PopupParticle>();
+                       if (particles) { particles.Particles.Play(); }
                     }
                     break;
                 }
@@ -623,13 +627,15 @@ namespace Zavala.UI.Info
             cityWater = StressUtility.ExtractCityWaterStatusLog(actor);
             cityMilk = StressUtility.ExtractCityMilkStatusLog(actor);
 
-            // TODO: determine sources of stress (blooms, not enough milk, etc)
+            // determine sources of stress (blooms, not enough milk, etc)
             m_PurchaseContents.WaterStatus.gameObject.SetActive(true);
             m_PurchaseContents.MilkStatus.gameObject.SetActive(true);
 
+            m_PurchaseContents.StatusText.gameObject.SetActive(false);
+
             if (actor.OperationState == OperationState.Great)
             {
-                m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.rising"));
+                // m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.rising"));
                 m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.rising"));
                 m_PurchaseContents.WaterStatus.Icon.sprite = m_GreatWaterSprite;
                 m_PurchaseContents.MilkStatus.Description.SetText(Loc.Find("ui.popup.info.city.milk.rising"));
@@ -639,18 +645,18 @@ namespace Zavala.UI.Info
                 m_PurchaseContents.Arrow.rectTransform.SetRotation(90, Axis.Z, Space.Self);
 
                 // if water is less than great (>= to 4), don't show as contributing factor
-                if (actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Okay])
+                /*if (actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Okay])
                 {
                     m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
                 }
                 if (actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Okay])
                 {
                     m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
-                }
+                }*/
             }
             else if (actor.OperationState == OperationState.Bad)
             {
-                m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.falling"));
+                // m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.falling"));
                 m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.falling"));
                 m_PurchaseContents.WaterStatus.Icon.sprite = m_PoorWaterSprite;
                 m_PurchaseContents.MilkStatus.Description.SetText(Loc.Find("ui.popup.info.city.milk.falling"));
@@ -660,29 +666,29 @@ namespace Zavala.UI.Info
                 m_PurchaseContents.Arrow.rectTransform.SetRotation(-90, Axis.Z, Space.Self);
 
                 // if water is better than bad (7 or less), don't show as contributing factor
-                if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Bad])
+                /*if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
                 }
                 if (actor.CurrentStress[StressCategory.Resource] < actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
-                }
+                }*/
             }
             else
             {
-                m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.stable"));
+                // m_PurchaseContents.StatusText.SetText(Loc.Find("ui.popup.info.city.stable"));
                 m_PurchaseContents.WaterStatus.Description.SetText(Loc.Find("ui.popup.info.city.water.stable"));
                 m_PurchaseContents.WaterStatus.Icon.sprite = m_FairWaterSprite;
                 m_PurchaseContents.MilkStatus.Description.SetText(Loc.Find("ui.popup.info.city.milk.stable"));
 
                 m_PurchaseContents.Arrow.gameObject.SetActive(false);
 
-                m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
-                m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
+                // m_PurchaseContents.WaterStatus.gameObject.SetActive(false);
+                // m_PurchaseContents.MilkStatus.gameObject.SetActive(false);
 
                 // if water is great or terrible (< 4 or >= 8), don't show as contributing factor
-                if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Okay]
+                /*if (actor.CurrentStress[StressCategory.Bloom] < actor.OperationThresholds[OperationState.Okay]
                     && actor.CurrentStress[StressCategory.Bloom] >= actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.WaterStatus.gameObject.SetActive(true);
@@ -691,7 +697,7 @@ namespace Zavala.UI.Info
                      && actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Bad])
                 {
                     m_PurchaseContents.MilkStatus.gameObject.SetActive(true);
-                }
+                }*/
 
                 /*
                 // if neither status are within okay range, show the worst
