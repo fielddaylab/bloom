@@ -188,6 +188,7 @@ $set intro:pendingPolicy = true
 {@advisorEconHill}     You can see me here to adjust Knoll County's policies.
 {@advisorEconHill}     As for that <b>Sales Policy</b>: it can provide additional revenue.
 {@advisorEconHill}     But set it too high, and farms may <b>slow down production.</b>
+$call SuppressCloseButton()
 {viewpoliciesnext}
 {@advisorEconHill}     What do you think? Don't worry, you can change it at any time.
 // $call ForcePolicyInstant("Economy")
@@ -199,6 +200,7 @@ $set intro:pendingPolicy = true
 @cutscene
 {@advisorEconHill}      Hold on there!
 {@advisorEconHill}      Make sure to set a Sales Policy before you leave.
+$call SuppressCloseButton()
 {viewpoliciesnext}
 {@advisorEconHill}      You can set it to None if you like, but we ought to decide.
 // $call ForcePolicyInstant("Economy")

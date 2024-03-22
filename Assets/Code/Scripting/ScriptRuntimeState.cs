@@ -173,6 +173,11 @@ namespace FieldDay.Scripting {
             Runtime.DefaultDialogue.ForceExpandPolicyUI(type);
         }
 
+        [LeafMember("SuppressCloseButton")]
+        static public void SuppressCloseButton() {
+            Runtime.DefaultDialogue.SuppressCloseButton();
+        }
+
         [LeafMember("ForceCloseDialogue")]
         static public void ForceCloseDialogue() {
             Runtime.DefaultDialogue.HideDialogueUI();

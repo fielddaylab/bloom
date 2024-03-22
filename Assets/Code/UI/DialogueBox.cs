@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-//using System.Linq;
 using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
@@ -70,6 +69,7 @@ namespace Zavala.UI {
         [NonSerialized] public bool ShowHand = false;
         [NonSerialized] public PolicyType CardsToShow;
         [NonSerialized] private bool m_PoliciesActive;
+        [NonSerialized] private bool m_SuppressPolicyCloseButton = false;
 
         private bool m_NodeExiting;
 
@@ -205,11 +205,11 @@ namespace Zavala.UI {
 
         public IEnumerator TypeLine(TagString inSourceString, TagTextData inType) {
             Contents.Contents.maxVisibleCharacters += inType.VisibleCharacterCount;
-            yield return 0.1f;
+            return null;
         }
 
         private void SetCutsceneMode(bool cutscene) {
-            m_CloseButton.gameObject.SetActive(!cutscene);
+            m_CloseButton.gameObject.SetActive(!cutscene && !m_SuppressPolicyCloseButton && m_IsActive);
             // m_PolicyCloseButton.gameObject.SetActive(!cutscene);
         }
 
@@ -294,6 +294,12 @@ namespace Zavala.UI {
             m_NodeExiting = true;
         }
 
+        public void SuppressCloseButton() {
+            m_SuppressPolicyCloseButton = true;
+            m_CloseButton.gameObject.SetActive(false);
+            m_PolicyCloseButton.gameObject.SetActive(false);
+        }
+
         #endregion // Leaf Flag Interactions
 
         #region Routines
@@ -313,6 +319,7 @@ namespace Zavala.UI {
         private IEnumerator HideRoutine() {
             m_FullyExpanded = false;
             m_IsActive = false;
+            m_SuppressPolicyCloseButton = false;
             SimTimeInput.SetPaused(false, SimPauseFlags.DialogBox);
             m_AdvisorButtons.ShowAdvisorButtons();
             if (m_PolicyExpansionContainer.gameObject.activeSelf) {
@@ -378,7 +385,7 @@ namespace Zavala.UI {
             yield return m_Rect.AnchorPosTo(m_OnscreenPolicyY, 0.1f, Axis.Y).Ease(Curve.CubeIn);
             // yield return
             m_PolicyExpansionContainer.gameObject.SetActive(true);
-            m_PolicyCloseButton.gameObject.SetActive(true);
+            m_PolicyCloseButton.gameObject.SetActive(!m_SuppressPolicyCloseButton);
             m_CloseButton.gameObject.SetActive(false);
             yield return m_PolicyExpansionContainer.AnchorPosTo(m_OnscreenPanelY, 0.2f, Axis.Y).Ease(Curve.CubeIn);
             // TODO: populate with default localized text? Or do we like having the last line spoken displayed?
@@ -402,7 +409,7 @@ namespace Zavala.UI {
             ForceAdvisorPolicies = AdvisorType.None;
 
             // Check if leaf has next line
-            if (m_NodeExiting)
+            if (m_NodeExiting && !m_SuppressPolicyCloseButton)
             {
                 // if not, add manual next listener
                 Debug.Log("[Close Next] Node exiting");

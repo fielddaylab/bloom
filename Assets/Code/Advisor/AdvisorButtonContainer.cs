@@ -1,4 +1,6 @@
 using BeauRoutine;
+using BeauUtil;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,13 +9,18 @@ public class AdvisorButtonContainer : MonoBehaviour
 {
     [SerializeField] private RectTransform m_Rect;
     private Routine m_TransitionRoutine;
+    [NonSerialized] private bool m_Showing = true;
 
 
     public void HideAdvisorButtons() {
-        m_TransitionRoutine.Replace(this, HideRoutine()).ExecuteWhileDisabled();
+        if (Ref.Replace(ref m_Showing, false)) {
+            m_TransitionRoutine.Replace(this, HideRoutine()).ExecuteWhileDisabled();
+        }
     }
     public void ShowAdvisorButtons() {
-        m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
+        if (Ref.Replace(ref m_Showing, true)) {
+            m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
+        }
     }
 
     private IEnumerator HideRoutine() {
