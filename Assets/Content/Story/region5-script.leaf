@@ -22,11 +22,11 @@ $call CutsceneBegin(5)
     PHOS4US imports continue adding phosphorus to our ecosystem. They must be cut off!
 	$call CutscenePrepareImages("act5/5-3-1.png", "act5/5-3-2.png", "act5/5-3-3.png")
 	$call CutsceneAllImages(0.5)
-    These digesters have enabled a new option: long-distance shipping! Could we use it to outcompete PHOS4US? 
+    These Manure Processors have enabled a new option: long-distance shipping! Could we use it to outcompete PHOS4US? 
 	$call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
 	$call CutsceneAllImages(0.5)
     It's a race to the end... We must stem the flow of phosphorus before algae overtakes our cities!
-    $call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
+    $call CutscenePrepareImages("act5/5-5-1.png", "act5/5-5-2.png", "act5/5-5-3.png")
 	$call CutsceneAllImages(0.5)
     The stakes are high... Can we prevent disaster?
 $call CutsceneEnd()

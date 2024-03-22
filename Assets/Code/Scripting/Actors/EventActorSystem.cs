@@ -40,8 +40,8 @@ namespace Zavala.Scripting {
                         EventActorUtility.CancelEvent(component, trigger.EventId);
 
                         // If the node has @once, check if it has been queued to an alert.
-                        if ((node.Flags & ScriptNodeFlags.Once) != 0 && node.QueuedToAlert) {
-                            Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to an alert", node.FullName, component.Id.ToDebugString());
+                        if ((node.Flags & ScriptNodeFlags.Once) != 0 && (node.QueuedToTileIdx > 0 && node.QueuedToTileIdx != trigger.TileIndex)) {
+                            Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to a different tile", node.FullName, component.Id.ToDebugString());
                             return;
                         }
 
@@ -55,10 +55,9 @@ namespace Zavala.Scripting {
                                 TileIndex = trigger.TileIndex,
                                 Alert = trigger.Alert
                             };
-                            if (component.QueuedEvents.TryPeekFront(out EventActorQueuedEvent qEvent) && qEvent.Alert == EventActorAlertType.Dialogue) {
-                                component.QueuedEvents.PushFront(queuedEvent);
-                            } else {
-                                component.QueuedEvents.PushBack(queuedEvent);
+                            component.QueuedEvents.PushBack(queuedEvent);
+                            if (queuedEvent.Alert != EventActorAlertType.Dialogue) {
+                                component.QueuedEvents.MoveFrontToBackWhere(e => e.Alert == EventActorAlertType.Dialogue);
                             }
                             HashSet<AutoAlertCondition> conditions = ZavalaGame.SharedState.Get<AlertState>().AutoTriggerAlerts;
                             foreach (AutoAlertCondition autoTrig in conditions) {
@@ -69,7 +68,6 @@ namespace Zavala.Scripting {
                                     // node.QueuedToAlert = true;
                                     Log.Msg("[EventActorUtility] AutoTriggerAlert ACTIVATED");
                                     //EventActorUtility.TriggerActorAlert(component);
-                                    component.QueuedEvents.MoveFrontToBackWhere(e => e.Alert == EventActorAlertType.Dialogue);
                                     GlobalAlertUtility.PushEventOfActorToGlobal(Game.Gui.GetShared<GlobalAlertButton>(), component);
                                     conditions.Remove(autoTrig);
                                     break;

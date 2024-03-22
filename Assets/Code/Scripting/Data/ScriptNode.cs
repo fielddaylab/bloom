@@ -26,7 +26,7 @@ namespace FieldDay.Scripting {
         [BlockMeta("repeat")] public int RepeatPeriod;
         public ScriptNodeMemoryTarget PersistenceType;
         [BlockMeta("tag")] public StringHash32 Tag;
-        public bool QueuedToAlert = false;
+        public int QueuedToTileIdx = -1;
 
         public new ScriptNodePackage Package() { return (ScriptNodePackage) m_Package; }
 
