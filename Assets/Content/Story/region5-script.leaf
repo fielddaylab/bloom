@@ -26,7 +26,7 @@ $call CutsceneBegin(5)
 	$call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
 	$call CutsceneAllImages(0.5)
     It's a race to the end... We must stem the flow of phosphorus before algae overtakes our cities!
-    $call CutscenePrepareImages("act5/5-4-1.png", "act5/5-4-2.png", "act5/5-4-3.png")
+    $call CutscenePrepareImages("act5/5-5-1.png", "act5/5-5-2.png", "act5/5-5-3.png")
 	$call CutsceneAllImages(0.5)
     The stakes are high... Can we prevent disaster?
 $call CutsceneEnd()
