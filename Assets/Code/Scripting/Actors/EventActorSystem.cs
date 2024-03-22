@@ -69,6 +69,7 @@ namespace Zavala.Scripting {
                                     // node.QueuedToAlert = true;
                                     Log.Msg("[EventActorUtility] AutoTriggerAlert ACTIVATED");
                                     //EventActorUtility.TriggerActorAlert(component);
+                                    component.QueuedEvents.MoveFrontToBackWhere(e => e.Alert == EventActorAlertType.Dialogue);
                                     GlobalAlertUtility.PushEventOfActorToGlobal(Game.Gui.GetShared<GlobalAlertButton>(), component);
                                     conditions.Remove(autoTrig);
                                     break;

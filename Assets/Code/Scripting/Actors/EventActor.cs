@@ -20,7 +20,7 @@ using Zavala.World;
 namespace Zavala.Scripting {
     [DisallowMultipleComponent]
     public sealed class EventActor : BatchedComponent, ILeafActor, IPersistBuildingComponent {
-        public int MaxQueuedEvents = 3;
+        public int MaxQueuedEvents = 5;
         public SerializedHash32 Id;
         public SerializedHash32 Class;
 
