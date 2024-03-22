@@ -30,6 +30,7 @@ namespace Zavala.World {
         public float CameraMaxZoomDist;
         public float CameraMinZoomDist;
         public int ZoomFactor;
+        public float AdditionalZoomPerRegion = 1;
 
         [NonSerialized] public Routine TransitionRoutine;
         // public Transform PanTarget;
@@ -117,7 +118,7 @@ namespace Zavala.World {
             if (delta > 0) {
                 camPos.z = Mathf.Min(Cam.CameraMaxZoomDist, start + delta);
             } else {
-                camPos.z = Mathf.Max(Cam.CameraMinZoomDist - 1 * (ZavalaGame.SimGrid.RegionCount - 1), start + delta);
+                camPos.z = Mathf.Max(Cam.CameraMinZoomDist - Cam.AdditionalZoomPerRegion * (ZavalaGame.SimGrid.RegionCount - 1), start + delta);
             }
             Cam.Camera.transform.localPosition = camPos;
             ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomData(start, camPos.z, usedWheel));

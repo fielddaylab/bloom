@@ -51,6 +51,7 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 5b66702076cbe7142b0606b2b3a874c5, type: 3}
   - {fileID: 21300000, guid: 064528b0730cfdc43bfb655c57bb6fec, type: 3}
   - {fileID: 21300000, guid: ff2dd5229d6166b4a88bf4da5c58f5ea, type: 3}
   - {fileID: 21300000, guid: 5f89e5f25f8c7cb4089c002e59ff6529, type: 3}
@@ -94,6 +95,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: eb5d687ff34744f4c99ad627148ce14f, type: 3}
   - {fileID: 21300000, guid: 93a0faff47d02034fa7bdfa072c21e7f, type: 3}
   m_PackedSpriteNamesToIndex:
+  - rupert
   - policy-import_2
   - cafo_urban
   - policy-sales_1
