@@ -3,6 +3,7 @@ using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay;
+using FieldDay.Scenes;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Leaf.Runtime;
@@ -19,7 +20,7 @@ using Zavala.World;
 
 namespace Zavala.Sim {
     [SharedStateInitOrder(-1)]
-    public sealed class SimGridState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject {
+    public sealed class SimGridState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject, ISceneLoadDependency {
         static public readonly StringHash32 Event_RegionUpdated = "SimGridState::TerrainUpdated";
 
         #region Inspector
@@ -49,9 +50,11 @@ namespace Zavala.Sim {
         // miscellaneous
 
         [NonSerialized] public System.Random Random;
+        [NonSerialized] public Routine LoadRoutine;
 
         void IRegistrationCallbacks.OnDeregister() {
             ZavalaGame.SaveBuffer.DeregisterHandler("Grid");
+            Game.Scenes.DeregisterLoadDependency(this);
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -72,6 +75,11 @@ namespace Zavala.Sim {
             ZavalaGame.SaveBuffer.RegisterHandler("Grid", this, -100);
 
             Game.Scenes.QueueOnLoad(() => SimDataUtility.LateInitializeData(this, WorldData));
+            Game.Scenes.RegisterLoadDependency(this);
+        }
+
+        bool ISceneLoadDependency.IsLoaded() {
+            return !LoadRoutine;
         }
 
         unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
@@ -97,7 +105,7 @@ namespace Zavala.Sim {
     static public class SimDataUtility {
         static public void LateInitializeData(SimGridState grid, WorldAsset world) {
             SimTimeUtility.Pause(SimPauseFlags.Loading, ZavalaGame.SimTime);
-            Routine.Start(LateInitializeProcess(grid, world));
+            grid.LoadRoutine = Routine.Start(LateInitializeProcess(grid, world));
         }
 
         static private IEnumerator LateInitializeProcess(SimGridState grid, WorldAsset world) {

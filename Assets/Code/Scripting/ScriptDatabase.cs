@@ -196,14 +196,6 @@ namespace FieldDay.Scripting {
 
         #region Checks
 
-        static public bool CanInterrupt(ScriptNode node, ScriptNodePriority priority) {
-            ScriptNodePriority checkPriority = node.Priority;
-            if ((node.Flags & ScriptNodeFlags.InterruptSamePriority) != 0) {
-                checkPriority++;
-            }
-            return checkPriority > priority;
-        }
-
         #endregion // Checks
     }
 }

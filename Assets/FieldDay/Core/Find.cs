@@ -98,6 +98,20 @@ namespace FieldDay {
             return UnityHelper.Find<T>(instanceId);
         }
 
+        /// <summary>
+        /// Finds an instance of the given type.
+        /// </summary>
+        static public T Any<T>() where T : UnityEngine.Object {
+            return Object.FindAnyObjectByType<T>(FindObjectsInactive.Include);
+        }
+
+        /// <summary>
+        /// Finds an instance of the given type.
+        /// </summary>
+        static public T Any<T>(FindObjectsInactive findInactive) where T : UnityEngine.Object {
+            return Object.FindAnyObjectByType<T>(findInactive);
+        }
+
         #endregion // Unity
     }
 }

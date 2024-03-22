@@ -1,3 +1,5 @@
+using System;
+using BeauUtil;
 using UnityEngine;
 
 namespace Zavala.Scripting {
@@ -25,5 +27,7 @@ namespace Zavala.Scripting {
         public Texture2D PanelBackground;
 
         #endregion // Inspector
+
+        [NonSerialized] public StringHash32 CachedId;
     }
 }

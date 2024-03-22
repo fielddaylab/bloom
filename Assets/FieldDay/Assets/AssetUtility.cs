@@ -81,6 +81,27 @@ namespace FieldDay.Assets {
         }
 
         /// <summary>
+        /// Caches the name hash of the given object.
+        /// </summary>
+        static public StringHash32 CacheNameHash(ref StringHash32 hash, object asset) {
+            if (hash.IsEmpty) {
+                hash = NameOf(asset);
+            }
+            return hash;
+        }
+
+        /// <summary>
+        /// Returns the name of the given object.
+        /// </summary>
+        static public string NameOf(UnityEngine.Object obj) {
+            if (obj == null) {
+                return null;
+            }
+
+            return obj.name;
+        }
+
+        /// <summary>
         /// Returns the name of the given object.
         /// </summary>
         static public string NameOf(object asset) {

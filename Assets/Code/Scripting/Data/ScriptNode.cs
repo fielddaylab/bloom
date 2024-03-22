@@ -21,10 +21,8 @@ namespace FieldDay.Scripting {
 
         public StringHash32 TriggerOrFunctionId;
         public LeafExpressionGroup Conditions;
-        public StringHash32 TargetId;
         public int EvalScore;
         public AdvisorType AdvisorType;
-        [BlockMeta("priority")] public ScriptNodePriority Priority = ScriptNodePriority.Medium;
         [BlockMeta("repeat")] public int RepeatPeriod;
         public ScriptNodeMemoryTarget PersistenceType;
         [BlockMeta("tag")] public StringHash32 Tag;
@@ -58,7 +56,6 @@ namespace FieldDay.Scripting {
         [BlockMeta("cutscene")]
         private void SetCutscene() {
             Flags |= ScriptNodeFlags.Cutscene;
-            Priority = ScriptNodePriority.Cutscene;
         }
 
         [BlockMeta("queued")]
@@ -80,14 +77,6 @@ namespace FieldDay.Scripting {
         [BlockMeta("evalPriority")]
         private void AdjustEvalPriority(int priority) {
             EvalScore += priority;
-        }
-
-        [BlockMeta("target")]
-        private void SetTarget(StringHash32 targetId) {
-            TargetId = targetId;
-            if (targetId == "*") {
-                Flags |= ScriptNodeFlags.AnyTarget;
-            }
         }
 
         [BlockMeta("forcePolicy")]

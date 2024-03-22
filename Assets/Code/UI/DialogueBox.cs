@@ -439,8 +439,9 @@ namespace Zavala.UI {
         }
 
         private void HandlePolicyCloseClicked() {
+            ScriptUtility.Runtime.Cutscene.Kill();
             m_TransitionRoutine.Replace(HideRoutine());
-            Input.InteractionUtility.ReleaseDialogueInteraction();
+            InteractionUtility.ReleaseDialogueInteraction();
         }
 
         private void HandleAdvisorButtonClicked(AdvisorType advisorType) {
@@ -457,7 +458,7 @@ namespace Zavala.UI {
         }
 
         IEnumerator<WorkSlicer.Result?> IScenePreload.Preload() {
-            m_AdvisorButtons = FindAnyObjectByType<AdvisorButtonContainer>(FindObjectsInactive.Include);
+            m_AdvisorButtons = Find.Any<AdvisorButtonContainer>();
             return null;
         }
 

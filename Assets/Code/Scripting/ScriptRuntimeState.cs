@@ -17,8 +17,6 @@ namespace FieldDay.Scripting {
     [DisallowMultipleComponent]
     [SharedStateInitOrder(-10)]
     public sealed class ScriptRuntimeState : SharedStateComponent, IRegistrationCallbacks {
-        public readonly ScriptThreadMap ThreadMap = new ScriptThreadMap();
-        public readonly RingBuffer<LeafThreadHandle> ActiveThreads = new RingBuffer<LeafThreadHandle>(8, RingBufferMode.Expand);
         public LeafThreadHandle Cutscene;
         public int NestedCutscenePauseCount;
 

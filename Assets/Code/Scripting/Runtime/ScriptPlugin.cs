@@ -5,6 +5,7 @@ using BeauUtil;
 using BeauUtil.Blocks;
 using BeauUtil.Tags;
 using BeauUtil.Variants;
+using FieldDay.Assets;
 using Leaf;
 using Leaf.Defaults;
 using Leaf.Runtime;
@@ -29,7 +30,7 @@ namespace FieldDay.Scripting {
             ConfigureTagStringHandling(new CustomTagParserConfig(), new TagStringEventHandler());
 
             LeafUtils.ConfigureDefaultParsers(m_TagParseConfig, this, null);
-            m_TagParseConfig.AddReplace("local", ReplaceLocalIdOf);
+            m_TagParseConfig.AddEvent("local", ReplaceLocalIdOf);
             m_TagParseConfig.AddReplace("alertRegionName", AlertRegionToName);
             // TODO: add replace "alert" to use local:alertRegion?
             m_TagParseConfig.AddEvent("viewpoliciesnext", "ViewPolicies");
@@ -42,19 +43,13 @@ namespace FieldDay.Scripting {
         }
 
         public override LeafThreadHandle Run(ScriptNode inNode, ILeafActor inActor = null, VariantTable inLocals = null, string inName = null, bool inbImmediateTick = true) {
-            if (inNode == null || !CheckPriorityState(inNode, m_RuntimeState)) {
+            if (inNode == null) {
                 return default;
             }
 
             ScriptThread thread = m_RuntimeState.ThreadPool.Alloc();
 
-            //if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
-                m_RuntimeState.Cutscene.Kill();
-                // Kill lower priority threads
-                foreach (var activeThread in m_RuntimeState.ActiveThreads) {
-                    activeThread.Kill();
-                }
-            // }
+            m_RuntimeState.Cutscene.Kill();
 
             TempAlloc<VariantTable> tempVars = m_RuntimeState.TablePool.TempAlloc();
             if (inLocals != null && inLocals.Count > 0) {
@@ -67,18 +62,7 @@ namespace FieldDay.Scripting {
             thread.SetInitialNode(inNode);
             thread.AttachRoutine(Routine.Start(m_RoutineHost, LeafRuntime.Execute(thread, inNode)));
 
-            m_RuntimeState.ActiveThreads.PushBack(handle);
-            // Why did we have this check? It prevents some nodes otherwise marked with cutscene from being cutscenes
-            //if ((inNode.Flags & ScriptNodeFlags.Trigger) != 0) {
-                if ((inNode.Flags & ScriptNodeFlags.Cutscene) != 0)
-                {
-                    m_RuntimeState.Cutscene = handle;
-                }
-            //}
-
-            if (!inNode.TargetId.IsEmpty) {
-                m_RuntimeState.ThreadMap.Threads[inNode.TargetId] = handle;
-            }
+            m_RuntimeState.Cutscene = handle;
 
             if (inbImmediateTick && m_RoutineHost.isActiveAndEnabled) {
                 thread.ForceTick();
@@ -137,7 +121,7 @@ namespace FieldDay.Scripting {
             if (Game.Gui.TryGetShared(out InfoPopup ip) && ip.HoldOpen) {
                 ip.HoldOpen = false;
             }
-            ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueClosing, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
             
         }
 
@@ -164,32 +148,13 @@ namespace FieldDay.Scripting {
             return parser;
         }
 
-        static private bool CheckPriorityState(ScriptNode node, ScriptRuntimeState runtime) {
-            StringHash32 target = node.TargetId;
-            if (target.IsEmpty) {
-                return true;
-            }
-
-            ScriptThread thread = runtime.ThreadMap.GetCurrentThread(target);
-            if (thread != null) {
-                if (!ScriptDatabaseUtility.CanInterrupt(node, thread.Priority())) {
-                    return false;
-                }
-
-                thread.Kill();
-                runtime.ThreadMap.Threads.Remove(target);
-            }
-
-            return true;
-        }
-
         public override bool TryLookupObject(StringHash32 inObjectId, LeafThreadState inThreadState, out object outObject) {
             bool result = m_RuntimeState.NamedActors.TryGetValue(inObjectId, out var evt);
             outObject = evt;
             return result;
         }
 
-        static private string ReplaceLocalIdOf(TagData inTag, object inContext) {
+        static private void ReplaceLocalIdOf(TagData inTag, object inContext, ref TagEventData ioData) {
             if (inTag.Data.StartsWith('@')) {
                 StringHash32 characterId = inTag.Data.Substring(1);
                 ScriptCharacterDB db = Game.SharedState.Get<ScriptCharacterDB>();
@@ -200,12 +165,16 @@ namespace FieldDay.Scripting {
                 if (context.Table.TryLookup("alertRegion", out Variant region)) {
                     regionOverride = region.AsInt() - 1; // 1-indexed to 0-indexed
                 }
-                // TODO: refactor into emitting the character event directly
-                return "{@" + ScriptCharacterDBUtility.GetRemapped(db, characterId, regionOverride).name + "}";
+
+                var remapped = ScriptCharacterDBUtility.GetRemapped(db, characterId, regionOverride);
+
+                ioData.Type = LeafUtils.Events.Character;
+                ioData.Argument0 = AssetUtility.CacheNameHash(ref remapped.CachedId, remapped);
+                return;
             }
 
             Debug.LogError("[ScriptPlugin] No local id could be found for " + inTag.Data.Substring(1));
-            return inTag.Data.ToString();
+            return;
         }
 
         static private string AlertRegionToName(TagData inTag, object inContext) {
@@ -213,7 +182,7 @@ namespace FieldDay.Scripting {
             if (LeafEvalContext.FromObject(inContext).Table.TryLookup("alertRegion", out Variant region)) {
                 regionIdx = region.AsInt() - 1; // 1-indexed to 0-indexed
             } else {
-                regionIdx = int.Parse(inTag.ToString());
+                regionIdx = StringParser.ParseInt(inTag.Data);
             }
             return RegionUtility.GetNameString(regionIdx);
         }

@@ -80,9 +80,9 @@ namespace FieldDay.Scripting {
                     continue;
                 }
 
-                if (!IsValidCandidateTriggerSpecific(node, evalContext, targetId, runtimeState)) {
-                    continue;
-                }
+                //if (!IsValidCandidateTriggerSpecific(node, evalContext, targetId, runtimeState)) {
+                //    continue;
+                //}
 
                 if (!IsValidCandidate(node, evalContext, targetId)) {
                     continue;
@@ -155,9 +155,9 @@ namespace FieldDay.Scripting {
                 }
             }
 
-            if ((node.Flags & ScriptNodeFlags.AnyTarget) != 0 && !targetId.IsEmpty && targetId != node.TargetId) {
-                return false;
-            }
+            //if ((node.Flags & ScriptNodeFlags.AnyTarget) != 0 && !targetId.IsEmpty && targetId != node.TargetId) {
+            //    return false;
+            //}
 
             return true;
         }
@@ -167,14 +167,13 @@ namespace FieldDay.Scripting {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private bool IsValidCandidateTriggerSpecific(ScriptNode node, LeafEvalContext evalContext, StringHash32 targetId, ScriptRuntimeState runtimeState) {
-            StringHash32 target = targetId.IsEmpty ? node.TargetId : targetId;
-            if (!target.IsEmpty) {
-                ScriptNodePriority currentPriority = runtimeState.ThreadMap.GetCurrentPriority(target);
-                if (!ScriptDatabaseUtility.CanInterrupt(node, currentPriority)) {
-                    return false;
-                }
-            }
-
+            //StringHash32 target = targetId.IsEmpty ? node.TargetId : targetId;
+            //if (!target.IsEmpty) {
+            //    ScriptNodePriority currentPriority = runtimeState.ThreadMap.GetCurrentPriority(target);
+            //    if (!ScriptDatabaseUtility.CanInterrupt(node, currentPriority)) {
+            //        return false;
+            //    }
+            //}
             return true;
         }
 
