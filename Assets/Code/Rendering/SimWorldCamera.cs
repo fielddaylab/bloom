@@ -51,9 +51,9 @@ namespace Zavala.World {
             if (!settings.HighQualityMode) {
                 renderScale.PixelHeight = 660;
                 renderScale.Mode = CameraRenderScale.ScaleMode.PixelHeight;
-                CameraAux.requiresDepthTexture = false;
-                CameraAux.requiresDepthOption = CameraOverrideOption.Off;
-                CameraAux.renderPostProcessing = false;
+                //CameraAux.requiresDepthTexture = false;
+                //CameraAux.requiresDepthOption = CameraOverrideOption.Off;
+                //CameraAux.renderPostProcessing = false;
             } else {
                 renderScale.enabled = false;
             }

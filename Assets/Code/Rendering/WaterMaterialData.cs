@@ -19,20 +19,16 @@ namespace Zavala.World {
             TopMaterial.Load();
             WaterfallMaterial.Load();
             TopDeepMaterial.Load();
-
-#if UNITY_EDITOR
-
-#endif // UNITY_EDITOR
         }
 
         public void SetShaderMode(bool highQuality) {
-            if (highQuality) {
-                TopMaterial.ReplaceShader(FancyShader);
-                TopDeepMaterial.ReplaceShader(FancyShader);
-            } else {
-                TopMaterial.ReplaceShader(SimpleShader);
-                TopDeepMaterial.ReplaceShader(SimpleShader);
-            }
+            //if (highQuality) {
+            //    TopMaterial.ReplaceShader(FancyShader);
+            //    TopDeepMaterial.ReplaceShader(FancyShader);
+            //} else {
+            //    TopMaterial.ReplaceShader(SimpleShader);
+            //    TopDeepMaterial.ReplaceShader(SimpleShader);
+            //}
         }
 
     }
