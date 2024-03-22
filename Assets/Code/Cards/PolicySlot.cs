@@ -165,14 +165,14 @@ namespace Zavala.Cards
         private void HandleSlotClicked(PolicyType policyType) {
             if (policyType != m_Type) {
                 // Clicked a different slot
-                if (m_HandState == HandState.Visible || m_HandState == HandState.Showing) {
+                if (m_HandState == HandState.Visible) {
                     // Hide this hand in deference to other hand
                     m_ChoiceRoutine.Replace(this, HideHandRoutine()).ExecuteWhileDisabled();
                 }
                 return;
             }
 
-            if (m_HandState == HandState.Hidden || m_HandState == HandState.Hiding) {
+            if (m_HandState == HandState.Hidden) {
                 // Show hand
                 CardsState cardState = Game.SharedState.Get<CardsState>();
                 CardPools pools = Game.SharedState.Get<CardPools>();
@@ -206,7 +206,7 @@ namespace Zavala.Cards
 
                 m_ChoiceRoutine.Replace(this, ShowHandRoutine()).ExecuteWhileDisabled();
             }
-            else if (m_HandState == HandState.Visible || m_HandState == HandState.Showing) {
+            else if (m_HandState == HandState.Visible) {
                 // Hide hand
                 m_ChoiceRoutine.Replace(this, HideHandRoutine()).ExecuteWhileDisabled();
             }
