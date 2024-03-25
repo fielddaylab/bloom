@@ -708,6 +708,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadFadeCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 6392123080006149912, guid: f17e538492668114e877fde8eb111229, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -2046748057
+      objectReference: {fileID: 0}
     - target: {fileID: 7655787635128613953, guid: f17e538492668114e877fde8eb111229, type: 3}
       propertyPath: m_Pivot.x
       value: 0
