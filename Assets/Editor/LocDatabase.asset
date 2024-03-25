@@ -396,6 +396,8 @@ MonoBehaviour:
       Content: 'Player Code:'
     - Id: ui.title.enterPlayerCode
       Content: Enter Player Code
+    - Id: ui.title.playerCodeNotFound
+      Content: Player Code Not Found
     - Id: ui.title.fullscreen
       Content: 'Fullscreen:'
     - Id: ui.title.quality

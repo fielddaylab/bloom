@@ -43,6 +43,7 @@ namespace Zavala.UI {
         [SerializeField] private Toggle m_HighQualityToggle;
         [SerializeField] private Button m_PlayGameButton;
         [SerializeField] private Button m_BackButton;
+        [SerializeField] private CanvasGroup m_NotFoundGroup;
 
         [Header("Credits")]
         [SerializeField] private UICredits m_CreditsPanel;
@@ -55,6 +56,7 @@ namespace Zavala.UI {
         [NonSerialized] private Routine m_StartGroupRoutine;
         [NonSerialized] private Routine m_GameGroupRoutine;
         [NonSerialized] private Routine m_PanelBGRoutine;
+        [NonSerialized] private Routine m_NotFoundRoutine;
 
         #region Unity Callbacks
 
@@ -72,6 +74,8 @@ namespace Zavala.UI {
             m_VolumeSlider.onValueChanged.AddListener(HandleSliderChanged);
 
             m_PlayerCodeInput.onValueChanged.AddListener(HandlePlayerCodeUpdated);
+
+            m_NotFoundGroup.alpha = 0;
         }
 
         private void LateUpdate() {
@@ -101,6 +105,9 @@ namespace Zavala.UI {
 
             m_PanelBGRoutine.Replace(this, AlignPanelRoutine(m_GameGroup, 0.2f));
 
+            m_NotFoundGroup.alpha = 0;
+            m_NotFoundRoutine.Stop();
+
             OGD.Player.NewId(HandleNewPlayerId, HandleNewPlayerIdError);
         }
 
@@ -119,6 +126,9 @@ namespace Zavala.UI {
             m_GameGroupRoutine.Replace(this, ShowPanelRoutine(m_GameGroup));
 
             m_PanelBGRoutine.Replace(this, AlignPanelRoutine(m_GameGroup, 0.2f));
+
+            m_NotFoundGroup.alpha = 0;
+            m_NotFoundRoutine.Stop();
         }
 
         private void HandleCreditsClicked()
@@ -182,6 +192,7 @@ namespace Zavala.UI {
         }
 
         private void HandlePlayAccepted() {
+            m_NotFoundRoutine.Stop();
             Game.SharedState.Get<UserSettings>().PlayerCode = m_PlayerCodeInput.text;
             ZavalaGame.Events.Dispatch(GameEvents.ProfileStarting, m_PlayerCodeInput.text);
             Game.Scenes.LoadMainScene(m_MainScene);
@@ -196,6 +207,7 @@ namespace Zavala.UI {
         private void HandleLoadError() {
             m_Raycaster.blocksRaycasts = true;
             Debug.LogError("load from server failed");
+            m_NotFoundRoutine.Replace(CodeNotFoundRoutine());
         }
 
         private void HandlePlayerCodeUpdated(string text) {
@@ -240,6 +252,15 @@ namespace Zavala.UI {
             yield return group.FadeTo(1, 0.2f);
             group.blocksRaycasts = true;
         }
+
+        private IEnumerator CodeNotFoundRoutine()
+        {
+            m_NotFoundGroup.blocksRaycasts = false;
+            yield return m_NotFoundGroup.FadeTo(1, 0.2f);
+            yield return 3f;
+            yield return m_NotFoundGroup.FadeTo(0, 0.2f);
+        }
+
 
         #endregion // Button Handlers
     }

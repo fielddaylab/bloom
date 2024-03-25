@@ -144,6 +144,9 @@ Player Code:
 :: title.enterPlayerCode
 Enter Player Code
 
+:: title.playerCodeNotFound
+Player Code Not Found
+
 :: title.fullscreen
 Fullscreen:
 
