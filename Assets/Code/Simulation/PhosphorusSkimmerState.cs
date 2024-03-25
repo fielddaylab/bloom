@@ -103,9 +103,18 @@ namespace Zavala.World {
             PhosphorusSkimmerState skimState =  Game.SharedState.Get<PhosphorusSkimmerState>();
             if (type == SkimmerType.Dredge) {
                 skimState.DredgerMesh.Apply(skim.Renderer, skim.Mesh);
+                skim.SkimParticles.gameObject.SetActive(false);
+                skim.SkimParticles.Stop();
+                skim.DredgeParticles.gameObject.SetActive(true);
+                skim.DredgeParticles.Play();
+
                 Debug.LogWarning("[SkimmerState] Attempting to apply dredger mesh...");
             } else {
                 skimState.SkimmerMesh.Apply(skim.Renderer, skim.Mesh);
+                skim.SkimParticles.gameObject.SetActive(true);
+                skim.SkimParticles.Play();
+                skim.DredgeParticles.gameObject.SetActive(false);
+                skim.DredgeParticles.Stop();
             }
             skim.Type = type;
         }

@@ -123,6 +123,7 @@ MonoBehaviour:
   Mesh: {fileID: 3715709998471520561}
   Renderer: {fileID: 1473853312814274043}
   SkimParticles: {fileID: 1043634438761924097}
+  DredgeParticles: {fileID: 6656668816901512516}
 --- !u!114 &1976245010908455185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,11 +303,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 833858533068772910, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
       propertyPath: looping
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 833858533068772910, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
       propertyPath: playOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1214382850396781752, guid: 9ecb03ec9ab7b0442bebf12237e7b1fc, type: 3}
       propertyPath: m_RootOrder
@@ -436,5 +437,10 @@ PrefabInstance:
 --- !u!4 &2985405595287858235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4497243170725636114, guid: 742128b33c5b90545b3229ba6e4517a3, type: 3}
+  m_PrefabInstance: {fileID: 1659330465384858665}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &6656668816901512516 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5433062167373551981, guid: 742128b33c5b90545b3229ba6e4517a3, type: 3}
   m_PrefabInstance: {fileID: 1659330465384858665}
   m_PrefabAsset: {fileID: 0}

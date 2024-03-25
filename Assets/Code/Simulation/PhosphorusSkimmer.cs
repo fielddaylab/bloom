@@ -16,6 +16,7 @@ namespace Zavala.Sim
         public MeshRenderer Renderer;
 
         public ParticleSystem SkimParticles;
+        public ParticleSystem DredgeParticles;
     }
 
     public enum SkimmerType {
