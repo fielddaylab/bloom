@@ -1944,6 +1944,11 @@ MonoBehaviour:
   m_Raycaster: {fileID: 8887166297473241737}
   m_BackgroundVideoPath: 
   m_BackgroundRenderer: {fileID: 0}
+  m_TitleMusic: {fileID: 0}
+  m_AllTitleSongs:
+  - music/Bird feeder cloud.mp3
+  m_AllCreditsSongs:
+  - music/farmland dance.mp3
   m_StartGroup: {fileID: 5461092245654841880}
   m_StartButton: {fileID: 7484506008911203530}
   m_LoadButton: {fileID: 1683712550396419000}

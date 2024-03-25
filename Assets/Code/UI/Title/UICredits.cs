@@ -169,6 +169,7 @@ namespace Zavala.UI {
             }
 
             m_Transitioning = false;
+            ZavalaGame.Events.Dispatch(GameEvents.CreditsExited);
         }
 
         private IEnumerator AdvanceConceptArtRoutine()

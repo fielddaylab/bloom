@@ -10,6 +10,7 @@ using FieldDay.Scenes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Audio;
 using Zavala.Data;
 
 namespace Zavala.UI {
@@ -28,6 +29,11 @@ namespace Zavala.UI {
         [SerializeField] private CanvasGroup m_Raycaster;
         [SerializeField, StreamingVideoPath] private string m_BackgroundVideoPath;
         [SerializeField] private StreamingQuadTexture m_BackgroundRenderer;
+
+        [Header("Music")]
+        [SerializeField] private MusicState m_TitleMusic;
+        [SerializeField, StreamingAudioPath] private string[] m_AllTitleSongs;
+        [SerializeField, StreamingAudioPath] private string[] m_AllCreditsSongs;
 
         [Header("Main Panel")]
         [SerializeField] private CanvasGroup m_StartGroup;
@@ -85,6 +91,11 @@ namespace Zavala.UI {
             }
         }
 
+        private void Start()
+        {
+            ZavalaGame.Events.Register(GameEvents.CreditsExited, HandleCreditsExited);
+        }
+
         #endregion // Unity Callbacks
 
         #region Button Handlers
@@ -135,6 +146,12 @@ namespace Zavala.UI {
         {
             ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.CreditsButtonClicked);
             m_CreditsPanel.OpenPanel();
+            MusicUtility.SetAllSongs(m_TitleMusic, m_AllCreditsSongs);
+        }
+
+        private void HandleCreditsExited()
+        {
+            MusicUtility.SetAllSongs(m_TitleMusic, m_AllTitleSongs);
         }
 
         private void HandleFullscreenToggle(bool toggle) {
@@ -193,6 +210,7 @@ namespace Zavala.UI {
 
         private void HandlePlayAccepted() {
             m_NotFoundRoutine.Stop();
+            m_TitleMusic.Step = MusicPlaybackStep.FadeOut;
             Game.SharedState.Get<UserSettings>().PlayerCode = m_PlayerCodeInput.text;
             ZavalaGame.Events.Dispatch(GameEvents.ProfileStarting, m_PlayerCodeInput.text);
             Game.Scenes.LoadMainScene(m_MainScene);

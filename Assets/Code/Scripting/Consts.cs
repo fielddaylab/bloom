@@ -21,6 +21,7 @@ namespace Zavala
         static public readonly StringHash32 FullscreenToggled = "menu:fullscreen-clicked";
         static public readonly StringHash32 QualityToggled = "menu:hq-toggled";
         static public readonly StringHash32 ProfileStarting = "menu:starting";
+        static public readonly StringHash32 CreditsExited = "menu:credits-exited";
 
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";

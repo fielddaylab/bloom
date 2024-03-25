@@ -25,14 +25,11 @@ namespace Zavala.Audio {
         }
 
         void IRegistrationCallbacks.OnRegister() {
-            foreach(var element in AllSongs) {
-                Playlist.Add(element);
-            }
-
-            UserSettings settings = Game.SharedState.Get<UserSettings>();
-            Volume *= settings.MusicVolume;
+            MusicUtility.ResetPlaylist(this);
         }
     }
+
+
 
     public enum MusicPlaybackMode {
         None,
@@ -52,6 +49,26 @@ namespace Zavala.Audio {
     static public class MusicUtility {
         public static void SetVolume(float vol) {
             Game.SharedState.Get<MusicState>().Volume = vol;
+        }
+
+        public static void SetAllSongs(MusicState state, string[] allSongs)
+        {
+            state.AllSongs = allSongs;
+            state.Queue.Clear();
+            state.Step = MusicPlaybackStep.None;
+            state.Playlist.Clear();
+            ResetPlaylist(state);
+        }
+
+        public static void ResetPlaylist(MusicState state)
+        {
+            foreach (var element in state.AllSongs)
+            {
+                state.Playlist.Add(element);
+            }
+
+            UserSettings settings = Game.SharedState.Get<UserSettings>();
+            state.Volume *= settings.MusicVolume;
         }
     }
 }

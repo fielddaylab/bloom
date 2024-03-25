@@ -22,12 +22,12 @@ namespace Zavala.UI.Info {
     }
 
     static public class InfoPopupMarketUtility {
-        static public readonly Color PositiveColorBG = Colors.Hex("#C8E295");
+        static public readonly Color PositiveColorBG = Colors.Hex("#60F5AD");
         static public readonly Color PositiveColor = Colors.Hex("#078313");
 
         static public readonly Color NeutralColor = Colors.Hex("#806844");
 
-        static public readonly Color NegativeColorBG = Colors.Hex("#FFBBBB");
+        static public readonly Color NegativeColorBG = Colors.Hex("#F0B59F");
         static public readonly Color NegativeColor = Colors.Hex("#C23636");
 
         static public readonly Color InactiveNumberColor = Colors.Hex("#B58B4C");
@@ -51,8 +51,8 @@ namespace Zavala.UI.Info {
             Colors.Hex("#F4EECE") //Colors.Hex("#ECCD90")
         }
 ;
-        static private readonly Color RowHighlightBuyColor = Colors.Hex("#D5FFF1");
-        static private readonly Color RowHighlightSellColor = Colors.Hex("#F9E59C");
+        static private readonly Color RowHighlightBuyColor = Colors.Hex("#4ADEFF");
+        static private readonly Color RowHighlightSellColor = Colors.Hex("#F6DA76");
         static private readonly Color RowPenaltyColor = Colors.Hex("#E62E2E");
         static private readonly Color[] RowDefaultColor = new Color[2]
         {
