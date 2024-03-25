@@ -124,14 +124,20 @@ namespace Zavala.UI {
         public void OpenPanel()
         {
             if (m_Transitioning) { return; }
-            m_TransitionRoutine.Replace(this, EnterRoutine());
+            m_TransitionRoutine.Replace(this, EnterRoutine(TRANSITION_TIME));
+        }
+
+        public void OpenPanelImmediate()
+        {
+            if (m_Transitioning) { return; }
+            m_TransitionRoutine.Replace(this, EnterRoutine(0));
         }
 
         #endregion // External
 
         #region Routines
 
-        private IEnumerator EnterRoutine()
+        private IEnumerator EnterRoutine(float enterTime)
         {
             m_Transitioning = true;
             m_ScrollTimer = m_ScrollTime;

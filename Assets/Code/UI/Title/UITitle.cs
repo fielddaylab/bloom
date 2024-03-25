@@ -82,6 +82,10 @@ namespace Zavala.UI {
             m_PlayerCodeInput.onValueChanged.AddListener(HandlePlayerCodeUpdated);
 
             m_NotFoundGroup.alpha = 0;
+
+            if (GameplayMetadata.Instance && GameplayMetadata.Instance.GameWinToTitle) {
+                LoadFromGameWin();
+            }
         }
 
         private void LateUpdate() {
@@ -281,5 +285,14 @@ namespace Zavala.UI {
 
 
         #endregion // Button Handlers
+
+        private void LoadFromGameWin()
+        {
+            Debug.Log("[Meta] opening from game win");
+            // load credits immediately
+            m_CreditsPanel.OpenPanelImmediate();
+            MusicUtility.SetAllSongs(m_TitleMusic, m_AllCreditsSongs);
+            GameplayMetadata.Instance.GameWinToTitle = false;
+        }
     }
 }
