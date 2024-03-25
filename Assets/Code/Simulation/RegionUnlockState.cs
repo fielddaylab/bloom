@@ -8,6 +8,7 @@ using Leaf.Runtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zavala.Audio;
 using Zavala.Data;
 using Zavala.Economy;
 using Zavala.World;
@@ -122,6 +123,7 @@ namespace Zavala.Sim {
                 ScriptUtility.Trigger(GameTriggers.RegionUnlocked, varTable);
             }
             ZavalaGame.Events.Dispatch(GameEvents.RegionUnlocked, regionName);
+            SfxUtility.PlaySfx("rumble");
             Debug.Log("[RegionUnlockSystem] Unlocked region " + region);
         }
 

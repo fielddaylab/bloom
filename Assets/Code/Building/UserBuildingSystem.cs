@@ -230,6 +230,7 @@ namespace Zavala.Building
             }
 
             if (!CanPurchaseBuild(activeTool, grid.CurrRegionIndex, m_StateD.RunningCost, out int price)) {
+                SfxUtility.PlaySfx("insufficient-funds");
                 return false;
             }
 
@@ -624,10 +625,9 @@ namespace Zavala.Building
                 return true;
             } else {
                 Debug.Log("[StagingRoad] Insufficient funds!");
+                SfxUtility.PlaySfx("insufficient-funds");
                 return false;
             }
-
-
         }
 
         /// <summary>

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Audio;
 using Zavala.Building;
 using Zavala.Economy;
 
@@ -140,6 +141,8 @@ namespace Zavala.UI
             else {
                 // some disallow routine? error sound, red flash, queue Balthazar, etc.
                 Game.Animation.AddLiteAnimator(button, 0.3f);
+
+                SfxUtility.PlaySfx("insufficient-funds");
             }
         }
 
