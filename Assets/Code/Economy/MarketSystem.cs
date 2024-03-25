@@ -953,16 +953,21 @@ namespace Zavala.Economy
                 return;
             }
 
-            // Determine if this transaction sold out inventory of supplier
-            bool soldOut = DidTransactionSellOut(activeRequest.Supplied, supplier.Storage.Current, supplier.Storage.StorageExtensionStore);
-            if (soldOut) {
-                // TODO: use this information in generating sold out entry in inspector
-                // var lastPurchaserId = activeRequest.Requester.GetComponent<LocationDescription>().TitleLabel;
-
-                // Check if purchaser requested given resource last tick
-                // If so, check the best option index they bought from.
-                // For all buyers on the list at a higher priority (who were not purchased from), mark as sold out
+            // Determine if this transaction sold out inventory of supplier (but we don't care about milk selling out)
+            if (activeRequest.Supplied.Milk == 0) {
+                bool soldOut = DidTransactionSellOut(activeRequest.Supplied, supplier.Storage.Current, supplier.Storage.StorageExtensionStore);
+                if (soldOut && !activeRequest.Requester.IsLocalOption && !supplier.Position.IsExternal)
+                {
+                    // use this information in generating sold out entry in inspector
+                    supplier.SoldOutTo = activeRequest.Requester.GetComponent<LocationDescription>().TitleLabel;
+                }
+                else
+                {
+                    // Remove old Sold out marker, if any
+                    supplier.SoldOutTo = "";
+                }
             }
+
 
             ResourceStorageUtility.RefreshStorageDisplays(supplier.Storage);
             if (supplierOffer.BaseProfit - supplierOffer.RelativeGain < 0)

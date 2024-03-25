@@ -276,6 +276,7 @@ namespace Zavala.Economy
         public int CostToBuyer;
         public ushort ProxyIdx;
         public GeneratedTaxRevenue TaxRevenue;
+        public TextId SoldOutTo;
     }
 
     /// <summary>
@@ -684,7 +685,8 @@ namespace Zavala.Economy
                             Profit = data.Profit /*- data.RelativeGain*/,
                             CostToBuyer = data.CostToBuyer,
                             ProxyIdx = data.ProxyIdx,
-                            TaxRevenue = data.TaxRevenue // NOTE: does not return correct value when supplier ships through export depot proxy
+                            TaxRevenue = data.TaxRevenue, // NOTE: does not return correct value when supplier ships through export depot proxy
+                            SoldOutTo = supplier.SoldOutTo
                         });
                         count++;
                         break;
@@ -710,6 +712,7 @@ namespace Zavala.Economy
                         result.Profit = data.Profit /*- data.RelativeGain*/;
                         result.TaxRevenue = data.TaxRevenue;
                         result.CostToBuyer = data.CostToBuyer;
+                        result.SoldOutTo = result.Supplier.SoldOutTo;
                         found = true;
                         break;
                     }
@@ -733,7 +736,8 @@ namespace Zavala.Economy
                         Distance = data.Distance,
                         PathFlags = data.Path.Flags,
                         Profit = data.Profit /* - data.RelativeGain */,
-                        TaxRevenue = data.TaxRevenue
+                        TaxRevenue = data.TaxRevenue,
+                        SoldOutTo = ""
                     });
                     count++;
                 }

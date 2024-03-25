@@ -31,7 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3963800827592362286}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -154,7 +154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1639232220078114418
 RectTransform:
   m_ObjectHideFlags: 0
@@ -168,12 +168,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6170450508404175732}
+  - {fileID: 6017558468786106251}
   m_Father: {fileID: 3963800827592362286}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 2.2}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -11}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -31}
   m_SizeDelta: {x: 36, y: 28}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &2946799133851219399
@@ -421,12 +422,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3963800827592362286}
+  m_Father: {fileID: 1639232220078114418}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 2.2}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -11}
+  m_AnchoredPosition: {x: 0, y: 28}
   m_SizeDelta: {x: 36, y: 32}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &431181816049293624
@@ -703,7 +704,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8527999273771724035}
-  - {fileID: 6017558468786106251}
   - {fileID: 1639232220078114418}
   - {fileID: 3421169711633523619}
   m_Father: {fileID: 7624095179259229190}
@@ -1698,14 +1698,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 640166219817684003, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 660965375635398133, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 927090955950546009, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1792,6 +1784,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1008925584446860518, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049270230930494283, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1099347800189403805, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
+      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1239844914958728746, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
@@ -2406,6 +2406,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4662257210706321781, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4767609393398865542, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2496,10 +2500,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5066649153866656980, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5106580896536231453, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}
-      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5160616955914616066, guid: 7e2c592a1cde20c4dbfa3bef78b629e1, type: 3}

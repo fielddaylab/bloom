@@ -49,15 +49,27 @@ namespace Zavala.Scripting
                 }
 
                  ScriptNode node = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, peekEvent.ScriptId);
-                if ((node.Flags & ScriptNodeFlags.Once) != 0) {
-                    if (node.QueuedToTileIdx > 0 && node.QueuedToTileIdx != peekEvent.TileIndex) {
-                        Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to tile {3}", node.FullName, peekEvent.TileIndex, node.QueuedToTileIdx);
-                        component.QueuedEvents.PopFront();
-                        return;
-                    } else {
-                        node.QueuedToTileIdx = peekEvent.TileIndex;
+                if (node == null)
+                {
+                    Debug.LogError("[EventActorSystem] Unable to find node for event " + peekEvent.ScriptId.ToDebugString());
+                }
+                else
+                {
+                    if ((node.Flags & ScriptNodeFlags.Once) != 0)
+                    {
+                        if (node.QueuedToTileIdx > 0 && node.QueuedToTileIdx != peekEvent.TileIndex)
+                        {
+                            Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to tile {3}", node.FullName, peekEvent.TileIndex, node.QueuedToTileIdx);
+                            component.QueuedEvents.PopFront();
+                            return;
+                        }
+                        else
+                        {
+                            node.QueuedToTileIdx = peekEvent.TileIndex;
+                        }
                     }
                 }
+
 
                 if (Game.Gui.GetShared<GlobalAlertButton>().QueuedActors.Contains(component)) {
                     return;

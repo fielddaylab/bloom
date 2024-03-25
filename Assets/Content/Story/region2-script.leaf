@@ -313,6 +313,8 @@ $call ForcePinDialogue()
 $call QueueDialogueBubble(region2_grain1, region2.phosManure)
 
 :: phosManure
+@queued
+@once
 {@advisorEcolForest}    Ah, looks like Emmett has started using manure fertilizer.
 {@phos4us}              Manure! What a mess! And smelly too.
 {@phos4us}              Why not keep clean with PHOS4US ProPebbles?

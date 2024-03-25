@@ -62,7 +62,7 @@ namespace Zavala.UI.Info {
 
         #region Load Columns
 
-        static public List<InspectorLocationQuery> GatherLocationGroupsForResourceTab(InfoPopupLocationColumn[] cols, int maxRows, int numFilledRows, RingBuffer<MarketQueryResultInfo> queryResults, GameObject bestOptionObj, List<InspectorLocationQuery> locations, bool isShipping)
+        static public List<InspectorLocationQuery> GatherLocationGroupsForResourceTab(InfoPopupLocationColumn[] cols, int maxRows, int numFilledRows, RingBuffer<MarketQueryResultInfo> queryResults, List<InspectorLocationQuery> locations, bool isShipping)
         {
             var newTabLocations = new List<InspectorLocationQuery>();
 
@@ -73,12 +73,18 @@ namespace Zavala.UI.Info {
                     var results = queryResults[i];
                     if (isShipping)
                     {
-                        newTabLocations.Add(InfoPopupMarketUtility.GatherLocationForQuery(results.Requester.Position, results.Supplier.Position, i));
-                        // newTabLocations.Add(InfoPopupMarketUtility.GatherLocationForQuery(results.Supplier.Position, results.Requester.Position, i));
+                        var query = InfoPopupMarketUtility.GatherLocationForQuery(results.Requester.Position, results.Supplier.Position, i);
+                        query.SoldOutTo = results.SoldOutTo.Equals(results.Requester.GetComponent<LocationDescription>().TitleLabel) ? "" : results.SoldOutTo;
+                        //if (results.Requester.PriceNegotiator.OfferedRecord[MarketUtility.ResourceIdToMarketIndex(currResource)]]) { }
+
+                        newTabLocations.Add(query);
                     }
                     else
                     {
-                        newTabLocations.Add(InfoPopupMarketUtility.GatherLocationForQuery(results.Supplier.Position, results.Requester.Position, i));
+                        var query = InfoPopupMarketUtility.GatherLocationForQuery(results.Supplier.Position, results.Requester.Position, i);
+                        query.SoldOutTo = results.SoldOutTo.Equals(results.Requester.GetComponent<LocationDescription>().TitleLabel) ? "" : results.SoldOutTo;
+
+                        newTabLocations.Add(query);
                     }
                 }
             }
@@ -110,14 +116,15 @@ namespace Zavala.UI.Info {
             return newLocationQuery;
         }
 
-        static public bool LoadLocationIntoCol(InfoPopupLocationColumn col, OccupiesTile location, OccupiesTile referenceLocation, bool forSale, bool runoffAffected, GameObject bestOptionBanner, int colGroupIndex, InspectorLocationQuery toLoad, ref int nextBestIndex, bool isShipping, InfoPopupColumnHeaders headers)
+        static public bool LoadLocationIntoCol(InfoPopupLocationColumn col, OccupiesTile location, OccupiesTile referenceLocation, bool forSale, bool runoffAffected, BestLocationHeader bestOptionHeader, int colGroupIndex, InspectorLocationQuery toLoad, ref int nextBestIndex, bool isShipping, InfoPopupColumnHeaders headers, Color arrowColor, Color arrowTextColor, string arrowTextId)
         {
             bool evenCol = colGroupIndex % 2 == 0;
             LocationDescription desc = location.GetComponent<LocationDescription>();
 
             col.NameLabel.gameObject.SetActive(true);
-            // col.Icon.gameObject.SetActive(true);
-            col.Arrow.gameObject.SetActive(true);
+            // force name label rect to be correct
+            col.ElseArrow.gameObject.SetActive(toLoad.SoldOutTo.IsEmpty);
+            col.BuyArrow.gameObject.SetActive(false);
             col.NameLabel.SetText(toLoad.FarmName);
             col.Icon.sprite = desc.Icon;
 
@@ -136,7 +143,7 @@ namespace Zavala.UI.Info {
             {
                 col.RegionLabel.gameObject.SetActive(true);
                 col.RegionLabel.SetText(toLoad.FarmCounty);
-                col.NameLabel.rectTransform.SetAnchorPos(col.RegionLabel.rectTransform.sizeDelta.y / 2, Axis.Y);
+                col.NameLabel.rectTransform.SetAnchorPos(3.7f, Axis.Y);
             }
 
             col.BackgroundRect.position = new Vector3(
@@ -147,28 +154,45 @@ namespace Zavala.UI.Info {
             col.BackgroundRect.offsetMax = new Vector2(col.BackgroundRect.offsetMax.x, 0);
             col.BackgroundRect.offsetMin = new Vector2(col.BackgroundRect.offsetMin.x, 0);
 
+            col.SoldOutGroup.SetActive(!toLoad.SoldOutTo.IsEmpty);
+
             if (colGroupIndex == nextBestIndex)
             {
-                bestOptionBanner.SetActive(forSale);
-                if (forSale)
+                if (!toLoad.SoldOutTo.IsEmpty)
                 {
-                    col.Background.SetColor(isShipping ? RowHighlightSellColor : RowHighlightBuyColor);
-                    return true;
+                    // sold out from this seller. Shift next best index down one
+                    nextBestIndex++;
+
+                    col.SoldToText.SetText(Loc.Find(toLoad.SoldOutTo));
                 }
                 else
                 {
-                    // check if runoff penalty
-                    if (runoffAffected)
+                    col.BuyArrow.gameObject.SetActive(true);
+                    col.BuyArrowText.SetText(Loc.Find(arrowTextId));
+                    col.BuyArrow.color = arrowColor;
+                    col.BuyArrowText.color = arrowTextColor;
+
+                    bestOptionHeader.gameObject.SetActive(forSale);
+                    if (forSale)
                     {
-                        // col.Background.SetColor(RowPenaltyColor);
-                        col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+                        col.Background.SetColor(isShipping ? RowHighlightSellColor : RowHighlightBuyColor);
+                        return true;
                     }
                     else
                     {
-                        col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
-                    }
+                        // check if runoff penalty
+                        if (runoffAffected)
+                        {
+                            // col.Background.SetColor(RowPenaltyColor);
+                            col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+                        }
+                        else
+                        {
+                            col.Background.SetColor(evenCol ? RowDefaultColor[0] : RowDefaultColor[1]);
+                        }
 
-                    nextBestIndex++;
+                        nextBestIndex++;
+                    }
                 }
             }
             else
@@ -245,6 +269,8 @@ namespace Zavala.UI.Info {
             col.PenaltyCol.Background.enabled = false;
             col.TotalPriceCol.Background.enabled = false;
             col.TotalProfitCol.Background.enabled = false;
+            col.SoldOutGroup.SetActive(false);
+            col.BuyArrow.gameObject.SetActive(false);
             LoadEmptyCol(col, bestOptionBanner, colGroupIndex, headers);
         }
 
@@ -265,6 +291,8 @@ namespace Zavala.UI.Info {
             col.PenaltyCol.Background.enabled = false;
             col.TotalPriceCol.Background.enabled = false;
             col.TotalProfitCol.Background.enabled = false;
+            col.SoldOutGroup.SetActive(false);
+            col.BuyArrow.gameObject.SetActive(false);
             LoadEmptyCol(col, bestOptionBanner, colGroupIndex, headers);
         }
 
@@ -273,7 +301,7 @@ namespace Zavala.UI.Info {
             bool evenCol = colGroupIndex % 2 == 0;
 
             col.PolicyIcon.gameObject.SetActive(false);
-            col.Arrow.gameObject.SetActive(false);
+            col.ElseArrow.gameObject.SetActive(false);
             col.RegionLabel.gameObject.SetActive(false);
             col.NameLabel.gameObject.SetActive(false);
             col.Icon.gameObject.SetActive(false);

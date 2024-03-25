@@ -101,6 +101,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
   - {fileID: 21300000, guid: 03e35de789d715e4194911330de60100, type: 3}
   - {fileID: 21300000, guid: 0acbcf2895103dc46bd2d52e01e2e3b3, type: 3}
+  - {fileID: 21300000, guid: fab2d4489ff461d479d84e8f8441738c, type: 3}
   - {fileID: 21300000, guid: 82903488d77b16e46a06d4b7f18aeb81, type: 3}
   - {fileID: 21300000, guid: d8120c88b3a67124086628f192bafcc0, type: 3}
   - {fileID: 21300000, guid: fe5afc8805aa61049864f3373d5c4f4a, type: 3}
@@ -193,6 +194,7 @@ SpriteAtlas:
   - banner_declining-pop
   - ToolImageStorage
   - money
+  - location-arrow-strip
   - water-status-fair
   - ToolImageRoad
   - policyicon_runoff

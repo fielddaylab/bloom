@@ -26,6 +26,8 @@ namespace Zavala.Economy {
         [NonSerialized] public MarketSupplierPriorityList Priorities;
         [NonSerialized] public int[] BestPriorityIndex;
 
+        [NonSerialized] public TextId SoldOutTo = "";
+
         [NonSerialized] public ResourcePriceNegotiator PriceNegotiator;
         [NonSerialized] public ResourceBlock PreSaleSnapshot;
         [NonSerialized] public ResourceBlock PostSaleSnapshot;

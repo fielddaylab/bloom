@@ -32,6 +32,7 @@ namespace Zavala.UI.Info
         public bool IsActive;
         public string FarmName;
         public string FarmCounty;
+        public TextId SoldOutTo;
     }
 
     public struct InspectorProfitQuery
@@ -430,7 +431,7 @@ namespace Zavala.UI.Info
 
                         InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
                         newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherProfitGroupsForResourceTab(policyState, grid, config, currResourceMask, WideNumRows, queryCount, m_TempQueryResults, showRunoff);
-                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
+                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_ActiveTabProfitGroup.Locations, shipping);
                         m_InspectorDisplayData.AllAvailableTabs.Add(newTabProfitGroup);
 
                         if ((m_ActiveResource & currResourceMask) != 0)
@@ -442,7 +443,7 @@ namespace Zavala.UI.Info
             }
             else {
                 InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
-                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
+                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_ActiveTabProfitGroup.Locations, shipping);
                 newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherProfitGroupsForResourceTab(policyState, grid, config, m_ActiveResource, WideNumRows, queryCount, m_QueryResults, showRunoff);
                 m_ActiveTabProfitGroup = newTabProfitGroup;
             }
@@ -462,10 +463,14 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = results.TaxRevenue.Penalties > 0;
-                    bool sellChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, true, m_MarketContentsColHeaders);
+                    bool sellChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Requester.Position, results.Supplier.Position, forSale, runoffAffected, m_BestOption, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, true, m_MarketContentsColHeaders, SellArrowColor, SellArrowTextColor, "ui.popup.info.sellingArrow");
+                    if (sellChoice)
+                    {
+                        m_BestOption.Banner.SetText(Loc.Find("ui.popup.info.selling"));
+                    }
                     InfoPopupMarketUtility.LoadProfitIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, forSale, i > 0, showRunoff, m_ActiveTabProfitGroup.Profits[i], sellChoice);
-                    m_MarketContentsCols.LocationCols[i].Arrow.color = SellArrowColor;
-                    m_MarketContentsCols.LocationCols[i].ArrowText.color = SellArrowTextColor;
+                    m_MarketContentsCols.LocationCols[i].ElseArrow.color = SellArrowColor;
+                    m_MarketContentsCols.LocationCols[i].ElseArrowText.color = SellArrowTextColor;
                     anyPrev = true;
                 }
                 else
@@ -477,13 +482,6 @@ namespace Zavala.UI.Info
             }
 
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
-            if (m_BestOption.gameObject.activeSelf)
-            {
-                m_BestOption.Banner.SetText(Loc.Find("ui.popup.info.selling"));
-                m_BestOption.ArrowText.SetText(Loc.Find("ui.popup.info.sellingArrow"));
-                m_BestOption.Arrow.color = SellArrowColor;
-                m_BestOption.ArrowText.color = SellArrowTextColor;
-            }
 
             if (gameObject.activeSelf)
             {
@@ -533,7 +531,7 @@ namespace Zavala.UI.Info
 
                         InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
                         newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherCostGroupsForResourceTab(policyState, grid, config, currResourceMask, WideNumRows, queryCount, m_TempQueryResults, showRunoff);
-                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
+                        newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_TempQueryResults, m_ActiveTabProfitGroup.Locations, shipping);
                         m_InspectorDisplayData.AllAvailableTabs.Add(newTabProfitGroup);
 
                         if ((m_ActiveResource & currResourceMask) != 0)
@@ -546,7 +544,7 @@ namespace Zavala.UI.Info
             else
             {
                 InspectorTabProfitGroup newTabProfitGroup = new InspectorTabProfitGroup();
-                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_BestOption.gameObject, m_ActiveTabProfitGroup.Locations, shipping);
+                newTabProfitGroup.Locations = InfoPopupMarketUtility.GatherLocationGroupsForResourceTab(m_MarketContentsCols.LocationCols, WideNumRows, queryCount, m_QueryResults, m_ActiveTabProfitGroup.Locations, shipping);
                 newTabProfitGroup.Profits = InfoPopupMarketUtility.GatherCostGroupsForResourceTab(policyState, grid, config, m_ActiveResource, WideNumRows, queryCount, m_QueryResults, showRunoff);
                 m_ActiveTabProfitGroup = newTabProfitGroup;
             }
@@ -559,10 +557,14 @@ namespace Zavala.UI.Info
                     var results = m_QueryResults[i];
                     bool forSale = true;
                     bool runoffAffected = false;
-                    bool bestBuyChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption.gameObject, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, false, m_MarketContentsColHeaders);
+                    bool bestBuyChoice = InfoPopupMarketUtility.LoadLocationIntoCol(m_MarketContentsCols.LocationCols[i], results.Supplier.Position, results.Requester.Position, forSale, runoffAffected, m_BestOption, i, m_ActiveTabProfitGroup.Locations[i], ref nextBestIndex, false, m_MarketContentsColHeaders, BuyArrowColor, BuyArrowTextColor, "ui.popup.info.buyingArrow");
+                    if (bestBuyChoice)
+                    {
+                        m_BestOption.Banner.SetText(Loc.Find("ui.popup.info.buying"));
+                    }
                     InfoPopupMarketUtility.LoadCostsIntoCol(policyState, grid, m_MarketContentsCols.LocationCols[i], m_MarketContentsColHeaders, results, config, forSale, i > 0, m_ActiveTabProfitGroup.Profits[i], bestBuyChoice);
-                    m_MarketContentsCols.LocationCols[i].Arrow.color = BuyArrowColor;
-                    m_MarketContentsCols.LocationCols[i].ArrowText.color = BuyArrowTextColor;
+                    m_MarketContentsCols.LocationCols[i].ElseArrow.color = BuyArrowColor;
+                    m_MarketContentsCols.LocationCols[i].ElseArrowText.color = BuyArrowTextColor;
                 }
                 else
                 {
@@ -577,10 +579,7 @@ namespace Zavala.UI.Info
             InfoPopupMarketUtility.AssignColColors(m_MarketContentsColHeaders);
             if (m_BestOption.gameObject.activeSelf)
             {
-                m_BestOption.Banner.SetText(Loc.Find("ui.popup.info.buying"));
-                m_BestOption.ArrowText.SetText(Loc.Find("ui.popup.info.buyingArrow"));
-                m_BestOption.Arrow.color = BuyArrowColor;
-                m_BestOption.ArrowText.color = BuyArrowTextColor;
+
             }
 
             if (gameObject.activeSelf)

@@ -11,9 +11,15 @@ namespace Zavala.UI.Info
         public Graphic Background;
         public RectTransform BackgroundRect;
         public TMP_Text NameLabel;
+        public RectTransform NameLabelRect;
         public TMP_Text RegionLabel;
-        public Image Arrow;
-        public TMP_Text ArrowText;
+        public Image BuyArrow; // or Sell Arrow
+        public TMP_Text BuyArrowText; // or Sell Arrow Text
+        public Image ElseArrow;
+        public TMP_Text ElseArrowText;
+        public GameObject SoldOutGroup;
+        public TMP_Text SoldToText;
+
 
         [Header("Prices")]
         public GameObject PriceGroup;
