@@ -65,7 +65,7 @@ namespace Zavala {
 
             GameLoop.OnDebugUpdate.Register(() => {
                 if (Input.IsKeyComboPressed(ModifierKeyCode.LCtrl, KeyCode.Space)) {
-                    Input.ConsumeInputForFrame();
+                    Input.ConsumeAllInputForFrame();
                     ScriptUtility.Trigger(GameTriggers.TutorialSkipped);
                 }
             });

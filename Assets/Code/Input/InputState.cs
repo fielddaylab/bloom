@@ -57,7 +57,6 @@ namespace Zavala.Input {
         MiddleMouse = 0x40,
 
         Pause = 0x100,
-        FastForward = 0x200,
 
         ZoomIn = 0x400,
         ZoomOut = 0x800,

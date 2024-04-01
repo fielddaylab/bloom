@@ -9,6 +9,7 @@ using FieldDay.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -71,6 +72,8 @@ namespace Zavala.UI
         private Routine m_BuildCommandLayoutRoutine;
         private Routine m_DestroyCommandLayoutRoutine;
 
+        private StringBuilder m_WorkString;
+
         public IEnumerator<WorkSlicer.Result?> Preload()
         {
             Game.Events.Register(GameEvents.BlueprintModeStarted, HandleStartBlueprintMode);
@@ -88,6 +91,8 @@ namespace Zavala.UI
             m_DestroyCommandLayout.alpha = 0;
             m_DestroyCommandLayout.blocksRaycasts = false;
 
+            yield return null;
+
             m_DestroyCommandLayout.gameObject.SetActive(true);
             m_BuildUndoButton.gameObject.SetActive(false);
 
@@ -98,7 +103,9 @@ namespace Zavala.UI
             m_DestroyConfirmButton.onClick.AddListener(HandleDestroyConfirmButtonClicked);
             m_DestroyExitButton.onClick.AddListener(HandleDestroyExitButtonClicked);
 
-            foreach(var box in m_PolicyBoxes)
+            yield return null;
+
+            foreach (var box in m_PolicyBoxes)
             {
                 box.gameObject.SetActive(false);
                 box.Popup.Group.alpha = 0;
@@ -106,7 +113,7 @@ namespace Zavala.UI
             m_MilkRevenueBox.gameObject.SetActive(true);
             m_MilkRevenueBox.Popup.Group.alpha = 0;
 
-            return null;
+            m_WorkString = new StringBuilder(256);
         }
 
         private void OnEnable()
@@ -130,18 +137,22 @@ namespace Zavala.UI
             // Change total to new total
             if (totalCost == 0)
             {
-                m_RunningCostText.text = "" + totalCost;
+                m_RunningCostText.text = "0";
                 m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(numCommits > 0));
                 // Do not change receipt state (might still be 0 cost with destroy activated)
             }
             else if (totalCost > 0)
             {
-                m_RunningCostText.text = "-" + totalCost;
+                m_WorkString.Length = 0;
+                m_WorkString.Append('-').AppendNoAlloc(totalCost);
+                m_RunningCostText.SetText(m_WorkString);
                 m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
             }
             else
             {
-                m_RunningCostText.text = "+" + Math.Abs(totalCost);
+                m_WorkString.Length = 0;
+                m_WorkString.Append('+').AppendNoAlloc(Math.Abs(totalCost));
+                m_RunningCostText.SetText(m_WorkString);
                 m_ReceiptRoutine.Replace(this, ReceiptAppearanceTransition(true));
             }
 
@@ -149,7 +160,9 @@ namespace Zavala.UI
             // TODO: Flash delta cost animation
 
             // Update funds remaining
-            m_FundsRemainingText.text = "" + (playerFunds - totalCost);
+            m_WorkString.Length = 0;
+            m_WorkString.AppendNoAlloc(playerFunds - totalCost);
+            m_FundsRemainingText.SetText(m_WorkString);
         }
 
         public void UpdateDefaultColor(int newRegion) {

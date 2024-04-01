@@ -50,6 +50,10 @@ namespace Zavala {
             return m_Map.TryGetValue(id, out sprite);
         }
 
+        public void Prewarm() {
+            BuildLookup();
+        }
+
         private void OnEnable() {
             if (Application.isPlaying) {
                 BuildLookup();

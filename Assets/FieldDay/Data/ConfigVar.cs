@@ -15,6 +15,7 @@ using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using FieldDay.Debugging;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.Data {
@@ -184,6 +185,36 @@ namespace FieldDay.Data {
         #endregion // Helpers
 
         #region Debug Menu
+
+        [DebugMenuFactory]
+        static private DMInfo DebugMenuFactory() {
+            // config vars
+            DMInfo configVarMenu = new DMInfo("Config Vars", 8);
+
+            configVarMenu.AddButton("Save Changes", ConfigVar.WriteUserToPlayerPrefs);
+            configVarMenu.AddButton("Reload Changes", ConfigVar.ReadUserFromPlayerPrefs, ConfigVar.HasUserPrefs);
+            configVarMenu.AddDivider();
+
+            configVarMenu.AddButton("Commit Changes", ConfigVar.WriteAllToResources, () => Application.isEditor);
+            configVarMenu.AddButton("Reset (Committed)", () => ConfigVar.Reset(ConfigVar.AllVars));
+            configVarMenu.AddButton("Reset (Programmer)", () => ConfigVar.ProgrammerReset(ConfigVar.AllVars));
+            configVarMenu.AddDivider();
+
+            configVarMenu.AddDivider();
+
+            string currentCategory = null;
+            DMInfo categoryMenu = null;
+            foreach (var cvar in ConfigVar.AllVars) {
+                if (cvar.Category != currentCategory) {
+                    currentCategory = cvar.Category;
+                    categoryMenu = DebugConsole.FindOrCreateSubmenu(configVarMenu, currentCategory);
+                }
+
+                ConfigVar.CreateDebugMenu(categoryMenu, cvar);
+            }
+
+            return configVarMenu;
+        }
 
         /// <summary>
         /// Creates a debug menu for the given config variable.

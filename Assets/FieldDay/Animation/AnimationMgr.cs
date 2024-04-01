@@ -58,7 +58,9 @@ namespace FieldDay.Animation {
             Assert.NotNull(animator);
             var liteAnimators = GetLiteAnimators(phase);
             for(int i = 0; i < liteAnimators.Count; i++) {
-                if (liteAnimators[i].Animator == animator) {
+                LiteAnimatorRecord animRecord = liteAnimators[i];
+                if (animRecord.Animator == animator) {
+                    animRecord.Animator.ResetAnimation(ref animRecord.State);
                     liteAnimators.FastRemoveAt(i);
                     break;
                 }
@@ -87,15 +89,15 @@ namespace FieldDay.Animation {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void UpdateLite(float deltaTime) {
-            HandleLateUpdate(GameLoopPhase.Update, deltaTime);
+            HandleLiteUpdate(GameLoopPhase.Update, deltaTime);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void UnscaledUpdateLite(float deltaTime) {
-            HandleLateUpdate(GameLoopPhase.UnscaledUpdate, deltaTime);
+            HandleLiteUpdate(GameLoopPhase.UnscaledUpdate, deltaTime);
         }
 
-        private void HandleLateUpdate(GameLoopPhase phase, float deltaTime) {
+        private void HandleLiteUpdate(GameLoopPhase phase, float deltaTime) {
             var liteAnimators = GetLiteAnimators(phase);
             int count = liteAnimators.Count;
             while (count-- > 0) {

@@ -18,11 +18,7 @@ namespace Zavala.Input {
 
             InputButton buttons = 0;
 
-            CheckKeyboard(ref buttons, InputButton.FastForward, KeyCode.F);
-            CheckKeyboard(ref buttons, InputButton.FastForward, KeyCode.LeftShift);
-
             CheckKeyboard(ref buttons, InputButton.Pause, KeyCode.Space);
-            CheckKeyboard(ref buttons, InputButton.Pause, KeyCode.P);
             CheckKeyboard(ref buttons, InputButton.Pause, KeyCode.Escape);
 
             CheckMouse(ref buttons, InputButton.PrimaryMouse, 0);
@@ -44,7 +40,7 @@ namespace Zavala.Input {
             CheckKeyboard(ref buttons, InputButton.DialogAdvance, KeyCode.X);
             CheckKeyboard(ref buttons, InputButton.DialogAdvance, KeyCode.F);
             CheckKeyboard(ref buttons, InputButton.DialogAdvance, KeyCode.LeftControl);
-            CheckMouse(ref buttons, InputButton.DialogAdvance, 0);
+            CheckKeyboard(ref buttons, InputButton.DialogAdvance, KeyCode.RightControl);
 
             m_State.ButtonsDown = buttons;
 

@@ -16,6 +16,7 @@ namespace Zavala.UI {
 
         private void Awake() {
             m_GraphicAlpha = m_Graphic.GetAlpha();
+            m_Graphic.enabled = false;
         }
 
         private void OnDisable() {
@@ -33,8 +34,14 @@ namespace Zavala.UI {
         public bool UpdateAnimation(ref LiteAnimatorState state, float deltaTime) {
             state.TimeRemaining = Math.Max(0, state.TimeRemaining - deltaTime);
             float amt = state.TimeRemaining / state.Duration;
-            m_Graphic.SetAlpha(m_GraphicAlpha * amt);
+            m_Graphic.SetAlpha(TweenUtil.Evaluate(Curve.CubeOut, amt) * m_GraphicAlpha);
+            m_Graphic.enabled = amt > 0;
             return state.TimeRemaining > 0;
+        }
+
+        public void ResetAnimation(ref LiteAnimatorState state) {
+            m_Graphic.SetAlpha(0);
+            m_Graphic.enabled = false;
         }
 
 #if UNITY_EDITOR

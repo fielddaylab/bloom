@@ -287,7 +287,7 @@ namespace FieldDay.HID {
         /// <summary>
         /// Consumes all input for this frame.
         /// </summary>
-        public void ConsumeInputForFrame() {
+        public void ConsumeAllInputForFrame() {
             m_InputConsumed = true;
         }
 

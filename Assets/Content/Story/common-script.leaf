@@ -88,7 +88,9 @@ $if intro:tutorialComplete = false
     $call PauseUser()
     $call QueueDialogueBubble(region1_city1, region1.throughForests)
     {@advisorEconHill}  Use the <b>spacebar</b> to toggle <b>Pause.</b>
-    $call ShowAnimatedTutorial("PauseTutorial")
+    $if !HasTutorialFlag("GameResumedFromPause")
+        $call ShowAnimatedTutorial("PauseTutorial")
+    $endif
     $call OffsetAlgaeGrowthThreshold(0)
 $endif
 

@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 1547257219449197939}
   - component: {fileID: 764168936872465502}
   - component: {fileID: 7654226265421118593}
+  - component: {fileID: -6459818153228065563}
   m_Layer: 7
   m_Name: Storage
   m_TagString: PlayerPlaced
@@ -230,7 +231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 828cc8f04903a4348baf85b7c59522bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Renderer: {fileID: 8141065082287600880}
   m_Renderers:
   - {fileID: 8141065082287600880}
   m_Snapping: {fileID: 4665823543789613535}
@@ -343,6 +343,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f67d6077a97cc874db65d84d0756f062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-6459818153228065563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0a512c55eeae2408db1dc0aa878615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConstructHandlers:
+  - {fileID: 4665823543789613532}
+  AllocHandlers:
+  - {fileID: 4665823543789613532}
 --- !u!1001 &1418807874943389641
 PrefabInstance:
   m_ObjectHideFlags: 0

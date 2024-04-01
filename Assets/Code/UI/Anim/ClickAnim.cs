@@ -33,6 +33,10 @@ namespace Zavala.UI {
             return state.TimeRemaining > 0;
         }
 
+        public void ResetAnimation(ref LiteAnimatorState state) {
+            m_LayoutOffset.Offset1 = default;
+        }
+
         void IPointerUpHandler.OnPointerUp(UnityEngine.EventSystems.PointerEventData eventData) {
             m_WasSelectable = !m_Selectable || m_Selectable.IsInteractable();
         }

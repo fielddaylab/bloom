@@ -1,32 +1,23 @@
-#if (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 #define DEVELOPMENT
-#endif // (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+#endif // UNITY_EDITOR || DEVELOPMENT_BUILD
 
 using System;
 using BeauUtil;
 using UnityEngine;
 using System.Diagnostics;
 using BeauUtil.Debugger;
-using System.Runtime.InteropServices;
 using UnityEngine.Scripting;
-using FieldDay.Systems;
 using BeauRoutine;
 using System.Reflection;
-using FieldDay.Data;
 using BeauUtil.UI;
 using UnityEngine.EventSystems;
 using FieldDay.HID;
-using FieldDay.Scenes;
-using FieldDayDebugging;
-
-
-
+using EasyBugReporter;
+using FieldDay.Perf;
 
 #if UNITY_EDITOR
-using UnityEditor;
 #endif // UNITY_EDITOR
-
-using Debug = UnityEngine.Debug;
 
 namespace FieldDay.Debugging {
     /// <summary>
@@ -34,9 +25,6 @@ namespace FieldDay.Debugging {
     /// </summary>
     [DefaultExecutionOrder(-9999)]
     public sealed class DebugConsole : MonoBehaviour {
-        static private DMInfo s_RootMenu;
-        static private DMInfo s_QuickMenu;
-
         #region Events
 
         /// <summary>
@@ -50,6 +38,8 @@ namespace FieldDay.Debugging {
         static public readonly CastableEvent<float> OnTimeScaleUpdated = new CastableEvent<float>();
 
         #endregion // Events
+
+#if DEVELOPMENT
 
         #region Inspector
 
@@ -76,7 +66,9 @@ namespace FieldDay.Debugging {
         [NonSerialized] private bool m_CursorWhenDebugMenuOpened;
         [NonSerialized] private bool m_MenuOpen;
         [NonSerialized] private bool m_MenuUIInitialized;
-        [NonSerialized] private bool m_FrameCounterWhenDebugMenuOpened;
+
+        static private DMInfo s_RootMenu;
+        static private DMInfo s_QuickMenu;
 
         private void Awake() {
             GameLoop.OnDebugUpdate.Register(OnPreUpdate);
@@ -94,10 +86,27 @@ namespace FieldDay.Debugging {
         }
 
         private void OnPreUpdate() {
+            if (!enabled) {
+                return;
+            }
+
+            CheckKeyboardShortcuts();
             CheckTimeInput();
             UpdateMinimalLayer();
             UpdateMenu();
         }
+
+        #region Keyboard Shortcuts
+
+        private void CheckKeyboardShortcuts() {
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift)) {
+                if (Input.GetKeyDown(KeyCode.F9) || Input.GetKeyDown(KeyCode.Backspace)) {
+                    BugReporter.DumpContext();
+                }
+            }
+        }
+
+        #endregion // Keyboard Shortcuts
 
         #region Time Scale
 
@@ -154,23 +163,27 @@ namespace FieldDay.Debugging {
         #region Menu
 
         private void UpdateMenu() {
-            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.W)) {
+
+            bool canHaveMenuOpen = !Game.Scenes.IsMainLoading();
+
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.W) && canHaveMenuOpen) {
                 SetMenuVisible(!m_MenuOpen);
+                Game.Input.ConsumeAllInputForFrame();
             }
 
             if (m_DebugMenus.isActiveAndEnabled) {
-                m_DebugMenus.UpdateElements();
-
-                if (Input.GetMouseButtonDown(1)) {
-                    m_DebugMenus.TryPopMenu();
-                } else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) {
-                    m_DebugMenus.TryPreviousPage();
-                } else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
-                    m_DebugMenus.TryNextPage();
-                }
-
-                if (Game.Scenes.IsMainLoading()) {
+                if (!canHaveMenuOpen) {
                     SetMenuVisible(false);
+                } else {
+                    m_DebugMenus.UpdateElements();
+
+                    if (Input.GetMouseButtonDown(1)) {
+                        m_DebugMenus.TryPopMenu();
+                    } else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) {
+                        m_DebugMenus.TryPreviousPage();
+                    } else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) {
+                        m_DebugMenus.TryNextPage();
+                    }
                 }
             }
         }
@@ -212,32 +225,6 @@ namespace FieldDay.Debugging {
                         s_RootMenu.AddSubmenu(menu);
                     }
                 }
-            }
-
-            // config vars
-            DMInfo configVarMenu = new DMInfo("Config Vars", 8);
-            s_RootMenu.AddSubmenu(configVarMenu);
-
-            configVarMenu.AddButton("Save Changes", ConfigVar.WriteUserToPlayerPrefs);
-            configVarMenu.AddButton("Reload Changes", ConfigVar.ReadUserFromPlayerPrefs, ConfigVar.HasUserPrefs);
-            configVarMenu.AddDivider();
-
-            configVarMenu.AddButton("Commit Changes", ConfigVar.WriteAllToResources, () => Application.isEditor);
-            configVarMenu.AddButton("Reset (Committed)", () => ConfigVar.Reset(ConfigVar.AllVars));
-            configVarMenu.AddButton("Reset (Programmer)", () => ConfigVar.ProgrammerReset(ConfigVar.AllVars));
-            configVarMenu.AddDivider();
-
-            configVarMenu.AddDivider();
-
-            string currentCategory = null;
-            DMInfo categoryMenu = null;
-            foreach (var cvar in ConfigVar.AllVars) {
-                if (cvar.Category != currentCategory) {
-                    currentCategory = cvar.Category;
-                    categoryMenu = FindOrCreateSubmenu(configVarMenu, currentCategory);
-                }
-
-                ConfigVar.CreateDebugMenu(categoryMenu, cvar);
             }
 
             SortByLabel(s_RootMenu);
@@ -289,7 +276,6 @@ namespace FieldDay.Debugging {
             if (visible) {
                 m_VisibilityWhenDebugMenuOpened = m_MinimalVisible;
                 m_CursorWhenDebugMenuOpened = CursorUtility.CursorIsShowing();
-                m_FrameCounterWhenDebugMenuOpened = FramerateDisplay.IsShowing();
                 SetMinimalVisible(true);
                 m_DebugMenus.gameObject.SetActive(true);
                 m_DebugMenuInput.interactable = true;
@@ -299,14 +285,10 @@ namespace FieldDay.Debugging {
                     m_MenuUIInitialized = true;
                 }
                 CursorUtility.ShowCursor();
-                FramerateDisplay.Hide();
                 SetPaused(true);
             } else {
                 if (!m_CursorWhenDebugMenuOpened) {
                     CursorUtility.HideCursor();
-                }
-                if (m_FrameCounterWhenDebugMenuOpened) {
-                    FramerateDisplay.Show();
                 }
                 m_DebugMenus.gameObject.SetActive(false);
                 m_DebugMenuInput.interactable = false;
@@ -374,6 +356,8 @@ namespace FieldDay.Debugging {
         }
 
         #endregion // Helpers
+
+#endif // DEVELOPMENT
     }
 
     /// <summary>

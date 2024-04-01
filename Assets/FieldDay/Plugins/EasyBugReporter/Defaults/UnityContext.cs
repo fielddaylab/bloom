@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
@@ -26,7 +24,7 @@ namespace EasyBugReporter {
                 writer.KeyValue("Loaded Scene", scene.path);
             }
 
-            writer.KeyValue("Current Resolution", string.Format("{0}x{1} full={2}", Screen.width, Screen.height, Screen.fullScreen));
+            writer.KeyValue("Current Resolution", string.Format("{0}x{1} full={2} dpi={3}", Screen.width, Screen.height, Screen.fullScreen, Screen.dpi));
             writer.KeyValue("Current Framerate Target", Application.targetFrameRate);
 
             writer.EndSection();

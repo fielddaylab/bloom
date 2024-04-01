@@ -1004,6 +1004,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8895112603932767967}
     - target: {fileID: 3560866004370143141, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
+      propertyPath: OutlineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: d67cd90864a06904a91c8e7d572a264f, type: 2}
+    - target: {fileID: 3560866004370143141, guid: c4cba8a2e39889c45b6f33125c11188d, type: 3}
       propertyPath: OutlineRenderer
       value: 
       objectReference: {fileID: 664172348448536332}

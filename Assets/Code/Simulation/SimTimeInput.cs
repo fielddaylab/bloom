@@ -1,3 +1,4 @@
+using FieldDay;
 using FieldDay.Systems;
 using Leaf.Runtime;
 using UnityEngine;
@@ -12,8 +13,22 @@ namespace Zavala.Sim {
             //    m_StateA.TimeScale = 1;
             //}
 
+            SimTimeState time = m_StateA;
+            if ((time.Paused & (SimPauseFlags.FullscreenCutscene | SimPauseFlags.Loading)) != 0) {
+                return;
+            }
+
             if (m_StateB.ButtonPressed(InputButton.Pause)) {
-                TogglePause(SimPauseFlags.User);
+                if ((time.Paused & SimPauseFlags.User) != 0) {
+                    SimTimeUtility.Resume(SimPauseFlags.User | SimPauseFlags.Help, time);
+
+                    // only if the player has an opportunity to see that they've unpaused
+                    if ((time.Paused & (SimPauseFlags.Blueprints | SimPauseFlags.Cutscene | SimPauseFlags.DialogBox | SimPauseFlags.Scripted)) == 0) {
+                        Find.State<TutorialState>().AddFlag(TutorialState.Flags.GameResumedFromPause);
+                    }
+                } else {
+                    SimTimeUtility.Pause(SimPauseFlags.User, time);
+                }
             }
         }
 

@@ -57,6 +57,7 @@ namespace Zavala.World
             ushort currentRegionIdx = m_StateB.CurrRegionIndex;
             m_StateA.OutlineFilter.sharedMesh = m_StateC.OutlineMeshes[currentRegionIdx];
             m_StateA.LockedOutlineFilter.sharedMesh = m_StateC.ThickOutlineMeshes[currentRegionIdx];
+            m_StateA.OutlineMaterial.color = m_StateB.Regions[currentRegionIdx].BorderColor;
         }
 
         public override void Shutdown() {

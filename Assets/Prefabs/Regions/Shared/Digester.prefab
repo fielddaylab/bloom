@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 3912968975191914243}
   - component: {fileID: 764168936872465502}
   - component: {fileID: 3682465586839502170}
+  - component: {fileID: -3427293170370622235}
   m_Layer: 7
   m_Name: Digester
   m_TagString: PlayerPlaced
@@ -353,6 +354,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f67d6077a97cc874db65d84d0756f062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-3427293170370622235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665823543789613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0a512c55eeae2408db1dc0aa878615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConstructHandlers:
+  - {fileID: 4665823543789613532}
+  AllocHandlers:
+  - {fileID: 4665823543789613532}
 --- !u!1001 &867671194487188298
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -348,7 +348,8 @@ namespace Zavala.Data {
         [SerializeField, Required] private string m_AppVersion = "1.0";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
-
+        [SerializeField] private bool m_Testing = false;
+        
         #endregion // Inspector
 
         private enum CityStatus : byte {
@@ -496,6 +497,12 @@ namespace Zavala.Data {
             }, new OGDLog.MemoryConfig(4096, 1024*1024*32, 256));
             // m_Log.UseFirebase(m_Firebase);
             m_Log.SetDebug(true);
+#if UNITY_EDITOR
+            if (!m_Testing) {
+                m_Log.AddSettings(OGDLog.SettingsFlags.SkipOGDUpload);
+                m_Log.SetDebug(false);
+            }
+#endif // UNITY_EDITOR
 
             ResetGameState();
         }

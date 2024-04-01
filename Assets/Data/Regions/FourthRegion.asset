@@ -1607,6 +1607,9 @@ MonoBehaviour:
   - Offset: 63
     Length: 9
   LeafScript: {fileID: 0}
+  OutlineColor:
+    serializedVersion: 2
+    rgba: 4294959360
   Ambience: {fileID: 11400000, guid: b4da8e03761e76642a15c51047bd0050, type: 2}
   Id: 3
   SourceFilePath: Tiled/Region4.json

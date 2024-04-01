@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3442992750624647281}
   - component: {fileID: 6078919034079738049}
   - component: {fileID: 8006977740525281254}
+  - component: {fileID: -5286497550218835626}
   m_Layer: 0
   m_Name: CardUI
   m_TagString: Untagged
@@ -106,11 +107,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99835a7f098ba824fbec750a46444daf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PolicyIndex: 0
   Button: {fileID: 3442992750624647281}
   Text: {fileID: 61101823028463490}
   CardArt: {fileID: 3487112840135310017}
   Background: {fileID: 8006977740525281254}
+  OriginAnchorRect: {x: 0, y: 0}
 --- !u!114 &8006977740525281254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +136,20 @@ MonoBehaviour:
   m_Resolution: 3
   m_Outline: 0
   m_Thickness: 1
+--- !u!114 &-5286497550218835626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1119247543764299307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0a512c55eeae2408db1dc0aa878615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConstructHandlers: []
+  AllocHandlers: []
 --- !u!1 &7351568381153388500
 GameObject:
   m_ObjectHideFlags: 0

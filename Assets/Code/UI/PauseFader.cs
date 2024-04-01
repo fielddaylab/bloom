@@ -15,6 +15,7 @@ namespace Zavala {
             None,
             Cutscene,
             UserPause,
+            UserHelp,
             Blueprints,
             Destroy
         }
@@ -22,6 +23,7 @@ namespace Zavala {
         [SerializeField] private Graphic m_DefaultFader;
         [SerializeField] private CanvasGroup m_UserPauseGroup;
         [SerializeField] private CanvasGroup m_BorderFader;
+        [SerializeField] private CanvasGroup m_HelpGroup;
         [SerializeField] private Graphic[] m_BorderGraphics;
 
         [Header("Config")]
@@ -33,25 +35,33 @@ namespace Zavala {
         [NonSerialized] private float m_DefaultFaderAlpha;
         [NonSerialized] private bool m_DefaultState;
         [NonSerialized] private bool m_BorderState;
+        [NonSerialized] private bool m_UserState;
+        [NonSerialized] private bool m_HelpState;
 
         [NonSerialized] private Color m_BorderColor;
         [NonSerialized] private Routine m_DefaultFadeRoutine;
         [NonSerialized] private Routine m_BorderFadeRoutine;
         [NonSerialized] private Routine m_BorderColorRoutine;
+        [NonSerialized] private Routine m_UserFadeRoutine;
+        [NonSerialized] private Routine m_HelpFadeRoutine;
 
         [NonSerialized] private UserBuildTool m_LastTool;
         [NonSerialized] private SimPauseFlags m_LastFlags;
         [NonSerialized] private Mode m_LastMode;
 
         private void Awake() {
-            m_DefaultFader.enabled = false;
             m_BorderFader.gameObject.SetActive(false);
-
-            m_DefaultFaderAlpha = m_DefaultFader.color.a;
-
-            m_DefaultFader.SetAlpha(0);
-            m_UserPauseGroup.gameObject.SetActive(false);
             m_BorderFader.alpha = 0;
+
+            m_DefaultFader.enabled = false;
+            m_DefaultFaderAlpha = m_DefaultFader.color.a;
+            m_DefaultFader.SetAlpha(0);
+
+            m_UserPauseGroup.gameObject.SetActive(false);
+            m_UserPauseGroup.alpha = 0;
+            
+            m_HelpGroup.gameObject.SetActive(false);
+            m_HelpGroup.alpha = 0;
 
             SimTimeUtility.OnPauseUpdated.Register(OnPauseUpdated);
             Game.Events.Register(GameEvents.BuildToolSelected, OnBuildToolUpdated)
@@ -96,16 +106,21 @@ namespace Zavala {
                     m_BorderFadeRoutine.Replace(this, FadeOut(m_BorderFader, m_FadeTime));
                     TutorialState.HidePanel();
                 }
+                if (m_HelpState) {
+                    m_HelpState = false;
+                    m_HelpFadeRoutine.Replace(this, FadeOut(m_HelpGroup, m_FadeTime));
+                }
+                if (m_UserState) {
+                    m_UserState = false;
+                    m_UserFadeRoutine.Replace(this, FadeOut(m_UserPauseGroup, m_FadeTime));
+                }
             } else { // pauses with borders
-                // TODO: make the userPauseGroup fade out properly
-                m_UserPauseGroup.gameObject.SetActive(false); // hide, only show if UserPause
                 Color c;
                 if (nextMode == Mode.Blueprints) {
                     c = m_BlueprintPauseColor;
                 } else if (nextMode == Mode.Destroy) {
                     c = m_DestroyPauseColor;
-                } else { // Mode.UserPause
-                    m_UserPauseGroup.gameObject.SetActive(true);
+                } else {
                     c = m_UserPauseColor;
                 }
 
@@ -120,6 +135,30 @@ namespace Zavala {
                 } else {
                     m_BorderColorRoutine.Replace(this, Tween.Color(m_BorderColor, c, OnBorderColorTweenUpdate, m_FadeTime));
                 }
+
+                if (nextMode == Mode.UserHelp || nextMode == Mode.UserPause) {
+                    if (!m_UserState) {
+                        m_UserState = true;
+                        m_UserFadeRoutine.Replace(this, FadeIn(m_UserPauseGroup, 1, m_FadeTime));
+                    }
+                } else {
+                    if (m_UserState) {
+                        m_UserState = false;
+                        m_UserFadeRoutine.Replace(this, FadeOut(m_UserPauseGroup, m_FadeTime));
+                    }
+                }
+
+                if (nextMode == Mode.UserHelp) {
+                    if (!m_HelpState) {
+                        m_HelpState = true;
+                        m_HelpFadeRoutine.Replace(this, FadeIn(m_HelpGroup, 1, m_FadeTime));
+                    }
+                } else {
+                    if (m_HelpState) {
+                        m_HelpState = false;
+                        m_HelpFadeRoutine.Replace(this, FadeOut(m_HelpGroup, m_FadeTime));
+                    }
+                }
             }
         }
 
@@ -128,10 +167,14 @@ namespace Zavala {
                 return Mode.Destroy;
             } else if ((flags & SimPauseFlags.Blueprints) != 0) {
                 return Mode.Blueprints;
-            } else if ((flags & SimPauseFlags.User) != 0) {
-                return Mode.UserPause;
             } else if ((flags & (SimPauseFlags.Cutscene | SimPauseFlags.Scripted | SimPauseFlags.DialogBox | SimPauseFlags.PendingGlobalAlert)) != 0) {
                 return Mode.Cutscene;
+            } else if ((flags & SimPauseFlags.User) != 0) {
+                if ((flags & SimPauseFlags.Help) != 0) {
+                    return Mode.UserHelp;
+                } else {
+                    return Mode.UserPause;
+                }
             } else {
                 return Mode.None;
             }
@@ -155,7 +198,9 @@ namespace Zavala {
 
         static private IEnumerator FadeIn(CanvasGroup group, float alpha, float duration) {
             group.gameObject.SetActive(true);
-            return group.FadeTo(alpha, duration);
+            group.blocksRaycasts = false;
+            yield return group.FadeTo(alpha, duration);
+            group.blocksRaycasts = true;
         }
 
         static private IEnumerator FadeOut(Graphic graphic, float duration) {
@@ -164,6 +209,7 @@ namespace Zavala {
         }
 
         static private IEnumerator FadeOut(CanvasGroup group, float duration) {
+            group.blocksRaycasts = false;
             yield return group.FadeTo(0, duration);
             group.gameObject.SetActive(false);
         }

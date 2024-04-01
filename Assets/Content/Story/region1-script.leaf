@@ -77,9 +77,10 @@ $call FocusClear()
 {@advisorEcolHill}      You can't build over any <b>red tiles</b>. Those are protected areas!
 {@advisorEconHill}      The trade of <b>Grain</b> and <b>Milk</b> will form the core of our economy.
 {@advisorEconHill}      First, build a road from the <i>Grain Farm</i> to the <i>Dairy Farm</i>.
-$call PanToBuilding("region1_grain1", -1)
-$call ShowAnimatedTutorial("ClickDragTutorial")
-
+$if !HasTutorialFlag("ValidRoadPreviewed")
+    $call PanToBuilding("region1_grain1", -1)
+    $call ShowAnimatedTutorial("ClickDragTutorial")
+$endif
 
 // Step 3: Introduce cities
 :: farmsConnected
@@ -90,6 +91,7 @@ $call ShowAnimatedTutorial("ClickDragTutorial")
 // $call Pause()
 $call FocusClear()
 $set intro:roadBuilt = true
+$set intro:roadPreviewed = true
 $set intro:farmsConnected = true
 $if intro:citiesConnected
     $call HideAnimatedTutorial()

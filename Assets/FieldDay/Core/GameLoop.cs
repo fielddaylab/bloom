@@ -2,44 +2,48 @@
 #define USE_SRP
 #endif // UNITY_2019_1_OR_NEWER
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif // UNITY_EDITOR
-
 #if USING_VR && !UNITY_EDITOR
 #define SKIP_ONGUI
 #endif // USING_VR && !UNITY_EDITOR
 
+#if (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+#define DEVELOPMENT
+#endif
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif // UNITY_EDITOR
+
 using System;
 using System.Collections;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
+using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
-using FieldDay.SharedState;
-using FieldDay.Systems;
+using BeauUtil.UI;
 using UnityEngine;
 using UnityEngine.Scripting;
+using UnityEngine.EventSystems;
 using FieldDay.Components;
 using FieldDay.Processes;
 using FieldDay.Data;
-using BeauPools;
 using FieldDay.Audio;
-using System.Collections.Generic;
-using BeauUtil.UI;
 using FieldDay.Scenes;
-using System.Threading;
-using System.Globalization;
-using BeauRoutine;
 using FieldDay.UI;
 using FieldDay.Assets;
 using FieldDay.HID;
 using FieldDay.Rendering;
-
-#if USE_SRP
-using UnityEngine.Rendering;
 using FieldDay.Animation;
 using FieldDay.Memory;
+using FieldDay.Debugging;
+using FieldDay.Perf;
+using FieldDay.SharedState;
+using FieldDay.Systems;
+
+#if USE_SRP
 #endif // USE_SRP
 
 namespace FieldDay {
@@ -144,6 +148,11 @@ namespace FieldDay {
         /// Invoked when the focus state is changed.
         /// </summary>
         static public readonly CastableEvent<bool> OnFocusStateChanged = new CastableEvent<bool>(4);
+
+        /// <summary>
+        /// Invoked when a crash occurs, to gather information.
+        /// </summary>
+        static public readonly CastableEvent<StringBuilder> OnCrashReport = new CastableEvent<StringBuilder>();
 
         #endregion // Global Events
 
@@ -268,6 +277,12 @@ namespace FieldDay {
             Game.Components.Lock();
 
             Async.InvokeAsync(PotentiallyExpensiveSystemResourceRetrieval);
+
+            CrashHandler.Register();
+            CrashHandler.DisplayCrash += OnCrash;
+#if !UNITY_EDITOR
+            CrashHandler.Enabled = true;
+#endif // UNITY_EDITOR
         }
 
         private void Start() {
@@ -287,6 +302,10 @@ namespace FieldDay {
             foreach (var entrypoint in Reflect.FindMethods<InvokeOnBootAttribute>(ReflectionCache.UserAssemblies, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
                 entrypoint.Info.Invoke(null, null);
             }
+
+#if PREVIEW || DEVELOPMENT
+            FramerateDisplay.Show();
+#endif // PREVIEW || DEVELOPMENT
 
             // fallback
             if (Game.Events == null) {
@@ -320,6 +339,7 @@ namespace FieldDay {
             Canvas.preWillRenderCanvases -= OnPreCanvasRender;
             Frame.DestroyAllocator();
             CounterHandle.DestroyAllocator();
+            CrashHandler.Deregister();
             s_Initialized = m_Initialized = false;
         }
 
@@ -407,6 +427,7 @@ namespace FieldDay {
             OnUpdate.Clear();
             OnPauseStateChanged.Clear();
             OnFocusStateChanged.Clear();
+            OnCrashReport.Clear();
 
             // clearing all callback queues
             s_AfterLateUpdateQueue.Clear();
@@ -588,7 +609,7 @@ namespace FieldDay {
             OnPauseStateChanged.Invoke(pause);
         }
 
-#endregion // Unity Events
+        #endregion // Unity Events
 
         #region Handlers
 
@@ -677,6 +698,32 @@ namespace FieldDay {
 
         static private void PotentiallyExpensiveSystemResourceRetrieval() {
             char.IsWhiteSpace('0'); // char.IsWhitespace has sometimes caused spikes due to retrieval of system resources *shrug*
+            EasyAssetStreaming.Streaming.Initialize();
+        }
+
+        static private void OnCrash(Exception e, string error, out string context) {
+            // pause everything
+            Time.timeScale = 0;
+            Routine.Settings.Paused = true;
+            GameLoop.SetDebugPause(true);
+            AudioListener.pause = true;
+
+            // disable all raycasters
+            foreach(var raycaster in GameObject.FindObjectsOfType<BaseRaycaster>()) {
+                raycaster.enabled = false;
+            }
+
+            // gather primary context
+            var activeScene = SceneHelper.ActiveScene();
+            StringBuilder contextBuilder = new StringBuilder(1024);
+            contextBuilder.Append("Current Scene:\t").Append(activeScene.Name).Append(" (state=").Append(activeScene.Scene.GetLoadingState()).Append(")");
+
+            if (!OnCrashReport.IsEmpty) {
+                contextBuilder.Append('\n');
+                OnCrashReport.Invoke(contextBuilder);
+            }
+
+            context = contextBuilder.Flush();
         }
 
         #endregion // Handlers

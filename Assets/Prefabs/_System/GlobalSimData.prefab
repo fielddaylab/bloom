@@ -431,7 +431,7 @@ MonoBehaviour:
     m_InitialPrewarm: 4
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
-    m_ResetTransformOnAlloc: 1
+    m_ResetTransformOnAlloc: 0
   DigesterMesh: {fileID: 2912852675422302327, guid: 4af7d0c5613c26c42851a7920460fd04, type: 3}
   StorageMesh: {fileID: 967685232985939790, guid: 314f5ed30550afc48b0bb960f9e5c4e9, type: 3}
   VizAnchors:
@@ -442,7 +442,7 @@ MonoBehaviour:
     m_InitialPrewarm: 16
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
-    m_ResetTransformOnAlloc: 1
+    m_ResetTransformOnAlloc: 0
   PoolRoot: {fileID: 0}
 --- !u!114 &7708306960153739472
 MonoBehaviour:

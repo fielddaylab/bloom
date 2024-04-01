@@ -179,7 +179,7 @@ MonoBehaviour:
   AmbiencePlayerA: {fileID: 4700715866585478435}
   AmbiencePlayerB: {fileID: 8060960350640540949}
   LoopVolume: 1
-  BirdVolume: 1
+  BirdVolume: 0.65
 --- !u!82 &4700715866585478435
 AudioSource:
   m_ObjectHideFlags: 0

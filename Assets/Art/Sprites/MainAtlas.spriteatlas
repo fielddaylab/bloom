@@ -98,6 +98,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 654583471bf8a0e4b9d6fe8f5229fce7, type: 3}
   - {fileID: 21300000, guid: f79fcf671d4107945a15ee4b2bed88bb, type: 3}
   - {fileID: 21300000, guid: 6e980b87d98ae3442b2a5dd8ff5be0b7, type: 3}
+  - {fileID: 21300000, guid: e80b0f878ec0f844cbb4d1eda724b0a7, type: 3}
   - {fileID: 21300000, guid: 50358ad718a14ed4281a5d2837e4d0b4, type: 3}
   - {fileID: 21300000, guid: 03e35de789d715e4194911330de60100, type: 3}
   - {fileID: 21300000, guid: 0acbcf2895103dc46bd2d52e01e2e3b3, type: 3}
@@ -113,6 +114,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 857ec83a58cf6e347bcbe1606be60479, type: 3}
   - {fileID: 21300000, guid: 29f3da3a1a16d614c933de7490d07e04, type: 3}
   - {fileID: 21300000, guid: a4e601cac11766d40b8c12bf68b1f94f, type: 3}
+  - {fileID: 21300000, guid: 917b610ba064cb349958c7021b65872f, type: 3}
   - {fileID: 21300000, guid: a00cd84bdab17764fa00e8d8c3cc95b2, type: 3}
   - {fileID: 21300000, guid: 7fdf6d5b4cb42ca46bdb089e269472a9, type: 3}
   - {fileID: 21300000, guid: 0e9fbc6bbb326b0438c4c1082ef6e508, type: 3}
@@ -122,11 +124,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a117f71cf3550a7488aeb8d23149928e, type: 3}
   - {fileID: 21300000, guid: 76b2b02c1f99b324b82b1a82869a4100, type: 3}
   - {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
-  - {fileID: 21300000, guid: f92c6b3ca865ebe46a062551d83dba1e, type: 3}
   - {fileID: 21300000, guid: f91c4b5cb3de15a4eaac5e39d284e4f1, type: 3}
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: f1c1991d55fde1b44975cee1f7f527e0, type: 3}
-  - {fileID: 21300000, guid: 6a7c80cdc0ea6db4490f49d084faa518, type: 3}
   - {fileID: 21300000, guid: 6faf280eb78f32546a29b8c60bffd739, type: 3}
   - {fileID: 21300000, guid: 6353d11e53a88f049bb1523cb18e34ae, type: 3}
   - {fileID: 21300000, guid: 98bf592e9435dd74fb7add32f6a182b2, type: 3}
@@ -143,6 +143,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e65cfa6f538f32144940e7a15406727e, type: 3}
   - {fileID: 21300000, guid: 9bf9fa9f64255fa49a7107abaaa3bddb, type: 3}
   - {fileID: 21300000, guid: 1341e9af6cc32cd4c90c6902052dc310, type: 3}
+  - {fileID: 21300000, guid: 8b7f3fcfdb170e84a83ba44f443088e1, type: 3}
   - {fileID: 21300000, guid: ed9a64ff8bf249b469c9ffa0397bc16a, type: 3}
   m_PackedSpriteNamesToIndex:
   - query-mark
@@ -191,6 +192,7 @@ SpriteAtlas:
   - PhosphorusLensIcon
   - resource-digested-manure
   - base_declining-pop
+  - Help-CameraZoom
   - banner_declining-pop
   - ToolImageStorage
   - money
@@ -206,6 +208,7 @@ SpriteAtlas:
   - global_alert
   - card-slot-locked-white
   - policyicon_skim
+  - Help-CameraMove
   - manure-resource
   - ShopButtonBorder
   - milk-resource
@@ -215,11 +218,9 @@ SpriteAtlas:
   - base_excess-runoff
   - ShopToggleBlank
   - urgentflag_manure
-  - controls_pan
   - policyicon_milk
   - BlueprintMode
   - resource_grain
-  - controls_zoom
   - resource-milk-yellow
   - efficiency-arrow
   - grain-resource
@@ -236,6 +237,7 @@ SpriteAtlas:
   - resource_manure
   - storage-full
   - NormalMode
+  - KeyboardKey
   - LensOutline
   m_RenderDataMap: {}
   m_Tag: MainAtlas

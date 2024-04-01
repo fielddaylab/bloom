@@ -283,21 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a18b24c3d6f2b4eae4fa906f0ff980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OnPointerEnter:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnPointerExit:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnPointerDown:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnPointerUp:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &5705263584653325711
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,6 +378,7 @@ GameObject:
   - component: {fileID: 8739821105233799652}
   - component: {fileID: 3347075156141743825}
   - component: {fileID: 2644307899784243691}
+  - component: {fileID: 227566216385221534}
   m_Layer: 31
   m_Name: Alert-Sprite
   m_TagString: Untagged
@@ -462,6 +448,20 @@ MonoBehaviour:
   AlertBanner: {fileID: 7386496271913806457}
   AlertBannerRect: {fileID: 4487624861595818924}
   Pointer: {fileID: 6230603776856646060}
+--- !u!114 &227566216385221534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5880324271969544398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0a512c55eeae2408db1dc0aa878615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConstructHandlers: []
+  AllocHandlers: []
 --- !u!1 &5961900970064368868
 GameObject:
   m_ObjectHideFlags: 0

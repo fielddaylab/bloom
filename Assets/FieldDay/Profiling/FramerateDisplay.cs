@@ -4,7 +4,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 
-namespace FieldDayDebugging {
+namespace FieldDay.Perf {
     /// <summary>
     /// Simple framerate counter.
     /// </summary>

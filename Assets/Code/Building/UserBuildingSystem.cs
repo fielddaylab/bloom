@@ -10,6 +10,7 @@ using Zavala.Roads;
 using Zavala.Sim;
 using Zavala.World;
 using Zavala.Audio;
+using FieldDay.Scripting;
 
 namespace Zavala.Building
 {
@@ -186,7 +187,7 @@ namespace Zavala.Building
                 Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} out of bounds", tileIndex);
 
                 if (activeTool == UserBuildTool.Road) {
-                    // cancel in-progress road 
+                    // cancel in-progress road
                     CancelRoad(grid, network);
                 }
                 return;
@@ -199,6 +200,9 @@ namespace Zavala.Building
             }
             if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.NonBuildable) != 0) {
                 Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} unbuildable", tileIndex);
+                if (activeTool == UserBuildTool.Road) {
+                    SfxUtility.PlaySfx("road-nonbuildable");
+                }
                 return;
             }
 
@@ -392,11 +396,13 @@ namespace Zavala.Building
                             // Tile is not buildable
                             // cannot build a road through non-buildable tiles
                             Debug.Log("[UserBuildingSystem] Cannot build a road through non-buildable tiles");
+                            SfxUtility.PlaySfx("road-nonbuildable");
                             // CancelRoad(grid, network);
                             return;
                         }
                         else if ((m_StateC.DigesterOnlyTiles.Contains(tileIndex))) {
                             Debug.Log("[UserBuildingSystem] Cannot build a road through digester-only tile");
+                            SfxUtility.PlaySfx("road-nonbuildable");
                             return;
                         }
                         else {
@@ -622,6 +628,11 @@ namespace Zavala.Building
 
                 ClearRoadToolState();
 
+                TutorialState tut = Find.State<TutorialState>();
+                if (tut.AddFlag(TutorialState.Flags.ValidRoadPreviewed)) {
+                    TutorialState.HidePanelWithName("ClickDragTutorial");
+                }
+
                 return true;
             } else {
                 Debug.Log("[StagingRoad] Insufficient funds!");
@@ -636,6 +647,9 @@ namespace Zavala.Building
         /// </summary>
         private void CancelRoad(SimGridState grid, RoadNetwork network) {
             // unstage all in-progress roads
+            if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0) {
+                SfxUtility.PlaySfx("road-cancel");
+            }
             for (int i = m_StateC.RoadToolState.TracedTileIdxs.Count - 1; i >= 0; i--) {
                 UnstageRoad(grid, network, m_StateC.RoadToolState.TracedTileIdxs[i], i);
             }

@@ -9,7 +9,8 @@ using Zavala.Sim;
 
 namespace Zavala.Data {
     public class SaveMgr {
-        public const int SaveVersion = 1;
+        // v2: adding tutorial flags
+        public const int SaveVersion = 2;
 
         private struct ChunkRecord {
             public StringHash32 Id;

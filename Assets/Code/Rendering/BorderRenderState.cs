@@ -22,6 +22,7 @@ namespace Zavala.World {
         [Header("Outline Rendering")]
         public MeshFilter OutlineFilter;
         public MeshRenderer OutlineRenderer;
+        public Material OutlineMaterial;
 
         [Header("Blueprint Outline Rendering")]
         public MeshFilter LockedOutlineFilter;

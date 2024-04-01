@@ -207,6 +207,8 @@ namespace Zavala.Sim {
                 regionInfo.WaterEdges[i] = (ushort) subRegion.FastIndexToGridIndex(asset.EdgeVisualUpdateSet[i]);
             }
 
+            regionInfo.BorderColor = asset.OutlineColor;
+
             SimWorldState world = Game.SharedState.Get<SimWorldState>();
             world.Palettes[regionIndex] = palette;
 

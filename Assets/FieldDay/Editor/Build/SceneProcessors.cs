@@ -1,8 +1,13 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#define DEVELOPMENT
+#endif // UNITY_EDITOR || DEVELOPMENT_BUILD
+
 using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Data;
 using FieldDay.Debugging;
+using FieldDay.Perf;
 using FieldDay.Rendering;
 using FieldDay.Scenes;
 using ScriptableBake;
@@ -98,6 +103,16 @@ namespace FieldDay.Editor {
                     GameObject.DestroyImmediate(obj.gameObject);
                 }
             }
+
+#if !PREVIEW && !DEVELOPMENT
+            FramerateDisplay[] toRemoveFramerates = GameObject.FindObjectsOfType<FramerateDisplay>();
+            if (toRemoveFramerates.Length > 0) {
+                Debug.LogFormat("[StripDebugSceneProcessor] Removing {0} FramerateDisplay GameObjects from scene '{1}'", toRemoveFramerates.Length, scene.name);
+                foreach(var obj in toRemoveFramerates) {
+                    GameObject.DestroyImmediate(obj.gameObject);
+                }
+            }
+#endif // !PREVIEW && !DEVELOPMENT
 
             List<IDevModeOnly> devModeOnlyComponents = new List<IDevModeOnly>(256);
             scene.GetAllComponents(true, devModeOnlyComponents);

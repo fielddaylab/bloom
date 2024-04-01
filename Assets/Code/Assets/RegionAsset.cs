@@ -123,6 +123,7 @@ namespace Zavala {
 
         [Header("Visuals")]
         public LeafAsset LeafScript;
+        public Color32 OutlineColor;
 
         [Header("Audio")]
         public AmbientSfxConfig Ambience;

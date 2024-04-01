@@ -10,6 +10,7 @@ using Leaf.Runtime;
 using BeauUtil.Debugger;
 using FieldDay.Debugging;
 using Zavala.Data;
+using FieldDay.Scenes;
 
 namespace Zavala.Cards
 {
@@ -42,7 +43,7 @@ namespace Zavala.Cards
     }
 
     [SharedStateInitOrder(10)]
-    public sealed class CardsState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject
+    public sealed class CardsState : SharedStateComponent, IRegistrationCallbacks, ISaveStateChunkObject, IScenePreload
     {
         public TextAsset CardDefs;
         public SpriteLibrary Sprites;
@@ -67,6 +68,12 @@ namespace Zavala.Cards
         }
 
         public void OnRegister() {
+            ZavalaGame.SaveBuffer.RegisterHandler("Cards", this);
+        }
+
+        public IEnumerator<WorkSlicer.Result?> Preload() {
+            Sprites.Prewarm();
+            yield return null;
             // Initialize Lists
             AllCards = new Dictionary<StringHash32, CardData>();
             UnlockedCards = new List<StringHash32>();
@@ -79,8 +86,6 @@ namespace Zavala.Cards
 
             // Populate Card data
             CardsUtility.PopulateCards(this);
-
-            ZavalaGame.SaveBuffer.RegisterHandler("Cards", this);
         }
 
         unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {

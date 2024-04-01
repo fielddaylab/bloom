@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using BeauUtil;
 using FieldDay;
+using FieldDay.Assets;
 using FieldDay.Rendering;
 using FieldDay.SharedState;
 using UnityEngine;
@@ -128,6 +129,17 @@ namespace Zavala.Rendering {
                 int height = heights[edge.Index];
                 foreach(var dir in edge.Directions) {
                     if (grid.IsValidIndexOffset(edge.Index, dir, out int neighbor) && !nonVoids[neighbor]) {
+                        AddTile(heatMap, world, neighbor, targetRegion, height, 0);
+                    }
+                }
+            }
+        }
+
+        static public void AddEdgeFalloffIgnoreNonVoids(PhosphorusHeatMap heatMap, HexGridWorldSpace world, HexGridSize grid, ushort targetRegion, UnsafeSpan<RegionEdgeInfo> edgeIndices, SimBuffer<ushort> heights) {
+            foreach (var edge in edgeIndices) {
+                int height = heights[edge.Index];
+                foreach (var dir in edge.Directions) {
+                    if (grid.IsValidIndexOffset(edge.Index, dir, out int neighbor)) {
                         AddTile(heatMap, world, neighbor, targetRegion, height, 0);
                     }
                 }

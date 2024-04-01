@@ -39,5 +39,10 @@ namespace Zavala.UI {
             }
             return state.TimeRemaining > 0;
         }
+
+        public void ResetAnimation(ref LiteAnimatorState state) {
+            Offset.Offset1 = default;
+            CostFlash.enabled = false;
+        }
     }
 }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 704513991833160493}
   - component: {fileID: 3324246927386804199}
   - component: {fileID: 1068307736973679315}
+  - component: {fileID: 1937188520177642557}
   m_Layer: 0
   m_Name: Airship00
   m_TagString: Untagged
@@ -128,5 +129,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sound: {fileID: 8300000, guid: d6ab2deee22f8724a99773b2e8850fed, type: 3}
+  MinDistance: 2
   MaxDistance: 5
   Volume: 1
+--- !u!114 &1937188520177642557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3828873905754168882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0a512c55eeae2408db1dc0aa878615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConstructHandlers: []
+  AllocHandlers: []

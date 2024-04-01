@@ -1,5 +1,6 @@
 {
     "name": "EasyBugReporter",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

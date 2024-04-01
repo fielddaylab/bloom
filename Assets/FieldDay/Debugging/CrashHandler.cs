@@ -3,6 +3,8 @@ using UnityEngine;
 using EasyBugReporter;
 using TMPro;
 using UnityEngine.UI;
+using BeauUtil.Debugger;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -110,14 +112,30 @@ namespace FieldDay.Debugging {
 #endif // UNITY_EDITOR
 
             if (!s_Instance) {
-                s_Instance = Instantiate(UnityEngine.Resources.Load<CrashHandler>("CrashHandler"));
                 string context = null;
                 OnCrash?.Invoke(exception, exceptionInfo);
                 DisplayCrash?.Invoke(exception, exceptionInfo, out context);
-                s_Instance.Populate(exception?.Message ?? exceptionInfo, context);
+
+                CrashHandler prefab = UnityEngine.Resources.Load<CrashHandler>("CrashHandler");
+                if (prefab != null) {
+                    s_Instance = Instantiate(prefab);
+                    s_Instance.Populate(exception?.Message ?? exceptionInfo, context);
+                } else {
+                    Debug.LogErrorFormat("[CrashHandler] No 'CrashHandler' prefab to instantiate");
+                    Debug.LogFormat(exception?.Message ?? exceptionInfo);
+                    Debug.LogFormat(context);
+                    BugReporter.DumpContext();
+                }
             }
         }
 
         #endregion // Static API
+
+        [DebugMenuFactory]
+        static private DMInfo CreateDebugMenu() {
+            DMInfo sysMenu = new DMInfo("Logging");
+            sysMenu.AddToggle("Enable Crash Handler", () => Enabled, (b) => Enabled = b);
+            return sysMenu;
+        }
     }
 }

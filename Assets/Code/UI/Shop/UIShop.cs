@@ -95,7 +95,7 @@ namespace Zavala.UI {
         }
 
         private IEnumerator CollapseRoutine() {
-            yield return m_expandedRect.AnchorPosTo(-125, 0.15f, Axis.X).Ease(Curve.CubeOut);
+            yield return m_expandedRect.AnchorPosTo(-130, 0.15f, Axis.X).Ease(Curve.CubeOut);
 
             m_shopBtnHub.Deactivate();
             m_expandedGroup.SetActive(false);

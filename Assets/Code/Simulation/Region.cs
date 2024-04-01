@@ -15,6 +15,7 @@ namespace Zavala.Sim {
         public UnsafeSpan<RegionEdgeInfo> Edges;
         public UnsafeSpan<ushort> WaterEdges;
         public int Age;
+        public Color32 BorderColor;
     }
 
     public struct RegionEdgeInfo {

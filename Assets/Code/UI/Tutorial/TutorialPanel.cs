@@ -33,6 +33,12 @@ namespace Zavala.UI.Tutorial {
             Hide();
         }
 
+        public void Close(string stateName) {
+            if (m_QueuedAnimatorState == stateName) {
+                Hide();
+            }
+        }
+
         protected override IEnumerator TransitionToShow() {
             Root.gameObject.SetActive(true);
             CanvasGroup.alpha = 0;

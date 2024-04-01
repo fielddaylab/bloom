@@ -5,6 +5,7 @@ using FieldDay.Debugging;
 using FieldDay.Scripting;
 using FieldDay.SharedState;
 using Leaf.Runtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +24,23 @@ namespace Zavala.Sim
             Completed
         }
 
+        [System.Flags]
+        public enum Flags : uint {
+            ValidRoadPreviewed = 0x01,
+            GameResumedFromPause = 0x02
+        }
+
         public State CurrState = State.InactiveSim;
+        public Flags CurrFlags = 0;
+
+        public bool AddFlag(Flags flag) {
+            if ((CurrFlags & flag) == 0) {
+                CurrFlags |= flag;
+                return true;
+            }
+
+            return false;
+        }
 
         [LeafMember("ActivateSim")]
         static public void ActivateSim() {
@@ -39,6 +56,20 @@ namespace Zavala.Sim
         [LeafMember("HideAnimatedTutorial")]
         static public void HidePanel() {
             Game.Gui.GetShared<TutorialPanel>().Close();
+        }
+
+        static public void HidePanelWithName(string tutorialName) {
+            Game.Gui.GetShared<TutorialPanel>().Close(tutorialName);
+        }
+
+        [LeafMember("HasTutorialFlag")]
+        static public bool HasTutorialFlag(Flags flag) {
+            return (Find.State<TutorialState>().CurrFlags & flag) != 0;
+        }
+
+        [LeafMember("SetTutorialFlag")]
+        static public void SetTutorialFlag(Flags flag) {
+            Find.State<TutorialState>().CurrFlags |= flag;
         }
 
         [DebugMenuFactory]
@@ -60,10 +91,14 @@ namespace Zavala.Sim
 
         unsafe void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(CurrState);
+            writer.Write(CurrFlags);
         }
 
         unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             reader.Read(ref CurrState);
+            if (consts.Version < 2) {
+                reader.Read(ref CurrFlags);
+            }
         }
     }
 }
