@@ -28,12 +28,15 @@ namespace Zavala.UI {
         public RectTransform AlertBannerRect;
         public PointerListener Pointer;
 
+        public Transform MoveRoot;
+
         [NonSerialized] public EventActor Actor; // The event actor this alert is anchored to
         [NonSerialized] public Routine BannerRoutine;
         [NonSerialized] public bool FullyOpened = false;
         [NonSerialized] public Routine FadeRoutine;
         [NonSerialized] public bool KeepFaded;
         [NonSerialized] public EventActorAlertType AlertType;
+        [NonSerialized] public float HoverCycle;
 
         private void Awake() {
             AlertBannerRect.SetAnchorPos(-3f, Axis.X);
@@ -43,6 +46,7 @@ namespace Zavala.UI {
         protected override void OnEnable() {
             base.OnEnable();
 
+            HoverCycle = RNG.Instance.NextFloat(2);
             Pointer.GetComponent<Collider>().enabled = true;
             Pointer.onClick.AddListener(HandleButtonClicked);
             SimTimeUtility.OnPauseUpdated.Register(OnPauseUpdated);
