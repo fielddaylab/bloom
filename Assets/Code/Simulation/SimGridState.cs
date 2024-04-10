@@ -292,11 +292,11 @@ namespace Zavala.Sim {
             }
 
             world.OutlineMeshes[regionIndex] = new Mesh();
-            world.ThickOutlineMeshes[regionIndex] = new Mesh();
+            world.ShadowMeshes[regionIndex] = new Mesh();
 
 #if UNITY_EDITOR || DEVELOPMENT
             world.OutlineMeshes[regionIndex].name = "Border" + regionIndex.ToStringLookup();
-            world.ThickOutlineMeshes[regionIndex].name = "ThickBorder" + regionIndex.ToStringLookup();
+            world.ShadowMeshes[regionIndex].name = "Shadow" + regionIndex.ToStringLookup();
 #endif // UNITY_EDITOR || DEVELOPMENT
 
             Game.SharedState.Get<BorderRenderState>().RegionQueue.PushBack(regionIndex);

@@ -12,10 +12,10 @@ using BeauUtil.Debugger;
 using UnityEngine;
 using UnityEngine.Scripting;
 using System.IO;
+using FieldDay.Debugging;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using FieldDay.Debugging;
 #endif // UNITY_EDITOR
 
 namespace FieldDay.Data {

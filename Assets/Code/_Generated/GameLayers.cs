@@ -30,6 +30,9 @@ static public class LayerMasks {
     // Layer 9: Phosphorus
     public const int Phosphorus_Index = 9;
     public const int Phosphorus_Mask = 512;
+    // Layer 10: Blueprints
+    public const int Blueprints_Index = 10;
+    public const int Blueprints_Mask = 1024;
     // Layer 31: WorldUI
     public const int WorldUI_Index = 31;
     public const int WorldUI_Mask = -2147483648;
@@ -38,6 +41,8 @@ static public class SortingLayers {
     
     // Layer Default
     public const int Default = 0;
+    // Layer Overlay
+    public const int Overlay = -2046748057;
 }
 static public class UnityTags {
     

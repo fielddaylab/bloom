@@ -14,6 +14,7 @@ using Zavala.Data;
 using Zavala.Sim;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
+using FieldDay.Rendering;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -24,6 +25,7 @@ namespace Zavala.World {
         public Camera Camera;
         public Transform LookTarget;
         public Vector3 PanTargetOffset;
+        public CameraRenderLayers CameraLayers;
 
         [Header("Camera Movement")]
         public float CameraMoveSpeed;
@@ -120,8 +122,10 @@ namespace Zavala.World {
             } else {
                 camPos.z = Mathf.Max(Cam.CameraMinZoomDist - Cam.AdditionalZoomPerRegion * (ZavalaGame.SimGrid.RegionCount - 1), start + delta);
             }
-            Cam.Camera.transform.localPosition = camPos;
-            ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomData(start, camPos.z, usedWheel));
+            if (start != camPos.z) {
+                Cam.Camera.transform.localPosition = camPos;
+                ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomData(start, camPos.z, usedWheel));
+            }
         }
 
         private static IEnumerator PanRoutine(SimWorldCamera cam) {

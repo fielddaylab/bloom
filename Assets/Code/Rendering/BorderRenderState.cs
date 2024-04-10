@@ -11,23 +11,16 @@ namespace Zavala.World {
     public class BorderRenderState : SharedStateComponent
     {
         [NonSerialized] public MeshData16<TileVertexFormat> MeshGeneratorA = new MeshData16<TileVertexFormat>(256);
-        [NonSerialized] public MeshData16<TileVertexFormat> MeshGeneratorB = new MeshData16<TileVertexFormat>(256);
         [NonSerialized] public RingBuffer<ushort> RegionQueue = new RingBuffer<ushort>(2, RingBufferMode.Expand);
 
         [Header("Outline Parameters")]
         public float OutlineThickness = 0.2f;
-        public float ThickOutlineThickness = 5;
         public float RadiusMuliplier = 1.05f;
 
         [Header("Outline Rendering")]
         public MeshFilter OutlineFilter;
         public MeshRenderer OutlineRenderer;
         public Material OutlineMaterial;
-
-        [Header("Blueprint Outline Rendering")]
-        public MeshFilter LockedOutlineFilter;
-        public MeshRenderer LockedOutlineRenderer;
-        public Material LockedOutlineMaterial;
 
         [DebugMenuFactory]
         static private DMInfo DebugMenu() {

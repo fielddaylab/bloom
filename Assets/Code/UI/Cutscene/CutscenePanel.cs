@@ -47,7 +47,7 @@ namespace Zavala.UI {
             InputState input = Game.SharedState.Get<InputState>();
 
             NextHint.gameObject.SetActive(true);
-            while(!input.ButtonPressed(InputButton.PrimaryMouse)) {
+            while(!input.ButtonPressed(InputButton.PrimaryMouse | InputButton.DialogAdvance)) {
                 yield return null;
             }
             input.ConsumedButtons |= InputButton.PrimaryMouse;
@@ -75,7 +75,7 @@ namespace Zavala.UI {
                 float delay = 0.02f;
                 while(delay > 0) {
                     delay -= Routine.DeltaTime;
-                    if (input.ButtonPressed(InputButton.PrimaryMouse)) {
+                    if (input.ButtonPressed(InputButton.PrimaryMouse | InputButton.DialogAdvance)) {
                         delay = 0;
                         Text.maxVisibleCharacters += chars;
                         chars = 0;
@@ -209,7 +209,7 @@ namespace Zavala.UI {
         protected override void OnShowComplete(bool inbInstant) {
             base.OnShowComplete(inbInstant);
 
-            //Game.SharedState.Get<SimWorldCamera>().Camera.enabled = false;
+            Game.SharedState.Get<SimWorldCamera>().CameraLayers.HideAll();
         }
 
         protected override void OnHide(bool inbInstant) {
@@ -222,7 +222,7 @@ namespace Zavala.UI {
             ScriptUtility.UnmountDisplayer(this);
             m_PrepareRoutine.Stop();
             m_NextRoutine.Stop();
-            //Game.SharedState.Get<SimWorldCamera>().Camera.enabled = true;
+            Game.SharedState.Get<SimWorldCamera>().CameraLayers.ShowAll();
 
             if (Frame.IsLoadingOrLoaded(this)) {
                 Game.Gui.GetShared<LoadFader>().Hide();

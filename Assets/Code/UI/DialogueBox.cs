@@ -24,6 +24,7 @@ using Zavala.Sim;
 using Zavala.World;
 using Zavala.Data;
 using Zavala.UI.Info;
+using Zavala.Audio;
 
 namespace Zavala.UI {
     public class DialogueBox : MonoBehaviour, ITextDisplayer, IChoiceDisplayer, IScenePreload {
@@ -360,16 +361,18 @@ namespace Zavala.UI {
                 yield return null;
             } 
             if (m_PoliciesActive) {
-                while (!input.ButtonPressed(InputButton.DialogAdvance) || Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer)) {
+                while (!input.ButtonPressed(InputButton.DialogAdvance) && 
+                    !(input.ButtonPressed(InputButton.PrimaryMouse) && !Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer))) {
                     //Log.Msg("   > Pointer over hierarchy: {0}", Game.Input.IsPointerOverHierarchy(m_PolicyExpansionContainer));
                     yield return null;
                 }
                 //Log.Msg("   > Policies active, but clicked!");
             } else {
-                while (!input.ButtonPressed(InputButton.DialogAdvance)) {
+                while (!input.ButtonPressed(InputButton.DialogAdvance | InputButton.PrimaryMouse)) {
                     yield return null;
                 }
             }
+            SfxUtility.PlaySfx("ui-dialog-advance");
             input.ConsumedButtons |= InputButton.PrimaryMouse | InputButton.DialogAdvance;
             ZavalaGame.Events.Dispatch(GameEvents.DialogueAdvanced);
             //Log.Msg("[DialogueBox] BREAK!");

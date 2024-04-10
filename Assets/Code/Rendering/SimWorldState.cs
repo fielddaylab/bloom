@@ -72,7 +72,7 @@ namespace Zavala.World {
         [NonSerialized] public TileInstance[] Tiles;
         [NonSerialized] public RegionPrefabPalette[] Palettes;
         [NonSerialized] public Mesh[] OutlineMeshes;
-        [NonSerialized] public Mesh[] ThickOutlineMeshes;
+        [NonSerialized] public Mesh[] ShadowMeshes;
 
         public GameObject TollBoothPrefab; // doesn't fit in palettes because each toll spans multiple regions
 
@@ -96,11 +96,11 @@ namespace Zavala.World {
 
             for(int i = 0; i < RegionCount; i++) {
                 DestroyImmediate(OutlineMeshes[i]);
-                DestroyImmediate(ThickOutlineMeshes[i]);
+                DestroyImmediate(ShadowMeshes[i]);
             }
 
             Array.Clear(OutlineMeshes, 0, RegionInfo.MaxRegions);
-            Array.Clear(ThickOutlineMeshes, 0, RegionInfo.MaxRegions);
+            Array.Clear(ShadowMeshes, 0, RegionInfo.MaxRegions);
         }
 
         void IRegistrationCallbacks.OnRegister() {
@@ -122,7 +122,7 @@ namespace Zavala.World {
             ExportRevealRoutine = new Routine();
 
             OutlineMeshes = new Mesh[RegionInfo.MaxRegions];
-            ThickOutlineMeshes = new Mesh[RegionInfo.MaxRegions]; 
+            ShadowMeshes = new Mesh[RegionInfo.MaxRegions];
 
             TileRendering.SetTileRadius(TileRadius);
 

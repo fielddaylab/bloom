@@ -26,18 +26,15 @@ namespace Zavala.World
             var edges = m_StateB.Regions[regionIdx].Edges;
 
             m_StateA.MeshGeneratorA.Clear();
-            m_StateA.MeshGeneratorB.Clear();
 
             for (int i = 0; i < edges.Length; i++) {
                 RegionEdgeInfo edge = edges[i];
                 Vector3 origin = SimWorldUtility.GetTileCenter(m_StateB, m_StateC, edge.Index);
 
                 TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornerCCW, edge.SharedCornerCW, m_StateA.RadiusMuliplier, 0, m_StateA.OutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorA);
-                TileRendering.GenerateTileBorderMeshData(origin, edge.Directions, edge.SharedCornerCCW, edge.SharedCornerCW, m_StateA.RadiusMuliplier, m_StateA.OutlineThickness, m_StateA.ThickOutlineThickness, Color.white, Color.white.WithAlpha(0), m_StateA.MeshGeneratorB);
             }
 
             m_StateA.MeshGeneratorA.Flush(m_StateC.OutlineMeshes[regionIdx]);
-            m_StateA.MeshGeneratorB.Flush(m_StateC.ThickOutlineMeshes[regionIdx]);
 
             RefreshOutlineRenderer();
         }
@@ -56,7 +53,6 @@ namespace Zavala.World
 
             ushort currentRegionIdx = m_StateB.CurrRegionIndex;
             m_StateA.OutlineFilter.sharedMesh = m_StateC.OutlineMeshes[currentRegionIdx];
-            m_StateA.LockedOutlineFilter.sharedMesh = m_StateC.ThickOutlineMeshes[currentRegionIdx];
             m_StateA.OutlineMaterial.color = m_StateB.Regions[currentRegionIdx].BorderColor;
         }
 

@@ -21,6 +21,8 @@ namespace Zavala.Economy
         {
             if (!m_StateE) { m_StateE = Game.SharedState.Get<MarketData>(); }
 
+            SimWorldCamera cam = Find.State<SimWorldCamera>();
+
             // --- Process UI triggers
 
             // Build clicked
@@ -35,6 +37,7 @@ namespace Zavala.Economy
                 m_StateA.IsActive = true;
                 SimTimeUtility.Pause(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
                 BlueprintUtility.OnStartBlueprintMode(m_StateA);
+                cam.CameraLayers.ShowLayers(LayerMasks.Blueprints_Mask);
             }
 
             // Exited blueprint mode
@@ -43,6 +46,7 @@ namespace Zavala.Economy
                 m_StateA.IsActive = false;
                 SimTimeUtility.Resume(SimPauseFlags.Blueprints, ZavalaGame.SimTime);
                 BlueprintUtility.OnExitedBlueprintMode(m_StateA, m_StateB, m_StateC);
+                cam.CameraLayers.HideLayers(LayerMasks.Blueprints_Mask);
             }
 
             // Clicked the Undo button (in Build mode)

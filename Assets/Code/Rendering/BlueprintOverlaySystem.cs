@@ -33,6 +33,8 @@ namespace Zavala.Rendering
                 m_StateE = Game.SharedState.Get<BuildToolState>();
             }
 
+            SimWorldCamera cam = Find.State<SimWorldCamera>();
+
             if (m_StateE.ToolUpdated)
             {
                 // Regen when non-road tool is selected
