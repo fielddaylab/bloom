@@ -298,8 +298,9 @@ namespace Zavala.Sim {
             world.OutlineMeshes[regionIndex].name = "Border" + regionIndex.ToStringLookup();
             world.ShadowMeshes[regionIndex].name = "Shadow" + regionIndex.ToStringLookup();
 #endif // UNITY_EDITOR || DEVELOPMENT
-
-            Game.SharedState.Get<BorderRenderState>().RegionQueue.PushBack(regionIndex);
+            BorderRenderState border = Game.SharedState.Get<BorderRenderState>();
+            border.RegionQueue.PushBack(regionIndex);
+            border.ShadowFilters[regionIndex].sharedMesh = world.ShadowMeshes[regionIndex];
 
             AmbienceState amb = Game.SharedState.Get<AmbienceState>();
             amb.RegionConfigs[regionIndex] = asset.Ambience;

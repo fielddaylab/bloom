@@ -823,6 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrState: 0
+  CurrFlags: 0
 --- !u!114 &1955328063047237028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -928,13 +929,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OutlineThickness: 0.08
-  ThickOutlineThickness: 5
   RadiusMuliplier: 1.023
   OutlineFilter: {fileID: 0}
   OutlineRenderer: {fileID: 0}
-  LockedOutlineFilter: {fileID: 0}
-  LockedOutlineRenderer: {fileID: 0}
-  LockedOutlineMaterial: {fileID: 0}
+  OutlineMaterial: {fileID: 0}
+  ShadowFilters: []
+  ShadowRenderers: []
+  ShadowMaterial: {fileID: 2100000, guid: 530110a24b9382b4f9ef06ee82f89321, type: 2}
 --- !u!114 &6508540445729216726
 MonoBehaviour:
   m_ObjectHideFlags: 0
