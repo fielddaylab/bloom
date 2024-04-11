@@ -26,6 +26,10 @@ namespace Zavala.Scripting
                 // TODO: This check won't be needed once we actually have a loading screen
                 return;
             }
+            if (component.CooldownAccumulator < component.AlertCooldown) {
+                component.CooldownAccumulator += deltaTime;
+                return;
+            }
 
             // if no active events, create alert
             if (component.QueuedEvents.Count > 0) { // only create if they have events and aren't displaying them
