@@ -30,12 +30,12 @@ $call PanToBuilding("region2_cafo1")
 {@advisorEconForest}    We have more Dairy Farms than our <b>dear</b> neighbors in Knoll County.
 $call PanToBuilding("region2_cafo2")
 $call FocusHighlightOn("Budget")
-{@advisorEconForest}    Each county has our own <b>budget</b>...
-{@advisorEconForest}    And our own roads.
+{@advisorEconForest}    Each county has its own <b>budget</b>...
+{@advisorEconForest}    And its own roads.
 $call FocusClear()
 $call PanToBuilding("toll_booth2to1")
 {@advisorEconForest}    Routes between counties must pass through this <b>Border Gate.</b>
-{@advisorEconForest}    And you'll need to set our <b>policies</b> separately.
+{@advisorEconForest}    And you'll need to set <b>policies</b> separately.
 {@advisorEconForest}    Shall we set a Sales Policy here?
 
 

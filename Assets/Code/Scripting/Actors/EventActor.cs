@@ -21,6 +21,8 @@ namespace Zavala.Scripting {
     [DisallowMultipleComponent]
     public sealed class EventActor : BatchedComponent, ILeafActor, IPersistBuildingComponent {
         public int MaxQueuedEvents = 5;
+        [NonSerialized] public float AlertCooldown = 5.0f; // seconds
+        [NonSerialized] public float CooldownAccumulator = 0f;
         public SerializedHash32 Id;
         public SerializedHash32 Class;
 

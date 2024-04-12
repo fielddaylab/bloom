@@ -9,8 +9,7 @@
 $call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)
-    You have become the Director of the Sustainable Agricultural Growth Administration: SAGA.
-    SAGA is just a new program, still unproven.  Can you lead it to success?
+    You are now the Director of SAGA: The Sustainable Agricultural Growth Administration.
     $call CutscenePrepareImages("intro/frame2-1.png", "intro/frame2-2.png", "intro/frame2-3.png")
 	$call CutsceneAllImages(0.3)
 	These counties are young. It's your job as SAGA director to help them bloom!
@@ -26,7 +25,7 @@ $call CutsceneBegin(1)
 	Your first assignment is <i>Knoll County</i>. Good luck, Director.
 $call CutsceneEnd()
 
-{@advisorEconHill}      Greetings! Welcome to Knoll County.
+//{@advisorEconHill}      Greetings! Welcome to Knoll County.
 $call ForceDialogueInteraction()
 {@advisorEconHill}      I'm here to advise you on money matters. 
 {@advisorEconHill}      Knoll County is a growing producer of milk...
@@ -158,7 +157,7 @@ $set intro:farmsAndCities = true
 $call HideAnimatedTutorial()
 {@advisorEconHill}      Everything in the county is connected.
 {@advisorEconHill}      SAGA will gain <b>$5</b> for every <b>shipment of milk</b> the City consumes.
-{@advisorEconHill}      That milk fuels taxable work, and gives us a budget!
+{@advisorEconHill}      The milk revenue gives SAGA some money!
 {@advisorEconHill}      But we may need more funding.
 {@advisorEconHill}      I've unlocked the Sales Tax policy.
 $call UnlockCards(SalesTaxPolicy)
@@ -192,7 +191,7 @@ $set intro:pendingPolicy = true
 {@advisorEconHill}     But set it too high, and farms may <b>slow down production.</b>
 $call SuppressCloseButton()
 {viewpoliciesnext}
-{@advisorEconHill}     What do you think? Don't worry, you can change it at any time.
+{@advisorEconHill}    Don't worry, you can change it at any time.
 // $call ForcePolicyInstant("Economy")
 
 :: closedWithoutSettingPolicy
@@ -256,11 +255,11 @@ $call PanToBuilding("region1_grain1")
 {@advisorEconHill}      Ho! Special delivery!
 {@advisorEconHill}      Henrietta's Grain Farm imported some <i>mineral fertilizer</i>.
 {@grainHill}            My crops need <b>phosphorus</b> to grow...
-{@grainHill}            There's some <b>phosphorus</b> in the soil, but it's not enough!
+//{@grainHill}            There's some <b>phosphorus</b> in the soil, but it's not enough!
 {@phos4us}              PHOS4US provides the nutrients plants need, at prices farmers deserve!
 $call QueueDialogueBubble(region1_cafo1, region1.dontTrustRupert)
-{@advisorEcolHill}      Woah there! They're adding MORE nutrients to our soil?
-{@advisorEcolHill}      Doesn't PHOS4US care about disrupting the phosphorus cycle!? // talk to phos4us - THEY dont consider the phos cycle??
+{@advisorEcolHill}      Woah there! They're adding MORE nutrients to the soil?
+{@advisorEcolHill}      Doesn't PHOS4US care about disrupting the balance!? // talk to phos4us - THEY dont consider the phos cycle??
 $call AddAutoAlertCondition("Bloom", 1)
 {@advisorEconHill}      I'm sure Henrietta has a good reason. Let's take a look...
 $set local:taxLevel = PolicyLevelInRegion(1, "SalesTaxPolicy")
@@ -278,10 +277,10 @@ $call OpenInfoPopup("region1_cafo1")
 $call Wait(0.5)
 {@advisorEconHill}      Here, the <b>Inspector</b> shows where he could <b>sell to</b>.
 {@cafoHill}             I <i>could</i> sell manure to Henrietta, but I would lose money <b>shipping</b> that heavy stuff!
-{@advisorEconHill}      And shipping it further would cost even more!
+//{@advisorEconHill}      And shipping it further would cost even more!
 {@cafoHill}             Right. Better to just let the manure sit.
-{@cafoHill}             If I lost money on that, plus my <b>operating costs</b>...
-{@cafoHill}             I'd go broke!
+//{@cafoHill}             If I lost money on that, plus my <b>operating costs</b>...
+//{@cafoHill}             I'd go broke!
 $call CloseInfoPopup()
 {@advisorEconHill}      I see.
 {@advisorEconHill}      You can always check the <b>Inspector</b> again by clicking on a farm.
@@ -444,8 +443,8 @@ $call ForcePolicyInstant("Ecology")
 {@grainHill}        Hey, why don't you SAGA people like <b>Phosphorus?</b>
 {@grainHill}        It's good! It helps my crops grow!
 {@advisorEcolHill}  You're right!
-{@advisorEcolHill}  But bringing in excess Phosphorus from elsewhere, like PHOS4US...
-{@advisorEcolHill}  That can unbalance our local cycle, and cause problems!
+{@advisorEcolHill}  But bringing in more Phosphorus from elsewhere, like PHOS4US...
+{@advisorEcolHill}  ... can cause imbalance!
 {@grainHill}        Like that Algae Bloom!
 {@advisorEcolHill}  Exactly.
 
@@ -533,24 +532,25 @@ $set global:bloomDiscovered = true
 $call CutsceneBegin(2)
     $call CutscenePrepareImages("act2/2-1-1.png", "act2/2-1-2.png", "act2/2-1-3.png")
     $call CutsceneAllImages(0.5)
-    Something is wrong with the lakes. They are filled with revolting green algae! It's depleting lake oxygen and killing fish...
+    Is this the dreaded green tide? The lakes are blooming with revolting green algae! It's killing fish...
     $call CutscenePrepareImages("act2/2-2-1.png", "act2/2-2-2.png", "act2/2-2-3.png")
 	$call CutsceneAllImages(0.5)
-	Algae loves phosphorus... Could the grain farmers be to blame? They import and apply lots of mineral <b>phosphorus!</b>
+	Maybe the phosphorus isn't just helping the grain grow... it could be feeding the algae too. 
+    Those farmers are importing lots of <b>phosphorus!</b>
     $call CutscenePrepareImages("act2/2-3-1.png", "act2/2-3-2.png", "act2/2-3-3.png")
 	$call CutsceneAllImages(0.5)
-	Or are the dairy farmers at fault? Their cows' <b>phosphorus</b>-filled manure runs off into the lakes too!
-    With the old Manure Processor broken down, manure is too heavy to ship effectively...
+	Or are the dairy farmers at fault? The <b>phosphorus</b>-filled manure seeps into the lakes as well!
+    The old Manure Processor broken down. Unprocessed manure is too heavy to ship...
     $call CutscenePrepareImages("act2/2-4-1.png", "act2/2-4-2.png", "act2/2-4-3.png")
 	$call CutsceneAllImages(0.5)
     Nearby farms might be able to afford manure fertilizer... But long-distance shipping is just too costly!
     $call CutscenePrepareImages("act2/2-5-1.png", "act2/2-5-2.png", "act2/2-5-3.png")
 	$call CutsceneAllImages(0.5)
-	Whoever is to blame, our cities need milk and clean water. You - and SAGA - will need to take action.
+	Whoever is to blame, our cities need milk and clean water. You need to take action.
 $call CutsceneEnd()
-{@advisorEcolHill}    When there's enough <b>phosphorus</b> in the water, <b>Algae</b> begins to take over.
-{@advisorEcolHill}    It takes up the nutrients that other organisms need, and can even produce toxins.
-{@advisorEcolHill}    Our <b>City</b> will become stressed if there are blooms nearby!
+{@advisorEcolHill}    When there's too much <b>phosphorus</b> in the water, <b>Algae</b> begins to take over.
+{@advisorEcolHill}    It can even produce toxins.
+{@advisorEcolHill}    Our <b>City</b> will become stressed if there are algae blooms nearby!
 {@advisorEcolHill}    Some algae blooms are <b>unavoidable...</b>
 {@advisorEcolHill}    But we can limit them if we <b>prevent phosphorus runoff!</b>
 {@advisorEcolHill}    I'll keep an eye out for any excess runoff...

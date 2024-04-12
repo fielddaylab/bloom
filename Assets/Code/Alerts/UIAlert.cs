@@ -149,6 +149,7 @@ namespace Zavala.UI {
             UIPools pools = Game.SharedState.Get<UIPools>();
             pools.Alerts.Free(alert);
 
+            alert.Actor.CooldownAccumulator = 0.0f;
             // Allow next queued events to be generated
             alert.Actor.DisplayingEvent = null;
         }
