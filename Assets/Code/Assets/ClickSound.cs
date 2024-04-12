@@ -13,7 +13,7 @@ namespace Zavala.Audio {
         [SerializeField] private Selectable m_Selectable;
 
         [Header("Hover State")]
-        [SfxRef] public SerializedHash32 EnterId = "ui-hover";
+        [SfxRef] public SerializedHash32 EnterId;
         [SfxRef] public SerializedHash32 ExitId;
 
         [Header("Click")]

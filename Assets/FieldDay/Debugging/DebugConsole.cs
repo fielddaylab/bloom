@@ -79,6 +79,10 @@ namespace FieldDay.Debugging {
             m_DebugMenus.gameObject.SetActive(false);
             m_Canvas.enabled = false;
             m_MinimalGroup.blocksRaycasts = false;
+
+#if UNITY_2022_2_OR_NEWER
+            UnityEngine.Debug.developerConsoleEnabled = false;
+#endif // UNITY_2022_2_OR_NEWER
         }
 
         private void OnDestroy() {
@@ -94,6 +98,11 @@ namespace FieldDay.Debugging {
             CheckTimeInput();
             UpdateMinimalLayer();
             UpdateMenu();
+
+#if !UNITY_EDITOR
+            UnityEngine.Debug.ClearDeveloperConsole();
+            UnityEngine.Debug.developerConsoleVisible = false;
+#endif // !UNITY_EDITOR
         }
 
         #region Keyboard Shortcuts
@@ -358,7 +367,7 @@ namespace FieldDay.Debugging {
         #endregion // Helpers
 
 #endif // DEVELOPMENT
-    }
+        }
 
     /// <summary>
     /// Attribute marking a static method to be invoked to create a root debug menu.

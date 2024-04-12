@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "com.beauprime.beaudata": "0.3.1",
+    "com.beauprime.beaupools": "0.3.1",
     "com.beauprime.beauroutine": "0.11.1",
     "com.beauprime.beauroutine-extensions": "0.1.2",
     "com.beauprime.beauroutine-spline": "0.1.1",
     "com.beauprime.beauutil": "0.10.3",
     "com.beauprime.leaf": "0.3.12",
-    "com.beauprime.beaupools": "0.3.0",
     "com.beauprime.tinyil-mono": "0.1.5",
     "com.fieldday.opengamedata-unity": "1.0.3",
     "com.unity.2d.sprite": "1.0.0",

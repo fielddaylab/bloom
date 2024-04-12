@@ -70,10 +70,6 @@ MonoBehaviour:
       Self: 0
       MemberCount: 1
       OverloadCount: 0
-    - TypeName: Zavala.UI.GlobalAlertParams
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
     - TypeName: Zavala.Sim.AlgaeSim
       Self: 0
       MemberCount: 2
@@ -89,6 +85,10 @@ MonoBehaviour:
     - TypeName: Zavala.Sim.SkimmerParams
       Self: 0
       MemberCount: 4
+      OverloadCount: 0
+    - TypeName: Zavala.UI.GlobalAlertParams
+      Self: 0
+      MemberCount: 1
       OverloadCount: 0
     Members:
     - MemberName: ParticlesPerPip
@@ -114,8 +114,6 @@ MonoBehaviour:
     - MemberName: DigesterCost
       Type: 4
     - MemberName: TicksBeforeCommittingSave
-      Type: 4
-    - MemberName: GlobalAlertDelay
       Type: 4
     - MemberName: MinPForAlgaeGrowthDefault
       Type: 4
@@ -157,6 +155,8 @@ MonoBehaviour:
       Type: 4
     - MemberName: PhosDredgeAmt
       Type: 4
+    - MemberName: GlobalAlertDelay
+      Type: 4
     OverloadedMethods: []
     TypeReferences: []
   DebugMenu:
@@ -167,7 +167,7 @@ MonoBehaviour:
     - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       TypeCount: 11
     - AssemblyName: FieldDay.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 1
+      TypeCount: 2
     Types:
     - TypeName: Zavala.Debugging.SimGridDebugger
       Self: 0
@@ -217,6 +217,10 @@ MonoBehaviour:
       Self: 0
       MemberCount: 1
       OverloadCount: 0
+    - TypeName: FieldDay.Data.ConfigVar
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
     Members:
     - MemberName: Debug_CreateMenu
       Type: 8
@@ -241,6 +245,8 @@ MonoBehaviour:
     - MemberName: AdvisorModuleUnlockUtility
       Type: 8
     - MemberName: CreateDebugMenu
+      Type: 8
+    - MemberName: DebugMenuFactory
       Type: 8
     OverloadedMethods: []
     TypeReferences: []

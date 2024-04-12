@@ -64,6 +64,8 @@ namespace Zavala.UI {
         [NonSerialized] private ScriptCharacterDef m_CurrentDef;
         [NonSerialized] private bool m_FullyExpanded = false;
         [NonSerialized] private bool m_IsActive;
+        [NonSerialized] private bool m_FullyVisible;
+
         [NonSerialized] public AdvisorType ForceAdvisorPolicies = AdvisorType.None;
         [NonSerialized] public bool ForcePin;
         [NonSerialized] public bool ForceUnpin;
@@ -189,7 +191,9 @@ namespace Zavala.UI {
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
                 ZavalaGame.Events.Dispatch(GameEvents.DialogueDisplayed, new Data.DialogueLineData(charDef.NameId, charDef.TitleId, inString.VisibleText));
-                m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
+                if (!m_IsActive || (ForceAdvisorPolicies != AdvisorType.None)) {
+                    m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
+                }
             } else {
                 // no string to prepare...
                 // m_TransitionRoutine.Replace(HideRoutine());
@@ -311,15 +315,18 @@ namespace Zavala.UI {
             this.gameObject.SetActive(true);
             m_AdvisorButtons.HideAdvisorButtons();
             m_Button.gameObject.SetActive(true);
-            float targetY = ForceAdvisorPolicies == AdvisorType.None ? m_OnscreenY : m_OnscreenPolicyY;
-            yield return m_Rect.AnchorPosTo(targetY, 0.3f, Axis.Y).Ease(Curve.CubeIn);
+            if (!m_FullyVisible) {
+                float targetY = ForceAdvisorPolicies == AdvisorType.None ? m_OnscreenY : m_OnscreenPolicyY;
+                yield return m_Rect.AnchorPosTo(targetY, 0.28f, Axis.Y).Ease(Curve.CubeIn);
+                m_FullyVisible = true;
+            }
             ExpandPolicyUI(ForceAdvisorPolicies);
-            yield return null;
         }
 
         private IEnumerator HideRoutine() {
             m_FullyExpanded = false;
             m_IsActive = false;
+            m_FullyVisible = false;
             m_SuppressPolicyCloseButton = false;
             SimTimeInput.SetPaused(false, SimPauseFlags.DialogBox);
             m_AdvisorButtons.ShowAdvisorButtons();
@@ -372,7 +379,7 @@ namespace Zavala.UI {
                     yield return null;
                 }
             }
-            SfxUtility.PlaySfx("ui-dialog-advance");
+            SfxUtility.PlaySfx("ui-dialog-next");
             input.ConsumedButtons |= InputButton.PrimaryMouse | InputButton.DialogAdvance;
             ZavalaGame.Events.Dispatch(GameEvents.DialogueAdvanced);
             //Log.Msg("[DialogueBox] BREAK!");

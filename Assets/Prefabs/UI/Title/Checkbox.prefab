@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 6212574192332430145}
   - component: {fileID: 285028913034223686}
   - component: {fileID: 8471075132015494621}
+  - component: {fileID: 2413371210283359921}
+  - component: {fileID: 4297154477936838512}
+  - component: {fileID: 3164448120415395478}
   m_Layer: 5
   m_Name: Checkbox
   m_TagString: Untagged
@@ -122,6 +125,63 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &2413371210283359921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705230346492197330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8399f76c068e54145b570750f25bf093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Selectable: {fileID: 8471075132015494621}
+  EnterId:
+    m_Source: 
+    m_HashValue: 0
+  ExitId:
+    m_Source: 
+    m_HashValue: 0
+  DownId:
+    m_Source: 
+    m_HashValue: 0
+  UpId:
+    m_Source: 
+    m_HashValue: 0
+  ClickId:
+    m_Source: ui-click
+    m_HashValue: 2094747682
+--- !u!114 &4297154477936838512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705230346492197330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd60b9a67a0443343b479b094c836759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Offset0: {x: 0, y: 0}
+  m_Offset1: {x: 0, y: 0}
+  m_Offset2: {x: 0, y: 0}
+--- !u!114 &3164448120415395478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705230346492197330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7d6f75513ad5e4691220017e408cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LayoutOffset: {fileID: 4297154477936838512}
+  m_Selectable: {fileID: 8471075132015494621}
 --- !u!1 &3853481461273247116
 GameObject:
   m_ObjectHideFlags: 0

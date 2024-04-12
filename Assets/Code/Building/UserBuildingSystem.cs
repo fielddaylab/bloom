@@ -324,8 +324,9 @@ namespace Zavala.Building
 
                 // Check if a valid start, (ResourceSupplier, ResourceRequester, or Road)
                 if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
-                    if (TryStageRoad(grid, network, tileIndex)) {
+                    if (TryStageRoad(grid, network, tileIndex, false)) {
                         Debug.Log("[UserBuildingSystem] Is road anchor. Added new tile to road path");
+                        SfxUtility.PlaySfx("build-road-begin");
                     }
                 }
                 else {
@@ -347,6 +348,7 @@ namespace Zavala.Building
                 if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsToll) != 0) {
                     if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsConnectionEndpoint) == 0) {
                         Debug.Log("[UserBuildingSystem] Cannot build onto a pending toll");
+                        SfxUtility.PlaySfx("road-nonbuildable");
                         return;
                     }
                 }
@@ -374,7 +376,7 @@ namespace Zavala.Building
                         // Check if reached a road anchor
                         if ((network.Roads.Info[tileIndex].Flags & RoadFlags.IsAnchor) != 0) {
                             // stage road
-                            if (!TryStageRoad(grid, network, tileIndex)) {
+                            if (!TryStageRoad(grid, network, tileIndex, false)) {
                                 Debug.Log("[UserBuildingSystem] Could not stage road. Connection already made.");
                                 CancelRoad(grid, network);
                                 return;
@@ -384,6 +386,7 @@ namespace Zavala.Building
                             // reached road anchor
                             if (TryFinishRoad(grid, network)) {
                                 // completed
+                                SfxUtility.PlaySfx("build-road-finish");
                                 return;
                             }
                             else {
@@ -407,7 +410,7 @@ namespace Zavala.Building
                         }
                         else {
                             // stage road
-                            TryStageRoad(grid, network, tileIndex);
+                            TryStageRoad(grid, network, tileIndex, true);
                             Debug.Log("[UserBuildingSystem] added new tile to road path");
                         }
                     }
@@ -421,7 +424,7 @@ namespace Zavala.Building
             }
         }
 
-        private bool TryStageRoad(SimGridState grid, RoadNetwork network, int tileIndex) {
+        private bool TryStageRoad(SimGridState grid, RoadNetwork network, int tileIndex, bool playSfx) {
             // calculate staging if not first in road sequence
             if (m_StateC.RoadToolState.TracedTileIdxs.Count > 0) {
                 // find previous tile
@@ -456,7 +459,9 @@ namespace Zavala.Building
                 // Add to running cost (include end roads)
                 ShopUtility.EnqueueCost(m_StateD, ShopUtility.PriceLookup(UserBuildTool.Road));
 
-                SfxUtility.PlaySfx("build-road");
+                if (playSfx) {
+                    SfxUtility.PlaySfx("build-road");
+                }
             }
 
             m_StateC.RoadToolState.TracedTileIdxs.Add(tileIndex);
@@ -511,7 +516,11 @@ namespace Zavala.Building
                     UnstageForward(grid, network, m_StateC.RoadToolState.TracedTileIdxs[i - 1]);
                 }
             }
+            int prevPrev = m_StateC.RoadToolState.PrevTileIndex;
             m_StateC.RoadToolState.PrevTileIndex = m_StateC.RoadToolState.TracedTileIdxs[rewindIndex];
+            if (m_StateC.RoadToolState.PrevTileIndex != prevPrev) {
+                SfxUtility.PlaySfx("road-rewind");
+            }
         }
 
         private void FinalizeRoad(SimGridState grid, RoadNetwork network, BuildingPools pools, int tileIndex, bool isEndpoint) {

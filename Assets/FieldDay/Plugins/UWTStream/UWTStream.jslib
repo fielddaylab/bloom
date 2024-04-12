@@ -176,7 +176,7 @@ var UWTStreamLibraryImpl = {
             pool.push(element);
         }
 
-        var baseURL = Pointer_stringify(path);
+        var baseURL = UTF8ToString(path);
 
         element.sources[0].src = uwt.ChangeExtension(baseURL, ".ogg");
         element.sources[1].src = uwt.ChangeExtension(baseURL, ".mp3");
