@@ -125,6 +125,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 76b2b02c1f99b324b82b1a82869a4100, type: 3}
   - {fileID: 21300000, guid: 24d99f2c2f4469345aadf3a77775ca20, type: 3}
   - {fileID: 21300000, guid: f91c4b5cb3de15a4eaac5e39d284e4f1, type: 3}
+  - {fileID: 21300000, guid: 6e4782ccd583fb048babd5e3101b25ad, type: 3}
   - {fileID: 21300000, guid: c6843ccc779d24644854b55de18efcbb, type: 3}
   - {fileID: 21300000, guid: f1c1991d55fde1b44975cee1f7f527e0, type: 3}
   - {fileID: 21300000, guid: 6faf280eb78f32546a29b8c60bffd739, type: 3}
@@ -219,6 +220,7 @@ SpriteAtlas:
   - ShopToggleBlank
   - urgentflag_manure
   - policyicon_milk
+  - phos4us
   - BlueprintMode
   - resource_grain
   - resource-milk-yellow

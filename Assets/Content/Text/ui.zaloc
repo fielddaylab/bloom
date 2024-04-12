@@ -28,7 +28,7 @@ Time
 Fertilizer Types
 
 :: lens.market.graph.header
-Total Fertilizer Market Share
+Strategy To Put PHOS4US Out Of Business
 
 :: lens.market.targets.header
 Local Market Targets
@@ -156,4 +156,19 @@ High Quality Mode:
 :: title.attr
 <size=20>Created by</size>
 Field Day Lab
+
+:: lens.pie.currentLabel
+Current Breakdown
+
+:: lens.pie.CFertLabel
+PHOS4US
+
+:: lens.pie.ManureLabel
+Manure
+
+:: lens.pie.DFertLabel
+Processed Manure
+
+:: lens.pie.goalLabel
+Goal
 

@@ -305,7 +305,7 @@ MonoBehaviour:
     - Id: ui.lens.market.graph.yaxis
       Content: Fertilizer Types
     - Id: ui.lens.market.graph.header
-      Content: Total Fertilizer Market Share
+      Content: Strategy To Put PHOS4US Out Of Business
     - Id: ui.lens.market.targets.header
       Content: Local Market Targets
     - Id: ui.popup.info.buying
@@ -406,6 +406,16 @@ MonoBehaviour:
       Content: '<size=20>Created by</size>
 
         Field Day Lab'
+    - Id: ui.lens.pie.currentLabel
+      Content: Current Breakdown
+    - Id: ui.lens.pie.CFertLabel
+      Content: PHOS4US
+    - Id: ui.lens.pie.ManureLabel
+      Content: Manure
+    - Id: ui.lens.pie.DFertLabel
+      Content: Processed Manure
+    - Id: ui.lens.pie.goalLabel
+      Content: Goal
     BasePath: ui
     AllBasePaths:
     - Path: ui
