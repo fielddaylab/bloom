@@ -228,6 +228,10 @@ namespace Zavala.UI {
             CollapsePolicyUI();
         }
 
+        public void ClearQueuedPolicyUI() {
+            ForceAdvisorPolicies = AdvisorType.None;
+        }
+
         public void ForcePinDialogue()
         {
             ForcePin = true;

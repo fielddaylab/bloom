@@ -395,6 +395,7 @@ GameObject:
   - component: {fileID: 190549083}
   - component: {fileID: 190549084}
   - component: {fileID: 190549085}
+  - component: {fileID: 190549086}
   m_Layer: 5
   m_Name: AdvisorLayout
   m_TagString: Untagged
@@ -476,6 +477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Rect: {fileID: 190549080}
+  m_Group: {fileID: 190549086}
 --- !u!114 &190549085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,6 +493,18 @@ MonoBehaviour:
   m_Id:
     m_Source: AdvisorButtons
     m_HashValue: 3477625448
+--- !u!225 &190549086
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190549079}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &541581160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2574,7 +2588,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4405407464299443817, guid: 55363246ee6a972418488f6396b42338, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 279.436
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4405407464299443817, guid: 55363246ee6a972418488f6396b42338, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -8,17 +8,20 @@ using UnityEngine;
 public class AdvisorButtonContainer : MonoBehaviour
 {
     [SerializeField] private RectTransform m_Rect;
+    [SerializeField] private CanvasGroup m_Group;
     private Routine m_TransitionRoutine;
     [NonSerialized] private bool m_Showing = true;
 
 
     public void HideAdvisorButtons() {
         if (Ref.Replace(ref m_Showing, false)) {
+            m_Group.blocksRaycasts = false;
             m_TransitionRoutine.Replace(this, HideRoutine()).ExecuteWhileDisabled();
         }
     }
     public void ShowAdvisorButtons() {
         if (Ref.Replace(ref m_Showing, true)) {
+            m_Group.blocksRaycasts = true;
             m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
         }
     }

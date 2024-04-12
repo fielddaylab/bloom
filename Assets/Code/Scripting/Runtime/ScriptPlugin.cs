@@ -50,6 +50,7 @@ namespace FieldDay.Scripting {
             ScriptThread thread = m_RuntimeState.ThreadPool.Alloc();
 
             m_RuntimeState.Cutscene.Kill();
+            m_RuntimeState.DefaultDialogue.ClearQueuedPolicyUI();
 
             TempAlloc<VariantTable> tempVars = m_RuntimeState.TablePool.TempAlloc();
             if (inLocals != null && inLocals.Count > 0) {
