@@ -100,6 +100,12 @@ namespace Zavala.UI {
             ZavalaGame.Events.Register(GameEvents.CreditsExited, HandleCreditsExited);
         }
 
+        private void OnDestroy() {
+            if (!Game.IsShuttingDown) {
+                Game.Events.Deregister(GameEvents.CreditsExited, HandleCreditsExited);
+            }
+        }
+
         #endregion // Unity Callbacks
 
         #region Button Handlers
