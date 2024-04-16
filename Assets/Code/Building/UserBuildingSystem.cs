@@ -11,6 +11,7 @@ using Zavala.Sim;
 using Zavala.World;
 using Zavala.Audio;
 using FieldDay.Scripting;
+using Zavala.Rendering;
 
 namespace Zavala.Building
 {
@@ -327,6 +328,7 @@ namespace Zavala.Building
                     if (TryStageRoad(grid, network, tileIndex, false)) {
                         Debug.Log("[UserBuildingSystem] Is road anchor. Added new tile to road path");
                         SfxUtility.PlaySfx("build-road-begin");
+                        VfxUtility.PlayEffect(SimWorldUtility.GetTileCenter(tileIndex), EffectType.Road_AnchorInteract);
                     }
                 }
                 else {
@@ -387,6 +389,7 @@ namespace Zavala.Building
                             if (TryFinishRoad(grid, network)) {
                                 // completed
                                 SfxUtility.PlaySfx("build-road-finish");
+                                VfxUtility.PlayEffect(SimWorldUtility.GetTileCenter(tileIndex), EffectType.Road_AnchorInteract);
                                 return;
                             }
                             else {

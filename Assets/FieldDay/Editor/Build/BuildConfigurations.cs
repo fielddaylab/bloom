@@ -37,7 +37,7 @@ namespace FieldDay.Editor {
         /// <summary>
         /// Applies the given build configuration settings.
         /// </summary>
-        static public void ApplyBuildConfig(string branchName, string configName, bool development, string defines, bool forceLogs = false) {
+        static public void ApplyBuildConfig(string branchName, string configName, bool development, string defines, ManagedStrippingLevel codeStripping, bool forceLogs = false) {
             bool logging = forceLogs;
             if (!logging) {
                 if ((InternalEditorUtility.inBatchMode || !InternalEditorUtility.isHumanControllingUs)) {
@@ -54,6 +54,7 @@ namespace FieldDay.Editor {
                 Debug.LogFormat("[BuildConfigurations] Source control branch is '{0}', applying build configuration '{1}'", branchName, configName);
             }
 
+            PlayerSettings.SetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup, codeStripping);
             EditorUserBuildSettings.development = development; 
             BuildUtils.WriteDefines(defines);
 
@@ -85,10 +86,10 @@ namespace FieldDay.Editor {
             string branchName = BuildUtils.GetSourceControlBranchName();
             BuildConfig config = GetDesiredConfig(branchName);
             if (config != null) {
-                ApplyBuildConfig(branchName, AssetDatabase.GetAssetPath(config), config.DevelopmentBuild, config.CustomDefines, forceLogging);
+                ApplyBuildConfig(branchName, AssetDatabase.GetAssetPath(config), config.DevelopmentBuild, config.CustomDefines, config.StrippingLevel, forceLogging);
             } else {
                 Debug.LogWarningFormat("no build config found??");
-                ApplyBuildConfig(branchName, "[fallback]", true, "DEVELOPMENT,PRESERVE_DEBUG_SYMBOLS", forceLogging);
+                ApplyBuildConfig(branchName, "[fallback]", true, "DEVELOPMENT,PRESERVE_DEBUG_SYMBOLS", ManagedStrippingLevel.Minimal, forceLogging);
             }
         }
 

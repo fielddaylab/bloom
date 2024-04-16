@@ -4,6 +4,7 @@ using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using BeauUtil.Tags;
+using EasyAssetStreaming;
 using FieldDay;
 using FieldDay.Scripting;
 using FieldDay.UI;
@@ -12,6 +13,7 @@ using Leaf.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zavala.Audio;
 using Zavala.Input;
 using Zavala.Sim;
 using Zavala.World;
@@ -23,6 +25,7 @@ namespace Zavala.UI {
         public CutsceneFrame[] Frames;
         public TMP_Text Text;
         public GameObject NextHint;
+        [StreamingAudioPath] public string MusicPath;
 
         [NonSerialized] private int m_LoadedFrames;
         [NonSerialized] private int m_DisplayedFrames;
@@ -203,13 +206,19 @@ namespace Zavala.UI {
 
             if (Frame.IsLoadingOrLoaded(this)) {
                 Game.Gui.GetShared<LoadFader>().Show();
+
+                if (Game.SharedState.TryGet(out MusicState mus)) {
+                    mus.Override = MusicPath;
+                }
             }
         }
 
         protected override void OnShowComplete(bool inbInstant) {
             base.OnShowComplete(inbInstant);
 
-            Game.SharedState.Get<SimWorldCamera>().CameraLayers.HideAll();
+            if (Game.SharedState.TryGet(out SimWorldCamera cam)) {
+                cam.CameraLayers.HideAll();
+            }
         }
 
         protected override void OnHide(bool inbInstant) {
@@ -222,7 +231,14 @@ namespace Zavala.UI {
             ScriptUtility.UnmountDisplayer(this);
             m_PrepareRoutine.Stop();
             m_NextRoutine.Stop();
-            Game.SharedState.Get<SimWorldCamera>().CameraLayers.ShowAll();
+
+            if (Game.SharedState.TryGet(out SimWorldCamera cam)) {
+                cam.CameraLayers.ShowAll();
+            }
+
+            if (Game.SharedState.TryGet(out MusicState mus)) {
+                mus.Override = null;
+            }
 
             if (Frame.IsLoadingOrLoaded(this)) {
                 Game.Gui.GetShared<LoadFader>().Hide();

@@ -129,7 +129,6 @@ namespace Zavala.Economy
                 }
             }
 
-
             // On market ticks, update top bar box popups
             // TODO: 
             if (m_StateE.MarketTimer.HasAdvanced())

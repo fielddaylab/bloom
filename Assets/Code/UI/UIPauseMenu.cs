@@ -36,7 +36,6 @@ public class UIPauseMenu : MonoBehaviour, IScenePreload
     }
     private void HandleSliderChanged(float val) {
         Game.SharedState.Get<UserSettings>().MusicVolume = val / 10f;
-        MusicUtility.SetVolume(val/10f);
     }
 
     private void HandleHelpToggle() {

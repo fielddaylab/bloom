@@ -2,6 +2,7 @@ using System;
 using BeauUtil;
 using FieldDay.Components;
 using UnityEngine;
+using Zavala.World;
 
 namespace Zavala {
     public class DecorationRenderer : BatchedComponent {
@@ -19,12 +20,26 @@ namespace Zavala {
 
         [NonSerialized] public RingBuffer<Decoration> Decorations = new RingBuffer<Decoration>();
         [NonSerialized] public Transform CachedTransform;
+        [NonSerialized] public int TileIndex;
+        [NonSerialized] public ushort RegionIndex;
 
         private void Awake() {
             this.CacheComponent(ref CachedTransform);
 
             foreach(var element in m_DEBUG_InitialElements) {
                 DecorationUtility.AddDecoration(this, element.Mesh, element.TRS.Matrix);
+            }
+        }
+
+        protected override void OnEnable() {
+            base.OnEnable();
+
+            if (SimWorldUtility.TryGetTilePosFromWorld(ZavalaGame.SimGrid, ZavalaGame.SimWorld, CachedTransform.position, out var vector)) {
+                TileIndex = ZavalaGame.SimGrid.HexSize.FastPosToIndex(vector);
+                RegionIndex = ZavalaGame.SimGrid.Terrain.Regions[TileIndex];
+            } else {
+                TileIndex = -1;
+                RegionIndex = Tile.InvalidIndex16;
             }
         }
     }

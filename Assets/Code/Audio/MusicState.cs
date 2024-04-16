@@ -19,7 +19,7 @@ namespace Zavala.Audio {
         [NonSerialized] public float CurrentWait;
 
         public RandomDeck<string> Playlist = new RandomDeck<string>(8);
-        public RingBuffer<string> Queue = new RingBuffer<string>(8, RingBufferMode.Expand);
+        [NonSerialized] public string Override;
 
         void IRegistrationCallbacks.OnDeregister() {
         }
@@ -34,7 +34,7 @@ namespace Zavala.Audio {
     public enum MusicPlaybackMode {
         None,
         Playlist,
-        Queue
+        Override
     }
 
     public enum MusicPlaybackStep {
@@ -47,14 +47,10 @@ namespace Zavala.Audio {
     }
 
     static public class MusicUtility {
-        public static void SetVolume(float vol) {
-            Game.SharedState.Get<MusicState>().Volume = vol;
-        }
-
         public static void SetAllSongs(MusicState state, string[] allSongs)
         {
             state.AllSongs = allSongs;
-            state.Queue.Clear();
+            state.Override = null;
             state.Step = MusicPlaybackStep.None;
             state.Playlist.Clear();
             ResetPlaylist(state);
@@ -66,9 +62,6 @@ namespace Zavala.Audio {
             {
                 state.Playlist.Add(element);
             }
-
-            UserSettings settings = Game.SharedState.Get<UserSettings>();
-            state.Volume *= settings.MusicVolume;
         }
     }
 }
