@@ -159,11 +159,11 @@ namespace Zavala
             StringBuilder sb = new StringBuilder();
             for (TileDirection i = 0; i < TileDirection.COUNT; i++) {
                 if (this[i]) {
-                    sb.Append(i).Append(" | ");
+                    sb.Append(EnumLookup.TileDirection[(int)i]).Append(", ");
                 }
             }
             if (sb.Length > 0) {
-                sb.Length -= 3;
+                sb.Length -= 2;
             }
             return sb.Flush();
         }
