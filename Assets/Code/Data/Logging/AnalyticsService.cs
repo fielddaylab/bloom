@@ -139,6 +139,17 @@ namespace Zavala.Data {
             GrainTab = grainTab;
             FertilizerTab = fertilizerTab;
         }
+
+        public StringBuilder GrainTabJSON() {
+            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+                psb.Builder.Append('[');
+                foreach (GFarmGrainTabData grain in GrainTab) {
+                    psb.Builder.Append(grain.ToJsonString()).Append(',');
+                }
+                psb.Builder.Append(']');
+                return psb.Builder;
+            }
+        }
     }
 
     [Serializable]
@@ -150,6 +161,20 @@ namespace Zavala.Data {
         public int BasePrice;
         public int ShippingCost;
         public int TotalProfit;
+
+        public StringBuilder ToJsonString() {
+            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+                psb.Builder.Append('{');
+                psb.Builder.Append("is_active:").Append(IsActive ? "true" : "false").Append(',');
+                psb.Builder.Append("farm_name:").Append(FarmName).Append(',');
+                psb.Builder.Append("farm_county:").Append(FarmCounty).Append(',');
+                psb.Builder.Append("base_price:").Append(BasePrice.ToStringLookup()).Append(',');
+                psb.Builder.Append("shipping_cost:").Append(ShippingCost.ToStringLookup()).Append(',');
+                psb.Builder.Append("total_profit:").Append(TotalProfit.ToStringLookup());
+                psb.Builder.Append('}');
+                return psb.Builder;
+            }
+        }
     }
 
     [Serializable]
@@ -366,15 +391,38 @@ namespace Zavala.Data {
         [Serializable]
         private struct PolicyStateData {
             public PolicyLevelData sales;
-            public PolicyLevelData import_subsidy;
+            public PolicyLevelData import;
             public PolicyLevelData runoff;
             public PolicyLevelData cleanup;
+
+            public StringBuilder ToJsonString() {
+                using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+                    psb.Builder.Append("sales:").Append(sales.ToJsonString()).Append(','); 
+
+                    psb.Builder.Append("import:").Append(import.ToJsonString()).Append(',');
+
+                    psb.Builder.Append("runoff:").Append(runoff.ToJsonString()).Append(',');
+
+                    psb.Builder.Append("cleanup:").Append(cleanup.ToJsonString()).Append(',');
+                    return psb.Builder;
+                }
+            }
         }
 
         [Serializable]
         private struct PolicyLevelData {
             public int policy_choice;
             public bool is_locked;
+
+            public readonly StringBuilder ToJsonString() {
+                using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+                    psb.Builder.Append("{policy_choice:").Append(policy_choice.ToStringLookup()).Append(',');
+                    psb.Builder.Append("is_locked:").Append(is_locked).Append('}');
+                    return psb.Builder;
+                }
+             
+            }
+            
         }
 
         #region Logging Variables
@@ -547,10 +595,10 @@ namespace Zavala.Data {
 
         private void UpdateAllState() {
             using (var s = m_Log.OpenGameState()) {
-                s.Param("current_county", ((RegionId)m_CurrentRegionIndex).ToString());
+                s.Param("current_county", EnumLookup.RegionName[m_CurrentRegionIndex]);
                 s.Param("current_money", m_CurrentBudget);
                 s.Param("map_mode", m_CurrentMode);
-                s.Param("county_policies", JsonUtility.ToJson(m_CountyPolicies));
+                s.Param("county_policies", m_CountyPolicies.ToJsonString());
                 s.Param("phosphorus_view_enabled", m_PhosView);
             }
         }
@@ -584,8 +632,8 @@ namespace Zavala.Data {
             m_CountyPolicies.sales.policy_choice = -1;
             m_CountyPolicies.sales.is_locked = true;
 
-            m_CountyPolicies.import_subsidy.policy_choice = -1;
-            m_CountyPolicies.import_subsidy.is_locked = true;
+            m_CountyPolicies.import.policy_choice = -1;
+            m_CountyPolicies.import.is_locked = true;
 
             m_CountyPolicies.runoff.policy_choice = -1;
             m_CountyPolicies.runoff.is_locked = true;
@@ -604,7 +652,7 @@ namespace Zavala.Data {
             m_CountyPolicies.sales.policy_choice =
                 p.EverSet[s] ? (int)p.Map[s] : -1;
 
-            m_CountyPolicies.import_subsidy.policy_choice = 
+            m_CountyPolicies.import.policy_choice = 
                 p.EverSet[i] ? (int)p.Map[i] : -1;
 
             m_CountyPolicies.runoff.policy_choice = 
@@ -619,7 +667,7 @@ namespace Zavala.Data {
         private void UpdatePoliciesLockedState() {
             CardsState cs = Game.SharedState.Get<CardsState>();
             m_CountyPolicies.sales.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.SalesTaxPolicy);
-            m_CountyPolicies.import_subsidy.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.ImportTaxPolicy);
+            m_CountyPolicies.import.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.ImportTaxPolicy);
             m_CountyPolicies.runoff.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.RunoffPolicy);
             m_CountyPolicies.cleanup.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.SkimmingPolicy);
 
@@ -638,7 +686,7 @@ namespace Zavala.Data {
                     m_CountyPolicies.cleanup.is_locked = isLocked;
                     break;
                 case PolicyType.ImportTaxPolicy:
-                    m_CountyPolicies.import_subsidy.is_locked = isLocked;
+                    m_CountyPolicies.import.is_locked = isLocked;
                     break;
                 default:
                     break;
@@ -776,7 +824,7 @@ namespace Zavala.Data {
 
         private void LogSelectedBuildTool(UserBuildTool tool) {
             // select_building_type { building_type, cost }
-            string toolName = tool.ToString();
+            string toolName = EnumLookup.BuildTool[(int)tool];
             using (var e = m_Log.NewEvent("select_building_type")) {
                 e.Param("building_type", toolName);
                 e.Param("cost", ShopUtility.PriceLookup(tool));
@@ -890,13 +938,13 @@ namespace Zavala.Data {
 
         private StringBuilder PrintBuildingParam(ActionCommit commit) {
             using (var psb = PooledStringBuilder.Create()) {
-                psb.Builder.Append("{");
-                psb.Builder.Append("building_type:").Append(commit.BuildType.ToString());
-                psb.Builder.Append("tile_id:").Append(commit.TileIndex);
-                psb.Builder.Append("cost:").Append(commit.Cost);
+                psb.Builder.Append('{');
+                psb.Builder.Append("building_type:").Append(EnumLookup.BuildingType[(int)commit.BuildType]);
+                psb.Builder.Append("tile_id:").Append(commit.TileIndex.ToStringLookup());
+                psb.Builder.Append("cost:").Append(commit.Cost.ToStringLookup());
                 psb.Builder.Append("connections:").Append(commit.FlowMaskSnapshot);
                 psb.Builder.Append("build_type:").Append(commit.ActionType.ToString());
-                psb.Builder.Append("}");
+                psb.Builder.Append('}');
                 return psb.Builder;
             }
         }
@@ -916,16 +964,16 @@ namespace Zavala.Data {
         private StringBuilder GetCommitChainData(RingBuffer<CommitChain> chains) {
             if (chains == null) return null;
             using (var psb = PooledStringBuilder.Create()) {
-                psb.Builder.Append("[");
+                psb.Builder.Append('[');
                 foreach (CommitChain chain in chains) {
                     foreach (ActionCommit commit in chain.Chain) {
                         psb.Builder.Append('{');
-                        psb.Builder.Append("building_type:").Append(commit.BuildType.ToString());
-                        psb.Builder.Append("tile_id:").Append(commit.TileIndex);
+                        psb.Builder.Append("building_type:").Append(EnumLookup.BuildingType[(int)commit.BuildType]);
+                        psb.Builder.Append("tile_id:").Append(commit.TileIndex.ToStringLookup());
                         psb.Builder.Append('}');
                     }
                 }
-                psb.Builder.Append("]");
+                psb.Builder.Append(']');
                 return psb.Builder;
             }
 
@@ -946,7 +994,7 @@ namespace Zavala.Data {
         private void LogRegionChanged(ushort newRegion) {
             // NOT IN SCHEMA
             // ADD?: county_changed { county_name }
-            string county = ((RegionId)newRegion).ToString();
+            string county = EnumLookup.RegionName[newRegion];
             using (var e = m_Log.NewEvent("county_changed")) {
                 e.Param("county_name", county);
             }
@@ -973,7 +1021,7 @@ namespace Zavala.Data {
         private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
             using (var e = m_Log.NewEvent("unlock_building_type")) {
-                e.Param("building_type", type.ToString());
+                e.Param("building_type", EnumLookup.BuildingType[(int)type]);
             }
         }
 
@@ -989,14 +1037,14 @@ namespace Zavala.Data {
         private void LogAdvisorButtonClicked(AdvisorType type) {
             // click_open_policy_category { category : enum(ECON, ECOLOGY) }
             using (var e = m_Log.NewEvent("click_open_policy_category")) {
-                e.Param("category", type.ToString());
+                e.Param("category", EnumLookup.AdvisorType[(int)type]);
             }
         }
 
         private void LogPolicyOpened(PolicyType type, bool fromTaskbar) {
             // click_open_policy { policy: enum(...), from_taskbar : bool }
             using (var e = m_Log.NewEvent("click_open_policy")) {
-                e.Param("policy", type.ToString());
+                e.Param("policy", EnumLookup.PolicyType[(int)type]);
                 e.Param("from_taskbar", fromTaskbar);
             }
         }
@@ -1004,7 +1052,7 @@ namespace Zavala.Data {
         private void LogHoverPolicy(PolicyData data) { // policy, level, hint text
             // hover_policy_card { choice_number, choice_name, choice_text }
             using (var e = m_Log.NewEvent("click_set_policy_choice")) {
-                e.Param("choice_name", data.Type.ToString());
+                e.Param("choice_name", EnumLookup.PolicyType[(int)data.Type]);
                 e.Param("choice_number", data.Level);
                 e.Param("choice_text", data.HintText);
             }
@@ -1013,7 +1061,7 @@ namespace Zavala.Data {
         private void LogPolicySet(PolicyData data) { // policy and level
             // click_set_policy_choice { choice_number, choice_name }
             using (var e = m_Log.NewEvent("click_set_policy_choice")) {
-                e.Param("choice_name", data.Type.ToString());
+                e.Param("choice_name", EnumLookup.PolicyType[(int)data.Type]);
                 e.Param("choice_number", data.Level);
             }
             UpdatePolicyChoicesState();
@@ -1021,7 +1069,7 @@ namespace Zavala.Data {
         private void LogPolicyUnlocked(PolicyType type) {
             // unlock_policy { policy_name }
             using (var e = m_Log.NewEvent("unlock_policy")) {
-                e.Param("policy_name", type.ToString());
+                e.Param("policy_name", EnumLookup.PolicyType[(int)type]);
             }
             UpdatePolicyLockedState(type, false);
         }
@@ -1089,7 +1137,7 @@ namespace Zavala.Data {
         private void LogAlertDisplayed(AlertData data) {
             // ADD? alert_displayed { alert_type, tile_id }
             using (var e = m_Log.NewEvent("alert_displayed")) {
-                e.Param("alert_id", data.Type.ToString());
+                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
                 e.Param("tile_id", data.TileIndex);
             }
             if (data.Type == EventActorAlertType.Bloom) {
@@ -1100,7 +1148,7 @@ namespace Zavala.Data {
         private void LogAlertClicked(AlertData data) {
             // ADD? click_alert { alert_type, tile_id, node_id }
             using (var e = m_Log.NewEvent("click_alert")) {
-                e.Param("alert_id", data.Type.ToString());
+                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
                 e.Param("tile_id", data.TileIndex);
                 e.Param("node_id", data.AttachedNode);
             }
@@ -1118,7 +1166,7 @@ namespace Zavala.Data {
         private void LogGlobalAlertDisplayed(AlertData data) {
             // global_alert_displayed { alert_id, node_id }
             using (var e = m_Log.NewEvent("global_alert_displayed")) {
-                e.Param("alert_id", data.Type.ToString());
+                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
                 e.Param("node_id", data.AttachedNode);
             }
         }
@@ -1126,7 +1174,7 @@ namespace Zavala.Data {
         private void LogGlobalAlertClicked(AlertData data) {
             // click_global_alert  { alert_id, node_id }
             using (var e = m_Log.NewEvent("click_global_alert")) {
-                e.Param("alert_id", data.Type.ToString());
+                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
                 e.Param("node_id", data.AttachedNode);
             }
         }
@@ -1137,7 +1185,7 @@ namespace Zavala.Data {
         private void LogInspectBuilding(BuildingData data) {
             // click_inspect_building { building_type : enum(GATE, CITY, DAIRY_FARM, GRAIN_FARM, STORAGE, PROCESSOR, EXPORT_DEPOT), building_id, tile_index : int // index in the county map }
             using (var e = m_Log.NewEvent("click_inspect_building")) {
-                e.Param("building_type", data.Type.ToString());
+                e.Param("building_type", EnumLookup.BuildingType[(int)data.Type]);
                 e.Param("building_id", data.Id);
                 e.Param("tile_index", data.TileIndex);
             }
@@ -1149,7 +1197,7 @@ namespace Zavala.Data {
         private void LogDismissInspector() {
             // dismiss_building_inspector: { building_type, building_id, tile_index }
             using (var e = m_Log.NewEvent("dismiss_building_inspector")) {
-                e.Param("building_type", m_InspectingBuilding.Type.ToString());
+                e.Param("building_type", EnumLookup.BuildingType[(int)m_InspectingBuilding.Type]);
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
             }
@@ -1179,6 +1227,7 @@ namespace Zavala.Data {
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
                 e.Param("city_name", data.Name);
+                // TODO: convert enum tostring to string lookup array?
                 e.Param("population", data.Population.ToString());
                 e.Param("water", data.Water.ToString());
                 e.Param("milk", data.Milk.ToString());
@@ -1288,7 +1337,7 @@ namespace Zavala.Data {
         private void LogCommonInspectorDisplayed() {
             // building_inspector_displayed : { building_type, building_id, tile_index}
             using (var e = m_Log.NewEvent("building_inspector_displayed")) {
-                e.Param("building_type", m_InspectingBuilding.Type.ToString());
+                e.Param("building_type", EnumLookup.BuildingType[(int)m_InspectingBuilding.Type]);
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
             }
@@ -1388,7 +1437,7 @@ namespace Zavala.Data {
         private void LogStartCutscene(int id) {
             // cutscene_started { cutscene_id }
             m_CurrentCutscene = (short)id;
-            m_CurrentCutscenePage = 0;
+            m_CurrentCutscenePage = 0;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
             using (var e = m_Log.NewEvent("cutscene_started")) {
                 e.Param("cutscene_id", id);
             }
@@ -1435,7 +1484,7 @@ namespace Zavala.Data {
             using (var e = m_Log.NewEvent("lose_game")) {
                 e.Param("lose_condition", data.EndType);
                 e.Param("county_id", data.Region); // 0-indexed
-                e.Param("county_name", ((RegionId)data.Region).ToString());
+                e.Param("county_name", EnumLookup.RegionName[data.Region]);
 
             }
         }

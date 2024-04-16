@@ -13,6 +13,33 @@ namespace Zavala
         static public readonly Quaternion CameraPerspective = Quaternion.Euler(50, 45, 0);
     }
 
+    public static class EnumLookup {
+        public static readonly string[] RegionName = new string[] {
+            "Hillside", "Forest", "Prairie", "Wetland", "Urban"
+        };
+        public static readonly string[] BuildingType = new string[] {
+            null, "GrainFarm", "DairyFarm", "City", "Road", "Digester", "Storage", "Skimmer",
+            "Obstacle", "ExportDepot", "TollBooth", "TempObstruction", "SkimmerLocation", "DigesterBroken"
+        };
+        public static readonly string[] BuildTool = new string[] {
+            "None", "Destroy", "Road", "Storage", "Digester", "Skimmer"
+        };
+        public static readonly string[] AdvisorType = new string[] {
+            "None", "Ecology", "Economy"
+        };
+        public static readonly string[] PolicyType = new string[] {
+            "RunoffPolicy", "SkimmingPolicy", "ImportTaxPolicy", "SalesTaxPolicy"
+        };
+
+        public static readonly string[] TileDirection = new string[] {
+            "Self", "SW", "S", "SE", "NE", "N", "NW"
+        };
+
+        public static readonly string[] ActionType = new string[] {
+            "Build", "Destroy"
+        };
+     }
+
     static public class GameEvents
     {
 
