@@ -8,6 +8,10 @@ namespace Zavala.Audio {
     [SysUpdate(GameLoopPhase.LateUpdate)]
     public class MusicSystem : SharedStateSystemBehaviour<MusicState, UserSettings> {
         public override void ProcessWork(float deltaTime) {
+            if (Game.Scenes.IsMainLoading() || !Game.Scenes.AreLoadDependenciesLoaded()) {
+                return;
+            }
+
             switch (m_StateA.Step) {
                 case MusicPlaybackStep.None: {
                     string nextPath = GetNextPath(out m_StateA.Mode);
