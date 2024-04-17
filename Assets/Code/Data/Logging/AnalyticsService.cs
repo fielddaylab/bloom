@@ -1137,7 +1137,7 @@ namespace Zavala.Data {
         private void LogAlertDisplayed(AlertData data) {
             // ADD? alert_displayed { alert_type, tile_id }
             using (var e = m_Log.NewEvent("alert_displayed")) {
-                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
                 e.Param("tile_id", data.TileIndex);
             }
             if (data.Type == EventActorAlertType.Bloom) {
