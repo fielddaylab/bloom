@@ -175,8 +175,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -100, y: 100}
-  m_SizeDelta: {x: 64, y: 64}
+  m_AnchoredPosition: {x: -74, y: 74}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8842747776346665649
 MonoBehaviour:
@@ -218,7 +218,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 8637392267750831923}
+  m_TargetGraphic: {fileID: 8560228839047978060}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -1313,7 +1313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8381975392610740457}
   - component: {fileID: 341068926064465249}
-  - component: {fileID: 8637392267750831923}
+  - component: {fileID: 8560228839047978060}
   m_Layer: 0
   m_Name: bg
   m_TagString: Untagged
@@ -1349,7 +1349,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6783352924884308095}
   m_CullTransparentMesh: 1
---- !u!114 &8637392267750831923
+--- !u!114 &8560228839047978060
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1358,23 +1358,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 6783352924884308095}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b929d2ed17ea3e499cba99c528388cc, type: 3}
+  m_Script: {fileID: 11500000, guid: a3cce1025f282c247b38ed00ee6ddc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9294118, g: 0.75294125, b: 0.1137255, a: 1}
+  m_Color: {r: 1, g: 0.9843137, b: 0.89411765, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Resolution: 8
-  m_StartDegrees: 0
-  m_ArcDegrees: 360
-  m_ArcFill: 1
-  m_Outline: 1
-  m_Thickness: 10
+  m_CornerRadius: 3
+  m_Resolution: 2
+  m_Outline: 0
+  m_Thickness: 1
 --- !u!1 &6865892922263676334
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,7 +1501,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 40}
+  m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5212286402944686569
 CanvasRenderer:
@@ -1533,7 +1531,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ca10ff5045736794ab053f2595acd42a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 424e1befe79040d448594383df864bdd, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

@@ -19,7 +19,7 @@ namespace Zavala.Roads {
         public DecorationRenderer RampStagedDecorations;
         // public DecorationRenderer BridgeSolidDecorations;
         public TileAdjacencyDataSet<RoadRampType> Ramps;
-        public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
+        // public TileAdjacencyMask BPCompareMask; // The old staging mask from current blueprint mode session
         public BuildingPreview MatSwap;
         public OccupiesTile Position;
     }
@@ -40,10 +40,10 @@ namespace Zavala.Roads {
             controller.RoadMeshTransform.localScale = roadData.Scale;
             controller.RoadMeshTransform.localRotation = roadData.Rotation;
 
-            if (!stageMask.IsEmpty)
-            {
-                controller.BPCompareMask = stageMask;
-            }
+            //if (!stageMask.IsEmpty)
+            //{
+            //    controller.BPCompareMask |= stageMask;
+            //}
 
             if (roadData.BridgeMesh != null) {
                 // TODO: slow to get this for every tile? consider passing in flags
@@ -55,20 +55,20 @@ namespace Zavala.Roads {
             }
 
             UpdateRampDecorations(controller, library, stageMask, true); // holo
-            UpdateRampDecorations(controller, library, flowMask, false); // solid
+            UpdateRampDecorations(controller, library, flowMask & ~stageMask, false); // solid
         }
 
-        static public void ClearBPMask(RoadNetwork network, int tileIndex)
-        {
-            for (int r = network.RoadObjects.Count - 1; r >= 0; r--)
-            {
-                if (network.RoadObjects[r].Position.TileIndex == tileIndex)
-                {
-                    network.RoadObjects[r].BPCompareMask.Clear();
-                }
-            }
+        //static public void ClearBPMask(RoadNetwork network, int tileIndex)
+        //{
+        //    for (int r = network.RoadObjects.Count - 1; r >= 0; r--)
+        //    {
+        //        if (network.RoadObjects[r].Position.TileIndex == tileIndex)
+        //        {
+        //            network.RoadObjects[r].BPCompareMask.Clear();
+        //        }
+        //    }
 
-        }
+        //}
 
 
         static private void UpdateRampDecorations(RoadInstanceController controller, RoadLibrary library, TileAdjacencyMask mask, bool isStaging)
@@ -86,8 +86,8 @@ namespace Zavala.Roads {
                     Vector3 offset = HexGrid.RotateVector(library.RampMeshOffset(), turns);
                     Quaternion rot = Quaternion.Euler(0, turns * -60, 0);
 
-                    bool blueprintOverride = controller.BPCompareMask[dir] && mask[dir];
-                    if (isStaging || blueprintOverride) { DecorationUtility.AddDecoration(controller.RampStagedDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale())); }
+                    //bool blueprintOverride = controller.BPCompareMask[dir];
+                    if (isStaging) { DecorationUtility.AddDecoration(controller.RampStagedDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale())); }
                     else { DecorationUtility.AddDecoration(controller.RampSolidDecorations, library.RampMesh(ramp), Matrix4x4.TRS(offset, rot, library.RampMeshScale())); }
                 }
             }

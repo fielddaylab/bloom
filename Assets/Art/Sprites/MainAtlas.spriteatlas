@@ -145,6 +145,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 9bf9fa9f64255fa49a7107abaaa3bddb, type: 3}
   - {fileID: 21300000, guid: 1341e9af6cc32cd4c90c6902052dc310, type: 3}
   - {fileID: 21300000, guid: 8b7f3fcfdb170e84a83ba44f443088e1, type: 3}
+  - {fileID: 21300000, guid: 424e1befe79040d448594383df864bdd, type: 3}
   - {fileID: 21300000, guid: ed9a64ff8bf249b469c9ffa0397bc16a, type: 3}
   m_PackedSpriteNamesToIndex:
   - query-mark
@@ -240,6 +241,7 @@ SpriteAtlas:
   - storage-full
   - NormalMode
   - KeyboardKey
+  - pause-questionmark
   - LensOutline
   m_RenderDataMap: {}
   m_Tag: MainAtlas

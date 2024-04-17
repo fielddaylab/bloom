@@ -34,6 +34,8 @@ MonoBehaviour:
       Content: Losing Money
     - Id: alerts.disconnected
       Content: Road Not Connected
+    - Id: alerts.dialogue
+      Content: Dialogue
     BasePath: alerts
     AllBasePaths:
     - Path: alerts

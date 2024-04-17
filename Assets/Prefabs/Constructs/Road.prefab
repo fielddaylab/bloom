@@ -5076,8 +5076,6 @@ MonoBehaviour:
   BridgeMesh: {fileID: 7760219220617682270}
   RampSolidDecorations: {fileID: 1723040191123504645}
   RampStagedDecorations: {fileID: 1379674122801371436}
-  BPCompareMask:
-    Value: 0
   MatSwap: {fileID: 7418557678709288407}
   Position: {fileID: 5074091816765350726}
 --- !u!135 &1930123993508356742

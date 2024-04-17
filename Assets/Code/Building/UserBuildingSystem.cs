@@ -242,6 +242,7 @@ namespace Zavala.Building
             RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
             TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
             TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
+            TileAdjacencyMask uncommittedSnapshot = network.Roads.ConstructInfo[tileIndex].ToCommitMask;
 
             bool brokenReplaced = false;
             if (activeTool == UserBuildTool.Digester) {
@@ -267,6 +268,7 @@ namespace Zavala.Building
                 rFlagSnapshot,
                 tFlagSnapshot,
                 flowSnapshot,
+                uncommittedSnapshot,
                 occupies.Pending
                 ));
             if (brokenReplaced) {
@@ -438,8 +440,8 @@ namespace Zavala.Building
                 // Stage direction from previous to curr, and curr to previous
 
                 RoadTileInfo idxRoadTile = network.Roads.Info[tileIndex];
-
-                if ((idxRoadTile.StagingMask | idxRoadTile.FlowMask)[dir]) {
+                RoadTileConstructionInfo idxRoadConstruct = network.Roads.ConstructInfo[tileIndex];
+                if ((idxRoadConstruct.InProgressMask | idxRoadTile.FlowMask)[dir]) {
                     Log.Msg("[UserBuildingSystem] Trying to build across a connection that already exists or is staged");
                     return false;
                 }
@@ -595,6 +597,7 @@ namespace Zavala.Building
                     RoadFlags rFlagsSnapshot = network.Roads.Info[currIndex].Flags;
                     TerrainFlags tFlagsSnapshot = grid.Terrain.Info[currIndex].Flags;
                     TileAdjacencyMask flowSnapshot = network.Roads.Info[currIndex].FlowMask;
+                    TileAdjacencyMask uncommittedSnapshot = network.Roads.ConstructInfo[currIndex].ToCommitMask;
 
                     FinalizeRoad(grid, network, pools, currIndex, isEndpoint);
 
@@ -619,6 +622,7 @@ namespace Zavala.Building
                         rFlagsSnapshot,
                         tFlagsSnapshot,
                         flowSnapshot,
+                        uncommittedSnapshot,
                         true
                         ));
 

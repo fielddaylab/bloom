@@ -424,6 +424,7 @@ namespace Zavala.Sim {
             RoadFlags rFlagSnapshot = network.Roads.Info[tileIndex].Flags;
             TerrainFlags tFlagSnapshot = grid.Terrain.Info[tileIndex].Flags;
             TileAdjacencyMask flowSnapshot = network.Roads.Info[tileIndex].FlowMask;
+            TileAdjacencyMask uncommittedSnapshot = network.Roads.ConstructInfo[tileIndex].ToCommitMask;
 
             bool wasPending = ot.Pending;
             DestroyBuilding(grid, network, hitObj, tileIndex, ot.Type, true, out TileAdjacencyMask inleadingDirsRemoved);
@@ -440,6 +441,7 @@ namespace Zavala.Sim {
                 rFlagSnapshot,
                 tFlagSnapshot,
                 flowSnapshot,
+                uncommittedSnapshot,
                 wasPending));
 
             // Add cost to receipt queue
@@ -633,12 +635,14 @@ namespace Zavala.Sim {
             }
         }
 
-        public static void RestoreSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot)
+        public static void RestoreSnapshot(RoadNetwork network, SimGridState grid, int tileIndex, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot, TileAdjacencyMask uncommittedSnapshot)
         {
             network.Roads.Info[tileIndex].Flags = rFlags;
             ref TerrainFlags tFlagRef = ref grid.Terrain.Info[tileIndex].Flags;
             tFlagRef = (tFlags & ~TerrainFlags.IsPreview) | (tFlagRef & TerrainFlags.IsPreview);
             network.Roads.Info[tileIndex].FlowMask = flowSnapshot;
+            network.Roads.ConstructInfo[tileIndex].ToCommitMask = uncommittedSnapshot;
+
         }
         
         [LeafMember("CameraInRegion")]

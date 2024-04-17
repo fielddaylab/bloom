@@ -153,11 +153,17 @@ namespace Zavala.Roads
     {
         // May be able to optimize checks if there's an 'IsValid' bool here, to apply to certain types of tiles (suppliers, requesters, roads, etc.)
         public TileAdjacencyMask FlowMask; // valid road connections (flow outward from center to given direction)
-        public TileAdjacencyMask StagingMask; // staged road connections, to be merged with flow mask upon successful road build
-        public TileDirection ForwardStagingDir; // The direction leading to the next road segment when staging (when rewinding, this is used to undo forward step)
+        // public TileAdjacencyMask StagingMask; // staged road connections, to be merged with flow mask upon successful road build
+        // public TileDirection ForwardStagingDir; // The direction leading to the next road segment when staging (when rewinding, this is used to undo forward step)
+        public TileDirection PreserveFlow;
         public ushort RegionIndex; // region identifier. used as a mask for sim updates (e.g. update region 1, update region 2, etc)
         public RoadFlags Flags;
-        public TileDirection PreserveFlow;
+    }
+
+    public struct RoadTileConstructionInfo {
+        public TileAdjacencyMask InProgressMask; // staged road connections, to be merged with flow mask upon successful road build
+        public TileAdjacencyMask ToCommitMask;
+        public TileDirection ForwardStagingDir; // The direction leading to the next road segment when staging (when rewinding, this is used to undo forward step)
     }
 
     /// <summary>
@@ -247,18 +253,19 @@ namespace Zavala.Roads
         #region Staging/Removal
 
         static public void StageRoad(RoadNetwork network, SimGridState grid, int tileIndex, TileDirection toStage) {
-            RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
-
+            ref RoadTileInfo tileInfo = ref network.Roads.Info[tileIndex];
+            ref RoadTileConstructionInfo constructInfo = ref network.Roads.ConstructInfo[tileIndex];
             // tileInfo.FlowMask[TileDirection.Self] = true; // doesn't seem to be necessary for road connection assessment
 
             Debug.Log("[StagingRoad] Begin staging tile " + tileIndex + " in directions : " + toStage.ToString());
 
-            tileInfo.StagingMask[toStage] = true;
-            tileInfo.ForwardStagingDir = toStage;
+            //tileInfo.StagingMask[toStage] = true;
+            //tileInfo.ForwardStagingDir = toStage;
 
-            Debug.Log("[StagingRoad] New staging mask for tile " + tileIndex + " : " + tileInfo.StagingMask.ToString());
+            constructInfo.InProgressMask[toStage] = true;
+            constructInfo.ForwardStagingDir = toStage;
 
-            network.Roads.Info[tileIndex] = tileInfo;
+            Debug.Log("[StagingRoad] New staging mask for tile " + tileIndex + " : " + constructInfo.InProgressMask.ToString());
 
             // TODO: Handle ramps appearing on non-road tiles
             RoadUtility.UpdateRoadVisuals(network, tileIndex);
@@ -267,12 +274,12 @@ namespace Zavala.Roads
 
         static public void UnstageRoad(RoadNetwork network, SimGridState grid, int tileIndex) {
             RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
-
-            tileInfo.StagingMask.Clear();
+            ref RoadTileConstructionInfo constructInfo = ref network.Roads.ConstructInfo[tileIndex];
+            constructInfo.InProgressMask.Clear();
 
             Debug.Log("[StagingRoad] Unstaged tile " + tileIndex);
 
-            network.Roads.Info[tileIndex] = tileInfo;
+            //network.Roads.Info[tileIndex] = tileInfo;
 
             // remove road object
             BuildingPools pools = Game.SharedState.Get<BuildingPools>();
@@ -280,29 +287,30 @@ namespace Zavala.Roads
         }
 
         static public void UnstageForward(RoadNetwork network, SimGridState grid, int tileIndex) {
-            RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+            ref RoadTileInfo tileInfo = ref network.Roads.Info[tileIndex];
+            ref RoadTileConstructionInfo constructInfo = ref network.Roads.ConstructInfo[tileIndex];
 
-            tileInfo.StagingMask[tileInfo.ForwardStagingDir] = false;
-            tileInfo.ForwardStagingDir = TileDirection.Self;
+            constructInfo.InProgressMask[constructInfo.ForwardStagingDir] = false;
+            constructInfo.ForwardStagingDir = TileDirection.Self;
 
-            Debug.Log("[StagingRoad] Unstaging forward of tile " + tileIndex + " || new dirs: " + tileInfo.StagingMask.ToString());
+            
+            Debug.Log("[StagingRoad] Unstaging forward of tile " + tileIndex + " || new dirs: " + constructInfo.InProgressMask.ToString());
 
-            network.Roads.Info[tileIndex] = tileInfo;
 
             RoadUtility.UpdateRoadVisuals(network, tileIndex);
         }
 
         static public void FinalizeRoad(RoadNetwork network, SimGridState grid, BuildingPools pools, int tileIndex, bool isEndpoint, Material holoMat) {
-            RoadTileInfo tileInfo = network.Roads.Info[tileIndex];
+            ref RoadTileInfo tileInfo = ref network.Roads.Info[tileIndex];
+            ref RoadTileConstructionInfo constructInfo = ref network.Roads.ConstructInfo[tileIndex];
             bool isToll = (grid.Terrain.Info[tileIndex].Flags & TerrainFlags.IsToll) != 0;
 
-            RoadUtility.MergeStagedRoadMask(ref tileInfo);
+            RoadUtility.MergeStagedRoadMask(ref tileInfo, ref constructInfo);
             tileInfo.Flags |= RoadFlags.IsAnchor; // roads may connect with other roads
             if (!isEndpoint || isToll) {
                 tileInfo.Flags |= RoadFlags.IsRoad; // endpoints should not act as roads (unless it is a road or toll)
             }
 
-            network.Roads.Info[tileIndex] = tileInfo;
 
             network.UpdateNeeded = true;
 
@@ -401,11 +409,12 @@ namespace Zavala.Roads
         static public void UpdateRoadVisuals(RoadNetwork network, int roadTileIndex)
         {
             RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
+            RoadTileConstructionInfo constructInfo = network.Roads.ConstructInfo[roadTileIndex];
             for (int r = network.RoadObjects.Count - 1; r >= 0; r--)
             {
                 if (network.RoadObjects[r].Position.TileIndex == roadTileIndex)
                 {
-                    RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
+                    RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, constructInfo.InProgressMask | constructInfo.ToCommitMask);
                 }
             }
 
@@ -416,7 +425,8 @@ namespace Zavala.Roads
             for (int r = network.RoadObjects.Count - 1; r >= 0; r--) {
                 int roadTileIndex = network.RoadObjects[r].Position.TileIndex;
                 RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
-                RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
+                RoadTileConstructionInfo constructInfo = network.Roads.ConstructInfo[roadTileIndex];
+                RoadVisualUtility.UpdateRoadMesh(network.RoadObjects[r], network.Library, tileInfo.FlowMask, constructInfo.InProgressMask | constructInfo.ToCommitMask);
                 SimWorldUtility.QueueVisualUpdate((ushort) roadTileIndex, VisualUpdateType.Road);
             }
         }
@@ -492,14 +502,16 @@ namespace Zavala.Roads
             }
         }
 
-        static public void MergeStagedRoadMask(ref RoadTileInfo info) {
+        static public void MergeStagedRoadMask(ref RoadTileInfo info, ref RoadTileConstructionInfo constructInfo) {
             // For each direction, set the flow to true if either existing road or staged road unlocks that direction
             Debug.Log("[StagingRoad] Merging staged mask...");
 
-            info.FlowMask |= info.StagingMask;
+            info.FlowMask |= constructInfo.InProgressMask;
+            constructInfo.ToCommitMask |= constructInfo.InProgressMask;
 
-            info.StagingMask.Clear();
-            info.ForwardStagingDir = TileDirection.Self; // necessary?
+            constructInfo.InProgressMask.Clear();
+            constructInfo.ForwardStagingDir = TileDirection.Self; // necessary?
+
 
             Debug.Log("[StagingRoad] Final merged mask: " + info.FlowMask.ToString());
         }
@@ -603,6 +615,7 @@ namespace Zavala.Roads
             network.RoadObjects.PushBack(road);
             int roadTileIndex = road.Position.TileIndex;
             RoadTileInfo tileInfo = network.Roads.Info[roadTileIndex];
+            RoadTileConstructionInfo constructInfo = network.Roads.ConstructInfo[roadTileIndex];
 
             road.Ramps = Tile.GatherAdjacencySet<ushort, RoadRampType>(roadTileIndex, grid.Terrain.Height, grid.HexSize, (in ushort c, in ushort a, out RoadRampType o) => {
                 if (c < a - 50) {
@@ -618,7 +631,7 @@ namespace Zavala.Roads
             });
 
 
-            RoadVisualUtility.UpdateRoadMesh(road, network.Library, tileInfo.FlowMask, tileInfo.StagingMask);
+            RoadVisualUtility.UpdateRoadMesh(road, network.Library, tileInfo.FlowMask, constructInfo.InProgressMask | constructInfo.ToCommitMask);
             SimWorldUtility.QueueVisualUpdate((ushort) roadTileIndex, VisualUpdateType.Road);
         }
 

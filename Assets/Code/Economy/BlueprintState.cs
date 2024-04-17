@@ -44,9 +44,10 @@ namespace Zavala.Economy
         public RoadFlags RoadFlagSnapshot;
         public TerrainFlags TerrainFlagSnapshot;
         public TileAdjacencyMask FlowMaskSnapshot;
+        public TileAdjacencyMask UncommittedMaskSnapshot;
         public bool WasPending;
 
-        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, TileAdjacencyMask inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot, bool wasPending)
+        public ActionCommit(BuildingType bType, ActionType aType, int cost, int tileIndex, TileAdjacencyMask inleadingRemoved, GameObject builtObj, RoadFlags rFlags, TerrainFlags tFlags, TileAdjacencyMask flowSnapshot, TileAdjacencyMask uncommittedSnapshot, bool wasPending)
         {
             BuildType = bType;
             ActionType = aType;
@@ -58,6 +59,7 @@ namespace Zavala.Economy
             RoadFlagSnapshot = rFlags;
             TerrainFlagSnapshot = tFlags;
             FlowMaskSnapshot = flowSnapshot;
+            UncommittedMaskSnapshot = uncommittedSnapshot;
             WasPending = wasPending;
         }
     }
@@ -228,7 +230,7 @@ namespace Zavala.Economy
                         }
 
                         // Restore flags and flow masks
-                        SimDataUtility.RestoreSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot, commit.FlowMaskSnapshot);
+                        SimDataUtility.RestoreSnapshot(network, grid, commit.TileIndex, commit.RoadFlagSnapshot, commit.TerrainFlagSnapshot, commit.FlowMaskSnapshot, commit.UncommittedMaskSnapshot);
 
                         break;
                     case ActionType.Destroy:
@@ -271,7 +273,7 @@ namespace Zavala.Economy
             }
 
             // Restore flags and flow masks
-            SimDataUtility.RestoreSnapshot(network, grid, prevCommit.TileIndex, prevCommit.RoadFlagSnapshot, prevCommit.TerrainFlagSnapshot, prevCommit.FlowMaskSnapshot);
+            SimDataUtility.RestoreSnapshot(network, grid, prevCommit.TileIndex, prevCommit.RoadFlagSnapshot, prevCommit.TerrainFlagSnapshot, prevCommit.FlowMaskSnapshot, prevCommit.UncommittedMaskSnapshot);
             RoadUtility.UpdateRoadVisuals(network, prevCommit.TileIndex);
 
 
@@ -317,6 +319,7 @@ namespace Zavala.Economy
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             BuildToolState toolState = Game.SharedState.Get<BuildToolState>();
 
+            SimBuffer.Clear(network.Roads.ConstructInfo);
             // Process commits
             foreach (var commitChain in blueprintState.Commits)
             {
@@ -355,7 +358,7 @@ namespace Zavala.Economy
                     // Process any confirm-time things
                     if (builtType == BuildingType.Road)
                     {
-                        RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
+                        // RoadVisualUtility.ClearBPMask(network, commitAction.TileIndex);
                         RoadUtility.UpdateRoadVisuals(network, commitAction.TileIndex);
                         if (commitAction.ActionType == ActionType.Build) {
                             VfxUtility.PlayEffect(SimWorldUtility.GetTileCenter(commitAction.TileIndex), EffectType.Poof_Road);
@@ -538,6 +541,7 @@ namespace Zavala.Economy
                 Undo(blueprintState, shop, grid, network);
             }
             ClearBuildCommits(blueprintState);
+            SimBuffer.Clear(network.Roads.ConstructInfo);
         }
 
         private static void ClearBuildCommits(BlueprintState blueprintState)
