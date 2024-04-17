@@ -1148,7 +1148,7 @@ namespace Zavala.Data {
         private void LogAlertClicked(AlertData data) {
             // ADD? click_alert { alert_type, tile_id, node_id }
             using (var e = m_Log.NewEvent("click_alert")) {
-                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
                 e.Param("tile_id", data.TileIndex);
                 e.Param("node_id", data.AttachedNode);
             }
@@ -1166,7 +1166,7 @@ namespace Zavala.Data {
         private void LogGlobalAlertDisplayed(AlertData data) {
             // global_alert_displayed { alert_id, node_id }
             using (var e = m_Log.NewEvent("global_alert_displayed")) {
-                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
                 e.Param("node_id", data.AttachedNode);
             }
         }
@@ -1174,7 +1174,7 @@ namespace Zavala.Data {
         private void LogGlobalAlertClicked(AlertData data) {
             // click_global_alert  { alert_id, node_id }
             using (var e = m_Log.NewEvent("click_global_alert")) {
-                e.Param("alert_id", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
                 e.Param("node_id", data.AttachedNode);
             }
         }
