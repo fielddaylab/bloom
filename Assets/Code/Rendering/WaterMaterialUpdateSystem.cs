@@ -43,10 +43,16 @@ namespace Zavala.World {
                 if (isDeep) {
                     topMaterial = materialAssets.TopDeepMaterial.Find(ratio);
                     sideMaterial = materialAssets.WaterfallMaterial.Find(ratio);
+                    if (tile.DepthObject) {
+                        tile.DepthObject.WaterRenderer.material = materialAssets.SideDeepMaterial.Find(ratio);
+                    }
                 }
                 else {
                     topMaterial = materialAssets.TopMaterial.Find(ratio);
                     sideMaterial = materialAssets.WaterfallMaterial.Find(ratio);
+                    if (tile.DepthObject) {
+                        tile.DepthObject.WaterRenderer.material = materialAssets.SideMaterial.Find(ratio);
+                    }
                 }
 
                 tile.SurfaceRenderer.sharedMaterial = topMaterial;

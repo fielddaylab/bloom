@@ -1011,7 +1011,7 @@ MonoBehaviour:
       m_Source: toll_booth_3to2_2
       m_HashValue: 1908426727
     Type: 10
-  EdgeVisualUpdateSet: 0d0011001e001f0020003c005e00
+  EdgeVisualUpdateSet: 0d001e001f0020003c00
   WaterEmitters:
   - LocalTileIndex: 93
     Variant: 0

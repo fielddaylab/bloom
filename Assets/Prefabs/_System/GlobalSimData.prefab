@@ -105,6 +105,7 @@ MonoBehaviour:
   Offset: {x: 0, y: 0, z: 0}
   TileRadius: 0.5
   DefaultWaterPrefab: {fileID: 7097652779095066658, guid: 5887f51366947f240ae408caadcb0af1, type: 3}
+  DefaultDepthObject: {fileID: 5734046746711203440, guid: 2f5ca9c4061fd4845b02a5168ff01e79, type: 3}
   WaterProxyPrefab: {fileID: 8533110041535147668, guid: c19b601fca869a34089440ba0eac7a9a, type: 3}
   WaterAudioPrefabs:
   - {fileID: 8794654112055953242, guid: 8c1dfe4a070cc90488502caec0423680, type: 3}

@@ -288,7 +288,7 @@ MonoBehaviour:
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
-    Flags: 32
+    Flags: 33
     Height: 200
   - RegionIndex: 65535
     Category: 2
@@ -802,8 +802,8 @@ MonoBehaviour:
       m_HashValue: 1167550896
     Type: 13
     LocationName:
-      m_Source: 
-      m_HashValue: 0
+      m_Source: location.digesterBroken
+      m_HashValue: 1163518798
     CharacterId:
       m_Source: 
       m_HashValue: 0
@@ -1141,7 +1141,7 @@ MonoBehaviour:
       m_Source: toll_booth_2to3_2
       m_HashValue: 3866290121
     Type: 10
-  EdgeVisualUpdateSet: 060007001e00260030006600700071007200
+  EdgeVisualUpdateSet: 060007001e00660070007100
   WaterEmitters:
   - LocalTileIndex: 12
     Variant: 2

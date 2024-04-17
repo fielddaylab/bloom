@@ -419,7 +419,7 @@ MonoBehaviour:
     Category: 2
     SubCategory: 0
     Flags: 72
-    Height: 250
+    Height: 200
   - RegionIndex: 65535
     Category: 1
     SubCategory: 1
@@ -829,7 +829,7 @@ MonoBehaviour:
     Category: 1
     SubCategory: 1
     Flags: 2
-    Height: 250
+    Height: 300
   - RegionIndex: 65535
     Category: 0
     SubCategory: 0
@@ -1576,7 +1576,7 @@ MonoBehaviour:
       m_Source: toll_booth_3to4
       m_HashValue: 1368788856
     Type: 10
-  EdgeVisualUpdateSet: 0b0013001500160017001d001e00200021002200270028002d00310032003d00450048005400600061006d00780084009700a100c500
+  EdgeVisualUpdateSet: 0b001300150016001d001e00200027002800310032003d0048005400600061006d0078008400
   WaterEmitters:
   - LocalTileIndex: 146
     Variant: 1

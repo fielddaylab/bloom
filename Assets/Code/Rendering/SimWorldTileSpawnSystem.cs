@@ -74,11 +74,14 @@ namespace Zavala.World {
                 // If deep water, modify default material
                 if ((tileInfo.Flags & TerrainFlags.NonBuildable) != 0) {
                     wTile.SurfaceRenderer.sharedMaterial = materialAssets.TopDeepMaterial.Find(0);
+                    WaterTileUtility.TrySpawnDepthObject(wTile, grid, world.DefaultDepthObject, materialAssets.SideDeepMaterial.Find(0));
                 } else {
                     wTile.SurfaceRenderer.sharedMaterial = materialAssets.TopMaterial.Find(0);
+                    WaterTileUtility.TrySpawnDepthObject(wTile, grid, world.DefaultDepthObject, materialAssets.SideMaterial.Find(0));
                 }
 
                 WaterTileUtility.UpdateWaterfallEdges(wTile, grid, materialAssets);
+                
             }
         }
 

@@ -360,6 +360,8 @@ MonoBehaviour:
   TopMaterial: {fileID: 11400000, guid: 0787aaccb5e7e464c954254134283b26, type: 2}
   WaterfallMaterial: {fileID: 11400000, guid: f89baba2d595fa34db52df1088109dff, type: 2}
   TopDeepMaterial: {fileID: 11400000, guid: 65367a65ace84be45917d8f00fe6afee, type: 2}
+  SideMaterial: {fileID: 11400000, guid: b19740251e0458c4c932408faceeeb21, type: 2}
+  SideDeepMaterial: {fileID: 11400000, guid: 872fac51cb9dcf146bdf4ab3de30a20f, type: 2}
   WaterfallOffset: {x: 0, y: 0, z: -0.3}
   FancyShader: {fileID: -6465566751694194690, guid: 27b042674da390c46a1ff4cc2317d5f2, type: 3}
   SimpleShader: {fileID: -6465566751694194690, guid: b17b7869b28f03942862bc170d7f3a98, type: 3}

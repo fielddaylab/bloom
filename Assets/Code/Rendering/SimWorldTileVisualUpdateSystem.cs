@@ -46,6 +46,7 @@ namespace Zavala.World {
                     case VisualUpdateType.Water: {
                         WaterTile wTile = m_StateA.Tiles[record.TileIndex].GetComponent<WaterTile>();
                         WaterTileUtility.UpdateWaterfallEdges(wTile, m_StateB, Game.SharedState.Get<WaterMaterialData>());
+                        WaterTileUtility.UpdateDepthObject(wTile, m_StateB);
                         break;
                     }
 

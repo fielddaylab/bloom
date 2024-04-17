@@ -7,6 +7,7 @@ using System.IO;
 using UnityEngine;
 using Zavala.Sim;
 using Zavala.Rendering;
+using BeauPools;
 
 namespace Zavala.Editor {
     static public class RegionImport {
@@ -498,7 +499,9 @@ namespace Zavala.Editor {
                     // get corners
 
                     if ((tileInfo.Flags & TerrainFlags.IsWater) != 0) {
-                        visualUpdateEdges.Add((ushort) idx);
+                        if (IsTowardsCamera(borderMask)) {
+                            visualUpdateEdges.Add((ushort)idx);
+                        }
                     }
                 }
             }

@@ -9,6 +9,8 @@ namespace Zavala.World {
         public InterpolatedMaterial TopMaterial;
         public InterpolatedMaterial WaterfallMaterial;
         public InterpolatedMaterial TopDeepMaterial;
+        public InterpolatedMaterial SideMaterial;
+        public InterpolatedMaterial SideDeepMaterial;
 
         public Vector3 WaterfallOffset;
 
@@ -19,6 +21,8 @@ namespace Zavala.World {
             TopMaterial.Load();
             WaterfallMaterial.Load();
             TopDeepMaterial.Load();
+            SideMaterial.Load();
+            SideDeepMaterial.Load();
         }
 
         public void SetShaderMode(bool highQuality) {

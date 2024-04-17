@@ -711,7 +711,7 @@ MonoBehaviour:
       m_Source: toll_booth_1to5
       m_HashValue: 200563685
     Type: 10
-  EdgeVisualUpdateSet: 09001100170019001f00200027002f00
+  EdgeVisualUpdateSet: 0900110019002000
   WaterEmitters:
   - LocalTileIndex: 25
     Variant: 0
