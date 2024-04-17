@@ -1187,7 +1187,7 @@ namespace FieldDay.Scenes {
 
                 // dependencies
 
-                while(!AreDependenciesLoaded()) {
+                while(!AreDependenciesAndStreamingLoaded()) {
                     yield return null;
                 }
 
@@ -1228,7 +1228,7 @@ namespace FieldDay.Scenes {
 
                 // one more check for dependencies
 
-                while (!AreDependenciesLoaded()) {
+                while (!AreDependenciesAndStreamingLoaded()) {
                     yield return null;
                 }
 
@@ -1263,7 +1263,7 @@ namespace FieldDay.Scenes {
 
         #region Dependencies
 
-        private bool AreDependenciesLoaded() {
+        private bool AreDependenciesAndStreamingLoaded() {
             for(int i = 0; i < m_Dependencies.Count; i++) {
                 if (!m_Dependencies[i].IsLoaded()) {
                     return false;
@@ -1276,7 +1276,24 @@ namespace FieldDay.Scenes {
 
             return true;
         }
-        
+
+        /// <summary>
+        /// Returns if all load dependencies loaded.
+        /// </summary>
+        public bool AreLoadDependenciesLoaded() {
+            for (int i = 0; i < m_Dependencies.Count; i++) {
+                if (!m_Dependencies[i].IsLoaded()) {
+                    return false;
+                }
+            }
+
+            if (Streaming.IsLoading()) {
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Registers a dependency, which must be completed before scenes can be late-enabled and readied.
         /// </summary>
