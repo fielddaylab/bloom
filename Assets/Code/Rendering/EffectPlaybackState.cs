@@ -9,11 +9,13 @@ namespace Zavala.Rendering {
         public ParticleSystem PoofEffectRoads;
         public ParticleSystem PoopRunoff;
         public ParticleSystem AlgaeRemove;
+        public ParticleSystem RoadAnchorInteract;
 
         public int DefaultPoofCount;
         public int DefaultPoofRoadCount;
         public int DefaultPoopRunoffCount;
         public int DefaultAlgaeCount;
+        public int DefaultRoadAnchorInteractCount;
 
         public RingBuffer<EffectRequest> Requests = new RingBuffer<EffectRequest>(8, RingBufferMode.Expand);
     }
@@ -28,7 +30,8 @@ namespace Zavala.Rendering {
         Poof,
         Poof_Road,
         Poop_Runoff,
-        Algae_Remove
+        Algae_Remove,
+        Road_AnchorInteract
     }
 
     static public class VfxUtility {

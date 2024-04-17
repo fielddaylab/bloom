@@ -96,7 +96,7 @@ namespace Zavala.Sim
 
         unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             reader.Read(ref CurrState);
-            if (consts.Version < 2) {
+            if (consts.Version >= 2) {
                 reader.Read(ref CurrFlags);
             }
         }

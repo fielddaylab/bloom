@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace FieldDay.Editor {
@@ -8,6 +9,7 @@ namespace FieldDay.Editor {
     public class BuildConfig : ScriptableObject {
         public string[] BranchNamePatterns;
         public bool DevelopmentBuild;
+        public ManagedStrippingLevel StrippingLevel = ManagedStrippingLevel.Medium;
 
         [Multiline]
         public string CustomDefines;

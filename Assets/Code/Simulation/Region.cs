@@ -63,9 +63,34 @@ namespace Zavala.Sim {
 
             Vector3 center = (maxWorld + minWorld) / 2;
             Vector3 size = maxWorld - minWorld + worldSpace.Scale;
+            size.x += expand;
+            size.z += expand;
 
             Bounds bounds = new Bounds(center, size);
-            bounds.Expand(expand);
+            return bounds;
+        }
+
+        static public unsafe BoundingSphere CalculateApproximateWorldSphere(UnsafeSpan<RegionEdgeInfo> borders, Vector3 center, in HexGridSize grid, in HexGridWorldSpace worldSpace, ushort maxHeight, float expand) {
+            Vector3* edgePos = stackalloc Vector3[(int) borders.Length];
+
+            for(int i = 0; i < borders.Length; i++) {
+                edgePos[i] = HexVector.ToWorld(grid.FastIndexToPos(borders[i].Index), maxHeight, worldSpace);
+            }
+
+            float radius = 0;
+            float tempRadius;
+            for(int i = 0; i < borders.Length; i++) {
+                tempRadius = Vector3.Distance(center, edgePos[i]);
+                if (radius < tempRadius) {
+                    radius = tempRadius;
+                }
+            }
+
+            radius += expand / 2;
+
+            center.y = 0;
+
+            BoundingSphere bounds = new BoundingSphere(center, radius);
             return bounds;
         }
     }

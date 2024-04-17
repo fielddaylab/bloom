@@ -34,11 +34,14 @@ namespace Zavala.Rendering {
                     return m_State.DefaultPoofRoadCount;
                 }
                 case EffectType.Poop_Runoff: {
-                        return m_State.DefaultPoopRunoffCount;
+                    return m_State.DefaultPoopRunoffCount;
                 }
                 case EffectType.Algae_Remove: {
-                        return m_State.DefaultAlgaeCount;
-                    }
+                    return m_State.DefaultAlgaeCount;
+                }
+                case EffectType.Road_AnchorInteract: {
+                    return m_State.DefaultRoadAnchorInteractCount;
+                }
                 default: {
                     Log.Warn("[EffectPlaybackSystem] No effects loaded for type '{0}'", type);
                     return 0;
@@ -58,7 +61,10 @@ namespace Zavala.Rendering {
                     return m_State.PoopRunoff;
                 }
                 case EffectType.Algae_Remove: {
-                        return m_State.AlgaeRemove;
+                    return m_State.AlgaeRemove;
+                }
+                case EffectType.Road_AnchorInteract: {
+                    return m_State.RoadAnchorInteract;
                 }
                 default: {
                     Log.Warn("[EffectPlaybackSystem] No effects loaded for type '{0}'", type);

@@ -57,6 +57,7 @@ namespace Zavala.World {
         // region data
 
         [NonSerialized] public SimBuffer<Bounds> RegionBounds;
+        [NonSerialized] public SimBuffer<BoundingSphere> RegionSpheres;
         [NonSerialized] public uint RegionCount; // cached from SimDataComponent
         [NonSerialized] public uint RegionCullingMask;
         [NonSerialized] public Rect CameraBounds;
@@ -107,6 +108,7 @@ namespace Zavala.World {
             SimGridState grid = ZavalaGame.SimGrid;
             WorldSpace = new HexGridWorldSpace(grid.HexSize, Scale, Offset);
             RegionBounds = SimBuffer.Create<Bounds>(grid.HexSize);
+            RegionSpheres = SimBuffer.Create<BoundingSphere>(grid.HexSize);
             Palettes = new RegionPrefabPalette[RegionInfo.MaxRegions];
             RegionCount = grid.RegionCount;
             RegionCullingMask = 0;

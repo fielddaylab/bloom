@@ -537,6 +537,7 @@ MonoBehaviour:
   - {fileID: 426076422724124939}
   Text: {fileID: 4101979357944302321}
   NextHint: {fileID: 7877248342217407840}
+  MusicPath: music/cutscene-final.mp3
 --- !u!1 &7877248342217407840
 GameObject:
   m_ObjectHideFlags: 0

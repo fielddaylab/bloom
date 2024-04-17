@@ -23,17 +23,17 @@ namespace FieldDay.Editor {
             if (isBatchMode) {
                 PlayerSettings.SplashScreen.show = false;
                 PlayerSettings.SplashScreen.showUnityLogo = false;
+                EditorUserBuildSettings.connectProfiler = false;
+                EditorUserBuildSettings.buildWithDeepProfilingSupport = false;
                 PlayerSettings.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
             }
 
             if (EditorUserBuildSettings.development) {
                 PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
                 PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
-                PlayerSettings.SetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup, ManagedStrippingLevel.Medium);
             } else {
                 PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly;
                 PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Off;
-                PlayerSettings.SetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup, ManagedStrippingLevel.Medium);
             }
 
             Debug.LogFormat("[AdjustSettingsBuildProcessor] Building branch '{0}', development mode {1}", branch, EditorUserBuildSettings.development);

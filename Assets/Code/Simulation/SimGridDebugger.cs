@@ -26,6 +26,7 @@ namespace Zavala.Debugging {
 
             for (int i = 0; i < m_StateA.RegionCount; i++) {
                 DebugDraw.AddBounds(m_StateB.RegionBounds[i], (m_StateB.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red, 1, 0, true, -1);
+                DebugDraw.AddSphere(m_StateB.RegionSpheres[i].position, m_StateB.RegionSpheres[i].radius, ((m_StateB.RegionCullingMask & (1 << i)) != 0 ? Color.green : Color.red).WithAlpha(0.2f), 0, true, -1);
             }
         }
 

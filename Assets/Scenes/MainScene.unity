@@ -10900,6 +10900,14 @@ PrefabInstance:
       propertyPath: Scale.y
       value: 0.0035
       objectReference: {fileID: 0}
+    - target: {fileID: 2517140936885967471, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
+      propertyPath: BottomBounds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517140936885967471, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
+      propertyPath: BoundsExpand
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2517140938799783801, guid: d8663495fd4585c4fa3b1935f8100008, type: 3}
       propertyPath: m_HoloMaterial
       value: 
@@ -11483,7 +11491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7297974679213213785, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 385.32
       objectReference: {fileID: 0}
     - target: {fileID: 7297974679213213785, guid: 976131e4d37ebdb47aa45193e59a170d, type: 3}
       propertyPath: m_AnchoredPosition.y

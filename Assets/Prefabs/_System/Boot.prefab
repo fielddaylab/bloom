@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8159169011444544349}
-  - component: {fileID: 49855547215680739}
   m_Layer: 0
   m_Name: Rendering
   m_TagString: Untagged
@@ -32,19 +31,6 @@ Transform:
   m_Father: {fileID: 3575173300138732489}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &49855547215680739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1387615988526915838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55e6a5e5538389742ad6bb6c51f52cb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_InitialCapacity: 64
 --- !u!1 &1662202873881693931
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,6 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d50dbcc54e5bbaa49a84a046bd8b8d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameWinToTitle: 0
 --- !u!1 &3575173299602382574
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,6 +565,7 @@ MonoBehaviour:
     MessagingSenderId: 
     AppId: 
     MeasurementId: 
+  m_Testing: 0
 --- !u!1001 &1254169883870357413
 PrefabInstance:
   m_ObjectHideFlags: 0
