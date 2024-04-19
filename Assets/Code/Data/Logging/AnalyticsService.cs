@@ -19,6 +19,9 @@ using Zavala.Sim;
 using BeauPools;
 using Zavala.Cards;
 using System.Text;
+using Zavala.Roads;
+using Zavala.World;
+using BeauData;
 
 namespace Zavala.Data {
 
@@ -67,6 +70,12 @@ namespace Zavala.Data {
         NOT_ENOUGH
     }
 
+    public enum TerrainType : byte {
+        Land,
+        Water,
+        DeepWater
+    }
+
     public struct ZoomData {
         public float Start;
         public float End;
@@ -78,19 +87,27 @@ namespace Zavala.Data {
         }
     }
 
-    public struct BuildOrderData {
+    public struct MapTile {
+        public int TileIndex;
+        public ushort Height;
+        public TerrainType TileType;
+        public TileAdjacencyMask Connections;
+        public BuildingType Building;
+    }
+
+    public struct BuildTile {
         //     Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
         public BuildingData Building;
-        public int Cost;
         public TileAdjacencyMask Connections;
+        public int Cost;
         public bool IsDestroying;
-        public BuildOrderData(BuildingType type, string id, int idx, int cost, TileAdjacencyMask mask, ActionType action) {
+        public BuildTile(BuildingType type, string id, int idx, int cost, TileAdjacencyMask mask, ActionType action) {
             Building = new BuildingData(type, id, idx);
             Cost = cost;
             Connections = mask;
             IsDestroying = (action == ActionType.Destroy);
         }
-        public BuildOrderData(ActionCommit commit) {
+        public BuildTile(ActionCommit commit) {
             Building = new BuildingData(commit.BuildType, "", commit.TileIndex);
             Cost = commit.Cost;
             Connections = commit.FlowMaskSnapshot;
@@ -113,6 +130,11 @@ namespace Zavala.Data {
             Id = "";
             Type = BuildingType.None;
         }
+    }
+
+    [Serializable]
+    public struct CountyBuildMap {
+        public List<BuildTile> Tiles;
     }
 
     public struct CityData {
@@ -360,7 +382,7 @@ namespace Zavala.Data {
     }
 
     public class AnalyticsService : MonoBehaviour {
-        private const ushort CLIENT_LOG_VERSION = 1;
+        private const ushort CLIENT_LOG_VERSION = 2;
 
         private static class Mode {
             public static readonly string View = "VIEW";
@@ -1011,13 +1033,57 @@ namespace Zavala.Data {
         }
 
         private void LogRegionUnlocked(string newRegion) {
-            // county_unlock { county_name, county_state : CountyBuildMap }
-            using (var e = m_Log.NewEvent("county_unlock")) {
+            // county_unlocked { county_name, county_state : CountyBuildMap }
+            using (var e = m_Log.NewEvent("county_unlocked")) {
                 e.Param("county_name", newRegion);
                 // TODO: e.Param("county_state", );
             }
         }
 
+        private StringBuilder GenerateCountyState(ushort regionIndex) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+                /*
+                 * county_state: 
+                 * [
+                 * {
+                 *      idx: 
+                 *      height:
+                 *      type: 
+                 *      building:  
+                 * }
+                 * ]
+                 */
+
+                psb.Builder.Append('[');
+                foreach (OccupiesTile ot in Game.Components.ComponentsOfType<OccupiesTile>()) {
+                    if (ot.RegionIndex != regionIndex) continue;
+                    psb.Builder.Append('{');
+                    psb.Builder.Append("idx:").Append(ot.TileIndex.ToString()).Append(',');
+                    psb.Builder.Append("height:").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
+                    psb.Builder.Append("type:");
+                    TerrainFlags flags = grid.Terrain.Info[ot.TileIndex].Flags;
+                    if ((flags & TerrainFlags.IsWater) != 0) {
+                        if ((flags & TerrainFlags.NonBuildable) != 0) {
+                            psb.Builder.Append("DEEP_WATER");
+                        } else {
+                            psb.Builder.Append("WATER");
+                        }
+                    } else {
+                        psb.Builder.Append("LAND");
+                    }
+                    psb.Builder.Append(',');
+
+                    psb.Builder.Append("connections:").Append(EnumLookup.BuildingType[(int)ot.Type]);
+                    psb.Builder.Append("building:").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
+                    psb.Builder.Append('}');             
+                }
+                psb.Builder.Append(']');
+                return psb;
+            }
+        }
         private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
             using (var e = m_Log.NewEvent("unlock_building_type")) {
