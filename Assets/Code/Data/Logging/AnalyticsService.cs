@@ -22,6 +22,7 @@ using System.Text;
 using Zavala.Roads;
 using Zavala.World;
 using BeauData;
+using FieldDay.Components;
 
 namespace Zavala.Data {
 
@@ -76,11 +77,11 @@ namespace Zavala.Data {
         DeepWater
     }
 
-    public struct ZoomData {
+    public struct ZoomVolData {
         public float Start;
         public float End;
         public bool UsedWheel;
-        public ZoomData(float start, float end, bool usedWheel) {
+        public ZoomVolData(float start, float end, bool usedWheel) {
             Start = start;
             End = end;
             UsedWheel = usedWheel;
@@ -482,6 +483,7 @@ namespace Zavala.Data {
             ZavalaGame.Events
                 // Main Menu
                 .Register<MenuInteractionType>(GameEvents.MainMenuInteraction, HandleMenuInteraction)
+                .Register<ZoomVolData>(GameEvents.VolumeChanged, LogVolumeChanged)
                 .Register<string>(GameEvents.ProfileStarting, SetUserCode)
                 .Register<bool>(GameEvents.FullscreenToggled, LogFullscreenToggled)
                 .Register<bool>(GameEvents.QualityToggled, LogQualityToggled)
@@ -528,8 +530,8 @@ namespace Zavala.Data {
                 .Register<SkimmerData>(GameEvents.SkimmerChanged, HandleSkimmer)
                 // ADD?                
                 .Register<ushort>(GameEvents.RegionSwitched, LogRegionChanged)
-                .Register<string>(GameEvents.RegionUnlocked, LogRegionUnlocked)
-                .Register<ZoomData>(GameEvents.SimZoomChanged, LogZoom)
+                .Register<ushort>(GameEvents.RegionUnlocked, LogRegionUnlocked)
+                .Register<ZoomVolData>(GameEvents.SimZoomChanged, LogZoom)
                 // Inspect
                 .Register<BuildingData>(GameEvents.InspectorOpened, LogInspectBuilding)
                 .Register(GameEvents.GenericInspectorDisplayed, LogCommonInspectorDisplayed)
@@ -586,6 +588,7 @@ namespace Zavala.Data {
                 ClientLogVersion = CLIENT_LOG_VERSION
             });
             m_Log.SetUserId(userCode);
+            m_Log.NewEvent("session_start");
         }
 
         private void OnDestroy() {
@@ -755,6 +758,8 @@ namespace Zavala.Data {
             }
         }
 
+
+
         private void LogClickedCredits() {
             // click_credits { }
             m_Log.Log("click_credits");
@@ -801,12 +806,20 @@ namespace Zavala.Data {
 
         private void LogGameStarted() {
             // game_started { music_volume : float, fullscreen_enabled : bool, hq_graphics_enabled : bool, map_state : BuildMap }
-            using (var e = m_Log.NewEvent("click_return_main_menu")) {
+            using (var e = m_Log.NewEvent("game_start")) {
                 UserSettings s = Game.SharedState.Get<UserSettings>();
                 e.Param("music_volume", s.MusicVolume);
                 e.Param("fullscreen_enabled", ScreenUtility.GetFullscreen());
                 e.Param("hq_graphics_enabled", s.HighQualityMode);
-                // TODO: e.Param("map_state",);
+                e.Param("map_state", GenerateMapState());
+            }
+        }
+
+        private void LogVolumeChanged(ZoomVolData data) {
+            using (var e = m_Log.NewEvent("set_music_volume")) {
+                e.Param("old_volume", data.Start);
+                e.Param("new_volume", data.End);
+                // e.Param("type", data.UsedWheel ? "SLIDE" : "CLICK")
             }
         }
         #endregion // Menu
@@ -1023,20 +1036,20 @@ namespace Zavala.Data {
             UpdateRegionState(newRegion);
         }
 
-        private void LogZoom(ZoomData info) {
+        private void LogZoom(ZoomVolData info) {
             // change_zoom { start_zoom: float, end_zoom : float, with_mousewheel : bool }
             using (var e = m_Log.NewEvent("change_zoom")) {
                 e.Param("start_zoom", info.Start);
                 e.Param("end_zoom", info.End);
-                e.Param("with_mousewheel", info.UsedWheel);
+                e.Param("zoom_type", info.UsedWheel ? "SCROLL" : "BUTTON");
             }
         }
 
-        private void LogRegionUnlocked(string newRegion) {
+        private void LogRegionUnlocked(ushort newRegion) {
             // county_unlocked { county_name, county_state : CountyBuildMap }
             using (var e = m_Log.NewEvent("county_unlocked")) {
-                e.Param("county_name", newRegion);
-                // TODO: e.Param("county_state", );
+                e.Param("county_name", EnumLookup.RegionName[newRegion]);
+                e.Param("county_state", GenerateCountyState(newRegion));
             }
         }
 
@@ -1056,34 +1069,75 @@ namespace Zavala.Data {
                  * }
                  * ]
                  */
-
                 psb.Builder.Append('[');
-                foreach (OccupiesTile ot in Game.Components.ComponentsOfType<OccupiesTile>()) {
-                    if (ot.RegionIndex != regionIndex) continue;
-                    psb.Builder.Append('{');
-                    psb.Builder.Append("idx:").Append(ot.TileIndex.ToString()).Append(',');
-                    psb.Builder.Append("height:").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
-                    psb.Builder.Append("type:");
-                    TerrainFlags flags = grid.Terrain.Info[ot.TileIndex].Flags;
-                    if ((flags & TerrainFlags.IsWater) != 0) {
-                        if ((flags & TerrainFlags.NonBuildable) != 0) {
-                            psb.Builder.Append("DEEP_WATER");
+                using (ComponentIterator<OccupiesTile> tiles = Game.Components.ComponentsOfType<OccupiesTile>()) {
+                    foreach (OccupiesTile ot in tiles) {
+                        if (ot.RegionIndex != regionIndex) { continue; }
+                        psb.Builder.Append('{');
+                        psb.Builder.Append("idx:").Append(ot.TileIndex.ToString()).Append(',');
+                        psb.Builder.Append("height:").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
+                        psb.Builder.Append("type:\"");
+                        TerrainFlags flags = grid.Terrain.Info[ot.TileIndex].Flags;
+                        if ((flags & TerrainFlags.IsWater) != 0) {
+                            if ((flags & TerrainFlags.NonBuildable) != 0) {
+                                psb.Builder.Append("DEEP_WATER");
+                            } else {
+                                psb.Builder.Append("WATER");
+                            }
                         } else {
-                            psb.Builder.Append("WATER");
+                            psb.Builder.Append("LAND");
                         }
-                    } else {
-                        psb.Builder.Append("LAND");
-                    }
-                    psb.Builder.Append(',');
+                        psb.Builder.Append("\",");
 
-                    psb.Builder.Append("connections:").Append(EnumLookup.BuildingType[(int)ot.Type]);
-                    psb.Builder.Append("building:").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
-                    psb.Builder.Append('}');             
+                        psb.Builder.Append("connections:").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
+                        psb.Builder.Append("building:").Append(EnumLookup.BuildingType[(int)ot.Type]);
+                        psb.Builder.Append("},");
+                    }
                 }
+                psb.Builder.Length -= 1;
                 psb.Builder.Append(']');
                 return psb;
             }
         }
+
+        private StringBuilder GenerateMapState() {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+
+                psb.Builder.Append('[');
+                using (ComponentIterator<OccupiesTile> tiles = Game.Components.ComponentsOfType<OccupiesTile>()) {
+                    foreach (OccupiesTile ot in tiles) {
+                        psb.Builder.Append('{');
+                        psb.Builder.Append("idx:").Append(ot.TileIndex.ToString()).Append(',');
+                        psb.Builder.Append("height:").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
+                        psb.Builder.Append("type:\"");
+                        TerrainFlags flags = grid.Terrain.Info[ot.TileIndex].Flags;
+                        if ((flags & TerrainFlags.IsWater) != 0) {
+                            if ((flags & TerrainFlags.NonBuildable) != 0) {
+                                psb.Builder.Append("DEEP_WATER");
+                            } else {
+                                psb.Builder.Append("WATER");
+                            }
+                        } else {
+                            psb.Builder.Append("LAND");
+                        }
+                        psb.Builder.Append("\",");
+
+                        psb.Builder.Append("connections:").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
+                        psb.Builder.Append("building:").Append(EnumLookup.BuildingType[(int)ot.Type]);
+                        psb.Builder.Append("},");
+                    }
+                }
+                psb.Builder.Length -= 1;
+                psb.Builder.Append(']');
+                return psb;
+            }
+        }
+
+
+
         private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
             using (var e = m_Log.NewEvent("unlock_building_type")) {
@@ -1117,18 +1171,20 @@ namespace Zavala.Data {
 
         private void LogHoverPolicy(PolicyData data) { // policy, level, hint text
             // hover_policy_card { choice_number, choice_name, choice_text }
-            using (var e = m_Log.NewEvent("click_set_policy_choice")) {
-                e.Param("choice_name", EnumLookup.PolicyType[(int)data.Type]);
+            using (var e = m_Log.NewEvent("hover_policy_card")) {
+                e.Param("policy", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("choice_name", Loc.Find("cards." + EnumLookup.PolicyType[(int)data.Type] + "." + EnumLookup.PolicyLevel[data.Level]));
                 e.Param("choice_number", data.Level);
                 e.Param("choice_text", data.HintText);
             }
         }
 
         private void LogPolicySet(PolicyData data) { // policy and level
-            // click_set_policy_choice { choice_number, choice_name }
-            using (var e = m_Log.NewEvent("click_set_policy_choice")) {
-                e.Param("choice_name", EnumLookup.PolicyType[(int)data.Type]);
+            using (var e = m_Log.NewEvent("select_policy_card")) {
+                e.Param("policy", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("choice_name", Loc.Find("cards." + EnumLookup.PolicyType[(int)data.Type] + "." + EnumLookup.PolicyLevel[data.Level]));
                 e.Param("choice_number", data.Level);
+                e.Param("choice_text", data.HintText);
             }
             UpdatePolicyChoicesState();
         }
@@ -1504,7 +1560,7 @@ namespace Zavala.Data {
             // cutscene_started { cutscene_id }
             m_CurrentCutscene = (short)id;
             m_CurrentCutscenePage = 0;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-            using (var e = m_Log.NewEvent("cutscene_started")) {
+            using (var e = m_Log.NewEvent("cutscene_start")) {
                 e.Param("cutscene_id", id);
             }
 
@@ -1542,7 +1598,9 @@ namespace Zavala.Data {
         #region End
         private void LogWonGame() {
             // win_game { }
-            m_Log.Log("win_game");
+            using (var e = m_Log.NewEvent("win_game")) {
+                e.Param("map_state", GenerateMapState());
+            }
         }
         
         private void LogFailedGame(LossData data) {
@@ -1551,6 +1609,7 @@ namespace Zavala.Data {
                 e.Param("lose_condition", data.EndType);
                 e.Param("county_id", data.Region); // 0-indexed
                 e.Param("county_name", EnumLookup.RegionName[data.Region]);
+                e.Param("map_state", GenerateMapState());
 
             }
         }

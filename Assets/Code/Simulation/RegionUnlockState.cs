@@ -116,13 +116,12 @@ namespace Zavala.Sim {
                 // region to unlock not registered
                 return;
             }
-            string regionName = ((RegionId)region).ToString();
             SimDataUtility.LoadAndRegenRegionDataFromWorld(grid, grid.WorldData, region, worldState);
             using (TempVarTable varTable = TempVarTable.Alloc()) {
-                varTable.Set("regionId", regionName);
+                varTable.Set("regionId", EnumLookup.RegionName[region]);
                 ScriptUtility.Trigger(GameTriggers.RegionUnlocked, varTable);
             }
-            ZavalaGame.Events.Dispatch(GameEvents.RegionUnlocked, regionName);
+            ZavalaGame.Events.Dispatch(GameEvents.RegionUnlocked, (ushort)region);
             SfxUtility.PlaySfx("rumble");
             Debug.Log("[RegionUnlockSystem] Unlocked region " + region);
         }

@@ -30,6 +30,9 @@ namespace Zavala
         public static readonly string[] PolicyType = new string[] {
             "RunoffPolicy", "SkimmingPolicy", "ImportTaxPolicy", "SalesTaxPolicy"
         };
+        public static readonly string[] PolicyLevel = new string[] {
+            "none", "low", "high", "alt"
+        };
 
         public static readonly string[] TileDirection = new string[] {
             "Self", "SW", "S", "SE", "NE", "N", "NW"
@@ -49,6 +52,7 @@ namespace Zavala
         static public readonly StringHash32 QualityToggled = "menu:hq-toggled";
         static public readonly StringHash32 ProfileStarting = "menu:starting";
         static public readonly StringHash32 CreditsExited = "menu:credits-exited";
+        static public readonly StringHash32 VolumeChanged = "menu:volume-changed";
 
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";
