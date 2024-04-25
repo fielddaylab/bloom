@@ -19,6 +19,10 @@ using Zavala.Sim;
 using BeauPools;
 using Zavala.Cards;
 using System.Text;
+using Zavala.Roads;
+using Zavala.World;
+using BeauData;
+using FieldDay.Components;
 
 namespace Zavala.Data {
 
@@ -67,31 +71,46 @@ namespace Zavala.Data {
         NOT_ENOUGH
     }
 
-    public struct ZoomData {
+    public enum TerrainType : byte {
+        Land,
+        Water,
+        DeepWater,
+        Void
+    }
+
+    public struct ZoomVolData {
         public float Start;
         public float End;
         public bool UsedWheel;
-        public ZoomData(float start, float end, bool usedWheel) {
+        public ZoomVolData(float start, float end, bool usedWheel) {
             Start = start;
             End = end;
             UsedWheel = usedWheel;
         }
     }
 
-    public struct BuildOrderData {
-        //     Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
-        public BuildingData Building;
-        public int Cost;
+    public struct MapTile {
+        public int TileIndex;
+        public ushort Height;
+        public TerrainType TileType;
         public TileAdjacencyMask Connections;
+        public BuildingType Building;
+    }
+
+    public struct BuildTile {
+        //     Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
+        public BuildingLocation Building;
+        public TileAdjacencyMask Connections;
+        public int Cost;
         public bool IsDestroying;
-        public BuildOrderData(BuildingType type, string id, int idx, int cost, TileAdjacencyMask mask, ActionType action) {
-            Building = new BuildingData(type, id, idx);
+        public BuildTile(BuildingType type, string id, int idx, int cost, TileAdjacencyMask mask, ActionType action) {
+            Building = new BuildingLocation(type, id, idx);
             Cost = cost;
             Connections = mask;
             IsDestroying = (action == ActionType.Destroy);
         }
-        public BuildOrderData(ActionCommit commit) {
-            Building = new BuildingData(commit.BuildType, "", commit.TileIndex);
+        public BuildTile(ActionCommit commit) {
+            Building = new BuildingLocation(commit.BuildType, "", commit.TileIndex);
             Cost = commit.Cost;
             Connections = commit.FlowMaskSnapshot;
             IsDestroying = (commit.ActionType == ActionType.Destroy);
@@ -99,20 +118,25 @@ namespace Zavala.Data {
     }
 
     [Serializable]
-    public struct BuildingData {
+    public struct BuildingLocation {
         public BuildingType Type;
         public string Id;
         public int TileIndex;
-        public BuildingData(BuildingType type, string id, int tileIndex) {
+        public BuildingLocation(BuildingType type, string id, int tileIndex) {
             Type = type;
             Id = id;
             TileIndex = tileIndex;
         }
-        public BuildingData(int tileIndex) {
+        public BuildingLocation(int tileIndex) {
             TileIndex = tileIndex;
             Id = "";
             Type = BuildingType.None;
         }
+    }
+
+    [Serializable]
+    public struct CountyBuildMap {
+        public List<BuildTile> Tiles;
     }
 
     public struct CityData {
@@ -360,7 +384,7 @@ namespace Zavala.Data {
     }
 
     public class AnalyticsService : MonoBehaviour {
-        private const ushort CLIENT_LOG_VERSION = 1;
+        private const ushort CLIENT_LOG_VERSION = 2;
 
         private static class Mode {
             public static readonly string View = "VIEW";
@@ -441,7 +465,7 @@ namespace Zavala.Data {
         [NonSerialized] private bool m_PhosView = false;
 
         [NonSerialized] private string m_CurrentTool;
-        [NonSerialized] private BuildingData m_InspectingBuilding;
+        [NonSerialized] private BuildingLocation m_InspectingBuilding;
         [NonSerialized] private short m_CurrentCutscene;
         [NonSerialized] private short m_CurrentCutscenePage;
         [NonSerialized] private DialogueLineData m_CurrentLine;
@@ -460,6 +484,7 @@ namespace Zavala.Data {
             ZavalaGame.Events
                 // Main Menu
                 .Register<MenuInteractionType>(GameEvents.MainMenuInteraction, HandleMenuInteraction)
+                .Register<ZoomVolData>(GameEvents.VolumeChanged, LogVolumeChanged)
                 .Register<string>(GameEvents.ProfileStarting, SetUserCode)
                 .Register<bool>(GameEvents.FullscreenToggled, LogFullscreenToggled)
                 .Register<bool>(GameEvents.QualityToggled, LogQualityToggled)
@@ -506,10 +531,10 @@ namespace Zavala.Data {
                 .Register<SkimmerData>(GameEvents.SkimmerChanged, HandleSkimmer)
                 // ADD?                
                 .Register<ushort>(GameEvents.RegionSwitched, LogRegionChanged)
-                .Register<string>(GameEvents.RegionUnlocked, LogRegionUnlocked)
-                .Register<ZoomData>(GameEvents.SimZoomChanged, LogZoom)
+                .Register<ushort>(GameEvents.RegionUnlocked, LogRegionUnlocked)
+                .Register<ZoomVolData>(GameEvents.SimZoomChanged, LogZoom)
                 // Inspect
-                .Register<BuildingData>(GameEvents.InspectorOpened, LogInspectBuilding)
+                .Register<BuildingLocation>(GameEvents.InspectorOpened, LogInspectBuilding)
                 .Register(GameEvents.GenericInspectorDisplayed, LogCommonInspectorDisplayed)
                 .Register<CityData>(GameEvents.CityInspectorDisplayed, LogCityInspectorDisplayed)
                 .Register<GrainFarmData>(GameEvents.GrainFarmInspectorDisplayed, LogGrainFarmInspectorDisplayed)
@@ -564,6 +589,7 @@ namespace Zavala.Data {
                 ClientLogVersion = CLIENT_LOG_VERSION
             });
             m_Log.SetUserId(userCode);
+            m_Log.NewEvent("session_start");
         }
 
         private void OnDestroy() {
@@ -733,6 +759,8 @@ namespace Zavala.Data {
             }
         }
 
+
+
         private void LogClickedCredits() {
             // click_credits { }
             m_Log.Log("click_credits");
@@ -779,12 +807,20 @@ namespace Zavala.Data {
 
         private void LogGameStarted() {
             // game_started { music_volume : float, fullscreen_enabled : bool, hq_graphics_enabled : bool, map_state : BuildMap }
-            using (var e = m_Log.NewEvent("click_return_main_menu")) {
+            using (var e = m_Log.NewEvent("game_start")) {
                 UserSettings s = Game.SharedState.Get<UserSettings>();
                 e.Param("music_volume", s.MusicVolume);
                 e.Param("fullscreen_enabled", ScreenUtility.GetFullscreen());
                 e.Param("hq_graphics_enabled", s.HighQualityMode);
-                // TODO: e.Param("map_state",);
+                e.Param("map_state", GenerateMapState());
+            }
+        }
+
+        private void LogVolumeChanged(ZoomVolData data) {
+            using (var e = m_Log.NewEvent("set_music_volume")) {
+                e.Param("old_volume", data.Start);
+                e.Param("new_volume", data.End);
+                // e.Param("type", data.UsedWheel ? "SLIDE" : "CLICK")
             }
         }
         #endregion // Menu
@@ -1001,22 +1037,120 @@ namespace Zavala.Data {
             UpdateRegionState(newRegion);
         }
 
-        private void LogZoom(ZoomData info) {
+        private void LogZoom(ZoomVolData info) {
             // change_zoom { start_zoom: float, end_zoom : float, with_mousewheel : bool }
             using (var e = m_Log.NewEvent("change_zoom")) {
                 e.Param("start_zoom", info.Start);
                 e.Param("end_zoom", info.End);
-                e.Param("with_mousewheel", info.UsedWheel);
+                e.Param("zoom_type", info.UsedWheel ? "SCROLL" : "BUTTON");
             }
         }
 
-        private void LogRegionUnlocked(string newRegion) {
-            // county_unlock { county_name, county_state : CountyBuildMap }
-            using (var e = m_Log.NewEvent("county_unlock")) {
-                e.Param("county_name", newRegion);
-                // TODO: e.Param("county_state", );
+        private void LogRegionUnlocked(ushort newRegion) {
+            // county_unlocked { county_name, county_state : CountyBuildMap }
+            using (var e = m_Log.NewEvent("county_unlocked")) {
+                e.Param("county_name", EnumLookup.RegionName[newRegion]);
+                e.Param("county_state", GenerateCountyState(newRegion));
             }
         }
+
+        private StringBuilder GenerateCountyState(ushort regionIndex) {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+                /*
+                 * county_state: 
+                 * [
+                 * {
+                 *      idx: 
+                 *      height:
+                 *      type: 
+                 *      building:  
+                 * }
+                 * ]
+                 */
+                psb.Builder.Append('[');
+                List<OccupiesTile> tiles = new List<OccupiesTile>(Game.Components.ComponentsOfType<OccupiesTile>()).FindAll(t => t.RegionIndex == regionIndex);     
+                foreach (OccupiesTile ot in tiles) {
+                    if (ot.RegionIndex != regionIndex) { continue; }
+                    psb.Builder.Append('{');
+                    psb.Builder.Append("idx:").Append(ot.TileIndex.ToString()).Append(',');
+                    psb.Builder.Append("height:").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
+                    psb.Builder.Append("type:\"");
+                    TerrainFlags flags = grid.Terrain.Info[ot.TileIndex].Flags;
+                    if ((flags & TerrainFlags.IsWater) != 0) {
+                        if ((flags & TerrainFlags.NonBuildable) != 0) {
+                            psb.Builder.Append("DEEP_WATER");
+                        } else {
+                            psb.Builder.Append("WATER");
+                        }
+                    } else {
+                        psb.Builder.Append("LAND");
+                    }
+                    psb.Builder.Append("\",");
+
+                    psb.Builder.Append("connections:").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
+                    psb.Builder.Append("building:").Append(EnumLookup.BuildingType[(int)ot.Type]);
+                    psb.Builder.Append("},");
+                }
+                psb.Builder.Length -= 1;
+                psb.Builder.Append(']');
+                return psb;
+            }
+        }
+
+        private StringBuilder GenerateMapState() {
+            RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+
+            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
+
+                psb.Builder.Append('[');
+                // turn enumerator into a list so we can sort it
+                List<OccupiesTile> tiles = new List<OccupiesTile>(Game.Components.ComponentsOfType<OccupiesTile>());
+                tiles.Sort((a, b) => a.RegionIndex - b.RegionIndex);
+
+                int region = 0;
+                psb.Builder.Append(EnumLookup.RegionName[region]).Append(":[");
+                for (int ot = 0; ot < tiles.Count; ot++) {
+                    // if we've advanced to a new region, start a new "array"
+                    if (tiles[ot].RegionIndex > region){
+                        psb.Builder.Length -= 1;
+                        region++;
+                        psb.Builder.Append("],").Append(EnumLookup.RegionName[region]).Append(":[");
+                    }
+                    // print in current region
+                    int idx = tiles[ot].TileIndex;
+                    psb.Builder.Append('{');
+                    psb.Builder.Append("idx:").Append(tiles[ot].TileIndex.ToString()).Append(',');
+                    psb.Builder.Append("height:").Append(grid.Terrain.Info[idx].Height.ToStringLookup()).Append(',');
+                    psb.Builder.Append("type:");
+                    TerrainFlags flags = grid.Terrain.Info[idx].Flags;
+                    if ((flags & TerrainFlags.IsWater) != 0) {
+                        if ((flags & TerrainFlags.NonBuildable) != 0) {
+                            psb.Builder.Append("DEEP_WATER");
+                        } else {
+                            psb.Builder.Append("WATER");
+                        }
+                    } else {
+                        psb.Builder.Append("LAND");
+                    }
+                    psb.Builder.Append(',');
+
+                    psb.Builder.Append("connections:").Append(network.Roads.Info[idx].FlowMask.ToString()).Append(',');
+                    psb.Builder.Append("building:").Append(EnumLookup.BuildingType[(int)tiles[ot].Type]);
+                    psb.Builder.Append("},");
+                    
+                    
+                }
+                psb.Builder.Length -= 1;
+                psb.Builder.Append(']');
+                return psb;
+            }
+        }
+
+
 
         private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
@@ -1051,18 +1185,20 @@ namespace Zavala.Data {
 
         private void LogHoverPolicy(PolicyData data) { // policy, level, hint text
             // hover_policy_card { choice_number, choice_name, choice_text }
-            using (var e = m_Log.NewEvent("click_set_policy_choice")) {
-                e.Param("choice_name", EnumLookup.PolicyType[(int)data.Type]);
+            using (var e = m_Log.NewEvent("hover_policy_card")) {
+                e.Param("policy", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("choice_name", Loc.Find("cards." + EnumLookup.PolicyType[(int)data.Type] + "." + EnumLookup.PolicyLevel[data.Level]));
                 e.Param("choice_number", data.Level);
                 e.Param("choice_text", data.HintText);
             }
         }
 
         private void LogPolicySet(PolicyData data) { // policy and level
-            // click_set_policy_choice { choice_number, choice_name }
-            using (var e = m_Log.NewEvent("click_set_policy_choice")) {
-                e.Param("choice_name", EnumLookup.PolicyType[(int)data.Type]);
+            using (var e = m_Log.NewEvent("select_policy_card")) {
+                e.Param("policy", EnumLookup.PolicyType[(int)data.Type]);
+                e.Param("choice_name", Loc.Find("cards." + EnumLookup.PolicyType[(int)data.Type] + "." + EnumLookup.PolicyLevel[data.Level]));
                 e.Param("choice_number", data.Level);
+                e.Param("choice_text", data.HintText);
             }
             UpdatePolicyChoicesState();
         }
@@ -1182,7 +1318,7 @@ namespace Zavala.Data {
         #endregion // Alert
 
         #region Inspector
-        private void LogInspectBuilding(BuildingData data) {
+        private void LogInspectBuilding(BuildingLocation data) {
             // click_inspect_building { building_type : enum(GATE, CITY, DAIRY_FARM, GRAIN_FARM, STORAGE, PROCESSOR, EXPORT_DEPOT), building_id, tile_index : int // index in the county map }
             using (var e = m_Log.NewEvent("click_inspect_building")) {
                 e.Param("building_type", EnumLookup.BuildingType[(int)data.Type]);
@@ -1201,7 +1337,7 @@ namespace Zavala.Data {
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
             }
-            m_InspectingBuilding = new BuildingData() {
+            m_InspectingBuilding = new BuildingLocation() {
                 Type = BuildingType.None,
                 Id = "",
                 TileIndex = -1
@@ -1438,7 +1574,7 @@ namespace Zavala.Data {
             // cutscene_started { cutscene_id }
             m_CurrentCutscene = (short)id;
             m_CurrentCutscenePage = 0;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-            using (var e = m_Log.NewEvent("cutscene_started")) {
+            using (var e = m_Log.NewEvent("cutscene_start")) {
                 e.Param("cutscene_id", id);
             }
 
@@ -1476,7 +1612,9 @@ namespace Zavala.Data {
         #region End
         private void LogWonGame() {
             // win_game { }
-            m_Log.Log("win_game");
+            using (var e = m_Log.NewEvent("win_game")) {
+                e.Param("map_state", GenerateMapState());
+            }
         }
         
         private void LogFailedGame(LossData data) {
@@ -1485,6 +1623,7 @@ namespace Zavala.Data {
                 e.Param("lose_condition", data.EndType);
                 e.Param("county_id", data.Region); // 0-indexed
                 e.Param("county_name", EnumLookup.RegionName[data.Region]);
+                e.Param("map_state", GenerateMapState());
 
             }
         }

@@ -18,7 +18,7 @@ namespace Zavala
             "Hillside", "Forest", "Prairie", "Wetland", "Urban"
         };
         public static readonly string[] BuildingType = new string[] {
-            null, "GrainFarm", "DairyFarm", "City", "Road", "Digester", "Storage", "Skimmer",
+            "null", "GrainFarm", "DairyFarm", "City", "Road", "Digester", "Storage", "Skimmer",
             "Obstacle", "ExportDepot", "TollBooth", "TempObstruction", "SkimmerLocation", "DigesterBroken"
         };
         public static readonly string[] BuildTool = new string[] {
@@ -29,6 +29,9 @@ namespace Zavala
         };
         public static readonly string[] PolicyType = new string[] {
             "RunoffPolicy", "SkimmingPolicy", "ImportTaxPolicy", "SalesTaxPolicy"
+        };
+        public static readonly string[] PolicyLevel = new string[] {
+            "none", "low", "high", "alt"
         };
 
         public static readonly string[] TileDirection = new string[] {
@@ -49,6 +52,7 @@ namespace Zavala
         static public readonly StringHash32 QualityToggled = "menu:hq-toggled";
         static public readonly StringHash32 ProfileStarting = "menu:starting";
         static public readonly StringHash32 CreditsExited = "menu:credits-exited";
+        static public readonly StringHash32 VolumeChanged = "menu:volume-changed";
 
         static public readonly StringHash32 PolicySlotClicked = "advisors:policy-slot-clicked";
         static public readonly StringHash32 PolicyTypeUnlocked = "advisors:policy-type-unlocked";

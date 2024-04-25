@@ -188,7 +188,10 @@ namespace Zavala.UI {
         }
 
         private void HandleSliderChanged(float val) {
-            Game.SharedState.Get<UserSettings>().MusicVolume = val/10f;
+            float oldVal = Game.SharedState.Get<UserSettings>().MusicVolume;
+            float newVal = val / 10f;
+            Game.SharedState.Get<UserSettings>().MusicVolume = newVal;
+            ZavalaGame.Events.Dispatch(GameEvents.VolumeChanged, new ZoomVolData(oldVal, newVal, false));
         }
 
         private void HandleBackButton() {

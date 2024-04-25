@@ -124,7 +124,7 @@ namespace Zavala.World {
             }
             if (start != camPos.z) {
                 Cam.Camera.transform.localPosition = camPos;
-                ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomData(start, camPos.z, usedWheel));
+                ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomVolData(start, camPos.z, usedWheel));
             }
         }
 

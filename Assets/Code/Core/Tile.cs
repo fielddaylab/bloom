@@ -157,14 +157,14 @@ namespace Zavala
             }
 
             StringBuilder sb = new StringBuilder();
+            sb.Append('[');
             for (TileDirection i = 0; i < TileDirection.COUNT; i++) {
                 if (this[i]) {
-                    sb.Append(EnumLookup.TileDirection[(int)i]).Append(", ");
+                    sb.Append(EnumLookup.TileDirection[(int)i]).Append(',');
                 }
             }
-            if (sb.Length > 0) {
-                sb.Length -= 2;
-            }
+            sb.Length -= 1;
+            sb.Append(']');
             return sb.Flush();
         }
 
