@@ -239,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91ad058123d5feb48bb6503d794a905f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SingleFrameAllocBufferSize: 64
+  m_SingleFrameAllocBufferSize: 128
   m_TargetFramerate: 60
   m_DefaultPixelSprite: {fileID: 21300000, guid: 767dd87e72022f14a9a64358bca57712, type: 3}
   m_AllowMultiTouchInput: 0
