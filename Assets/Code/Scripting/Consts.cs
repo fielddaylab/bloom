@@ -18,7 +18,7 @@ namespace Zavala
             "Hillside", "Forest", "Prairie", "Wetland", "Urban"
         };
         public static readonly string[] BuildingType = new string[] {
-            null, "GrainFarm", "DairyFarm", "City", "Road", "Digester", "Storage", "Skimmer",
+            "null", "GrainFarm", "DairyFarm", "City", "Road", "Digester", "Storage", "Skimmer",
             "Obstacle", "ExportDepot", "TollBooth", "TempObstruction", "SkimmerLocation", "DigesterBroken"
         };
         public static readonly string[] BuildTool = new string[] {

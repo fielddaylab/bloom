@@ -346,7 +346,7 @@ namespace Zavala.UI.Info
             m_InitialOpen = true;
             Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
 
-            ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, new Data.BuildingData(m_Mode, title, idx));
+            ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, new Data.BuildingLocation(m_Mode, title, idx));
             Show();
 
             UpdateData(false);

@@ -160,7 +160,7 @@ namespace Zavala
             sb.Append('[');
             for (TileDirection i = 0; i < TileDirection.COUNT; i++) {
                 if (this[i]) {
-                    sb.Append('\"').Append(EnumLookup.TileDirection[(int)i]).Append("\",");
+                    sb.Append(EnumLookup.TileDirection[(int)i]).Append(',');
                 }
             }
             sb.Length -= 1;
