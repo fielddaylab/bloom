@@ -24,7 +24,6 @@ namespace Zavala.UI {
     {
         private static string CREDITS_DELIM = "::";
 
-        private static float TRANSITION_X = 1060;
         private static float TRANSITION_TIME = 0.5f;
 
         #region Inspector
@@ -151,6 +150,7 @@ namespace Zavala.UI {
                     yield return null;
                 }
             }
+            m_Rect.SetAnchorsPreservePosition(new Vector2(0, 0), new Vector2(1, 1));
             yield return m_Rect.AnchorPosTo(0, TRANSITION_TIME, Axis.X).Ease(Curve.CubeOut);
             m_Scrolling = true;
             m_Transitioning = false;
@@ -159,7 +159,8 @@ namespace Zavala.UI {
         private IEnumerator ExitRoutine()
         {
             m_Transitioning = true;
-            yield return m_Rect.AnchorPosTo(TRANSITION_X, TRANSITION_TIME, Axis.X).Ease(Curve.CubeOut);
+            m_Rect.SetAnchorsPreservePosition(new Vector2(1, 0), new Vector2(2, 1));
+            yield return m_Rect.AnchorPosTo(0, TRANSITION_TIME, Axis.X).Ease(Curve.CubeOut);
 
             ResetLayout();
 
