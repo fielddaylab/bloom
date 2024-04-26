@@ -101,6 +101,12 @@ namespace Zavala
         static public readonly StringHash32 BuildingUnqueued = "blueprint:build-unqueued";
         static public readonly StringHash32 BuildToolDeselected = "blueprint:build-tool-deselected";
 
+        static public readonly StringHash32 SalesTaxRevenueGenerated = "blueprint:sales-tax-revenue-generated"; // int
+        static public readonly StringHash32 ImportTaxRevenueGenerated = "blueprint:import-tax-revenue-generated"; // int
+        static public readonly StringHash32 PenaltiesRevenueGenerated = "blueprint:penalties-revenue-generated"; // int
+        static public readonly StringHash32 SkimmerCostDeducted = "blueprint:skimmer-cost-deducted"; // int
+        static public readonly StringHash32 MilkRevenueGenerated = "blueprint:milk-revenue-generated"; // int
+
         static public readonly StringHash32 DestroyModeClicked = "destroy:clicked";
         static public readonly StringHash32 DestroyModeStarted = "destroy:started";
         static public readonly StringHash32 DestroyModeConfirmed = "destroy:clicked";

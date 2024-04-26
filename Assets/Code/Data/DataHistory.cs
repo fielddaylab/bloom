@@ -23,6 +23,7 @@ namespace Zavala.Data
         public void AddPending(int pendingDelta) {
             PrevPending = Pending;
             Pending += pendingDelta;
+
             // Log.Msg("[DataHistory] AddPending {0}, PrevPending {1}, New Pending {2}", pendingDelta, PrevPending, Pending);
         }
 

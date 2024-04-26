@@ -466,6 +466,15 @@ MonoBehaviour:
     m_DefaultPoolRoot: {fileID: 0}
     m_DefaultSpawnRoot: {fileID: 0}
     m_ResetTransformOnAlloc: 1
+  PolicyBoxPopups:
+    m_Prefab: {fileID: 2552886533324528734, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
+    m_Name: PolicyBoxPopUp
+    m_InitialCapacity: 16
+    m_PrewarmOnInitialize: 1
+    m_InitialPrewarm: 8
+    m_DefaultPoolRoot: {fileID: 0}
+    m_DefaultSpawnRoot: {fileID: 0}
+    m_ResetTransformOnAlloc: 1
   PoolRoot: {fileID: 0}
 --- !u!114 &7708306960153739475
 MonoBehaviour:

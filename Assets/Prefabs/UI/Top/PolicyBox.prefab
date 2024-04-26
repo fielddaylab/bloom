@@ -597,23 +597,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3833881616026858609, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3833881616026858609, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3833881616026858609, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 27.71
       objectReference: {fileID: 0}
     - target: {fileID: 3833881616026858609, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3833881616026858609, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 4061848007341805641, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_HorizontalFit
@@ -649,7 +649,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5016460832869530186, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 31.71
       objectReference: {fileID: 0}
     - target: {fileID: 5016460832869530186, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_SizeDelta.y
@@ -716,6 +716,10 @@ PrefabInstance:
     - target: {fileID: 7167347784582636670, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_Name
       value: PolicyBoxPopUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7167347784582636670, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9093112012781345165, guid: cae7364b2ab5e2947aba19398b6bdf49, type: 3}
       propertyPath: m_Enabled

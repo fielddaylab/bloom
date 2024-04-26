@@ -12,16 +12,19 @@ namespace Zavala.UI
         #region Types
 
         [Serializable] public class AlertPools : SerializablePool<UIAlert> { }
+        [Serializable] public class PolicyBoxPopupPools : SerializablePool<UIPolicyBoxPopup> { }
 
         #endregion // Types
 
         public AlertPools Alerts;
+        public PolicyBoxPopupPools PolicyBoxPopups;
 
         [Header("Shared")]
         public Transform PoolRoot;
 
         void IRegistrationCallbacks.OnRegister() {
             Alerts.TryInitialize(PoolRoot);
+            PolicyBoxPopups.TryInitialize(PoolRoot);
         }
 
         void IRegistrationCallbacks.OnDeregister() {

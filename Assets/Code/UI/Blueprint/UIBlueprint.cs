@@ -47,6 +47,10 @@ namespace Zavala.UI
 
         [SerializeField] private CanvasGroup m_PolicyBoxGroup;
         [SerializeField] private UIPolicyBox[] m_PolicyBoxes;
+        [SerializeField] private UIPolicyBox m_SalesRevenueBox;
+        [SerializeField] private UIPolicyBox m_ImportRevenueBox;
+        [SerializeField] private UIPolicyBox m_PenaltiesBox;
+        [SerializeField] private UIPolicyBox m_SkimmerBox;
         [SerializeField] private UIPolicyBox m_MilkRevenueBox; // Not in m_PolicyBoxes as it is not associated with a PolicyType
 
         [Header("Receipt")]
@@ -72,6 +76,8 @@ namespace Zavala.UI
         private Routine m_BuildCommandLayoutRoutine;
         private Routine m_DestroyCommandLayoutRoutine;
 
+        private Vector3 POPUP_OFFSET = new Vector3(-15, -22, 0);
+
         private StringBuilder m_WorkString;
 
         public IEnumerator<WorkSlicer.Result?> Preload()
@@ -83,6 +89,11 @@ namespace Zavala.UI
             Game.Events.Register(GameEvents.GameLoaded, HandleGameLoaded);
             Game.Events.Register(GameEvents.LeafCutsceneStarted, HandleCutsceneStarted);
             Game.Events.Register(GameEvents.LeafCutsceneEnded, HandleCutsceneEnded);
+            ZavalaGame.Events.Register<Tuple<int, int>>(GameEvents.SalesTaxRevenueGenerated, HandleSalesTaxRevenueGenerated);
+            ZavalaGame.Events.Register<Tuple<int, int>>(GameEvents.ImportTaxRevenueGenerated, HandleImportTaxRevenueGenerated);
+            ZavalaGame.Events.Register<Tuple<int, int>>(GameEvents.PenaltiesRevenueGenerated, HandlePenaltiesRevenueGenerated);
+            ZavalaGame.Events.Register<Tuple<int, int>>(GameEvents.SkimmerCostDeducted, HandleSkimmerCostDeducted);
+            ZavalaGame.Events.Register<Tuple<int, int>>(GameEvents.MilkRevenueGenerated, HandleMilkRevenueGenerated);
 
             m_ReceiptGroup.alpha = 0;
             m_BuildingModeText.SetAlpha(0);
@@ -253,6 +264,86 @@ namespace Zavala.UI
             blueprintState.CanceledDestroyMode = true;
         }
 
+        private void HandleSalesTaxRevenueGenerated(Tuple<int, int> revenue)
+        {
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            if (revenue.Item2 != grid.CurrRegionIndex) { return; }
+
+            if (revenue.Item1 == 0) { return; }
+
+            var pools = Game.SharedState.Get<UIPools>();
+            UIPolicyBoxPopup popup = pools.PolicyBoxPopups.Alloc(m_SalesRevenueBox.transform);
+
+            popup.Rect.anchoredPosition = POPUP_OFFSET;
+
+            PolicyBoxUtility.SetPopupAmt(popup, revenue.Item1);
+            PolicyBoxUtility.PlayPopupRoutine(popup);
+        }
+
+        private void HandleImportTaxRevenueGenerated(Tuple<int, int> revenue)
+        {
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            if (revenue.Item2 != grid.CurrRegionIndex) { return; }
+
+            if (revenue.Item1 == 0) { return; }
+
+            var pools = Game.SharedState.Get<UIPools>();
+            UIPolicyBoxPopup popup = pools.PolicyBoxPopups.Alloc(m_ImportRevenueBox.transform);
+
+            popup.Rect.anchoredPosition = POPUP_OFFSET;
+
+            PolicyBoxUtility.SetPopupAmt(popup, revenue.Item1);
+            PolicyBoxUtility.PlayPopupRoutine(popup);
+        }
+
+        private void HandlePenaltiesRevenueGenerated(Tuple<int, int> revenue)
+        {
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            if (revenue.Item2 != grid.CurrRegionIndex) { return; }
+
+            if (revenue.Item1 == 0) { return; }
+
+            var pools = Game.SharedState.Get<UIPools>();
+            UIPolicyBoxPopup popup = pools.PolicyBoxPopups.Alloc(m_PenaltiesBox.transform);
+
+            popup.Rect.anchoredPosition = POPUP_OFFSET;
+
+            PolicyBoxUtility.SetPopupAmt(popup, revenue.Item1);
+            PolicyBoxUtility.PlayPopupRoutine(popup);
+        }
+
+        private void HandleSkimmerCostDeducted(Tuple<int, int> revenue)
+        {
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            if (revenue.Item2 != grid.CurrRegionIndex) { return; }
+
+            if (revenue.Item1 == 0) { return; }
+
+            var pools = Game.SharedState.Get<UIPools>();
+            UIPolicyBoxPopup popup = pools.PolicyBoxPopups.Alloc(m_SkimmerBox.transform);
+
+            popup.Rect.anchoredPosition = POPUP_OFFSET;
+
+            PolicyBoxUtility.SetPopupAmt(popup, revenue.Item1);
+            PolicyBoxUtility.PlayPopupRoutine(popup);
+        }
+
+        private void HandleMilkRevenueGenerated(Tuple<int, int> revenue)
+        {
+            SimGridState grid = Game.SharedState.Get<SimGridState>();
+            if (revenue.Item2 != grid.CurrRegionIndex) { return; }
+
+            if (revenue.Item1 == 0) { return; }
+
+            var pools = Game.SharedState.Get<UIPools>();
+            UIPolicyBoxPopup popup = pools.PolicyBoxPopups.Alloc(m_MilkRevenueBox.transform);
+
+            popup.Rect.anchoredPosition = POPUP_OFFSET;
+
+            PolicyBoxUtility.SetPopupAmt(popup, revenue.Item1);
+            PolicyBoxUtility.PlayPopupRoutine(popup);
+        }
+
         #endregion // UI Handlers
 
         #region System Handlers
@@ -341,8 +432,9 @@ namespace Zavala.UI
             //m_BuildCommandLayoutRoutine.Replace(this, BuildCommandAppearanceTransition(true));
         }
 
-        public void OnMarketTickAdvanced(MarketData data, SimGridState grid) {
-
+        public void OnMarketTickAdvanced(MarketData data, SimGridState grid)
+        {
+            /* NOTE: Commented out implementation is for displaying tax revenues on market ticks
             int region = grid.CurrRegionIndex;
             if (data.SalesTaxHistory[region].Net.Count <= 0) return;
 
@@ -389,6 +481,7 @@ namespace Zavala.UI
                     PolicyBoxUtility.PlayPopupRoutine(box);
                 }
             }
+            */
         }
 
         private void HandleGameLoaded() {

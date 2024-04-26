@@ -435,6 +435,10 @@ MonoBehaviour:
   - {fileID: 4122519429803908929}
   - {fileID: 2159644815622770507}
   - {fileID: 2217916544201102803}
+  m_SalesRevenueBox: {fileID: 8076735051405191059}
+  m_ImportRevenueBox: {fileID: 4122519429803908929}
+  m_PenaltiesBox: {fileID: 2159644815622770507}
+  m_SkimmerBox: {fileID: 2217916544201102803}
   m_MilkRevenueBox: {fileID: 3973946264826799003}
   m_ReceiptGroup: {fileID: 3924927606052771427}
   m_RunningCostText: {fileID: 6217443432774026198}

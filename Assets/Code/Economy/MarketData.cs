@@ -475,22 +475,32 @@ namespace Zavala.Economy
         public static void RecordRevenueToHistory(MarketData marketData, GeneratedTaxRevenue taxRevenue, int regionIndex) {
             if (taxRevenue.Sales != 0) {
                 marketData.SalesTaxHistory[regionIndex].AddPending(taxRevenue.Sales);
+
+                ZavalaGame.Events.Dispatch(GameEvents.SalesTaxRevenueGenerated, new Tuple<int, int>(taxRevenue.Sales, regionIndex));
             }
             if (taxRevenue.Import != 0) {
                 marketData.ImportTaxHistory[regionIndex].AddPending(taxRevenue.Import);
+
+                ZavalaGame.Events.Dispatch(GameEvents.ImportTaxRevenueGenerated, new Tuple<int, int>(taxRevenue.Import, regionIndex));
             }
             if (taxRevenue.Penalties != 0) {
                 marketData.PenaltiesHistory[regionIndex].AddPending(taxRevenue.Penalties);
+
+                ZavalaGame.Events.Dispatch(GameEvents.PenaltiesRevenueGenerated, new Tuple<int, int>(taxRevenue.Penalties, regionIndex));
             }
         }
 
         public static void RecordSkimmerCostToHistory(MarketData marketData, int skimmerCost, int regionIndex)
         {
             marketData.SkimmerCostHistory[regionIndex].AddPending(skimmerCost);
+
+            ZavalaGame.Events.Dispatch(GameEvents.SkimmerCostDeducted, new Tuple<int, int>(skimmerCost, regionIndex));
         }
 
         public static void RecordMilkRevenueToHistory(MarketData marketData, int milkRevenue, int regionIndex) {
             marketData.MilkRevenueHistory[regionIndex].AddPending(milkRevenue);
+
+            ZavalaGame.Events.Dispatch(GameEvents.MilkRevenueGenerated, new Tuple<int, int>(milkRevenue, regionIndex));
         }
 
         public static void FinalizeCycleHistory(MarketData marketData) {

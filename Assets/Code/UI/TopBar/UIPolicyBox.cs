@@ -74,18 +74,18 @@ namespace Zavala.UI {
 
         #region Routines
 
-        public IEnumerator DisplayPopupRoutine()
+        public IEnumerator DisplayPopupRoutine(UIPolicyBoxPopup popup)
         {
-            Popup.Group.alpha = 0;
+            popup.Group.alpha = 0;
 
             yield return Routine.Combine(
-                Popup.Group.FadeTo(1, .1f)
+                popup.Group.FadeTo(1, .1f)
                 );
 
             yield return DISPLAY_TIME;
 
             yield return Routine.Combine(
-                Popup.Group.FadeTo(0, .1f)
+                popup.Group.FadeTo(0, .1f)
                 );
         }
 
@@ -94,9 +94,9 @@ namespace Zavala.UI {
 
     static public class PolicyBoxUtility
     {
-        static public void PlayPopupRoutine(UIPolicyBox box)
+        static public void PlayPopupRoutine(UIPolicyBoxPopup popup)
         {
-            box.PopupRoutine.Replace(box, box.DisplayPopupRoutine()).ExecuteWhileDisabled();
+            popup.PopupRoutine.Replace(popup.DisplayPopupRoutine(popup)).ExecuteWhileDisabled();
         }
 
         static public void UpdateLevelText(PolicyState policyState, SimGridState grid, UIPolicyBox box)
