@@ -153,14 +153,14 @@ namespace Zavala
 
         public override string ToString() {
             if (Value == 0) {
-                return "[empty]";
+                return "[null]";
             }
 
             StringBuilder sb = new StringBuilder();
             sb.Append('[');
             for (TileDirection i = 0; i < TileDirection.COUNT; i++) {
                 if (this[i]) {
-                    sb.Append(EnumLookup.TileDirection[(int)i]).Append(',');
+                    sb.Append('\"').Append(EnumLookup.TileDirection[(int)i]).Append("\",");
                 }
             }
             sb.Length -= 1;

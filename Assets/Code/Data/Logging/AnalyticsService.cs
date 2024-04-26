@@ -1075,9 +1075,9 @@ namespace Zavala.Data {
                 foreach (OccupiesTile ot in tiles) {
                     if (ot.RegionIndex != regionIndex) { continue; }
                     psb.Builder.Append('{');
-                    psb.Builder.Append("idx:").Append(ot.TileIndex.ToString()).Append(',');
-                    psb.Builder.Append("height:").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
-                    psb.Builder.Append("type:\"");
+                    psb.Builder.Append("\"idx\":").Append(ot.TileIndex.ToString()).Append(',');
+                    psb.Builder.Append("\"height\":").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
+                    psb.Builder.Append("\"type\":\"");
                     TerrainFlags flags = grid.Terrain.Info[ot.TileIndex].Flags;
                     if ((flags & TerrainFlags.IsWater) != 0) {
                         if ((flags & TerrainFlags.NonBuildable) != 0) {
@@ -1090,9 +1090,9 @@ namespace Zavala.Data {
                     }
                     psb.Builder.Append("\",");
 
-                    psb.Builder.Append("connections:").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
-                    psb.Builder.Append("building:").Append(EnumLookup.BuildingType[(int)ot.Type]);
-                    psb.Builder.Append("},");
+                    psb.Builder.Append("\"connections\":").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
+                    psb.Builder.Append("\"building\":\"").Append(EnumLookup.BuildingType[(int)ot.Type]);
+                    psb.Builder.Append("\"},");
                 }
                 psb.Builder.Length -= 1;
                 psb.Builder.Append(']');
@@ -1118,14 +1118,14 @@ namespace Zavala.Data {
                     if (tiles[ot].RegionIndex > region){
                         psb.Builder.Length -= 1;
                         region++;
-                        psb.Builder.Append("],").Append(EnumLookup.RegionName[region]).Append(":[");
+                        psb.Builder.Append("],\"").Append(EnumLookup.RegionName[region]).Append("\":[");
                     }
                     // print in current region
                     int idx = tiles[ot].TileIndex;
                     psb.Builder.Append('{');
-                    psb.Builder.Append("idx:").Append(tiles[ot].TileIndex.ToString()).Append(',');
-                    psb.Builder.Append("height:").Append(grid.Terrain.Info[idx].Height.ToStringLookup()).Append(',');
-                    psb.Builder.Append("type:");
+                    psb.Builder.Append("\"idx\":").Append(tiles[ot].TileIndex.ToString()).Append(',');
+                    psb.Builder.Append("\"height\":").Append(grid.Terrain.Info[idx].Height.ToStringLookup()).Append(',');
+                    psb.Builder.Append("\"type\":\"");
                     TerrainFlags flags = grid.Terrain.Info[idx].Flags;
                     if ((flags & TerrainFlags.IsWater) != 0) {
                         if ((flags & TerrainFlags.NonBuildable) != 0) {
@@ -1136,11 +1136,11 @@ namespace Zavala.Data {
                     } else {
                         psb.Builder.Append("LAND");
                     }
-                    psb.Builder.Append(',');
+                    psb.Builder.Append("\",");
 
-                    psb.Builder.Append("connections:").Append(network.Roads.Info[idx].FlowMask.ToString()).Append(',');
-                    psb.Builder.Append("building:").Append(EnumLookup.BuildingType[(int)tiles[ot].Type]);
-                    psb.Builder.Append("},");
+                    psb.Builder.Append("\"connections\":").Append(network.Roads.Info[idx].FlowMask.ToString()).Append(',');
+                    psb.Builder.Append("\"building\":\"").Append(EnumLookup.BuildingType[(int)tiles[ot].Type]);
+                    psb.Builder.Append("\"},");
                     
                     
                 }

@@ -133,6 +133,7 @@ namespace Zavala.Sim {
             Game.Events.Dispatch(GameEvents.GameLoaded);
             SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
             ScriptUtility.Trigger(GameTriggers.GameBooted);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.GameStarted);
 
             if (!ZavalaGame.SaveBuffer.HasSave) {
                 SaveUtility.Save(SaveSlot.Main);

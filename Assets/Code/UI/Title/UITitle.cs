@@ -227,7 +227,6 @@ namespace Zavala.UI {
             Game.SharedState.Get<UserSettings>().PlayerCode = m_PlayerCodeInput.text;
             ZavalaGame.Events.Dispatch(GameEvents.ProfileStarting, m_PlayerCodeInput.text);
             Game.Scenes.LoadMainScene(m_MainScene);
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.GameStarted);
         }
 
         private void HandleClaimNewIdError(OGD.Core.Error err) {
