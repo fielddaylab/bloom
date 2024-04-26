@@ -42,5 +42,12 @@ namespace Zavala {
             rect.offsetMin = new Vector2(offset.left, offset.bottom);
             rect.offsetMax = new Vector2(-offset.right, -offset.top);
         }
+
+        static public void SetAnchorsPreservePosition(this RectTransform rect, Vector2 min, Vector2 max) {
+            Vector3 pos = rect.position;
+            rect.anchorMin = min;
+            rect.anchorMax = max;
+            rect.position = pos;
+        }
     }
 }
