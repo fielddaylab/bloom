@@ -38,7 +38,19 @@ namespace Zavala.Economy {
 
         [Serializable] public class InternalAirshipPool : SerializablePool<RequestFulfiller> { } // The vehicle transporting internal digested phosphorus
 
-        [Serializable] public class ParcelPool : SerializablePool<RequestFulfiller> { } // The packages airships drop
+        [Serializable] public class ParcelPool : SerializablePool<RequestFulfiller> { // The packages airships drop
+            [Header("Parcel Configs")]
+            [SerializeField] private SimpleMeshConfig DefaultParcel;
+            [SerializeField] private SimpleMeshConfig CommercialParcel;
+
+            public void SetParcelMesh(RequestFulfiller parcel, ResourceMask resources) {
+                if ((resources & ResourceMask.MFertilizer) != 0) {
+                    CommercialParcel.Apply(parcel.TruckRenderer, parcel.TruckMesh);
+                } else {
+                    DefaultParcel.Apply(parcel.TruckRenderer, parcel.TruckMesh);
+                }
+            }
+        }
 
         #endregion // Types
 

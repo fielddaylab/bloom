@@ -70,7 +70,7 @@ $call ForcePinDialogue()
 @trigger InternalBlimpSent
 @once
 $call QueueDialogueBubble(region1_city1, region1.pippinEcology)
-$call QueueDialogueBubble(region3_city1, region3.blimpConcerns)
+$call QueueDialogueBubble(region3_city1, region4.blimpConcerns)
 $call SendGlobalAlertForNode("region5_city1", region5.firstBlimpReceived, true)
 
 :: firstBlimpReceived

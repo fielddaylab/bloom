@@ -186,6 +186,7 @@ namespace Zavala.Economy {
                     // create a new parcel w/ src airship position, target tile below; pass on fulfiller role
                     RequestFulfiller newFulfiller = pools.Parcels.Alloc();
                     FulfillerUtility.InitializeFulfiller(newFulfiller, marketData.ActiveRequests[index], component.transform.position);
+                    pools.Parcels.SetParcelMesh(newFulfiller, marketData.ActiveRequests[index].Supplied.PositiveMask);
                     marketData.ActiveRequests[index].Fulfiller = newFulfiller;
                 }
             }

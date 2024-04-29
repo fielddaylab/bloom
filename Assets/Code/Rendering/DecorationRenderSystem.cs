@@ -11,7 +11,7 @@ using Zavala.World;
 namespace Zavala {
     [SysUpdate(GameLoopPhase.ApplicationPreRender)]
     public class DecorationRenderSystem : ComponentSystemBehaviour<DecorationRenderer> {
-        static private readonly InstanceBucket[] s_WorkBuckets = new InstanceBucket[16];
+        static private readonly InstanceBucket[] s_WorkBuckets = new InstanceBucket[64];
         
         [SerializeField] private bool m_Instancing = true;
 

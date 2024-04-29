@@ -158,6 +158,7 @@ namespace Zavala.UI {
 
         // TODO: add a special case for region unlock "alerts"
         public static void CreateEventForGlobal(GlobalAlertButton button, EventActor actor, StringHash32 nodeId, bool overrideDelay) {
+            Assert.NotNull(actor, "Cannot create global event for null actor");
             EventActorQueuedEvent fakeEvent = new() {
                 ScriptId = nodeId,
                 Alert = EventActorAlertType.GlobalDummy,
@@ -170,6 +171,7 @@ namespace Zavala.UI {
         [LeafMember("SendGlobalAlertForNode")]
         public static void GlobalAlertLeaf(StringHash32 actorId, StringHash32 scriptId, bool overrideDelay = false) {
             EventActor actor = ScriptUtility.LookupActor(actorId);
+            Assert.NotNull(actor, "Cannot create global event for null actor with id '{0}'", scriptId);
             CreateEventForGlobal(Game.Gui.GetShared<GlobalAlertButton>(), actor, scriptId, overrideDelay);
         }
 

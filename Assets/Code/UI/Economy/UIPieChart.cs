@@ -95,7 +95,7 @@ namespace Zavala.UI
             int cFert = 0;
             int manure = 0;
             int dFert = 0;
-            for (int i = 0; i <= ZavalaGame.SimGrid.RegionCount; i++) {
+            for (int i = 0; i < ZavalaGame.SimGrid.RegionCount; i++) {
                 marketData.CFertilizerSaleHistory[i].TryGetTotal(m_HistoryDepth, out int cFertVal);
                 cFert += cFertVal;
                 marketData.ManureSaleHistory[i].TryGetTotal(m_HistoryDepth, out int manureVal);

@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FulfillerType: 2
-  TruckMesh: {fileID: 0}
-  TruckRenderer: {fileID: 0}
+  TruckMesh: {fileID: 895930853785753500}
+  TruckRenderer: {fileID: 1250215754335486309}
 --- !u!33 &895930853785753500
 MeshFilter:
   m_ObjectHideFlags: 0
