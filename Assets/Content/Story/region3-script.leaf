@@ -204,28 +204,28 @@ $call ForcePinDialogue()
 {@cityPrairie}          That sounds amazing! Mind if I tag along?
 {@advisorEcolForest}    ...Oh! I suppose, if you want to?
 
-:: queueUnlockMarketView
-@trigger        RegionReachedAge // RegionAgeDelta 20 after PIPS unlocked
-@conditions     regionId == 3, global:importUnlocked, global:pipsUnlocked
-@cutscene
-@once
-$call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
+// :: queueUnlockMarketView
+// @trigger        RegionReachedAge // RegionAgeDelta 20 after PIPS unlocked
+// @conditions     regionId == 3, global:importUnlocked, global:pipsUnlocked
+// @cutscene
+// @once
+// $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
 
-:: unlockTradeGraphs
-@cutscene // RegionAgeDelta 20 after PIPS unlocked
-@queued
-@once
-$set global:tradeGraphsUnlocked = true
-$call UnlockAdvisorModule("Economy")
-{@advisorEconPrairie}   Howdy! Hope I'm not interrupting anything important.
-{@advisorEconPrairie}   I was inspired by Winston's PIP system...
-{@advisorEconPrairie}   So I whipped up something of an economic equivalent!
-{@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph.
-{@advisorEconPrairie}   It shows which types of phosphorus fertilizer are being used.
-$call ForceAdvisorModule("Economy")
-{@advisorEconPrairie}   We'll want to replace red PHOS4US to keep those extra nutrients out!
-{@advisorEconPrairie}   You can click <b>Economy View</b> to check it any time.
-// $call Unpause()
+// :: unlockTradeGraphs
+// @cutscene // RegionAgeDelta 20 after PIPS unlocked
+// @queued
+// @once
+// $set global:tradeGraphsUnlocked = true
+// $call UnlockAdvisorModule("Economy")
+// {@advisorEconPrairie}   Howdy! Hope I'm not interrupting anything important.
+// {@advisorEconPrairie}   I was inspired by Winston's PIP system...
+// {@advisorEconPrairie}   So I whipped up something of an economic equivalent!
+// {@advisorEconPrairie}   It includes a <b>Phosphorus Market Share</b> graph.
+// {@advisorEconPrairie}   It shows which types of phosphorus fertilizer are being used.
+// $call ForceAdvisorModule("Economy")
+// {@advisorEconPrairie}   We'll want to replace red PHOS4US to keep those extra nutrients out!
+// {@advisorEconPrairie}   You can click <b>Economy View</b> to check it any time.
+// // $call Unpause()
 
 :: urbanVisit
 @queued

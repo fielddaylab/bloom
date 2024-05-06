@@ -17,9 +17,9 @@ $set global:readyForSkimmers = true
 $if global:importUnlocked = false
     $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
 $endif
-$if global:tradeGraphsUnlocked = false
-    $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
-$endif
+// $if global:tradeGraphsUnlocked = false
+//     $call SendGlobalAlertForNode("region3_city1", region3.unlockTradeGraphs)
+// $endif
 $call QueueDialogueBubble(region3_city1, region3.visitingVeldt)
 {@advisorEcolWetland}    Welcome to Muskeg County, boss.
 $call PanToBuilding("region4_city1")

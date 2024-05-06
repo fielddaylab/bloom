@@ -214,7 +214,7 @@ $endif
 // @once
 // $call SendGlobalAlertForNode("region2_city1", region2.unlockPhosphorusView)
 
-:: unlockPhosphorusView
+:: forestBloomCutscene
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
 @cutscene
@@ -228,23 +228,32 @@ $call CutsceneBegin(3)
     We thought the gross algae was only in Knoll County... How could blooms reach our forest?
     $call CutscenePrepareImages("act3/3-2-1.png", "act3/3-2-2.png", "act3/3-2-3.png")
 	$call CutsceneAllImages(0.5)
-	We need to figure out what is happening. Veldt University sent its best scholars to help investigate.
+	We need to figure out what is happening. Veldt University is developing new technologies to address the problem.
     $call CutscenePrepareImages("act3/3-3-1.png", "act3/3-3-2.png", "act3/3-3-3.png")
 	$call CutsceneAllImages(0.5)
-    Their new technology senses the flow of phosphorus... It flows through groundwater and downward into our lakes!
+    Their Phosphorus View has shown us that phosphorus flows through groundwater and downward into our lakes!
     $call CutscenePrepareImages("act3/3-4-1.png", "act3/3-4-2.png", "act3/3-4-3.png")
-	$call CutsceneAllImages(0.5)
-	This situation is dire... Could this tool help us locate sources of phosphorus and put a stop to them?
+    $call CutsceneNextImage()
+	Maybe we can stop the flow at the source: PHOS4US.
+    $call CutsceneAllImages(0.5)
+    If we replace their imported mineral fertilizer with recycled sources, we can get PHOS4US out for good!
 $call CutsceneEnd()
-{@cityPrairie}      ...I call it PIP! Persistent Imaging of Phosphorus.
-{@cityPrairie}      Let's try it out here in Cypress County.
-$set global:pipsUnlocked = true
-$call UnlockAdvisorModule("Ecology")
-$call PanToBuilding("region2_cafo2")
-$call ForceAdvisorModule("Ecology")
-{@advisorEconForest}   Good heavens! There's excess phosphorus all over...
-{@advisorEcolForest}   Hmm... Maybe this can help us find where <b>new phosphorus</b> is appearing.
-$call AddRegionAgeDeltaTrigger(3, 20) // for unlocking MARKET GRAPHS.
+// $set global:pipsUnlocked = true
+$set global:tradeGraphsUnlocked = true
+$call UnlockAdvisorModule("Economy")
+{@advisorEconPrairie}   We now have a Market Share Graph!
+$call ForceAdvisorModule("Economy")
+{@advisorEconPrairie}   You can use it to see how much of each fertilizer type is being used.
+{@advisorEconPrairie}   If we replace that red PHOS4US enough, we can get 'em out!
+{@phos4us}              How absurd!! PHOS4US is providing a service to this community.
+$call ForceAdvisorModule("Economy")
+{@advisorEcolPrairie}   That "service" of yours is ruining our lakes!
+// $call UnlockAdvisorModule("Ecology")
+//$call PanToBuilding("region2_cafo2")
+// $call ForceAdvisorModule("Ecology")
+// {@advisorEconForest}   Good heavens! There's excess phosphorus all over...
+// {@advisorEcolForest}   Hmm... Maybe this can help us find where <b>new phosphorus</b> is appearing.
+// $call AddRegionAgeDeltaTrigger(3, 20) // for unlocking MARKET GRAPHS.
 
 $call OffsetAlgaeGrowthThreshold(1)
 

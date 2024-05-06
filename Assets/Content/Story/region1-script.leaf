@@ -540,7 +540,7 @@ $call CutsceneBegin(2)
     $call CutscenePrepareImages("act2/2-3-1.png", "act2/2-3-2.png", "act2/2-3-3.png")
 	$call CutsceneAllImages(0.5)
 	Or are the dairy farmers at fault? The <b>phosphorus</b>-filled manure seeps into the lakes as well!
-    The old Manure Processor broken down. Unprocessed manure is too heavy to ship...
+    The old Manure Processor is broken down. Unprocessed manure is too heavy to ship...
     $call CutscenePrepareImages("act2/2-4-1.png", "act2/2-4-2.png", "act2/2-4-3.png")
 	$call CutsceneAllImages(0.5)
     Nearby farms might be able to afford manure fertilizer... But long-distance shipping is just too costly!
@@ -550,10 +550,16 @@ $call CutsceneBegin(2)
 $call CutsceneEnd()
 {@advisorEcolHill}    When there's too much <b>phosphorus</b> in the water, <b>Algae</b> begins to take over.
 {@advisorEcolHill}    It can even produce toxins.
-{@advisorEcolHill}    Our <b>City</b> will become stressed if there are algae blooms nearby!
-{@advisorEcolHill}    Some algae blooms are <b>unavoidable...</b>
+{@advisorEconHill}    Our <b>City</b> will become stressed if there are algae blooms nearby!
+{@advisorEcolHill}    Right. Some algae blooms are <b>unavoidable...</b>
 {@advisorEcolHill}    But we can limit them if we <b>prevent phosphorus runoff!</b>
-{@advisorEcolHill}    I'll keep an eye out for any excess runoff...
+$call UnlockAdvisorModule("Ecology")
+$set global:pipsUnlocked = true
+$call ForceAdvisorModule("Ecology")
+{@advisorEcolHill}    SAGA has gained a <b>Phosphorus View.</b>
+{@advisorEcolHill}    This can help us identify sources of runoff!
+{@advisorEcolHill}    Let's keep an eye on those red areas...
+$call ForceAdvisorModule("Ecology")
 $call QueueDialogueBubble(region2_grain1, region2.bloomRumors)
 $call OffsetAlgaeGrowthThreshold(1)
 $call AddAutoAlertCondition("ExcessRunoff", 1)

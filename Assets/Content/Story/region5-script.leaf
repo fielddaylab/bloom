@@ -36,8 +36,11 @@ $call CutsceneEnd()
 $call UnlockExportDepot("region2_export1")
 $call Wait(3)
 {@advisorEconUrban}     We can send Processed Fertilizer there to be shipped anywhere!
-{@advisorEcolUrban}     Good thinking, Xavier.
+{@advisorEcolUrban}     Good thinking, Xavier. That'll help us <b>outcompete PHOS4US!</b>
+$call ForceAdvisorModule("Economy")
 {@advisorEconUrban}     Yeah, I'm kind of a <i>logistical wizard.</i>
+{@advisorEcolUrban}     Let's reduce that PHOS4US Market Share, dude!
+$call ForceAdvisorModule("Economy")
 
 // $call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()

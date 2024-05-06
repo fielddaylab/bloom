@@ -720,7 +720,7 @@ MonoBehaviour:
       TargetAge:
         Below: 0
         Value: 20
-      NodeTitle: region2.unlockPhosphorusView
+      NodeTitle: region2.forestBloomCutscene
       CheckCitiesConnected: 0
       CheckFarmsConnected: 0
     RegionIndexUnlocks: 03000000
