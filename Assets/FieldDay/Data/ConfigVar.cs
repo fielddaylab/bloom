@@ -185,7 +185,7 @@ namespace FieldDay.Data {
         #endregion // Helpers
 
         #region Debug Menu
-
+#if DEVELOPMENT
         [DebugMenuFactory]
         static private DMInfo DebugMenuFactory() {
             // config vars
@@ -215,6 +215,7 @@ namespace FieldDay.Data {
 
             return configVarMenu;
         }
+#endif // DEVELOPMENT
 
         /// <summary>
         /// Creates a debug menu for the given config variable.
