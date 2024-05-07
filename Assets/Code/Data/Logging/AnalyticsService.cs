@@ -568,8 +568,10 @@ namespace Zavala.Data {
                 AppBranch = BuildInfo.Branch(),
                 ClientLogVersion = CLIENT_LOG_VERSION,
             }, new OGDLog.MemoryConfig(4096, 1024*1024*32, 256));
-            // m_Log.UseFirebase(m_Firebase);
-            m_Log.SetDebug(true);
+            if (!string.IsNullOrEmpty(m_Firebase.ApiKey)) {
+                m_Log.UseFirebase(m_Firebase);
+            }
+            m_Log.SetDebug(m_Debug);
 #if UNITY_EDITOR
             if (!m_Testing) {
                 m_Log.AddSettings(OGDLog.SettingsFlags.SkipOGDUpload);

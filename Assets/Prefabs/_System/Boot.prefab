@@ -561,12 +561,12 @@ MonoBehaviour:
   m_AppId: ALGAE
   m_AppVersion: 1.0
   m_Firebase:
-    ApiKey: 
-    ProjectId: 
-    StorageBucket: 
-    MessagingSenderId: 
-    AppId: 
-    MeasurementId: 
+    ApiKey: AIzaSyBS3dM4uRQqRbtgMoCPag5ErpEelUL-lGI
+    ProjectId: bloom-36ebf
+    StorageBucket: bloom-36ebf.appspot.com
+    MessagingSenderId: 568050537090
+    AppId: 1:568050537090:web:8aa10c815abe6b4057da9b
+    MeasurementId: G-TKW6WFXF6G
   m_Testing: 0
 --- !u!1001 &1254169883870357413
 PrefabInstance:
