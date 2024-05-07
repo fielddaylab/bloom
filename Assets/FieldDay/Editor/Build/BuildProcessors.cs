@@ -28,6 +28,11 @@ namespace FieldDay.Editor {
                 PlayerSettings.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
             }
 
+            BuildConfig config = BuildConfigurations.GetDesiredConfig(branch);
+            if (config != null) {
+                BuildConfigurations.ApplyBuildConfig(branch, AssetDatabase.GetAssetPath(config), config.DevelopmentBuild, config.CustomDefines, config.StrippingLevel, true);
+            }
+
             if (EditorUserBuildSettings.development) {
                 PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
                 PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;

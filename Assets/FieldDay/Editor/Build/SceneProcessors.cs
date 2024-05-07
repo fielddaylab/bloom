@@ -104,7 +104,7 @@ namespace FieldDay.Editor {
                 }
             }
 
-#if !PREVIEW && !DEVELOPMENT
+#if DISABLE_FRAMERATE_COUNTER
             FramerateDisplay[] toRemoveFramerates = GameObject.FindObjectsOfType<FramerateDisplay>();
             if (toRemoveFramerates.Length > 0) {
                 Debug.LogFormat("[StripDebugSceneProcessor] Removing {0} FramerateDisplay GameObjects from scene '{1}'", toRemoveFramerates.Length, scene.name);
@@ -112,7 +112,7 @@ namespace FieldDay.Editor {
                     GameObject.DestroyImmediate(obj.gameObject);
                 }
             }
-#endif // !PREVIEW && !DEVELOPMENT
+#endif // DISABLE_FRAMERATE_COUNTER
 
             List<IDevModeOnly> devModeOnlyComponents = new List<IDevModeOnly>(256);
             scene.GetAllComponents(true, devModeOnlyComponents);

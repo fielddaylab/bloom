@@ -49,6 +49,8 @@ namespace FieldDay.Perf {
         private void Awake() {
             if (s_Instance != null && s_Instance != this) {
                 UnityEngine.Debug.LogWarning("[FramerateDisplay] Multiple instances of FramerateDisplay detected!");
+                Destroy(gameObject);
+                return;
             } else {
                 s_Instance = this;
             }
