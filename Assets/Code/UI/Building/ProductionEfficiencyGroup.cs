@@ -195,7 +195,7 @@ namespace Zavala.UI
             if (opState == OperationState.Great) { builder.Append("quickly"); }
             builder.Append("</i>");
 
-            group.EfficiencyText.SetText(builder.ToString());
+            group.EfficiencyText.SetText(builder);
             SetEfficiencyLevel(group, opState, true);
         }
     }

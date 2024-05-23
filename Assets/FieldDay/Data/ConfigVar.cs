@@ -259,7 +259,7 @@ namespace FieldDay.Data {
                         if (idx < 0 || idx >= cvar.m_EnumInfo.Values.Length) {
                             return string.Empty;
                         } else {
-                            return cvar.m_EnumInfo.Names[idx];
+                            return cvar.m_EnumInfo.InspectorNames[idx];
                         }
                     }, predicate, indent);
                     break;

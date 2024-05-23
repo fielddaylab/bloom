@@ -82,21 +82,16 @@ namespace Zavala.UI
         return Array.Find(m_shopItemBtns, b => b.BuildTool == tool);
     }
 
-    public StringBuilder GetUnlockedToolData() {
-            using (var psb = PooledStringBuilder.Create()) {
-                psb.Builder.Append('[');
-                foreach(ShopItemButton b in m_shopItemBtns) {
-                    if (b.Button.interactable) {
-                        psb.Builder.Append('{');
-                        psb.Builder.Append("building_type: ").Append(b.BuildTool);
-                        psb.Builder.Append("cost: ").Append(b.Cost);
-                        psb.Builder.Append("},");
-                    }
+    public JsonBuilder GetUnlockedToolData(JsonBuilder json) {
+            foreach(ShopItemButton b in m_shopItemBtns) {
+                if (b.Button.interactable) {
+                    json.BeginObject()
+                        .Field("building_type", EnumLookup.BuildTool[(int) b.BuildTool])
+                        .Field("cost", b.Cost)
+                        .EndObject();
                 }
-                if (psb.Builder.Length > 0) psb.Builder.Length -= 1; // trim last comma
-                psb.Builder.Append(']');
-                return psb.Builder;
             }
+            return json;
     }
 
     public void SetShopItemBtnUnlocked(ShopItemButton btn, bool unlocked) {

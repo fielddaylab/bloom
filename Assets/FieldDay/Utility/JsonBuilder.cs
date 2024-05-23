@@ -3,9 +3,39 @@ using BeauUtil;
 
 namespace FieldDay {
     /// <summary>
+    /// JSON writing interface.
+    /// </summary>
+    public interface IJsonBuilder<T> {
+        T BeginArray();
+        T BeginArray(string name);
+        T BeginObject();
+        T BeginObject(string name);
+        T EndArray();
+        T EndObject();
+        T Field(string name, bool item);
+        T Field(string name, double item);
+        T Field(string name, double item, int precision);
+        T Field(string name, float item);
+        T Field(string name, float item, int precision);
+        T Field(string name, long item);
+        T Field(string name, string item);
+        T Field(string name, StringBuilder item);
+        T Field(string name, ulong item);
+        T Item(bool item);
+        T Item(double item);
+        T Item(double item, int precision);
+        T Item(float item);
+        T Item(float item, int precision);
+        T Item(long item);
+        T Item(string item);
+        T Item(StringBuilder item);
+        T Item(ulong item);
+    }
+
+    /// <summary>
     /// JSON writing
     /// </summary>
-    public class JsonBuilder {
+    public class JsonBuilder : IJsonBuilder<JsonBuilder> {
         private readonly StringBuilder m_Builder;
 
         public JsonBuilder(int capacity) {
@@ -90,7 +120,7 @@ namespace FieldDay {
                 m_Builder.Append("null,");
             } else {
                 m_Builder.Append('"');
-                for(int i = 0, len = item.Length; i < len; i++) {
+                for (int i = 0, len = item.Length; i < len; i++) {
                     char c = item[i];
                     switch (c) {
                         case '\\': {
@@ -248,7 +278,7 @@ namespace FieldDay {
 
         static private void TrimComma(StringBuilder builder) {
             int len = builder.Length;
-            while(len > 0 && builder[len - 1] == ',') {
+            while (len > 0 && builder[len - 1] == ',') {
                 len--;
             }
             builder.Length = len;

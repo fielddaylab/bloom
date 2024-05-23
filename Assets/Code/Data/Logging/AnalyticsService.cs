@@ -24,6 +24,7 @@ using Zavala.World;
 using BeauData;
 using FieldDay.Components;
 using OGD;
+using FieldDay.Data;
 
 namespace Zavala.Data {
 
@@ -369,13 +370,15 @@ namespace Zavala.Data {
         }
 
         #region Inspector
-        [SerializeField, Required] private string m_AppId = "ALGAE";
+        [SerializeField, Required] private string m_AppId = "BLOOM";
         [SerializeField, Required] private string m_AppVersion = "1.0";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
         [SerializeField] private bool m_Testing = false;
-        
+
         #endregion // Inspector
+
+        private readonly JsonBuilder m_JsonBuilder = new JsonBuilder(Unsafe.KiB * 64);
 
         private enum CityStatus : byte {
             GOOD,
@@ -395,17 +398,16 @@ namespace Zavala.Data {
             public PolicyLevelData runoff;
             public PolicyLevelData cleanup;
 
-            public StringBuilder ToJsonString() {
-                using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
-                    psb.Builder.Append("sales:").Append(sales.ToJsonString()).Append(','); 
-
-                    psb.Builder.Append("import:").Append(import.ToJsonString()).Append(',');
-
-                    psb.Builder.Append("runoff:").Append(runoff.ToJsonString()).Append(',');
-
-                    psb.Builder.Append("cleanup:").Append(cleanup.ToJsonString()).Append(',');
-                    return psb.Builder;
-                }
+            public readonly JsonBuilder Append(JsonBuilder json) {
+                json.BeginObject("sales");
+                sales.Append(json).EndObject();
+                json.BeginObject("import");
+                import.Append(json).EndObject();
+                json.BeginObject("runoff");
+                runoff.Append(json).EndObject();
+                json.BeginObject("cleanup");
+                cleanup.Append(json).EndObject();
+                return json;
             }
         }
 
@@ -414,13 +416,10 @@ namespace Zavala.Data {
             public int policy_choice;
             public bool is_locked;
 
-            public readonly StringBuilder ToJsonString() {
-                using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
-                    psb.Builder.Append("{policy_choice:").Append(policy_choice.ToStringLookup()).Append(',');
-                    psb.Builder.Append("is_locked:").Append(is_locked).Append('}');
-                    return psb.Builder;
-                }
-             
+            public readonly JsonBuilder Append(JsonBuilder json) {
+                json.Field("policy_choice", policy_choice.ToStringLookup());
+                json.Field("is_locked", is_locked);
+                return json;
             }
             
         }
@@ -543,7 +542,7 @@ namespace Zavala.Data {
                 AppVersion = m_AppVersion,
                 AppBranch = BuildInfo.Branch(),
                 ClientLogVersion = CLIENT_LOG_VERSION,
-            }, new OGDLog.MemoryConfig(4096, 1024*1024*32, 256));
+            }, new OGDLog.MemoryConfig(4096, Unsafe.KiB * 64, 256));
             if (!string.IsNullOrEmpty(m_Firebase.ApiKey)) {
                 m_Log.UseFirebase(m_Firebase);
             }
@@ -594,41 +593,36 @@ namespace Zavala.Data {
             m_CurrentMode = Mode.View;
             m_PhosView = false;
             InitializePolicyChoiceState();
-            UpdateAllState();
+            ResubmitGameState();
         }
 
-        private void UpdateAllState() {
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("current_county", EnumLookup.RegionName[m_CurrentRegionIndex]);
-                s.Param("current_money", m_CurrentBudget);
-                s.Param("map_mode", m_CurrentMode);
-                s.Param("county_policies", m_CountyPolicies.ToJsonString());
-                s.Param("phosphorus_view_enabled", m_PhosView);
-            }
+        private void ResubmitGameState() {
+            m_JsonBuilder.Begin()
+                .Field("current_county", EnumLookup.RegionName[m_CurrentRegionIndex])
+                .Field("current_money", m_CurrentBudget)
+                .Field("map_mode", m_CurrentMode)
+                .Field("phosphorus_view_enabled", m_PhosView)
+                .BeginObject("county_policies");
+            m_CountyPolicies.Append(m_JsonBuilder).EndObject();
+            m_Log.GameState(m_JsonBuilder.End());
         }
 
         private void UpdateRegionState(ushort region) {
             //         current_county : str
             m_CurrentRegionIndex = region;
-            UpdateAllState();
+            ResubmitGameState();
         }
 
         private void UpdateMoneyState(int budget) {
             //         current_money : int
             m_CurrentBudget = budget;
-            UpdateAllState();
+            ResubmitGameState();
         }
 
         private void UpdateBuildState(string mode) {
             //         map_mode : enum(VIEW, BUILD, DESTROY)
             m_CurrentMode = mode;
-            UpdateAllState();
-        }
-
-        private void SavePolicyState() {
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("county_policies", JsonUtility.ToJson(m_CountyPolicies));
-            }
+            ResubmitGameState();
         }
 
         // -1 for "Not Set"
@@ -665,7 +659,7 @@ namespace Zavala.Data {
             m_CountyPolicies.cleanup.policy_choice =
                 p.EverSet[c] ? (int)p.Map[c] : -1;
 
-            UpdateAllState();
+            ResubmitGameState();
         }
 
         private void UpdatePoliciesLockedState() {
@@ -675,7 +669,7 @@ namespace Zavala.Data {
             m_CountyPolicies.runoff.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.RunoffPolicy);
             m_CountyPolicies.cleanup.is_locked = CardsUtility.PolicyIsUnlocked(cs, PolicyType.SkimmingPolicy);
 
-            UpdateAllState();
+            ResubmitGameState();
         }
 
         private void UpdatePolicyLockedState(PolicyType type, bool isLocked) {
@@ -695,12 +689,12 @@ namespace Zavala.Data {
                 default:
                     break;
             }
-            UpdateAllState();
+            ResubmitGameState();
         }
 
         private void UpdatePhosState(bool toggle) {
             m_PhosView = toggle;
-            UpdateAllState();
+            ResubmitGameState();
         }
 
         #endregion // Game State
@@ -785,12 +779,14 @@ namespace Zavala.Data {
 
         private void LogGameStarted() {
             // game_started { music_volume : float, fullscreen_enabled : bool, hq_graphics_enabled : bool, map_state : BuildMap }
-            using (var e = m_Log.NewEvent("game_start")) {
+            using (var e = m_Log.NewEvent("game_start", m_JsonBuilder)) {
                 UserSettings s = Game.SharedState.Get<UserSettings>();
-                e.Param("music_volume", s.MusicVolume);
-                e.Param("fullscreen_enabled", ScreenUtility.GetFullscreen());
-                e.Param("hq_graphics_enabled", s.HighQualityMode);
-                e.Param("map_state", GenerateMapState());
+                e.Field("music_volume", s.MusicVolume);
+                e.Field("fullscreen_enabled", ScreenUtility.GetFullscreen());
+                e.Field("hq_graphics_enabled", s.HighQualityMode);
+                e.BeginObject("map_state");
+                GenerateMapState(e);
+                e.EndObject();
             }
         }
 
@@ -831,8 +827,10 @@ namespace Zavala.Data {
 
         private void LogDisplayBuildMenu() {
             // build_menu_displayed { available_buildings : array[dict] // each item has name and price }
-            using (var e = m_Log.NewEvent("build_menu_displayed")) {  
-                e.Param("available_buildings", ShopUtility.GetShopUnlockData());
+            using (var e = m_Log.NewEvent("build_menu_displayed", m_JsonBuilder)) {
+                e.BeginArray("available_buildings");
+                ShopUtility.GetShopUnlockData(e);
+                e.EndArray();
             }
         }
 
@@ -883,9 +881,7 @@ namespace Zavala.Data {
             // enter_destroy_mode { }
             m_Log.Log("enter_destroy_mode");
             m_CurrentMode = Mode.Destroy;
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("map_mode", Mode.Destroy);
-            }
+            ResubmitGameState();
         }
 
         private void LogHoverDestroy(int idx) {
@@ -921,9 +917,7 @@ namespace Zavala.Data {
             // exit_destroy_mode { }
             m_Log.Log("exit_destroy_mode");
             m_CurrentMode = Mode.Build;
-            using (var s = m_Log.OpenGameState()) {
-                s.Param("map_mode", Mode.Build);
-            }
+            ResubmitGameState();
         }
 
         #endregion Destroy
@@ -1078,28 +1072,29 @@ namespace Zavala.Data {
             }
         }
 
-        private StringBuilder GenerateMapState() {
+        private JsonBuilder GenerateMapState(JsonBuilder json) {
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
 
-            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
-
-                psb.Builder.Append('[');
+            using (PooledList<OccupiesTile> tiles = PooledList<OccupiesTile>.Create()) {
                 // turn enumerator into a list so we can sort it
-                List<OccupiesTile> tiles = new List<OccupiesTile>(Game.Components.ComponentsOfType<OccupiesTile>());
+                tiles.AddRange(Game.Components.ComponentsOfType<OccupiesTile>());
                 tiles.Sort((a, b) => a.RegionIndex - b.RegionIndex);
 
-                int region = 0;
-                psb.Builder.Append(EnumLookup.RegionName[region]).Append(":[");
+                int region = -1;
                 for (int ot = 0; ot < tiles.Count; ot++) {
                     // if we've advanced to a new region, start a new "array"
-                    if (tiles[ot].RegionIndex > region){
-                        psb.Builder.Length -= 1;
-                        region++;
-                        psb.Builder.Append("],\"").Append(EnumLookup.RegionName[region]).Append("\":[");
+                    OccupiesTile tile = tiles[ot];
+                    if (tile.RegionIndex > region){
+                        json.EndArray()
+                            .BeginArray(EnumLookup.RegionName[region]);
                     }
                     // print in current region
-                    int idx = tiles[ot].TileIndex;
+                    int idx = tile.TileIndex;
+                    json.BeginObject()
+                        .Field("idx", idx)
+                        .Field("height", grid.Terrain.Height[idx])
+                        .
                     psb.Builder.Append('{');
                     psb.Builder.Append("\"idx\":").Append(tiles[ot].TileIndex.ToString()).Append(',');
                     psb.Builder.Append("\"height\":").Append(grid.Terrain.Info[idx].Height.ToStringLookup()).Append(',');
@@ -1122,10 +1117,12 @@ namespace Zavala.Data {
                     
                     
                 }
-                psb.Builder.Length -= 1;
-                psb.Builder.Append(']');
-                return psb;
+                if (region >= 0) {
+                    json.EndArray();
+                }
             }
+
+            return json;
         }
 
 
@@ -1590,9 +1587,11 @@ namespace Zavala.Data {
         #region End
         private void LogWonGame() {
             // win_game { }
-            using (var e = m_Log.NewEvent("win_game")) {
-                e.Param("map_state", GenerateMapState());
-            }
+            m_JsonBuilder.Begin();
+            m_JsonBuilder.BeginObject("map_state");
+            GenerateMapState(m_JsonBuilder);
+            m_JsonBuilder.EndObject();
+            m_Log.Log("win_game", m_JsonBuilder.End());
         }
         
         private void LogFailedGame(LossData data) {

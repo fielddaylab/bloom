@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using BeauPools;
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay;
 using Zavala.Data;
 
 namespace Zavala.Economy {
@@ -134,10 +135,10 @@ namespace Zavala.Economy {
         }
     }
 
-        /// <summary>
-        /// Block of 32-bit resource values.
-        /// </summary>
-        [Serializable]
+    /// <summary>
+    /// Block of 32-bit resource values.
+    /// </summary>
+    [Serializable]
     public struct ResourceBlock {
         public int Manure;
         public int MFertilizer;

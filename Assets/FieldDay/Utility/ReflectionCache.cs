@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace FieldDay {
     /// <summary>
@@ -14,7 +15,7 @@ namespace FieldDay {
         /// </summary>
         public struct EnumInfoCache {
             public object[] Values;
-            public string[] Names;
+            public string[] InspectorNames;
         }
 
         static private readonly Dictionary<Type, EnumInfoCache> s_CachedEnumInfo = new Dictionary<Type, EnumInfoCache>(4);
@@ -63,7 +64,7 @@ namespace FieldDay {
                 }
 
                 cache.Values = values.ToArray();
-                cache.Names = names.ToArray();
+                cache.InspectorNames = names.ToArray();
                 s_CachedEnumInfo.Add(enumType, cache);
             }
             return cache;
@@ -109,7 +110,9 @@ namespace FieldDay {
         }
 
         /// <summary>
-        /// Returns the nicified name for the given name.
+        /// Returns the analytics-style name for the given name.
+        /// This makes all characters uppercase and places underscores
+        /// where word breaks would occur in the original string.
         /// </summary>
         static public unsafe string AnalyticsName(string name) {
             char* buff = stackalloc char[name.Length * 2];
@@ -144,6 +147,18 @@ namespace FieldDay {
         }
 
         #endregion // String
+    }
+
+    public struct EnumStringTable<T> where T : unmanaged, Enum {
+        public readonly string[] Strings;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string Get(T value) {
+            return Strings[Enums.ToInt(value)] ?? value.ToString();
+        }
     }
 
     /// <summary>

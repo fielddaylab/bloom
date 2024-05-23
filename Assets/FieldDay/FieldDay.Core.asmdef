@@ -15,7 +15,8 @@
         "ScriptableBake",
         "UWTStream",
         "EasyAssetStreaming",
-        "NativeInput"
+        "NativeInput",
+        "OGD.Log"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -34,6 +35,11 @@
             "name": "com.unity.modules.vr",
             "expression": "0.0.1",
             "define": "USING_VR"
+        },
+        {
+            "name": "com.fieldday.opengamedata-unity",
+            "expression": "1.0.6",
+            "define": "USING_OGDLOG"
         }
     ],
     "noEngineReferences": false
