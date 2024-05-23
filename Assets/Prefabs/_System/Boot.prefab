@@ -391,6 +391,7 @@ GameObject:
   - component: {fileID: 6373850018556134797}
   - component: {fileID: 7241340875902165443}
   - component: {fileID: 7984283997466576007}
+  - component: {fileID: 5823255876144044126}
   m_Layer: 0
   m_Name: UICamera
   m_TagString: UICamera
@@ -514,6 +515,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InitialCapacity: 64
+--- !u!114 &5823255876144044126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4613536460739364412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd05536b8d341f44e9cc8da352f0286d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Viewport:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!1 &7045890445170681987
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,7 +577,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61f3707fc31bc4a4ab0ffdd62051ebc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AppId: ALGAE
+  m_AppId: BLOOM
   m_AppVersion: 1.0
   m_Firebase:
     ApiKey: AIzaSyBS3dM4uRQqRbtgMoCPag5ErpEelUL-lGI

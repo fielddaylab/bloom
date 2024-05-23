@@ -45,7 +45,7 @@ namespace Zavala.Economy {
         public void ChangeDemandAmount(ResourceId resource, int change) {
             ChangeRequestAmount(resource, change);
             // ChangePurchasePrice(resource, change);
-            Log.Msg("[ResourcePurchaser] {0} demand changed by {1} for actor {2}", resource, change, transform.name);
+            Log.Debug("[ResourcePurchaser] {0} demand changed by {1} for actor {2}", resource, change, transform.name);
         }
 
         private void Awake() {

@@ -39,7 +39,7 @@ namespace Zavala.Economy {
                 }
 
                 ResourceRequester requester = producer.GetComponent<ResourceRequester>();
-                Log.Msg("[ResourceProducerSystem] Producer '{0}' consumed {1} to produce {2}", producer.name, consumed, produced);
+                Log.Debug("[ResourceProducerSystem] Producer '{0}' consumed {1} to produce {2}", producer.name, consumed, produced);
                 DebugDraw.AddWorldText(producer.transform.position, "Produced!", Color.green, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
 
                 if (requester != null && requester.IsLocalOption) {

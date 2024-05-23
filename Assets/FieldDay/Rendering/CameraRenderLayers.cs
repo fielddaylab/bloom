@@ -1,10 +1,10 @@
 using System;
 using BeauUtil;
-using BeauUtil.Debugger;
 using UnityEngine;
 
 namespace FieldDay.Rendering {
-    [RequireComponent(typeof(Camera))]
+    [DisallowMultipleComponent, RequireComponent(typeof(Camera))]
+    [AddComponentMenu("Field Day/Cameras/Camera Render Layers")]
     public class CameraRenderLayers : MonoBehaviour {
         [NonSerialized] private Camera m_Camera;
 

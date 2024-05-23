@@ -4,7 +4,7 @@ var BugReporterLib = {
         /**
          * @type {String}
          */
-        var docSrcStr = Pointer_stringify(documentSrc);
+        var docSrcStr = UTF8ToString(documentSrc);
         docStr = docSrcStr.trim();
         if (docSrcStr.startsWith("<html>")) {
             docSrcStr = docSrcStr.substring(6);

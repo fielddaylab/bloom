@@ -30,6 +30,12 @@ namespace FieldDay.Debugging {
 
         #region Types
 
+        private enum EnableMode {
+            Enabled,
+            Disabled,
+            DisableInBuildOnly
+        }
+
         private struct DrawParams {
             public Color32 Color;
             public float LineWidth;
@@ -84,6 +90,9 @@ namespace FieldDay.Debugging {
 
         #region Inspector
 
+        [SerializeField] private EnableMode m_EnableMode = EnableMode.DisableInBuildOnly;
+
+        [Header("Mesh Rendering")]
         [SerializeField] private Font m_TextFont = null;
         [SerializeField] private Mesh m_SphereMesh = null;
         [SerializeField] private Mesh m_CubeMesh = null;
@@ -114,6 +123,7 @@ namespace FieldDay.Debugging {
         [NonSerialized] static private BitSet64 s_CategoryMask = new BitSet64();
         [NonSerialized] static private DebugDraw s_Instance;
         [NonSerialized] static private Camera s_MainCameraOverride;
+        [NonSerialized] static private bool s_PauseAll = false;
 
         [NonSerialized] private bool m_InitializedResources = false;
 
@@ -139,8 +149,19 @@ namespace FieldDay.Debugging {
             m_MainMeshData = new MeshData16<DebugVertexFormat>(512);
             m_OverlayMeshData = new MeshData16<DebugVertexFormat>(512);
 
+            switch (m_EnableMode) {
+                case EnableMode.Disabled: {
+                    s_PauseAll = true;
+                    break;
+                }
+                case EnableMode.DisableInBuildOnly: {
+                    s_PauseAll |= !Application.isEditor;
+                    break;
+                }
+            }
+
 #if UNITY_EDITOR
-            SceneView.duringSceneGui += OnSceneGUI;
+            SceneView.duringSceneGui += OnSceneGUI;            
 #endif // UNITY_EDITOR
         }
 
@@ -172,9 +193,9 @@ namespace FieldDay.Debugging {
 
             Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Camera.main;
             if (mainCam) {
-                RenderLines(deltaTime, mainCam.transform.forward, s_CategoryMask);
+                RenderLines(deltaTime, mainCam.transform.forward, s_CategoryMask, !s_PauseAll);
             }
-            RenderSpheres(deltaTime, s_CategoryMask);
+            RenderSpheres(deltaTime, s_CategoryMask, !s_PauseAll);
 
             if (m_MainMeshData.VertexCount > 0) {
                 RenderParams p = new RenderParams(m_DepthTestMaterial);
@@ -209,9 +230,9 @@ namespace FieldDay.Debugging {
 
             Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Camera.main;
             if (mainCam) {
-                RenderText(deltaTime, mainCam, s_CategoryMask);
+                RenderText(deltaTime, mainCam, s_CategoryMask, !s_PauseAll);
             } else {
-                RenderText(deltaTime); 
+                DecayText(deltaTime); 
             }
         }
 
@@ -231,7 +252,7 @@ namespace FieldDay.Debugging {
             Handles.BeginGUI();
 
             EnsureGUIResources();
-            RenderText(0, view.camera, s_CategoryMask);
+            RenderText(0, view.camera, s_CategoryMask, !s_PauseAll);
 
             Handles.EndGUI();
         }
@@ -273,11 +294,11 @@ namespace FieldDay.Debugging {
 
         #region Rendering
 
-        private void RenderLines(float deltaTime, Vector3 invCameraLook, BitSet64 mask) {
+        private void RenderLines(float deltaTime, Vector3 invCameraLook, BitSet64 mask, bool allowRendering) {
             for (int i = s_ActiveLines.Count - 1; i >= 0; i--) {
                 ref Vector3x2RenderState state = ref s_ActiveLines[i];
 
-                if (state.Params.Category < 0 || mask.IsSet(state.Params.Category)) {
+                if (allowRendering && (state.Params.Category < 0 || mask.IsSet(state.Params.Category))) {
                     MeshData16<DebugVertexFormat> meshData;
                     if (state.Params.DepthTest) {
                         meshData = m_MainMeshData;
@@ -307,11 +328,11 @@ namespace FieldDay.Debugging {
             }
         }
 
-        private void RenderSpheres(float deltaTime, BitSet64 mask) {
+        private void RenderSpheres(float deltaTime, BitSet64 mask, bool allowRendering) {
             for (int i = s_ActiveSpheres.Count - 1; i >= 0; i--) {
                 ref SphereRenderState state = ref s_ActiveSpheres[i];
 
-                if (state.Params.Category < 0 || mask.IsSet(state.Params.Category)) {
+                if (allowRendering && (state.Params.Category < 0 || mask.IsSet(state.Params.Category))) {
                     float scale = state.Radius / m_SphereMeshDefaultRadius;
                     Matrix4x4 pos = Matrix4x4.TRS(state.Center, Quaternion.identity, new Vector3(scale, scale, scale));
 
@@ -337,11 +358,11 @@ namespace FieldDay.Debugging {
             }
         }
 
-        private void RenderText(float deltaTime, Camera camera, BitSet64 mask) {
+        private void RenderText(float deltaTime, Camera camera, BitSet64 mask, bool allowRendering) {
             for (int i = s_ActiveTexts.Count - 1; i >= 0; i--) {
                 ref TextRenderState state = ref s_ActiveTexts[i];
 
-                if (state.Params.Category < 0 || mask.IsSet(state.Params.Category)) {
+                if (allowRendering && (state.Params.Category < 0 || mask.IsSet(state.Params.Category))) {
                     Vector2 targetPoint;
 
                     if (state.WorldSpace) {
@@ -432,7 +453,7 @@ namespace FieldDay.Debugging {
             }
         }
 
-        private void RenderText(float deltaTime) {
+        private void DecayText(float deltaTime) {
             for (int i = s_ActiveTexts.Count - 1; i >= 0; i--) {
                 ref TextRenderState state = ref s_ActiveTexts[i];
 
@@ -704,6 +725,37 @@ namespace FieldDay.Debugging {
         }
 
         /// <summary>
+        /// Enables debug rendering.
+        /// </summary>
+        static public void EnableRendering() {
+#if DEVELOPMENT
+            s_PauseAll = false;
+            Log.Msg("[DebugDraw] Rendering enabled");
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Disables debug rendering.
+        /// </summary>
+        static public void DisableRendering() {
+#if DEVELOPMENT
+            s_PauseAll = true;
+            Log.Msg("[DebugDraw] Rendering disabled");
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Returns if debug rendering is enabled.
+        /// </summary>
+        static public bool IsRenderingEnabled() {
+#if DEVELOPMENT
+            return !s_PauseAll;
+#else
+            return false;
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
         /// Adds a toggle for the given category to a debug menu.
         /// </summary>
         static public void AddCategoryToggle(DMInfo info, int category, string name, DMPredicate predicate = null, int indent = 0) {
@@ -713,6 +765,21 @@ namespace FieldDay.Debugging {
                     EnableCategory(category);
                 } else {
                     DisableCategory(category);
+                }
+            }, predicate, indent);
+#endif // DEVELOPMENT
+        }
+
+        /// <summary>
+        /// Adds a toggle for all debug rendering to a debug menu.
+        /// </summary>
+        static public void AddRenderToggle(DMInfo info, string name, DMPredicate predicate = null, int indent = 0) {
+#if DEVELOPMENT
+            info.AddToggle(name ?? "Enable Debug Rendering", () => !s_PauseAll, (b) => {
+                if (b) {
+                    EnableRendering();
+                } else {
+                    DisableRendering();
                 }
             }, predicate, indent);
 #endif // DEVELOPMENT

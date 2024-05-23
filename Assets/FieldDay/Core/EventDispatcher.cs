@@ -423,11 +423,8 @@ namespace FieldDay {
             return m_Phase == WAITING;
         }
 
-        public void Reset() {
-            if (m_Phase > UNINITIALIZED) {
-                m_Parent.Deregister(m_EventId, m_CachedHandler);
-                m_Phase = UNINITIALIZED;
-            }
+        void IEnumerator.Reset() {
+            throw new NotSupportedException();
         }
     }
 }

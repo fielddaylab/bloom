@@ -29,7 +29,7 @@ var NativeWebCursorLib = {
      * Sets the canvas id to look up.
      */
     NativeWebCursor_SetCanvasId: function(id) {
-        NWCCache.canvasId = Pointer_stringify(id);
+        NWCCache.canvasId = UTF8ToString(id);
         NWCCache.canvasOverride = null;
     },
 
@@ -66,7 +66,7 @@ var NativeWebCursorLib = {
         /** @type {HTMLCanvasElement} */
         var canvasElement = NWCCache.canvasOverride || document.getElementById(NWCCache.canvasId);
         if (canvasElement) {
-            canvasElement.style.setProperty("cursor", Pointer_stringify(type), "important");
+            canvasElement.style.setProperty("cursor", UTF8ToString(type), "important");
         }
     },
 

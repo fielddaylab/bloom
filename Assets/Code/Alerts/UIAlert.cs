@@ -120,7 +120,7 @@ namespace Zavala.UI {
 
         public static bool ClearAlert(UIAlert alert, bool recycleEvent = false) {
             if (alert == null) {
-                Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
+                Log.Debug("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
 ;                return false; 
             }
             alert.KeepFaded = false;
@@ -131,7 +131,7 @@ namespace Zavala.UI {
 
         public static bool ClearAlertImmediate(UIAlert alert, bool recycleEvent = false) {
             if (alert == null) {
-                Log.Msg("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
+                Log.Debug("[UIAlertUtility] Clear Alert: attempted to clear null alert, skipping.");
                 return false;
             }
             alert.KeepFaded = false;

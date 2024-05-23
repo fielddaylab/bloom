@@ -127,7 +127,7 @@ namespace Zavala.Building
             if (Game.Input.IsPointerOverCanvas()) {
                 // return  if over UI
                 // TODO: more permanent solution
-                Log.Msg("[UserBuildingSystem] Raycast over UI, discarding.");
+                Log.Debug("[UserBuildingSystem] Raycast over UI, discarding.");
                 return CODE_INVALID;
             }
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
@@ -145,7 +145,7 @@ namespace Zavala.Building
                     return CODE_INVALID;
                 }
 
-                Log.Msg("[UserBuildingSystem] New raycast hit Tile {0}", i);
+                Log.Debug("[UserBuildingSystem] New raycast hit Tile {0}", i);
 
                 // TODO: check if valid neighbor (otherwise try to draw line between current and previous, or wait for return)
 
@@ -155,7 +155,7 @@ namespace Zavala.Building
                 return i;
             }
             else {
-                Log.Msg("[UserBuildingSystem] Raycast missed.");
+                Log.Debug("[UserBuildingSystem] Raycast missed.");
                 return CODE_INVALID;
             }
         }
@@ -170,7 +170,7 @@ namespace Zavala.Building
             if (Game.Input.IsPointerOverCanvas()) {
                 // return  if over UI
                 // TODO: more permanent solution
-                Log.Msg("[UserBuildingSystem] Raycast over UI, discarding.");
+                Log.Debug("[UserBuildingSystem] Raycast over UI, discarding.");
                 return null;
             }
             Ray mouseRay = m_StateB.Camera.ScreenPointToRay(m_StateA.ScreenMousePos);
@@ -185,7 +185,7 @@ namespace Zavala.Building
         /// </summary>
         private void TryApplyTool(SimGridState grid, RoadNetwork network, UserBuildTool activeTool, int tileIndex) {
             if (tileIndex == CODE_INVALID) {
-                Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} out of bounds", tileIndex);
+                Log.Debug("[UserBuildingSystem] Invalid build location: tile {0} out of bounds", tileIndex);
 
                 if (activeTool == UserBuildTool.Road) {
                     // cancel in-progress road
@@ -200,7 +200,7 @@ namespace Zavala.Building
                 return;
             }
             if ((grid.Terrain.Info[tileIndex].Flags & TerrainFlags.NonBuildable) != 0) {
-                Log.Msg("[UserBuildingSystem] Invalid build location: tile {0} unbuildable", tileIndex);
+                Log.Debug("[UserBuildingSystem] Invalid build location: tile {0} unbuildable", tileIndex);
                 if (activeTool == UserBuildTool.Road) {
                     SfxUtility.PlaySfx("road-nonbuildable");
                 }
@@ -442,7 +442,7 @@ namespace Zavala.Building
                 RoadTileInfo idxRoadTile = network.Roads.Info[tileIndex];
                 RoadTileConstructionInfo idxRoadConstruct = network.Roads.ConstructInfo[tileIndex];
                 if ((idxRoadConstruct.InProgressMask | idxRoadTile.FlowMask)[dir]) {
-                    Log.Msg("[UserBuildingSystem] Trying to build across a connection that already exists or is staged");
+                    Log.Debug("[UserBuildingSystem] Trying to build across a connection that already exists or is staged");
                     return false;
                 }
 

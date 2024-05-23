@@ -140,7 +140,7 @@ var WebAudioStreamLibrary = {
             pool.push(element);
         }
 
-        element.resource.src = Pointer_stringify(path);;
+        element.resource.src = UTF8ToString(path);;
         element.resource.volume = 1;
         element.resource.loop = false;
         element.resource.muted = false;

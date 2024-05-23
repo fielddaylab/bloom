@@ -97,7 +97,7 @@ namespace Zavala.Scripting
                 }
 
                 ZavalaGame.Events.Dispatch(GameEvents.AlertAppeared, new Data.AlertData(peekEvent.Alert, peekEvent.TileIndex, node.FullName));
-                Debug.Log("[Alerts] Created new alert!" + node.FullName);
+                Log.Debug("[Alerts] Created new alert!" + node.FullName);
                 component.DisplayingEvent = alert;
             }
         }

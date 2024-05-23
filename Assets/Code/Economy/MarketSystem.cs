@@ -383,7 +383,7 @@ namespace Zavala.Economy
             m_RequesterWorkList.Clear();
             m_BuyerPriorityWorkList.Clear();
 
-            Log.Msg("[MarketSystem] Updated supplier priorities");
+            Log.Debug("[MarketSystem] Updated supplier priorities");
         }
 
         private void UpdateSupplierPriority(ResourceSupplier supplier, MarketData data, MarketConfig config, RoadNetwork network, HexGridSize gridSize, TutorialState tutorialState)
@@ -606,7 +606,7 @@ namespace Zavala.Economy
             m_RequesterWorkList.Clear();
             m_SellerPriorityWorkList.Clear();
 
-            Log.Msg("[MarketSystem] Updated buyer priorities");
+            Log.Debug("[MarketSystem] Updated buyer priorities");
         }
 
 

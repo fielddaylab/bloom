@@ -61,7 +61,7 @@ namespace Zavala.Scripting {
                             }
                             HashSet<AutoAlertCondition> conditions = ZavalaGame.SharedState.Get<AlertState>().AutoTriggerAlerts;
                             foreach (AutoAlertCondition autoTrig in conditions) {
-                                Log.Msg("[EventActorUtility] Checking for AutoTriggerAlert...");
+                                Log.Debug("[EventActorUtility] Checking for AutoTriggerAlert...");
                                 if ((autoTrig.Alert == EventActorAlertType.None || autoTrig.Alert == queuedEvent.Alert) &&
                                     (autoTrig.RegionIndex == -1 || autoTrig.RegionIndex == queuedEvent.RegionIndex.Value) &&
                                     (autoTrig.CafosOnly == false || (queuedEvent.SecondArg.Id == "isFromGrainFarm" && queuedEvent.SecondArg.Value == false))) {
@@ -72,7 +72,7 @@ namespace Zavala.Scripting {
                                     conditions.Remove(autoTrig);
                                     break;
                                 } else {
-                                    Log.Msg("[EventActorUtility] AutoTriggerAlert BYPASSED.");
+                                    Log.Debug("[EventActorUtility] AutoTriggerAlert BYPASSED.");
                                 }
 
                             }

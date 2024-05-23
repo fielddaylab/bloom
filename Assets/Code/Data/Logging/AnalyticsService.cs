@@ -23,6 +23,7 @@ using Zavala.Roads;
 using Zavala.World;
 using BeauData;
 using FieldDay.Components;
+using OGD;
 
 namespace Zavala.Data {
 
@@ -163,17 +164,6 @@ namespace Zavala.Data {
             GrainTab = grainTab;
             FertilizerTab = fertilizerTab;
         }
-
-        public StringBuilder GrainTabJSON() {
-            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
-                psb.Builder.Append('[');
-                foreach (GFarmGrainTabData grain in GrainTab) {
-                    psb.Builder.Append(grain.ToJsonString()).Append(',');
-                }
-                psb.Builder.Append(']');
-                return psb.Builder;
-            }
-        }
     }
 
     [Serializable]
@@ -185,20 +175,6 @@ namespace Zavala.Data {
         public int BasePrice;
         public int ShippingCost;
         public int TotalProfit;
-
-        public StringBuilder ToJsonString() {
-            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
-                psb.Builder.Append('{');
-                psb.Builder.Append("is_active:").Append(IsActive ? "true" : "false").Append(',');
-                psb.Builder.Append("farm_name:").Append(FarmName).Append(',');
-                psb.Builder.Append("farm_county:").Append(FarmCounty).Append(',');
-                psb.Builder.Append("base_price:").Append(BasePrice.ToStringLookup()).Append(',');
-                psb.Builder.Append("shipping_cost:").Append(ShippingCost.ToStringLookup()).Append(',');
-                psb.Builder.Append("total_profit:").Append(TotalProfit.ToStringLookup());
-                psb.Builder.Append('}');
-                return psb.Builder;
-            }
-        }
     }
 
     [Serializable]

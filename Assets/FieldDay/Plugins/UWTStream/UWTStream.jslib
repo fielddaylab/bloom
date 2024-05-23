@@ -417,7 +417,14 @@ var UWTStreamLibraryImpl = {
             element.resource.currentTime = 0;
         }
 
-        element.resource.play();
+        try {
+            element.resource.play()
+                .catch((error) => {
+                    console.warn("[UWTStream] Play() failed:", error);
+                });
+        } catch (e) {
+            console.warn("[UWTStream] Play() failed:", e);
+        }
         return true;
     },
 

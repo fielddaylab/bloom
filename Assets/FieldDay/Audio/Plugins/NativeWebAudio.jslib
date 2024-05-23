@@ -6,6 +6,10 @@ var NativeWebAudio = {
         } else {
             return false;
         }
+    },
+
+    NativeWebAudio_IsActive: function () {
+        return WEBAudio.audioContext.state !== "suspended";
     }
 };
 

@@ -130,6 +130,11 @@ namespace FieldDay {
         static public readonly CastableEvent<Event> OnGuiEvent = new CastableEvent<Event>(8);
 
         /// <summary>
+        /// Invoked before rendering.
+        /// </summary>
+        static public readonly ActionEvent OnApplicationPreRender = new ActionEvent(16);
+
+        /// <summary>
         /// Invoked at the end of the frame, after rendering has concluded and frame data has advanced.
         /// </summary>
         static public readonly CastableEvent<ushort> OnFrameAdvance = new CastableEvent<ushort>(16);
@@ -234,6 +239,7 @@ namespace FieldDay {
 
             Log.Msg("[GameLoop] Creating rendering manager...");
             Game.Rendering = new RenderMgr();
+            Game.Rendering.Initialize();
 
             Log.Msg("[GameLoop] Creating input manager...");
             Game.Input = new InputMgr();
@@ -414,6 +420,7 @@ namespace FieldDay {
 
             // clearing all callbacks
             OnCanvasPreRender.Clear();
+            OnApplicationPreRender.Clear();
             OnDebugUpdate.Clear();
             OnFixedUpdate.Clear();
             OnFrameAdvance.Clear();
@@ -572,6 +579,7 @@ namespace FieldDay {
             }
 #endif // UNITY_EDITOR
             SetCurrentPhase(GameLoopPhase.ApplicationPreRender);
+            OnApplicationPreRender.Invoke();
             if (!IsPaused()) {
                 Game.Components.Lock();
                 Game.Systems.ApplicationPreRender(Frame.DeltaTime, s_UpdateMask);
@@ -625,6 +633,8 @@ namespace FieldDay {
                 FlushQueue(s_FrameStartQueue);
 
                 FlushQueue(s_OnBootQueue);
+
+                Game.Memory.UpdateGCMarkers(Frame.Index);
 
                 Game.Input.BeginFrame();
 

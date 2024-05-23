@@ -226,6 +226,7 @@ namespace FieldDay.Editor {
                     Scene subsceneRef = EditorSceneManager.GetSceneByPath(settings.Path);
 
                     EditorSceneManager.OpenScene(settings.Path, OpenSceneMode.Additive);
+                    Assert.True(subsceneRef.IsValid(), "Scene '{0}' is not valid", settings.Path);
                     foreach (var root in subsceneRef.GetRootGameObjects()) {
                         root.GetComponentsInChildren(true, importBuffer);
                         foreach(var subImport in importBuffer) {

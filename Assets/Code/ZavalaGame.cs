@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using BeauUtil;
 using FieldDay;
 using FieldDay.HID;
@@ -6,7 +8,9 @@ using FieldDay.SharedState;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Scripting;
+using Zavala.Advisor;
 using Zavala.Data;
+using Zavala.Economy;
 using Zavala.Sim;
 using Zavala.World;
 
@@ -46,6 +50,8 @@ namespace Zavala {
             Events = new EventDispatcher<object>();
             Game.SetEventDispatcher(Events);
             SaveBuffer = new SaveMgr();
+
+            Game.Rendering.EnableMinimumAspectClamping(1024, 660);
 
             UserSettings settings = new UserSettings();
             Game.SharedState.Register(settings);

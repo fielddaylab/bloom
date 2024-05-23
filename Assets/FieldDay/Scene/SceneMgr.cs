@@ -675,14 +675,14 @@ namespace FieldDay.Scenes {
         static private bool IsDoneLoading(AsyncOperation operation, in LoadSceneArgs args, out Scene scene) {
             if (operation != null) {
                 if (operation.isDone) {
-                    scene = SceneManager.GetSceneByPath(args.ScenePath);
+                    scene = SafeGetSceneByPath(args.ScenePath);
                     return true;
                 } else {
                     scene = default;
                     return false;
                 }
             } else {
-                scene = SceneManager.GetSceneByPath(args.ScenePath);
+                scene = SafeGetSceneByPath(args.ScenePath);
                 return scene.isLoaded;
             }
         }
@@ -748,6 +748,12 @@ namespace FieldDay.Scenes {
             }
         }
 
+        static private Scene SafeGetSceneByPath(string path) {
+            SceneBinding scene = SceneHelper.FindSceneByPath(path, SceneCategories.Build);
+            Assert.True(scene.IsValid(), "Scene '{0}' is not valid", path);
+            return scene;
+        }
+
         #endregion // Internal
 
         #region Operations
@@ -790,7 +796,7 @@ namespace FieldDay.Scenes {
                 }
             } else if (m_CurrentLoadOperation.TryFill(m_LoadQueue)) {
                 LoadSceneArgs args = m_CurrentLoadOperation.Args;
-                Scene currentScene = SceneManager.GetSceneByPath(args.ScenePath);
+                Scene currentScene = SafeGetSceneByPath(args.ScenePath);
                 if (!IsLoadingOrLoaded(currentScene)) {
                     Log.Msg("[SceneMgr] Starting additive load of '{0}'", args.ScenePath);
 #if UNITY_EDITOR
@@ -1106,7 +1112,7 @@ namespace FieldDay.Scenes {
 
                     if (m_MainTransitionUnload != null) {
                         if (m_MainScene != null || m_AuxScenes.Count > 0) {
-                            Scene targetScene = SceneManager.GetSceneByPath(args.Path);
+                            Scene targetScene = SafeGetSceneByPath(args.Path);
                             IEnumerator wait = m_MainTransitionUnload(targetScene, args.Tag);
                             if (wait != null) {
                                 yield return wait;
@@ -1249,7 +1255,7 @@ namespace FieldDay.Scenes {
                     OnMainSceneReady.Invoke();
 
                     if (m_MainTransitionLoad != null) {
-                        Scene targetScene = SceneManager.GetSceneByPath(args.Path);
+                        Scene targetScene = SafeGetSceneByPath(args.Path);
                         IEnumerator wait = m_MainTransitionLoad(targetScene, args.Tag);
                         m_MainSceneTransition.Replace(wait);
                     }
@@ -1341,6 +1347,13 @@ namespace FieldDay.Scenes {
         static public class Events {
             static public readonly StringHash32 Ready = "SceneMgr::Ready";
             static public readonly StringHash32 PreUnload = "SceneMgr::PreUnload";
+        }
+
+        /// <summary>
+        /// Returns the active scene's build index.
+        /// </summary>
+        static public int ActiveSceneIndex() {
+            return SceneManager.GetActiveScene().buildIndex;
         }
     }
 

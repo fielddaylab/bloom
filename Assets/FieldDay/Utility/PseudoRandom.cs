@@ -20,6 +20,14 @@ namespace FieldDay {
             return Float(ref Seed, min, max, mod);
         }
 
+        public bool Bool(float chance, uint mod = 0) {
+            return Int(ref Seed, ushort.MaxValue) >= (int) (chance * ushort.MaxValue);
+        }
+
+        public bool Bool(uint mod = 0) {
+            return Int(ref Seed, ushort.MaxValue) >= ushort.MaxValue / 2;
+        }
+
         static public int Int(ref uint seed, int range, uint mod = 0) {
             seed = (uint) (((ulong) seed * 48271 * (mod + 1)) % 0x7FFFFFFF);
             return (int) (seed % range);

@@ -156,7 +156,7 @@ namespace Zavala.Scripting {
             
             float MFertVal = ratios[0];
             float DFertVal = ratios[2];
-            Log.Msg("[WinLossSystem: Evaluating Fert. proportions: {0}:{1}:{2} over past {3} ticks", ratios[0], ratios[1], ratios[2], depth );
+            Log.Debug("[WinLossSystem: Evaluating Fert. proportions: {0}:{1}:{2} over past {3} ticks", ratios[0], ratios[1], ratios[2], depth );
 
             if (MFertProp.Target == 0 && !MFertProp.Above) {
                 // uninitialized

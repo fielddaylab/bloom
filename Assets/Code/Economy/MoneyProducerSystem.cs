@@ -25,7 +25,7 @@ namespace Zavala.Economy {
                 
                 MarketUtility.RecordMilkRevenueToHistory(marketData, producedAmt, position.RegionIndex);
 
-                Log.Msg("[MoneyProducerSystem] Producer '{0}' consumed {1} to produce {2} money units", producer.name, consumed, producedAmt);
+                Log.Debug("[MoneyProducerSystem] Producer '{0}' consumed {1} to produce {2} money units", producer.name, consumed, producedAmt);
                 // TODO: events?
                 DebugDraw.AddWorldText(producer.transform.position, "Produced $!", Color.green, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundDark);
                 ResourceStorageUtility.RefreshStorageDisplays(producer.Storage);

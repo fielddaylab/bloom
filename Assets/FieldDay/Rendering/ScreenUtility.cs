@@ -42,7 +42,15 @@ namespace FieldDay.Rendering {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static public Resolution GetResolution() {
+#if UNITY_EDITOR || UNITY_WEBGL
+            return new Resolution() {
+                width = Screen.width,
+                height = Screen.height,
+                refreshRate = 60
+            };
+#else
             return Screen.currentResolution;
+#endif // UNITY_EDITOR || UNITY_WEBGL
         }
     }
 }

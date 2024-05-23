@@ -108,6 +108,41 @@ namespace FieldDay {
             return new string(buff, 0, charsWritten);
         }
 
+        /// <summary>
+        /// Returns the nicified name for the given name.
+        /// </summary>
+        static public unsafe string AnalyticsName(string name) {
+            char* buff = stackalloc char[name.Length * 2];
+            bool wasUpper = true, isUpper;
+            int charsWritten = 0;
+
+            int i = 0;
+            if (name.Length > 1) {
+                char first = name[0];
+                if (first == '_') {
+                    i = 1;
+                } else if (first == 'm' || first == 's' || first == 'k') {
+                    char second = name[1];
+                    if (second == '_' || char.IsUpper(second)) {
+                        i = 2;
+                    }
+                }
+            }
+
+            for (; i < name.Length; i++) {
+                char c = name[i];
+                isUpper = char.IsUpper(c);
+                if (isUpper && !wasUpper && charsWritten > 0) {
+                    buff[charsWritten++] = '_';
+                }
+                buff[charsWritten++] = StringUtils.ToUpperInvariant(c);
+
+                wasUpper = isUpper;
+            }
+
+            return new string(buff, 0, charsWritten);
+        }
+
         #endregion // String
     }
 

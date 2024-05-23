@@ -10,7 +10,7 @@ using UnityEngine;
 namespace FieldDay.Editor {
     [CustomPropertyDrawer(typeof(AssetNameAttribute), true)]
     public class AssetNamePropertyDrawer : PropertyDrawer {
-        private const double RebuildCacheDelay = 60;
+        private const double RebuildCacheDelay = 150;
 
         private struct SimpleCacheEntry {
             public double LastUpdateTime;
@@ -81,16 +81,6 @@ namespace FieldDay.Editor {
                 string named = attr.Name(obj);
                 items.Add(obj.name, named);
             }
-        }
-
-        static private UnityEngine.Object FindAsset(Type type, string name) {
-            StringComparer ordinalcompare = StringComparer.Ordinal;
-            foreach(var asset in AssetDBUtils.FindAssets(type, name)) {
-                if (ordinalcompare.Equals(asset.name, name)) {
-                    return asset;
-                }
-            }
-            return null;
         }
 
         /// <summary>

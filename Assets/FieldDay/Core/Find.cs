@@ -80,6 +80,14 @@ namespace FieldDay {
             return Game.Components.ComponentsOfType<T>();
         }
 
+        /// <summary>
+        /// Looks up the first component of the given type.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public T FirstComponent<T>() where T : class, IComponentData {
+            return Game.Components.FirstComponentOfType<T>();
+        }
+
         #endregion // Components
 
         #region Unity

@@ -16,6 +16,6 @@ MonoBehaviour:
   - milestone*
   - '*preview*'
   DevelopmentBuild: 0
-  StrippingLevel: 2
+  StrippingLevel: 3
   CustomDefines: PREVIEW,ENABLE_LOGGING_ERRORS_BEAUUTIL,ENABLE_LOGGING_WARNINGS_BEAUUTIL,PRESERVE_DEBUG_SYMBOLS
   Order: 1

@@ -3,18 +3,17 @@
 #endif // UNITY_EDITOR || DEVELOPMENT_BUILD
 
 using System;
-using BeauUtil;
-using UnityEngine;
 using System.Diagnostics;
-using BeauUtil.Debugger;
-using UnityEngine.Scripting;
-using BeauRoutine;
 using System.Reflection;
+using BeauRoutine;
+using BeauUtil;
+using BeauUtil.Debugger;
 using BeauUtil.UI;
-using UnityEngine.EventSystems;
-using FieldDay.HID;
 using EasyBugReporter;
-using FieldDay.Perf;
+using FieldDay.HID;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Scripting;
 
 #if UNITY_EDITOR
 #endif // UNITY_EDITOR
@@ -108,7 +107,8 @@ namespace FieldDay.Debugging {
         #region Keyboard Shortcuts
 
         private void CheckKeyboardShortcuts() {
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift)) {
+            if ((Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift))
+                || (Input.GetKey(KeyCode.RightControl) && Input.GetKey(KeyCode.RightShift))) {
                 if (Input.GetKeyDown(KeyCode.F9) || Input.GetKeyDown(KeyCode.Backspace)) {
                     BugReporter.DumpContext();
                 }
@@ -120,7 +120,7 @@ namespace FieldDay.Debugging {
         #region Time Scale
 
         private void CheckTimeInput() {
-            if (Input.GetKey(KeyCode.LeftShift)) {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
                 if (Input.GetKeyDown(KeyCode.Minus)) {
                     UpdateTimescale(m_TimeScale / 2);
                 } else if (Input.GetKeyDown(KeyCode.Equals)) {

@@ -6,6 +6,8 @@ using BeauUtil.Tags;
 using TMPro;
 using UnityEngine;
 using System.Text;
+using BeauUtil.Debugger;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -46,7 +48,7 @@ namespace Zavala
         public TextMetrics Metrics { get { return m_LastMetrics; } }
 
         public void SetText(TextId inId, object inContext = null) {
-            Debug.Log("[Loc] Setting text for " + inId);
+            Log.Trace("[Loc] Setting text for {0}", inId);
 
             m_LastId = inId;
 

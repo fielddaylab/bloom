@@ -17,6 +17,6 @@ MonoBehaviour:
   - staging*
   - hotfix*
   DevelopmentBuild: 0
-  StrippingLevel: 2
+  StrippingLevel: 3
   CustomDefines: PRODUCTION
   Order: 2

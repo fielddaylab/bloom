@@ -137,7 +137,7 @@ namespace Zavala.UI {
         public static void TickGlobalAlertDelay(GlobalAlertButton button) {
             if (button.TicksSinceFired < GlobalAlertParams.GlobalAlertDelay) {
                 button.TicksSinceFired++;
-                Log.Msg("[GlobalAlertButton] Ticking global alert delay... {0} of {1}", button.TicksSinceFired, GlobalAlertParams.GlobalAlertDelay);
+                Log.Debug("[GlobalAlertButton] Ticking global alert delay... {0} of {1}", button.TicksSinceFired, GlobalAlertParams.GlobalAlertDelay);
             }
             if (button.TicksSinceFired >= GlobalAlertParams.GlobalAlertDelay) {
                 button.UpdateButtonRoutine();

@@ -20,7 +20,8 @@ namespace FieldDay.Rendering {
     /// <summary>
     /// Automatically attaches overlay cameras to this camera.
     /// </summary>
-    [RequireComponent(typeof(Camera)), ExecuteAlways]
+    [DisallowMultipleComponent, RequireComponent(typeof(Camera)), ExecuteAlways]
+    [AddComponentMenu("Field Day/Cameras/Auto Attach Overlays")]
     public sealed class AutoAttachOverlayCameras : MonoBehaviour {
         [SerializeField, UnityTag] private string[] m_Tags = Array.Empty<string>();
         [NonSerialized] private readonly RingBuffer<Camera> m_CachedAddedCameras = new RingBuffer<Camera>();

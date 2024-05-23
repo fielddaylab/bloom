@@ -379,7 +379,7 @@ namespace Zavala.Economy
                 MarketData marketData = Game.SharedState.Get<MarketData>();
                 Assert.NotNull(marketData);
                 marketData.RequestQueue.PushBack(new MarketRequestInfo(requester, request));
-                Log.Msg("[MarketUtility] Producer '{0}' requested {1}", requester.name, request);
+                Log.Debug("[MarketUtility] Producer '{0}' requested {1}", requester.name, request);
                 return true;
             }
 

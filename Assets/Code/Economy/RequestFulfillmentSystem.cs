@@ -228,7 +228,7 @@ namespace Zavala.Economy {
         private void DeliverFulfillment(MarketData marketData, RequestFulfiller component, RequestVisualState visualState) {
             component.Target.Received += component.Carrying;
             component.Target.RequestCount--;
-            Log.Msg("[RequestFulfillmentSystem] Shipment of {0} received by '{1}'", component.Carrying, component.Target.name);
+            Log.Debug("[RequestFulfillmentSystem] Shipment of {0} received by '{1}'", component.Carrying, component.Target.name);
             DebugDraw.AddWorldText(component.Target.transform.position, "Received!", Color.black, 2, TextAnchor.MiddleCenter, DebugTextStyle.BackgroundLightOpaque);
             ResourceStorageUtility.RefreshStorageDisplays(component.Target.Storage);
 

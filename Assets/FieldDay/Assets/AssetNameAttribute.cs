@@ -1,7 +1,11 @@
+#if (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+#define DEVELOPMENT
+#endif // (UNITY_EDITOR && !IGNORE_UNITY_EDITOR) || DEVELOPMENT_BUILD
+
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using BeauUtil;
 using UnityEngine;
 
 namespace FieldDay.Assets {
@@ -17,8 +21,10 @@ namespace FieldDay.Assets {
         protected internal virtual string Name(UnityEngine.Object obj) { return obj.name; }
         protected virtual int CalculateHash() {
             int hash = 53;
-            hash = MixHash(hash, GetType());
-            hash = MixHash(hash, GetType().GetMethod("Predicate", BindingFlags.NonPublic | BindingFlags.Instance));
+            if (UseDropdown) {
+                hash = MixHash(hash, GetType());
+                hash = MixHash(hash, GetType().GetMethod("Predicate", BindingFlags.NonPublic | BindingFlags.Instance));
+            }
             hash = MixHash(hash, AssetType);
             return hash;
         }
@@ -33,6 +39,7 @@ namespace FieldDay.Assets {
             return currentHash ^ ((nextVal != null ? nextVal.GetHashCode() : 0) + (currentHash >> 2) + (currentHash << 5));
         }
 
+#if DEVELOPMENT
         internal uint GetCacheKey() {
             if (m_CachedCacheKey == 0) {
                 unsafe {
@@ -44,6 +51,7 @@ namespace FieldDay.Assets {
         }
 
         private uint m_CachedCacheKey;
+#endif // DEVELOPMENT
 
         public AssetNameAttribute(Type assetType, bool useDropdown = false) {
             if (assetType == null) {
@@ -52,11 +60,13 @@ namespace FieldDay.Assets {
             AssetType = assetType;
             order = -10;
 
+#if DEVELOPMENT
             UseDropdown = useDropdown;
             if (!UseDropdown) {
                 UseDropdown = GetType().GetMethod("Predicate", BindingFlags.NonPublic | BindingFlags.Instance).DeclaringType != typeof(AssetNameAttribute);
                 UseDropdown |= GetType().GetMethod("Name", BindingFlags.NonPublic | BindingFlags.Instance).DeclaringType != typeof(AssetNameAttribute);
             }
+#endif // DEVELOPMENT
         }
     }
 }

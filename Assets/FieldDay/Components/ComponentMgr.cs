@@ -205,6 +205,34 @@ namespace FieldDay.Components
             return default;
         }
 
+        /// <summary>
+        /// Returns the first component of the given type.
+        /// </summary>
+        public IComponentData FirstComponentOfType(Type componentType)
+        {
+            int index = ComponentIndex.Get(componentType);
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components != null && components.Count > 0)
+            {
+                return components[0];
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Returns the first component of the given type.
+        /// </summary>
+        public T FirstComponentOfType<T>() where T : class, IComponentData
+        {
+            int index = ComponentIndex.Get<T>();
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components != null && components.Count > 0)
+            {
+                return (T) components[0];
+            }
+            return default;
+        }
+
         #endregion // Iteration
 
         #region Events

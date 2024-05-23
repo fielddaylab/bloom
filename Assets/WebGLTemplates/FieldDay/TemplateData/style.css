@@ -1,7 +1,7 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: #2D3039;
+    background-color: #101920;
     margin: 0px;
     height: 100%;
     overflow: hidden;
@@ -34,16 +34,18 @@ body {
 }
 
 #unity-logo {
-    width: 154px;
-    height: 130px;
-    background: url('unity-logo-{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}.png') no-repeat center
+    width: 400px;
+    height: 212px;
+    background: url('game-logo.png') no-repeat center;
+    background-size: contain;
 }
 
 #unity-progress-bar-empty {
     width: 141px;
     height: 18px;
     margin-top: 10px;
-    margin-left: 6.5px;
+    margin-left: auto;
+    margin-right: auto;
     background: url('progress-bar-empty-{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}.png') no-repeat center
 }
 
@@ -62,4 +64,32 @@ body {
     background: white;
     padding: 10px;
     display: none
+}
+
+.unsupported-center {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	color: white;
+    text-align: center;
+}
+
+.unsupported-header {
+	color: #ff6139;
+    font-family: monospace;
+	font-size: 3em;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.unsupported-explanation {
+	color: white;
+    font-family: monospace;
+	font-size: 2em;
+}
+
+.unsupported-name {
+	font-weight: bold;
+	color: #b39100;
 }
