@@ -2,29 +2,27 @@
 #define DEVELOPMENT
 #endif
 
-using BeauUtil;
-using FieldDay;
-using UnityEngine;
 using System;
-using BeauUtil.Debugger;
-using FieldDay.Rendering;
-using Zavala.Advisor;
-using Zavala.Economy;
-using Zavala.Building;
-using Zavala.UI.Info;
 using System.Collections.Generic;
-using Zavala.Scripting;
-using FieldDay.Scripting;
-using Zavala.Sim;
-using BeauPools;
-using Zavala.Cards;
 using System.Text;
-using Zavala.Roads;
-using Zavala.World;
 using BeauData;
-using FieldDay.Components;
-using OGD;
+using BeauPools;
+using BeauUtil;
+using BeauUtil.Debugger;
+using FieldDay;
 using FieldDay.Data;
+using FieldDay.Rendering;
+using FieldDay.Scripting;
+using OGD;
+using UnityEngine;
+using Zavala.Advisor;
+using Zavala.Building;
+using Zavala.Cards;
+using Zavala.Economy;
+using Zavala.Roads;
+using Zavala.Scripting;
+using Zavala.Sim;
+using Zavala.UI.Info;
 
 namespace Zavala.Data {
 
@@ -1020,58 +1018,31 @@ namespace Zavala.Data {
 
         private void LogRegionUnlocked(ushort newRegion) {
             // county_unlocked { county_name, county_state : CountyBuildMap }
-            using (var e = m_Log.NewEvent("county_unlocked")) {
-                e.Param("county_name", EnumLookup.RegionName[newRegion]);
-                e.Param("county_state", GenerateCountyState(newRegion));
-            }
+            m_JsonBuilder.Begin()
+                .Field("county_name", EnumLookup.RegionName[newRegion])
+                .BeginArray("county_state");
+            GenerateCountyState(m_JsonBuilder, newRegion).EndArray();
+            m_Log.Log("county_unlocked", m_JsonBuilder.End());
         }
 
-        private StringBuilder GenerateCountyState(ushort regionIndex) {
+        private JsonBuilder GenerateCountyState(JsonBuilder json, ushort regionIndex) {
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
 
-            using (PooledStringBuilder psb = PooledStringBuilder.Create()) {
-                /*
-                 * county_state: 
-                 * [
-                 * {
-                 *      idx: 
-                 *      height:
-                 *      type: 
-                 *      building:  
-                 * }
-                 * ]
-                 */
-                psb.Builder.Append('[');
-                List<OccupiesTile> tiles = new List<OccupiesTile>(Game.Components.ComponentsOfType<OccupiesTile>()).FindAll(t => t.RegionIndex == regionIndex);     
-                foreach (OccupiesTile ot in tiles) {
-                    if (ot.RegionIndex != regionIndex) { continue; }
-                    psb.Builder.Append('{');
-                    psb.Builder.Append("\"idx\":").Append(ot.TileIndex.ToString()).Append(',');
-                    psb.Builder.Append("\"height\":").Append(grid.Terrain.Info[ot.TileIndex].Height.ToStringLookup()).Append(',');
-                    psb.Builder.Append("\"type\":\"");
-                    TerrainFlags flags = grid.Terrain.Info[ot.TileIndex].Flags;
-                    if ((flags & TerrainFlags.IsWater) != 0) {
-                        if ((flags & TerrainFlags.NonBuildable) != 0) {
-                            psb.Builder.Append("DEEP_WATER");
-                        } else {
-                            psb.Builder.Append("WATER");
-                        }
-                    } else {
-                        psb.Builder.Append("LAND");
+            using (PooledList<OccupiesTile> tiles = PooledList<OccupiesTile>.Create()) {
+                foreach (var tile in Game.Components.ComponentsOfType<OccupiesTile>()) {
+                    if (tile.RegionIndex == regionIndex) {
+                        tiles.Add(tile);
                     }
-                    psb.Builder.Append("\",");
-
-                    psb.Builder.Append("\"connections\":").Append(network.Roads.Info[ot.TileIndex].FlowMask.ToString()).Append(',');
-                    psb.Builder.Append("\"building\":\"").Append(EnumLookup.BuildingType[(int)ot.Type]);
-                    psb.Builder.Append("\"},");
                 }
-                psb.Builder.Length -= 1;
-                psb.Builder.Append(']');
-                return psb;
-            }
-        }
 
+                foreach (var tile in tiles) {
+                    WriteOccupiesTile(tile, network, grid, json);
+                }
+            }
+
+            return json;
+        }
         private JsonBuilder GenerateMapState(JsonBuilder json) {
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
@@ -1086,36 +1057,14 @@ namespace Zavala.Data {
                     // if we've advanced to a new region, start a new "array"
                     OccupiesTile tile = tiles[ot];
                     if (tile.RegionIndex > region){
-                        json.EndArray()
-                            .BeginArray(EnumLookup.RegionName[region]);
-                    }
-                    // print in current region
-                    int idx = tile.TileIndex;
-                    json.BeginObject()
-                        .Field("idx", idx)
-                        .Field("height", grid.Terrain.Height[idx])
-                        .
-                    psb.Builder.Append('{');
-                    psb.Builder.Append("\"idx\":").Append(tiles[ot].TileIndex.ToString()).Append(',');
-                    psb.Builder.Append("\"height\":").Append(grid.Terrain.Info[idx].Height.ToStringLookup()).Append(',');
-                    psb.Builder.Append("\"type\":\"");
-                    TerrainFlags flags = grid.Terrain.Info[idx].Flags;
-                    if ((flags & TerrainFlags.IsWater) != 0) {
-                        if ((flags & TerrainFlags.NonBuildable) != 0) {
-                            psb.Builder.Append("DEEP_WATER");
-                        } else {
-                            psb.Builder.Append("WATER");
+                        if (region >= 0) {
+                            json.EndArray();
                         }
-                    } else {
-                        psb.Builder.Append("LAND");
+                        region = tile.RegionIndex;
+                        json.BeginArray(EnumLookup.RegionName[region]);
                     }
-                    psb.Builder.Append("\",");
 
-                    psb.Builder.Append("\"connections\":").Append(network.Roads.Info[idx].FlowMask.ToString()).Append(',');
-                    psb.Builder.Append("\"building\":\"").Append(EnumLookup.BuildingType[(int)tiles[ot].Type]);
-                    psb.Builder.Append("\"},");
-                    
-                    
+                    WriteOccupiesTile(tile, network, grid, json);
                 }
                 if (region >= 0) {
                     json.EndArray();
@@ -1125,7 +1074,33 @@ namespace Zavala.Data {
             return json;
         }
 
+        static private void WriteOccupiesTile(OccupiesTile tile, RoadNetwork network, SimGridState grid, JsonBuilder json) {
+            // print in current region
+            int idx = tile.TileIndex;
+            json.BeginObject()
+                .Field("idx", idx)
+                .Field("height", grid.Terrain.Height[idx]);
+            TerrainFlags flags = grid.Terrain.Info[idx].Flags;
+            if ((flags & TerrainFlags.IsWater) != 0) {
+                if ((flags & TerrainFlags.NonBuildable) != 0) {
+                    json.Field("type", "DEEP_WATER");
+                } else {
+                    json.Field("type", "WATER");
+                }
+            } else {
+                json.Field("type", "LAND");
+            }
 
+            json.Field("building", EnumLookup.BuildingType[(int) tile.Type]);
+
+            json.BeginArray("connections");
+            foreach (var dir in network.Roads.Info[idx].FlowMask) {
+                json.Item(EnumLookup.TileDirection[(int) dir]);
+            }
+            json.EndArray();
+
+            json.EndObject();
+        }
 
         private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
@@ -1596,13 +1571,14 @@ namespace Zavala.Data {
         
         private void LogFailedGame(LossData data) {
             // lose_game { lose_condition: enum(CITY_FAILED, TOO_MANY_BLOOMS, OUT_OF_MONEY), county_id, county_name
-            using (var e = m_Log.NewEvent("lose_game")) {
-                e.Param("lose_condition", data.EndType);
-                e.Param("county_id", data.Region); // 0-indexed
-                e.Param("county_name", EnumLookup.RegionName[data.Region]);
-                e.Param("map_state", GenerateMapState());
-
-            }
+            m_JsonBuilder.Begin();
+            m_JsonBuilder.Field("lose_condition", data.EndType);
+            m_JsonBuilder.Field("county_id", data.Region);
+            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
+            m_JsonBuilder.BeginObject("map_state");
+            GenerateMapState(m_JsonBuilder);
+            m_JsonBuilder.EndObject();
+            m_Log.Log("lose_game", m_JsonBuilder.End());
         }
 
         #endregion // End
