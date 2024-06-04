@@ -68,7 +68,7 @@ namespace FieldDay.Data {
             }
 
             public JsonScope BeginObject(string name) {
-                m_Json.BeginObject();
+                m_Json.BeginObject(name);
                 return this;
             }
 

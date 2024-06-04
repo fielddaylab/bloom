@@ -23,6 +23,7 @@ using Zavala.Roads;
 using Zavala.Scripting;
 using Zavala.Sim;
 using Zavala.UI.Info;
+using Zavala.World;
 
 namespace Zavala.Data {
 
@@ -152,6 +153,14 @@ namespace Zavala.Data {
             Water = water;
             Milk = milk;
         }
+
+        public JsonBuilder ToJson(JsonBuilder json) {
+            json.Field("name", Name)
+                .Field("population", EnumLookup.Get(Population))
+                .Field("water", EnumLookup.Get(Water))
+                .Field("milk", EnumLookup.Get(Milk));
+            return json;
+        }
     }
 
     public struct GrainFarmData {
@@ -174,6 +183,16 @@ namespace Zavala.Data {
         public int BasePrice;
         public int ShippingCost;
         public int TotalProfit;
+
+        public JsonBuilder ToJson(JsonBuilder json) {
+            json.Field("is_active", IsActive)
+                .Field("farm_name", FarmName)
+                .Field("farm_county", FarmCounty)
+                .Field("base_price", BasePrice)
+                .Field("shipping_cost", ShippingCost)
+                .Field("total_profit", TotalProfit);
+            return json;
+        }
     }
 
     [Serializable]
@@ -187,6 +206,18 @@ namespace Zavala.Data {
         public int SalesPolicy;
         public int ImportPolicy;
         public int TotalProfit;
+
+        public JsonBuilder ToJson(JsonBuilder json) {
+            json.Field("is_active", IsActive)
+                .Field("farm_name", FarmName)
+                .Field("farm_county", FarmCounty)
+                .Field("base_price", BasePrice)
+                .Field("shipping_cost", ShippingCost)
+                .Field("sales_policy", SalesPolicy)
+                .Field("import_policy", ImportPolicy)
+                .Field("total_profit", TotalProfit);
+            return json;
+        }
     }
 
     [Serializable]
@@ -215,6 +246,18 @@ namespace Zavala.Data {
         public int SalesPolicy;
         public int ImportPolicy;
         public int TotalProfit;
+
+        public JsonBuilder ToJson(JsonBuilder json) {
+            json.Field("is_active", IsActive)
+                .Field("farm_name", FarmName)
+                .Field("farm_county", FarmCounty)
+                .Field("base_price", BasePrice)
+                .Field("shipping_cost", ShippingCost)
+                .Field("sales_policy", SalesPolicy)
+                .Field("import_policy", ImportPolicy)
+                .Field("total_profit", TotalProfit);
+            return json;
+        }
     }
 
     [Serializable]
@@ -225,6 +268,15 @@ namespace Zavala.Data {
         public string FarmCounty;
         public int BasePrice;
         public int TotalProfit;
+
+        public JsonBuilder ToJson(JsonBuilder json) {
+            json.Field("is_active", IsActive)
+                .Field("farm_name", FarmName)
+                .Field("farm_county", FarmCounty)
+                .Field("base_price", BasePrice)
+                .Field("total_profit", TotalProfit);
+            return json;
+        }
     }
 
     [Serializable]
@@ -237,6 +289,17 @@ namespace Zavala.Data {
         public int ShippingCost;
         public int Penalties;
         public int TotalProfit;
+
+        public JsonBuilder ToJson(JsonBuilder json) {
+            json.Field("is_active", IsActive)
+                .Field("farm_name", FarmName)
+                .Field("farm_county", FarmCounty)
+                .Field("base_price", BasePrice)
+                .Field("shipping_cost", ShippingCost)
+                .Field("penalties", Penalties)
+                .Field("total_profit", TotalProfit);
+            return json;
+        }
     }
 
     [Serializable]
@@ -1028,16 +1091,23 @@ namespace Zavala.Data {
         private JsonBuilder GenerateCountyState(JsonBuilder json, ushort regionIndex) {
             RoadNetwork network = Game.SharedState.Get<RoadNetwork>();
             SimGridState grid = Game.SharedState.Get<SimGridState>();
+            SimWorldState world = Game.SharedState.Get<SimWorldState>();
 
             using (PooledList<OccupiesTile> tiles = PooledList<OccupiesTile>.Create()) {
                 foreach (var tile in Game.Components.ComponentsOfType<OccupiesTile>()) {
-                    if (tile.RegionIndex == regionIndex) {
+                    if (tile.RegionIndex == regionIndex && IsBuildingLoggable(tile.Type)) {
                         tiles.Add(tile);
                     }
                 }
 
                 foreach (var tile in tiles) {
                     WriteOccupiesTile(tile, network, grid, json);
+                }
+
+                foreach(var buildingSpawn in world.Spawns.QueuedBuildings) {
+                    if (buildingSpawn.RegionIndex == regionIndex && IsBuildingLoggable(buildingSpawn.Data.Type)) {
+                        WriteQueuedBuildingSpawn(buildingSpawn, network, grid, json);
+                    }
                 }
             }
 
@@ -1056,15 +1126,17 @@ namespace Zavala.Data {
                 for (int ot = 0; ot < tiles.Count; ot++) {
                     // if we've advanced to a new region, start a new "array"
                     OccupiesTile tile = tiles[ot];
-                    if (tile.RegionIndex > region){
-                        if (region >= 0) {
-                            json.EndArray();
+                    if (IsBuildingLoggable(tile.Type)) {
+                        if (tile.RegionIndex > region) {
+                            if (region >= 0) {
+                                json.EndArray();
+                            }
+                            region = tile.RegionIndex;
+                            json.BeginArray(EnumLookup.RegionName[region]);
                         }
-                        region = tile.RegionIndex;
-                        json.BeginArray(EnumLookup.RegionName[region]);
-                    }
 
-                    WriteOccupiesTile(tile, network, grid, json);
+                        WriteOccupiesTile(tile, network, grid, json);
+                    }
                 }
                 if (region >= 0) {
                     json.EndArray();
@@ -1102,6 +1174,34 @@ namespace Zavala.Data {
             json.EndObject();
         }
 
+        static private void WriteQueuedBuildingSpawn(SpawnRecord<BuildingSpawnData> building, RoadNetwork network, SimGridState grid, JsonBuilder json) {
+            // print in current region
+            int idx = building.TileIndex;
+            json.BeginObject()
+                .Field("idx", idx)
+                .Field("height", grid.Terrain.Height[idx]);
+            TerrainFlags flags = grid.Terrain.Info[idx].Flags;
+            if ((flags & TerrainFlags.IsWater) != 0) {
+                if ((flags & TerrainFlags.NonBuildable) != 0) {
+                    json.Field("type", "DEEP_WATER");
+                } else {
+                    json.Field("type", "WATER");
+                }
+            } else {
+                json.Field("type", "LAND");
+            }
+
+            json.Field("building", EnumLookup.BuildingType[(int) building.Data.Type]);
+
+            json.BeginArray("connections");
+            foreach (var dir in network.Roads.Info[idx].FlowMask) {
+                json.Item(EnumLookup.TileDirection[(int) dir]);
+            }
+            json.EndArray();
+
+            json.EndObject();
+        }
+
         private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
             using (var e = m_Log.NewEvent("unlock_building_type")) {
@@ -1114,6 +1214,17 @@ namespace Zavala.Data {
             using (var e = m_Log.NewEvent("export_depot_spawned")) {
                 e.Param("depot_id", data.Id);
                 e.Param("tile_id", data.TileIndex);
+            }
+        }
+        
+        static private bool IsBuildingLoggable(BuildingType type) {
+            switch (type) {
+                case BuildingType.None:
+                case BuildingType.Road:
+                    return false;
+
+                default:
+                    return true;
             }
         }
 
@@ -1314,9 +1425,9 @@ namespace Zavala.Data {
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
                 e.Param("city_name", data.Name);
                 // TODO: convert enum tostring to string lookup array?
-                e.Param("population", data.Population.ToString());
-                e.Param("water", data.Water.ToString());
-                e.Param("milk", data.Milk.ToString());
+                e.Param("population", EnumLookup.Get(data.Population));
+                e.Param("water", EnumLookup.Get(data.Water));
+                e.Param("milk", EnumLookup.Get(data.Milk));
             }
         }
 
@@ -1348,14 +1459,22 @@ namespace Zavala.Data {
             }
              */
 
-            using (var e = m_Log.NewEvent("grain_inspector_displayed"))
-            {
-                // TODO: is active
-                e.Param("building_id", m_InspectingBuilding.Id);
-                e.Param("tile_index", m_InspectingBuilding.TileIndex);
-                e.Param("grain_tab", JsonUtility.ToJson(data.GrainTab));
-                e.Param("fertilizer_tab", JsonUtility.ToJson(data.FertilizerTab));
+            m_JsonBuilder.Begin()
+                .Field("building_id", m_InspectingBuilding.Id)
+                .Field("tile_index", m_InspectingBuilding.TileIndex)
+                .BeginArray("grain_tab");
+            foreach(var d in data.GrainTab) {
+                m_JsonBuilder.BeginObject();
+                d.ToJson(m_JsonBuilder).EndObject();
             }
+            m_JsonBuilder.EndArray()
+                .BeginArray("fertilizer_tab");
+            foreach (var d in data.FertilizerTab) {
+                m_JsonBuilder.BeginObject();
+                d.ToJson(m_JsonBuilder).EndObject();
+            }
+            m_JsonBuilder.EndArray();
+            m_Log.Log("grain_inspector_displayed", m_JsonBuilder.End());
         }
 
         private void LogDairyFarmInspectorDisplayed(DairyFarmData data) {
@@ -1394,15 +1513,28 @@ namespace Zavala.Data {
             }
              */
 
-            using (var e = m_Log.NewEvent("dairy_inspector_displayed"))
-            {
-                // TODO: is active
-                e.Param("building_id", m_InspectingBuilding.Id);
-                e.Param("tile_index", m_InspectingBuilding.TileIndex);
-                e.Param("grain_tab", JsonUtility.ToJson(data.GrainTab));
-                e.Param("dairy_tab", JsonUtility.ToJson(data.DairyTab));
-                e.Param("fertilizer_tab", JsonUtility.ToJson(data.FertilizerTab));
+            m_JsonBuilder.Begin()
+                .Field("building_id", m_InspectingBuilding.Id)
+                .Field("tile_index", m_InspectingBuilding.TileIndex)
+                .BeginArray("grain_tab");
+            foreach (var d in data.GrainTab) {
+                m_JsonBuilder.BeginObject();
+                d.ToJson(m_JsonBuilder).EndObject();
             }
+            m_JsonBuilder.EndArray()
+                .BeginArray("dairy_tab");
+            foreach (var d in data.DairyTab) {
+                m_JsonBuilder.BeginObject();
+                d.ToJson(m_JsonBuilder).EndObject();
+            }
+            m_JsonBuilder.EndArray()
+                .BeginArray("fertilizer_tab");
+            foreach (var d in data.FertilizerTab) {
+                m_JsonBuilder.BeginObject();
+                d.ToJson(m_JsonBuilder).EndObject();
+            }
+            m_JsonBuilder.EndArray();
+            m_Log.Log("dairy_inspector_displayed", m_JsonBuilder.End());
         }
 
         private void LogStorageInspectorDisplayed(StorageData data) {

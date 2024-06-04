@@ -2,6 +2,8 @@ using UnityEngine;
 using BeauUtil;
 using BeauUtil.Variants;
 using Zavala.Scripting;
+using System;
+using FieldDay;
 
 namespace Zavala
 {
@@ -41,6 +43,22 @@ namespace Zavala
         public static readonly string[] ActionType = new string[] {
             "Build", "Destroy"
         };
+
+        public static string Get<T>(T e) where T : unmanaged, Enum {
+            return GenericLookup<T>.Names[Enums.ToInt(e)];
+        }
+
+        static private class GenericLookup<T> where T : unmanaged, Enum {
+            static internal readonly string[] Names;
+
+            static GenericLookup() {
+                string[] strings = Enum.GetNames(typeof(T));
+                for(int i = 0; i < strings.Length; i++) {
+                    strings[i] = ReflectionCache.AnalyticsNamePascal(strings[i]);
+                }
+                Names = strings;
+            }
+        }
      }
 
     static public class GameEvents

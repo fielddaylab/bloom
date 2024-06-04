@@ -18,6 +18,7 @@ MonoBehaviour:
   - '*debug*'
   - feature/*
   - improvement/*
+  - fixes/*
   - experimental/*
   - main
   DevelopmentBuild: 1

@@ -114,7 +114,7 @@ namespace FieldDay {
         /// This makes all characters uppercase and places underscores
         /// where word breaks would occur in the original string.
         /// </summary>
-        static public unsafe string AnalyticsName(string name) {
+        static public unsafe string AnalyticsNameUpper(string name) {
             char* buff = stackalloc char[name.Length * 2];
             bool wasUpper = true, isUpper;
             int charsWritten = 0;
@@ -135,10 +135,52 @@ namespace FieldDay {
             for (; i < name.Length; i++) {
                 char c = name[i];
                 isUpper = char.IsUpper(c);
-                if (isUpper && !wasUpper && charsWritten > 0) {
+                if (char.IsWhiteSpace(c)) {
                     buff[charsWritten++] = '_';
+                } else {
+                    if (isUpper && !wasUpper && charsWritten > 0) {
+                        buff[charsWritten++] = '_';
+                    }
+                    buff[charsWritten++] = StringUtils.ToUpperInvariant(c);
                 }
-                buff[charsWritten++] = StringUtils.ToUpperInvariant(c);
+
+                wasUpper = isUpper;
+            }
+
+            return new string(buff, 0, charsWritten);
+        }
+
+        /// <summary>
+        /// Returns the analytics-style name for the given name.
+        /// This formats similarly to InspectorName but without spaces
+        /// </summary>
+        static public unsafe string AnalyticsNamePascal(string name) {
+            char* buff = stackalloc char[name.Length * 2];
+            bool wasUpper = true, isUpper;
+            int charsWritten = 0;
+
+            int i = 0;
+            if (name.Length > 1) {
+                char first = name[0];
+                if (first == '_') {
+                    i = 1;
+                } else if (first == 'm' || first == 's' || first == 'k') {
+                    char second = name[1];
+                    if (second == '_' || char.IsUpper(second)) {
+                        i = 2;
+                    }
+                }
+            }
+
+            for (; i < name.Length; i++) {
+                char c = name[i];
+                isUpper = char.IsUpper(c);
+                //if (isUpper && !wasUpper && charsWritten > 0) {
+                //    buff[charsWritten++] = ' ';
+                //}
+                if (!char.IsWhiteSpace(c)) {
+                    buff[charsWritten++] = c;
+                }
 
                 wasUpper = isUpper;
             }
