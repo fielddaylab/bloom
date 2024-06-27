@@ -67,11 +67,15 @@ namespace Zavala.UI {
         }
 
         private IEnumerator HandleLoad(Scene scene, StringHash32 tag) {
+            Game.Input.ResumeRaycasts();
             if (ZavalaGame.SimTime) {
                 SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
+                if (!SimTimeUtility.IsPaused(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime)) {
+                    Hide();
+                }
+            } else {
+                Hide();
             }
-            Game.Input.ResumeRaycasts();
-            Hide();
             return null;
         }
 

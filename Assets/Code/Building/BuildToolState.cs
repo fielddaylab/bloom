@@ -165,7 +165,7 @@ namespace Zavala.Building {
             }
             else
             {
-                ZavalaGame.Events.Dispatch(GameEvents.BuildToolSelected, toolType);
+                ZavalaGame.Events.Dispatch(GameEvents.BuildToolSelected, EvtArgs.Create(toolType));
             }
         }
 

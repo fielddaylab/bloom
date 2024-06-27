@@ -290,7 +290,7 @@ namespace Zavala.Cards
                 state.UnlockedCards.Add(id);
             }
 
-            ZavalaGame.Events.Dispatch(GameEvents.PolicyTypeUnlocked, type);
+            ZavalaGame.Events.Dispatch(GameEvents.PolicyTypeUnlocked, EvtArgs.Create(type));
         }
 
         [DebugMenuFactory]

@@ -12,7 +12,9 @@ namespace FieldDay.UI {
     [RequireComponent(typeof(Selectable))]
     public abstract class SelectableStateAnimator : MonoBehaviour, IOnGuiUpdate {
         [SerializeField, HideInInspector] private Selectable m_Selectable;
-        [NonSerialized] private SelectionState m_LastState = SelectionState.Disabled;
+        [NonSerialized] private SelectionState m_LastState = SelectionState.Unset;
+
+        [NonSerialized] private SelectionState? m_StateOverride;
 
         #region Unity Events
 
@@ -25,18 +27,33 @@ namespace FieldDay.UI {
         }
 
         protected virtual void OnDisable() {
-            m_LastState = SelectionState.Disabled;
+            m_LastState = SelectionState.Unset;
             Game.Gui?.DeregisterUpdate(this);
         }
 
         #endregion // Unity Events
 
+        /// <summary>
+        /// Overrides the selection state.
+        /// </summary>
+        public void OverrideState(SelectionState? state) {
+            m_StateOverride = state;
+        }
+
+        /// <summary>
+        /// Clears the selection state override.
+        /// </summary>
+        public void ClearOverride() {
+            m_StateOverride = null;
+        }
+
         #region Handlers
         public abstract void HandleStateChanged(SelectionState state);
 
         public virtual void OnGuiUpdate() {
-            if (Ref.ReplaceEnum(ref m_LastState, m_Selectable.GetSelectionState())) {
-                HandleStateChanged(m_LastState);
+            SelectionState state = m_StateOverride.GetValueOrDefault(m_Selectable.GetSelectionState());
+            if (Ref.ReplaceEnum(ref m_LastState, state)) {
+                HandleStateChanged(state);
             }
         }
 

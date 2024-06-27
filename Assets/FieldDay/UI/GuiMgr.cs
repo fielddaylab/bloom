@@ -4,9 +4,10 @@ using System.Runtime.CompilerServices;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.HID;
+using FieldDay.Pipes;
 using FieldDay.Rendering;
 using UnityEngine;
-
+using UnityEngine.UI;
 using PanelIndex = BeauUtil.TypeIndex<FieldDay.UI.IGuiPanel>;
 
 namespace FieldDay.UI {
@@ -20,6 +21,7 @@ namespace FieldDay.UI {
         private readonly Dictionary<StringHash32, RectTransform> m_NamedElementMap = new Dictionary<StringHash32, RectTransform>(16, CompareUtils.DefaultEquals<StringHash32>());
 
         private readonly RingBuffer<IOnGuiUpdate> m_UpdateCallbacks = new RingBuffer<IOnGuiUpdate>(32, RingBufferMode.Expand);
+        private readonly Pipe<GuiCommandData> m_Commands = new Pipe<GuiCommandData>(16, true);
 
         private InputMgr m_InputMgr;
         private Camera m_PrimaryUICamera;
@@ -51,6 +53,7 @@ namespace FieldDay.UI {
             }
             m_PrimaryUICamera = camera;
             Log.Msg("[GuiMgr] Assigned primary Gui camera as '{0}'", camera);
+            OnPrimaryCameraChanged.Invoke(camera);
         }
 
         /// <summary>
@@ -63,7 +66,13 @@ namespace FieldDay.UI {
 
             m_PrimaryUICamera = null;
             Log.Msg("[GuiMgr] Removed primary Gui camera");
+            OnPrimaryCameraChanged.Invoke(null);
         }
+
+        /// <summary>
+        /// Event dispatched when the primary gui camera changes.
+        /// </summary>
+        public readonly CastableEvent<Camera> OnPrimaryCameraChanged = new CastableEvent<Camera>();
 
         #endregion // Gui Camera
 
@@ -303,6 +312,81 @@ namespace FieldDay.UI {
 
         #endregion // Lookup
 
+        #region Commands
+
+        internal void QueueCommand(GuiCommandData cmd) {
+            m_Commands.Write(cmd);
+        }
+
+        internal void ExecuteCommand(ref GuiCommandData cmd) {
+            switch (cmd.Type) {
+                case GuiCommandType.SetActive_GO: {
+                    ((GameObject) cmd.Target).SetActive(cmd.Arg.Bool);
+                    break;
+                }
+                case GuiCommandType.SetActive_Behaviour: {
+                    ((Behaviour) cmd.Target).enabled = cmd.Arg.Bool;
+                    break;
+                }
+                case GuiCommandType.SetActive_ActiveGroup: {
+                    ((ActiveGroup) cmd.Target).SetActive(cmd.Arg.Bool);
+                    break;
+                }
+                case GuiCommandType.TryClick_GO: {
+                    Game.Input.ExecuteClick((GameObject) cmd.Target);
+                    break;
+                }
+                case GuiCommandType.ForceClick_GO: {
+                    Game.Input.ForceClick((GameObject) cmd.Target);
+                    break;
+                }
+                case GuiCommandType.ExecuteAction_Void: {
+                    ((Action) cmd.Target)();
+                    break;
+                }
+                case GuiCommandType.ExecuteAction_Bool: {
+                    ((Action<bool>) cmd.Target)(cmd.Arg.Bool);
+                    break;
+                }
+                case GuiCommandType.ExecuteAction_Int: {
+                    ((Action<int>) cmd.Target)(cmd.Arg.Int);
+                    break;
+                }
+                case GuiCommandType.ExecuteAction_Float: {
+                    ((Action<float>) cmd.Target)(cmd.Arg.Float);
+                    break;
+                }
+                case GuiCommandType.ExecuteAction_StringHash32: {
+                    ((Action<StringHash32>) cmd.Target)(cmd.Arg.StringHash32);
+                    break;
+                }
+                case GuiCommandType.ExecuteAction_Object: {
+                    ((Action<object>) cmd.Target)(cmd.ArgObject);
+                    break;
+                }
+                case GuiCommandType.RebuildLayout_RectTransform: {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform) cmd.Target);
+                    break;
+                }
+                case GuiCommandType.RebuildLayoutManually_LayoutGroup: {
+                    LayoutGroup group = (LayoutGroup) cmd.Target;
+                    ContentSizeFitter fitter = group.GetComponent<ContentSizeFitter>();
+                    group.enabled = true;
+                    if (fitter) {
+                        fitter.enabled = true;
+                    }
+                    LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform) group.transform);
+                    if (fitter) {
+                        fitter.enabled = false;
+                    }
+                    group.enabled = false;
+                    break;
+                }
+            }
+        }
+
+        #endregion // Commands
+
         #region Events
 
         internal void Initialize() {
@@ -317,11 +401,18 @@ namespace FieldDay.UI {
             }
         }
 
+        internal void FlushCommands() {
+            while(m_Commands.TryRead(out GuiCommandData cmd)) {
+                ExecuteCommand(ref cmd);
+            }
+        }
+
         internal void Shutdown() {
             Array.Clear(m_SharedPanelMap, 0, m_SharedPanelMap.Length);
             m_PanelSet.Clear();
             m_NamedElementMap.Clear();
             m_UpdateCallbacks.Clear();
+            OnPrimaryCameraChanged.Clear();
             m_InputMgr = null;
         }
 

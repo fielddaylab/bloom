@@ -190,7 +190,7 @@ namespace Zavala.UI {
                     }
                 }
                 Contents.Contents.maxVisibleCharacters = 0;
-                ZavalaGame.Events.Dispatch(GameEvents.DialogueDisplayed, new Data.DialogueLineData(charDef.NameId, charDef.TitleId, inString.VisibleText));
+                ZavalaGame.Events.Dispatch(GameEvents.DialogueDisplayed, EvtArgs.Box(new Data.DialogueLineData(charDef.NameId, charDef.TitleId, inString.VisibleText)));
                 if (!m_IsActive || (ForceAdvisorPolicies != AdvisorType.None)) {
                     m_TransitionRoutine.Replace(this, ShowRoutine()).ExecuteWhileDisabled();
                 }

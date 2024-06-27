@@ -24,6 +24,7 @@ using BeauRoutine;
 using BeauUtil;
 using BeauUtil.Debugger;
 using BeauUtil.UI;
+using BeauUtil.Variants;
 using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.EventSystems;
@@ -215,6 +216,9 @@ namespace FieldDay {
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
             BuildInfo.Load();
 
+            CommandLineArgs.Initialize();
+            ApplyCommandLineArguments();
+
             Log.Msg("[GameLoop] Creating memory manager...");
             Game.Memory = new MemoryMgr();
             Game.Memory.Initialize(m_MemoryConfig);
@@ -297,6 +301,7 @@ namespace FieldDay {
             Game.Components.Unlock();
             Game.Input.Initialize();
             Game.Gui.Initialize();
+            Game.Rendering.LateInitialize();
             Game.Animation.Initialize();
 			Game.Scenes.Prepare();
             Game.Systems.ProcessInitQueue();
@@ -311,12 +316,64 @@ namespace FieldDay {
 
 #if PREVIEW || DEVELOPMENT
             FramerateDisplay.Show();
+#else
+            if (CommandLineArgs.HasFlag("show-fps")) {
+                FramerateDisplay.Show();
+                Debug.LogWarning("[GameLoop] 'show-fps' flag found, framerate counter displayed");
+            }
 #endif // PREVIEW || DEVELOPMENT
+
+            if (!Game.Rendering.HasFallbackCamera()) {
+                Game.Rendering.CreateDefaultFallbackCamera();
+            }
 
             // fallback
             if (Game.Events == null) {
-                Game.SetEventDispatcher(new EventDispatcher<object>());
+                Game.SetEventDispatcher(new EventDispatcher<EvtArgs>());
             }
+        }
+
+        private void ApplyCommandLineArguments() {
+            if (CommandLineArgs.HasFlag("clear-playerprefs")) {
+                PlayerPrefs.DeleteAll();
+                PlayerPrefs.Save();
+                Debug.LogWarning("[GameLoop] 'clear-playerprefs' flag found, all PlayerPrefs entries cleared");
+            }
+
+            if (CommandLineArgs.HasFlag("mute")) {
+                AudioListener.volume = 0;
+                Debug.LogWarning("[GameLoop] 'mute' flag found, AudioListener.volume set to 0");
+            }
+
+            if (CommandLineArgs.ReadValue("force-fps", out Variant fpsConfig)) {
+                int fps = fpsConfig.AsInt();
+                if (fps <= 0) {
+                    fps = -1;
+                }
+                Application.targetFrameRate = fps;
+                Debug.LogWarningFormat("[GameLoop] 'force-fps' flag found, Application.targetFrameRate set to {0}", fps);
+            }
+
+            if (CommandLineArgs.HasFlag("full-stacktraces")) {
+                Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.Full);
+                Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.Full);
+                Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
+                Application.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
+                Application.SetStackTraceLogType(LogType.Assert, StackTraceLogType.Full);
+                Debug.LogWarning("[GameLoop] 'full-stacktraces' flag found, all logs will contain stack traces");
+            }
+
+#if PREVIEW || DEVELOPMENT
+            if (CommandLineArgs.ReadValue("frame-buffer-size", out Variant frameBufferConfig)) {
+                int size = frameBufferConfig.AsInt();
+                if (size < 32) {
+                    Debug.LogErrorFormat("[GameLoop] 'frame-buffer-size' parameter must be 32 or more, {0} specified", size);
+                } else {
+                    Frame.CreateAllocator(size);
+                    Debug.LogWarningFormat("[GameLoop] 'frame-buffer-size' parameter found, Frame buffer reinitialized to {0}KiB", size);
+                }
+            }
+#endif // PREVIEW || DEVELOPMENT
         }
 
         private void FinishCallbackRegistration() {
@@ -499,8 +556,10 @@ namespace FieldDay {
                 OnUnscaledUpdate.Invoke(Frame.UnscaledDeltaTime);
             }
 
+
             // flush event queue
-            Game.Events?.Flush();
+            Game.Events.Flush();
+            Game.Gui.FlushCommands();
         }
 
         private void LateUpdate() {
@@ -528,7 +587,8 @@ namespace FieldDay {
             Game.Audio.Update(Frame.UnscaledDeltaTime);
 
             // flush event queue
-            Game.Events?.Flush();
+            Game.Events.Flush();
+            Game.Gui.FlushCommands();
 
             FlushQueue(s_AfterLateUpdateQueue);
             Game.Scenes.Update();
@@ -670,6 +730,7 @@ namespace FieldDay {
 
         static private void OnPreCanvasRender() {
             SetCurrentPhase(GameLoopPhase.CanvasPreRender);
+            Game.Gui.FlushCommands();
             OnCanvasPreRender.Invoke();
             FlushQueue(s_CanvasPreRenderQueue);
         }

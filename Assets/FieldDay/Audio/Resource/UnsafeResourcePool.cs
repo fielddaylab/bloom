@@ -8,7 +8,7 @@ namespace FieldDay.Audio {
         private int m_AllocHead;
 
         public void Create(Unsafe.ArenaHandle arena, int amount) {
-            m_BitMap.Bits = arena.AllocSpan<byte>(Unsafe.AlignUp8(amount) / 8);
+            m_BitMap = new UnsafeBitSet(arena.AllocSpan<uint>(Unsafe.AlignUp8(amount) / 32));
             m_BitMap.Clear();
 
             m_Data = arena.AllocSpan<T>(amount);
@@ -32,27 +32,7 @@ namespace FieldDay.Audio {
         public void Free(T* ptr) {
             int chunkIdx = (int) (ptr - m_Data.Ptr);
             Assert.True(chunkIdx >= 0 && chunkIdx < m_Data.Length);
-            m_BitMap.UnSet(chunkIdx);
-        }
-    }
-
-    internal unsafe struct UnsafeBitSet {
-        public UnsafeSpan<byte> Bits;
-
-        public void Clear() {
-            Unsafe.Clear(Bits);
-        }
-
-        public bool IsSet(int bit) {
-            return ((Bits[bit >> 3]) & (1u << (bit & 0x7))) != 0;
-        }
-
-        public void Set(int bit) {
-            Bits[bit >> 3] |= (byte) (1u << (bit & 0x7));
-        }
-
-        public void UnSet(int bit) {
-            Bits[bit >> 3] &= (byte) ~(1u << (bit & 0x7));
+            m_BitMap.Unset(chunkIdx);
         }
     }
 }

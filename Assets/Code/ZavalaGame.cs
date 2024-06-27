@@ -42,17 +42,17 @@ namespace Zavala {
         /// <summary>
         /// Event system.
         /// </summary>
-        static public new EventDispatcher<object> Events { get; set; }
+        static public new EventDispatcher<EvtArgs> Events { get; set; }
 
         [InvokePreBoot]
         static private void OnPreBoot() {
             SimAllocator.Initialize(700 * Unsafe.KiB); // 700KiB simulation allocation buffer
-            Events = new EventDispatcher<object>();
+            Events = new EventDispatcher<EvtArgs>();
             Game.SetEventDispatcher(Events);
             SaveBuffer = new SaveMgr();
 
-            Game.Rendering.EnableMinimumAspectClamping(1024, 660);
 
+            Game.Rendering.EnableAspectClamping(new Vector2Int(1024, 660), new Vector2Int(16, 9));
             UserSettings settings = new UserSettings();
             Game.SharedState.Register(settings);
 

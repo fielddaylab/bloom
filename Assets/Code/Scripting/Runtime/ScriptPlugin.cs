@@ -98,7 +98,7 @@ namespace FieldDay.Scripting {
             // reset pin overrides at the start of a new node
             m_RuntimeState.DefaultDialogue.ClearPinForces();
 
-            ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueStarted, EvtArgs.Box(new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene)));
         }
 
         public override void OnNodeExit(ScriptNode inNode, LeafThreadState<ScriptNode> inThreadState) {
@@ -122,7 +122,7 @@ namespace FieldDay.Scripting {
             if (Game.Gui.TryGetShared(out InfoPopup ip) && ip.HoldOpen) {
                 ip.HoldOpen = false;
             }
-            ZavalaGame.Events.Dispatch(GameEvents.DialogueClosing, new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene));
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueClosing, EvtArgs.Box(new Zavala.Data.ScriptNodeData(inNode.FullName, !cutscene)));
             
         }
 

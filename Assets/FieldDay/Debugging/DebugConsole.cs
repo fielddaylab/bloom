@@ -220,23 +220,11 @@ namespace FieldDay.Debugging {
                 DMInfo menu = (DMInfo) pair.Info.Invoke(null, Array.Empty<object>());
 
                 if (menu != null) {
-                    DMInfo existing = FindSubmenu(s_RootMenu, menu.Header.Label);
-                    if (existing != null) {
-                        if (existing.Elements.Count > 0) {
-                            existing.AddDivider();
-                        }
-                        existing.MinimumWidth = Math.Max(existing.MinimumWidth, menu.MinimumWidth);
-                        foreach (var element in menu.Elements) {
-                            existing.Elements.PushBack(element);
-                        }
-                        menu.Clear(); // make sure to clear out old menu
-                    } else {
-                        s_RootMenu.AddSubmenu(menu);
-                    }
+                    DMInfo.MergeSubmenu(s_RootMenu, menu, true);
                 }
             }
 
-            SortByLabel(s_RootMenu);
+            DMInfo.SortByLabel(s_RootMenu);
         }
 
         static private void LoadQuickMenu() {
@@ -257,23 +245,11 @@ namespace FieldDay.Debugging {
                 DMInfo menu = (DMInfo) pair.Info.Invoke(null, Array.Empty<object>());
 
                 if (menu != null) {
-                    DMInfo existing = FindSubmenu(s_QuickMenu, menu.Header.Label);
-                    if (existing != null) {
-                        if (existing.Elements.Count > 0) {
-                            existing.AddDivider();
-                        }
-                        existing.MinimumWidth = Math.Max(existing.MinimumWidth, menu.MinimumWidth);
-                        foreach (var element in menu.Elements) {
-                            existing.Elements.PushBack(element);
-                        }
-                        menu.Clear(); // make sure to clear out old menu
-                    } else {
-                        s_QuickMenu.AddSubmenu(menu);
-                    }
+                    DMInfo.MergeSubmenu(s_QuickMenu, menu);
                 }
             }
 
-            SortByLabel(s_QuickMenu);
+            DMInfo.SortByLabel(s_QuickMenu);
         }
 
         private void SetMenuVisible(bool visible) {
@@ -333,38 +309,6 @@ namespace FieldDay.Debugging {
         }
 
         #endregion // Minimal Layer
-
-        #region Helpers
-
-        static internal DMInfo FindSubmenu(DMInfo menu, string label) {
-            int index = menu.Elements.FindIndex((e, l) => {
-                return e.Type == DMElementType.Submenu && e.Submenu.Submenu.Header.Label == label;
-            }, label);
-            if (index >= 0) {
-                return menu.Elements[index].Submenu.Submenu;
-            } else {
-                return null;
-            }
-        }
-
-        static internal DMInfo FindOrCreateSubmenu(DMInfo menu, string label) {
-            int index = menu.Elements.FindIndex((e, l) => {
-                return e.Type == DMElementType.Submenu && e.Submenu.Submenu.Header.Label == label;
-            }, label);
-            if (index >= 0) {
-                return menu.Elements[index].Submenu.Submenu;
-            } else {
-                DMInfo newInfo = new DMInfo(label);
-                menu.AddSubmenu(newInfo);
-                return newInfo;
-            }
-        }
-
-        static internal void SortByLabel(DMInfo menu) {
-            menu.Elements.Sort((a, b) => StringComparer.Ordinal.Compare(a.Label, b.Label));
-        }
-
-        #endregion // Helpers
 
 #endif // DEVELOPMENT
         }

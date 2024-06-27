@@ -31,7 +31,7 @@ namespace Zavala.UI {
             Game.Animation.AddLiteAnimator(this, 0.2f);
         }
 
-        public bool UpdateAnimation(ref LiteAnimatorState state, float deltaTime) {
+        public bool UpdateAnimation(object _, ref LiteAnimatorState state, float deltaTime) {
             state.TimeRemaining = Math.Max(0, state.TimeRemaining - deltaTime);
             float amt = state.TimeRemaining / state.Duration;
             m_Graphic.SetAlpha(TweenUtil.Evaluate(Curve.CubeOut, amt) * m_GraphicAlpha);
@@ -39,7 +39,7 @@ namespace Zavala.UI {
             return state.TimeRemaining > 0;
         }
 
-        public void ResetAnimation(ref LiteAnimatorState state) {
+        public void ResetAnimation(object _, ref LiteAnimatorState state) {
             m_Graphic.SetAlpha(0);
             m_Graphic.enabled = false;
         }

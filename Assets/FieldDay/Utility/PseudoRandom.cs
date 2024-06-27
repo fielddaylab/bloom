@@ -1,4 +1,5 @@
 using BeauUtil;
+using UnityEngine.UIElements;
 
 namespace FieldDay {
     public struct PseudoRandom {
@@ -26,6 +27,19 @@ namespace FieldDay {
 
         public bool Bool(uint mod = 0) {
             return Int(ref Seed, ushort.MaxValue) >= ushort.MaxValue / 2;
+        }
+
+        public unsafe void Shuffle<T>(UnsafeSpan<T> span, uint mod = 0) where T : unmanaged {
+            Shuffle(span.Ptr, span.Length, mod);
+        }
+
+        public unsafe void Shuffle<T>(T* ptr, int length, uint mod = 0) where T : unmanaged {
+            int i = length, j;
+            while (--i > 0) {
+                T old = ptr[i];
+                ptr[i] = ptr[j = Int(i + 1, mod)];
+                ptr[j] = old;
+            }
         }
 
         static public int Int(ref uint seed, int range, uint mod = 0) {

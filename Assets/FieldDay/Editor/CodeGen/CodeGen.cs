@@ -2,8 +2,6 @@ using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 
 namespace FieldDay.Editor {
     static public class CodeGen {

@@ -8,6 +8,8 @@ using System;
 using BeauUtil.Debugger;
 using Zavala.Data;
 using EasyAssetStreaming;
+using FieldDay;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -111,7 +113,7 @@ namespace Zavala.UI {
 
         private void HandleReturnClicked()
         {
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.CreditsExited);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, EvtArgs.Create(MenuInteractionType.CreditsExited));
             if (m_Transitioning) { return; }
             m_TransitionRoutine.Replace(this, ExitRoutine());
         }

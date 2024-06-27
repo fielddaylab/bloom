@@ -112,7 +112,7 @@ namespace Zavala.UI {
 
         private void HandleStartClicked()
         {
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.NewGameClicked);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, EvtArgs.Create(MenuInteractionType.NewGameClicked));
             m_CurrentPanel = Panel.NewGame;
             m_PlayerCodeInput.SetTextWithoutNotify(string.Empty);
             m_PlayerCodeInput.readOnly = true;
@@ -134,7 +134,7 @@ namespace Zavala.UI {
 
         private void HandleLoadClicked()
         {
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.ResumeGameClicked);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, EvtArgs.Create(MenuInteractionType.ResumeGameClicked));
             m_CurrentPanel = Panel.LoadGame;
             m_PlayerCodeInput.SetTextWithoutNotify(Game.SharedState.Get<UserSettings>().PlayerCode);
             m_PlayerCodeInput.readOnly = false;
@@ -154,7 +154,7 @@ namespace Zavala.UI {
 
         private void HandleCreditsClicked()
         {
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.CreditsButtonClicked);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, EvtArgs.Create(MenuInteractionType.CreditsButtonClicked));
             m_CreditsPanel.OpenPanel();
             MusicUtility.SetAllSongs(m_TitleMusic, m_AllCreditsSongs);
         }
@@ -175,7 +175,7 @@ namespace Zavala.UI {
         }
 
         private void HandlePlayButton() {
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.PlayGameClicked);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, EvtArgs.Create(MenuInteractionType.PlayGameClicked));
             m_Raycaster.blocksRaycasts = false;
             if (m_CurrentPanel == Panel.NewGame) {
                 ZavalaGame.SaveBuffer.Clear();
@@ -191,11 +191,11 @@ namespace Zavala.UI {
             float oldVal = Game.SharedState.Get<UserSettings>().MusicVolume;
             float newVal = val / 10f;
             Game.SharedState.Get<UserSettings>().MusicVolume = newVal;
-            ZavalaGame.Events.Dispatch(GameEvents.VolumeChanged, new ZoomVolData(oldVal, newVal, false));
+            ZavalaGame.Events.Dispatch(GameEvents.VolumeChanged, EvtArgs.Create(new ZoomVolData(oldVal, newVal, false)));
         }
 
         private void HandleBackButton() {
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.ReturnedToMainMenu);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, EvtArgs.Create(MenuInteractionType.ReturnedToMainMenu));
             m_CurrentPanel = Panel.Start;
             
             m_StartGroup.blocksRaycasts = false;

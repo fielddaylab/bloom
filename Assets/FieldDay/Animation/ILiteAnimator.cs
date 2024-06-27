@@ -3,8 +3,8 @@ using BeauUtil;
 
 namespace FieldDay.Animation {
     public interface ILiteAnimator {
-        bool UpdateAnimation(ref LiteAnimatorState state, float deltaTime);
-        void ResetAnimation(ref LiteAnimatorState state);
+        bool UpdateAnimation(object target, ref LiteAnimatorState state, float deltaTime);
+        void ResetAnimation(object target, ref LiteAnimatorState state);
     }
 
     public struct LiteAnimatorState {
@@ -12,11 +12,13 @@ namespace FieldDay.Animation {
         public float Duration;
         public BitSet32 Flags;
         public int StateId;
-        public LiteAnimatorStateParams StateParams;
+        public LiteAnimatorStateParam StateParams;
     }
 
-    public struct LiteAnimatorStateParams {
-        public int Int;
-        public float Float;
+    [StructLayout(LayoutKind.Explicit)]
+    public struct LiteAnimatorStateParam {
+        [FieldOffset(0)] public bool Bool;
+        [FieldOffset(0)] public int Int;
+        [FieldOffset(0)] public float Float;
     }
 }

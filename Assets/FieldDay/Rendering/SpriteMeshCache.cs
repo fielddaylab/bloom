@@ -29,6 +29,7 @@ namespace FieldDay.Rendering {
             Mesh m = new Mesh();
             m_Builder.Upload(m);
             m.UploadMeshData(true);
+            m_Builder.Clear();
 
             m_MeshMap.Add(id, m);
             return m;

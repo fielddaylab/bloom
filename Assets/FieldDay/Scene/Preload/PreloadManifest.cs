@@ -254,7 +254,7 @@ namespace FieldDay.Scenes {
         }
 
         /// <summary>
-        /// WorkSlider operation.
+        /// WorkSlicer operation.
         /// </summary>
         static public readonly WorkSlicer.EnumeratedElementOperation<IScenePreload> ExecutePreloader = (a) => a.Preload();
 

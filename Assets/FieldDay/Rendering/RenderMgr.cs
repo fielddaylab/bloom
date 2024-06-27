@@ -2,10 +2,18 @@
 #define USE_SRP
 #endif // UNITY_2019_1_OR_NEWER
 
+#if UNITY_2019_1_OR_NEWER && HAS_URP
+#define USE_URP
+#endif // UNITY_2019_1_OR_NEWER
+
 using BeauUtil;
 using BeauUtil.Debugger;
 using UnityEngine;
 using UnityEngine.Rendering;
+
+#if USE_URP
+using UnityEngine.Rendering.Universal;
+#endif // USE_URP
 
 namespace FieldDay.Rendering {
     public sealed class RenderMgr {
@@ -13,6 +21,7 @@ namespace FieldDay.Rendering {
         private Resolution m_LastKnownResolution;
 
         private Camera m_PrimaryCamera;
+        private Camera m_FallbackCamera;
 
         private RingBuffer<CameraClampToVirtualViewport> m_ClampedViewportCameras = new RingBuffer<CameraClampToVirtualViewport>(2, RingBufferMode.Expand);
         private Rect m_VirtualViewport = new Rect(0, 0, 1, 1);
@@ -20,6 +29,9 @@ namespace FieldDay.Rendering {
         private float m_MinAspect;
         private float m_MaxAspect;
         private bool m_HasLetterboxing;
+
+        private bool m_ShouldCheckFallback = true;
+        private bool m_UsingFallback = false;
 
         #region Callbacks
 
@@ -33,6 +45,15 @@ namespace FieldDay.Rendering {
         internal void Initialize() {
             GameLoop.OnCanvasPreRender.Register(OnCanvasPreUpdate);
             GameLoop.OnApplicationPreRender.Register(OnApplicationPreRender);
+
+            Game.Scenes.OnAnySceneUnloaded.Register(OnSceneLoadUnload);
+            Game.Scenes.OnAnySceneEnabled.Register(OnSceneLoadUnload);
+            Game.Scenes.OnSceneReady.Register(OnSceneLoadUnload);
+        }
+
+        internal void LateInitialize() {
+            Game.Gui.OnPrimaryCameraChanged.Register(OnGuiCameraChanged);
+            OnGuiCameraChanged(Game.Gui.PrimaryCamera);
         }
 
         internal void PollScreenSettings() {
@@ -53,6 +74,10 @@ namespace FieldDay.Rendering {
             GameLoop.OnCanvasPreRender.Deregister(OnCanvasPreUpdate);
             GameLoop.OnApplicationPreRender.Deregister(OnApplicationPreRender);
 
+            Game.Scenes.OnAnySceneUnloaded.Deregister(OnSceneLoadUnload);
+            Game.Scenes.OnAnySceneEnabled.Deregister(OnSceneLoadUnload);
+            Game.Scenes.OnSceneReady.Deregister(OnSceneLoadUnload);
+
             OnResolutionChanged.Clear();
             OnFullscreenChanged.Clear();
         }
@@ -66,6 +91,7 @@ namespace FieldDay.Rendering {
                 Log.Warn("[RenderMgr] Primary world camera already set to '{0}' - make sure to deregister it first", m_PrimaryCamera);
             }
             m_PrimaryCamera = camera;
+            m_ShouldCheckFallback = true;
             Log.Msg("[RenderMgr] Assigned primary world camera as '{0}'", camera);
         }
 
@@ -75,6 +101,7 @@ namespace FieldDay.Rendering {
             }
 
             m_PrimaryCamera = null;
+            m_ShouldCheckFallback = true;
             Log.Msg("[RenderMgr] Removed primary world camera");
         }
 
@@ -118,7 +145,99 @@ namespace FieldDay.Rendering {
 
         #endregion // Clamped Viewport
 
+        #region Fallback
+
+        public bool HasFallbackCamera() {
+            return m_FallbackCamera;
+        }
+
+        public void CreateDefaultFallbackCamera() {
+            if (m_FallbackCamera) {
+                Log.Warn("[RenderMgr] Fallback camera already in place.");
+                return;
+            }
+
+            GameObject go = new GameObject("[RenderMgr Fallback]");
+            Camera camera = go.AddComponent<Camera>();
+            GameObject.DontDestroyOnLoad(go);
+            go.SetActive(false);
+
+            camera.cullingMask = 0;
+            camera.orthographic = true;
+            camera.orthographicSize = 0.5f;
+            camera.backgroundColor = Color.black;
+            camera.clearFlags = CameraClearFlags.SolidColor | CameraClearFlags.Depth;
+            camera.depth = -100;
+
+#if USE_URP
+            var data = camera.GetUniversalAdditionalCameraData();
+            data.renderType = CameraRenderType.Base;
+            data.renderShadows = false;
+            data.renderPostProcessing = false;
+            data.requiresDepthTexture = false;
+            data.requiresColorOption = CameraOverrideOption.Off;
+            data.requiresColorTexture = false;
+            data.stopNaN = false;
+            data.dithering = false;
+#endif // USE_URP
+
+            m_FallbackCamera = camera;
+
+            Log.Msg("[RenderMgr] Created default fallback camera");
+
+            OnGuiCameraChanged(Game.Gui.PrimaryCamera);
+            go.SetActive(m_UsingFallback);
+        }
+
+        // TODO: SetCustomFallbackCamera
+
+        /// <summary>
+        /// Marks the "fallback camera" state as dirty.
+        /// This will force it to be reevaluated before the next render.
+        /// </summary>
+        public void QueueFallbackCameraReevaluate() {
+            m_ShouldCheckFallback = true;
+        }
+
+        #endregion // Fallback
+
         #region Handlers
+
+        private void OnGuiCameraChanged(Camera uiCam) {
+            if (!m_FallbackCamera) {
+                return;
+            }
+#if USE_URP
+            var data = m_FallbackCamera.GetUniversalAdditionalCameraData();
+            if (uiCam != null) {
+                if (!data.cameraStack.Contains(uiCam)) {
+                    data.cameraStack.Add(uiCam);
+                }
+            } else {
+                data.cameraStack.Clear();
+            }
+#endif // USE_URP
+        }
+
+        private void OnSceneLoadUnload() {
+            m_ShouldCheckFallback = true;
+        }
+
+        private void CheckIfNeedsFallback() {
+            if (!m_ShouldCheckFallback) {
+                return;
+            }
+
+            bool needsFallback = !CameraUtility.AreAnyCamerasDirectlyRendering(m_FallbackCamera);
+            if (Ref.Replace(ref m_UsingFallback, needsFallback)) {
+                if (m_FallbackCamera) {
+                    m_FallbackCamera.gameObject.SetActive(needsFallback);
+                }
+                Log.Msg("[RenderMgr] Fallback camera switched to {0}", needsFallback ? "ON" : "OFF");
+            }
+            
+            m_ShouldCheckFallback = false;
+        }
 
         private void OnCanvasPreUpdate() {
             if (m_MinAspect <= 0 || m_MaxAspect <= 0) {
@@ -142,6 +261,15 @@ namespace FieldDay.Rendering {
         }
 
         private void OnApplicationPreRender() {
+            CheckIfNeedsFallback();
+
+            if (m_UsingFallback && !m_FallbackCamera) {
+                GL.PushMatrix();
+                GL.LoadOrtho();
+                GL.Clear(true, true, Color.black, 1);
+                GL.PopMatrix();
+            }
+
             if (m_HasLetterboxing && m_ClampedViewportCameras.Count > 0) {
                 CameraHelper.RenderLetterboxing(m_VirtualViewport, Color.black);
             }

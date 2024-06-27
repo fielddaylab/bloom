@@ -476,17 +476,17 @@ namespace Zavala.Economy
             if (taxRevenue.Sales != 0) {
                 marketData.SalesTaxHistory[regionIndex].AddPending(taxRevenue.Sales);
 
-                ZavalaGame.Events.Dispatch(GameEvents.SalesTaxRevenueGenerated, new Tuple<int, int>(taxRevenue.Sales, regionIndex));
+                ZavalaGame.Events.Dispatch(GameEvents.SalesTaxRevenueGenerated, EvtArgs.Ref(new Tuple<int, int>(taxRevenue.Sales, regionIndex)));
             }
             if (taxRevenue.Import != 0) {
                 marketData.ImportTaxHistory[regionIndex].AddPending(taxRevenue.Import);
 
-                ZavalaGame.Events.Dispatch(GameEvents.ImportTaxRevenueGenerated, new Tuple<int, int>(taxRevenue.Import, regionIndex));
+                ZavalaGame.Events.Dispatch(GameEvents.ImportTaxRevenueGenerated, EvtArgs.Ref(new Tuple<int, int>(taxRevenue.Import, regionIndex)));
             }
             if (taxRevenue.Penalties != 0) {
                 marketData.PenaltiesHistory[regionIndex].AddPending(taxRevenue.Penalties);
 
-                ZavalaGame.Events.Dispatch(GameEvents.PenaltiesRevenueGenerated, new Tuple<int, int>(taxRevenue.Penalties, regionIndex));
+                ZavalaGame.Events.Dispatch(GameEvents.PenaltiesRevenueGenerated, EvtArgs.Ref(new Tuple<int, int>(taxRevenue.Penalties, regionIndex)));
             }
         }
 
@@ -494,13 +494,13 @@ namespace Zavala.Economy
         {
             marketData.SkimmerCostHistory[regionIndex].AddPending(skimmerCost);
 
-            ZavalaGame.Events.Dispatch(GameEvents.SkimmerCostDeducted, new Tuple<int, int>(skimmerCost, regionIndex));
+            ZavalaGame.Events.Dispatch(GameEvents.SkimmerCostDeducted, EvtArgs.Ref(new Tuple<int, int>(skimmerCost, regionIndex)));
         }
 
         public static void RecordMilkRevenueToHistory(MarketData marketData, int milkRevenue, int regionIndex) {
             marketData.MilkRevenueHistory[regionIndex].AddPending(milkRevenue);
 
-            ZavalaGame.Events.Dispatch(GameEvents.MilkRevenueGenerated, new Tuple<int, int>(milkRevenue, regionIndex));
+            ZavalaGame.Events.Dispatch(GameEvents.MilkRevenueGenerated, EvtArgs.Ref(new Tuple<int, int>(milkRevenue, regionIndex)));
         }
 
         public static void FinalizeCycleHistory(MarketData marketData) {

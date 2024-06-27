@@ -13,6 +13,7 @@ using FieldDay.Rendering;
 using FieldDay.Assets;
 using System.Runtime.CompilerServices;
 using EasyAssetStreaming;
+using FieldDay.Debugging;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
@@ -179,6 +180,7 @@ namespace FieldDay.Scenes {
         private RingBuffer<ISceneLoadDependency> m_Dependencies = new RingBuffer<ISceneLoadDependency>(8, RingBufferMode.Expand);
 
         // temp queues
+        private RingBuffer<UninitializedSceneCallback> m_TempOnLateEnableQueue = new RingBuffer<UninitializedSceneCallback>(4, RingBufferMode.Expand);
         private RingBuffer<UninitializedSceneCallback> m_TempOnLoadQueue = new RingBuffer<UninitializedSceneCallback>(4, RingBufferMode.Expand);
         private RingBuffer<UninitializedSceneCallback> m_TempOnUnloadQueue = new RingBuffer<UninitializedSceneCallback>(4, RingBufferMode.Expand);
 
@@ -191,6 +193,8 @@ namespace FieldDay.Scenes {
         public readonly CastableEvent<SceneEventArgs> OnSceneReady = new CastableEvent<SceneEventArgs>();
         public readonly ActionEvent OnMainSceneReady = new ActionEvent();
         public readonly CastableEvent<SceneEventArgs> OnSceneUnload = new CastableEvent<SceneEventArgs>();
+        public readonly ActionEvent OnAnySceneUnloaded = new ActionEvent();
+        public readonly ActionEvent OnAnySceneEnabled = new ActionEvent();
 
         #endregion // Exposed Events
 
@@ -473,6 +477,54 @@ namespace FieldDay.Scenes {
         #region Callbacks
 
         /// <summary>
+        /// Queues a callback for when the main scene is enabled.
+        /// </summary>
+        public void QueueOnEnable(Action action) {
+            SceneDataExt data = m_MainScene;
+            if (data != null) {
+                if (data.IsVisited(SceneDataExt.VisitFlags.LateEnabled)) {
+                    action();
+                } else {
+                    data.LateEnableCallbackQueue.PushBack(action);
+                }
+            } else {
+                m_TempOnLateEnableQueue.PushBack(new UninitializedSceneCallback(default, action));
+            }
+        }
+
+        /// <summary>
+        /// Queues a callback for when the given scene is enabled.
+        /// </summary>
+        public void QueueOnEnable(Scene scene, Action action) {
+            SceneDataExt data = SceneDataExt.Get(scene);
+            if (data != null) {
+                if (data.IsVisited(SceneDataExt.VisitFlags.LateEnabled)) {
+                    action();
+                } else {
+                    data.LateEnableCallbackQueue.PushBack(action);
+                }
+            } else {
+                m_TempOnLateEnableQueue.PushBack(new UninitializedSceneCallback(scene, action));
+            }
+        }
+
+        /// <summary>
+        /// Queues a callback for when the scene for the given object is enabled.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void QueueOnEnable(GameObject gameObject, Action action) {
+            QueueOnEnable(gameObject.scene, action);
+        }
+
+        /// <summary>
+        /// Queues a callback for when the scene for the given object is enabled.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void QueueOnEnable(Component component, Action action) {
+            QueueOnEnable(component.gameObject.scene, action);
+        }
+
+        /// <summary>
         /// Queues a callback for when the main scene is loaded.
         /// </summary>
         public void QueueOnLoad(Action action) {
@@ -661,6 +713,14 @@ namespace FieldDay.Scenes {
 
             m_MainSceneLoadProcess.Stop();
             m_AdditionalSceneLoadProcess.Stop();
+
+            OnScenePreload.Clear();
+            OnSceneReady.Clear();
+            OnSceneUnload.Clear();
+            OnAnySceneEnabled.Clear();
+            OnAnySceneUnloaded.Clear();
+            OnMainSceneReady.Clear();
+            OnPrepareScene.Clear();
         }
 
         #endregion // Events
@@ -706,6 +766,10 @@ namespace FieldDay.Scenes {
                 ClearNonPersistentLoadProcesses();
             }
             m_LoadProcessQueue.PushFront(args);
+
+            if (!killNonPersistentLoads) {
+                DebugFlags.MarkNewSceneLoaded();
+            }
         }
 
         private void QueueSceneLoadInternal(string path, StringHash32 tag, SceneType type, SceneImportFlags flags, Matrix4x4? transform, SceneLoadPriority priority) {
@@ -732,6 +796,7 @@ namespace FieldDay.Scenes {
         }
 
         private void FlushSceneLoadCallbacks(SceneDataExt ext, Scene scene, bool isMain) {
+            FlushSceneLoadCallbacks(ext, scene, isMain, m_TempOnLateEnableQueue, ext.LateEnableCallbackQueue);
             FlushSceneLoadCallbacks(ext, scene, isMain, m_TempOnLoadQueue, ext.LoadedCallbackQueue);
             FlushSceneLoadCallbacks(ext, scene, isMain, m_TempOnUnloadQueue, ext.UnloadingCallbackQueue);
         }
@@ -908,6 +973,11 @@ namespace FieldDay.Scenes {
                 if (m_CurrentUnloadOperation.UnityOp == null || m_CurrentUnloadOperation.UnityOp.isDone) {
                     Log.Msg("[SceneMgr] Unload complete");
                     m_CurrentUnloadOperation.Args.Counter.Decrement();
+
+                    if (!OnAnySceneUnloaded.IsEmpty) {
+                        OnAnySceneUnloaded.Invoke();
+                    }
+
                     m_CurrentUnloadOperation.Clear();
                     Game.Events?.CleanupDeadReferences();
                     return true;
@@ -1063,6 +1133,10 @@ namespace FieldDay.Scenes {
                     if (args.Data.TryVisit(SceneDataExt.VisitFlags.LateEnabled)) {
                         foreach (var obj in args.Data.LateEnable) {
                             obj.SetActive(true);
+                        }
+                        FlushCallbacks(args.Data.LateEnableCallbackQueue);
+                        if (!OnAnySceneEnabled.IsEmpty) {
+                            OnAnySceneEnabled.Invoke();
                         }
                         Log.Msg("[SceneMgr] LateEnable processed for '{0}'", args.Data.Scene.path);
                     }
@@ -1225,6 +1299,10 @@ namespace FieldDay.Scenes {
                         counter.Increment();
                     } else {
                         data.TryVisit(SceneDataExt.VisitFlags.LateEnabled);
+                        FlushCallbacks(data.LateEnableCallbackQueue);
+                        if (!OnAnySceneEnabled.IsEmpty) {
+                            OnAnySceneEnabled.Invoke();
+                        }
                     }
                 }
 
@@ -1354,6 +1432,13 @@ namespace FieldDay.Scenes {
         /// </summary>
         static public int ActiveSceneIndex() {
             return SceneManager.GetActiveScene().buildIndex;
+        }
+
+        /// <summary>
+        /// Returns the active scene's name.
+        /// </summary>
+        static public string ActiveSceneName() {
+            return SceneManager.GetActiveScene().name;
         }
     }
 

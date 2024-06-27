@@ -38,7 +38,7 @@ public class UIPauseMenu : MonoBehaviour, IScenePreload
         float oldVal = Game.SharedState.Get<UserSettings>().MusicVolume;
         float newVal = val / 10f;
         Game.SharedState.Get<UserSettings>().MusicVolume = newVal;
-        ZavalaGame.Events.Dispatch(GameEvents.VolumeChanged, new ZoomVolData(oldVal, newVal, false));
+        ZavalaGame.Events.Dispatch(GameEvents.VolumeChanged, EvtArgs.Create(new ZoomVolData(oldVal, newVal, false)));
 
     }
 

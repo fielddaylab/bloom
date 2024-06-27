@@ -5153,7 +5153,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 6.056604, y: 4}
+  m_SizeDelta: {x: 6.2249613, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &384047924 stripped
 GameObject:
@@ -5233,7 +5233,7 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   m_Visible: 1
-  m_Size: {x: 6.056604, y: 4}
+  m_Size: {x: 6.2249613, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
   m_UVRect:
     serializedVersion: 2
@@ -11172,7 +11172,7 @@ PrefabInstance:
       objectReference: {fileID: 671709479}
     - target: {fileID: 880307345726718726, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_BackgroundVideoPath
-      value: Zavala_TitleScreenVid_00.mp4
+      value: Titlescreen_720.mp4
       objectReference: {fileID: 0}
     - target: {fileID: 1572932321366830289, guid: e945938df3b5ac941a447a7538023cc2, type: 3}
       propertyPath: m_AnchorMax.x

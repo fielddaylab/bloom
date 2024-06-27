@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Drawing;
+using ScriptableBake;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +12,20 @@ namespace FieldDay.Editor {
 
         public abstract void Generate(IndentedTextWriter writer, string ns);
 
-        [CustomEditor(typeof(LayerCodeGen), true)]
+        static public void WriteToFile(CodeGenBase gen) {
+            if (gen.TargetFile != null) {
+                using (var stream = CodeGen.OpenCodeStream(gen.TargetFile)) {
+                    using (var writer = CodeGen.OpenCodeFile(stream)) {
+                        gen.Generate(writer, gen.Namespace);
+                        writer.InnerWriter.Flush();
+                        stream.Flush();
+                    }
+                }
+                EditorUtility.SetDirty(gen.TargetFile);
+            }
+        }
+
+        [CustomEditor(typeof(CodeGenBase), true)]
         public class InspectorBase : UnityEditor.Editor {
             protected SerializedProperty m_TargetFileProp;
             protected SerializedProperty m_NamespaceProp;
@@ -51,6 +65,7 @@ namespace FieldDay.Editor {
                             Undo.RecordObject(gen, "Generating code file...");
                             if (CodeGen.ResolveTarget(ref gen.TargetFile, gen.name)) {
                                 try {
+                                    serializedObject.ApplyModifiedProperties();
                                     using (var stream = CodeGen.OpenCodeStream(gen.TargetFile)) {
                                         using (var writer = CodeGen.OpenCodeFile(stream)) {
                                             gen.Generate(writer, m_NamespaceProp.stringValue);

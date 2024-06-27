@@ -26,7 +26,7 @@ namespace Zavala.UI {
         public Color SelectedColor;
         public Color UnselectedColor;
 
-        public bool UpdateAnimation(ref LiteAnimatorState state, float deltaTime) {
+        public bool UpdateAnimation(object _, ref LiteAnimatorState state, float deltaTime) {
             state.TimeRemaining = Mathf.Max(0, state.TimeRemaining - deltaTime);
             float amt = state.TimeRemaining / state.Duration;
             if (CanAfford) {
@@ -40,7 +40,7 @@ namespace Zavala.UI {
             return state.TimeRemaining > 0;
         }
 
-        public void ResetAnimation(ref LiteAnimatorState state) {
+        public void ResetAnimation(object _, ref LiteAnimatorState state) {
             Offset.Offset1 = default;
             CostFlash.enabled = false;
         }

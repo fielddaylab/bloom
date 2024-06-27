@@ -266,7 +266,7 @@ namespace Zavala.Cards
 
             CardUIUtility.ExtractLocText(args.Data, out locText);
             m_Text.SetText(locText);
-            ZavalaGame.Events.Dispatch(GameEvents.PolicyHover,  new PolicyData(args.Data.PolicyType, (int)args.Data.PolicyLevel, locText));
+            ZavalaGame.Events.Dispatch(GameEvents.PolicyHover, EvtArgs.Box(new PolicyData(args.Data.PolicyType, (int)args.Data.PolicyLevel, locText)));
         }
 
         private void OnCardHoverExit(object sender, EventArgs args)

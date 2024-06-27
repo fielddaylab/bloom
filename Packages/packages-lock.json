@@ -36,7 +36,7 @@
       "url": "https://package.openupm.com"
     },
     "com.beauprime.beauutil": {
-      "version": "0.10.4",
+      "version": "0.10.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -53,7 +53,7 @@
       "url": "https://package.openupm.com"
     },
     "com.beauprime.tinyil-mono": {
-      "version": "0.1.5",
+      "version": "0.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -62,7 +62,7 @@
       "url": "https://package.openupm.com"
     },
     "com.fieldday.opengamedata-unity": {
-      "version": "1.0.7",
+      "version": "1.0.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

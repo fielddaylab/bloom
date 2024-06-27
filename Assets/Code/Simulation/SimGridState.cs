@@ -74,7 +74,8 @@ namespace Zavala.Sim {
 
             ZavalaGame.SaveBuffer.RegisterHandler("Grid", this, -100);
 
-            Game.Scenes.QueueOnLoad(() => SimDataUtility.LateInitializeData(this, WorldData));
+            Game.Scenes.QueueOnEnable(() => SimDataUtility.LateInitializeData(this, WorldData));
+            Game.Scenes.QueueOnLoad(SimDataUtility.LatestInitialize);
             Game.Scenes.RegisterLoadDependency(this);
         }
 
@@ -127,13 +128,15 @@ namespace Zavala.Sim {
                 ZavalaGame.SaveBuffer.HandlePostLoad();
                 yield return null;
             }
+        }
 
+        static public void LatestInitialize() {
             SimAllocator.DumpStats();
 
             Game.Events.Dispatch(GameEvents.GameLoaded);
             SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
             ScriptUtility.Trigger(GameTriggers.GameBooted);
-            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, MenuInteractionType.GameStarted);
+            ZavalaGame.Events.Dispatch(GameEvents.MainMenuInteraction, EvtArgs.Create(MenuInteractionType.GameStarted));
 
             if (!ZavalaGame.SaveBuffer.HasSave) {
                 SaveUtility.Save(SaveSlot.Main);

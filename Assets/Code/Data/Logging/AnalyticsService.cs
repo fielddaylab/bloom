@@ -441,17 +441,6 @@ namespace Zavala.Data {
 
         private readonly JsonBuilder m_JsonBuilder = new JsonBuilder(Unsafe.KiB * 64);
 
-        private enum CityStatus : byte {
-            GOOD,
-            OKAY,
-            BAD
-        }
-
-        private enum AdvisorType : byte {
-            ECONOMY,
-            ECOLOGY
-        }
-
         [Serializable]
         private struct PolicyStateData {
             public PolicyLevelData sales;

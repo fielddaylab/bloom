@@ -1,6 +1,14 @@
+#if UNITY_2019_1_OR_NEWER && HAS_URP
+#define USE_URP
+#endif // UNITY_2019_1_OR_NEWER
+
 using System;
 using BeauUtil;
 using UnityEngine;
+
+#if USE_URP
+using UnityEngine.Rendering.Universal;
+#endif // USE_URP
 
 namespace FieldDay.Rendering {
     /// <summary>
@@ -38,6 +46,52 @@ namespace FieldDay.Rendering {
 
             Array.Clear(s_CameraWorkArray, 0, cameraCount);
             return found;
+        }
+
+        /// <summary>
+        /// Returns if any cameras are set to render directly to the screen/backbuffer.
+        /// </summary>
+        static public bool AreAnyCamerasDirectlyRendering() {
+            return AreAnyCamerasDirectlyRendering(null);
+        }
+
+        /// <summary>
+        /// Returns if any cameras are set to render directly to the screen/backbuffer.
+        /// </summary>
+        static public bool AreAnyCamerasDirectlyRendering(Camera excludeCamera) {
+            int cameraCount = Camera.GetAllCameras(s_CameraWorkArray);
+            bool found = false;
+
+            for(int i = 0; i < cameraCount; i++) {
+                Camera c = s_CameraWorkArray[i];
+                if (!ReferenceEquals(c, excludeCamera) && c.isActiveAndEnabled && WillRenderDirectly(c)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Array.Clear(s_CameraWorkArray, 0, cameraCount);
+            return found;
+        }
+
+        /// <summary>
+        /// Returns if the given camera will render directly to the screen/backbuffer.
+        /// </summary>
+        static public bool WillRenderDirectly(Camera camera) {
+            // cameras rendering to a target
+            if (camera.targetTexture != null) {
+                return false;
+            }
+
+#if USE_URP
+            // overlay cameras
+            var data = camera.GetUniversalAdditionalCameraData();
+            if (data.renderType == CameraRenderType.Overlay) {
+                return false;
+            }
+#endif // USE_URP
+
+            return true;
         }
     }
 }

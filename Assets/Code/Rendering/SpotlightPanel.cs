@@ -85,6 +85,8 @@ namespace Zavala.Rendering {
             Vector3 pos;
             target.TryGetCamera(out SpaceHelper.WorldCamera);
             SpaceHelper.TryConvertToLocalSpace(target, out pos);
+            pos.x = Mathf.Round(pos.x);
+            pos.y = Mathf.Round(pos.y);
             return (Vector2) pos;
         }
 
