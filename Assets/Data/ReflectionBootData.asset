@@ -167,7 +167,7 @@ MonoBehaviour:
     - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       TypeCount: 11
     - AssemblyName: FieldDay.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 2
+      TypeCount: 1
     Types:
     - TypeName: Zavala.Debugging.SimGridDebugger
       Self: 0
@@ -213,10 +213,6 @@ MonoBehaviour:
       Self: 0
       MemberCount: 1
       OverloadCount: 0
-    - TypeName: FieldDay.Debugging.CrashHandler
-      Self: 0
-      MemberCount: 1
-      OverloadCount: 0
     - TypeName: FieldDay.Data.ConfigVar
       Self: 0
       MemberCount: 1
@@ -243,8 +239,6 @@ MonoBehaviour:
     - MemberName: WinLossMenu
       Type: 8
     - MemberName: AdvisorModuleUnlockUtility
-      Type: 8
-    - MemberName: CreateDebugMenu
       Type: 8
     - MemberName: DebugMenuFactory
       Type: 8

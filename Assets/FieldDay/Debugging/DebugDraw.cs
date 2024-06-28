@@ -229,6 +229,9 @@ namespace FieldDay.Debugging {
             EnsureGUIResources();
 
             Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Camera.main;
+            if (!mainCam) {
+                mainCam = Game.Rendering.PrimaryCamera;
+            }
             if (mainCam) {
                 RenderText(deltaTime, mainCam, s_CategoryMask, !s_PauseAll);
             } else {
@@ -240,7 +243,7 @@ namespace FieldDay.Debugging {
 
 #if UNITY_EDITOR
 
-            private void OnSceneGUI(SceneView view) {
+        private void OnSceneGUI(SceneView view) {
             if (!enabled) {
                 return;
             }
@@ -359,6 +362,7 @@ namespace FieldDay.Debugging {
         }
 
         private void RenderText(float deltaTime, Camera camera, BitSet64 mask, bool allowRendering) {
+            int screenW = Screen.width, screenH = Screen.height;
             for (int i = s_ActiveTexts.Count - 1; i >= 0; i--) {
                 ref TextRenderState state = ref s_ActiveTexts[i];
 
@@ -368,10 +372,10 @@ namespace FieldDay.Debugging {
                     if (state.WorldSpace) {
                         targetPoint = camera.WorldToScreenPoint(state.Position);
                     } else {
-                        targetPoint = camera.ViewportToScreenPoint(state.Position);
+                        targetPoint = new Vector2(state.Position.x * screenW, state.Position.y * screenH);
                     }
 
-                    targetPoint.y = camera.pixelHeight - targetPoint.y;
+                    targetPoint.y = screenH - targetPoint.y;
                     targetPoint.x += state.Offset.x;
                     targetPoint.y -= state.Offset.y;
 
@@ -786,6 +790,13 @@ namespace FieldDay.Debugging {
         }
 
         #endregion // Static API
+
+        [EngineMenuFactory]
+        static private DMInfo CreateDrawingEngineMenu() {
+            DMInfo info = new DMInfo("DebugDraw", 4);
+            AddRenderToggle(info, null);
+            return info;
+        }
     }
 
     /// <summary>

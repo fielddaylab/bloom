@@ -8,6 +8,7 @@
 
 using BeauUtil;
 using BeauUtil.Debugger;
+using FieldDay.Debugging;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -16,7 +17,7 @@ using UnityEngine.Rendering.Universal;
 #endif // USE_URP
 
 namespace FieldDay.Rendering {
-    public sealed class RenderMgr {
+    public sealed class RenderMgr : ICameraPreRenderCallback {
         private bool m_LastKnownFullscreen;
         private Resolution m_LastKnownResolution;
 
@@ -32,6 +33,7 @@ namespace FieldDay.Rendering {
 
         private bool m_ShouldCheckFallback = true;
         private bool m_UsingFallback = false;
+        private ushort m_LastLetterboxFrameRendered = Frame.InvalidIndex;
 
         #region Callbacks
 
@@ -45,10 +47,13 @@ namespace FieldDay.Rendering {
         internal void Initialize() {
             GameLoop.OnCanvasPreRender.Register(OnCanvasPreUpdate);
             GameLoop.OnApplicationPreRender.Register(OnApplicationPreRender);
+            GameLoop.OnFrameAdvance.Register(OnApplicationPostRender);
 
             Game.Scenes.OnAnySceneUnloaded.Register(OnSceneLoadUnload);
             Game.Scenes.OnAnySceneEnabled.Register(OnSceneLoadUnload);
             Game.Scenes.OnSceneReady.Register(OnSceneLoadUnload);
+
+            CameraHelper.AddOnPreRender(this);
         }
 
         internal void LateInitialize() {
@@ -73,10 +78,13 @@ namespace FieldDay.Rendering {
         internal void Shutdown() {
             GameLoop.OnCanvasPreRender.Deregister(OnCanvasPreUpdate);
             GameLoop.OnApplicationPreRender.Deregister(OnApplicationPreRender);
+            GameLoop.OnFrameAdvance.Deregister(OnApplicationPostRender);
 
             Game.Scenes.OnAnySceneUnloaded.Deregister(OnSceneLoadUnload);
             Game.Scenes.OnAnySceneEnabled.Deregister(OnSceneLoadUnload);
             Game.Scenes.OnSceneReady.Deregister(OnSceneLoadUnload);
+
+            CameraHelper.RemoveOnPreRender(this);
 
             OnResolutionChanged.Clear();
             OnFullscreenChanged.Clear();
@@ -85,6 +93,10 @@ namespace FieldDay.Rendering {
         #endregion // Events
 
         #region World Camera
+
+        public Camera PrimaryCamera {
+            get { return m_PrimaryCamera; }
+        }
 
         public void SetPrimaryCamera(Camera camera) {
             if (m_PrimaryCamera != null) {
@@ -246,6 +258,9 @@ namespace FieldDay.Rendering {
             }
 
             m_VirtualViewport = UpdateAspectRatioClamping();
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Virtual viewport is {0}", m_VirtualViewport.ToString());
+            }
 
             for(int i = 0; i < m_ClampedViewportCameras.Count; i++) {
                 ref var c = ref m_ClampedViewportCameras[i];
@@ -262,17 +277,10 @@ namespace FieldDay.Rendering {
 
         private void OnApplicationPreRender() {
             CheckIfNeedsFallback();
+        }
 
-            if (m_UsingFallback && !m_FallbackCamera) {
-                GL.PushMatrix();
-                GL.LoadOrtho();
-                GL.Clear(true, true, Color.black, 1);
-                GL.PopMatrix();
-            }
-
-            if (m_HasLetterboxing && m_ClampedViewportCameras.Count > 0) {
-                CameraHelper.RenderLetterboxing(m_VirtualViewport, Color.black);
-            }
+        private void OnApplicationPostRender() {
+            
         }
 
         private Rect UpdateAspectRatioClamping() {
@@ -299,6 +307,63 @@ namespace FieldDay.Rendering {
             return r;
         }
 
+        void ICameraPreRenderCallback.OnCameraPreRender(Camera inCamera, CameraCallbackSource inSource) {
+            if (m_LastLetterboxFrameRendered == Frame.Index) {
+                return;
+            }
+
+            m_LastLetterboxFrameRendered = Frame.Index;
+
+            Graphics.SetRenderTarget(null);
+
+            if (m_UsingFallback && !m_FallbackCamera) {
+                if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                    Log.Trace("[RenderMgr] Clearing backbuffer as fallback");
+                }
+                GL.PushMatrix();
+                GL.LoadOrtho();
+                GL.Clear(true, true, Color.black, 1);
+                GL.PopMatrix();
+            }
+
+            if (m_HasLetterboxing && m_ClampedViewportCameras.Count > 0) {
+                GL.Viewport(new Rect(0, 0, m_LastKnownResolution.width, m_LastKnownResolution.height));
+                if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                    Log.Trace("[RenderMgr] Rendering letterboxing for viewport {0}", m_VirtualViewport.ToString());
+                }
+                CameraHelper.RenderLetterboxing(m_VirtualViewport, Color.black);
+            }
+
+            if (DebugFlags.IsFlagSet(DebuggingFlags.VisualizeEntireScreen)) {
+                GL.PushMatrix();
+                GL.LoadOrtho();
+                GL.Viewport(new Rect(0, 0, m_LastKnownResolution.width, m_LastKnownResolution.height));
+                GL.Clear(true, true, Color.magenta, 1);
+                GL.PopMatrix();
+
+                string debugText = string.Format("Screen Dimensions: {0} ({1})", m_LastKnownResolution, m_LastKnownFullscreen ? "FULLSCREEN" : "NOT FULLSCREEN");
+
+                DebugDraw.AddViewportText(new Vector2(0.5f, 1), new Vector2(0, -8), debugText, Color.white, 0, TextAnchor.UpperCenter, DebugTextStyle.BackgroundDarkOpaque);
+            }
+        }
+
         #endregion // Handlers
+
+        #region Debug
+
+        private enum DebuggingFlags {
+            TraceExecution,
+            VisualizeEntireScreen
+        }
+
+        [EngineMenuFactory]
+        static private DMInfo CreateRenderDebugMenu() {
+            DMInfo info = new DMInfo("RenderMgr", 16);
+            DebugFlags.Menu.AddSingleFrameFlagButton(info, DebuggingFlags.TraceExecution);
+            DebugFlags.Menu.AddFlagToggle(info, DebuggingFlags.VisualizeEntireScreen);
+            return info;
+        }
+
+        #endregion // Debug
     }
 }

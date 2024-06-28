@@ -131,7 +131,7 @@ namespace FieldDay.Debugging {
 
         #endregion // Static API
 
-        [DebugMenuFactory]
+        [EngineMenuFactory]
         static private DMInfo CreateDebugMenu() {
             DMInfo sysMenu = new DMInfo("Logging");
             sysMenu.AddToggle("Enable Crash Handler", () => Enabled, (b) => Enabled = b);

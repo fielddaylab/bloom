@@ -687,6 +687,7 @@ namespace FieldDay {
                 s_TimeProfiling.Clear();
 
                 SetCurrentPhase(GameLoopPhase.DebugUpdate);
+                DebugFlags.HandleFrameRollover();
                 s_PrevUpdateFrameIndex = Frame.Index;
                 Frame.UnscaledDeltaTime = Time.unscaledDeltaTime;
                 DequeueNextValues();

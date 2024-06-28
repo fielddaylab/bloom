@@ -224,6 +224,29 @@ namespace FieldDay.Debugging {
                 }
             }
 
+            // load engine menus from user assemblies
+            DMInfo engineMenu = new DMInfo("Engine", 16);
+            foreach (var pair in Reflect.FindMethods<EngineMenuFactoryAttribute>(ReflectionCache.UserAssemblies, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)) {
+                if (pair.Info.ReturnType != typeof(DMInfo)) {
+                    Log.Error("[DebugConsole] Method '{0}::{1}' does not return DMInfo", pair.Info.DeclaringType.Name, pair.Info.Name);
+                    continue;
+                }
+
+                if (pair.Info.GetParameters().Length != 0) {
+                    Log.Error("[DebugConsole] Method '{0}::{1}' has parameters", pair.Info.DeclaringType.Name, pair.Info.Name);
+                    continue;
+                }
+
+                DMInfo menu = (DMInfo) pair.Info.Invoke(null, Array.Empty<object>());
+
+                if (menu != null) {
+                    DMInfo.MergeSubmenu(engineMenu, menu, true);
+                }
+            }
+
+            DMInfo.SortByLabel(engineMenu);
+
+            DMInfo.MergeSubmenu(s_RootMenu, engineMenu, false);
             DMInfo.SortByLabel(s_RootMenu);
         }
 
@@ -326,4 +349,11 @@ namespace FieldDay.Debugging {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
     public sealed class QuickMenuFactoryAttribute : PreserveAttribute { }
+
+    /// <summary>
+    /// Attribute marking a static method to be invoked to create an engine debug menu.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+    public sealed class EngineMenuFactoryAttribute : PreserveAttribute { }
 }
