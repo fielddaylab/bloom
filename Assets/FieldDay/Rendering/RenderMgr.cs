@@ -3,21 +3,24 @@
 #endif // UNITY_2019_1_OR_NEWER
 
 #if UNITY_2019_1_OR_NEWER && HAS_URP
-#define USE_URP
+#define USING_URP
 #endif // UNITY_2019_1_OR_NEWER
 
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Debugging;
 using UnityEngine;
-using UnityEngine.Rendering;
 
-#if USE_URP
+#if USE_SRP
+using UnityEngine.Rendering;
+#endif // USE_SRP
+
+#if USING_URP
 using UnityEngine.Rendering.Universal;
-#endif // USE_URP
+#endif // USING_URP
 
 namespace FieldDay.Rendering {
-    public sealed class RenderMgr : ICameraPreRenderCallback {
+    public sealed class RenderMgr : ICameraPreRenderCallback, ICameraPreCullCallback, ICameraPostRenderCallback {
         private bool m_LastKnownFullscreen;
         private Resolution m_LastKnownResolution;
 
@@ -34,6 +37,12 @@ namespace FieldDay.Rendering {
         private bool m_ShouldCheckFallback = true;
         private bool m_UsingFallback = false;
         private ushort m_LastLetterboxFrameRendered = Frame.InvalidIndex;
+
+#if DEVELOPMENT
+
+        private LayerMask m_DebugDisableMask;
+
+#endif // DEVELOPMENT
 
         #region Callbacks
 
@@ -53,7 +62,9 @@ namespace FieldDay.Rendering {
             Game.Scenes.OnAnySceneEnabled.Register(OnSceneLoadUnload);
             Game.Scenes.OnSceneReady.Register(OnSceneLoadUnload);
 
+            CameraHelper.AddOnPreCull(this);
             CameraHelper.AddOnPreRender(this);
+            CameraHelper.AddOnPostRender(this);
         }
 
         internal void LateInitialize() {
@@ -84,7 +95,9 @@ namespace FieldDay.Rendering {
             Game.Scenes.OnAnySceneEnabled.Deregister(OnSceneLoadUnload);
             Game.Scenes.OnSceneReady.Deregister(OnSceneLoadUnload);
 
+            CameraHelper.RemoveOnPreCull(this);
             CameraHelper.RemoveOnPreRender(this);
+            CameraHelper.RemoveOnPostRender(this);
 
             OnResolutionChanged.Clear();
             OnFullscreenChanged.Clear();
@@ -181,7 +194,7 @@ namespace FieldDay.Rendering {
             camera.clearFlags = CameraClearFlags.SolidColor | CameraClearFlags.Depth;
             camera.depth = -100;
 
-#if USE_URP
+#if USING_URP
             var data = camera.GetUniversalAdditionalCameraData();
             data.renderType = CameraRenderType.Base;
             data.renderShadows = false;
@@ -191,7 +204,7 @@ namespace FieldDay.Rendering {
             data.requiresColorTexture = false;
             data.stopNaN = false;
             data.dithering = false;
-#endif // USE_URP
+#endif // USING_URP
 
             m_FallbackCamera = camera;
 
@@ -219,7 +232,7 @@ namespace FieldDay.Rendering {
             if (!m_FallbackCamera) {
                 return;
             }
-#if USE_URP
+#if USING_URP
             var data = m_FallbackCamera.GetUniversalAdditionalCameraData();
             if (uiCam != null) {
                 if (!data.cameraStack.Contains(uiCam)) {
@@ -228,7 +241,7 @@ namespace FieldDay.Rendering {
             } else {
                 data.cameraStack.Clear();
             }
-#endif // USE_URP
+#endif // USING_URP
         }
 
         private void OnSceneLoadUnload() {
@@ -307,47 +320,69 @@ namespace FieldDay.Rendering {
             return r;
         }
 
-        void ICameraPreRenderCallback.OnCameraPreRender(Camera inCamera, CameraCallbackSource inSource) {
-            if (m_LastLetterboxFrameRendered == Frame.Index) {
+        #endregion // Handlers
+
+        #region Camera Callbacks
+
+        void ICameraPreCullCallback.OnCameraPreCull(Camera inCamera, CameraCallbackSource inSource) {
+            if (!GameLoop.IsRenderingOrPreparingRendering()) {
                 return;
             }
 
-            m_LastLetterboxFrameRendered = Frame.Index;
+            AttemptRenderLetterboxing();
+        }
 
-            Graphics.SetRenderTarget(null);
-
-            if (m_UsingFallback && !m_FallbackCamera) {
-                if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
-                    Log.Trace("[RenderMgr] Clearing backbuffer as fallback");
-                }
-                GL.PushMatrix();
-                GL.LoadOrtho();
-                GL.Clear(true, true, Color.black, 1);
-                GL.PopMatrix();
-            }
-
-            if (m_HasLetterboxing && m_ClampedViewportCameras.Count > 0) {
-                GL.Viewport(new Rect(0, 0, m_LastKnownResolution.width, m_LastKnownResolution.height));
-                if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
-                    Log.Trace("[RenderMgr] Rendering letterboxing for viewport {0}", m_VirtualViewport.ToString());
-                }
-                CameraHelper.RenderLetterboxing(m_VirtualViewport, Color.black);
-            }
-
-            if (DebugFlags.IsFlagSet(DebuggingFlags.VisualizeEntireScreen)) {
-                GL.PushMatrix();
-                GL.LoadOrtho();
-                GL.Viewport(new Rect(0, 0, m_LastKnownResolution.width, m_LastKnownResolution.height));
-                GL.Clear(true, true, Color.magenta, 1);
-                GL.PopMatrix();
-
-                string debugText = string.Format("Screen Dimensions: {0} ({1})", m_LastKnownResolution, m_LastKnownFullscreen ? "FULLSCREEN" : "NOT FULLSCREEN");
-
-                DebugDraw.AddViewportText(new Vector2(0.5f, 1), new Vector2(0, -8), debugText, Color.white, 0, TextAnchor.UpperCenter, DebugTextStyle.BackgroundDarkOpaque);
+        void ICameraPreRenderCallback.OnCameraPreRender(Camera inCamera, CameraCallbackSource inSource) {
+            if (!GameLoop.IsRendering()) {
+                return;
             }
         }
 
-        #endregion // Handlers
+        private void AttemptRenderLetterboxing() {
+            if (m_LastLetterboxFrameRendered != Frame.Index) {
+                m_LastLetterboxFrameRendered = Frame.Index;
+
+                Graphics.SetRenderTarget(null);
+
+                if (m_UsingFallback && !m_FallbackCamera) {
+                    if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                        Log.Trace("[RenderMgr] Clearing backbuffer as fallback");
+                    }
+                    GL.PushMatrix();
+                    GL.LoadOrtho();
+                    GL.Clear(true, true, Color.black, 1);
+                    GL.PopMatrix();
+                }
+
+                if (m_HasLetterboxing && m_ClampedViewportCameras.Count > 0) {
+                    GL.Viewport(new Rect(0, 0, m_LastKnownResolution.width, m_LastKnownResolution.height));
+                    if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                        Log.Trace("[RenderMgr] Rendering letterboxing for viewport {0}", m_VirtualViewport.ToString());
+                    }
+                    CameraHelper.RenderLetterboxing(m_VirtualViewport, Color.black);
+                }
+
+                if (DebugFlags.IsFlagSet(DebuggingFlags.VisualizeEntireScreen)) {
+                    GL.PushMatrix();
+                    GL.LoadOrtho();
+                    GL.Viewport(new Rect(0, 0, m_LastKnownResolution.width, m_LastKnownResolution.height));
+                    GL.Clear(true, true, Color.magenta, 1);
+                    GL.PopMatrix();
+
+                    string debugText = string.Format("Screen Dimensions: {0} ({1})", m_LastKnownResolution, m_LastKnownFullscreen ? "FULLSCREEN" : "NOT FULLSCREEN");
+
+                    DebugDraw.AddViewportText(new Vector2(0.5f, 1), new Vector2(0, -8), debugText, Color.white, 0, TextAnchor.UpperCenter, DebugTextStyle.BackgroundDarkOpaque);
+                }
+            }
+        }
+
+        void ICameraPostRenderCallback.OnCameraPostRender(Camera inCamera, CameraCallbackSource inSource) {
+            if (!GameLoop.IsRendering()) {
+                return;
+            }
+        }
+
+        #endregion // Camera Callbacks
 
         #region Debug
 
@@ -358,9 +393,79 @@ namespace FieldDay.Rendering {
 
         [EngineMenuFactory]
         static private DMInfo CreateRenderDebugMenu() {
-            DMInfo info = new DMInfo("RenderMgr", 16);
-            DebugFlags.Menu.AddSingleFrameFlagButton(info, DebuggingFlags.TraceExecution);
-            DebugFlags.Menu.AddFlagToggle(info, DebuggingFlags.VisualizeEntireScreen);
+            DMInfo info = new DMInfo("Rendering", 16);
+            DebugFlags.Menu.AddSingleFrameFlagButton(info, "Trace Execution for Frame", DebuggingFlags.TraceExecution);
+            DebugFlags.Menu.AddFlagToggle(info, "Render Debug Info", DebuggingFlags.VisualizeEntireScreen);
+            info.AddDivider();
+
+            DMPredicate requiresCamera = () => Game.Rendering.PrimaryCamera;
+
+            DMInfo postProcessingMenu = new DMInfo("Post Processing", 4);
+#if USING_URP
+            postProcessingMenu.AddToggle("Enabled", () => {
+                if (Game.Rendering.PrimaryCamera) {
+                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
+                    return data.renderPostProcessing;
+                } else {
+                    return false;
+                }
+            }, (b) => {
+                if (Game.Rendering.PrimaryCamera) {
+                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
+                    data.renderPostProcessing = b;
+                }
+            }, requiresCamera);
+#endif // USING_URP
+
+            info.AddSubmenu(postProcessingMenu);
+
+            DMInfo antialiasingSettings = new DMInfo("Antialiasing");
+#if USING_URP
+            var renderPipeline = UniversalRenderPipeline.asset;
+            antialiasingSettings.AddSlider("Antialiasing", () => {
+                if (Game.Rendering.PrimaryCamera) {
+                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
+                    return (int) data.antialiasing;
+                } else {
+                    return 0;
+                }
+            }, (f) => {
+                if (Game.Rendering.PrimaryCamera) {
+                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
+                    data.antialiasing = (AntialiasingMode) ((int) f);
+                }
+            }, 0, 2, 1, (f) => ((AntialiasingMode) (int) f).ToString(), requiresCamera);
+
+            antialiasingSettings.AddSlider("Quality", () => {
+                if (Game.Rendering.PrimaryCamera) {
+                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
+                    return (int) data.antialiasingQuality;
+                } else {
+                    return 0;
+                }
+            }, (f) => {
+                if (Game.Rendering.PrimaryCamera) {
+                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
+                    data.antialiasingQuality = (AntialiasingQuality) ((int) f);
+                }
+            }, 0, 2, 1, (f) => ((AntialiasingQuality) (int) f).ToString(), () => {
+                if (Game.Rendering.PrimaryCamera) {
+                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
+                    return data.antialiasing == AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                } else {
+                    return false;
+                }
+            }, 1);
+#else
+
+#endif // USING_URP
+
+            info.AddSubmenu(antialiasingSettings);
+
+            DMInfo qualitySettings = new DMInfo("Quality Settings");
+
+            info.AddSubmenu(qualitySettings);
+
             return info;
         }
 

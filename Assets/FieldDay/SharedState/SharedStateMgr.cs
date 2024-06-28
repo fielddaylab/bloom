@@ -138,6 +138,24 @@ namespace FieldDay.SharedState {
         }
 
         /// <summary>
+        /// Returns if the shared state of the given type exists.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has(Type type) {
+            int index = StateIndex.Get(type);
+            return index < m_StateMap.Length ? m_StateMap[index] != null : false;
+        }
+
+        /// <summary>
+        /// Returns if the shared state of the given type exists.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has<T>() where T : class, ISharedState {
+            int index = StateIndex.Get<T>();
+            return index < m_StateMap.Length ? m_StateMap[index] != null : false;
+        }
+
+        /// <summary>
         /// Looks up all shared states that pass the given predicate.
         /// </summary>
         public int LookupAll(Predicate<ISharedState> predicate, List<ISharedState> sharedStates) {

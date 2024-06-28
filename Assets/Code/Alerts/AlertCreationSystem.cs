@@ -96,7 +96,7 @@ namespace Zavala.Scripting
                     alert.AlertBanner.sprite = GetAlertBannerSprite(peekEvent.Alert, m_AlertAssets);
                 }
 
-                ZavalaGame.Events.Dispatch(GameEvents.AlertAppeared, EvtArgs.Box(new Data.AlertData(peekEvent.Alert, peekEvent.TileIndex, node.FullName)));
+                ZavalaGame.Events.Dispatch(GameEvents.AlertAppeared, EvtArgs.Box(new Data.AlertData(component, peekEvent.Alert, peekEvent.TileIndex, node.FullName)));
                 Log.Debug("[Alerts] Created new alert!" + node.FullName);
                 component.DisplayingEvent = alert;
             }

@@ -122,7 +122,6 @@ namespace Zavala {
         public WaterGroupRange[] WaterGroups = Array.Empty<WaterGroupRange>();
 
         [Header("Visuals")]
-        public LeafAsset LeafScript;
         public Color32 OutlineColor;
 
         [Header("Audio")]

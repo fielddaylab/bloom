@@ -874,6 +874,14 @@ namespace FieldDay {
         }
 
         /// <summary>
+        /// Is the game loop currently executing rendering steps.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool IsRenderingOrPreparingRendering() {
+            return PhaseInRange(s_CurrentPhase, GameLoopPhase.ApplicationPreRender, GameLoopPhase.PostRender);
+        }
+
+        /// <summary>
         /// Is the game loop currently executing the given phase.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

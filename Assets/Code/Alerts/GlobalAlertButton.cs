@@ -62,7 +62,7 @@ namespace Zavala.UI {
 
             Log.Msg("[GlobalAlertButton] Popped actor {0}", actor.gameObject.name);
             if (actor.QueuedEvents.TryPeekFront(out EventActorQueuedEvent evt)) {
-                ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertClicked, EvtArgs.Box(new AlertData(evt)));
+                ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertClicked, EvtArgs.Box(new AlertData(actor, evt)));
                 actor.QueuedEvents.MoveFrontToBackWhere(e => e.Alert == EventActorAlertType.Dialogue);
             }
 
@@ -91,7 +91,7 @@ namespace Zavala.UI {
                 m_Routine.Replace(GlobalAlertUtility.AppearRoutine(this));
                 SimTimeInput.SetPaused(true, SimPauseFlags.PendingGlobalAlert);
                 if (QueuedActors.TryPeekFront(out actor) && actor.QueuedEvents.TryPeekFront(out evt)) {
-                    ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertAppeared, EvtArgs.Box(new AlertData(evt)));
+                    ZavalaGame.Events.Dispatch(GameEvents.GlobalAlertAppeared, EvtArgs.Box(new AlertData(actor, evt)));
                 }
                 // UIAlertUtility.SetAlertFaded(QueuedActors.PeekFront().DisplayingEvent, true);
             } else {

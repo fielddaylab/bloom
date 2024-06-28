@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using BeauPools;
 using BeauRoutine;
 using BeauUtil;
+using BeauUtil.Debugger;
+using FieldDay.Scenes;
 using FieldDay.SharedState;
 using Leaf;
 using Leaf.Runtime;
@@ -10,7 +12,7 @@ using UnityEngine;
 
 namespace FieldDay.Scripting {
     [DisallowMultipleComponent]
-    public sealed class ScriptDatabase : SharedStateComponent {
+    public sealed class ScriptDatabase : SharedStateComponent, ISceneLoadDependency, IRegistrationCallbacks {
         // loaded
         public HashSet<ScriptNodePackage> RegisteredPackages = new HashSet<ScriptNodePackage>(8);
         public Dictionary<LeafAsset, ScriptNodePackage> LoadedSourceAssetMap = new Dictionary<LeafAsset, ScriptNodePackage>(CompareUtils.DefaultEquals<LeafAsset>());
@@ -25,6 +27,21 @@ namespace FieldDay.Scripting {
         
         // unloading
         public RingBuffer<LeafAsset> UnloadQueue = new RingBuffer<LeafAsset>();
+
+        public bool IsLoaded(SceneLoadPhase phase) {
+            if ((phase & SceneLoadPhase.BeforeReady) != 0) {
+                return LoadQueue.Count == 0 && !CurrentLoadHandle.IsRunning();
+            }
+            return !CurrentLoadHandle.IsRunning();
+        }
+
+        void IRegistrationCallbacks.OnDeregister() {
+            Game.Scenes?.DeregisterLoadDependency(this);
+        }
+
+        void IRegistrationCallbacks.OnRegister() {
+            Game.Scenes.RegisterLoadDependency(this);
+        }
     }
 
     static public class ScriptDatabaseUtility {
@@ -42,6 +59,8 @@ namespace FieldDay.Scripting {
                 return;
             }
 
+            Log.Trace("[ScriptDatabase] Queueing script load '{0}'", asset.name);
+
             db.LoadQueue.PushBack(asset);
         }
 
@@ -52,6 +71,8 @@ namespace FieldDay.Scripting {
                 package.SetActive(true);
                 return;
             }
+
+            Log.Trace("[ScriptDatabase] Loading script '{0}' immediately", asset.name);
 
             CancelCurrentLoad(db, asset);
             db.LoadQueue.FastRemove(asset);
@@ -68,6 +89,8 @@ namespace FieldDay.Scripting {
             if (db.LoadedSourceAssetMap.TryGetValue(asset, out ScriptNodePackage package)) {
                 if (package.SetActive(false)) {
                     db.UnloadQueue.PushBack(asset);
+
+                    Log.Trace("[ScriptDatabase] Queueing script unload '{0}'", asset.name);
                 }
             }
         }

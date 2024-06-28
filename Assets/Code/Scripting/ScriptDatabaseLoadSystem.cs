@@ -1,6 +1,7 @@
 using System.Collections;
 using BeauRoutine;
 using BeauUtil;
+using BeauUtil.Debugger;
 using FieldDay.Systems;
 using Leaf;
 
@@ -39,6 +40,7 @@ namespace FieldDay.Scripting {
         static private bool StartLoadingOne(ScriptDatabase db) {
             if (db.LoadQueue.TryPopFront(out LeafAsset asset)) {
                 db.CurrentLoadAsset = asset;
+                Log.Trace("[ScriptDatabase] Processing '{0}' from queue...", asset.name);
                 db.CurrentLoadPackage = LeafAsset.CompileAsync(asset, ScriptNodePackage.Parser.Instance, out IEnumerator loader);
                 db.CurrentLoadHandle = Async.Schedule(loader, AsyncFlags.HighPriority);
                 return true;

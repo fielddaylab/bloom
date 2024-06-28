@@ -51,6 +51,14 @@ namespace FieldDay.Rendering {
             }
         }
 
+        public bool IsRenderingLayersAny(LayerMask mask) {
+            if (m_HideDepth > 0) {
+                return (m_QueuedMask.value & mask.value) != 0;
+            } else {
+                return (m_Camera.cullingMask & mask.value) != 0;
+            }
+        }
+
         #endregion // Masks
 
         #region All

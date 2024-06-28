@@ -33,6 +33,9 @@ static public class LayerMasks {
     // Layer 10: Blueprints
     public const int Blueprints_Index = 10;
     public const int Blueprints_Mask = 1024;
+    // Layer 11: WorldEffects
+    public const int WorldEffects_Index = 11;
+    public const int WorldEffects_Mask = 2048;
     // Layer 31: WorldUI
     public const int WorldUI_Index = 31;
     public const int WorldUI_Mask = -2147483648;

@@ -178,6 +178,7 @@ namespace FieldDay.Scenes {
 
         // dependencies
         private RingBuffer<ISceneLoadDependency> m_Dependencies = new RingBuffer<ISceneLoadDependency>(8, RingBufferMode.Expand);
+        private RingBuffer<AsyncHandle> m_DependencyHandles = new RingBuffer<AsyncHandle>(8, RingBufferMode.Expand);
 
         // temp queues
         private RingBuffer<UninitializedSceneCallback> m_TempOnLateEnableQueue = new RingBuffer<UninitializedSceneCallback>(4, RingBufferMode.Expand);
@@ -1267,7 +1268,7 @@ namespace FieldDay.Scenes {
 
                 // dependencies
 
-                while(!AreDependenciesAndStreamingLoaded()) {
+                while(!AreDependenciesAndStreamingLoaded(SceneLoadPhase.BeforeLateEnable)) {
                     yield return null;
                 }
 
@@ -1312,7 +1313,7 @@ namespace FieldDay.Scenes {
 
                 // one more check for dependencies
 
-                while (!AreDependenciesAndStreamingLoaded()) {
+                while (!AreDependenciesAndStreamingLoaded(SceneLoadPhase.BeforeReady)) {
                     yield return null;
                 }
 
@@ -1347,11 +1348,18 @@ namespace FieldDay.Scenes {
 
         #region Dependencies
 
-        private bool AreDependenciesAndStreamingLoaded() {
+        private bool AreDependenciesAndStreamingLoaded(SceneLoadPhase phase) {
             for(int i = 0; i < m_Dependencies.Count; i++) {
-                if (!m_Dependencies[i].IsLoaded()) {
+                if (!m_Dependencies[i].IsLoaded(phase)) {
                     return false;
                 }
+            }
+
+            while(m_DependencyHandles.TryPeekFront(out AsyncHandle handle)) {
+                if (handle.IsRunning()) {
+                    return false;
+                }
+                m_DependencyHandles.PopFront();
             }
 
             if (Streaming.IsLoading()) {
@@ -1364,11 +1372,18 @@ namespace FieldDay.Scenes {
         /// <summary>
         /// Returns if all load dependencies loaded.
         /// </summary>
-        public bool AreLoadDependenciesLoaded() {
+        public bool AreLoadDependenciesLoaded(SceneLoadPhase phase = SceneLoadPhase.Any) {
             for (int i = 0; i < m_Dependencies.Count; i++) {
-                if (!m_Dependencies[i].IsLoaded()) {
+                if (!m_Dependencies[i].IsLoaded(phase)) {
                     return false;
                 }
+            }
+
+            while (m_DependencyHandles.TryPeekFront(out AsyncHandle handle)) {
+                if (handle.IsRunning()) {
+                    return false;
+                }
+                m_DependencyHandles.PopFront();
             }
 
             if (Streaming.IsLoading()) {
@@ -1390,12 +1405,22 @@ namespace FieldDay.Scenes {
         }
 
         /// <summary>
+        /// Registers a dependency, which must be completed before scenes can be late-enabled and readied.
+        /// </summary>
+        public void RegisterLoadDependency(AsyncHandle loadDependency) {
+            if (loadDependency.IsRunning() && !m_DependencyHandles.Contains(loadDependency)) {
+                m_DependencyHandles.PushBack(loadDependency);
+                Log.Msg("[SceneMgr] Registered scene load dependency async handle");
+            }
+        }
+
+        /// <summary>
         /// Deregisters a load dependency.
         /// </summary>
         public void DeregisterLoadDependency(ISceneLoadDependency loadDependency) {
             Assert.NotNull(loadDependency);
             if (m_Dependencies.FastRemove(loadDependency)) {
-                Log.Msg("[SceneMgr] Deregistered scene load dependency '{0}'", AssetUtility.NameOf(loadDependency));
+                Log.Msg("[SceneMgr] Deregistered scene load dependency async handle");
             }
         }
 
@@ -1451,6 +1476,16 @@ namespace FieldDay.Scenes {
     /// Scene loading dependency.
     /// </summary>
     public interface ISceneLoadDependency {
-        bool IsLoaded();
+        bool IsLoaded(SceneLoadPhase loadPhase);
+    }
+
+    /// <summary>
+    /// Scene load phase.
+    /// </summary>
+    [Flags]
+    public enum SceneLoadPhase {
+        Any = 0,
+        BeforeLateEnable = 0x1,
+        BeforeReady = 0x2,
     }
 }

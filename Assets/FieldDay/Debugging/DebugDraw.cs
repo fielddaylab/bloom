@@ -228,9 +228,9 @@ namespace FieldDay.Debugging {
 
             EnsureGUIResources();
 
-            Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Camera.main;
+            Camera mainCam = s_MainCameraOverride ? s_MainCameraOverride : Game.Rendering.PrimaryCamera;
             if (!mainCam) {
-                mainCam = Game.Rendering.PrimaryCamera;
+                mainCam = Camera.main;
             }
             if (mainCam) {
                 RenderText(deltaTime, mainCam, s_CategoryMask, !s_PauseAll);
@@ -793,7 +793,7 @@ namespace FieldDay.Debugging {
 
         [EngineMenuFactory]
         static private DMInfo CreateDrawingEngineMenu() {
-            DMInfo info = new DMInfo("DebugDraw", 4);
+            DMInfo info = new DMInfo("Debug Drawing", 4);
             AddRenderToggle(info, null);
             return info;
         }

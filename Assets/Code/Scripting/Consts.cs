@@ -20,11 +20,11 @@ namespace Zavala
             "Hillside", "Forest", "Prairie", "Wetland", "Urban"
         };
         public static readonly string[] BuildingType = new string[] {
-            "null", "GrainFarm", "DairyFarm", "City", "Road", "Digester", "Storage", "Skimmer",
-            "Obstacle", "ExportDepot", "TollBooth", "TempObstruction", "SkimmerLocation", "DigesterBroken"
+            "Empty", "GrainFarm", "DairyFarm", "City", "Road", "Processor", "Storage", "Skimmer",
+            "Obstacle", "ExportDepot", "TollBooth", "Obstacle", "SkimmerLocation", "ProcessorBroken"
         };
         public static readonly string[] BuildTool = new string[] {
-            "None", "Destroy", "Road", "Storage", "Digester", "Skimmer"
+            "None", "Destroy", "Road", "Storage", "Processor", "Skimmer"
         };
         public static readonly string[] AdvisorType = new string[] {
             "None", "Ecology", "Economy"
@@ -38,6 +38,11 @@ namespace Zavala
 
         public static readonly string[] TileDirection = new string[] {
             "Self", "SW", "S", "SE", "NE", "N", "NW"
+        };
+
+        public static readonly string[] AlertType = new string[] {
+            "null", "Bloom", "ExcessRunoff", "DieOff", "CritImbalance", "UnusedProcessor", "DecliningPop",
+            "SellingLoss", "Disconnected", "Dialogue", "Global"
         };
 
         public static readonly string[] ActionType = new string[] {

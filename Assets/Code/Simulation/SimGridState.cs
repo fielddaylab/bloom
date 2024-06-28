@@ -79,7 +79,7 @@ namespace Zavala.Sim {
             Game.Scenes.RegisterLoadDependency(this);
         }
 
-        bool ISceneLoadDependency.IsLoaded() {
+        bool ISceneLoadDependency.IsLoaded(SceneLoadPhase phase) {
             return !LoadRoutine;
         }
 
@@ -312,9 +312,9 @@ namespace Zavala.Sim {
             amb.QueuedUpdate = true;
 
             // load script
-            if (asset.LeafScript != null) {
-                ScriptDatabaseUtility.LoadNow(ScriptUtility.Database, asset.LeafScript);
-            }
+            //if (asset.LeafScript != null) {
+            //    ScriptDatabaseUtility.LoadNow(ScriptUtility.Database, asset.LeafScript);
+            //}
 
             RegenRegionInfo(grid, regionIndex, subRegion);
             worldState.MaxHeight = HexVector.ToWorld(new HexVector(), grid.GlobalMaxHeight, worldState.WorldSpace).y;

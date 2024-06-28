@@ -11,6 +11,7 @@ using BeauUtil.Debugger;
 using FieldDay.Debugging;
 using Zavala.Data;
 using FieldDay.Scenes;
+using BeauRoutine;
 
 namespace Zavala.Cards
 {
@@ -83,9 +84,11 @@ namespace Zavala.Cards
             CardMap[1] = new List<StringHash32>();
             CardMap[2] = new List<StringHash32>();
             CardMap[3] = new List<StringHash32>();
+            yield return null;
 
             // Populate Card data
-            CardsUtility.PopulateCards(this);
+            var populate = Async.Schedule(CardsUtility.PopulateCards(this), AsyncFlags.HighPriority | AsyncFlags.MainThreadOnly);
+            Game.Scenes.RegisterLoadDependency(populate);
         }
 
         unsafe void ISaveStateChunkObject.Read(object self, ref ByteReader reader, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
@@ -128,7 +131,7 @@ namespace Zavala.Cards
 
         public static readonly EMap<AdvisorType, PolicyType[]> AdvisorPolicyMap;
 
-        static public void PopulateCards(CardsState cardsState) {
+        static public IEnumerator PopulateCards(CardsState cardsState) {
             List<string> cardStrings = TextIO.TextAssetToList(cardsState.CardDefs, "::");
 
             foreach (string str in cardStrings) {
@@ -147,6 +150,7 @@ namespace Zavala.Cards
                 catch (Exception e) {
                     Debug.Log("[CardUtility] Parsing error! " + e.Message);
                 }
+                yield return null;
             }
         }
 
@@ -234,18 +238,6 @@ namespace Zavala.Cards
                 if (state.UnlockedCards.Contains(cardID)) {
                     allOptions.Add(state.AllCards[cardID]);
                 }
-            }
-
-            return allOptions;
-        }
-
-        static public List<CardData> GetAllOptions(CardsState state, PolicyType type) {
-            List<CardData> allOptions = new List<CardData>();
-
-            List<StringHash32> cardIDs = state.CardMap[type];
-
-            foreach (SerializedHash32 cardID in cardIDs) {
-                allOptions.Add(state.AllCards[cardID]);
             }
 
             return allOptions;
