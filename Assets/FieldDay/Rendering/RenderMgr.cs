@@ -6,6 +6,7 @@
 #define USING_URP
 #endif // UNITY_2019_1_OR_NEWER
 
+using System.Collections.Generic;
 using BeauUtil;
 using BeauUtil.Debugger;
 using FieldDay.Debugging;
@@ -21,6 +22,103 @@ using UnityEngine.Rendering.Universal;
 
 namespace FieldDay.Rendering {
     public sealed class RenderMgr : ICameraPreRenderCallback, ICameraPreCullCallback, ICameraPostRenderCallback {
+#if DEVELOPMENT
+
+        private struct CameraRestoreData {
+            public int CameraId;
+
+            public bool PostProcessing;
+            public float FOV;
+            public float Ortho;
+            public int CullingMask;
+
+#if USING_URP
+            public AntialiasingMode AA;
+            public AntialiasingQuality AAQuality;
+#endif // USING_URP
+
+            public void Apply(Camera camera) {
+                camera.cullingMask = CullingMask;
+                camera.orthographicSize = Ortho;
+                camera.fieldOfView = FOV;
+
+#if USING_URP
+                var data = camera.GetUniversalAdditionalCameraData();
+                data.renderPostProcessing = PostProcessing;
+
+                data.antialiasing = AA;
+                data.antialiasingQuality = AAQuality;
+#endif // USING_URP
+            }
+
+            public void CreateFrom(Camera camera) {
+                CameraId = camera.GetInstanceID();
+
+                CullingMask = camera.cullingMask;
+                Ortho = camera.orthographicSize;
+                FOV = camera.fieldOfView;
+
+#if USING_URP
+                var data = camera.GetUniversalAdditionalCameraData();
+                PostProcessing = data.renderPostProcessing;
+
+                AA = data.antialiasing;
+                AAQuality = data.antialiasingQuality;
+#endif // USING_URP
+            }
+        }
+
+        private struct DebugCameraAdjustments {
+            public bool DisablePostProcessing;
+            public int DisableLayers;
+            public int ForceLayers;
+            public float? AdjustFOV;
+            public float? AdjustOrthoSize;
+
+#if USING_URP
+            public AntialiasingMode? AA;
+            public AntialiasingQuality? AAQuality;
+#endif // USING_URP
+
+            public bool CachedActive;
+
+            public bool CheckIsActive() {
+#if USING_URP
+                if (AA.HasValue || AAQuality.HasValue) {
+                    return true;
+                }
+#endif // USING_URP
+                return DisablePostProcessing || DisableLayers != 0 || ForceLayers != 0
+                    || AdjustFOV.HasValue || AdjustOrthoSize.HasValue;
+            }
+
+            public void Apply(Camera camera) {
+                camera.cullingMask = (camera.cullingMask | ForceLayers) & ~DisableLayers;
+                if (AdjustFOV.HasValue) {
+                    camera.fieldOfView = AdjustFOV.Value;
+                }
+                if (AdjustOrthoSize.HasValue) {
+                    camera.orthographicSize = AdjustOrthoSize.Value;
+                }
+
+#if USING_URP
+                var data = camera.GetUniversalAdditionalCameraData();
+                if (DisablePostProcessing) {
+                    data.renderPostProcessing = false;
+                }
+
+                if (AA.HasValue) {
+                    data.antialiasing = AA.Value;
+                }
+                if (AAQuality.HasValue) {
+                    data.antialiasingQuality = AAQuality.Value;
+                }
+#endif // USING_URP
+            }
+        }
+
+#endif // DEVELOPMENT
+
         private bool m_LastKnownFullscreen;
         private Resolution m_LastKnownResolution;
 
@@ -40,7 +138,12 @@ namespace FieldDay.Rendering {
 
 #if DEVELOPMENT
 
-        private LayerMask m_DebugDisableMask;
+        private CameraRestoreData m_DebugPrimaryCameraRestore;
+        private DebugCameraAdjustments m_DebugPrimaryCameraAdjustments;
+
+        private void CacheDebugCameraAdjustments() {
+            m_DebugPrimaryCameraAdjustments.CachedActive = m_DebugPrimaryCameraAdjustments.CheckIsActive();
+        }
 
 #endif // DEVELOPMENT
 
@@ -325,17 +428,39 @@ namespace FieldDay.Rendering {
         #region Camera Callbacks
 
         void ICameraPreCullCallback.OnCameraPreCull(Camera inCamera, CameraCallbackSource inSource) {
-            if (!GameLoop.IsRenderingOrPreparingRendering()) {
+            if (!GameLoop.IsRenderingOrPreparingRendering() || !CameraUtility.IsGameCamera(inCamera)) {
                 return;
             }
 
             AttemptRenderLetterboxing();
+
+#if DEVELOPMENT
+            if (m_DebugPrimaryCameraAdjustments.CachedActive && ReferenceEquals(inCamera, m_PrimaryCamera)) {
+                if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                    Log.Trace("[RenderMgr] Applying debug changes to primary camera");
+                }
+                m_DebugPrimaryCameraRestore.CreateFrom(inCamera);
+                m_DebugPrimaryCameraAdjustments.Apply(inCamera);
+            }
+#endif // DEVELOPMENT
+
+#if DEVELOPMENT
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Camera '{0}' pre-cull", inCamera.name);
+            }
+#endif // DEVELOPMENT
         }
 
         void ICameraPreRenderCallback.OnCameraPreRender(Camera inCamera, CameraCallbackSource inSource) {
-            if (!GameLoop.IsRendering()) {
+            if (!GameLoop.IsRendering() || !CameraUtility.IsGameCamera(inCamera)) {
                 return;
             }
+
+#if DEVELOPMENT
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Camera '{0}' pre-render", inCamera.name);
+            }
+#endif // DEVELOPMENT
         }
 
         private void AttemptRenderLetterboxing() {
@@ -377,9 +502,27 @@ namespace FieldDay.Rendering {
         }
 
         void ICameraPostRenderCallback.OnCameraPostRender(Camera inCamera, CameraCallbackSource inSource) {
-            if (!GameLoop.IsRendering()) {
+            if (!GameLoop.IsRendering() || !CameraUtility.IsGameCamera(inCamera)) {
                 return;
             }
+
+#if DEVELOPMENT
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Camera '{0}' post-render", inCamera.name);
+            }
+#endif // DEVELOPMENT
+
+#if DEVELOPMENT
+
+            if (m_DebugPrimaryCameraRestore.CameraId == inCamera.GetInstanceID()) {
+                m_DebugPrimaryCameraRestore.Apply(inCamera);
+                m_DebugPrimaryCameraRestore = default;
+                if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                    Log.Trace("[RenderMgr] Undoing debug changes to primary camera");
+                }
+            }
+
+#endif // DEVELOPMENT
         }
 
         #endregion // Camera Callbacks
@@ -391,6 +534,8 @@ namespace FieldDay.Rendering {
             VisualizeEntireScreen
         }
 
+#if DEVELOPMENT
+
         [EngineMenuFactory]
         static private DMInfo CreateRenderDebugMenu() {
             DMInfo info = new DMInfo("Rendering", 16);
@@ -398,64 +543,95 @@ namespace FieldDay.Rendering {
             DebugFlags.Menu.AddFlagToggle(info, "Render Debug Info", DebuggingFlags.VisualizeEntireScreen);
             info.AddDivider();
 
-            DMPredicate requiresCamera = () => Game.Rendering.PrimaryCamera;
-
             DMInfo postProcessingMenu = new DMInfo("Post Processing", 4);
-#if USING_URP
-            postProcessingMenu.AddToggle("Enabled", () => {
-                if (Game.Rendering.PrimaryCamera) {
-                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
-                    return data.renderPostProcessing;
-                } else {
-                    return false;
-                }
-            }, (b) => {
-                if (Game.Rendering.PrimaryCamera) {
-                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
-                    data.renderPostProcessing = b;
-                }
-            }, requiresCamera);
-#endif // USING_URP
+            postProcessingMenu.AddToggle("Suppress Post-Processing", () => Game.Rendering.m_DebugPrimaryCameraAdjustments.DisablePostProcessing, (b) => {
+                Game.Rendering.m_DebugPrimaryCameraAdjustments.DisablePostProcessing = b;
+                Game.Rendering.CacheDebugCameraAdjustments();
+            });
 
             info.AddSubmenu(postProcessingMenu);
 
+            DMInfo renderLayerMenu = new DMInfo("Rendering Layers");
+            renderLayerMenu.MinimumWidth = 250;
+
+            for (int i = 0; i < 32; i++) {
+                string layerName = LayerMask.LayerToName(i);
+
+                if (string.IsNullOrEmpty(layerName)) {
+                    continue;
+                }
+
+                int idx = i;
+                renderLayerMenu.AddSlider(layerName, () => {
+                    if (Bits.Contains(Game.Rendering.m_DebugPrimaryCameraAdjustments.ForceLayers, idx)) {
+                        return 2;
+                    } else if (Bits.Contains(Game.Rendering.m_DebugPrimaryCameraAdjustments.DisableLayers, idx)) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }, (f) => {
+                    Bits.Set(ref Game.Rendering.m_DebugPrimaryCameraAdjustments.ForceLayers, idx, f == 2);
+                    Bits.Set(ref Game.Rendering.m_DebugPrimaryCameraAdjustments.DisableLayers, idx, f == 1);
+                    Game.Rendering.CacheDebugCameraAdjustments();
+                }, 0, 2, 1, (f) => {
+                    if (f == 0) {
+                        return "(Scene Default)";
+                    } else if (f == 1) {
+                        return "Disabled";
+                    } else {
+                        return "Always";
+                    }
+                });
+            }
+
+            info.AddSubmenu(renderLayerMenu);
+
             DMInfo antialiasingSettings = new DMInfo("Antialiasing");
+            antialiasingSettings.MinimumWidth = 250;
 #if USING_URP
             var renderPipeline = UniversalRenderPipeline.asset;
             antialiasingSettings.AddSlider("Antialiasing", () => {
-                if (Game.Rendering.PrimaryCamera) {
-                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
-                    return (int) data.antialiasing;
+                var aa = Game.Rendering.m_DebugPrimaryCameraAdjustments.AA;
+                if (aa.HasValue) {
+                    return 1 + (int) aa.Value;
                 } else {
                     return 0;
                 }
             }, (f) => {
-                if (Game.Rendering.PrimaryCamera) {
-                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
-                    data.antialiasing = (AntialiasingMode) ((int) f);
+                int m = (int) f;
+                AntialiasingMode? mode = m == 0 ? null : (AntialiasingMode) (m - 1);
+                Game.Rendering.m_DebugPrimaryCameraAdjustments.AA = mode;
+                Game.Rendering.CacheDebugCameraAdjustments();
+            }, 0, 3, 1, (f) => {
+                int m = (int) f;
+                if (m == 0) {
+                    return "(Scene Default)";
+                } else {
+                    return ((AntialiasingMode) (m - 1)).ToString();
                 }
-            }, 0, 2, 1, (f) => ((AntialiasingMode) (int) f).ToString(), requiresCamera);
+            });
 
             antialiasingSettings.AddSlider("Quality", () => {
-                if (Game.Rendering.PrimaryCamera) {
-                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
-                    return (int) data.antialiasingQuality;
+                var quality = Game.Rendering.m_DebugPrimaryCameraAdjustments.AAQuality;
+                if (quality.HasValue) {
+                    return 1 + (int) quality.Value;
                 } else {
                     return 0;
                 }
             }, (f) => {
-                if (Game.Rendering.PrimaryCamera) {
-                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
-                    data.antialiasingQuality = (AntialiasingQuality) ((int) f);
-                }
-            }, 0, 2, 1, (f) => ((AntialiasingQuality) (int) f).ToString(), () => {
-                if (Game.Rendering.PrimaryCamera) {
-                    var data = Game.Rendering.PrimaryCamera.GetUniversalAdditionalCameraData();
-                    return data.antialiasing == AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                int q = (int) f;
+                AntialiasingQuality? quality = q == 0 ? null : (AntialiasingQuality) (q - 1);
+                Game.Rendering.m_DebugPrimaryCameraAdjustments.AAQuality = quality;
+                Game.Rendering.CacheDebugCameraAdjustments();
+            }, 0, 3, 1, (f) => {
+                int m = (int) f;
+                if (m == 0) {
+                    return "(Scene Default)";
                 } else {
-                    return false;
+                    return ((AntialiasingQuality) (m - 1)).ToString();
                 }
-            }, 1);
+            }, null, 1);
 #else
 
 #endif // USING_URP
@@ -468,6 +644,8 @@ namespace FieldDay.Rendering {
 
             return info;
         }
+
+#endif // DEVELOPMENT
 
         #endregion // Debug
     }

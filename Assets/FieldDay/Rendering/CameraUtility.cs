@@ -3,6 +3,7 @@
 #endif // UNITY_2019_1_OR_NEWER
 
 using System;
+using System.Runtime.CompilerServices;
 using BeauUtil;
 using UnityEngine;
 
@@ -92,6 +93,21 @@ namespace FieldDay.Rendering {
 #endif // USE_URP
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns if the given camera is a game camera.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool IsGameCamera(Camera camera) {
+            switch (camera.cameraType) {
+                case CameraType.SceneView:
+                case CameraType.Preview:
+                    return false;
+
+                default:
+                    return true;
+            }
         }
     }
 }

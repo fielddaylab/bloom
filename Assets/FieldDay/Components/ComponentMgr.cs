@@ -194,6 +194,22 @@ namespace FieldDay.Components
         /// <summary>
         /// Enumerates all the components of the given type.
         /// </summary>
+        public int ComponentsOfType(Type componentType, ICollection<IComponentData> componentOutput)
+        {
+            int index = ComponentIndex.Get(componentType);
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components != null) {
+                foreach(var c in components) {
+                    componentOutput.Add(c);
+                }
+                return components.Count;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Enumerates all the components of the given type.
+        /// </summary>
         public ComponentIterator<T> ComponentsOfType<T>() where T : class, IComponentData
         {
             int index = ComponentIndex.Get<T>();
@@ -203,6 +219,22 @@ namespace FieldDay.Components
                 return new ComponentIterator<T>(components);
             }
             return default;
+        }
+
+        /// <summary>
+        /// Enumerates all the components of the given type.
+        /// </summary>
+        public int ComponentsOfType<T>(ICollection<T> componentOutput) where T : class, IComponentData
+        {
+            int index = ComponentIndex.Get<T>();
+            List<IComponentData> components = m_ComponentLists[index];
+            if (components != null) {
+                foreach(var c in components) {
+                    componentOutput.Add((T) c);
+                }
+                return components.Count;
+            }
+            return 0;
         }
 
         /// <summary>
