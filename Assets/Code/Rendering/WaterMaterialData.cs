@@ -26,13 +26,13 @@ namespace Zavala.World {
         }
 
         public void SetShaderMode(bool highQuality) {
-            //if (highQuality) {
-            //    TopMaterial.ReplaceShader(FancyShader);
-            //    TopDeepMaterial.ReplaceShader(FancyShader);
-            //} else {
-            //    TopMaterial.ReplaceShader(SimpleShader);
-            //    TopDeepMaterial.ReplaceShader(SimpleShader);
-            //}
+            if (highQuality) {
+                TopMaterial.ReplaceShader(FancyShader);
+                TopDeepMaterial.ReplaceShader(FancyShader);
+            } else {
+                TopMaterial.ReplaceShader(SimpleShader);
+                TopDeepMaterial.ReplaceShader(SimpleShader);
+            }
         }
 
     }

@@ -8,13 +8,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WaterTop01_Deep_Dirty
-  m_Shader: {fileID: -6465566751694194690, guid: 27b042674da390c46a1ff4cc2317d5f2, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 9632bc2e27e39aa4a84db05a031e1ad6, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 1999
+  m_CustomRenderQueue: 2999
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:

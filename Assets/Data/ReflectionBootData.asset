@@ -165,7 +165,7 @@ MonoBehaviour:
     LookupInherit: 0
     Assemblies:
     - AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      TypeCount: 11
+      TypeCount: 12
     - AssemblyName: FieldDay.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       TypeCount: 1
     Types:
@@ -190,6 +190,10 @@ MonoBehaviour:
       MemberCount: 1
       OverloadCount: 0
     - TypeName: Zavala.World.BorderRenderState
+      Self: 0
+      MemberCount: 1
+      OverloadCount: 0
+    - TypeName: Zavala.World.SimWorldCamera
       Self: 0
       MemberCount: 1
       OverloadCount: 0
@@ -229,6 +233,8 @@ MonoBehaviour:
     - MemberName: PolicyUnlockDebugMenu
       Type: 8
     - MemberName: DebugMenu
+      Type: 8
+    - MemberName: CreateCameraDebug
       Type: 8
     - MemberName: BudgetDebugMenu
       Type: 8

@@ -368,12 +368,18 @@ namespace FieldDay.Rendering {
         }
 
         private void OnCanvasPreUpdate() {
+#if DEVELOPMENT
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Canvas pre-update");
+            }
+#endif // DEVELOPMENT
+
             if (m_MinAspect <= 0 || m_MaxAspect <= 0) {
                 m_HasLetterboxing = false;
                 return;
             }
 
-            m_VirtualViewport = UpdateAspectRatioClamping();
+            m_VirtualViewport = UpdateAspectRatioClamping(m_LastKnownResolution.width, m_LastKnownResolution.height, m_MinAspect, m_MaxAspect);
             if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
                 Log.Trace("[RenderMgr] Virtual viewport is {0}", m_VirtualViewport.ToString());
             }
@@ -392,16 +398,26 @@ namespace FieldDay.Rendering {
         }
 
         private void OnApplicationPreRender() {
+#if DEVELOPMENT
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Application pre-render");
+            }
+#endif // DEVELOPMENT
+
             CheckIfNeedsFallback();
         }
 
         private void OnApplicationPostRender() {
-            
+#if DEVELOPMENT
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Application post-render");
+            }
+#endif // DEVELOPMENT
         }
 
-        private Rect UpdateAspectRatioClamping() {
-            float currentAspect = (float) m_LastKnownResolution.width / m_LastKnownResolution.height;
-            float finalAspect = Mathf.Clamp(currentAspect, m_MinAspect, m_MaxAspect);
+        static private Rect UpdateAspectRatioClamping(float w, float h, float min, float max) {
+            float currentAspect = (float) w / h;
+            float finalAspect = Mathf.Clamp(currentAspect, min, max);
 
             float aspectW = finalAspect;
             float aspectH = 1;
@@ -432,21 +448,21 @@ namespace FieldDay.Rendering {
                 return;
             }
 
+#if DEVELOPMENT
+            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                Log.Trace("[RenderMgr] Camera '{0}' pre-cull", inCamera.name);
+            }
+#endif // DEVELOPMENT
+
             AttemptRenderLetterboxing();
 
 #if DEVELOPMENT
-            if (m_DebugPrimaryCameraAdjustments.CachedActive && ReferenceEquals(inCamera, m_PrimaryCamera)) {
+            if (m_DebugPrimaryCameraRestore.CameraId == 0 && m_DebugPrimaryCameraAdjustments.CachedActive && ReferenceEquals(inCamera, m_PrimaryCamera)) {
                 if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
                     Log.Trace("[RenderMgr] Applying debug changes to primary camera");
                 }
                 m_DebugPrimaryCameraRestore.CreateFrom(inCamera);
                 m_DebugPrimaryCameraAdjustments.Apply(inCamera);
-            }
-#endif // DEVELOPMENT
-
-#if DEVELOPMENT
-            if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
-                Log.Trace("[RenderMgr] Camera '{0}' pre-cull", inCamera.name);
             }
 #endif // DEVELOPMENT
         }
@@ -459,6 +475,16 @@ namespace FieldDay.Rendering {
 #if DEVELOPMENT
             if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
                 Log.Trace("[RenderMgr] Camera '{0}' pre-render", inCamera.name);
+            }
+#endif // DEVELOPMENT
+
+#if DEVELOPMENT
+            if (m_DebugPrimaryCameraRestore.CameraId == 0 && m_DebugPrimaryCameraAdjustments.CachedActive && ReferenceEquals(inCamera, m_PrimaryCamera)) {
+                if (DebugFlags.IsFlagSet(DebuggingFlags.TraceExecution)) {
+                    Log.Trace("[RenderMgr] Applying debug changes to primary camera");
+                }
+                m_DebugPrimaryCameraRestore.CreateFrom(inCamera);
+                m_DebugPrimaryCameraAdjustments.Apply(inCamera);
             }
 #endif // DEVELOPMENT
         }

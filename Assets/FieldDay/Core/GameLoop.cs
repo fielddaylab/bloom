@@ -174,7 +174,7 @@ namespace FieldDay {
         // phase tracking
         static internal GameLoopPhase s_CurrentPhase = GameLoopPhase.None;
         static private ushort s_PrevUpdateFrameIndex = Frame.InvalidIndex;
-        static private bool m_ReadyForRender;
+        static private bool s_ReadyForRender;
         static private bool s_Initialized;
 
         // update masks
@@ -594,7 +594,7 @@ namespace FieldDay {
             Game.Scenes.Update();
             Game.Rendering.PollScreenSettings();
 
-            m_ReadyForRender = true;
+            s_ReadyForRender = true;
         }
 
         private void OnGUI() {
@@ -609,7 +609,7 @@ namespace FieldDay {
         }
 
         void ICameraPreCullCallback.OnCameraPreCull(Camera camera, CameraCallbackSource source) {
-            if (!m_ReadyForRender) {
+            if (!s_ReadyForRender) {
                 return;
             }
 
@@ -617,7 +617,7 @@ namespace FieldDay {
         }
 
         void ICameraPreRenderCallback.OnCameraPreRender(Camera camera, CameraCallbackSource source) {
-            if (!m_ReadyForRender) {
+            if (!s_ReadyForRender) {
                 return;
             }
 
@@ -625,7 +625,7 @@ namespace FieldDay {
         }
 
         void ICameraPostRenderCallback.OnCameraPostRender(Camera camera, CameraCallbackSource source) {
-            if (!m_ReadyForRender) {
+            if (!s_ReadyForRender) {
                 return;
             }
 
@@ -725,7 +725,7 @@ namespace FieldDay {
 
                 DequeueNextValues();
 
-                m_ReadyForRender = false;
+                s_ReadyForRender = false;
             }
         }
 
@@ -745,7 +745,7 @@ namespace FieldDay {
             DequeueNextValues();
             Game.Processes.FrameAdvanced();
             OnFrameAdvance.Invoke(Frame.Index);
-            m_ReadyForRender = false;
+            s_ReadyForRender = false;
         }
 
         static private void DequeueNextValues() {
@@ -870,7 +870,7 @@ namespace FieldDay {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static public bool IsRendering() {
-            return PhaseInRange(s_CurrentPhase, GameLoopPhase.PreCull, GameLoopPhase.PostRender);
+            return s_ReadyForRender || PhaseInRange(s_CurrentPhase, GameLoopPhase.PreCull, GameLoopPhase.PostRender);
         }
 
         /// <summary>
@@ -878,7 +878,7 @@ namespace FieldDay {
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static public bool IsRenderingOrPreparingRendering() {
-            return PhaseInRange(s_CurrentPhase, GameLoopPhase.ApplicationPreRender, GameLoopPhase.PostRender);
+            return s_ReadyForRender || PhaseInRange(s_CurrentPhase, GameLoopPhase.ApplicationPreRender, GameLoopPhase.PostRender);
         }
 
         /// <summary>
@@ -970,6 +970,14 @@ namespace FieldDay {
         }
 
         #endregion // Pausing
+
+        #region Debug
+
+        private enum DebuggingFlags {
+            TraceExecution
+        }
+
+        #endregion // Debug
     }
 
     /// <summary>

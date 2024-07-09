@@ -364,7 +364,7 @@ MonoBehaviour:
   SideDeepMaterial: {fileID: 11400000, guid: 872fac51cb9dcf146bdf4ab3de30a20f, type: 2}
   WaterfallOffset: {x: 0, y: 0, z: -0.3}
   FancyShader: {fileID: -6465566751694194690, guid: 27b042674da390c46a1ff4cc2317d5f2, type: 3}
-  SimpleShader: {fileID: -6465566751694194690, guid: b17b7869b28f03942862bc170d7f3a98, type: 3}
+  SimpleShader: {fileID: -6465566751694194690, guid: 9632bc2e27e39aa4a84db05a031e1ad6, type: 3}
 --- !u!114 &1539644123676633215
 MonoBehaviour:
   m_ObjectHideFlags: 0
