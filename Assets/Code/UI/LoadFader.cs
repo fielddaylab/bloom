@@ -16,6 +16,7 @@ namespace Zavala.UI {
         public GraphicRaycaster Raycaster;
 
         [NonSerialized] private bool m_Showing;
+        [NonSerialized] private bool m_IsLoading;
         private Routine m_FadeRoutine;
 
         protected override void Awake() {
@@ -39,7 +40,7 @@ namespace Zavala.UI {
         }
 
         public override void Show() {
-            if (!m_Showing) {
+            if (!m_Showing && !m_IsLoading) {
                 m_Showing = true;
                 BeginShow();
                 m_FadeRoutine.Replace(this, FadeIn()).TryManuallyUpdate(0);
@@ -47,7 +48,7 @@ namespace Zavala.UI {
         }
 
         public override void Hide() {
-            if (m_Showing) {
+            if (m_Showing && !m_IsLoading) {
                 m_Showing = false;
                 m_FadeRoutine.Replace(this, FadeOut());
             }
@@ -62,15 +63,17 @@ namespace Zavala.UI {
             GameLoop.SuspendUpdates(ZavalaGame.SimulationUpdateMask);
             Game.Input.PauseRaycasts();
             Show();
+            m_IsLoading = true;
             yield return m_FadeRoutine.Wait();
             yield return 0.1f;
         }
 
         private IEnumerator HandleLoad(Scene scene, StringHash32 tag) {
+            m_IsLoading = false;
             Game.Input.ResumeRaycasts();
             if (ZavalaGame.SimTime) {
                 SimTimeUtility.Resume(SimPauseFlags.Loading, ZavalaGame.SimTime);
-                if (!SimTimeUtility.IsPaused(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime)) {
+                if (!SimTimeUtility.IsPaused(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime) && ZavalaGame.SaveBuffer.HasSave) {
                     Hide();
                 }
             } else {
