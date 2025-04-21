@@ -31,6 +31,7 @@ namespace Zavala.Scripting {
     // Failure conditions 
     public struct EndGameConditions {
         public EndType Type;
+        [NonSerialized] public BitSet32 CondWasMet;
         [Header("Failure")]
         public int BudgetBelow;
         public bool CheckFarmsUnconnected;

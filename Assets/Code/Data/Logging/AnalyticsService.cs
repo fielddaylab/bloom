@@ -427,8 +427,33 @@ namespace Zavala.Data {
         }
     }
 
+    public struct EndConditionData {
+        public string EndType;
+        public string ConditionType;
+        public ushort Region;
+
+        public EndConditionData(string endType, string condType, ushort region) {
+            EndType = endType;
+            ConditionType = condType;
+            Region = region;
+        }
+    }
+
+    public enum EndConditionType {
+        BudgetBelow,
+        FarmsUnconnected,
+        PhosphorusAbove,
+        AlgaeAbove,
+        CityFallingDurationAbove,
+        RegionAgeAbove,
+        NodeReached,
+        DFertilizerRatio,
+        MFertilizerRatio,
+        CitiesConnected
+    }
+
     public class AnalyticsService : MonoBehaviour {
-        private const ushort CLIENT_LOG_VERSION = 2;
+        private const ushort CLIENT_LOG_VERSION = 3;
 
         private static class Mode {
             public static readonly string View = "VIEW";
@@ -441,7 +466,7 @@ namespace Zavala.Data {
         [SerializeField, Required] private string m_AppVersion = "1.0";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
-        [SerializeField] private bool m_Testing = false;
+        [SerializeField] private bool m_Testing = true;
 
         #endregion // Inspector
 
@@ -480,6 +505,25 @@ namespace Zavala.Data {
             
         }
 
+        [Serializable]
+        private struct WinConditionStateData {
+            public bool RegionAgeAbove;
+            public bool NodeReached;
+            public bool MFertilizerRatio;
+            public bool DFertilizerRatio;
+            public bool CitiesConnected;
+
+            public readonly JsonBuilder Append(JsonBuilder json) {
+                json.Field("region_age_above", RegionAgeAbove);
+                json.Field("node_reached", NodeReached);
+                json.Field("mineral_fertilizer_ratio", MFertilizerRatio);
+                json.Field("digested_fertilizer_ratio", DFertilizerRatio);
+                json.Field("cities_connected", CitiesConnected);
+                return json;
+            }
+        }
+
+
         #region Logging Variables
 
         private OGDLog m_Log;
@@ -494,6 +538,7 @@ namespace Zavala.Data {
         [NonSerialized] private string m_CurrentMode = Mode.View;
         [NonSerialized] private PolicyStateData m_CountyPolicies;
         [NonSerialized] private bool m_PhosView = false;
+        [NonSerialized] private WinConditionStateData m_WinConditionsMet;
 
         [NonSerialized] private string m_CurrentTool;
         [NonSerialized] private BuildingLocation m_InspectingBuilding;
@@ -583,6 +628,8 @@ namespace Zavala.Data {
 
                 .Register(GameEvents.GameWon, LogWonGame)
                 .Register<LossData>(GameEvents.GameFailed, LogFailedGame)
+                .Register<EndConditionData>(GameEvents.EndConditionMet, LogConditionMet)
+                .Register<EndConditionData>(GameEvents.EndConditionLost, LogConditionLost)
             ;
 
             // roadnetwork: use a StringBuilder to consider every tile of road as a char, send StringBuilder as a parameter, reset to length zero to reuse
@@ -653,6 +700,7 @@ namespace Zavala.Data {
             m_CurrentBudget = -1;
             m_CurrentMode = Mode.View;
             m_PhosView = false;
+            m_WinConditionsMet = new WinConditionStateData();
             InitializePolicyChoiceState();
             ResubmitGameState();
         }
@@ -662,9 +710,13 @@ namespace Zavala.Data {
                 .Field("current_county", EnumLookup.RegionName[m_CurrentRegionIndex])
                 .Field("current_money", m_CurrentBudget)
                 .Field("map_mode", m_CurrentMode)
-                .Field("phosphorus_view_enabled", m_PhosView)
-                .BeginObject("county_policies");
+                .Field("phosphorus_view_enabled", m_PhosView);
+            m_JsonBuilder.BeginObject("county_policies");
             m_CountyPolicies.Append(m_JsonBuilder).EndObject();
+
+            m_JsonBuilder.BeginObject("win_conditions_met");
+            m_WinConditionsMet.Append(m_JsonBuilder).EndObject();
+
             m_Log.GameState(m_JsonBuilder.End());
         }
 
@@ -684,6 +736,20 @@ namespace Zavala.Data {
             //         map_mode : enum(VIEW, BUILD, DESTROY)
             m_CurrentMode = mode;
             ResubmitGameState();
+        }
+
+        private void UpdateWinConditionState(string condition, bool met) {
+            if (condition.Equals(EnumLookup.Get(EndConditionType.RegionAgeAbove))) {
+                m_WinConditionsMet.RegionAgeAbove = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.NodeReached))) {
+                m_WinConditionsMet.NodeReached = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.MFertilizerRatio))) {
+                m_WinConditionsMet.MFertilizerRatio = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.DFertilizerRatio))) {
+                m_WinConditionsMet.DFertilizerRatio = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.CitiesConnected))) {
+                m_WinConditionsMet.CitiesConnected = met;
+            }
         }
 
         // -1 for "Not Set"
@@ -1727,6 +1793,32 @@ namespace Zavala.Data {
             GenerateMapState(m_JsonBuilder);
             m_JsonBuilder.EndObject();
             m_Log.Log("lose_game", m_JsonBuilder.End());
+        }
+
+        private void LogConditionMet(EndConditionData data) {
+            // end_condition_achieved: { end_type: enum, condition_type: enum, county: int }
+            m_JsonBuilder.Begin();
+            m_JsonBuilder.Field("end_type", data.EndType);
+            m_JsonBuilder.Field("condition_type", data.ConditionType);
+            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
+            m_JsonBuilder.EndObject();
+            m_Log.Log("end_condition_achieved", m_JsonBuilder.End());
+            if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
+                UpdateWinConditionState(data.ConditionType, true);
+            }
+        }
+
+        private void LogConditionLost(EndConditionData data) {
+            // end_condition_lost: { end_type: enum, condition_type: enum, county: int }
+            m_JsonBuilder.Begin();
+            m_JsonBuilder.Field("end_type", data.EndType);
+            m_JsonBuilder.Field("condition_type", data.ConditionType);
+            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
+            m_JsonBuilder.EndObject();
+            m_Log.Log("end_condition_lost", m_JsonBuilder.End());
+            if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
+                UpdateWinConditionState(data.ConditionType, false);
+            }
         }
 
         #endregion // End
