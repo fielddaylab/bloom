@@ -7,7 +7,7 @@
 
 :: policyForcedToZero
 @trigger        PolicySet
-@conditions     policyIndex == 0, policyForced == true
+@conditions     policyIndex == 0, policyForced
 @cutscene
 $call Wait(1.0)
 $if local:policyType == "SalesTaxPolicy"
@@ -28,10 +28,10 @@ $endif
 
 :: policySet
 @trigger        PolicySet
-@conditions     policyForced == false
+@conditions     !policyForced
 @evalPriority   -3
 @cutscene
-$if intro:pendingPolicy = true
+$if intro:pendingPolicy
     $set intro:pendingPolicy = false
 $endif
 $if local:policyType == "RunoffPolicy"
@@ -79,7 +79,7 @@ $elseif local:policyType == "ImportTaxPolicy"
         {local @advisorEcon}    With a Fertilizer Subsidy, we'll pay $6 for each Manure shipment, to offset shipping costs.
     $endif
 $endif
-$if intro:tutorialComplete = false
+$if !intro:tutorialComplete
 // ::setFirstPolicy
     $set intro:tutorialComplete = true
     $call ActivateSim()
@@ -97,7 +97,7 @@ $endif
 :: runoffCafoGeneric
 @trigger        AlertExamined
 @evalPriority   -3
-@conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == false
+@conditions     alertType == "excess-runoff", global:runoffDiscovered, !isFromGrainFarm
 {local @advisorEcol}    This dairy farm is letting manure sit!
 {local @cafoFarmer}     Sorry, but it's my best option!
 $set local:runoffLevel = PolicyLevelInRegion($local:alertRegion, "RunoffPolicy")
@@ -118,7 +118,7 @@ $endif
 :: grainRunoffGeneric
 @trigger        AlertExamined
 @evalPriority   -3
-@conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm == true
+@conditions     alertType == "excess-runoff", global:runoffDiscovered, isFromGrainFarm
 {local @advisorEcol}    Runoff from a grain farm...
 {local @advisorEcol}    All fertilizer causes <i>some</i> runoff... 
 {local @advisorEcol}    But <b>mineral fertilizer</b> from PHOS4US tends to be overapplied.
@@ -132,7 +132,7 @@ $endif
 :: sellAtLossCafoGeneric
 @trigger        AlertExamined
 @evalPriority   -3
-@conditions     alertType == "selling-loss", isFromGrainFarm == false
+@conditions     alertType == "selling-loss", !isFromGrainFarm
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {local @advisorEcon}    This dairy farm is under financial stress.
 {local @advisorEcon}    They may be selling manure at a loss!
@@ -154,7 +154,7 @@ $endif
 :: sellAtLossGrainGeneric
 @trigger        AlertExamined
 @evalPriority   -3
-@conditions     alertType == "selling-loss", isFromGrainFarm == true
+@conditions     alertType == "selling-loss", isFromGrainFarm
 // @forcePolicy    Economy
 // $call Pause()
 {local @grainFarmer}      Aw shucks... How am I gonna feed my family?
