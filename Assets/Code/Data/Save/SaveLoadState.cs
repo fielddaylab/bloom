@@ -17,6 +17,7 @@ namespace Zavala.Data {
         public Routine Operation;
 
         [NonSerialized] public int TicksToCommit;
+        [NonSerialized] public bool AutosaveActive = true;
 
         private void Awake() {
             OGD.Core.Configure(ServerURL, "ALGAE");
@@ -30,6 +31,9 @@ namespace Zavala.Data {
             var save = Game.SharedState.Get<SaveLoadState>();
             if (save.Operation) {
                 Log.Error("[SaveUtility] Save/load operation is ongoing");
+                return;
+            }
+            if (!save.AutosaveActive) {
                 return;
             }
 
@@ -203,6 +207,7 @@ namespace Zavala.Data {
             info.AddButton("Read Current from Memory", () => {
                 SaveUtility.Reload();
             }, () => ZavalaGame.SaveBuffer.HasSave);
+            info.AddToggle("Toggle Autosaving", () => { return Find.State<SaveLoadState>().AutosaveActive; }, (bool toggle) => { Find.State<SaveLoadState>().AutosaveActive = toggle; });
             return info;
         }
     }
