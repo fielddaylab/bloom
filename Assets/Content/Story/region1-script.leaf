@@ -2,7 +2,7 @@
 
 :: welcome
 @trigger GameBooted
-@conditions     intro:tutorialComplete = false
+@conditions     !intro:tutorialComplete
 @cutscene
 @once
 // $call Pause()
@@ -48,7 +48,7 @@ $call FocusHighlightOn("BuildModeButton")
 
 :: startedBlueprintMode
 @trigger BlueprintModeEntered
-@conditions     intro:tutorialComplete = false, intro:roadBuilt = false
+@conditions     !intro:tutorialComplete, !intro:roadBuilt
 @cutscene
 $call FocusClear()
 {@advisorEconHill}      Splendid!
@@ -58,7 +58,7 @@ $call FocusHighlightOn("ShopButton1")
 
 :: prematureExitBuild
 @trigger BlueprintModeExited
-@conditions     intro:tutorialComplete = false, intro:roadBuilt = false
+@conditions     !intro:tutorialComplete, !intro:roadBuilt
 @cutscene
 $call FocusClear()
 $call Wait(3)
@@ -68,7 +68,7 @@ $call FocusHighlightOn("BuildModeButton")
 // Step 2: Road drawing tutorial
 :: roadSelected
 @trigger BuildButtonPressed
-@conditions     intro:tutorialComplete = false, intro:roadBuilt = false
+@conditions     !intro:tutorialComplete, !intro:roadBuilt
 @cutscene
 $call FocusClear()
 {@advisorEconHill}      Each road segment costs $5. 
@@ -84,7 +84,7 @@ $endif
 // Step 3: Introduce cities
 :: farmsConnected
 @trigger    FarmConnection
-@conditions     intro:tutorialComplete = false
+@conditions     !intro:tutorialComplete
 @cutscene
 @once
 // $call Pause()
@@ -119,13 +119,13 @@ $endif
 
 :: clearBlueprintHighlight
 @trigger BlueprintModeEntered
-@conditions     intro:tutorialComplete = false, intro:roadBuilt = true
+@conditions     !intro:tutorialComplete, intro:roadBuilt
 @cutscene
 $call FocusClear()
 
 :: cityConnected
 @trigger    CityConnection
-@conditions     intro:tutorialComplete = false
+@conditions     !intro:tutorialComplete
 @cutscene
 @once
 // $call Pause()
@@ -150,7 +150,7 @@ $endif
 // $call Unpause()
 
 :: farmsAndCitiesConnected 
-@conditions     intro:tutorialComplete = false
+@conditions     !intro:tutorialComplete
 @once
 @cutscene
 $set intro:farmsAndCities = true
@@ -169,7 +169,7 @@ $call ReleaseDialogueInteraction()
 
 :: wrongAdvisor
 @trigger AdvisorOpened
-@conditions     advisorType == "Ecology", intro:farmsAndCities, intro:tutorialComplete = false
+@conditions     advisorType == "Ecology", intro:farmsAndCities, !intro:tutorialComplete
 @cutscene
 $call FocusClear()
 {@advisorEcolHill}      Hey there!
@@ -179,7 +179,7 @@ $call FocusHighlightOn("EconomyAdvisor")
 
 :: letsGetStarted
 @trigger AdvisorOpened
-@conditions     advisorType == "Economy", intro:farmsAndCities, intro:tutorialComplete == false
+@conditions     advisorType == "Economy", intro:farmsAndCities, !intro:tutorialComplete
 @forcePolicy    Economy
 @cutscene
 @once
@@ -196,7 +196,7 @@ $call SuppressCloseButton()
 
 :: closedWithoutSettingPolicy
 @trigger    AdvisorClosed
-@conditions intro:pendingPolicy == true, intro:tutorialComplete == false
+@conditions intro:pendingPolicy, !intro:tutorialComplete
 @forcePolicy    Economy
 @cutscene
 {@advisorEconHill}      Hold on there!
@@ -246,7 +246,7 @@ $call ForcePinDialogue()
 
 :: specialDelivery
 @trigger    ExternalImport
-@conditions intro:externalFound = false
+@conditions !intro:externalFound
 @cutscene
 @once
 // $call Pause()
@@ -417,7 +417,7 @@ $endif
 
 :: runoffTrigger
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1, global:bloomDiscovered, isFromGrainFarm == false
+@conditions     alertType == "excess-runoff", alertRegion == 1, global:bloomDiscovered, !isFromGrainFarm
 // @forcePolicy    Ecology
 @queued
 @cutscene
@@ -504,7 +504,7 @@ $call CloseInfoPopup()
 
 :: genericRunoff
 @trigger        AlertExamined
-@conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered, isFromGrainFarm == false
+@conditions     alertType == "excess-runoff", alertRegion == 1, global:runoffDiscovered, !isFromGrainFarm
 @queued
 // $call Pause()
 {local @advisorEcol}        More runoff... 
@@ -587,7 +587,7 @@ $call ForcePolicyInstant("Ecology")
 
 :: SellAtLossCafo
 @trigger        AlertExamined
-@conditions     alertType == "selling-loss", alertRegion == 1, isFromGrainFarm == false
+@conditions     alertType == "selling-loss", alertRegion == 1, !isFromGrainFarm
 // $call Pause()
 {local @cafoFarmer}     My farm is losing money... At this rate, I'll have to slow down milk production!
 {@advisorEconHill}      Hmm... Bertram here is in a rough spot.

@@ -256,15 +256,15 @@ namespace Zavala.Actors {
         {
             if (state == OperationState.Bad)
             {
-                return CityPopulationLog.FALLING;
+                return CityPopulationLog.BAD;
             }
             else if (state == OperationState.Okay)
             {
-                return CityPopulationLog.STABLE;
+                return CityPopulationLog.OKAY;
             }
             else
             {
-                return CityPopulationLog.RISING;
+                return CityPopulationLog.GOOD;
             }
         }
 
@@ -288,15 +288,15 @@ namespace Zavala.Actors {
         {
             if (actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Bad])
             {
-                return CityMilkStatusLog.NOT_ENOUGH;
+                return CityMilkStatusLog.BAD;
             }
             else if (actor.CurrentStress[StressCategory.Resource] >= actor.OperationThresholds[OperationState.Okay])
             {
-                return CityMilkStatusLog.ENOUGH;
+                return CityMilkStatusLog.OKAY;
             }
             else
             {
-                return CityMilkStatusLog.PLENTY;
+                return CityMilkStatusLog.GOOD;
             }
         }
     }

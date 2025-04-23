@@ -53,9 +53,9 @@ namespace Zavala.Data {
 
     public enum CityPopulationLog : byte
     {
-        RISING,
-        FALLING,
-        STABLE
+        GOOD,
+        BAD,
+        OKAY
     }
 
     public enum CityWaterStatusLog : byte
@@ -67,9 +67,9 @@ namespace Zavala.Data {
 
     public enum CityMilkStatusLog : byte
     {
-        PLENTY,
-        ENOUGH,
-        NOT_ENOUGH
+        GOOD,
+        OKAY,
+        BAD
     }
 
     public enum TerrainType : byte {
@@ -99,7 +99,7 @@ namespace Zavala.Data {
     }
 
     public struct BuildTile {
-        //     Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
+        //     Building : { building_type, tile_index, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
         public BuildingLocation Building;
         public TileAdjacencyMask Connections;
         public int Cost;
@@ -186,8 +186,8 @@ namespace Zavala.Data {
 
         public JsonBuilder ToJson(JsonBuilder json) {
             json.Field("is_active", IsActive)
-                .Field("farm_name", FarmName)
-                .Field("farm_county", FarmCounty)
+                .Field("buyer_name", FarmName)
+                .Field("buyer_county", FarmCounty)
                 .Field("base_price", BasePrice)
                 .Field("shipping_cost", ShippingCost)
                 .Field("total_profit", TotalProfit);
@@ -209,8 +209,8 @@ namespace Zavala.Data {
 
         public JsonBuilder ToJson(JsonBuilder json) {
             json.Field("is_active", IsActive)
-                .Field("farm_name", FarmName)
-                .Field("farm_county", FarmCounty)
+                .Field("seller_name", FarmName)
+                .Field("seller_county", FarmCounty)
                 .Field("base_price", BasePrice)
                 .Field("shipping_cost", ShippingCost)
                 .Field("sales_policy", SalesPolicy)
@@ -249,8 +249,8 @@ namespace Zavala.Data {
 
         public JsonBuilder ToJson(JsonBuilder json) {
             json.Field("is_active", IsActive)
-                .Field("farm_name", FarmName)
-                .Field("farm_county", FarmCounty)
+                .Field("seller_name", FarmName)
+                .Field("seller_county", FarmCounty)
                 .Field("base_price", BasePrice)
                 .Field("shipping_cost", ShippingCost)
                 .Field("sales_policy", SalesPolicy)
@@ -271,8 +271,8 @@ namespace Zavala.Data {
 
         public JsonBuilder ToJson(JsonBuilder json) {
             json.Field("is_active", IsActive)
-                .Field("farm_name", FarmName)
-                .Field("farm_county", FarmCounty)
+                .Field("buyer_name", FarmName)
+                .Field("buyer_county", FarmCounty)
                 .Field("base_price", BasePrice)
                 .Field("total_profit", TotalProfit);
             return json;
@@ -292,11 +292,11 @@ namespace Zavala.Data {
 
         public JsonBuilder ToJson(JsonBuilder json) {
             json.Field("is_active", IsActive)
-                .Field("farm_name", FarmName)
-                .Field("farm_county", FarmCounty)
+                .Field("buyer_name", FarmName)
+                .Field("buyer_county", FarmCounty)
                 .Field("base_price", BasePrice)
                 .Field("shipping_cost", ShippingCost)
-                .Field("penalties", Penalties)
+                .Field("runoff_fine", Penalties)
                 .Field("total_profit", TotalProfit);
             return json;
         }
@@ -348,6 +348,8 @@ namespace Zavala.Data {
             CharName = CharTitle = "cutscene";
             Text = text;
         }
+
+        // TODO: add character CLASS (titleId doesn't cut it!)
     }
 
     public struct ExportDepotData {
@@ -387,14 +389,18 @@ namespace Zavala.Data {
         public EventActorAlertType Type;
         public int TileIndex;
         public string AttachedNode;
-        public AlertData(EventActorAlertType type, int idx, string node) {
+        public EventActor Actor;
+        public AlertData(EventActor actor, EventActorAlertType type, int idx, string node) {
             Type = type;
             TileIndex = idx;
             AttachedNode = node;
+            Actor = actor;
         }
-        public AlertData(EventActorQueuedEvent evt) {
+        public AlertData(EventActor actor, EventActorQueuedEvent evt) {
             Type = evt.Alert;
             TileIndex = evt.TileIndex;
+            Actor = actor;
+
             ScriptNode foundNode = ScriptDatabaseUtility.FindSpecificNode(ScriptUtility.Database, evt.ScriptId);
             if (foundNode != null)
             {
@@ -421,8 +427,33 @@ namespace Zavala.Data {
         }
     }
 
+    public struct EndConditionData {
+        public string EndType;
+        public string ConditionType;
+        public ushort Region;
+
+        public EndConditionData(string endType, string condType, ushort region) {
+            EndType = endType;
+            ConditionType = condType;
+            Region = region;
+        }
+    }
+
+    public enum EndConditionType {
+        BudgetBelow,
+        FarmsUnconnected,
+        PhosphorusAbove,
+        AlgaeAbove,
+        CityFallingDurationAbove,
+        RegionAgeAbove,
+        NodeReached,
+        DFertilizerRatio,
+        MFertilizerRatio,
+        CitiesConnected
+    }
+
     public class AnalyticsService : MonoBehaviour {
-        private const ushort CLIENT_LOG_VERSION = 2;
+        private const ushort CLIENT_LOG_VERSION = 3;
 
         private static class Mode {
             public static readonly string View = "VIEW";
@@ -435,22 +466,11 @@ namespace Zavala.Data {
         [SerializeField, Required] private string m_AppVersion = "1.0";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
-        [SerializeField] private bool m_Testing = false;
+        [SerializeField] private bool m_Testing = true;
 
         #endregion // Inspector
 
         private readonly JsonBuilder m_JsonBuilder = new JsonBuilder(Unsafe.KiB * 64);
-
-        private enum CityStatus : byte {
-            GOOD,
-            OKAY,
-            BAD
-        }
-
-        private enum AdvisorType : byte {
-            ECONOMY,
-            ECOLOGY
-        }
 
         [Serializable]
         private struct PolicyStateData {
@@ -485,6 +505,25 @@ namespace Zavala.Data {
             
         }
 
+        [Serializable]
+        private struct WinConditionStateData {
+            public bool RegionAgeAbove;
+            public bool NodeReached;
+            public bool MFertilizerRatio;
+            public bool DFertilizerRatio;
+            public bool CitiesConnected;
+
+            public readonly JsonBuilder Append(JsonBuilder json) {
+                json.Field("region_age_above", RegionAgeAbove);
+                json.Field("node_reached", NodeReached);
+                json.Field("mineral_fertilizer_ratio", MFertilizerRatio);
+                json.Field("digested_fertilizer_ratio", DFertilizerRatio);
+                json.Field("cities_connected", CitiesConnected);
+                return json;
+            }
+        }
+
+
         #region Logging Variables
 
         private OGDLog m_Log;
@@ -499,6 +538,7 @@ namespace Zavala.Data {
         [NonSerialized] private string m_CurrentMode = Mode.View;
         [NonSerialized] private PolicyStateData m_CountyPolicies;
         [NonSerialized] private bool m_PhosView = false;
+        [NonSerialized] private WinConditionStateData m_WinConditionsMet;
 
         [NonSerialized] private string m_CurrentTool;
         [NonSerialized] private BuildingLocation m_InspectingBuilding;
@@ -588,6 +628,8 @@ namespace Zavala.Data {
 
                 .Register(GameEvents.GameWon, LogWonGame)
                 .Register<LossData>(GameEvents.GameFailed, LogFailedGame)
+                .Register<EndConditionData>(GameEvents.EndConditionMet, LogConditionMet)
+                .Register<EndConditionData>(GameEvents.EndConditionLost, LogConditionLost)
             ;
 
             // roadnetwork: use a StringBuilder to consider every tile of road as a char, send StringBuilder as a parameter, reset to length zero to reuse
@@ -614,6 +656,11 @@ namespace Zavala.Data {
                 m_Log.SetDebug(false);
             }
 #endif // UNITY_EDITOR
+
+            OGDLog.SchedulingConfig sched = OGDLog.SchedulingConfig.Default;
+            sched.FlushDelay = 2;
+
+            m_Log.ConfigureScheduling(sched);
 
             ResetGameState();
         }
@@ -653,6 +700,7 @@ namespace Zavala.Data {
             m_CurrentBudget = -1;
             m_CurrentMode = Mode.View;
             m_PhosView = false;
+            m_WinConditionsMet = new WinConditionStateData();
             InitializePolicyChoiceState();
             ResubmitGameState();
         }
@@ -662,9 +710,13 @@ namespace Zavala.Data {
                 .Field("current_county", EnumLookup.RegionName[m_CurrentRegionIndex])
                 .Field("current_money", m_CurrentBudget)
                 .Field("map_mode", m_CurrentMode)
-                .Field("phosphorus_view_enabled", m_PhosView)
-                .BeginObject("county_policies");
+                .Field("phosphorus_view_enabled", m_PhosView);
+            m_JsonBuilder.BeginObject("county_policies");
             m_CountyPolicies.Append(m_JsonBuilder).EndObject();
+
+            m_JsonBuilder.BeginObject("win_conditions_met");
+            m_WinConditionsMet.Append(m_JsonBuilder).EndObject();
+
             m_Log.GameState(m_JsonBuilder.End());
         }
 
@@ -684,6 +736,20 @@ namespace Zavala.Data {
             //         map_mode : enum(VIEW, BUILD, DESTROY)
             m_CurrentMode = mode;
             ResubmitGameState();
+        }
+
+        private void UpdateWinConditionState(string condition, bool met) {
+            if (condition.Equals(EnumLookup.Get(EndConditionType.RegionAgeAbove))) {
+                m_WinConditionsMet.RegionAgeAbove = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.NodeReached))) {
+                m_WinConditionsMet.NodeReached = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.MFertilizerRatio))) {
+                m_WinConditionsMet.MFertilizerRatio = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.DFertilizerRatio))) {
+                m_WinConditionsMet.DFertilizerRatio = met;
+            } else if (condition.Equals(EnumLookup.Get(EndConditionType.CitiesConnected))) {
+                m_WinConditionsMet.CitiesConnected = met;
+            }
         }
 
         // -1 for "Not Set"
@@ -915,20 +981,36 @@ namespace Zavala.Data {
         }
 
         private void LogHoverBuild(int idx) {
-            // hover_build_tile { tile_id, is_valid }
+            // hover_build_tile { tile_index, is_valid }
             bool valid = idx >= 0;
             if (!valid) idx *= -1;
             using (var e = m_Log.NewEvent("hover_build_tile")) {
-                e.Param("tile_id", idx);
+                e.Param("tile_index", idx);
                 e.Param("is_valid", valid);
             }
         }
 
         private void LogBuildInvalid(int idx) {
-            // click_build_invalid { tile_id, building_type }
+            // click_build_invalid { tile_index, building_type }
             using (var e = m_Log.NewEvent("click_build_invalid")) {
-                e.Param("tile_id", idx);
+                e.Param("tile_index", idx);
                 e.Param("building_type", m_CurrentTool);
+            }
+        }
+
+        private void LogBuildClick(int idx) {
+            // click_build_invalid { tile_index, building_type }
+            using (var e = m_Log.NewEvent("click_build")) {
+                e.Param("tile_index", idx);
+                e.Param("building_type", m_CurrentTool);
+            }
+        }
+
+        private void LogDestroyClick(int idx) {
+            // click_build_invalid { tile_index, building_type }
+            using (var e = m_Log.NewEvent("click_destroy")) {
+                e.Param("tile_index", idx);
+                e.Param("building_type", m_CurrentTool); // destroy type
             }
         }
 
@@ -946,18 +1028,18 @@ namespace Zavala.Data {
         }
 
         private void LogHoverDestroy(int idx) {
-            // hover_destroy_tile { tile_id, building_type : enum(building types) | null }
+            // hover_destroy_tile { tile_index, building_type : enum(building types) | null }
             using (var e = m_Log.NewEvent("hover_destroy_tile")) {
-                e.Param("tile_id", idx);
+                e.Param("tile_index", idx);
                 // TODO: e.Param("building_type", type | null);
                 // How to get this data cheaply?
             }
         }
 
         private void LogDestroyInvalid(int idx) {
-            // click_destroy_invalid { tile_id, terrain_type }
+            // click_destroy_invalid { tile_index, terrain_type }
             using (var e = m_Log.NewEvent("click_destroy_invalid")) {
-                e.Param("tile_id", idx);
+                e.Param("tile_index", idx);
                 // TODO: e.Param("terrain_type", type);
                 //          water, deep, grass, tree, rock
             }
@@ -981,13 +1063,16 @@ namespace Zavala.Data {
             ResubmitGameState();
         }
 
+        // TODO: click_undo
+        // TODO: use queue/dequeue exclusively for build stuff
+
         #endregion Destroy
 
         private void LogQueuedBuilding(ActionCommit commit) {
             //      queue_building { Building, total_cost, funds_remaining }
-            using (var e = m_Log.NewEvent("queue_building")) {
+            using (var e = m_Log.NewEvent("building_queued")) {
                 e.Param("building", PrintBuildingParam(commit));
-                //          Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
+                //          Building : { building_type, tile_index, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
                 int tot = Game.SharedState.Get<ShopState>().RunningCost + commit.Cost;
                 e.Param("total_cost", tot);
                 e.Param("funds_remaining", m_CurrentBudget - tot);
@@ -996,9 +1081,9 @@ namespace Zavala.Data {
 
         private void LogUnqueuedBuilding(ActionCommit commit) {
             //  unqueue_building { Building, total_cost, funds_remaining }
-            using (var e = m_Log.NewEvent("unqueue_building")) {
+            using (var e = m_Log.NewEvent("building_dequeued")) {
                 e.Param("building", PrintBuildingParam(commit));
-                //  Building : { building_type, tile_id, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
+                //  Building : { building_type, tile_index, cost, connections : array[bool], build_type : enum(BUILD, DESTROY) }
                 int tot = Game.SharedState.Get<ShopState>().RunningCost - commit.Cost;
                 e.Param("total_cost", tot);
                 e.Param("funds_remaining", m_CurrentBudget - tot);
@@ -1009,7 +1094,7 @@ namespace Zavala.Data {
             using (var psb = PooledStringBuilder.Create()) {
                 psb.Builder.Append('{');
                 psb.Builder.Append("building_type:").Append(EnumLookup.BuildingType[(int)commit.BuildType]);
-                psb.Builder.Append("tile_id:").Append(commit.TileIndex.ToStringLookup());
+                psb.Builder.Append("tile_index:").Append(commit.TileIndex.ToStringLookup());
                 psb.Builder.Append("cost:").Append(commit.Cost.ToStringLookup());
                 psb.Builder.Append("connections:").Append(commit.FlowMaskSnapshot);
                 psb.Builder.Append("build_type:").Append(commit.ActionType.ToString());
@@ -1023,7 +1108,7 @@ namespace Zavala.Data {
             // click_execute_build { built_items : array[Building], total_cost, funds_remaining }
 
             ShopState s = Game.SharedState.Get<ShopState>();
-            using (var e = m_Log.NewEvent("click_execute_build")) {
+            using (var e = m_Log.NewEvent("execute_build_queue")) {
                 e.Param("built_items", GetCommitChainData(chains));
                 e.Param("total_cost", s.RunningCost);
                 e.Param("funds_remaining", m_CurrentBudget - s.RunningCost);
@@ -1038,7 +1123,7 @@ namespace Zavala.Data {
                     foreach (ActionCommit commit in chain.Chain) {
                         psb.Builder.Append('{');
                         psb.Builder.Append("building_type:").Append(EnumLookup.BuildingType[(int)commit.BuildType]);
-                        psb.Builder.Append("tile_id:").Append(commit.TileIndex.ToStringLookup());
+                        psb.Builder.Append("tile_index:").Append(commit.TileIndex.ToStringLookup());
                         psb.Builder.Append('}');
                     }
                 }
@@ -1150,7 +1235,7 @@ namespace Zavala.Data {
             // print in current region
             int idx = tile.TileIndex;
             json.BeginObject()
-                .Field("idx", idx)
+                .Field("index", idx)
                 .Field("height", grid.Terrain.Height[idx]);
             TerrainFlags flags = grid.Terrain.Info[idx].Flags;
             if ((flags & TerrainFlags.IsWater) != 0) {
@@ -1178,7 +1263,7 @@ namespace Zavala.Data {
             // print in current region
             int idx = building.TileIndex;
             json.BeginObject()
-                .Field("idx", idx)
+                .Field("index", idx)
                 .Field("height", grid.Terrain.Height[idx]);
             TerrainFlags flags = grid.Terrain.Info[idx].Flags;
             if ((flags & TerrainFlags.IsWater) != 0) {
@@ -1204,23 +1289,23 @@ namespace Zavala.Data {
 
         private void LogBuildingUnlocked(UserBuildTool type) {
             // unlock_building_type { building_type }
-            using (var e = m_Log.NewEvent("unlock_building_type")) {
+            using (var e = m_Log.NewEvent("building_type_unlocked")) {
                 e.Param("building_type", EnumLookup.BuildingType[(int)type]);
             }
         }
 
         private void LogExportDepot(ExportDepotData data) {
-            // export_depot_spawned { depot_id, tile_id }
+            // export_depot_spawned { depot_id, tile_index }
             using (var e = m_Log.NewEvent("export_depot_spawned")) {
                 e.Param("depot_id", data.Id);
-                e.Param("tile_id", data.TileIndex);
+                e.Param("tile_index", data.TileIndex);
             }
         }
         
         static private bool IsBuildingLoggable(BuildingType type) {
             switch (type) {
                 case BuildingType.None:
-                case BuildingType.Road:
+                case BuildingType.SkimmerLocation:
                     return false;
 
                 default:
@@ -1265,7 +1350,7 @@ namespace Zavala.Data {
         }
         private void LogPolicyUnlocked(PolicyType type) {
             // unlock_policy { policy_name }
-            using (var e = m_Log.NewEvent("unlock_policy")) {
+            using (var e = m_Log.NewEvent("policy_unlocked")) {
                 e.Param("policy_name", EnumLookup.PolicyType[(int)type]);
             }
             UpdatePolicyLockedState(type, false);
@@ -1273,7 +1358,7 @@ namespace Zavala.Data {
 
         private void LogUnlockView(bool isEcon) {
             //unlock_view { view_type : enum(PHOSPHORUS_VIEW, ECONOMY_VIEW) }
-            using (var e = m_Log.NewEvent("unlock_view")) {
+            using (var e = m_Log.NewEvent("view_unlocked")) {
                 if (isEcon) {
                     e.Param("view_type", "ECONOMY_VIEW");
                 } else {
@@ -1312,17 +1397,17 @@ namespace Zavala.Data {
         }
 
         private void LogSkimmerAppear(SkimmerData data) {
-            // skimmer_appear { tile_id, is_dredger : bool }
-            using (var e = m_Log.NewEvent("skimmer_appear")) {
-                e.Param("tile_id", data.TileIndex);
+            // skimmer_appear { tile_index, is_dredger : bool }
+            using (var e = m_Log.NewEvent("skimmer_appeared")) {
+                e.Param("tile_index", data.TileIndex);
                 e.Param("is_dredger", data.IsDredger);
             }
         }
 
         private void LogSkimmerDisappear(SkimmerData data) {
-            // skimmer_disappear { tile_id, is_dredger : bool }
-            using (var e = m_Log.NewEvent("skimmer_disappear")) {
-                e.Param("tile_id", data.TileIndex);
+            // skimmer_disappear { tile_index, is_dredger : bool }
+            using (var e = m_Log.NewEvent("skimmer_disappeared")) {
+                e.Param("tile_index", data.TileIndex);
                 e.Param("is_dredger", data.IsDredger);
             }
         }
@@ -1332,10 +1417,10 @@ namespace Zavala.Data {
         #region Alert
 
         private void LogAlertDisplayed(AlertData data) {
-            // ADD? alert_displayed { alert_type, tile_id }
-            using (var e = m_Log.NewEvent("alert_displayed")) {
-                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
-                e.Param("tile_id", data.TileIndex);
+            // ADD? alert_displayed { alert_type, tile_index }
+            using (var e = m_Log.NewEvent("local_alert_displayed")) {
+                e.Param("alert_type", EnumLookup.AlertType[(int) data.Type]);
+                e.Param("tile_index", data.TileIndex);
             }
             if (data.Type == EventActorAlertType.Bloom) {
                 LogBloomAlert(data.TileIndex);
@@ -1343,36 +1428,33 @@ namespace Zavala.Data {
         }
 
         private void LogAlertClicked(AlertData data) {
-            // ADD? click_alert { alert_type, tile_id, node_id }
-            using (var e = m_Log.NewEvent("click_alert")) {
-                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
-                e.Param("tile_id", data.TileIndex);
-                e.Param("node_id", data.AttachedNode);
+            // ADD? click_alert { alert_type, tile_index, node_id }
+            using (var e = m_Log.NewEvent("click_local_alert")) {
+                e.Param("alert_type", EnumLookup.AlertType[(int) data.Type]);
+                e.Param("tile_index", data.TileIndex);
             }
         }
 
         private void LogBloomAlert(int idx) {
-            // bloom_alert { tile_id, phosphorus_value }
+            // bloom_alert { tile_index, phosphorus_value }
             int phos = Game.SharedState.Get<SimPhosphorusState>().Phosphorus.CurrentState()[idx].Count;
             using (var e = m_Log.NewEvent("bloom_alert")) {
-                e.Param("tile_id", idx);
+                e.Param("tile_index", idx);
                 e.Param("phosphorus_value", phos);
             }
         }
 
         private void LogGlobalAlertDisplayed(AlertData data) {
-            // global_alert_displayed { alert_id, node_id }
+            // global_alert_displayed { alert_type, node_id }
             using (var e = m_Log.NewEvent("global_alert_displayed")) {
-                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
-                e.Param("node_id", data.AttachedNode);
+                e.Param("alert_type", EnumLookup.AlertType[(int) data.Type]);
             }
         }
 
         private void LogGlobalAlertClicked(AlertData data) {
-            // click_global_alert  { alert_id, node_id }
+            // click_global_alert  { alert_type, node_id }
             using (var e = m_Log.NewEvent("click_global_alert")) {
-                e.Param("alert_id", GameAlerts.GetLocalizedName(data.Type));
-                e.Param("node_id", data.AttachedNode);
+                e.Param("alert_type", EnumLookup.AlertType[(int) data.Type]);
             }
         }
 
@@ -1578,18 +1660,18 @@ namespace Zavala.Data {
             }
         }
         private void LogStartGrowAlgae(AlgaeData data) {
-            // algae_growth_begin { tile_id, phosphorus_value, algae_percent }
+            // algae_growth_begin { tile_index, phosphorus_value, algae_percent }
             using (var e = m_Log.NewEvent("algae_growth_begin")) {
-                e.Param("tile_id", data.TileIndex);
+                e.Param("tile_index", data.TileIndex);
                 e.Param("phosphorus_value", data.Phosphorus);
                 e.Param("algae_percent", data.Algae);
             }
         }
 
         private void LogEndGrowAlgae(AlgaeData data) {
-            // algae_growth_end { tile_id, phosphorus_value, algae_percent }
+            // algae_growth_end { tile_index, phosphorus_value, algae_percent }
             using (var e = m_Log.NewEvent("algae_growth_end")) {
-                e.Param("tile_id", data.TileIndex);
+                e.Param("tile_index", data.TileIndex);
                 e.Param("phosphorus_value", data.Phosphorus);
                 e.Param("algae_percent", data.Algae);
             }
@@ -1711,6 +1793,32 @@ namespace Zavala.Data {
             GenerateMapState(m_JsonBuilder);
             m_JsonBuilder.EndObject();
             m_Log.Log("lose_game", m_JsonBuilder.End());
+        }
+
+        private void LogConditionMet(EndConditionData data) {
+            // end_condition_achieved: { end_type: enum, condition_type: enum, county: int }
+            m_JsonBuilder.Begin();
+            m_JsonBuilder.Field("end_type", data.EndType);
+            m_JsonBuilder.Field("condition_type", data.ConditionType);
+            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
+            m_JsonBuilder.EndObject();
+            m_Log.Log("end_condition_achieved", m_JsonBuilder.End());
+            if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
+                UpdateWinConditionState(data.ConditionType, true);
+            }
+        }
+
+        private void LogConditionLost(EndConditionData data) {
+            // end_condition_lost: { end_type: enum, condition_type: enum, county: int }
+            m_JsonBuilder.Begin();
+            m_JsonBuilder.Field("end_type", data.EndType);
+            m_JsonBuilder.Field("condition_type", data.ConditionType);
+            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
+            m_JsonBuilder.EndObject();
+            m_Log.Log("end_condition_lost", m_JsonBuilder.End());
+            if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
+                UpdateWinConditionState(data.ConditionType, false);
+            }
         }
 
         #endregion // End

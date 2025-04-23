@@ -15,6 +15,7 @@ using Zavala.Sim;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 using FieldDay.Rendering;
+using FieldDay.Debugging;
 
 namespace Zavala.World {
     [SharedStateInitOrder(100)]
@@ -53,6 +54,7 @@ namespace Zavala.World {
             if (!settings.HighQualityMode) {
                 renderScale.PixelHeight = 660;
                 renderScale.Mode = CameraRenderScale.ScaleMode.PixelHeight;
+                CameraAux.renderPostProcessing = false;
                 //CameraAux.requiresDepthTexture = false;
                 //CameraAux.requiresDepthOption = CameraOverrideOption.Off;
                 //CameraAux.renderPostProcessing = false;
@@ -71,6 +73,29 @@ namespace Zavala.World {
         void ISaveStateChunkObject.Write(object self, ref ByteWriter writer, SaveStateChunkConsts consts, ref SaveScratchpad scratch) {
             writer.Write(LookTarget.position);
             writer.Write(Camera.transform.localPosition.z);
+        }
+
+        [DebugMenuFactory]
+        static private DMInfo CreateCameraDebug() {
+            DMInfo menu = new DMInfo("Camera", 4);
+
+            menu.AddToggle("Render Clouds & Dust", () => {
+                if (Game.SharedState.TryGet(out SimWorldCamera cam)) {
+                    return cam.CameraLayers.IsRenderingLayersAny(LayerMasks.WorldEffects_Mask);
+                } else {
+                    return false;
+                }
+            }, (b) => {
+                if (Game.SharedState.TryGet(out SimWorldCamera cam)) {
+                    if (b) {
+                        cam.CameraLayers.ShowLayers(LayerMasks.WorldEffects_Mask);
+                    } else {
+                        cam.CameraLayers.HideLayers(LayerMasks.WorldEffects_Mask);
+                    }
+                }
+            }, () => Game.SharedState.Has<SimWorldCamera>());
+
+            return menu;
         }
     }
 
@@ -124,7 +149,7 @@ namespace Zavala.World {
             }
             if (start != camPos.z) {
                 Cam.Camera.transform.localPosition = camPos;
-                ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, new ZoomVolData(start, camPos.z, usedWheel));
+                ZavalaGame.Events.Dispatch(GameEvents.SimZoomChanged, EvtArgs.Create(new ZoomVolData(start, camPos.z, usedWheel)));
             }
         }
 

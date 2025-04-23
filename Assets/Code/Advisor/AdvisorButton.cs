@@ -45,7 +45,7 @@ namespace Zavala.Advisor
             }
 
             // regardless of on or off, advisor was clicked
-            ZavalaGame.Events.Dispatch(GameEvents.AdvisorButtonClicked, ButtonAdvisorType);
+            ZavalaGame.Events.Dispatch(GameEvents.AdvisorButtonClicked, EvtArgs.Create(ButtonAdvisorType));
             // advisorState.AdvisorButtonClicked?.Invoke(ButtonAdvisorType);
         }
 

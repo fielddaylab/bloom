@@ -41,7 +41,7 @@ namespace FieldDay.Scripting {
             Plugin = new ScriptPlugin(this, Resolver);
             Plugin.ConfigureDisplay(DefaultDialogue, DefaultDialogue);
 
-            ThreadPool = new DynamicPool<ScriptThread>(4, (p) => {
+            ThreadPool = new DynamicPool<ScriptThread>(1, (p) => {
                 return new ScriptThread(p, Plugin);
             });
             ThreadPool.Prewarm();
@@ -49,7 +49,7 @@ namespace FieldDay.Scripting {
             ParserPool = new DynamicPool<TagStringParser>(2, (p) => Plugin.NewParser());
             ParserPool.Prewarm();
 
-            TablePool = new DynamicPool<VariantTable>(8, Pool.DefaultConstructor<VariantTable>());
+            TablePool = new DynamicPool<VariantTable>(2, Pool.DefaultConstructor<VariantTable>());
             TablePool.Config.RegisterOnAlloc((p, t) => t.Name = "temp");
             TablePool.Config.RegisterOnFree((p, t) => t.Reset());
             TablePool.Prewarm();

@@ -26,14 +26,14 @@ namespace Zavala.UI {
             Game.Animation.AddLiteAnimator(this, 0.15f);
         }
 
-        public bool UpdateAnimation(ref LiteAnimatorState state, float deltaTime) {
+        public bool UpdateAnimation(object _, ref LiteAnimatorState state, float deltaTime) {
             state.TimeRemaining = Math.Max(0, state.TimeRemaining - deltaTime);
             float amt = state.TimeRemaining / state.Duration;
             m_LayoutOffset.Offset1 = new Vector2(0, amt * -2);
             return state.TimeRemaining > 0;
         }
 
-        public void ResetAnimation(ref LiteAnimatorState state) {
+        public void ResetAnimation(object _, ref LiteAnimatorState state) {
             m_LayoutOffset.Offset1 = default;
         }
 

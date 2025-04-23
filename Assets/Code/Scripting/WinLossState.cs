@@ -31,6 +31,7 @@ namespace Zavala.Scripting {
     // Failure conditions 
     public struct EndGameConditions {
         public EndType Type;
+        [NonSerialized] public BitSet32 CondWasMet;
         [Header("Failure")]
         public int BudgetBelow;
         public bool CheckFarmsUnconnected;
@@ -119,7 +120,7 @@ namespace Zavala.Scripting {
                 var handle = ScriptUtility.Trigger(GameTriggers.GameFailed, varTable);
                 SaveUtility.Reload();
             }
-            ZavalaGame.Events.Dispatch(GameEvents.GameFailed, new LossData(eType.ToString(), (ushort)regionIndex));
+            ZavalaGame.Events.Dispatch(GameEvents.GameFailed, EvtArgs.Box(new LossData(eType.ToString(), (ushort) regionIndex)));
         }
 
         public static void TriggerWin() {

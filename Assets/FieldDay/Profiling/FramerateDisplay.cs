@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using TMPro;
@@ -41,6 +42,8 @@ namespace FieldDay.Perf {
         [NonSerialized] private long m_WarningThreshold;
         [NonSerialized] private float m_WarningTimeLeft = 0;
 
+        private Coroutine m_EOFCoroutine;
+
         static private FramerateDisplay s_Instance;
         static private bool s_Initialized;
 
@@ -82,6 +85,8 @@ namespace FieldDay.Perf {
             m_TextDisplay.SetText("-.-");
             m_TextDisplay.color = m_DefaultTextColor;
             m_FrameCooldown = 2;
+
+            m_EOFCoroutine = StartCoroutine(EndOfFrameCoroutine());
         }
 
         private void OnDisable() {
@@ -92,6 +97,9 @@ namespace FieldDay.Perf {
             if (m_FramerateDropWarning != null) {
                 m_FramerateDropWarning.SetActive(false);
             }
+
+            StopCoroutine(m_EOFCoroutine);
+            m_EOFCoroutine = null;
         }
 
         private void OnDestroy() {
@@ -108,7 +116,16 @@ namespace FieldDay.Perf {
             }
         }
 
-        private void LateUpdate() {
+
+        static private readonly WaitForEndOfFrame s_EOF = new WaitForEndOfFrame();
+        private IEnumerator EndOfFrameCoroutine() {
+            while(true) {
+                yield return s_EOF;
+                OnFrameEnd();
+            }
+        }
+
+        private void OnFrameEnd() {
             long timestamp = Stopwatch.GetTimestamp();
 
             if (m_FrameCooldown > 0) {

@@ -59,6 +59,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 32760
@@ -104,7 +105,7 @@ MonoBehaviour:
   m_WarningTextColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_ForceEnabled: 0
   m_TargetFramerate: 60
-  m_AveragingFrames: 8
+  m_AveragingFrames: 4
   m_FramerateDropWarning: {fileID: 0}
   m_FramerateDropTolerance: 0
   m_FramerateDropWarningDuration: 3

@@ -17,11 +17,11 @@ namespace FieldDay.Data {
 
         static private ReflectionBootData s_Mounted;
 
-        static public AttributeEnumerable<ConfigVar, FieldInfo> GetAllConfigVars() {
+        static public IEnumerable<AttributeBinding<ConfigVar, MemberInfo>> GetAllConfigVars() {
             if (s_Mounted != null) {
-                return new AttributeEnumerable<ConfigVar, FieldInfo>(s_Mounted.ConfigVars.Read<ConfigVar>(ReflectionCache.UserAssemblies));
+                return s_Mounted.ConfigVars.Read<ConfigVar>(ReflectionCache.UserAssemblies);
             }
-            return new AttributeEnumerable<ConfigVar, FieldInfo>(Reflect.FindFields<ConfigVar>(ReflectionCache.UserAssemblies, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, false));
+            return Reflect.FindMembers<ConfigVar>(ReflectionCache.UserAssemblies, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, false);
         }
 
         //static public AttributeEnumerable<InvokePreBootAttribute, MethodInfo> GetPreBoot() {

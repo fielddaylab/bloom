@@ -226,7 +226,7 @@ namespace Zavala
 
         #region IService
 
-        public bool IsLoaded()
+        public bool IsLoaded(SceneLoadPhase phase)
         {
             return !m_LoadRoutine;
         }

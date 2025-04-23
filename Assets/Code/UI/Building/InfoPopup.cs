@@ -346,7 +346,7 @@ namespace Zavala.UI.Info
             m_InitialOpen = true;
             Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
 
-            ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, new Data.BuildingLocation(m_Mode, title, idx));
+            ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, EvtArgs.Box(new Data.BuildingLocation(m_Mode, title, idx)));
             Show();
 
             UpdateData(false);
@@ -801,12 +801,12 @@ namespace Zavala.UI.Info
                     // tab initial open corresponds to forceRefresh
                     if (m_InitialOpen) {
                         ZavalaGame.Events.Dispatch(GameEvents.CityInspectorDisplayed,
-                            new Data.CityData(
+                            EvtArgs.Box(new Data.CityData(
                                 Loc.Find(m_SelectedLocation.TitleLabel),
                                 cityPop,
                                 cityWater,
                                 cityMilk
-                            )
+                            ))
                         );
                     }
 
@@ -827,7 +827,7 @@ namespace Zavala.UI.Info
                 case BuildingType.Storage: {
                     PopulateStorageCapacity(out int unitsFilled);
                     if (m_InitialOpen) {
-                        ZavalaGame.Events.Dispatch(GameEvents.StorageInspectorDisplayed, new Data.StorageData(unitsFilled));
+                        ZavalaGame.Events.Dispatch(GameEvents.StorageInspectorDisplayed, EvtArgs.Create(new Data.StorageData(unitsFilled)));
                     }
                     break;
                 }
@@ -893,7 +893,7 @@ namespace Zavala.UI.Info
                 }
             }
 
-            ZavalaGame.Events.Dispatch(GameEvents.GrainFarmInspectorDisplayed, newFarmData);
+            ZavalaGame.Events.Dispatch(GameEvents.GrainFarmInspectorDisplayed, EvtArgs.Box(newFarmData));
         }
 
         private void DispatchDairyFarmDisplayed()
@@ -951,7 +951,7 @@ namespace Zavala.UI.Info
                 }
             }
 
-            ZavalaGame.Events.Dispatch(GameEvents.DairyFarmInspectorDisplayed, newFarmData);
+            ZavalaGame.Events.Dispatch(GameEvents.DairyFarmInspectorDisplayed, EvtArgs.Box(newFarmData));
         }
 
         private void SortQueryResults(bool isShippingResource) {

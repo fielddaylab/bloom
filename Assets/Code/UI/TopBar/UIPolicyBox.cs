@@ -64,7 +64,7 @@ namespace Zavala.UI {
             }
 
             // ZavalaGame.Events.Dispatch(GameEvents.AdvisorButtonClicked, type);
-            ZavalaGame.Events.Dispatch(GameEvents.PolicyButtonClicked, PolicyType);
+            ZavalaGame.Events.Dispatch(GameEvents.PolicyButtonClicked, EvtArgs.Create(PolicyType));
             //AdvisorState advisorState = Game.SharedState.Get<AdvisorState>();
             //advisorState.AdvisorButtonClicked?.Invoke(type);
 

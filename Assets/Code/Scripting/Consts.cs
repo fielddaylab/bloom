@@ -20,11 +20,11 @@ namespace Zavala
             "Hillside", "Forest", "Prairie", "Wetland", "Urban"
         };
         public static readonly string[] BuildingType = new string[] {
-            "null", "GrainFarm", "DairyFarm", "City", "Road", "Digester", "Storage", "Skimmer",
-            "Obstacle", "ExportDepot", "TollBooth", "TempObstruction", "SkimmerLocation", "DigesterBroken"
+            "Empty", "GrainFarm", "DairyFarm", "City", "Road", "Processor", "Storage", "Skimmer",
+            "Obstacle", "ExportDepot", "TollBooth", "Obstacle", "SkimmerLocation", "ProcessorBroken"
         };
         public static readonly string[] BuildTool = new string[] {
-            "None", "Destroy", "Road", "Storage", "Digester", "Skimmer"
+            "None", "Destroy", "Road", "Storage", "Processor", "Skimmer"
         };
         public static readonly string[] AdvisorType = new string[] {
             "None", "Ecology", "Economy"
@@ -38,6 +38,11 @@ namespace Zavala
 
         public static readonly string[] TileDirection = new string[] {
             "Self", "SW", "S", "SE", "NE", "N", "NW"
+        };
+
+        public static readonly string[] AlertType = new string[] {
+            "null", "Bloom", "ExcessRunoff", "DieOff", "CritImbalance", "UnusedProcessor", "DecliningPop",
+            "SellingLoss", "Disconnected", "Dialogue", "Global"
         };
 
         public static readonly string[] ActionType = new string[] {
@@ -151,6 +156,8 @@ namespace Zavala
         static public readonly StringHash32 LeafCutsceneStarted = "dialogue:leaf-cutscene-started";
         static public readonly StringHash32 LeafCutsceneEnded = "dialogue:leaf-cutscene-ended";
 
+        static public readonly StringHash32 EndConditionMet = "game:end-cond-met";
+        static public readonly StringHash32 EndConditionLost = "game:end-cond-lost";
         static public readonly StringHash32 GameLoaded = "game:loaded";
         static public readonly StringHash32 GameFailed = "game:failed";
         static public readonly StringHash32 GameWon = "game:won";

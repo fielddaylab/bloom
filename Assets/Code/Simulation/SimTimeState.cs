@@ -229,6 +229,14 @@ namespace Zavala.Sim {
         }
 
         /// <summary>
+        /// Returns if the simulation is paused for the given flags.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static public bool IsPaused(SimPauseFlags pauseFlags, SimTimeState timeState) {
+            return (timeState.Paused & pauseFlags) != 0;
+        }
+
+        /// <summary>
         /// Pauses the simulation.
         /// </summary>
         static private void PauseSimulation(SimTimeState timeState) {

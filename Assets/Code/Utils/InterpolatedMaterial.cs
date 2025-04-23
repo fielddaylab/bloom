@@ -68,7 +68,7 @@ namespace Zavala {
 
         public void ReplaceShader(Shader shader) {
             if (m_Range != null) {
-                for (int i = 1; i < m_Range.Length - 1; i++) {
+                for (int i = 0; i < m_Range.Length; i++) {
                     m_Range[i].shader = shader;
                 }
             }

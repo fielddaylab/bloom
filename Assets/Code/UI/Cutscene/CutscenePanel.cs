@@ -87,7 +87,7 @@ namespace Zavala.UI {
                     yield return null;
                 }
             }
-            ZavalaGame.Events.Dispatch(GameEvents.DialogueDisplayed, new Data.DialogueLineData(inSourceString.VisibleText));
+            ZavalaGame.Events.Dispatch(GameEvents.DialogueDisplayed, EvtArgs.Box(new Data.DialogueLineData(inSourceString.VisibleText)));
         }
 
         #endregion // ITextDisplayer

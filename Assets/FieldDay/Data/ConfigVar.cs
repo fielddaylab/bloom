@@ -86,7 +86,6 @@ namespace FieldDay.Data {
             if (!field.IsStatic) {
                 throw new ArgumentException(string.Format("Non-static field '{0}::{1}' cannot be used as a config var", field.DeclaringType.FullName, field.Name));
             }
-            Assert.True(field.IsStatic, "Cannot bind non-static config vars");
             m_ProgrammerDefault = field.GetValue(null);
             m_ActiveDefault = m_ProgrammerDefault;
 
@@ -209,7 +208,7 @@ namespace FieldDay.Data {
             foreach (var cvar in ConfigVar.AllVars) {
                 if (cvar.Category != currentCategory) {
                     currentCategory = cvar.Category;
-                    categoryMenu = DebugConsole.FindOrCreateSubmenu(configVarMenu, currentCategory);
+                    categoryMenu = DMInfo.FindOrCreateSubmenu(configVarMenu, currentCategory);
                 }
 
                 ConfigVar.CreateDebugMenu(categoryMenu, cvar);
@@ -440,7 +439,7 @@ namespace FieldDay.Data {
             List<ConfigVar> list = new List<ConfigVar>(512);
             foreach(var kv in ReflectionBootData.GetAllConfigVars()) {
                 try {
-                    kv.Attribute.Bind(kv.Info);
+                    kv.Attribute.Bind((FieldInfo) kv.Info);
                     list.Add(kv.Attribute);
                 } catch(Exception e) {
                     UnityEngine.Debug.LogException(e);

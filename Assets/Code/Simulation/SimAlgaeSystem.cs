@@ -28,12 +28,12 @@ namespace Zavala.Sim {
                     // update GrowingTiles
                     if (pCount >= m_StateA.CurrentMinPForAlgaeGrowth) {
                         if (m_StateA.Algae.GrowingTiles.Add(tileIndex)) {
-                            ZavalaGame.Events.Dispatch(GameEvents.SimAlgaeChanged, new Data.AlgaeData(true, tileIndex, pCount, m_StateA.Algae.State[tileIndex].PercentAlgae));
+                            ZavalaGame.Events.Dispatch(GameEvents.SimAlgaeChanged, EvtArgs.Create(new Data.AlgaeData(true, tileIndex, pCount, m_StateA.Algae.State[tileIndex].PercentAlgae)));
                         }
                     } else {
                         m_StateA.Algae.GrowingTiles.Remove(tileIndex);
                         m_StateA.Algae.State[tileIndex].IsPeaked = false;
-                        ZavalaGame.Events.Dispatch(GameEvents.SimAlgaeChanged, new Data.AlgaeData(false, tileIndex, pCount, m_StateA.Algae.State[tileIndex].PercentAlgae));
+                        ZavalaGame.Events.Dispatch(GameEvents.SimAlgaeChanged, EvtArgs.Create(new Data.AlgaeData(false, tileIndex, pCount, m_StateA.Algae.State[tileIndex].PercentAlgae)));
                         // m_StateA.Algae.PeakingTiles.Remove(tileIndex);
                     }
                 }

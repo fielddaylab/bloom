@@ -95,6 +95,11 @@ namespace FieldDay.Scenes {
         }
 
         /// <summary>
+        /// Queue of callbacks for when the scene is marked as late-enabled.
+        /// </summary>
+        public RingBuffer<Action> LateEnableCallbackQueue = new RingBuffer<Action>(32, RingBufferMode.Expand);
+
+        /// <summary>
         /// Queue of callbacks for when the scene is marked loaded.
         /// </summary>
         public RingBuffer<Action> LoadedCallbackQueue = new RingBuffer<Action>(32, RingBufferMode.Expand);

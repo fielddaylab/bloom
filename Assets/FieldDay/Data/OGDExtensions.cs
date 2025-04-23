@@ -1,6 +1,8 @@
 using System;
 using System.Text;
+#if USING_OGDLOG
 using OGD;
+#endif // USING_OGDLOG
 
 namespace FieldDay.Data {
 #if USING_OGDLOG

@@ -220,23 +220,34 @@ namespace FieldDay.Debugging {
                 DMInfo menu = (DMInfo) pair.Info.Invoke(null, Array.Empty<object>());
 
                 if (menu != null) {
-                    DMInfo existing = FindSubmenu(s_RootMenu, menu.Header.Label);
-                    if (existing != null) {
-                        if (existing.Elements.Count > 0) {
-                            existing.AddDivider();
-                        }
-                        existing.MinimumWidth = Math.Max(existing.MinimumWidth, menu.MinimumWidth);
-                        foreach (var element in menu.Elements) {
-                            existing.Elements.PushBack(element);
-                        }
-                        menu.Clear(); // make sure to clear out old menu
-                    } else {
-                        s_RootMenu.AddSubmenu(menu);
-                    }
+                    DMInfo.MergeSubmenu(s_RootMenu, menu, true);
                 }
             }
 
-            SortByLabel(s_RootMenu);
+            // load engine menus from user assemblies
+            DMInfo engineMenu = new DMInfo("Engine", 16);
+            foreach (var pair in Reflect.FindMethods<EngineMenuFactoryAttribute>(ReflectionCache.UserAssemblies, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)) {
+                if (pair.Info.ReturnType != typeof(DMInfo)) {
+                    Log.Error("[DebugConsole] Method '{0}::{1}' does not return DMInfo", pair.Info.DeclaringType.Name, pair.Info.Name);
+                    continue;
+                }
+
+                if (pair.Info.GetParameters().Length != 0) {
+                    Log.Error("[DebugConsole] Method '{0}::{1}' has parameters", pair.Info.DeclaringType.Name, pair.Info.Name);
+                    continue;
+                }
+
+                DMInfo menu = (DMInfo) pair.Info.Invoke(null, Array.Empty<object>());
+
+                if (menu != null) {
+                    DMInfo.MergeSubmenu(engineMenu, menu, true);
+                }
+            }
+
+            DMInfo.SortByLabel(engineMenu);
+
+            DMInfo.MergeSubmenu(s_RootMenu, engineMenu, false);
+            DMInfo.SortByLabel(s_RootMenu);
         }
 
         static private void LoadQuickMenu() {
@@ -257,23 +268,11 @@ namespace FieldDay.Debugging {
                 DMInfo menu = (DMInfo) pair.Info.Invoke(null, Array.Empty<object>());
 
                 if (menu != null) {
-                    DMInfo existing = FindSubmenu(s_QuickMenu, menu.Header.Label);
-                    if (existing != null) {
-                        if (existing.Elements.Count > 0) {
-                            existing.AddDivider();
-                        }
-                        existing.MinimumWidth = Math.Max(existing.MinimumWidth, menu.MinimumWidth);
-                        foreach (var element in menu.Elements) {
-                            existing.Elements.PushBack(element);
-                        }
-                        menu.Clear(); // make sure to clear out old menu
-                    } else {
-                        s_QuickMenu.AddSubmenu(menu);
-                    }
+                    DMInfo.MergeSubmenu(s_QuickMenu, menu);
                 }
             }
 
-            SortByLabel(s_QuickMenu);
+            DMInfo.SortByLabel(s_QuickMenu);
         }
 
         private void SetMenuVisible(bool visible) {
@@ -334,38 +333,6 @@ namespace FieldDay.Debugging {
 
         #endregion // Minimal Layer
 
-        #region Helpers
-
-        static internal DMInfo FindSubmenu(DMInfo menu, string label) {
-            int index = menu.Elements.FindIndex((e, l) => {
-                return e.Type == DMElementType.Submenu && e.Submenu.Submenu.Header.Label == label;
-            }, label);
-            if (index >= 0) {
-                return menu.Elements[index].Submenu.Submenu;
-            } else {
-                return null;
-            }
-        }
-
-        static internal DMInfo FindOrCreateSubmenu(DMInfo menu, string label) {
-            int index = menu.Elements.FindIndex((e, l) => {
-                return e.Type == DMElementType.Submenu && e.Submenu.Submenu.Header.Label == label;
-            }, label);
-            if (index >= 0) {
-                return menu.Elements[index].Submenu.Submenu;
-            } else {
-                DMInfo newInfo = new DMInfo(label);
-                menu.AddSubmenu(newInfo);
-                return newInfo;
-            }
-        }
-
-        static internal void SortByLabel(DMInfo menu) {
-            menu.Elements.Sort((a, b) => StringComparer.Ordinal.Compare(a.Label, b.Label));
-        }
-
-        #endregion // Helpers
-
 #endif // DEVELOPMENT
         }
 
@@ -382,4 +349,11 @@ namespace FieldDay.Debugging {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
     public sealed class QuickMenuFactoryAttribute : PreserveAttribute { }
+
+    /// <summary>
+    /// Attribute marking a static method to be invoked to create an engine debug menu.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [Conditional("DEVELOPMENT"), Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+    public sealed class EngineMenuFactoryAttribute : PreserveAttribute { }
 }

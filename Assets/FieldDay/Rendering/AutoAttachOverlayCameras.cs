@@ -71,5 +71,15 @@ namespace FieldDay.Rendering {
             }
 #endif // USE_URP
         }
+
+        public void OverrideTags(string[] tags) {
+            if (isActiveAndEnabled) {
+                enabled = false;
+                m_Tags = tags ?? Array.Empty<string>();
+                enabled = true;
+            } else {
+                m_Tags = tags ?? Array.Empty<string>();
+            }
+        }
     }
 }

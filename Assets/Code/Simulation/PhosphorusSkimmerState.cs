@@ -74,7 +74,7 @@ namespace Zavala.World {
                         TileIndex = locs[i].TileIndex,
                         PlacedSkimmer = null
                     };
-                    ZavalaGame.Events.Dispatch(GameEvents.SkimmerChanged, new SkimmerData(locs[i].TileIndex, false, i == 2));
+                    ZavalaGame.Events.Dispatch(GameEvents.SkimmerChanged, EvtArgs.Create(new SkimmerData(locs[i].TileIndex, false, i == 2)));
                 } else if (locs[i].PlacedSkimmer == null && i < numSkimmers){
                     PhosphorusSkimmer skim = PlaceSkimmer(grid, skimmerPool, locs[i], i == 2); // if i == 2: third skimmer, make it a dredger
                     skim.gameObject.SetActive(true);
@@ -83,7 +83,7 @@ namespace Zavala.World {
                         TileIndex = locs[i].TileIndex,
                         PlacedSkimmer = skim
                     };
-                    ZavalaGame.Events.Dispatch(GameEvents.SkimmerChanged, new SkimmerData(locs[i].TileIndex, true, i == 2));
+                    ZavalaGame.Events.Dispatch(GameEvents.SkimmerChanged, EvtArgs.Create(new SkimmerData(locs[i].TileIndex, true, i == 2)));
                 }
             }
         }

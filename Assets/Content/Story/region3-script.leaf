@@ -18,7 +18,7 @@ $call QueueDialogueBubble(region2_city1, region2.explainAlgaeBloom)
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom", 2) // for unlocking PIPS
 $call AddRegionAgeTrigger(3, 20) // for unlocking IMPORT TAX
-$if global:storageUnlocked = false
+$if !global:storageUnlocked
     $call SendGlobalAlertForNode("region2_cafo1", region2.unlockStorage)
 $endif
 // $call Unpause()

@@ -7,6 +7,7 @@ namespace FieldDay.UI {
     /// Registers this transform for global lookup in the GuiMgr.
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
+    [AddComponentMenu("Field Day/Canvas/Global Named Gui Element")]
     public sealed class NamedGuiElement : MonoBehaviour {
         [SerializeField] private SerializedHash32 m_Id;
         [NonSerialized] private StringHash32 m_AppliedName;

@@ -9,6 +9,7 @@ namespace FieldDay.Animation {
 
         private struct LiteAnimatorRecord {
             public ILiteAnimator Animator;
+            public object Target;
             public LiteAnimatorState State;
         }
 
@@ -34,12 +35,23 @@ namespace FieldDay.Animation {
             }, phase);
         }
 
+        public void AddLiteAnimator(ILiteAnimator animator, object target, float duration, GameLoopPhase phase = GameLoopPhase.Update) {
+            AddLiteAnimator(animator, target, new LiteAnimatorState() {
+                Duration = duration,
+                TimeRemaining = duration
+            }, phase);
+        }
+
         public void AddLiteAnimator(ILiteAnimator animator, LiteAnimatorState state, GameLoopPhase phase = GameLoopPhase.Update) {
+            AddLiteAnimator(animator, animator, state, phase);
+        }
+
+        public void AddLiteAnimator(ILiteAnimator animator, object target, LiteAnimatorState state, GameLoopPhase phase = GameLoopPhase.Update) {
             Assert.NotNull(animator);
             var liteAnimators = GetLiteAnimators(phase);
 
             for (int i = 0; i < liteAnimators.Count; i++) {
-                if (liteAnimators[i].Animator == animator) {
+                if (liteAnimators[i].Animator == animator && liteAnimators[i].Target == target) {
                     liteAnimators[i].State = state;
                     break;
                 }
@@ -47,6 +59,7 @@ namespace FieldDay.Animation {
 
             liteAnimators.PushBack(new LiteAnimatorRecord() {
                 Animator = animator,
+                Target = target,
                 State = state
             });
         }
@@ -55,12 +68,19 @@ namespace FieldDay.Animation {
         /// Cancels an animation.
         /// </summary>
         public void CancelLiteAnimator(ILiteAnimator animator, GameLoopPhase phase = GameLoopPhase.Update) {
+            CancelLiteAnimator(animator, animator, phase);
+        }
+
+        /// <summary>
+        /// Cancels an animation.
+        /// </summary>
+        public void CancelLiteAnimator(ILiteAnimator animator, object target, GameLoopPhase phase = GameLoopPhase.Update) {
             Assert.NotNull(animator);
             var liteAnimators = GetLiteAnimators(phase);
-            for(int i = 0; i < liteAnimators.Count; i++) {
+            for (int i = 0; i < liteAnimators.Count; i++) {
                 LiteAnimatorRecord animRecord = liteAnimators[i];
-                if (animRecord.Animator == animator) {
-                    animRecord.Animator.ResetAnimation(ref animRecord.State);
+                if (animRecord.Animator == animator && animRecord.Target == target) {
+                    animRecord.Animator.ResetAnimation(animRecord.Target, ref animRecord.State);
                     liteAnimators.FastRemoveAt(i);
                     break;
                 }
@@ -102,7 +122,7 @@ namespace FieldDay.Animation {
             int count = liteAnimators.Count;
             while (count-- > 0) {
                 LiteAnimatorRecord animRecord = liteAnimators.PopFront();
-                if (animRecord.Animator.UpdateAnimation(ref animRecord.State, deltaTime)) {
+                if (animRecord.Animator.UpdateAnimation(animRecord.Target, ref animRecord.State, deltaTime)) {
                     liteAnimators.PushBack(animRecord);
                 }
             }
