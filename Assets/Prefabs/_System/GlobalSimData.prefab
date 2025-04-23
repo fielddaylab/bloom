@@ -181,7 +181,7 @@ MonoBehaviour:
     ExportDepotFlatRate:
       Manure: 0
       MFertilizer: 20
-      DFertilizer: 5
+      DFertilizer: 2
       Grain: 0
       Milk: 0
   TemplateMarketCosts:
