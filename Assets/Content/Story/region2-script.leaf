@@ -161,6 +161,7 @@ $endif
 
 :: unlockStorage
 @conditions     global:runoffDiscovered
+@queued
 @cutscene
 @once
 $call Wait(0.5)
