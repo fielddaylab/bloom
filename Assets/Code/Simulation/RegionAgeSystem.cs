@@ -43,7 +43,7 @@ namespace Zavala.Sim
             //Debug.Log("[RegionAgeSystem] Checking... "+age);
             int triggerAge = m_StateA.AgeTriggers[region];
             if (triggerAge > 0 && age >= triggerAge) {
-                Debug.Log("[RegionAgeSystem] Sending Trigger: "+region+" aged "+age);
+                // Debug.Log("[RegionAgeSystem] Sending Trigger: "+region+" aged "+age);
                 using (TempVarTable varTable = TempVarTable.Alloc()) {
                     varTable.Set("regionId", (int)region + 1); //0-indexed to 1-indexed
                     varTable.Set("age", age);

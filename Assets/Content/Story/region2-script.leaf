@@ -215,9 +215,23 @@ $endif
 // @once
 // $call SendGlobalAlertForNode("region2_city1", region2.unlockPhosphorusView)
 
-:: forestBloomCutscene
+:: queueForestBloomFallback
+@trigger        RegionReachedAge // 50 after import tax unlocked
+@conditions     regionId == 2
+@cutscene
+@once
+$if !global:tradeGraphsUnlocked
+    $call SendGlobalAlertForNode("region2_city1", region2.forestBloomCutscene)
+$endif
+
+:: queueForestBloom
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
+@cutscene
+@once
+$branch .forestBloomCutscene
+
+:: forestBloomCutscene
 @cutscene
 @queued
 @once

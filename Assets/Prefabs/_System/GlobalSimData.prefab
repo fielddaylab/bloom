@@ -1247,9 +1247,9 @@ MonoBehaviour:
       RegionAgeAbove: 20
       NodeReached: region5.firstBlimpReceived
       DFertilizerRatio:
-        Target: 0.5
+        Target: 0.2
         Above: 1
       MFertilizerRatio:
-        Target: 0.2
+        Target: 0.5
         Above: 0
       CheckCitiesConnected: 1
