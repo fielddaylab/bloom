@@ -1039,7 +1039,7 @@ MonoBehaviour:
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
       TotalPhosphorusAbove: 192
-      TotalAlgaeAbove: 12
+      TotalAlgaeAbove: 16
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
@@ -1244,7 +1244,7 @@ MonoBehaviour:
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
-      RegionAgeAbove: 90
+      RegionAgeAbove: 20
       NodeReached: region5.firstBlimpReceived
       DFertilizerRatio:
         Target: 0.5
