@@ -142,6 +142,9 @@ $call ForcePinDialogue()
 @trigger        RegionReachedAge // RegionAge 20 after region opens
 @conditions     regionId == 3
 @once
+$if !global:tradeGraphsUnlocked
+    $call AddRegionAgeDeltaTrigger(2, 50) // for unlocking MARKET GRAPHS.
+$endif
 $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
 
 :: unlockImportTax

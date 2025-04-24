@@ -13,6 +13,7 @@ $call QueueDialogueBubble(region2_city1, region2.openedToWetland)
 // // $call Pause()
 $call OffsetAlgaeGrowthThreshold(0)
 $call AddAutoAlertCondition("Bloom")
+$call AddRegionAgeDeltaTrigger(2, 80) // fallback for unlocking DIGESTERS
 $set global:readyForSkimmers = true
 $if !global:importUnlocked
     $call SendGlobalAlertForNode("region3_grain2", region3.unlockImportTax)
@@ -263,9 +264,26 @@ $elseif local:policyType == "ImportTaxPolicy"
     $endif
 $endif
 
-:: unlockDigesters
+:: queueUnlockDigestersFallback
+@trigger        RegionReachedAge
+@conditions     regionId == 2, AgeOfRegion(4) > 1
+@cutscene
+@once
+$if !global:digestersUnlocked
+    $branch .unlockDigesters
+$endif
+
+:: queueUnlockDigesters
 @trigger        AlertExamined
 @conditions     alertType == "bloom", alertRegion == 4
+@cutscene
+@once
+$if !global:digestersUnlocked
+    $branch .unlockDigesters
+$endif
+
+:: unlockDigesters
+@queued
 @cutscene
 @once
 // // $call Pause()

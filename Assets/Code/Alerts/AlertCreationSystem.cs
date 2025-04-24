@@ -63,7 +63,7 @@ namespace Zavala.Scripting
                     {
                         if (node.QueuedToTileIdx > 0 && node.QueuedToTileIdx != peekEvent.TileIndex)
                         {
-                            Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to tile {3}", node.FullName, peekEvent.TileIndex, node.QueuedToTileIdx);
+                            Log.Msg("[EventActorSystem] Attempted to attach node {0} to {1}, but it has already been queued to tile {2}", node.FullName, peekEvent.TileIndex, node.QueuedToTileIdx);
                             component.QueuedEvents.PopFront();
                             return;
                         }
