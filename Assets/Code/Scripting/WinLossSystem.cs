@@ -116,7 +116,7 @@ namespace Zavala.Scripting {
         private void EvaluateTotalAlgaeAbove(ref bool triggered, float threshold, uint region, ref EndGameConditions cond) {
             if (threshold <= 0) return;
             float algae = Game.SharedState.Get<SimAlgaeState>().TotalAlgaePerRegion[region];
-            if (algae < threshold && Math.Abs(algae - threshold) > 0.1) {
+            if (algae < threshold) {
                 triggered = false;
                 TryLogConditionChanged(false, ref cond, EndType.TooManyBlooms, EndConditionType.AlgaeAbove, region);
             } else {

@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f5bce2403f8124e9edef615ac5ac95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_initialBudgetsPerRegion: 3c000000000000005f00000000000000550000000000000050000000000000005a00000000000000
+  m_initialBudgetsPerRegion: 3c000000000000005f0000000000000055000000000000005f000000000000005a00000000000000
 --- !u!114 &7708306960153739439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,8 +1038,8 @@ MonoBehaviour:
     - Type: 2
       BudgetBelow: 0
       CheckFarmsUnconnected: 0
-      TotalPhosphorusAbove: 192
-      TotalAlgaeAbove: 12
+      TotalPhosphorusAbove: 256
+      TotalAlgaeAbove: 16
       CityFallingDurationAbove: 0
       RegionAgeAbove: 0
       NodeReached: 
@@ -1244,7 +1244,7 @@ MonoBehaviour:
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
-      RegionAgeAbove: 90
+      RegionAgeAbove: 20
       NodeReached: region5.firstBlimpReceived
       DFertilizerRatio:
         Target: 0.5

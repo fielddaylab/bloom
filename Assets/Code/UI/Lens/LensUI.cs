@@ -9,6 +9,7 @@ using FieldDay.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Zavala.Advisor;
 using Zavala.Data;
 using Zavala.World;
@@ -105,10 +106,10 @@ namespace Zavala.UI {
                 SetButtonActive(m_EcoButton);
                 m_Mode = AdvisorType.Ecology;
                 ShowFoldout(m_EcoButton);
+                ZavalaGame.Events.Dispatch(GameEvents.TogglePhosphorusView, true);
             } else {
                 HidePhosphorus(true);
             }
-            ZavalaGame.Events.Dispatch(GameEvents.TogglePhosphorusView, toggle);
         }
 
         private void OnEconClicked() {
@@ -118,12 +119,11 @@ namespace Zavala.UI {
                 SetButtonActive(m_EconButton);
                 m_Mode = AdvisorType.Economy;
                 ShowFoldout(m_EconButton);
-
+                ZavalaGame.Events.Dispatch(GameEvents.ToggleEconomyView, true);
                 m_MarketRoutine.Replace(this, ShowMarket());
             } else {
                 HideMarket(true);
             }
-            ZavalaGame.Events.Dispatch(GameEvents.ToggleEconomyView, toggle);
         }
 
         #endregion // Handlers
@@ -169,7 +169,7 @@ namespace Zavala.UI {
                 if (hideFoldout) {
                     HideFoldout();
                 }
-
+                ZavalaGame.Events.Dispatch(GameEvents.ToggleEconomyView, false);
                 m_MarketRoutine.Replace(this, HideMarket());
             }
         }
@@ -183,6 +183,7 @@ namespace Zavala.UI {
                 if (hideFoldout) {
                     HideFoldout();
                 }
+                ZavalaGame.Events.Dispatch(GameEvents.TogglePhosphorusView, false);
             }
         }
 
