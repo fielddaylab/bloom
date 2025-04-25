@@ -666,6 +666,7 @@ namespace Zavala.Sim {
             int index = (int) grid.WaterGroupCount;
             ref WaterGroupInfo info = ref grid.WaterGroups[index];
             info.RegionId = regionIndex;
+            Assert.True(range.Length <= WaterGroupInfo.MaxTilesPerGroup, "Exceeded max water tiles per group");
             info.TileCount = range.Length;
             unsafe {
                 for (int i = 0; i < range.Length; i++) {

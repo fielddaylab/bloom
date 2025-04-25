@@ -449,12 +449,16 @@ namespace Zavala.Editor {
 
             for(int i = 0; i < 4; i++) {
                 if (groups[i].Count > 0) {
-                    groups[i].Sort();
-                    groupData.Add(new RegionAsset.WaterGroupRange() {
-                        Offset = (ushort) groupIndices.Count,
-                        Length = (ushort) groups[i].Count
-                    });
-                    groupIndices.AddRange(groups[i]);
+                    if (groups[i].Count >= WaterGroupInfo.MaxTilesPerGroup) {
+                        Log.Error("Too many water tiles in group {0} ({1} vs max {2})", i, groups[i].Count, WaterGroupInfo.MaxTilesPerGroup);
+                    } else {
+                        groups[i].Sort();
+                        groupData.Add(new RegionAsset.WaterGroupRange() {
+                            Offset = (ushort)groupIndices.Count,
+                            Length = (ushort)groups[i].Count
+                        });
+                        groupIndices.AddRange(groups[i]);
+                    }
                 }
             }
 
