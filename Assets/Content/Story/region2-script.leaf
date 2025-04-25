@@ -221,6 +221,7 @@ $endif
 @conditions     regionId == 2, !global:tradeGraphsUnlocked
 @cutscene
 @once
+$call RemoveAutoAlertConditions("Bloom", 2)
 $call SendGlobalAlertForNode("region2_city1", region2.forestBloomCutscene)
 
 :: queueForestBloom

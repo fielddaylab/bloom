@@ -187,6 +187,16 @@ namespace Zavala.Scripting {
             });
         }
 
+        [LeafMember("RemoveAutoAlertConditions")]
+        static public void RemoveAutoAlertConditionLeaf(EventActorAlertType alertType = default, int regionIndex = -1) {
+            AlertState state = Game.SharedState.Get<AlertState>();
+            state.AutoTriggerAlerts.RemoveWhere(a => AutoAlertMatch(a, alertType, regionIndex));
+        }
+
+        private static bool AutoAlertMatch(AutoAlertCondition member, EventActorAlertType searchType, int searchRegion) {
+            return (searchType == default || member.Alert.Equals(searchType))
+                && (searchRegion == -1 || member.RegionIndex.Equals(searchRegion));
+        }
         /*
         [LeafMember("PauseAlertType")]
         static public bool PauseAlertType(EventActorAlertType alertType) {
