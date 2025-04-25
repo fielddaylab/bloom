@@ -269,6 +269,7 @@ $endif
 @conditions     regionId == 2, global:tradeGraphsUnlocked, global:skimmersUnlocked, !global:digestersUnlocked, AgeOfRegion(4) > 1
 @cutscene
 @once
+$call RemoveAutoAlertConditions("Bloom", 4)
 $call SendGlobalAlertForNode("region4_city1", region4.unlockDigesters)
 
 :: queueUnlockDigesters
