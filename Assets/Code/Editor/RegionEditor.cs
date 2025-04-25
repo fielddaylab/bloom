@@ -22,7 +22,7 @@ namespace Zavala.Editor {
         private void SingleEditor() {
             RegionAsset region = target as RegionAsset;
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("LeafScript"));
+            //EditorGUILayout.PropertyField(serializedObject.FindProperty("LeafScript"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("OutlineColor"));
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty("Ambience"));

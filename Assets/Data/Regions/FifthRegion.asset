@@ -1328,7 +1328,6 @@ MonoBehaviour:
     Length: 21
   - Offset: 29
     Length: 20
-  LeafScript: {fileID: 0}
   OutlineColor:
     serializedVersion: 2
     rgba: 4294918886
