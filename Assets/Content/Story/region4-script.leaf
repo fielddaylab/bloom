@@ -157,7 +157,7 @@ $endif
 
 :: unlockSkimmers
 @trigger        AlertExamined // unlocked by first bloom appearance after region 4 opens up
-@conditions     alertType == "bloom", global:readyForSkimmers, !global:skimmersUnlocked
+@conditions     global:readyForSkimmers, alertType == "bloom", !global:skimmersUnlocked, AgeOfRegion(4) > 1
 @forcePolicy    Ecology
 @cutscene
 @once
@@ -370,7 +370,7 @@ $call AddRegionAgeDeltaTrigger(4, 10)
 :: digesterDelay
 @trigger    RegionReachedAge 
 @conditions regionId == 4, global:builtDigester
-$call SendGlobalAlertForNode(region4_city1, region4.afterBuiltDigester)
+$call SendGlobalAlertForNode(region4_city1, region4.afterBuiltDigester, true)
 
 :: afterBuiltDigester
 @cutscene

@@ -125,7 +125,7 @@ namespace Zavala.Cards
         private static readonly string POLICY_TYPE_TAG = "@policytype";
         private static readonly string IMAGE_PATH_TAG = "@path";
 
-        private static readonly string END_DELIM = "\n";
+        private static readonly string END_DELIM = "\r\n";
 
         #endregion // Card Definition Parsing
 
