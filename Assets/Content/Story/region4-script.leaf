@@ -266,21 +266,17 @@ $endif
 
 :: queueUnlockDigestersFallback
 @trigger        RegionReachedAge
-@conditions     regionId == 2, AgeOfRegion(4) > 1
+@conditions     regionId == 2, !global:digestersUnlocked, AgeOfRegion(4) > 1
 @cutscene
 @once
-$if !global:digestersUnlocked
-    $branch .unlockDigesters
-$endif
+$branch .unlockDigesters
 
 :: queueUnlockDigesters
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 4
+@conditions     alertType == "bloom", alertRegion == 4, !global:digestersUnlocked
 @cutscene
 @once
-$if !global:digestersUnlocked
-    $branch .unlockDigesters
-$endif
+$branch .unlockDigesters
 
 :: unlockDigesters
 @queued

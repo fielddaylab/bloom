@@ -217,12 +217,10 @@ $endif
 
 :: queueForestBloomFallback
 @trigger        RegionReachedAge // 50 after import tax unlocked
-@conditions     regionId == 2
+@conditions     regionId == 2, !global:tradeGraphsUnlocked
 @cutscene
 @once
-$if !global:tradeGraphsUnlocked
-    $call SendGlobalAlertForNode("region2_city1", region2.forestBloomCutscene)
-$endif
+$call SendGlobalAlertForNode("region2_city1", region2.forestBloomCutscene)
 
 :: queueForestBloom
 @trigger        AlertExamined
