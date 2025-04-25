@@ -12,7 +12,7 @@ $call QueueDialogueBubble(region2_city1, region2.openedToWetland)
 @cutscene
 // // $call Pause()
 $call OffsetAlgaeGrowthThreshold(0)
-$call AddAutoAlertCondition("Bloom")
+$call AddAutoAlertCondition("Bloom") // first bloom anywhere: for unlocking SKIMMERS
 $call AddRegionAgeDeltaTrigger(2, 80) // fallback for unlocking DIGESTERS
 $set global:readyForSkimmers = true
 $if !global:importUnlocked
@@ -266,14 +266,14 @@ $endif
 
 :: queueUnlockDigestersFallback
 @trigger        RegionReachedAge
-@conditions     regionId == 2, !global:digestersUnlocked, AgeOfRegion(4) > 1
+@conditions     regionId == 2, global:tradeGraphsUnlocked, global:skimmersUnlocked, !global:digestersUnlocked, AgeOfRegion(4) > 1
 @cutscene
 @once
-$branch .unlockDigesters
+$call SendGlobalAlertForNode("region4_city1", region4.unlockDigesters)
 
 :: queueUnlockDigesters
 @trigger        AlertExamined
-@conditions     alertType == "bloom", alertRegion == 4, !global:digestersUnlocked
+@conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked, !global:digestersUnlocked, AgeOfRegion(4) > 1
 @cutscene
 @once
 $branch .unlockDigesters
