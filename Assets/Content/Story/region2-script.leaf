@@ -1,4 +1,5 @@
 # basePath   region2
+# requiredRegion    2
 
 :: queueForestUnlock
 @trigger        RegionUnlocked
@@ -190,7 +191,7 @@ $call UnlockShopItem("Storage")
 :: runoffGeneric // triggered by runoffBranch
 {@advisorEcolForest}    Eugh, more of that contemptible runoff.
 {@advisorEcolForest}    We have to find a way to use the manure for fertilizer. 
-$if BuildingBuiltInRegion("Storage", 2)
+$if BuildingBuiltInRegion(2, "Storage")
     {@advisorEconForest}     Another <b>Storage</b> unit could help, but they aren't cheap.
 $else
     {@advisorEconForest}     A <b>Storage</b> unit might help, but they aren't cheap.

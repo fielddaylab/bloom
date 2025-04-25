@@ -1,4 +1,6 @@
 # basePath   region3
+# requiredRegion    3
+
 :: queuePrairieUnlock
 @trigger        RegionUnlocked
 @conditions     regionId == "Prairie"

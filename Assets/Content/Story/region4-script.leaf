@@ -1,4 +1,5 @@
 # basePath   region4
+# requiredRegion    4
 
 :: queueWetlandUnlock
 @trigger        RegionUnlocked

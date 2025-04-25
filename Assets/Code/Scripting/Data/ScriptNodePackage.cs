@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BeauUtil;
+using BeauUtil.Blocks;
 using BeauUtil.IO;
 using Leaf;
 using Leaf.Compiler;
@@ -11,6 +12,8 @@ namespace FieldDay.Scripting {
         private int m_UseCount = 0;
         private IHotReloadable m_HotReload; // TODO: Implement
         internal LeafAsset m_SourceAsset; // TODO: Implement
+        
+        [BlockMeta("requiredRegion"), UnityEngine.Scripting.Preserve] internal int m_RequiredRegion = -1;
 
         public ScriptNodePackage(string inName) : base(inName) {
         }
@@ -95,7 +98,7 @@ namespace FieldDay.Scripting {
             }
 
             protected override ScriptNode CreateNode(string inFullId, StringSlice inExtraData, ScriptNodePackage inPackage) {
-                return new ScriptNode(inFullId, inPackage);
+                return new ScriptNode(inFullId, inPackage, inPackage.m_RequiredRegion);
             }
         }
 

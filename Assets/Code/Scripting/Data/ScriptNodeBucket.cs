@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using BeauUtil;
+using BeauUtil.Debugger;
 using Leaf.Runtime;
 
 namespace FieldDay.Scripting {
@@ -62,7 +63,7 @@ namespace FieldDay.Scripting {
         /// <summary>
         /// Retrieves the highest scoring nodes that fulfill the given predicate.
         /// </summary>
-        public int GetHighestScoringSorted(LeafEvalContext evalContext, StringHash32 targetId, ScriptPersistence persistence, ScriptRuntimeState runtimeState, ICollection<ScriptNode> nodes) {
+        public int GetHighestScoringSorted(LeafEvalContext evalContext, StringHash32 targetId, ScriptPersistence persistence, ScriptRuntimeState runtimeState, int regionCount, ICollection<ScriptNode> nodes) {
             EnsureSorted();
 
             int count = 0;
@@ -76,7 +77,7 @@ namespace FieldDay.Scripting {
                     break;
                 }
 
-                if (!IsValidCandidateEarly(node, evalContext, targetId, persistence, runtimeState)) {
+                if (!IsValidCandidateEarly(node, evalContext, targetId, persistence, runtimeState, regionCount)) {
                     continue;
                 }
 
@@ -84,7 +85,7 @@ namespace FieldDay.Scripting {
                 //    continue;
                 //}
 
-                if (!IsValidCandidate(node, evalContext, targetId)) {
+                if (!IsValidCandidate(node, evalContext, targetId, regionCount)) {
                     continue;
                 }
 
@@ -99,18 +100,18 @@ namespace FieldDay.Scripting {
         /// <summary>
         /// Retrieves all the unsorted that fulfill the given predicate.
         /// </summary>
-        public int GetAllUnsorted(LeafEvalContext evalContext, StringHash32 targetId, ScriptPersistence persistence, ScriptRuntimeState runtimeState, ICollection<ScriptNode> nodes) {
+        public int GetAllUnsorted(LeafEvalContext evalContext, StringHash32 targetId, ScriptPersistence persistence, ScriptRuntimeState runtimeState, int regionCount, ICollection<ScriptNode> nodes) {
             int count = 0; 
             foreach(var node in m_Unordered) {
                 if (!node.Package().IsActive()) {
                     continue;
                 }
 
-                if (!IsValidCandidateEarly(node, evalContext, targetId, persistence, runtimeState)) {
+                if (!IsValidCandidateEarly(node, evalContext, targetId, persistence, runtimeState, regionCount)) {
                     continue;
                 }
 
-                if (!IsValidCandidate(node, evalContext, targetId)) {
+                if (!IsValidCandidate(node, evalContext, targetId, regionCount)) {
                     continue;
                 }
 
@@ -125,12 +126,19 @@ namespace FieldDay.Scripting {
         /// Returns if the given node is a valid candidate for execution.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static private bool IsValidCandidate(ScriptNode node, LeafEvalContext evalContext, StringHash32 targetId) {
+        static private bool IsValidCandidate(ScriptNode node, LeafEvalContext evalContext, StringHash32 targetId, int regionCount) {
             if (node.Conditions.Count > 0) {
                 if (!node.Conditions.Evaluate(evalContext, out LeafExpression failure).AsBool()) {
                     return false;
                 }
             }
+
+#if UNITY_EDITOR
+            if (node.RequiredRegion > 0 && regionCount < node.RequiredRegion) {
+                Log.Error("Node '{0}' was available to trigger yet region {1} not yet unlocked ({2} regions unlocked)", node.FullName, node.RequiredRegion, regionCount);
+                return false;
+            }
+#endif // UNITY_EDITOR
 
             return true;
         }
@@ -139,7 +147,7 @@ namespace FieldDay.Scripting {
         /// Returns if the given node is a valid candidate for execution.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static private bool IsValidCandidateEarly(ScriptNode node, LeafEvalContext evalContext, StringHash32 targetId, ScriptPersistence persistence, ScriptRuntimeState runtimeState) {
+        static private bool IsValidCandidateEarly(ScriptNode node, LeafEvalContext evalContext, StringHash32 targetId, ScriptPersistence persistence, ScriptRuntimeState runtimeState, int regionCount) {
             if ((node.Flags & ScriptNodeFlags.IgnoreDuringCutscene) != 0 && runtimeState.Cutscene.IsRunning()) {
                 return false;
             }
@@ -154,6 +162,13 @@ namespace FieldDay.Scripting {
                     return false;
                 }
             }
+
+#if !UNITY_EDITOR
+            if (node.RequiredRegion > 0 && regionCount < node.RequiredRegion) {
+                Log.Msg("Skipping node '{0}' because region {1} not yet unlocked ({2} regions unlocked)", node.FullName, node.RequiredRegion, regionCount);
+                return false;
+            }
+#endif // UNITY_EDITOR
 
             //if ((node.Flags & ScriptNodeFlags.AnyTarget) != 0 && !targetId.IsEmpty && targetId != node.TargetId) {
             //    return false;

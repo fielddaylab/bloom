@@ -12,8 +12,9 @@ namespace FieldDay.Scripting {
     /// Scripting node.
     /// </summary>
     public sealed class ScriptNode : LeafNode {
-        public ScriptNode(string fullName, ScriptNodePackage inPackage) : base(fullName, inPackage) {
+        public ScriptNode(string fullName, ScriptNodePackage inPackage, int regionIndex) : base(fullName, inPackage) {
             FullName = fullName;
+            RequiredRegion = regionIndex;
         }
 
         public readonly string FullName;
@@ -26,7 +27,9 @@ namespace FieldDay.Scripting {
         [BlockMeta("repeat")] public int RepeatPeriod;
         public ScriptNodeMemoryTarget PersistenceType;
         [BlockMeta("tag")] public StringHash32 Tag;
+
         public int QueuedToTileIdx = -1;
+        public int RequiredRegion;
 
         public new ScriptNodePackage Package() { return (ScriptNodePackage) m_Package; }
 

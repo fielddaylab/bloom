@@ -125,7 +125,7 @@ namespace Zavala.Cards
         private static readonly string POLICY_TYPE_TAG = "@policytype";
         private static readonly string IMAGE_PATH_TAG = "@path";
 
-        private static readonly string END_DELIM = "\r\n";
+        private static readonly char[] END_DELIMS = new char[] { '\r', '\n' };
 
         #endregion // Card Definition Parsing
 
@@ -165,7 +165,7 @@ namespace Zavala.Cards
             // Parse into data
 
             // First line must be card id
-            cardID = cardDef.Substring(0, cardDef.IndexOf(END_DELIM));
+            cardID = cardDef.Substring(0, cardDef.IndexOfAny(END_DELIMS));
             Debug.Log("[CardUtility] parsed card id : " + cardID);
 
             // PolicyLevel comes after @PolicyLevel
@@ -173,7 +173,7 @@ namespace Zavala.Cards
             if (levelIndex != -1) {
                 string afterLevel = cardDef.Substring(levelIndex);
                 int offset = POLICY_LEVEL_TAG.Length;
-                string levelStr = cardDef.Substring(levelIndex + offset, afterLevel.IndexOf(END_DELIM) - offset).Trim();
+                string levelStr = cardDef.Substring(levelIndex + offset, afterLevel.IndexOfAny(END_DELIMS) - offset).Trim();
                 try {
                     level = (PolicyLevel)Enum.Parse(typeof(PolicyLevel), levelStr, true);
                 }
@@ -195,7 +195,7 @@ namespace Zavala.Cards
             if (simIDIndex != -1) {
                 string afterSimID = cardDef.Substring(simIDIndex);
                 int offset = POLICY_TYPE_TAG.Length;
-                string simIDStr = cardDef.Substring(simIDIndex + offset, afterSimID.IndexOf(END_DELIM) - offset).Trim();
+                string simIDStr = cardDef.Substring(simIDIndex + offset, afterSimID.IndexOfAny(END_DELIMS) - offset).Trim();
 
                 policyType = (PolicyType)Enum.Parse(typeof(PolicyType), simIDStr, true);
             }
@@ -213,7 +213,7 @@ namespace Zavala.Cards
             if (imgPathIndex != -1) {
                 string afterPathIndex = cardDef.Substring(imgPathIndex);
                 int offset = IMAGE_PATH_TAG.Length;
-                string imgPathStr = cardDef.Substring(imgPathIndex + offset, afterPathIndex.IndexOf(END_DELIM) - offset).Trim();
+                string imgPathStr = cardDef.Substring(imgPathIndex + offset, afterPathIndex.IndexOfAny(END_DELIMS) - offset).Trim();
 
                 imgPath = imgPathStr;
             }
