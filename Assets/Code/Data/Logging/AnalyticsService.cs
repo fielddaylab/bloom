@@ -463,10 +463,10 @@ namespace Zavala.Data {
 
         #region Inspector
         [SerializeField, Required] private string m_AppId = "BLOOM";
-        [SerializeField, Required] private string m_AppVersion = "1.0";
+        [SerializeField, Required] private string m_AppVersion = "1.1";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
-        [SerializeField] private bool m_Testing = true;
+        [SerializeField] private bool m_Testing = false;
 
         #endregion // Inspector
 
