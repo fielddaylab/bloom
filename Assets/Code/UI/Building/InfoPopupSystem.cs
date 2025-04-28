@@ -37,7 +37,7 @@ namespace Zavala.UI.Info {
                 } else {
                     HasInfoPopup infoPopup = GetInfoPopup(m_StateA.ViewportMouseRay);
                     if (infoPopup != null) {
-                        popupUI.LoadTarget(infoPopup);
+                        popupUI.LoadTarget(infoPopup, true);
                         WorldCameraUtility.PanCameraToTransform(infoPopup.transform);
                     }
                 }
@@ -78,7 +78,7 @@ namespace Zavala.UI.Info {
             if (ScriptUtility.LookupActor(id).TryGetComponent(out HasInfoPopup target)) {
                 InfoPopup ip = Game.Gui.GetShared<InfoPopup>();
                 ScriptUtility.UnpinDialogue();
-                ip.LoadTarget(target);
+                ip.LoadTarget(target, false);
                 ip.HoldOpen = holdOpen;
                 WorldCameraUtility.PanCameraToTransform(target.transform);
             } else {
