@@ -9,6 +9,8 @@ using FieldDay.SharedState;
 using Leaf;
 using Leaf.Runtime;
 using UnityEngine;
+using Zavala.Sim;
+using Zavala.World;
 
 namespace FieldDay.Scripting {
     [DisallowMultipleComponent]
@@ -184,8 +186,9 @@ namespace FieldDay.Scripting {
         static public ScriptNode FindRandomTrigger(ScriptDatabase db, StringHash32 bucketId, LeafEvalContext context, StringHash32 targetId) {
             ScriptNodeBucket bucket;
             if (db.LoadedNodeBuckets.TryGetValue(bucketId, out bucket)) {
+                int regionCount = (int) Find.State<SimGridState>().RegionCount;
                 using(PooledList<ScriptNode> lookupList = PooledList<ScriptNode>.Create()) {
-                    int count = bucket.GetHighestScoringSorted(context, targetId, ScriptUtility.Persistence, ScriptUtility.Runtime, lookupList);
+                    int count = bucket.GetHighestScoringSorted(context, targetId, ScriptUtility.Persistence, ScriptUtility.Runtime, regionCount, lookupList);
                     if (count > 0) {
                         return ScriptUtility.Runtime.Random.Choose(lookupList);
                     }
@@ -206,9 +209,10 @@ namespace FieldDay.Scripting {
 
         static public int FindAllFunctions(ScriptDatabase db, StringHash32 bucketId, LeafEvalContext context, StringHash32 targetId, ICollection<ScriptNode> results) {
             ScriptNodeBucket bucket;
+            int regionCount = (int)Find.State<SimGridState>().RegionCount;
             if (db.LoadedNodeBuckets.TryGetValue(bucketId, out bucket)) {
                 using (PooledList<ScriptNode> lookupList = PooledList<ScriptNode>.Create()) {
-                    return bucket.GetAllUnsorted(context, targetId, ScriptUtility.Persistence, ScriptUtility.Runtime, lookupList);
+                    return bucket.GetAllUnsorted(context, targetId, ScriptUtility.Persistence, ScriptUtility.Runtime, regionCount, lookupList);
                 }
             }
 

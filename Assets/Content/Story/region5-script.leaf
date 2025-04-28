@@ -1,4 +1,5 @@
 # basePath   region5
+# requiredRegion    5
 
 :: queueCityUnlocked
 @trigger        RegionUnlocked

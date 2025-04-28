@@ -725,7 +725,6 @@ MonoBehaviour:
   WaterGroups:
   - Offset: 0
     Length: 16
-  LeafScript: {fileID: 0}
   OutlineColor:
     serializedVersion: 2
     rgba: 4280216766

@@ -1,4 +1,5 @@
 # basePath   region1
+# requiredRegion    1
 
 :: welcome
 @trigger GameBooted
