@@ -1244,12 +1244,12 @@ MonoBehaviour:
       TotalPhosphorusAbove: 0
       TotalAlgaeAbove: 0
       CityFallingDurationAbove: 0
-      RegionAgeAbove: 80
+      RegionAgeAbove: 100
       NodeReached: region5.firstBlimpReceived
       DFertilizerRatio:
-        Target: 0.2
+        Target: 0.3
         Above: 1
       MFertilizerRatio:
-        Target: 0.5
+        Target: 0.3
         Above: 0
       CheckCitiesConnected: 1
