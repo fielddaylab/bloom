@@ -229,6 +229,7 @@ $call SendGlobalAlertForNode("region2_city1", region2.forestBloomCutscene)
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
 @cutscene
 @once
+$call RemoveRegionAgeTrigger(2)
 $branch .forestBloomCutscene
 
 :: forestBloomCutscene
@@ -236,6 +237,7 @@ $branch .forestBloomCutscene
 @queued
 @once
 // $call Pause()
+$if !global:tradeGraphsUnlocked
 {@advisorEconForest}    Oh no...
 $call CutsceneBegin(3)
     $call CutscenePrepareImages("act3/3-1-1.png", "act3/3-1-2.png", "act3/3-1-3.png")
@@ -269,8 +271,8 @@ $call ForceAdvisorModule("Economy")
 // {@advisorEconForest}   Good heavens! There's excess phosphorus all over...
 // {@advisorEcolForest}   Hmm... Maybe this can help us find where <b>new phosphorus</b> is appearing.
 // $call AddRegionAgeDeltaTrigger(3, 20) // for unlocking MARKET GRAPHS.
-
 $call OffsetAlgaeGrowthThreshold(1)
+$endif
 
 :: testBloomTriggerForest
 @trigger        AlertExamined

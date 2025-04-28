@@ -35,5 +35,10 @@ namespace Zavala.Sim {
             int finalAge = ZavalaGame.SharedState.Get<SimGridState>().Regions[region].Age + delay;
             ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers[region] = finalAge; 
         }
+
+        [LeafMember("RemoveRegionAgeTrigger")]
+        static public void RemoveRegionAgeTrigger(int region) {
+            ZavalaGame.SharedState.Get<RegionAgeState>().AgeTriggers[region - 1] = -1; // 1-indexed to 0-indexed
+        }
     }
 }
