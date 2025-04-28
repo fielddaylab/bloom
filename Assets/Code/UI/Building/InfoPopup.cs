@@ -190,17 +190,15 @@ namespace Zavala.UI.Info
 
         #region Load
 
-        public void LoadTarget(HasInfoPopup thing) {
+        public void LoadTarget(HasInfoPopup thing, bool sendEvent) {
             if (m_SelectedThing == thing) {
                 return;
             }
 
             m_SelectedThing = thing;
-            int idx = -1;
             if (thing.Position)
             {
                 m_Mode = thing.Position.Type;
-                idx = thing.Position.TileIndex;
             }
             else
             {
@@ -345,8 +343,13 @@ namespace Zavala.UI.Info
             m_ConnectionsDirty = true;
             m_InitialOpen = true;
             Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
-
-            ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, EvtArgs.Box(new Data.BuildingLocation(m_Mode, title, idx)));
+            if (sendEvent) {
+                int idx = -1;
+                if (thing.Position) {
+                    idx = thing.Position.TileIndex;
+                }
+                ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, EvtArgs.Box(new Data.BuildingLocation(m_Mode, title, idx)));
+            }
             Show();
 
             UpdateData(false);
