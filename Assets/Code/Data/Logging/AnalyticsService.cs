@@ -466,7 +466,7 @@ namespace Zavala.Data {
         [SerializeField, Required] private string m_AppVersion = "1.1";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
-        [SerializeField] private bool m_Testing = false;
+        [SerializeField] private bool m_Testing = true;
 
         #endregion // Inspector
 

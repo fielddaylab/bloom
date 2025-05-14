@@ -578,7 +578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AppId: BLOOM
-  m_AppVersion: 1.0
+  m_AppVersion: 1.1
   m_Firebase:
     ApiKey: AIzaSyBS3dM4uRQqRbtgMoCPag5ErpEelUL-lGI
     ProjectId: bloom-36ebf
@@ -586,7 +586,7 @@ MonoBehaviour:
     MessagingSenderId: 568050537090
     AppId: 1:568050537090:web:8aa10c815abe6b4057da9b
     MeasurementId: G-TKW6WFXF6G
-  m_Testing: 0
+  m_Testing: 1
 --- !u!1001 &1254169883870357413
 PrefabInstance:
   m_ObjectHideFlags: 0
