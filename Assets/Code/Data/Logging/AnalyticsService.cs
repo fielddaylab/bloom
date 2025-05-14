@@ -498,7 +498,7 @@ namespace Zavala.Data {
             public bool is_locked;
 
             public readonly JsonBuilder Append(JsonBuilder json) {
-                json.Field("policy_choice", policy_choice.ToStringLookup());
+                json.Field("policy_choice", policy_choice);
                 json.Field("is_locked", is_locked);
                 return json;
             }
@@ -610,7 +610,7 @@ namespace Zavala.Data {
                 .Register<ushort>(GameEvents.RegionUnlocked, LogRegionUnlocked)
                 .Register<ZoomVolData>(GameEvents.SimZoomChanged, LogZoom)
                 // Inspect
-                .Register<BuildingLocation>(GameEvents.InspectorOpened, LogInspectBuilding)
+                .Register<BuildingLocation>(GameEvents.PlayerClickedInspector, LogClickInspectBuilding)
                 .Register(GameEvents.GenericInspectorDisplayed, LogCommonInspectorDisplayed)
                 .Register<CityData>(GameEvents.CityInspectorDisplayed, LogCityInspectorDisplayed)
                 .Register<GrainFarmData>(GameEvents.GrainFarmInspectorDisplayed, LogGrainFarmInspectorDisplayed)
@@ -1461,7 +1461,7 @@ namespace Zavala.Data {
         #endregion // Alert
 
         #region Inspector
-        private void LogInspectBuilding(BuildingLocation data) {
+        private void LogClickInspectBuilding(BuildingLocation data) {
             // click_inspect_building { building_type : enum(GATE, CITY, DAIRY_FARM, GRAIN_FARM, STORAGE, PROCESSOR, EXPORT_DEPOT), building_id, tile_index : int // index in the county map }
             using (var e = m_Log.NewEvent("click_inspect_building")) {
                 e.Param("building_type", EnumLookup.BuildingType[(int)data.Type]);

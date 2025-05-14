@@ -225,6 +225,14 @@ namespace Zavala.UI.Info
             m_HeaderLayout.padding.right = DefaultHeaderRightPadding;
             SetEfficiencyGroupActive(false);
             string title = Loc.Find(m_SelectedLocation.TitleLabel);
+            if (sendEvent) {
+                int idx = -1;
+                if (thing.Position) {
+                    idx = thing.Position.TileIndex;
+                }
+                ZavalaGame.Events.Dispatch(GameEvents.PlayerClickedInspector, EvtArgs.Box(new Data.BuildingLocation(m_Mode, title, idx)));
+            }
+
             switch (m_Mode) {
                 case BuildingType.GrainFarm: {
                     //m_HeaderLabel.SetText(Loc.Find(m_SelectedLocation.TitleLabel));
@@ -343,13 +351,6 @@ namespace Zavala.UI.Info
             m_ConnectionsDirty = true;
             m_InitialOpen = true;
             Game.Events.Dispatch(GameEvents.ForceMarketPrioritiesRebuild);
-            if (sendEvent) {
-                int idx = -1;
-                if (thing.Position) {
-                    idx = thing.Position.TileIndex;
-                }
-                ZavalaGame.Events.Dispatch(GameEvents.InspectorOpened, EvtArgs.Box(new Data.BuildingLocation(m_Mode, title, idx)));
-            }
             Show();
 
             UpdateData(false);

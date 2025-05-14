@@ -90,6 +90,7 @@ namespace FieldDay.Scripting {
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
             }
             if (Game.Gui.TryGetShared(out InfoPopup ip)) {
+                ZavalaGame.Events.Dispatch(GameEvents.InspectorClosed);
                 ip.HoldOpen = false;
                 ip.Hide();
             }

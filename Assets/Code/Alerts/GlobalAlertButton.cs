@@ -66,7 +66,7 @@ namespace Zavala.UI {
                 actor.QueuedEvents.MoveFrontToBackWhere(e => e.Alert == EventActorAlertType.Dialogue);
             }
 
-            EventActorUtility.TriggerActorAlert(actor);
+            EventActorUtility.TriggerActorAlert(actor, false);
             UIAlertUtility.ClearAlert(actor.DisplayingEvent);
             TicksSinceFired = 0;
             UpdateButtonRoutine();
