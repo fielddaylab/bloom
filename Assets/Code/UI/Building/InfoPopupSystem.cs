@@ -25,8 +25,10 @@ namespace Zavala.UI.Info {
             }
 
             if ((m_StateB.Paused & DisallowFlags) != 0 && !popupUI.HoldOpen) {
-                ZavalaGame.Events.Dispatch(GameEvents.InspectorClosed);
-                popupUI.Hide();
+                if (popupUI.IsVisible()) {
+                    ZavalaGame.Events.Dispatch(GameEvents.InspectorClosed);
+                    popupUI.Hide();
+                }
                 return;
             }
 

@@ -90,10 +90,13 @@ namespace FieldDay.Scripting {
                 m_RuntimeState.DefaultDialogue.ForceExpandPolicyUI(inNode.AdvisorType);
             }
             if (Game.Gui.TryGetShared(out InfoPopup ip)) {
-                ZavalaGame.Events.Dispatch(GameEvents.InspectorClosed);
                 ip.HoldOpen = false;
-                ip.Hide();
+                if (ip.IsVisible()) {
+                    ZavalaGame.Events.Dispatch(GameEvents.InspectorClosed);
+                    ip.Hide();
+                }
             }
+
             m_RuntimeState.DefaultDialogue.MarkNodeEntered();
             
             // reset pin overrides at the start of a new node
