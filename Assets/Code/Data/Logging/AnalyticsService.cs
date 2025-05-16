@@ -1797,12 +1797,12 @@ namespace Zavala.Data {
 
         private void LogConditionMet(EndConditionData data) {
             // end_condition_achieved: { end_type: enum, condition_type: enum, county: int }
-            m_JsonBuilder.Begin();
-            m_JsonBuilder.Field("end_type", data.EndType);
-            m_JsonBuilder.Field("condition_type", data.ConditionType);
-            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
-            m_JsonBuilder.EndObject();
-            m_Log.Log("end_condition_achieved", m_JsonBuilder.End());
+            using (var e = m_Log.NewEvent("end_condition_achieved", m_JsonBuilder)) {
+                e.Field("end_type", data.EndType);
+                e.Field("condition_type", data.ConditionType);
+                e.Field("county_name", EnumLookup.RegionName[data.Region]);
+                e.EndObject();
+            }
             if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
                 UpdateWinConditionState(data.ConditionType, true);
             }
@@ -1810,12 +1810,12 @@ namespace Zavala.Data {
 
         private void LogConditionLost(EndConditionData data) {
             // end_condition_lost: { end_type: enum, condition_type: enum, county: int }
-            m_JsonBuilder.Begin();
-            m_JsonBuilder.Field("end_type", data.EndType);
-            m_JsonBuilder.Field("condition_type", data.ConditionType);
-            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
-            m_JsonBuilder.EndObject();
-            m_Log.Log("end_condition_lost", m_JsonBuilder.End());
+            using (var e = m_Log.NewEvent("end_condition_lost", m_JsonBuilder)) {
+                e.Field("end_type", data.EndType);
+                e.Field("condition_type", data.ConditionType);
+                e.Field("county_name", EnumLookup.RegionName[data.Region]);
+                e.EndObject();
+            }
             if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
                 UpdateWinConditionState(data.ConditionType, false);
             }
