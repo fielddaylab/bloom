@@ -260,6 +260,7 @@ namespace Zavala.UI {
 
                 if (!Game.IsShuttingDown && Frame.IsLoadingOrLoaded(this)) {
                     SimTimeUtility.Resume(SimPauseFlags.FullscreenCutscene, ZavalaGame.SimTime);
+                    ZavalaGame.Events.Dispatch(GameEvents.CutsceneEnded);
                 }
             }
 
@@ -307,7 +308,6 @@ namespace Zavala.UI {
 
         [LeafMember("CutsceneEnd")]
         static public void End() {
-            ZavalaGame.Events.Dispatch(GameEvents.CutsceneEnded);
             Game.Gui.GetShared<CutscenePanel>().Hide();
         }
 
