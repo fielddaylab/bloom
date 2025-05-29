@@ -190,7 +190,7 @@ namespace Zavala.UI.Info
 
         #region Load
 
-        public void LoadTarget(HasInfoPopup thing, bool sendEvent) {
+        public void LoadTarget(HasInfoPopup thing, bool playerClicked) {
             if (m_SelectedThing == thing) {
                 return;
             }
@@ -225,12 +225,12 @@ namespace Zavala.UI.Info
             m_HeaderLayout.padding.right = DefaultHeaderRightPadding;
             SetEfficiencyGroupActive(false);
             string title = Loc.Find(m_SelectedLocation.TitleLabel);
-            if (sendEvent) {
-                int idx = -1;
-                if (thing.Position) {
-                    idx = thing.Position.TileIndex;
-                }
+
+            int idx = thing.Position ? thing.Position.TileIndex : -1;
+            if (playerClicked) {
                 ZavalaGame.Events.Dispatch(GameEvents.PlayerClickedInspector, EvtArgs.Box(new Data.BuildingLocation(m_Mode, title, idx)));
+            } else {
+                ZavalaGame.Events.Dispatch(GameEvents.InspectorForceOpened, EvtArgs.Box(new Data.BuildingLocation(m_Mode, title, idx)));
             }
 
             switch (m_Mode) {

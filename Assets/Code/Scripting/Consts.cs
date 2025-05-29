@@ -137,6 +137,7 @@ namespace Zavala
         static public readonly StringHash32 DestroyModeEnded = "destroy:ended";
 
         static public readonly StringHash32 PlayerClickedInspector = "inspector:opened";
+        static public readonly StringHash32 InspectorForceOpened = "inspector:force-opened";
         static public readonly StringHash32 InspectorClosed = "inspector:closed";
         static public readonly StringHash32 InspectorTabClicked = "inspector:tab";
 

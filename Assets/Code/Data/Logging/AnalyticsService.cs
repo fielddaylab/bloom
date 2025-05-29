@@ -611,6 +611,7 @@ namespace Zavala.Data {
                 .Register<ZoomVolData>(GameEvents.SimZoomChanged, LogZoom)
                 // Inspect
                 .Register<BuildingLocation>(GameEvents.PlayerClickedInspector, LogClickInspectBuilding)
+                .Register<BuildingLocation>(GameEvents.InspectorForceOpened, UpdateInspectingBuilding)
                 .Register(GameEvents.GenericInspectorDisplayed, LogCommonInspectorDisplayed)
                 .Register<CityData>(GameEvents.CityInspectorDisplayed, LogCityInspectorDisplayed)
                 .Register<GrainFarmData>(GameEvents.GrainFarmInspectorDisplayed, LogGrainFarmInspectorDisplayed)
@@ -1461,16 +1462,22 @@ namespace Zavala.Data {
         #endregion // Alert
 
         #region Inspector
+
+        private void UpdateInspectingBuilding(BuildingLocation data) {
+            m_InspectingBuilding = data;
+        }
+
+
         private void LogClickInspectBuilding(BuildingLocation data) {
             // click_inspect_building { building_type : enum(GATE, CITY, DAIRY_FARM, GRAIN_FARM, STORAGE, PROCESSOR, EXPORT_DEPOT), building_id, tile_index : int // index in the county map }
+            // save this building for inspector dismiss and inspector displayed events
+            m_InspectingBuilding = data;
+
             using (var e = m_Log.NewEvent("click_inspect_building")) {
                 e.Param("building_type", EnumLookup.BuildingType[(int)data.Type]);
                 e.Param("building_id", data.Id);
                 e.Param("tile_index", data.TileIndex);
             }
-
-            // save this building for inspector dismiss and inspector displayed events
-            m_InspectingBuilding = data;
         }
 
         private void LogDismissInspector() {
@@ -1506,7 +1513,6 @@ namespace Zavala.Data {
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
                 e.Param("city_name", data.Name);
-                // TODO: convert enum tostring to string lookup array?
                 e.Param("population", EnumLookup.Get(data.Population));
                 e.Param("water", EnumLookup.Get(data.Water));
                 e.Param("milk", EnumLookup.Get(data.Milk));
