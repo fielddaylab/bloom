@@ -4,6 +4,7 @@
 :: queuePrairieUnlock
 @trigger        RegionUnlocked
 @conditions     regionId == "Prairie"
+@doNotLog
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region3_city1", region3.regionUnlocked, true)
 
@@ -116,6 +117,7 @@ $call ForcePinDialogue()
 @trigger        ExternalImport
 @conditions     alertRegion == 3
 @once
+@doNotLog
 $call QueueDialogueBubble(region3_grain1, region3.phosSale)
 
 :: phosSale
@@ -144,6 +146,7 @@ $call ForcePinDialogue()
 @trigger        RegionReachedAge // RegionAge 20 after region opens
 @conditions     regionId == 3
 @once
+@doNotLog
 $if !global:tradeGraphsUnlocked
     $call AddRegionAgeDeltaTrigger(2, 50) // for unlocking MARKET GRAPHS.
 $endif
@@ -178,6 +181,7 @@ $call ForcePolicyInstant("Economy")
 @trigger    ExternalImport
 @conditions global:importUnlocked, alertRegion == 3, PolicyLevelInRegion(3, "ImportTaxPolicy") != 3
 @once
+@doNotLog
 $call QueueDialogueBubble(region3_grain3, region3.suggestFertSubsidy)
 
 :: suggestFertSubsidy

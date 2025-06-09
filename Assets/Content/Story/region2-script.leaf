@@ -5,6 +5,7 @@
 @trigger        RegionUnlocked
 @conditions     regionId == "Forest"
 @queued
+@doNotLog
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region2_city1", region2.forestUnlocked, true)
 $call AddAutoAlertCondition("ExcessRunoff", 2, true)
@@ -67,6 +68,7 @@ $endif
 @trigger FarmConnection
 @conditions CameraInRegion(2) 
 @once
+@doNotLog
 // $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
 $call QueueDialogueBubble(region2_city1, region2.enjoyingCypress)
 
@@ -120,6 +122,7 @@ $call QueueDialogueBubble(region2_cafo1, region2.urgentGrainChat)
 @trigger        UrgentRequest
 @conditions     resource == "Grain", alertRegion == 2, global:importUnlocked
 @once
+@doNotLog
 $call QueueDialogueBubble(region2_cafo2, region2.urgentGrainSubsidy)
 
 :: urgentGrainSubsidy
@@ -152,6 +155,7 @@ $endif
 :: runoffBranch
 @trigger        AlertExamined
 @conditions     alertType == "excess-runoff", alertRegion == 2, global:runoffDiscovered, !isFromGrainFarm
+@doNotLog
 // $call Pause()
 $if Visited("region2.unlockStorage")
     $branch .runoffGeneric
@@ -221,6 +225,7 @@ $endif
 @conditions     regionId == 2, !global:tradeGraphsUnlocked
 @cutscene
 @once
+@doNotLog
 $call RemoveAutoAlertConditions("Bloom", 2)
 $call SendGlobalAlertForNode("region2_city1", region2.forestBloomCutscene)
 
@@ -229,6 +234,7 @@ $call SendGlobalAlertForNode("region2_city1", region2.forestBloomCutscene)
 @conditions     alertType == "bloom", alertRegion == 2, global:bloomDiscovered, AgeOfRegion(3) > 1
 @cutscene
 @once
+@doNotLog
 $call RemoveRegionAgeTrigger(2)
 $branch .forestBloomCutscene
 
@@ -317,6 +323,7 @@ $call ForcePinDialogue()
 @trigger        ExternalImport
 @conditions     alertRegion == 2
 @once
+@doNotLog
 $call QueueDialogueBubble(region2_grain1, region2.advancedFormula)
 
 :: advancedFormula
@@ -336,6 +343,7 @@ $call ForcePinDialogue()
 @trigger        ManureSold
 @conditions     alertRegion == 2
 @once
+@doNotLog
 $call QueueDialogueBubble(region2_grain1, region2.phosManure)
 
 :: phosManure

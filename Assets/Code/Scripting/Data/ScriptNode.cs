@@ -96,6 +96,11 @@ namespace FieldDay.Scripting {
             PersistenceType = target;
         }
 
+        [BlockMeta("doNotLog")]
+        private void SetDoNotLog() {
+            Flags |= ScriptNodeFlags.DoNotLog;
+        }
+
         #endregion // Internal
     }
 
@@ -113,7 +118,8 @@ namespace FieldDay.Scripting {
         InterruptSamePriority = 0x40,
         AnyTarget = 0x80,
         ForcePolicy = 0x100,
-        ForcePolicyEarly = 0x200
+        ForcePolicyEarly = 0x200,
+        DoNotLog = 0x400
     }
 
     /// <summary>
