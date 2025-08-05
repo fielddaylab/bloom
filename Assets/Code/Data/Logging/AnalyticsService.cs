@@ -453,7 +453,7 @@ namespace Zavala.Data {
     }
 
     public class AnalyticsService : MonoBehaviour {
-        private const ushort CLIENT_LOG_VERSION = 3;
+        private const ushort CLIENT_LOG_VERSION = 4;
 
         private static class Mode {
             public static readonly string View = "VIEW";
@@ -574,7 +574,7 @@ namespace Zavala.Data {
                 .Register<AlertData>(GameEvents.GlobalAlertAppeared, LogGlobalAlertDisplayed)
                 .Register<AlertData>(GameEvents.GlobalAlertClicked, LogGlobalAlertClicked)
                 .Register<ExportDepotData>(GameEvents.ExportDepotUnlocked, LogExportDepot)
-                .Register<AlgaeData>(GameEvents.SimAlgaeChanged, HandleAlgaeChanged)
+                //.Register<AlgaeData>(GameEvents.SimAlgaeChanged, HandleAlgaeChanged)
                 // TODO: do we want to log every pause or just player pause?
                 .Register(GameEvents.SimPaused, LogGamePaused)
                 .Register(GameEvents.SimResumed, LogGameResumed)
@@ -1658,30 +1658,30 @@ namespace Zavala.Data {
 
         #endregion //Inspector
 
-        private void HandleAlgaeChanged(AlgaeData data) {
-            if (data.IsGrowing) {
-                LogStartGrowAlgae(data);
-            } else {
-                LogEndGrowAlgae(data);
-            }
-        }
-        private void LogStartGrowAlgae(AlgaeData data) {
-            // algae_growth_begin { tile_index, phosphorus_value, algae_percent }
-            using (var e = m_Log.NewEvent("algae_growth_begin")) {
-                e.Param("tile_index", data.TileIndex);
-                e.Param("phosphorus_value", data.Phosphorus);
-                e.Param("algae_percent", data.Algae);
-            }
-        }
+        //private void HandleAlgaeChanged(AlgaeData data) {
+        //    if (data.IsGrowing) {
+        //        LogStartGrowAlgae(data);
+        //    } else {
+        //        LogEndGrowAlgae(data);
+        //    }
+        //}
+        //private void LogStartGrowAlgae(AlgaeData data) {
+        //    // algae_growth_begin { tile_index, phosphorus_value, algae_percent }
+        //    using (var e = m_Log.NewEvent("algae_growth_begin")) {
+        //        e.Param("tile_index", data.TileIndex);
+        //        e.Param("phosphorus_value", data.Phosphorus);
+        //        e.Param("algae_percent", data.Algae);
+        //    }
+        //}
 
-        private void LogEndGrowAlgae(AlgaeData data) {
-            // algae_growth_end { tile_index, phosphorus_value, algae_percent }
-            using (var e = m_Log.NewEvent("algae_growth_end")) {
-                e.Param("tile_index", data.TileIndex);
-                e.Param("phosphorus_value", data.Phosphorus);
-                e.Param("algae_percent", data.Algae);
-            }
-        }
+        //private void LogEndGrowAlgae(AlgaeData data) {
+        //    // algae_growth_end { tile_index, phosphorus_value, algae_percent }
+        //    using (var e = m_Log.NewEvent("algae_growth_end")) {
+        //        e.Param("tile_index", data.TileIndex);
+        //        e.Param("phosphorus_value", data.Phosphorus);
+        //        e.Param("algae_percent", data.Algae);
+        //    }
+        //}
 
         #endregion // Sim
 
