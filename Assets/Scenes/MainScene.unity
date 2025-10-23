@@ -11035,7 +11035,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3439126375216716605, guid: e92b035dfe8e9ba45a2b0da83420b417, type: 3}
       propertyPath: m_UVRect.width
-      value: 1.9999999
+      value: 3.681603
       objectReference: {fileID: 0}
     - target: {fileID: 3439126375216716605, guid: e92b035dfe8e9ba45a2b0da83420b417, type: 3}
       propertyPath: m_UVRect.height
