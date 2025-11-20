@@ -7,6 +7,9 @@
 @cutscene
 @once
 // $call Pause()
+
+// Testing Surverys
+// $call RequestSurvey(understanding_check_late_game)
 $call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)

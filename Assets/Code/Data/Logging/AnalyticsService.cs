@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using BeauData;
@@ -13,6 +14,7 @@ using FieldDay;
 using FieldDay.Data;
 using FieldDay.Rendering;
 using FieldDay.Scripting;
+using Leaf.Runtime;
 using OGD;
 using UnityEngine;
 using Zavala.Advisor;
@@ -523,11 +525,14 @@ namespace Zavala.Data {
             }
         }
 
-
         #region Logging Variables
 
         private OGDLog m_Log;
         [NonSerialized] private bool m_Debug;
+
+        static private OGDSurvey s_Survey;
+        [SerializeField] private SurveyPanel SurveyPrefab;
+        [SerializeField] private TextAsset SurveyText;
 
         [NonSerialized] private float m_MusicVolume;
         [NonSerialized] private bool m_IsFullscreen;
@@ -555,8 +560,6 @@ namespace Zavala.Data {
         #region Register and Deregister
 
         private void Start() {
-
-
             ZavalaGame.Events
                 // Main Menu
                 .Register<MenuInteractionType>(GameEvents.MainMenuInteraction, HandleMenuInteraction)
@@ -651,6 +654,12 @@ namespace Zavala.Data {
                 m_Log.UseFirebase(m_Firebase);
             }
             m_Log.SetDebug(m_Debug);
+
+            // Create an OGDSurvey instance for survey functionality
+            s_Survey = new OGDSurvey(SurveyPrefab, m_Log);
+            // Initalize the surveys with a public TextAsset on the script
+            s_Survey.LoadSurveyPackageFromString(SurveyText.text);
+            
 #if UNITY_EDITOR
             if (!m_Testing) {
                 m_Log.AddSettings(OGDLog.SettingsFlags.SkipOGDUpload);
@@ -829,6 +838,14 @@ namespace Zavala.Data {
 
         #region Log Events
 
+        #region Surveys
+        [LeafMember("RequestSurvey")]
+        static private IEnumerator RequestSurvey(string surveryId) {
+            Debug.Log("[Analytics > RequestSurvey] Requested survey: " + surveryId);
+            yield return s_Survey.DisplaySurveyAndWait(surveryId);
+            Debug.Log("[Analytics] Survey Complete.");
+        }
+        #endregion
 
         #region Menu
 

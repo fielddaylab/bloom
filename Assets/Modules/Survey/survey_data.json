@@ -1,0 +1,126 @@
+{
+  "package_config_id": "survey_test",
+  "surveys": [
+    {
+      "display_event_id": "example",
+      "header": "Survey Example",
+      "pages": [
+        {
+          "items": [
+            {
+              "prompt": "Are you reading a survey question?",
+              "responses": ["Yes", "No"]
+            },
+            {
+              "prompt": "Are you responding to the survey question?",
+              "responses": ["Yes", "No"]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "prompt": "How often do you think about Mars?",
+              "responses": ["Every Day", "Every Hour", "eeeeeeeee", "Never"]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "prompt": "When I said \"Mars\", which of these did you think of?",
+              "responses": ["Rome", "Planet", "Candy", "Other"]
+            },
+            {
+              "prompt": "How does that make you feel?",
+              "responses": [
+                "Ashamed",
+                "Giddy",
+                "Curious",
+                "Neutral",
+                "Agitated"
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "prompt": "Was this survey to your satisfaction?",
+              "responses": ["Nope", "Uhhh", "Definitely Not"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "display_event_id": "understanding_check_post_subsidies",
+      "header": "Knowledge Check - Subsidies",
+      "pages": [
+        {
+          "items": [
+            {
+              "prompt": "In the game, which of the following would reduce the cost that grain farmers pay for fertilizer? Select all that apply:",
+              "type": "multi",
+              "responses": [
+                "Building shorter shipping distances for manure",
+                "Setting a low sales tax on grain",
+                "Setting a county import subsidy on fertilizer",
+                "Removing a sales subsidy"
+              ]
+            },
+            {
+              "prompt": "In the game, what is a sales subsidy?",
+              "responses": [
+                "A tax on the sale of goods",
+                "A payment to farmers to help lower their costs",
+                "A tax on goods that get shipped between counties",
+                "A fine applied to farmers who store too much manure on their property"
+              ]
+            },
+            {
+              "prompt": "In the game, which of the following can be used to encourage farmers to sell their manure? Select all that apply:",
+              "type": "multi",
+              "responses": [
+                "Setting a run-off fine",
+                "Setting a county import subsidy on fertilizer",
+                "Setting a high sales tax",
+                "Setting a sales subsidy"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "display_event_id": "understanding_check_late_game",
+      "header": "Understanding Check - Late Game",
+      "pages": [
+        {
+          "items": [
+            {
+              "prompt": "In the game, which of the following can reduce the amount of phosphorus that ends up in local waterways? Select all that apply:",
+              "type": "multi",
+              "responses": [
+                "Setting a run-off fine",
+                "Setting a county import subsidy on milk",
+                "Building a manure storage tank",
+                "Setting a high sales tax",
+                "Setting a sales subsidy"
+              ]
+            },
+            {
+              "prompt": "In the game, which of the following BEST describes what an import subsidy is:",
+              "responses": [
+                "A tax on goods that get shipped between counties",
+                "A payment that helps reduce the cost of shipping a product",
+                "A fine applied to farmers who store too much manure on their property",
+                "A tax on the sale of goods"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

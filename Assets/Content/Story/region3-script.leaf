@@ -165,6 +165,7 @@ $set global:importUnlocked = true
 {@advisorEconPrairie}   Perhaps SAGA could help cover those costs?
 {@advisorEconPrairie}   I've added a policy for setting <b>Import Subsidies.</b>
 $call UnlockCards(ImportTaxPolicy)
+// $call RequestSurvey(understanding_check_post_subsidies)
 {@advisorEconPrairie}   <b>Subsidizing</b> a resource will encourage buying it from other counties.
 {@advisorEconPrairie}   That could help us balance one county's <b>excess</b> with another's <b>needs.</b>
 $call OpenInfoPopup("region3_grain2")
