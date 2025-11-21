@@ -58,6 +58,7 @@ $endif
 @trigger FarmConnection
 @conditions CameraInRegion(4) 
 @once
+@doNotLog
 // $call OffsetAlgaeGrowthThreshold(-1) // speed up growth to get first bloom alert
 $call QueueDialogueBubble(region4_city1, region4.characterIntro)
 
@@ -110,6 +111,7 @@ $endif
 @trigger        ExternalImport
 @conditions     alertRegion == 4
 @once
+@doNotLog
 $call QueueDialogueBubble(region4_grain1, region4.phosPlus)
 
 :: phosPlus
@@ -183,6 +185,7 @@ $endif
 @trigger        UrgentRequest
 @conditions     resource == "Grain", alertRegion == 4, global:importUnlocked
 @once
+@doNotLog
 $call QueueDialogueBubble(region4_cafo1, region4.neilGrainSubsidy)
 
 :: neilGrainSubsidy
@@ -270,6 +273,7 @@ $endif
 @conditions     regionId == 2, global:tradeGraphsUnlocked, global:skimmersUnlocked, !global:digestersUnlocked, AgeOfRegion(4) > 1
 @cutscene
 @once
+@doNotLog
 $call RemoveAutoAlertConditions("Bloom", 4)
 $call SendGlobalAlertForNode("region4_city1", region4.unlockDigesters)
 
@@ -278,6 +282,8 @@ $call SendGlobalAlertForNode("region4_city1", region4.unlockDigesters)
 @conditions     alertType == "bloom", alertRegion == 4, global:skimmersUnlocked, !global:digestersUnlocked, AgeOfRegion(4) > 1
 @cutscene
 @once
+@doNotLog
+$call RemoveRegionAgeTrigger(2)
 $branch .unlockDigesters
 
 :: unlockDigesters
@@ -285,6 +291,7 @@ $branch .unlockDigesters
 @cutscene
 @once
 // // $call Pause()
+$if !global:digestersUnlocked
 $set global:digestersUnlocked = true
 {@advisorEcolWetland}   It's just as we feared...
 $call CutsceneBegin(4)
@@ -322,6 +329,7 @@ $call QueueDialogueBubble(region1_city1, region1.visitingBirds)
 $call QueueDialogueBubble(region4_city1, region4.explainProcessors)
 $call FocusClear()
 $call OffsetAlgaeGrowthThreshold(1)
+$endif
 // $call Unpause()
 // $call AddRegionAgeDeltaTrigger(4, 10)
 
@@ -365,6 +373,7 @@ $call ForcePolicyInstant("Ecology")
 @trigger        PlayerBuiltBuilding
 @conditions     buildingType == "Digester"
 @once       
+@doNotLog
 $set global:builtDigester = true
 $call QueueDialogueBubble(region1_grain1, region1.phosShirt)
 $call AddRegionAgeDeltaTrigger(4, 10)
@@ -372,6 +381,7 @@ $call AddRegionAgeDeltaTrigger(4, 10)
 :: digesterDelay
 @trigger    RegionReachedAge 
 @conditions regionId == 4, global:builtDigester
+@doNotLog
 $call SendGlobalAlertForNode(region4_city1, region4.afterBuiltDigester, true)
 
 :: afterBuiltDigester

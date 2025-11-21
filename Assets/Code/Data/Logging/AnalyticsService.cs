@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using BeauData;
@@ -13,6 +14,7 @@ using FieldDay;
 using FieldDay.Data;
 using FieldDay.Rendering;
 using FieldDay.Scripting;
+using Leaf.Runtime;
 using OGD;
 using UnityEngine;
 using Zavala.Advisor;
@@ -453,7 +455,7 @@ namespace Zavala.Data {
     }
 
     public class AnalyticsService : MonoBehaviour {
-        private const ushort CLIENT_LOG_VERSION = 3;
+        private const ushort CLIENT_LOG_VERSION = 4;
 
         private static class Mode {
             public static readonly string View = "VIEW";
@@ -466,7 +468,7 @@ namespace Zavala.Data {
         [SerializeField, Required] private string m_AppVersion = "1.1";
         // TODO: set up firebase consts in inspector
         [SerializeField] private FirebaseConsts m_Firebase = default;
-        [SerializeField] private bool m_Testing = false;
+        [SerializeField] private bool m_Testing = true;
 
         #endregion // Inspector
 
@@ -498,7 +500,7 @@ namespace Zavala.Data {
             public bool is_locked;
 
             public readonly JsonBuilder Append(JsonBuilder json) {
-                json.Field("policy_choice", policy_choice.ToStringLookup());
+                json.Field("policy_choice", policy_choice);
                 json.Field("is_locked", is_locked);
                 return json;
             }
@@ -523,11 +525,14 @@ namespace Zavala.Data {
             }
         }
 
-
         #region Logging Variables
 
         private OGDLog m_Log;
         [NonSerialized] private bool m_Debug;
+
+        static private OGDSurvey s_Survey;
+        [SerializeField] private SurveyPanel SurveyPrefab;
+        [SerializeField] private TextAsset SurveyText;
 
         [NonSerialized] private float m_MusicVolume;
         [NonSerialized] private bool m_IsFullscreen;
@@ -555,8 +560,6 @@ namespace Zavala.Data {
         #region Register and Deregister
 
         private void Start() {
-
-
             ZavalaGame.Events
                 // Main Menu
                 .Register<MenuInteractionType>(GameEvents.MainMenuInteraction, HandleMenuInteraction)
@@ -574,7 +577,7 @@ namespace Zavala.Data {
                 .Register<AlertData>(GameEvents.GlobalAlertAppeared, LogGlobalAlertDisplayed)
                 .Register<AlertData>(GameEvents.GlobalAlertClicked, LogGlobalAlertClicked)
                 .Register<ExportDepotData>(GameEvents.ExportDepotUnlocked, LogExportDepot)
-                .Register<AlgaeData>(GameEvents.SimAlgaeChanged, HandleAlgaeChanged)
+                //.Register<AlgaeData>(GameEvents.SimAlgaeChanged, HandleAlgaeChanged)
                 // TODO: do we want to log every pause or just player pause?
                 .Register(GameEvents.SimPaused, LogGamePaused)
                 .Register(GameEvents.SimResumed, LogGameResumed)
@@ -610,7 +613,8 @@ namespace Zavala.Data {
                 .Register<ushort>(GameEvents.RegionUnlocked, LogRegionUnlocked)
                 .Register<ZoomVolData>(GameEvents.SimZoomChanged, LogZoom)
                 // Inspect
-                .Register<BuildingLocation>(GameEvents.InspectorOpened, LogInspectBuilding)
+                .Register<BuildingLocation>(GameEvents.PlayerClickedInspector, LogClickInspectBuilding)
+                .Register<BuildingLocation>(GameEvents.InspectorForceOpened, UpdateInspectingBuilding)
                 .Register(GameEvents.GenericInspectorDisplayed, LogCommonInspectorDisplayed)
                 .Register<CityData>(GameEvents.CityInspectorDisplayed, LogCityInspectorDisplayed)
                 .Register<GrainFarmData>(GameEvents.GrainFarmInspectorDisplayed, LogGrainFarmInspectorDisplayed)
@@ -650,6 +654,12 @@ namespace Zavala.Data {
                 m_Log.UseFirebase(m_Firebase);
             }
             m_Log.SetDebug(m_Debug);
+
+            // Create an OGDSurvey instance for survey functionality
+            s_Survey = new OGDSurvey(SurveyPrefab, m_Log);
+            // Initalize the surveys with a public TextAsset on the script
+            s_Survey.LoadSurveyPackageFromString(SurveyText.text);
+            
 #if UNITY_EDITOR
             if (!m_Testing) {
                 m_Log.AddSettings(OGDLog.SettingsFlags.SkipOGDUpload);
@@ -828,6 +838,14 @@ namespace Zavala.Data {
 
         #region Log Events
 
+        #region Surveys
+        [LeafMember("RequestSurvey")]
+        static private IEnumerator RequestSurvey(string surveryId) {
+            Debug.Log("[Analytics > RequestSurvey] Requested survey: " + surveryId);
+            yield return s_Survey.DisplaySurveyAndWait(surveryId);
+            Debug.Log("[Analytics] Survey Complete.");
+        }
+        #endregion
 
         #region Menu
 
@@ -1461,16 +1479,22 @@ namespace Zavala.Data {
         #endregion // Alert
 
         #region Inspector
-        private void LogInspectBuilding(BuildingLocation data) {
+
+        private void UpdateInspectingBuilding(BuildingLocation data) {
+            m_InspectingBuilding = data;
+        }
+
+
+        private void LogClickInspectBuilding(BuildingLocation data) {
             // click_inspect_building { building_type : enum(GATE, CITY, DAIRY_FARM, GRAIN_FARM, STORAGE, PROCESSOR, EXPORT_DEPOT), building_id, tile_index : int // index in the county map }
+            // save this building for inspector dismiss and inspector displayed events
+            m_InspectingBuilding = data;
+
             using (var e = m_Log.NewEvent("click_inspect_building")) {
                 e.Param("building_type", EnumLookup.BuildingType[(int)data.Type]);
                 e.Param("building_id", data.Id);
                 e.Param("tile_index", data.TileIndex);
             }
-
-            // save this building for inspector dismiss and inspector displayed events
-            m_InspectingBuilding = data;
         }
 
         private void LogDismissInspector() {
@@ -1506,7 +1530,6 @@ namespace Zavala.Data {
                 e.Param("building_id", m_InspectingBuilding.Id);
                 e.Param("tile_index", m_InspectingBuilding.TileIndex);
                 e.Param("city_name", data.Name);
-                // TODO: convert enum tostring to string lookup array?
                 e.Param("population", EnumLookup.Get(data.Population));
                 e.Param("water", EnumLookup.Get(data.Water));
                 e.Param("milk", EnumLookup.Get(data.Milk));
@@ -1652,30 +1675,30 @@ namespace Zavala.Data {
 
         #endregion //Inspector
 
-        private void HandleAlgaeChanged(AlgaeData data) {
-            if (data.IsGrowing) {
-                LogStartGrowAlgae(data);
-            } else {
-                LogEndGrowAlgae(data);
-            }
-        }
-        private void LogStartGrowAlgae(AlgaeData data) {
-            // algae_growth_begin { tile_index, phosphorus_value, algae_percent }
-            using (var e = m_Log.NewEvent("algae_growth_begin")) {
-                e.Param("tile_index", data.TileIndex);
-                e.Param("phosphorus_value", data.Phosphorus);
-                e.Param("algae_percent", data.Algae);
-            }
-        }
+        //private void HandleAlgaeChanged(AlgaeData data) {
+        //    if (data.IsGrowing) {
+        //        LogStartGrowAlgae(data);
+        //    } else {
+        //        LogEndGrowAlgae(data);
+        //    }
+        //}
+        //private void LogStartGrowAlgae(AlgaeData data) {
+        //    // algae_growth_begin { tile_index, phosphorus_value, algae_percent }
+        //    using (var e = m_Log.NewEvent("algae_growth_begin")) {
+        //        e.Param("tile_index", data.TileIndex);
+        //        e.Param("phosphorus_value", data.Phosphorus);
+        //        e.Param("algae_percent", data.Algae);
+        //    }
+        //}
 
-        private void LogEndGrowAlgae(AlgaeData data) {
-            // algae_growth_end { tile_index, phosphorus_value, algae_percent }
-            using (var e = m_Log.NewEvent("algae_growth_end")) {
-                e.Param("tile_index", data.TileIndex);
-                e.Param("phosphorus_value", data.Phosphorus);
-                e.Param("algae_percent", data.Algae);
-            }
-        }
+        //private void LogEndGrowAlgae(AlgaeData data) {
+        //    // algae_growth_end { tile_index, phosphorus_value, algae_percent }
+        //    using (var e = m_Log.NewEvent("algae_growth_end")) {
+        //        e.Param("tile_index", data.TileIndex);
+        //        e.Param("phosphorus_value", data.Phosphorus);
+        //        e.Param("algae_percent", data.Algae);
+        //    }
+        //}
 
         #endregion // Sim
 
@@ -1797,12 +1820,12 @@ namespace Zavala.Data {
 
         private void LogConditionMet(EndConditionData data) {
             // end_condition_achieved: { end_type: enum, condition_type: enum, county: int }
-            m_JsonBuilder.Begin();
-            m_JsonBuilder.Field("end_type", data.EndType);
-            m_JsonBuilder.Field("condition_type", data.ConditionType);
-            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
-            m_JsonBuilder.EndObject();
-            m_Log.Log("end_condition_achieved", m_JsonBuilder.End());
+            using (var e = m_Log.NewEvent("end_condition_achieved", m_JsonBuilder)) {
+                e.Field("end_type", data.EndType);
+                e.Field("condition_type", data.ConditionType);
+                e.Field("county_name", EnumLookup.RegionName[data.Region]);
+                e.EndObject();
+            }
             if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
                 UpdateWinConditionState(data.ConditionType, true);
             }
@@ -1810,12 +1833,12 @@ namespace Zavala.Data {
 
         private void LogConditionLost(EndConditionData data) {
             // end_condition_lost: { end_type: enum, condition_type: enum, county: int }
-            m_JsonBuilder.Begin();
-            m_JsonBuilder.Field("end_type", data.EndType);
-            m_JsonBuilder.Field("condition_type", data.ConditionType);
-            m_JsonBuilder.Field("county_name", EnumLookup.RegionName[data.Region]);
-            m_JsonBuilder.EndObject();
-            m_Log.Log("end_condition_lost", m_JsonBuilder.End());
+            using (var e = m_Log.NewEvent("end_condition_lost", m_JsonBuilder)) {
+                e.Field("end_type", data.EndType);
+                e.Field("condition_type", data.ConditionType);
+                e.Field("county_name", EnumLookup.RegionName[data.Region]);
+                e.EndObject();
+            }
             if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
                 UpdateWinConditionState(data.ConditionType, false);
             }

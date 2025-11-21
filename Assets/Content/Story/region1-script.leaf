@@ -7,6 +7,9 @@
 @cutscene
 @once
 // $call Pause()
+
+// Testing Surverys
+// $call RequestSurvey(understanding_check_late_game)
 $call CutsceneBegin(1)
     $call CutscenePrepareImages("intro/frame1-1.png", "intro/frame1-2.png", "intro/frame1-3.png")
     $call CutsceneAllImages(0.3)
@@ -122,6 +125,7 @@ $endif
 @trigger BlueprintModeEntered
 @conditions     !intro:tutorialComplete, intro:roadBuilt
 @cutscene
+@doNotLog
 $call FocusClear()
 
 :: cityConnected
@@ -453,6 +457,7 @@ $call ForcePolicyInstant("Ecology")
 @trigger        UrgentRequest
 @conditions     resource == "Milk", alertRegion == 1
 @once
+@doNotLog
 $call QueueDialogueBubble(region1_city1, region1.cityNeedsMilk)
 
 :: cityNeedsMilk
@@ -468,6 +473,7 @@ $call QueueDialogueBubble(region1_city1, region1.cityNeedsMilk)
 @trigger        UrgentRequest
 @conditions     resource == "Milk", alertRegion == 1, global:importUnlocked
 @once
+@doNotLog
 $call QueueDialogueBubble(region1_city1, region1.suggestMilkSubsidy)
 
 :: suggestMilkSubsidy
@@ -487,6 +493,7 @@ $endif
 @trigger        ManureSold
 @conditions     alertRegion == 1
 @once
+@doNotLog
 $call QueueDialogueBubble(region1_cafo1, region1.runoffFineWorking)
 
 :: runoffFineWorking

@@ -187,6 +187,7 @@ $call ForcePolicyInstant("Economy")
 
 :: skipTutorial
 @trigger    TutorialSkipped
+@doNotLog
 $call CutsceneEnd()
 $call FocusClear()
 {@phos4us}    Thank you for using PHOS4US TutSkip technology!

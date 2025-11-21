@@ -4,6 +4,8 @@
 :: queueCityUnlocked
 @trigger        RegionUnlocked
 @conditions     regionId == "Urban"
+@doNotLog
+$call RequestSurvey(understanding_check_late_game)
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region5_city1", region5.regionUnlocked, true)
 
@@ -55,6 +57,7 @@ $call ForceAdvisorModule("Economy")
 @trigger        ExternalImport
 @conditions     alertRegion == 5
 @once
+@doNotLog
 $call QueueDialogueBubble(region5_grain2, region5.phosUranium)
 
 :: phosUranium
@@ -73,6 +76,7 @@ $call ForcePinDialogue()
 :: triggerFirstBlimp
 @trigger InternalBlimpSent
 @once
+@doNotLog
 $call QueueDialogueBubble(region1_city1, region1.pippinEcology)
 $call QueueDialogueBubble(region3_city1, region4.blimpConcerns)
 $call SendGlobalAlertForNode("region5_city1", region5.firstBlimpReceived, true)
@@ -122,6 +126,7 @@ $call ForcePinDialogue()
 @trigger        UrgentRequest
 @conditions     resource == "Milk", alertRegion == 5
 @once
+@doNotLog
 $call QueueDialogueBubble(region5_city2, region5.needMilk)
 
 :: needMilk

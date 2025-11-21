@@ -39,16 +39,6 @@ namespace Zavala.Advisor {
         // TODO: There is probably a cleaner way to do this. Does it belong in a system?
         public bool SetPolicyByIndex(PolicyType policyType, int policyIndex, int region, bool forced) {
             if (policyIndex < 0 || policyIndex > 3) { return false; }
-
-            using (TempVarTable varTable = TempVarTable.Alloc()) {
-                varTable.Set("policyType", policyType.ToString());
-                varTable.Set("policyIndex", policyIndex);
-                varTable.Set("alertRegion", region+1); // 0-indexed to 1-indexed
-                varTable.Set("policyForced", forced);
-                ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
-            }
-            ZavalaGame.Events.Dispatch(GameEvents.PolicySet, EvtArgs.Box(new PolicyData(policyType, policyIndex)));
-
             Policies[region].Map[(int) policyType] = (PolicyLevel)policyIndex;
             Policies[region].EverSet[(int) policyType] = true; // this policy has now been set
             bool policySetSuccessful = false;
@@ -86,6 +76,16 @@ namespace Zavala.Advisor {
             }
 
             OnPolicyUpdated?.Invoke();
+
+            ZavalaGame.Events.Dispatch(GameEvents.PolicySet, EvtArgs.Box(new PolicyData(policyType, policyIndex)));
+
+            using (TempVarTable varTable = TempVarTable.Alloc()) {
+                varTable.Set("policyType", policyType.ToString());
+                varTable.Set("policyIndex", policyIndex);
+                varTable.Set("alertRegion", region + 1); // 0-indexed to 1-indexed
+                varTable.Set("policyForced", forced);
+                ScriptUtility.Trigger(GameTriggers.PolicySet, varTable);
+            }
 
             return policySetSuccessful;
         }

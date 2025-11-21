@@ -241,7 +241,7 @@ namespace Zavala.Scripting {
             QueueDialogueAlert("region" + regionOneIndexed + "_" + type + "1", targetNode);
         }
 
-        public static void TriggerActorAlert(EventActor actor) {
+        public static void TriggerActorAlert(EventActor actor, bool sendEvent = true) {
 
             // Activate queued script node event
             using (TempVarTable varTable = TempVarTable.Alloc()) {
@@ -256,9 +256,11 @@ namespace Zavala.Scripting {
                     varTable.Set(newEvent.SecondArg.Id, newEvent.SecondArg.Value);
                 }
 
-                ZavalaGame.Events.Dispatch(GameEvents.AlertClicked, EvtArgs.Box(new AlertData(actor, newEvent)));
+                if (sendEvent) {
+                    ZavalaGame.Events.Dispatch(GameEvents.AlertClicked, EvtArgs.Box(new AlertData(actor, newEvent)));
+                }
 
-                // TODD: shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
+                // shift screen focus to this event, updating current region index (may need to store the occupies tile index or region number in the queued event)
                 WorldCameraUtility.PanCameraToTransform(actor.transform, -1.5f);
 
                 // Use region index as a condition for alerts
