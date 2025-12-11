@@ -1821,10 +1821,11 @@ namespace Zavala.Data {
         private void LogConditionMet(EndConditionData data) {
             // end_condition_achieved: { end_type: enum, condition_type: enum, county: int }
             using (var e = m_Log.NewEvent("end_condition_achieved", m_JsonBuilder)) {
+                m_JsonBuilder.Begin();
                 e.Field("end_type", data.EndType);
                 e.Field("condition_type", data.ConditionType);
                 e.Field("county_name", EnumLookup.RegionName[data.Region]);
-                e.EndObject();
+                m_JsonBuilder.End();
             }
             if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
                 UpdateWinConditionState(data.ConditionType, true);
@@ -1834,10 +1835,11 @@ namespace Zavala.Data {
         private void LogConditionLost(EndConditionData data) {
             // end_condition_lost: { end_type: enum, condition_type: enum, county: int }
             using (var e = m_Log.NewEvent("end_condition_lost", m_JsonBuilder)) {
+                m_JsonBuilder.Begin();
                 e.Field("end_type", data.EndType);
                 e.Field("condition_type", data.ConditionType);
                 e.Field("county_name", EnumLookup.RegionName[data.Region]);
-                e.EndObject();
+                m_JsonBuilder.End();
             }
             if (data.EndType.Equals(EnumLookup.Get(EndType.Succeeded))) {
                 UpdateWinConditionState(data.ConditionType, false);
