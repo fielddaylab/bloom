@@ -5,7 +5,6 @@
 @trigger        RegionUnlocked
 @conditions     regionId == "Urban"
 @doNotLog
-$call RequestSurvey(understanding_check_late_game)
 $yield // wait 1 frame for region to unlock
 $call SendGlobalAlertForNode("region5_city1", region5.regionUnlocked, true)
 
@@ -44,6 +43,11 @@ $call ForceAdvisorModule("Economy")
 {@advisorEconUrban}     Yeah, I'm kind of a <i>logistical wizard.</i>
 {@advisorEcolUrban}     Let's reduce that PHOS4US Market Share, dude!
 $call ForceAdvisorModule("Economy")
+$start .surveyOnTimeout
+
+:: surveyOnTimeout
+$call Wait(2)
+$call RequestSurvey(understanding_check_late_game)
 
 // $call OffsetAlgaeGrowthThreshold(2)
 // $call Unpause()
