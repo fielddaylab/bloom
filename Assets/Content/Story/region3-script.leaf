@@ -199,11 +199,6 @@ $else
     $call CloseInfoPopup()
     {@advisorEconPrairie}   What do you think, Director?
 $endif
-$start .surveyOnTimeout
-
-:: surveyOnTimeout
-$call Wait(2)
-$call RequestSurvey(understanding_check_post_subsidies)
 
 :: visitingVeldt // triggered by unlocking Region 4
 @queued

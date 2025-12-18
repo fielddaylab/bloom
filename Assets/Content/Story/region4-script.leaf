@@ -31,6 +31,7 @@ $call PanToBuilding("region4_cafo1")
 {@advisorEcolWetland}    We fear it could once again threaten our wildlife. Maybe SAGA could help us avoid it.
 $call PanToBuilding("region4_cafo3")
 // $call Unpause()
+$call RequestSurvey(understanding_check_post_subsidies)
 
 :: ecologyAdvisorOpen
 @trigger        AdvisorOpened
