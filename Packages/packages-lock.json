@@ -62,13 +62,12 @@
       "url": "https://package.openupm.com"
     },
     "com.fieldday.opengamedata-unity": {
-      "version": "1.0.14",
+      "version": "file:com.fieldday.opengamedata-unity@1.0.14",
       "depth": 0,
-      "source": "registry",
+      "source": "embedded",
       "dependencies": {
         "com.unity.textmeshpro": "1.0.0"
-      },
-      "url": "https://package.openupm.com"
+      }
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
