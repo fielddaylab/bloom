@@ -5152,7 +5152,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 4.6409373, y: 4}
+  m_SizeDelta: {x: 5.442869, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &384047924 stripped
 GameObject:
@@ -5232,7 +5232,7 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   m_Visible: 1
-  m_Size: {x: 4.6409373, y: 4}
+  m_Size: {x: 5.442869, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
   m_UVRect:
     serializedVersion: 2
@@ -5748,7 +5748,7 @@ PrefabInstance:
     - target: {fileID: 1439248957510760085, guid: e92b035dfe8e9ba45a2b0da83420b417, type: 3}
       propertyPath: SurveyPrefab
       value: 
-      objectReference: {fileID: 2400622096144153359, guid: 81cf92935e5d17146b89dd315e67020b, type: 3}
+      objectReference: {fileID: 2400622096144153359, guid: 398bbd449430d0d4e873888eb6aa169a, type: 3}
     - target: {fileID: 3439126375216716605, guid: e92b035dfe8e9ba45a2b0da83420b417, type: 3}
       propertyPath: m_UVRect.width
       value: 2.3264818

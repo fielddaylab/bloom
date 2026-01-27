@@ -77,7 +77,11 @@
                 "A tax on goods that get shipped between counties",
                 "A fine applied to farmers who store too much manure on their property"
               ]
-            },
+            }
+          ]
+        },
+        {
+            "items": [
             {
               "prompt": "In the game, which of the following can be used to encourage farmers to sell their manure? Select all that apply:",
               "type": "multi",
@@ -88,7 +92,8 @@
                 "Setting a sales subsidy"
               ]
             }
-          ]
+
+            ]
         }
       ]
     },
