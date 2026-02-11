@@ -65,7 +65,6 @@ Gerardo Ruiz-Mercado (EPA)
 David Cole (UW-Madison)
 Lauren Knose (EPA)
 
-
 :: Educator Support Materials
 Jim Mathews
 
@@ -97,13 +96,19 @@ Jennifer Scianna
 Mai Vang
 
 :: Student Playtesting Classrooms
-
+Clark Street Community School
+Desoto Middle School
+Emanuel Lutheran School, New London
+DeForest High School
+Greendale High School
+Omro High School
+UW-Madison - Game Design 1
 
 :: Additional Thanks to
 Chris Baker 
 Nora Juniper Gagnon
 Jacques "Bear" Gagnon
-Shari Metclaf 
+Shari Metcalf
 Geoffrey Nelson
 Jenn Scianna 
 

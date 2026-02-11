@@ -294,7 +294,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 8049365857654399942}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.813107
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -733,7 +733,7 @@ MonoBehaviour:
   m_QuestionLayout: {fileID: 3716807878716562378}
   m_QuestionPrefab: {fileID: 2399614719670412535, guid: a642d99ceba3bf84a87d6b02667f1f86, type: 3}
   m_DefaultResponsePrefab: {fileID: 7842835166434953078, guid: 70e027068f4c7504b91cbf0e2b849f83, type: 3}
-  m_MultiResponsePrefab: {fileID: 7842835166434953078, guid: 879551f6d3ba5d6409f5aea5fcae3316, type: 3}
+  m_MultiResponsePrefab: {fileID: 7842835166434953078, guid: bf62db28d09bca642995b01bf4fd4812, type: 3}
   m_ButtonGroup: {fileID: 5295685656934815297}
   m_ContinueButton: {fileID: 6642907650035332191}
   m_FinishButton: {fileID: 4046393260847079903}
@@ -828,8 +828,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 16.124994}
-  m_SizeDelta: {x: 0, y: 10.509989}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4567268009776871009
 CanvasRenderer:
@@ -1059,7 +1059,7 @@ RectTransform:
   m_Father: {fileID: 4228906578772720267}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.18689299}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -0.000061035156, y: -0.000061035156}
   m_SizeDelta: {x: 20, y: 20}
@@ -1137,8 +1137,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -16}
-  m_SizeDelta: {x: -32, y: 64}
+  m_AnchoredPosition: {x: 6.7099, y: -25.3}
+  m_SizeDelta: {x: -45.420174, y: 64}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1997416157657789924
 CanvasRenderer:
