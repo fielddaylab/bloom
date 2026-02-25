@@ -842,7 +842,9 @@ namespace Zavala.Data {
         [LeafMember("RequestSurvey")]
         static private IEnumerator RequestSurvey(string surveryId) {
             Debug.Log("[Analytics > RequestSurvey] Requested survey: " + surveryId);
+            SimTimeInput.SetPaused(true, SimPauseFlags.Cutscene);
             yield return s_Survey.DisplaySurveyAndWait(surveryId);
+            SimTimeInput.SetPaused(false, SimPauseFlags.Cutscene);
             Debug.Log("[Analytics] Survey Complete.");
         }
         #endregion
