@@ -21,6 +21,7 @@ using Zavala.Advisor;
 using Zavala.Building;
 using Zavala.Cards;
 using Zavala.Economy;
+using Zavala.Input;
 using Zavala.Roads;
 using Zavala.Scripting;
 using Zavala.Sim;
@@ -841,10 +842,11 @@ namespace Zavala.Data {
         #region Surveys
         [LeafMember("RequestSurvey")]
         static private IEnumerator RequestSurvey(string surveryId) {
-            Debug.Log("[Analytics > RequestSurvey] Requested survey: " + surveryId);
-            SimTimeInput.SetPaused(true, SimPauseFlags.Cutscene);
+            InteractionState interactions = Game.SharedState.Get<InteractionState>();
+            InteractionUtility.SetInteractions(interactions, InteractionMask.None);
+            SimTimeInput.SetPaused(true, SimPauseFlags.Scripted);
             yield return s_Survey.DisplaySurveyAndWait(surveryId);
-            SimTimeInput.SetPaused(false, SimPauseFlags.Cutscene);
+            SimTimeInput.SetPaused(false, SimPauseFlags.Scripted);
             Debug.Log("[Analytics] Survey Complete.");
         }
         #endregion
