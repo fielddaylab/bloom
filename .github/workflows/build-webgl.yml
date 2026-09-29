@@ -65,7 +65,7 @@ jobs:
     # Unity Build Steps
 
     - name: Cache Library folder
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: Library
         key: Library
@@ -86,7 +86,7 @@ jobs:
     # Deploy Steps
     
     - name: Upload build as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ github.event.repository.name }}-webgl_${{ env.VERSION }}
         path: build/WebGL/WebGL
